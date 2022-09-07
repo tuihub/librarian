@@ -3,39 +3,29 @@ package data
 import (
 	"context"
 
+	"github.com/sony/sonyflake"
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 type greeterRepo struct {
 	data *Data
-	log  *log.Helper
+	sf   *sonyflake.Sonyflake
 }
 
 // NewGreeterRepo .
 func NewGreeterRepo(data *Data) biz.GreeterRepo {
+	sf := sonyflake.NewSonyflake(sonyflake.Settings{
+		MachineID: func() (uint16, error) {
+			return 0, nil
+		},
+	})
 	return &greeterRepo{
-		data: data,
+		data,
+		sf,
 	}
 }
 
-func (r *greeterRepo) Save(ctx context.Context, g *biz.Greeter) (*biz.Greeter, error) {
-	return g, nil
-}
-
-func (r *greeterRepo) Update(ctx context.Context, g *biz.Greeter) (*biz.Greeter, error) {
-	return g, nil
-}
-
-func (r *greeterRepo) FindByID(context.Context, int64) (*biz.Greeter, error) {
-	return nil, nil
-}
-
-func (r *greeterRepo) ListByHello(context.Context, string) ([]*biz.Greeter, error) {
-	return nil, nil
-}
-
-func (r *greeterRepo) ListAll(context.Context) ([]*biz.Greeter, error) {
-	return nil, nil
+func (r *greeterRepo) NewID(ctx context.Context) (int64, error) {
+	id, err := r.sf.NextID()
+	return int64(id), err
 }

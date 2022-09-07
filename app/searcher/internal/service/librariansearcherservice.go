@@ -11,15 +11,21 @@ import (
 type LibrarianSearcherServiceService struct {
 	pb.UnimplementedLibrarianSearcherServiceServer
 
-	uc *biz.GreeterUsecase
+	uc *biz.GreeterUseCase
 }
 
-func NewLibrarianSearcherServiceService(uc *biz.GreeterUsecase) pb.LibrarianSearcherServiceServer {
+func NewLibrarianSearcherServiceService(uc *biz.GreeterUseCase) pb.LibrarianSearcherServiceServer {
 	return &LibrarianSearcherServiceService{uc: uc}
 }
 
 func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.NewIDRequest) (*pb.NewIDResponse, error) {
-	return &pb.NewIDResponse{}, nil
+	id, err := s.uc.NewID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.NewIDResponse{
+		Id: id,
+	}, nil
 }
 func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *pb.DescribeIDRequest) (*pb.DescribeIDResponse, error) {
 	return &pb.DescribeIDResponse{}, nil

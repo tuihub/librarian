@@ -22,8 +22,8 @@ func NewSearcherService(searcher_Data *conf.Searcher_Data) (v1.LibrarianSearcher
 		return nil, nil, err
 	}
 	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo)
-	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(greeterUsecase)
+	greeterUseCase := biz.NewGreeterUseCase(greeterRepo)
+	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(greeterUseCase)
 	return librarianSearcherServiceServer, func() {
 		cleanup()
 	}, nil
