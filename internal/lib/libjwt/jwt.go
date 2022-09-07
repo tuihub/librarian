@@ -23,7 +23,7 @@ func NewClaims() jwtv4.Claims {
 
 func FromContext(ctx context.Context) (*Claims, bool) {
 	if token, ok := jwt.FromContext(ctx); ok {
-		if claims, ok := token.(Claims); ok {
+		if claims, met := token.(Claims); met {
 			return &claims, true
 		}
 	}

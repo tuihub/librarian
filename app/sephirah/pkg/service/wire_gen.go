@@ -20,7 +20,7 @@ import (
 // Injectors from wire.go:
 
 func NewSephirahService(sephirah_Data *conf.Sephirah_Data, librarianMapperServiceClient *v1.LibrarianMapperServiceClient, librarianSearcherServiceClient *v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient *v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
-	client, cleanup, err := data.NewSqlClient(sephirah_Data)
+	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}

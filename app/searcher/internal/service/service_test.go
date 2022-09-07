@@ -1,9 +1,11 @@
-package service
+package service_test
 
 import (
 	"context"
 	"errors"
 	"testing"
+
+	"github.com/tuihub/librarian/app/searcher/internal/service"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -22,10 +24,7 @@ func (m *mockedGreeterRepo) NewID(ctx context.Context) (int64, error) {
 
 func TestLibrarianSearcherServiceService_NewID(t *testing.T) {
 	m := mockedGreeterRepo{}
-	s := LibrarianSearcherServiceService{
-		UnimplementedLibrarianSearcherServiceServer: searcher.UnimplementedLibrarianSearcherServiceServer{},
-		uc: biz.NewGreeterUseCase(&m),
-	}
+	s := service.NewLibrarianSearcherServiceService(biz.NewGreeterUseCase(&m))
 
 	mc := m.On("NewID", context.Background()).Return((int64)(123), nil)
 	id, err := s.NewID(context.Background(), &searcher.NewIDRequest{})

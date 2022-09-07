@@ -9,12 +9,12 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
-	_ "github.com/lib/pq"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"           // required by ent
+	_ "github.com/mattn/go-sqlite3" // required by ent
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewSqlClient, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewSQLClient, NewGreeterRepo)
 
 // Data .
 type Data struct {
@@ -28,7 +28,7 @@ func NewData(db *ent.Client) *Data {
 	}
 }
 
-func NewSqlClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
+func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 	var driverName, dataSourceName string
 	driverName = c.Database.Driver
 	switch driverName {
@@ -44,7 +44,7 @@ func NewSqlClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
 	// Run the auto migration tool.
-	if err := client.Schema.Create(context.Background()); err != nil {
+	if err = client.Schema.Create(context.Background()); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
 	return client, func() {

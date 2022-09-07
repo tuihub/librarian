@@ -28,7 +28,7 @@ func NewNebula(c *conf.Mapper_Data) (*norm.DB, func()) {
 
 	dialector, err := dialectors.NewNebulaDialector(dialectors.DialectorConfig{
 		Addresses: c.GetNebula().GetAddress(),
-		Timeout:   time.Second * 5,
+		Timeout:   time.Second * 5, //nolint:gomnd //TODO
 		Space:     c.GetNebula().GetSpace(),
 		Username:  c.GetNebula().GetUsername(),
 		Password:  c.GetNebula().GetPassword(),

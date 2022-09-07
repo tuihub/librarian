@@ -20,7 +20,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data) (*kratos.App, func(), error) {
-	entClient, cleanup, err := data.NewSqlClient(sephirah_Data)
+	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}

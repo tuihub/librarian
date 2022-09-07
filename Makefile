@@ -45,6 +45,11 @@ all:
 	make config;
 	make generate;
 
+.PHONY: test
+# run go test
+test:
+	go test ./... -race
+
 # show help
 help:
 	@echo ''

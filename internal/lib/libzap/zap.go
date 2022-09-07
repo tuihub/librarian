@@ -16,7 +16,7 @@ const (
 	WarnLevel   Level = zap.WarnLevel   // 1
 	ErrorLevel  Level = zap.ErrorLevel  // 2
 	DPanicLevel Level = zap.DPanicLevel // 3, used in development log
-	// PanicLevel logs a message, then panics
+	// PanicLevel logs a message, then panics.
 	PanicLevel Level = zap.PanicLevel // 4
 	// FatalLevel logs a message, then calls os.Exit(1).
 	FatalLevel Level = zap.FatalLevel // 5
@@ -97,7 +97,7 @@ func NewDefaultLogger() *zap.Logger {
 			Rotate: RotateOptions{
 				MaxSize:    1,
 				MaxAge:     1,
-				MaxBackups: 3,
+				MaxBackups: 3, //nolint:gomnd // default settings
 				Compress:   true,
 			},
 			LevelEnablerFunc: func(_ Level) bool {
@@ -109,7 +109,7 @@ func NewDefaultLogger() *zap.Logger {
 			Rotate: RotateOptions{
 				MaxSize:    1,
 				MaxAge:     1,
-				MaxBackups: 3,
+				MaxBackups: 3, //nolint:gomnd // default settings
 				Compress:   true,
 			},
 			LevelEnablerFunc: func(lvl Level) bool {

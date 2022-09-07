@@ -18,7 +18,8 @@ func NewLibrarianSearcherServiceService(uc *biz.GreeterUseCase) pb.LibrarianSear
 	return &LibrarianSearcherServiceService{uc: uc}
 }
 
-func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.NewIDRequest) (*pb.NewIDResponse, error) {
+func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.NewIDRequest) (
+	*pb.NewIDResponse, error) {
 	id, err := s.uc.NewID(ctx)
 	if err != nil {
 		return nil, err
@@ -27,9 +28,11 @@ func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.New
 		Id: id,
 	}, nil
 }
-func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *pb.DescribeIDRequest) (*pb.DescribeIDResponse, error) {
+func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *pb.DescribeIDRequest) (
+	*pb.DescribeIDResponse, error) {
 	return &pb.DescribeIDResponse{}, nil
 }
-func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.SearchIDRequest) (*pb.SearchIDResponse, error) {
+func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.SearchIDRequest) (
+	*pb.SearchIDResponse, error) {
 	return &pb.SearchIDResponse{}, nil
 }
