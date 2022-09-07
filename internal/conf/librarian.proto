@@ -1,0 +1,17 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "Librarian/internal/conf;conf";
+
+import "conf/sephirah.proto";
+import "conf/mapper.proto";
+import "conf/searcher.proto";
+import "conf/porter.proto";
+
+message Librarian {
+  Sephirah sephirah = 1;
+  Mapper mapper = 2;
+  Searcher searcher = 3;
+  Porter porter = 4;
+}
+

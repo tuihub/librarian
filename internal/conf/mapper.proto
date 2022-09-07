@@ -1,0 +1,36 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "Librarian/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Mapper {
+  message Server {
+    message GRPC {
+      string network = 1;
+      string addr = 2;
+      google.protobuf.Duration timeout = 3;
+    }
+    GRPC grpc = 1;
+  }
+
+  message Data {
+    message NebulaGraph {
+      repeated string address  = 1;
+      string space    = 2;
+      string username = 3;
+      string password = 4;
+    }
+    message CayleyGraph {
+      string store = 1;
+    }
+    oneof GraphDB {
+      NebulaGraph nebula = 1;
+      CayleyGraph cayley = 2;
+    }
+  }
+  Server server = 1;
+  Data data = 2;
+}
+
