@@ -11,10 +11,10 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/lib/pq v1.10.5
 	github.com/mattn/go-sqlite3 v1.14.13
+	github.com/sony/sonyflake v1.1.0
+	github.com/stretchr/testify v1.8.0
 	github.com/tuihub/protos v0.0.0-20220904181332-7f1d9ba4ff82
 	github.com/zhihu/norm v0.1.11
-	google.golang.org/genproto v0.0.0-20220902135211-223410557253
-	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -24,6 +24,7 @@ require (
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/cayleygraph/quad v1.2.4 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-kratos/aegis v0.1.2 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
@@ -46,6 +47,7 @@ require (
 	github.com/sirupsen/logrus v1.4.2 // indirect
 	github.com/spf13/cobra v1.5.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/objx v0.4.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/vesoft-inc/nebula-go/v2 v2.0.0-ga // indirect
@@ -54,6 +56,8 @@ require (
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/tools v0.1.13-0.20220804200503-81c7dc4e4efa // indirect
+	google.golang.org/genproto v0.0.0-20220902135211-223410557253 // indirect
+	google.golang.org/grpc v1.49.0 // indirect
 )
 
 require (
