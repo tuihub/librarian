@@ -18,6 +18,7 @@ init:
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.49.0
 
 .PHONY: config
 # generate internal proto
@@ -44,6 +45,10 @@ generate:
 all:
 	make config;
 	make generate;
+
+.PHONY: lint
+lint:
+	golangci-lint run --fix
 
 .PHONY: test
 # run go test
