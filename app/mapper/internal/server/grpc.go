@@ -1,12 +1,11 @@
 package server
 
 import (
-	"github.com/tuihub/librarian/internal/conf"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/tuihub/librarian/internal/conf"
 	pb "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 

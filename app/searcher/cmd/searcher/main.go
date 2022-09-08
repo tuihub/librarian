@@ -3,10 +3,6 @@ package main
 import (
 	"flag"
 
-	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/libapp"
-	"github.com/tuihub/librarian/internal/lib/libzap"
-
 	"github.com/go-kratos/kratos/contrib/log/zap/v2"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -14,6 +10,9 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libzap"
 )
 
 func newApp(gs *grpc.Server) *kratos.App {

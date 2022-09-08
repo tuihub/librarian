@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
-
 	pb "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 

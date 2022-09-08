@@ -1,10 +1,9 @@
 package data
 
 import (
-	"github.com/tuihub/librarian/internal/conf"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"github.com/tuihub/librarian/internal/conf"
 )
 
 // ProviderSet is data providers.

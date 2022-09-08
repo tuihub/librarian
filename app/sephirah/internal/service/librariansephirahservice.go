@@ -5,9 +5,7 @@ import (
 	"io"
 
 	"github.com/go-kratos/kratos/v2/errors"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
-
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 

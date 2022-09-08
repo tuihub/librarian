@@ -5,11 +5,10 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/tuihub/librarian/app/searcher/internal/service"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
+	"github.com/tuihub/librarian/app/searcher/internal/service"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 

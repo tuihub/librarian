@@ -3,11 +3,10 @@ package data
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/mapper/internal/biz"
-	"github.com/tuihub/librarian/internal/conf"
-
 	"github.com/cayleygraph/cayley"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/tuihub/librarian/app/mapper/internal/biz"
+	"github.com/tuihub/librarian/internal/conf"
 )
 
 type cayleyMapperRepo struct {

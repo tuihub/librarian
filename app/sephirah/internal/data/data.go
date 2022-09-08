@@ -4,13 +4,12 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/ent"
-	"github.com/tuihub/librarian/internal/conf"
-
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	_ "github.com/lib/pq"           // required by ent
 	_ "github.com/mattn/go-sqlite3" // required by ent
+	"github.com/tuihub/librarian/app/sephirah/internal/ent"
+	"github.com/tuihub/librarian/internal/conf"
 )
 
 // ProviderSet is data providers.

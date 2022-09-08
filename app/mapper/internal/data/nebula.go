@@ -4,10 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	"github.com/tuihub/librarian/internal/conf"
-
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/zhihu/norm"
 	"github.com/zhihu/norm/dialectors"
 )
