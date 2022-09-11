@@ -4,6 +4,7 @@ package kratos.api;
 option go_package = "Librarian/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
+import "conf/auth.proto";
 
 message Sephirah {
   message Server {
@@ -21,6 +22,8 @@ message Sephirah {
     }
     Database database = 1;
   }
+
   Server server = 1;
   Data data = 2;
+  Auth auth = 3;
 }

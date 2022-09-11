@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -20,6 +21,6 @@ import (
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 
-func NewSephirahService(*conf.Sephirah_Data, *mapper.LibrarianMapperServiceClient, *searcher.LibrarianSearcherServiceClient, *porter.LibrarianPorterServiceClient) (pb.LibrarianSephirahServiceServer, func(), error) {
-	panic(wire.Build(data.ProviderSet, biz.ProviderSet, service.ProviderSet))
+func NewSephirahService(*conf.Sephirah_Data, *conf.Auth, mapper.LibrarianMapperServiceClient, searcher.LibrarianSearcherServiceClient, porter.LibrarianPorterServiceClient) (pb.LibrarianSephirahServiceServer, func(), error) {
+	panic(wire.Build(data.ProviderSet, biz.ProviderSet, service.ProviderSet, libauth.ProviderSet))
 }

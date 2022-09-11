@@ -20,7 +20,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth) (*kratos.App, func(), error) {
 	librarianMapperServiceServer, cleanup, err := service.NewMapperService(mapper_Data)
 	if err != nil {
 		return nil, nil, err
@@ -39,7 +39,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
-	librarianSephirahServiceServer, cleanup4, err := service4.NewSephirahService(sephirah_Data, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer, cleanup4, err := service4.NewSephirahService(sephirah_Data, auth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup3()
 		cleanup2()

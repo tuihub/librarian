@@ -1,0 +1,10 @@
+syntax = "proto3";
+package kratos.api;
+
+option go_package = "Librarian/internal/conf;conf";
+
+message Auth {
+  string Salt = 1;
+  string Issuer = 2;
+  string JwtSecret = 3;
+}

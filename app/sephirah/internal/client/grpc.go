@@ -10,7 +10,7 @@ import (
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
-func NewMapperClient() (*mapper.LibrarianMapperServiceClient, error) {
+func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint(""),
@@ -19,10 +19,10 @@ func NewMapperClient() (*mapper.LibrarianMapperServiceClient, error) {
 		),
 	)
 	cli := mapper.NewLibrarianMapperServiceClient(conn)
-	return &cli, err
+	return cli, err
 }
 
-func NewSearcherClient() (*searcher.LibrarianSearcherServiceClient, error) {
+func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint(""),
@@ -31,10 +31,10 @@ func NewSearcherClient() (*searcher.LibrarianSearcherServiceClient, error) {
 		),
 	)
 	cli := searcher.NewLibrarianSearcherServiceClient(conn)
-	return &cli, err
+	return cli, err
 }
 
-func NewPorterClient() (*porter.LibrarianPorterServiceClient, error) {
+func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint(""),
@@ -43,5 +43,5 @@ func NewPorterClient() (*porter.LibrarianPorterServiceClient, error) {
 		),
 	)
 	cli := porter.NewLibrarianPorterServiceClient(conn)
-	return &cli, err
+	return cli, err
 }

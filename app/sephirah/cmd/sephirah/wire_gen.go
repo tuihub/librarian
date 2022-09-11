@@ -13,19 +13,25 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth) (*kratos.App, func(), error) {
 	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
-	greeterRepo := data.NewGreeterRepo(dataData)
+	tipherethRepo := data.NewTipherethRepo(dataData)
+	libauthAuth, err := libauth.NewAuth(auth)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup()
@@ -41,8 +47,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(greeterUsecase)
+	tipherethUsecase := biz.NewTipherethUsecase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUsecase)
 	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

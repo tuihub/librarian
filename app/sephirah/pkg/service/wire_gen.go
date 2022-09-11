@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v1_2 "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -19,15 +20,20 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, librarianMapperServiceClient *v1.LibrarianMapperServiceClient, librarianSearcherServiceClient *v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient *v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(client)
-	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(greeterUsecase)
+	tipherethRepo := data.NewTipherethRepo(dataData)
+	libauthAuth, err := libauth.NewAuth(auth)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	tipherethUsecase := biz.NewTipherethUsecase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUsecase)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

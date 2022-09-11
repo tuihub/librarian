@@ -2,15 +2,26 @@
 
 package user
 
+import (
+	"fmt"
+	"time"
+)
+
 const (
 	// Label holds the string label denoting the user type in the database.
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldAge holds the string denoting the age field in the database.
-	FieldAge = "age"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
+	// FieldInternalID holds the string denoting the internal_id field in the database.
+	FieldInternalID = "internal_id"
+	// FieldUsername holds the string denoting the username field in the database.
+	FieldUsername = "username"
+	// FieldPassword holds the string denoting the password field in the database.
+	FieldPassword = "password"
+	// FieldState holds the string denoting the state field in the database.
+	FieldState = "state"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -18,8 +29,11 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldAge,
-	FieldName,
+	FieldInternalID,
+	FieldUsername,
+	FieldPassword,
+	FieldState,
+	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -33,8 +47,29 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
-	AgeValidator func(int) error
-	// DefaultName holds the default value on creation for the "name" field.
-	DefaultName string
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
 )
+
+// State defines the type for the "state" enum field.
+type State string
+
+// State values.
+const (
+	StateActive   State = "active"
+	StateDisabled State = "disabled"
+)
+
+func (s State) String() string {
+	return string(s)
+}
+
+// StateValidator is a validator for the "state" field enum values. It is called by the builders before save.
+func StateValidator(s State) error {
+	switch s {
+	case StateActive, StateDisabled:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for state field: %q", s)
+	}
+}

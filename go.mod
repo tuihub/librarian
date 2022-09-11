@@ -15,6 +15,7 @@ require (
 	github.com/stretchr/testify v1.8.0
 	github.com/tuihub/protos v0.0.0-20220904181332-7f1d9ba4ff82
 	github.com/zhihu/norm v0.1.11
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	google.golang.org/protobuf v1.28.1
 )
 
@@ -52,7 +53,6 @@ require (
 	github.com/tklauser/numcpus v0.3.0 // indirect
 	github.com/vesoft-inc/nebula-go/v2 v2.0.0-ga // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/tools v0.1.13-0.20220804200503-81c7dc4e4efa // indirect

@@ -1,6 +1,9 @@
 package server
 
 import (
+	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
+
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -8,8 +11,6 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
-	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/libjwt"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
@@ -21,9 +22,9 @@ func NewGRPCServer(c *conf.Sephirah_Server, greeter pb.LibrarianSephirahServiceS
 			logging.Server(log.GetLogger()),
 			ratelimit.Server(),
 			jwt.Server(
-				libjwt.KeyFunc(""),
+				libauth.KeyFunc(""),
 				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-				jwt.WithClaims(libjwt.NewClaims),
+				jwt.WithClaims(libauth.NewClaims),
 			),
 		),
 	}

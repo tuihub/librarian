@@ -10,23 +10,23 @@ import (
 
 var ProviderSet = wire.NewSet(NewInprocMapperChannel, NewInprocSearcherChannel, NewInprocPorterChannel)
 
-func NewInprocMapperChannel(s mapper.LibrarianMapperServiceServer) *mapper.LibrarianMapperServiceClient {
+func NewInprocMapperChannel(s mapper.LibrarianMapperServiceServer) mapper.LibrarianMapperServiceClient {
 	channel := inprocgrpc.Channel{}
 	mapper.RegisterLibrarianMapperServiceServer(&channel, s)
 	cli := mapper.NewLibrarianMapperServiceClient(&channel)
-	return &cli
+	return cli
 }
 
-func NewInprocSearcherChannel(s searcher.LibrarianSearcherServiceServer) *searcher.LibrarianSearcherServiceClient {
+func NewInprocSearcherChannel(s searcher.LibrarianSearcherServiceServer) searcher.LibrarianSearcherServiceClient {
 	channel := inprocgrpc.Channel{}
 	searcher.RegisterLibrarianSearcherServiceServer(&channel, s)
 	cli := searcher.NewLibrarianSearcherServiceClient(&channel)
-	return &cli
+	return cli
 }
 
-func NewInprocPorterChannel(s porter.LibrarianPorterServiceServer) *porter.LibrarianPorterServiceClient {
+func NewInprocPorterChannel(s porter.LibrarianPorterServiceServer) porter.LibrarianPorterServiceClient {
 	channel := inprocgrpc.Channel{}
 	porter.RegisterLibrarianPorterServiceServer(&channel, s)
 	cli := porter.NewLibrarianPorterServiceClient(&channel)
-	return &cli
+	return cli
 }

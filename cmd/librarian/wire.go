@@ -19,6 +19,6 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Sephirah_Server, *conf.Sephirah_Data, *conf.Mapper_Data, *conf.Searcher_Data, *conf.Porter_Data) (*kratos.App, func(), error) {
+func wireApp(*conf.Sephirah_Server, *conf.Sephirah_Data, *conf.Mapper_Data, *conf.Searcher_Data, *conf.Porter_Data, *conf.Auth) (*kratos.App, func(), error) {
 	panic(wire.Build(sephirahService.ProviderSet, mapperService.ProviderSet, searcherService.ProviderSet, porterService.ProviderSet, server.ProviderSet, inprocgrpc.ProviderSet, newApp))
 }

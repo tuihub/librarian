@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -13,10 +15,14 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("age").
-			Positive(),
-		field.String("name").
-			Default("unknown"),
+		field.Int64("internal_id"),
+		field.String("username").
+			Unique(),
+		field.String("password"),
+		field.Enum("state").
+			Values("active", "disabled"),
+		field.Time("created_at").
+			Default(time.Now),
 	}
 }
 

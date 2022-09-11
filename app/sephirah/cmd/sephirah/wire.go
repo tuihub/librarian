@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -18,6 +19,6 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Sephirah_Server, *conf.Sephirah_Data) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, client.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+func wireApp(*conf.Sephirah_Server, *conf.Sephirah_Data, *conf.Auth) (*kratos.App, func(), error) {
+	panic(wire.Build(server.ProviderSet, client.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, libauth.ProviderSet, newApp))
 }

@@ -12,10 +12,10 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	uc *biz.GreeterUsecase
+	uc *biz.TipherethUsecase
 }
 
-func NewLibrarianSephirahServiceService(uc *biz.GreeterUsecase) pb.LibrarianSephirahServiceServer {
+func NewLibrarianSephirahServiceService(uc *biz.TipherethUsecase) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		uc: uc,
 	}
@@ -23,7 +23,16 @@ func NewLibrarianSephirahServiceService(uc *biz.GreeterUsecase) pb.LibrarianSeph
 
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error) {
-	return &pb.GetTokenResponse{}, nil
+	token, err := s.uc.UserLogin(ctx, &biz.User{
+		UserName: req.GetUsername(),
+		PassWord: req.GetPassword(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetTokenResponse{
+		AccessToken: token,
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error) {
@@ -35,7 +44,16 @@ func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req
 }
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error) {
-	return &pb.CreateUserResponse{}, nil
+	u, err := s.uc.AddUser(ctx, &biz.User{
+		UserName: req.GetUsername(),
+		PassWord: req.GetPassword(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateUserResponse{
+		Id: &pb.InternalID{Id: u.Id},
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
 	*pb.UpdateUserResponse, error) {
