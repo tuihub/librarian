@@ -55,6 +55,10 @@ lint:
 test:
 	go test ./... -race
 
+.PHONY: run
+run:
+	kratos run
+
 # show help
 help:
 	@echo ''

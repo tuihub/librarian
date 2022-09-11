@@ -1,6 +1,8 @@
 package server
 
 import (
+	"context"
+
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -10,6 +12,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
 )
@@ -21,11 +24,13 @@ func NewGRPCServer(c *conf.Sephirah_Server, greeter pb.LibrarianSephirahServiceS
 			recovery.Recovery(),
 			logging.Server(log.GetLogger()),
 			ratelimit.Server(),
-			jwt.Server(
-				libauth.KeyFunc(""),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-				jwt.WithClaims(libauth.NewClaims),
-			),
+			selector.Server(
+				jwt.Server(
+					libauth.KeyFunc(""),
+					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+					jwt.WithClaims(libauth.NewClaims),
+				),
+			).Match(NewWhiteListMatcher()).Build(),
 		),
 	}
 	if c.Grpc.Network != "" {
@@ -40,4 +45,18 @@ func NewGRPCServer(c *conf.Sephirah_Server, greeter pb.LibrarianSephirahServiceS
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianSephirahServiceServer(srv, greeter)
 	return srv
+}
+
+func NewWhiteListMatcher() selector.MatchFunc {
+	whiteList := make(map[string]struct{})
+	whiteList["/grpc.health.v1.Health/Check"] = struct{}{}
+	whiteList["/grpc.health.v1.Health/Watch"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetToken"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/CreateUser"] = struct{}{}
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := whiteList[operation]; ok {
+			return false
+		}
+		return true
+	}
 }

@@ -8,6 +8,7 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 type LibrarianSephirahServiceService struct {
@@ -29,6 +30,7 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 		PassWord: req.GetPassword(),
 	})
 	if err != nil {
+		log.Infof("[service] UserLogin failed: %s", err.Error())
 		return nil, err
 	}
 	return &pb.GetTokenResponse{

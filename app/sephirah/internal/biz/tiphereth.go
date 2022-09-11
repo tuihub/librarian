@@ -9,6 +9,8 @@ import (
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 // User is a User model.
@@ -42,6 +44,7 @@ func NewTipherethUsecase(repo TipherethRepo, auth *libauth.Auth, mClient mapper.
 func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (AccessToken, error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
+		log.Infof("[biz] generate password failed: %s", err.Error())
 		return "", errors.New("internal error")
 	}
 	ok, err := t.repo.UserActive(ctx, &User{
@@ -49,12 +52,14 @@ func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (AccessTok
 		PassWord: password,
 	})
 	if err != nil {
+		log.Infof("[biz] UserActive failed: %s", err.Error())
 		return "", err
 	}
 	if ok {
 		var token string
 		token, err = t.auth.GenerateToken(1, 1, time.Hour)
 		if err != nil {
+			log.Infof("[biz] GenerateToken failed: %s", err.Error())
 			return "", err
 		}
 		return AccessToken(token), nil
@@ -65,10 +70,12 @@ func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (AccessTok
 func (t *TipherethUsecase) AddUser(ctx context.Context, user *User) (*User, error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
+		log.Infof("[biz] generate password failed: %s", err.Error())
 		return nil, err
 	}
 	resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
+		log.Infof("[biz] NewID failed: %s", err.Error())
 		return nil, err
 	}
 	_, err = t.repo.AddUser(ctx, &User{
@@ -77,6 +84,7 @@ func (t *TipherethUsecase) AddUser(ctx context.Context, user *User) (*User, erro
 		PassWord: password,
 	})
 	if err != nil {
+		log.Infof("[biz] repo AddUser failed: %s", err.Error())
 		return nil, err
 	}
 	return &User{

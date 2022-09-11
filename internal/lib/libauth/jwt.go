@@ -48,6 +48,6 @@ func (a *Auth) GenerateToken(id int64, ty int64, expire time.Duration) (string, 
 
 	tokenClaims := jwtv4.NewWithClaims(jwtv4.SigningMethodHS256, claims)
 
-	token, err := tokenClaims.SignedString(a.config.JwtSecret)
+	token, err := tokenClaims.SignedString([]byte(a.config.JwtSecret))
 	return token, err
 }
