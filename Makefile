@@ -47,6 +47,7 @@ all:
 	make generate;
 
 .PHONY: lint
+# lint files
 lint:
 	golangci-lint run --fix
 
@@ -56,6 +57,7 @@ test:
 	go test ./... -race
 
 .PHONY: run
+# run server
 run:
 	kratos run
 
