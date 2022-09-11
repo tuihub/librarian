@@ -3,8 +3,9 @@ package data
 import (
 	"context"
 
-	"github.com/sony/sonyflake"
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
+
+	"github.com/sony/sonyflake"
 )
 
 type greeterRepo struct {

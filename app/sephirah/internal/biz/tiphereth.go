@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
-
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -14,14 +13,12 @@ import (
 
 // User is a User model.
 type User struct {
-	Id       int64
+	ID       int64
 	UserName string
 	PassWord string
 }
 
-type Token struct {
-	claims *libauth.Claims
-}
+type AccessToken string
 
 // TipherethRepo is a Greater repo.
 type TipherethRepo interface {
@@ -42,7 +39,7 @@ func NewTipherethUsecase(repo TipherethRepo, auth *libauth.Auth, mClient mapper.
 	return &TipherethUsecase{auth: auth, repo: repo, searcher: sClient}
 }
 
-func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (string, error) {
+func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (AccessToken, error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		return "", errors.New("internal error")
@@ -55,7 +52,12 @@ func (t *TipherethUsecase) UserLogin(ctx context.Context, user *User) (string, e
 		return "", err
 	}
 	if ok {
-		return t.auth.GenerateToken(1, 1, time.Hour)
+		var token string
+		token, err = t.auth.GenerateToken(1, 1, time.Hour)
+		if err != nil {
+			return "", err
+		}
+		return AccessToken(token), nil
 	}
 	return "", errors.New("invalid user")
 }
@@ -70,7 +72,7 @@ func (t *TipherethUsecase) AddUser(ctx context.Context, user *User) (*User, erro
 		return nil, err
 	}
 	_, err = t.repo.AddUser(ctx, &User{
-		Id:       resp.Id,
+		ID:       resp.Id,
 		UserName: user.UserName,
 		PassWord: password,
 	})
@@ -78,6 +80,6 @@ func (t *TipherethUsecase) AddUser(ctx context.Context, user *User) (*User, erro
 		return nil, err
 	}
 	return &User{
-		Id: resp.Id,
+		ID: resp.Id,
 	}, nil
 }

@@ -4,9 +4,10 @@ import (
 	"context"
 	"io"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type LibrarianSephirahServiceService struct {
@@ -31,7 +32,7 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 		return nil, err
 	}
 	return &pb.GetTokenResponse{
-		AccessToken: token,
+		AccessToken: string(token),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
@@ -52,7 +53,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &pb.InternalID{Id: u.Id},
+		Id: &pb.InternalID{Id: u.ID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (

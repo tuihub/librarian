@@ -1,11 +1,12 @@
 package inprocgrpc
 
 import (
-	"github.com/fullstorydev/grpchan/inprocgrpc"
-	"github.com/google/wire"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+
+	"github.com/fullstorydev/grpchan/inprocgrpc"
+	"github.com/google/wire"
 )
 
 var ProviderSet = wire.NewSet(NewInprocMapperChannel, NewInprocSearcherChannel, NewInprocPorterChannel)

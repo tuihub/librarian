@@ -59,7 +59,14 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Sephirah.Server, bc.Sephirah.Data, bc.Mapper.Data, bc.Searcher.Data, bc.Porter.Data, bc.Sephirah.Auth)
+	app, cleanup, err := wireApp(
+		bc.Sephirah.Server,
+		bc.Sephirah.Data,
+		bc.Mapper.Data,
+		bc.Searcher.Data,
+		bc.Porter.Data,
+		bc.Sephirah.Auth,
+	)
 	if err != nil {
 		panic(err)
 	}

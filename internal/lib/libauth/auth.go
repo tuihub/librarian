@@ -3,8 +3,9 @@ package libauth
 import (
 	"errors"
 
-	"github.com/google/wire"
 	"github.com/tuihub/librarian/internal/conf"
+
+	"github.com/google/wire"
 )
 
 var ProviderSet = wire.NewSet(NewAuth)

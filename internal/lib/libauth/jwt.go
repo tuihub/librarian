@@ -9,7 +9,7 @@ import (
 )
 
 type Claims struct {
-	Id   int64
+	ID   int64
 	Type int64
 	jwtv4.RegisteredClaims
 }
@@ -38,7 +38,7 @@ func (a *Auth) GenerateToken(id int64, ty int64, expire time.Duration) (string, 
 	expireTime := nowTime.Add(expire)
 
 	claims := Claims{
-		Id:   id,
+		ID:   id,
 		Type: ty,
 		RegisteredClaims: jwtv4.RegisteredClaims{
 			ExpiresAt: jwtv4.NewNumericDate(expireTime),

@@ -3,9 +3,8 @@ package data
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 type tipherethRepo struct {
@@ -35,7 +34,7 @@ func (t tipherethRepo) UserActive(ctx context.Context, userData *biz.User) (bool
 
 func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) (*biz.User, error) {
 	_, err := t.data.db.User.Create().
-		SetInternalID(userData.Id).
+		SetInternalID(userData.ID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
 		SetState(user.StateActive).
