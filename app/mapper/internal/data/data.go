@@ -3,9 +3,10 @@ package data
 import (
 	"errors"
 
+	"github.com/tuihub/librarian/app/mapper/internal/biz"
+
 	"github.com/cayleygraph/cayley"
 	"github.com/google/wire"
-	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	"github.com/zhihu/norm"
 )
 
