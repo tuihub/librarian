@@ -12,6 +12,9 @@
   "docker-compose": {
     "enabled": false
   },
+  "go": {
+    "enabled": false
+  },
   "labels": ["renovate"],
   "prBodyNotes": [
     "{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"
@@ -24,7 +27,8 @@
       ],
       "matchUpdateTypes": [
         "minor",
-        "patch"
+        "patch",
+        "digest"
       ],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
