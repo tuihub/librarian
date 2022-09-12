@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	entgo.io/ent v0.11.2
-	github.com/cayleygraph/cayley v0.7.7-0.20220304214302-275a7428fb10
+	github.com/cayleygraph/cayley v0.7.7
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-kratos/kratos/v2 v2.5.0
 	github.com/golang-jwt/jwt/v4 v4.4.1
@@ -34,7 +34,6 @@ require (
 	github.com/gobuffalo/packd v0.3.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.7.1 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
-	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jhump/protoreflect v1.11.0 // indirect
@@ -84,3 +83,5 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/cayleygraph/cayley v0.7.7 => github.com/cayleygraph/cayley v0.7.7-0.20220304214302-275a7428fb10
