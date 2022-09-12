@@ -12,9 +12,6 @@
   "docker-compose": {
     "enabled": false
   },
-  "go": {
-    "enabled": false
-  },
   "labels": ["renovate"],
   "prBodyNotes": [
     "{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"
@@ -33,6 +30,12 @@
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "automerge": true
+    },
+    {
+      "description": "Opt-out minimum Go version updates: https://github.com/renovatebot/renovate/issues/16715",
+      "matchManagers": ["gomod"],
+      "matchDepTypes": ["golang"],
+      "enabled": false
     }
   ],
   "platformAutomerge": true
