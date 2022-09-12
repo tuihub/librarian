@@ -22,30 +22,20 @@
   },
   "packageRules": [
     {
-      "description": "Automatically group and merge minor-level updates",
+      "description": "Automatically group and merge minor and patch-level updates",
       "matchPackagePatterns": [
         "*"
       ],
       "matchUpdateTypes": [
-        "minor"
-      ],
-      "stabilityDays": 7,
-      "groupName": "all minor dependencies",
-      "groupSlug": "all-minor",
-      "automerge": true
-    },
-    {
-      "description": "Automatically merge patch-level updates",
-      "matchPackagePatterns": [
-        "*"
-      ],
-      "matchUpdateTypes": [
+        "minor",
         "patch",
         "digest"
       ],
+      "matchManagers": ["gomod"],
       "stabilityDays": 7,
-      "automerge": true,
-      "automergeType": "branch"
+      "groupName": "all non-major dependencies",
+      "groupSlug": "all-minor-patch",
+      "automerge": true
     },
     {
       "description": "Opt-out minimum Go version updates: https://github.com/renovatebot/renovate/issues/16715",
