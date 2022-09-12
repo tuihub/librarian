@@ -3,7 +3,8 @@
   "extends": [
     "config:base",
     "schedule:earlyMondays",
-    ":timezone(Asia/Singapore)"
+    ":timezone(Asia/Singapore)",
+    ":dependencyDashboard"
   ],
   "postUpdateOptions": ["gomodTidy"],
   "docker": {
@@ -16,6 +17,9 @@
   "prBodyNotes": [
     "{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"
   ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
   "packageRules": [
     {
       "description": "Automatically group and merge minor and patch-level updates",
@@ -23,10 +27,11 @@
         "*"
       ],
       "matchUpdateTypes": [
-        "minor",
         "patch",
         "digest"
       ],
+      "matchManagers": ["gomod"],
+      "stabilityDays": 7,
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "automerge": true
