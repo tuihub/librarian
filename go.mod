@@ -7,15 +7,15 @@ require (
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-kratos/kratos/v2 v2.5.0
-	github.com/golang-jwt/jwt/v4 v4.4.1
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/google/wire v0.5.0
-	github.com/lib/pq v1.10.5
-	github.com/mattn/go-sqlite3 v1.14.13
+	github.com/lib/pq v1.10.7
+	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.0
-	github.com/tuihub/protos v0.0.0-20220904181332-7f1d9ba4ff82
+	github.com/tuihub/protos v0.0.0-20220905132009-453cdb3e9f6a
 	github.com/zhihu/norm v0.1.11
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
+	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	google.golang.org/protobuf v1.28.1
 )
 
