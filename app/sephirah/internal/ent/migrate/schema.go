@@ -11,7 +11,7 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "internal_id", Type: field.TypeInt64},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "state", Type: field.TypeEnum, Enums: []string{"active", "disabled"}},

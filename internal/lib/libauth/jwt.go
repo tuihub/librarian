@@ -10,9 +10,17 @@ import (
 
 type Claims struct {
 	ID   int64
-	Type int64
+	Type ClaimsType
 	jwtv4.RegisteredClaims
 }
+
+type ClaimsType string
+
+const (
+	ClaimsTypeUnspecified  = ""
+	ClaimsTypeAccessToken  = "access_token"
+	ClaimsTypeRefreshToken = "refresh_token"
+)
 
 func KeyFunc(key string) jwtv4.Keyfunc {
 	return func(token *jwtv4.Token) (interface{}, error) {
@@ -33,7 +41,7 @@ func FromContext(ctx context.Context) (*Claims, bool) {
 	return nil, false
 }
 
-func (a *Auth) GenerateToken(id int64, ty int64, expire time.Duration) (string, error) {
+func (a *Auth) GenerateToken(id int64, ty ClaimsType, expire time.Duration) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
 

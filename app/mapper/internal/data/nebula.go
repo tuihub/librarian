@@ -6,8 +6,8 @@ import (
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/zhihu/norm"
 	"github.com/zhihu/norm/dialectors"
 )
@@ -34,17 +34,17 @@ func NewNebula(c *conf.Mapper_Data) (*norm.DB, func()) {
 		Password:  c.GetNebula().GetPassword(),
 	})
 	if err != nil {
-		log.Errorf("Failed to initialize Nebula Dialector, %s", err.Error())
+		logger.Errorf("Failed to initialize Nebula Dialector, %s", err.Error())
 		return nil, nil
 	}
 
 	db, err := norm.Open(dialector, norm.Config{}, norm.WithLogger(NebulaLoggerWrapper{}))
 	if err != nil {
-		log.Errorf("Failed to initialize Nebula DB, %s", err.Error())
+		logger.Errorf("Failed to initialize Nebula DB, %s", err.Error())
 		return nil, nil
 	}
 	return db, func() {
-		log.Info("closing the data resources")
+		logger.Info("closing the data resources")
 		db.Close()
 		dialector.Close()
 	}
@@ -53,17 +53,17 @@ func NewNebula(c *conf.Mapper_Data) (*norm.DB, func()) {
 type NebulaLoggerWrapper struct{}
 
 func (l NebulaLoggerWrapper) Info(msg string) {
-	log.Info(msg)
+	logger.Info(msg)
 }
 
 func (l NebulaLoggerWrapper) Warn(msg string) {
-	log.Warn(msg)
+	logger.Warn(msg)
 }
 
 func (l NebulaLoggerWrapper) Error(msg string) {
-	log.Error(msg)
+	logger.Error(msg)
 }
 
 func (l NebulaLoggerWrapper) Fatal(msg string) {
-	log.Fatal(msg)
+	logger.Fatal(msg)
 }

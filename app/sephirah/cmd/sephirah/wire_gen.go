@@ -47,8 +47,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUsecase := biz.NewTipherethUsecase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUsecase)
+	tipherethUseCase := biz.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase)
 	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

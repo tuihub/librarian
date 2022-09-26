@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
@@ -32,9 +33,24 @@ func (t tipherethRepo) UserActive(ctx context.Context, userData *biz.User) (bool
 	return false, err
 }
 
+func (t tipherethRepo) GetUserID(ctx context.Context, userData *biz.User) (*biz.User, error) {
+	u, err := t.data.db.User.Query().Where(
+		user.UsernameEQ(userData.UserName),
+		user.PasswordEQ(userData.PassWord),
+	).First(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if u != nil {
+		userData.UniqueID = u.InternalID
+		return userData, nil
+	}
+	return nil, errors.New("invalid user")
+}
+
 func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) (*biz.User, error) {
 	_, err := t.data.db.User.Create().
-		SetInternalID(userData.ID).
+		SetInternalID(userData.UniqueID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
 		SetState(user.StateActive).

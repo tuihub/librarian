@@ -13,7 +13,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.0
-	github.com/tuihub/protos v0.0.0-20220905132009-453cdb3e9f6a
+	github.com/tuihub/protos v0.0.0-20220926174826-19a9d15bf080
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
 	google.golang.org/protobuf v1.28.1
@@ -34,6 +34,7 @@ require (
 	github.com/gobuffalo/packd v0.3.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.7.1 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
+	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jhump/protoreflect v1.11.0 // indirect

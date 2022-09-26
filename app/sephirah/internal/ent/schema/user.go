@@ -15,7 +15,8 @@ type User struct {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("internal_id"),
+		field.Int64("internal_id").
+			Unique(),
 		field.String("username").
 			Unique(),
 		field.String("password"),

@@ -5,19 +5,19 @@ import (
 	"io"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	uc *biz.TipherethUsecase
+	uc *biz.TipherethUseCase
 }
 
-func NewLibrarianSephirahServiceService(uc *biz.TipherethUsecase) pb.LibrarianSephirahServiceServer {
+func NewLibrarianSephirahServiceService(uc *biz.TipherethUseCase) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		uc: uc,
 	}
@@ -25,21 +25,31 @@ func NewLibrarianSephirahServiceService(uc *biz.TipherethUsecase) pb.LibrarianSe
 
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error) {
-	token, err := s.uc.UserLogin(ctx, &biz.User{
+	accessToken, refreshToken, err := s.uc.GetToken(ctx, &biz.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
 	})
 	if err != nil {
-		log.Infof("[service] UserLogin failed: %s", err.Error())
+		logger.Infof("GetToken failed: %s", err.Error())
 		return nil, err
 	}
 	return &pb.GetTokenResponse{
-		AccessToken: string(token),
+		AccessToken:  string(accessToken),
+		RefreshToken: string(refreshToken),
 	}, nil
 }
+
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error) {
-	return &pb.RefreshTokenResponse{}, nil
+	accessToken, refreshToken, err := s.uc.RefreshToken(ctx)
+	if err != nil {
+		logger.Infof("GetToken failed: %s", err.Error())
+		return nil, err
+	}
+	return &pb.RefreshTokenResponse{
+		AccessToken:  string(accessToken),
+		RefreshToken: string(refreshToken),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req *pb.GenerateTokenRequest) (
 	*pb.GenerateTokenResponse, error) {
@@ -55,7 +65,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &pb.InternalID{Id: u.ID},
+		Id: &pb.InternalID{Id: u.UniqueID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
