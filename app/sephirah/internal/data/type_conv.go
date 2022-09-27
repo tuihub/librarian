@@ -45,7 +45,7 @@ func toBizUser(u *ent.User) *biztiphereth.User {
 	return &biztiphereth.User{
 		InternalID: u.InternalID,
 		UserName:   u.Username,
-		UserType:   toLibAuthUserType(u.Type),
+		Type:       toLibAuthUserType(u.Type),
 	}
 }
 
@@ -66,5 +66,47 @@ func toEntAppSource(s bizgebura.AppSource) app.Source {
 		return app.SourceSteam
 	default:
 		return ""
+	}
+}
+
+func toBizAppType(t app.Type) bizgebura.AppType {
+	switch t {
+	case app.TypeGame:
+		return bizgebura.AppTypeGame
+	default:
+		return bizgebura.AppTypeGeneral
+	}
+}
+
+func toBizAppSource(s app.Source) bizgebura.AppSource {
+	switch s {
+	case app.SourceInternal:
+		return bizgebura.AppSourceInternal
+	case app.SourceSteam:
+		return bizgebura.AppSourceSteam
+	default:
+		return bizgebura.AppSourceUnspecified
+	}
+}
+
+func toBizAppDetails(a *ent.App) *bizgebura.AppDetails {
+	return &bizgebura.AppDetails{
+		Description: a.Description,
+		ReleaseDate: a.ReleaseDate,
+		Developer:   a.Developer,
+		Publisher:   a.Publisher,
+	}
+}
+
+func toBizApp(a *ent.App) *bizgebura.App {
+	return &bizgebura.App{
+		InternalID:      a.InternalID,
+		Source:          toBizAppSource(a.Source),
+		SourceAppID:     a.SourceAppID,
+		SourceURL:       a.SourceURL,
+		Name:            a.Name,
+		Type:            toBizAppType(a.Type),
+		ShorDescription: a.ShortDescription,
+		ImageURL:        a.ImageURL,
 	}
 }

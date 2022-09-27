@@ -36,7 +36,8 @@ type AppDetails struct {
 type AppSource int
 
 const (
-	AppSourceInternal AppSource = iota
+	AppSourceUnspecified AppSource = iota
+	AppSourceInternal
 	AppSourceSteam
 )
 
@@ -47,9 +48,16 @@ const (
 	AppTypeGame
 )
 
+type Paging struct {
+	PageSize int
+	PageNum  int
+}
+
 // GeburaRepo is an App repo.
 type GeburaRepo interface {
 	CreateApp(context.Context, *App) error
+	UpdateApp(context.Context, *App) error
+	ListApp(context.Context, Paging, []AppSource, []AppType, []int64, bool) ([]*App, error)
 }
 
 // GeburaUseCase is an App use case.
@@ -89,9 +97,39 @@ func (g *GeburaUseCase) CreateApp(ctx context.Context, app *App) (*App, *errors.
 	app.SourceURL = ""
 	err = g.repo.CreateApp(ctx, app)
 	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("create failed")
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return app, nil
+}
+
+func (g *GeburaUseCase) UpdateApp(ctx context.Context, app *App) *errors.Error {
+	app.Source = AppSourceInternal
+	app.SourceAppID = ""
+	app.SourceURL = ""
+	err := g.repo.UpdateApp(ctx, app)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return nil
+}
+
+func (g *GeburaUseCase) ListApp(
+	ctx context.Context,
+	paging Paging,
+	sources []AppSource,
+	types []AppType,
+	ids []int64,
+	containDetails bool,
+	withBind bool,
+) ([]*App, *errors.Error) {
+	if withBind {
+		return nil, pb.ErrorErrorReasonNotImplemented("not support")
+	}
+	apps, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return apps, nil
 }
 
 func UploadArtifactsCallback(file *bizbinah.UploadFile) error {

@@ -47,22 +47,37 @@ func (t tipherethRepo) FetchUserByPassword(
 	}
 	if u != nil {
 		userData.InternalID = u.InternalID
-		userData.UserType = toLibAuthUserType(u.Type)
+		userData.Type = toLibAuthUserType(u.Type)
 		return userData, nil
 	}
 	return nil, errors.New("invalid user")
 }
 
 func (t tipherethRepo) AddUser(ctx context.Context, userData *biztiphereth.User) error {
-	userType := toEntUserType(userData.UserType)
+	userType := toEntUserType(userData.Type)
 	_, err := t.data.db.User.Create().
 		SetInternalID(userData.InternalID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
-		SetStatus(user.StatusActive).
+		SetStatus(toEntUserStatus(userData.Status)).
 		SetType(userType).
 		Save(ctx)
 	return err
+}
+
+func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User) error {
+	update := t.data.db.User.Update().
+		Where(user.InternalIDEQ(u.InternalID))
+	if u.UserName != "" {
+		update = update.SetUsername(u.UserName)
+	}
+	if u.PassWord != "" {
+		update = update.SetPassword(u.PassWord)
+	}
+	if u.Status != biztiphereth.UserStatusUnspecified {
+		update = update.SetStatus(toEntUserStatus(u.Status))
+	}
+	return update.Exec(ctx)
 }
 
 func (t tipherethRepo) ListUser(
@@ -71,13 +86,13 @@ func (t tipherethRepo) ListUser(
 	types []libauth.UserType,
 	statuses []biztiphereth.UserStatus,
 ) ([]*biztiphereth.User, error) {
-	var typeFilter []user.Type
-	for _, userType := range types {
-		typeFilter = append(typeFilter, toEntUserType(userType))
+	typeFilter := make([]user.Type, len(types))
+	for i, userType := range types {
+		typeFilter[i] = toEntUserType(userType)
 	}
-	var statusFilter []user.Status
-	for _, userStatus := range statuses {
-		statusFilter = append(statusFilter, toEntUserStatus(userStatus))
+	statusFilter := make([]user.Status, len(statuses))
+	for i, userStatus := range statuses {
+		statusFilter[i] = toEntUserStatus(userStatus)
 	}
 	u, err := t.data.db.User.Query().
 		Where(
@@ -90,9 +105,9 @@ func (t tipherethRepo) ListUser(
 	if err != nil {
 		return nil, err
 	}
-	var users []*biztiphereth.User
-	for _, su := range u {
-		users = append(users, toBizUser(su))
+	users := make([]*biztiphereth.User, len(u))
+	for i, su := range u {
+		users[i] = toBizUser(su)
 	}
 	return users, nil
 }

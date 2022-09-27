@@ -69,7 +69,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	u, err := s.t.AddUser(ctx, &biztiphereth.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
-		UserType: toLibAuthUserType(req.GetType()),
+		Type:     toLibAuthUserType(req.GetType()),
 	})
 	if err != nil {
 		return nil, err
@@ -80,6 +80,18 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
 	*pb.UpdateUserResponse, error) {
+	if req.GetId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("id required")
+	}
+	err := s.t.UpdateUser(ctx, &biztiphereth.User{
+		InternalID: req.GetId().GetId(),
+		UserName:   req.GetUsername(),
+		PassWord:   req.GetPassword(),
+		Status:     toBizUserStatus(req.GetStatus()),
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &pb.UpdateUserResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
@@ -176,11 +188,45 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (
 	*pb.UpdateAppResponse, error) {
+	app := req.GetApp()
+	if app == nil || app.GetId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("app and internal_id required")
+	}
+	err := s.g.UpdateApp(ctx, &bizgebura.App{
+		InternalID:      app.GetId().GetId(),
+		Name:            app.GetName(),
+		Type:            toBizAppType(app.GetType()),
+		ShorDescription: app.GetShortDescription(),
+		ImageURL:        app.GetImageUrl(),
+		Details:         toBizAppDetail(app.GetDetails()),
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &pb.UpdateAppResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.ListAppRequest) (
 	*pb.ListAppResponse, error) {
-	return &pb.ListAppResponse{}, nil
+	a, err := s.g.ListApp(ctx,
+		bizgebura.Paging{
+			PageSize: int(req.GetPageSize()),
+			PageNum:  int(req.GetPageNum()),
+		},
+		toBizAppSourceList(req.GetSourceFilter()),
+		toBizAppTypeList(req.GetTypeFilter()),
+		req.GetIdFilter(),
+		req.GetContainDetails(),
+		req.GetWithBind())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListAppResponse{
+		Content: &pb.ListAppResponse_WithoutBind{
+			WithoutBind: &pb.ListAppResponse_AppList{
+				AppList: toPBAppList(a, req.GetContainDetails()),
+			},
+		},
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
 	*pb.BindAppResponse, error) {
