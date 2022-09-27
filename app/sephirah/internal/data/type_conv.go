@@ -3,6 +3,7 @@ package data
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
@@ -41,8 +42,28 @@ func toBizUser(u *ent.User) *biz.User {
 		return nil
 	}
 	return &biz.User{
-		UniqueID: u.InternalID,
-		UserName: u.Username,
-		UserType: toLibAuthUserType(u.Type),
+		InternalID: u.InternalID,
+		UserName:   u.Username,
+		UserType:   toLibAuthUserType(u.Type),
+	}
+}
+
+func toEntAppType(t biz.AppType) app.Type {
+	switch t {
+	case biz.AppTypeGame:
+		return app.TypeGame
+	default:
+		return app.TypeGeneral
+	}
+}
+
+func toEntAppSource(s biz.AppSource) app.Source {
+	switch s {
+	case biz.AppSourceInternal:
+		return app.SourceInternal
+	case biz.AppSourceSteam:
+		return app.SourceSteam
+	default:
+		return ""
 	}
 }

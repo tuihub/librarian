@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
@@ -13,6 +14,12 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	appFields := schema.App{}.Fields()
+	_ = appFields
+	// appDescCreatedAt is the schema descriptor for created_at field.
+	appDescCreatedAt := appFields[12].Descriptor()
+	// app.DefaultCreatedAt holds the default value on creation for the created_at field.
+	app.DefaultCreatedAt = appDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for created_at field.

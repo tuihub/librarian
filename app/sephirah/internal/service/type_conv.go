@@ -57,7 +57,7 @@ func toBizUserStatusList(sl []pb.UserStatus) []biz.UserStatus {
 
 func toPBUser(u biz.User) pb.ListUserResponse_User {
 	return pb.ListUserResponse_User{
-		Id:       &pb.InternalID{Id: u.UniqueID},
+		Id:       &pb.InternalID{Id: u.InternalID},
 		Username: u.PassWord,
 		Type:     toPBUserType(u.UserType),
 	}
@@ -72,4 +72,25 @@ func toPBUserList(ul []*biz.User) []*pb.ListUserResponse_User {
 		}
 	}
 	return res
+}
+
+func toBizAppType(t pb.AppType) biz.AppType {
+	switch t {
+	case pb.AppType_APP_TYPE_GAME:
+		return biz.AppTypeGame
+	default:
+		return biz.AppTypeGeneral
+	}
+}
+
+func toBizAppDetail(d *pb.AppDetails) *biz.AppDetails {
+	if d == nil {
+		return nil
+	}
+	return &biz.AppDetails{
+		Description: d.GetDescription(),
+		ReleaseDate: d.GetReleaseDate(),
+		Developer:   d.GetDeveloper(),
+		Publisher:   d.GetPublisher(),
+	}
 }

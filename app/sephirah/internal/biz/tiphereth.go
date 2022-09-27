@@ -6,8 +6,6 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -16,18 +14,18 @@ import (
 
 // User is a User model.
 type User struct {
-	UniqueID int64
-	UserName string
-	PassWord string
-	UserType libauth.UserType
+	InternalID int64
+	UserName   string
+	PassWord   string
+	UserType   libauth.UserType
 }
 
-type UserStatus int64
+type UserStatus int
 
 const (
-	UserStatusUnspecified UserStatus = 0
-	UserStatusActive      UserStatus = 1
-	UserStatusBlocked     UserStatus = 2
+	UserStatusUnspecified UserStatus = iota
+	UserStatusActive
+	UserStatusBlocked
 )
 
 type AccessToken string
@@ -38,11 +36,11 @@ type Paging struct {
 	PageNum  int
 }
 
-// TipherethRepo is a Greater repo.
+// TipherethRepo is a User repo.
 type TipherethRepo interface {
 	UserActive(context.Context, *User) (bool, error)
 	FetchUserByPassword(context.Context, *User) (*User, error)
-	AddUser(context.Context, *User) (*User, error)
+	AddUser(context.Context, *User) error
 	ListUser(context.Context, Paging, []libauth.UserType, []UserStatus) ([]*User, error)
 }
 
@@ -54,8 +52,8 @@ type TipherethUseCase struct {
 }
 
 // NewTipherethUseCase new a User use case.
-func NewTipherethUseCase(repo TipherethRepo, auth *libauth.Auth, mClient mapper.LibrarianMapperServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient, pClient porter.LibrarianPorterServiceClient) *TipherethUseCase {
+func NewTipherethUseCase(repo TipherethRepo, auth *libauth.Auth,
+	sClient searcher.LibrarianSearcherServiceClient) *TipherethUseCase {
 	return &TipherethUseCase{auth: auth, repo: repo, searcher: sClient}
 }
 
@@ -81,13 +79,13 @@ func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToke
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	var accessToken, refreshToken string
-	accessToken, err = t.auth.GenerateToken(user.UniqueID,
+	accessToken, err = t.auth.GenerateToken(user.InternalID,
 		libauth.ClaimsTypeAccessToken, user.UserType, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	refreshToken, err = t.auth.GenerateToken(user.UniqueID,
+	refreshToken, err = t.auth.GenerateToken(user.InternalID,
 		libauth.ClaimsTypeRefreshToken, user.UserType, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
@@ -129,14 +127,14 @@ func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *err
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	user.UniqueID = resp.Id
-	_, err = t.repo.AddUser(ctx, user)
+	user.InternalID = resp.Id
+	err = t.repo.AddUser(ctx, user)
 	if err != nil {
 		logger.Infof("repo AddUser failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &User{
-		UniqueID: resp.Id,
+		InternalID: resp.Id,
 	}, nil
 }
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/migrate"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -21,6 +22,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// App is the client for interacting with the App builders.
+	App *AppClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -36,6 +39,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.App = NewAppClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -70,6 +74,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		App:    NewAppClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -90,6 +95,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
+		App:    NewAppClient(cfg),
 		User:   NewUserClient(cfg),
 	}, nil
 }
@@ -97,7 +103,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		User.
+//		App.
 //		Query().
 //		Count(ctx)
 //
@@ -120,7 +126,98 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.App.Use(hooks...)
 	c.User.Use(hooks...)
+}
+
+// AppClient is a client for the App schema.
+type AppClient struct {
+	config
+}
+
+// NewAppClient returns a client for the App from the given config.
+func NewAppClient(c config) *AppClient {
+	return &AppClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `app.Hooks(f(g(h())))`.
+func (c *AppClient) Use(hooks ...Hook) {
+	c.hooks.App = append(c.hooks.App, hooks...)
+}
+
+// Create returns a builder for creating a App entity.
+func (c *AppClient) Create() *AppCreate {
+	mutation := newAppMutation(c.config, OpCreate)
+	return &AppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of App entities.
+func (c *AppClient) CreateBulk(builders ...*AppCreate) *AppCreateBulk {
+	return &AppCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for App.
+func (c *AppClient) Update() *AppUpdate {
+	mutation := newAppMutation(c.config, OpUpdate)
+	return &AppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppClient) UpdateOne(a *App) *AppUpdateOne {
+	mutation := newAppMutation(c.config, OpUpdateOne, withApp(a))
+	return &AppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppClient) UpdateOneID(id int) *AppUpdateOne {
+	mutation := newAppMutation(c.config, OpUpdateOne, withAppID(id))
+	return &AppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for App.
+func (c *AppClient) Delete() *AppDelete {
+	mutation := newAppMutation(c.config, OpDelete)
+	return &AppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppClient) DeleteOne(a *App) *AppDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOne returns a builder for deleting the given entity by its id.
+func (c *AppClient) DeleteOneID(id int) *AppDeleteOne {
+	builder := c.Delete().Where(app.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppDeleteOne{builder}
+}
+
+// Query returns a query builder for App.
+func (c *AppClient) Query() *AppQuery {
+	return &AppQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a App entity by its id.
+func (c *AppClient) Get(ctx context.Context, id int) (*App, error) {
+	return c.Query().Where(app.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppClient) GetX(ctx context.Context, id int) *App {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppClient) Hooks() []Hook {
+	return c.hooks.App
 }
 
 // UserClient is a client for the User schema.

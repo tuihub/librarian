@@ -32,12 +32,14 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMapperServiceClient, err := client.NewMapperClient()
+	librarianSearcherServiceClient, err := client.NewSearcherClient()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSearcherServiceClient, err := client.NewSearcherClient()
+	tipherethUseCase := biz.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianSearcherServiceClient)
+	geburaRepo := data.NewGeburaRepo(dataData)
+	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -47,8 +49,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUseCase := biz.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase)
+	geburaUseCase := biz.NewGeburaUseCase(geburaRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase)
 	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

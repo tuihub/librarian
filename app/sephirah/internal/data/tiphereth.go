@@ -43,26 +43,23 @@ func (t tipherethRepo) FetchUserByPassword(ctx context.Context, userData *biz.Us
 		return nil, err
 	}
 	if u != nil {
-		userData.UniqueID = u.InternalID
+		userData.InternalID = u.InternalID
 		userData.UserType = toLibAuthUserType(u.Type)
 		return userData, nil
 	}
 	return nil, errors.New("invalid user")
 }
 
-func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) (*biz.User, error) {
+func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) error {
 	userType := toEntUserType(userData.UserType)
 	_, err := t.data.db.User.Create().
-		SetInternalID(userData.UniqueID).
+		SetInternalID(userData.InternalID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
 		SetStatus(user.StatusActive).
 		SetType(userType).
 		Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return &biz.User{}, nil
+	return err
 }
 
 func (t tipherethRepo) ListUser(ctx context.Context,

@@ -16,21 +16,21 @@ type Claims struct {
 	jwtv4.RegisteredClaims
 }
 
-type ClaimsType int64
+type ClaimsType int
 
 const (
-	ClaimsTypeUnspecified  ClaimsType = 0
-	ClaimsTypeAccessToken  ClaimsType = 1
-	ClaimsTypeRefreshToken ClaimsType = 2
+	ClaimsTypeUnspecified ClaimsType = iota
+	ClaimsTypeAccessToken
+	ClaimsTypeRefreshToken
 )
 
-type UserType int64
+type UserType int
 
 const (
-	UserTypeUnspecified UserType = 0
-	UserTypeAdmin       UserType = 1
-	UserTypeNormal      UserType = 2
-	UserTypeSentinel    UserType = 3
+	UserTypeUnspecified UserType = iota
+	UserTypeAdmin
+	UserTypeNormal
+	UserTypeSentinel
 )
 
 func KeyFunc(key string, ty ClaimsType) jwtv4.Keyfunc {

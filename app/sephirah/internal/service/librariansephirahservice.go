@@ -15,11 +15,14 @@ type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
 	t *biz.TipherethUseCase
+	g *biz.GeburaUseCase
 }
 
-func NewLibrarianSephirahServiceService(t *biz.TipherethUseCase) pb.LibrarianSephirahServiceServer {
+func NewLibrarianSephirahServiceService(
+	t *biz.TipherethUseCase, g *biz.GeburaUseCase) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		t: t,
+		g: g,
 	}
 }
 
@@ -38,7 +41,6 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 		RefreshToken: string(refreshToken),
 	}, nil
 }
-
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error) {
 	accessToken, refreshToken, err := s.t.RefreshToken(ctx)
@@ -66,7 +68,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &pb.InternalID{Id: u.UniqueID},
+		Id: &pb.InternalID{Id: u.InternalID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
@@ -170,7 +172,23 @@ func (s *LibrarianSephirahServiceService) SimpleDownloadFile(
 }
 func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb.CreateAppRequest) (
 	*pb.CreateAppResponse, error) {
-	return &pb.CreateAppResponse{}, nil
+	app := req.GetApp()
+	if app == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("app required")
+	}
+	a, err := s.g.CreateApp(ctx, &biz.App{
+		Name:            app.GetName(),
+		Type:            toBizAppType(app.GetType()),
+		ShorDescription: app.GetShortDescription(),
+		ImageURL:        app.GetImageUrl(),
+		Details:         toBizAppDetail(app.GetDetails()),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateAppResponse{
+		Id: &pb.InternalID{Id: a.InternalID},
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (
 	*pb.UpdateAppResponse, error) {
