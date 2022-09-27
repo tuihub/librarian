@@ -20,8 +20,10 @@ func (User) Fields() []ent.Field {
 		field.String("username").
 			Unique(),
 		field.String("password"),
-		field.Enum("state").
-			Values("active", "disabled"),
+		field.Enum("status").
+			Values("active", "blocked"),
+		field.Enum("type").
+			Values("admin"),
 		field.Time("created_at").
 			Default(time.Now),
 	}

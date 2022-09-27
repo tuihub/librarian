@@ -2,6 +2,7 @@ package libauth
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
@@ -9,22 +10,32 @@ import (
 )
 
 type Claims struct {
-	ID   int64
-	Type ClaimsType
+	ID       int64
+	Type     ClaimsType
+	UserType UserType
 	jwtv4.RegisteredClaims
 }
 
-type ClaimsType string
+type ClaimsType int64
 
 const (
-	ClaimsTypeUnspecified  = ""
-	ClaimsTypeAccessToken  = "access_token"
-	ClaimsTypeRefreshToken = "refresh_token"
+	ClaimsTypeUnspecified  ClaimsType = 0
+	ClaimsTypeAccessToken  ClaimsType = 1
+	ClaimsTypeRefreshToken ClaimsType = 2
 )
 
-func KeyFunc(key string) jwtv4.Keyfunc {
+type UserType int64
+
+const (
+	UserTypeUnspecified UserType = 0
+	UserTypeAdmin       UserType = 1
+	UserTypeNormal      UserType = 2
+	UserTypeSentinel    UserType = 3
+)
+
+func KeyFunc(key string, ty ClaimsType) jwtv4.Keyfunc {
 	return func(token *jwtv4.Token) (interface{}, error) {
-		return key, nil
+		return fmt.Sprintf("%s%d", key, ty), nil
 	}
 }
 
@@ -41,13 +52,13 @@ func FromContext(ctx context.Context) (*Claims, bool) {
 	return nil, false
 }
 
-func (a *Auth) GenerateToken(id int64, ty ClaimsType, expire time.Duration) (string, error) {
+func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType, expire time.Duration) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
 
 	claims := Claims{
 		ID:   id,
-		Type: ty,
+		Type: claimsType,
 		RegisteredClaims: jwtv4.RegisteredClaims{
 			ExpiresAt: jwtv4.NewNumericDate(expireTime),
 			Issuer:    a.config.Issuer,

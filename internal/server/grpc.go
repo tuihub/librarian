@@ -27,11 +27,18 @@ func NewGRPCServer(c *conf.Sephirah_Server, greeter pb.LibrarianSephirahServiceS
 			ratelimit.Server(),
 			selector.Server(
 				jwt.Server(
-					libauth.KeyFunc(""),
+					libauth.KeyFunc("", libauth.ClaimsTypeAccessToken),
 					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
 					jwt.WithClaims(libauth.NewClaims),
 				),
 			).Match(NewWhiteListMatcher()).Build(),
+			selector.Server(
+				jwt.Server(
+					libauth.KeyFunc("", libauth.ClaimsTypeRefreshToken),
+					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+					jwt.WithClaims(libauth.NewClaims),
+				),
+			).Match(NewRefreshTokenMatcher()).Build(),
 		),
 	}
 	if c.Grpc.Network != "" {
@@ -53,6 +60,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/grpc.health.v1.Health/Check"] = struct{}{}
 	whiteList["/grpc.health.v1.Health/Watch"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetToken"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
 	if _, ok := os.LookupEnv("UNLOCK_CREATE"); ok {
 		whiteList["/librarian.sephirah.v1.LibrarianSephirahService/CreateUser"] = struct{}{}
 	}
@@ -61,5 +69,16 @@ func NewWhiteListMatcher() selector.MatchFunc {
 			return false
 		}
 		return true
+	}
+}
+
+func NewRefreshTokenMatcher() selector.MatchFunc {
+	list := make(map[string]struct{})
+	list["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := list[operation]; ok {
+			return true
+		}
+		return false
 	}
 }

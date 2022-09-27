@@ -164,6 +164,11 @@ linters-settings:
     # Default: []
     replace-allow-list:
       - github.com/cayleygraph/cayley
+  exhaustive:
+    # Presence of "default" case in switch statements satisfies exhaustiveness,
+    # even if all enum members are not listed.
+    # Default: false
+    default-signifies-exhaustive: true
 
 
 linters:

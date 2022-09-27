@@ -19,16 +19,31 @@ type User struct {
 	UniqueID int64
 	UserName string
 	PassWord string
+	UserType libauth.UserType
 }
+
+type UserStatus int64
+
+const (
+	UserStatusUnspecified UserStatus = 0
+	UserStatusActive      UserStatus = 1
+	UserStatusBlocked     UserStatus = 2
+)
 
 type AccessToken string
 type RefreshToken string
 
+type Paging struct {
+	PageSize int
+	PageNum  int
+}
+
 // TipherethRepo is a Greater repo.
 type TipherethRepo interface {
 	UserActive(context.Context, *User) (bool, error)
-	GetUserID(context.Context, *User) (*User, error)
+	FetchUserByPassword(context.Context, *User) (*User, error)
 	AddUser(context.Context, *User) (*User, error)
+	ListUser(context.Context, Paging, []libauth.UserType, []UserStatus) ([]*User, error)
 }
 
 // TipherethUseCase is a User use case.
@@ -60,20 +75,20 @@ func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToke
 		return "", "", pb.ErrorErrorReasonBadRequest("invalid password")
 	}
 
-	user, err = t.repo.GetUserID(ctx, user)
+	user, err = t.repo.FetchUserByPassword(ctx, user)
 	if err != nil {
-		logger.Errorf("GetUserID failed: %s", err.Error())
+		logger.Errorf("FetchUserByPassword failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	var accessToken, refreshToken string
 	accessToken, err = t.auth.GenerateToken(user.UniqueID,
-		libauth.ClaimsTypeAccessToken, time.Hour)
+		libauth.ClaimsTypeAccessToken, user.UserType, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(user.UniqueID,
-		libauth.ClaimsTypeRefreshToken, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, user.UserType, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -88,13 +103,13 @@ func (t *TipherethUseCase) RefreshToken(ctx context.Context) (AccessToken, Refre
 	}
 	var accessToken, refreshToken string
 	accessToken, err := t.auth.GenerateToken(claims.ID,
-		libauth.ClaimsTypeAccessToken, time.Hour)
+		libauth.ClaimsTypeAccessToken, claims.UserType, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(claims.ID,
-		libauth.ClaimsTypeRefreshToken, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, claims.UserType, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -108,16 +123,14 @@ func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *err
 		logger.Infof("generate password failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonBadRequest("invalid password")
 	}
+	user.PassWord = password
 	resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	_, err = t.repo.AddUser(ctx, &User{
-		UniqueID: resp.Id,
-		UserName: user.UserName,
-		PassWord: password,
-	})
+	user.UniqueID = resp.Id
+	_, err = t.repo.AddUser(ctx, user)
 	if err != nil {
 		logger.Infof("repo AddUser failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -125,4 +138,13 @@ func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *err
 	return &User{
 		UniqueID: resp.Id,
 	}, nil
+}
+
+func (t *TipherethUseCase) ListUser(ctx context.Context,
+	paging Paging, types []libauth.UserType, statuses []UserStatus) ([]*User, *errors.Error) {
+	users, err := t.repo.ListUser(ctx, paging, types, statuses)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return users, nil
 }

@@ -37,7 +37,8 @@ type UserMutation struct {
 	addinternal_id *int64
 	username       *string
 	password       *string
-	state          *user.State
+	status         *user.Status
+	_type          *user.Type
 	created_at     *time.Time
 	clearedFields  map[string]struct{}
 	done           bool
@@ -271,40 +272,76 @@ func (m *UserMutation) ResetPassword() {
 	m.password = nil
 }
 
-// SetState sets the "state" field.
-func (m *UserMutation) SetState(u user.State) {
-	m.state = &u
+// SetStatus sets the "status" field.
+func (m *UserMutation) SetStatus(u user.Status) {
+	m.status = &u
 }
 
-// State returns the value of the "state" field in the mutation.
-func (m *UserMutation) State() (r user.State, exists bool) {
-	v := m.state
+// Status returns the value of the "status" field in the mutation.
+func (m *UserMutation) Status() (r user.Status, exists bool) {
+	v := m.status
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldState returns the old "state" field's value of the User entity.
+// OldStatus returns the old "status" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldState(ctx context.Context) (v user.State, err error) {
+func (m *UserMutation) OldStatus(ctx context.Context) (v user.Status, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldState is only allowed on UpdateOne operations")
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldState requires an ID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldState: %w", err)
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
 	}
-	return oldValue.State, nil
+	return oldValue.Status, nil
 }
 
-// ResetState resets all changes to the "state" field.
-func (m *UserMutation) ResetState() {
-	m.state = nil
+// ResetStatus resets all changes to the "status" field.
+func (m *UserMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetType sets the "type" field.
+func (m *UserMutation) SetType(u user.Type) {
+	m._type = &u
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *UserMutation) GetType() (r user.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldType(ctx context.Context) (v user.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *UserMutation) ResetType() {
+	m._type = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -362,7 +399,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.internal_id != nil {
 		fields = append(fields, user.FieldInternalID)
 	}
@@ -372,8 +409,11 @@ func (m *UserMutation) Fields() []string {
 	if m.password != nil {
 		fields = append(fields, user.FieldPassword)
 	}
-	if m.state != nil {
-		fields = append(fields, user.FieldState)
+	if m.status != nil {
+		fields = append(fields, user.FieldStatus)
+	}
+	if m._type != nil {
+		fields = append(fields, user.FieldType)
 	}
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
@@ -392,8 +432,10 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Username()
 	case user.FieldPassword:
 		return m.Password()
-	case user.FieldState:
-		return m.State()
+	case user.FieldStatus:
+		return m.Status()
+	case user.FieldType:
+		return m.GetType()
 	case user.FieldCreatedAt:
 		return m.CreatedAt()
 	}
@@ -411,8 +453,10 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldUsername(ctx)
 	case user.FieldPassword:
 		return m.OldPassword(ctx)
-	case user.FieldState:
-		return m.OldState(ctx)
+	case user.FieldStatus:
+		return m.OldStatus(ctx)
+	case user.FieldType:
+		return m.OldType(ctx)
 	case user.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
@@ -445,12 +489,19 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPassword(v)
 		return nil
-	case user.FieldState:
-		v, ok := value.(user.State)
+	case user.FieldStatus:
+		v, ok := value.(user.Status)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetState(v)
+		m.SetStatus(v)
+		return nil
+	case user.FieldType:
+		v, ok := value.(user.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
 		return nil
 	case user.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -532,8 +583,11 @@ func (m *UserMutation) ResetField(name string) error {
 	case user.FieldPassword:
 		m.ResetPassword()
 		return nil
-	case user.FieldState:
-		m.ResetState()
+	case user.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case user.FieldType:
+		m.ResetType()
 		return nil
 	case user.FieldCreatedAt:
 		m.ResetCreatedAt()

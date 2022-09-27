@@ -14,18 +14,18 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	uc *biz.TipherethUseCase
+	t *biz.TipherethUseCase
 }
 
-func NewLibrarianSephirahServiceService(uc *biz.TipherethUseCase) pb.LibrarianSephirahServiceServer {
+func NewLibrarianSephirahServiceService(t *biz.TipherethUseCase) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
-		uc: uc,
+		t: t,
 	}
 }
 
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error) {
-	accessToken, refreshToken, err := s.uc.GetToken(ctx, &biz.User{
+	accessToken, refreshToken, err := s.t.GetToken(ctx, &biz.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
 	})
@@ -41,7 +41,7 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error) {
-	accessToken, refreshToken, err := s.uc.RefreshToken(ctx)
+	accessToken, refreshToken, err := s.t.RefreshToken(ctx)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
 		return nil, err
@@ -53,13 +53,14 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 }
 func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req *pb.GenerateTokenRequest) (
 	*pb.GenerateTokenResponse, error) {
-	return &pb.GenerateTokenResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("")
 }
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error) {
-	u, err := s.uc.AddUser(ctx, &biz.User{
+	u, err := s.t.AddUser(ctx, &biz.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
+		UserType: toLibAuthUserType(req.GetType()),
 	})
 	if err != nil {
 		return nil, err
@@ -74,19 +75,32 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 }
 func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
 	*pb.ListUserResponse, error) {
-	return &pb.ListUserResponse{}, nil
+	u, err := s.t.ListUser(ctx,
+		biz.Paging{
+			PageSize: int(req.GetPageSize()),
+			PageNum:  int(req.GetPageNum()),
+		},
+		toLibAuthUserTypeList(req.GetTypeFilter()),
+		toBizUserStatusList(req.GetStatusFilter()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListUserResponse{
+		UserList: toPBUserList(u),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error) {
-	return &pb.LinkAccountResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("")
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error) {
-	return &pb.UnLinkAccountResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("")
 }
 func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountRequest) (
 	*pb.ListLinkAccountResponse, error) {
-	return &pb.ListLinkAccountResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("")
 }
 func (s *LibrarianSephirahServiceService) UploadFile(conn pb.LibrarianSephirahService_UploadFileServer) error {
 	for {

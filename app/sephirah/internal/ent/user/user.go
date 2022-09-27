@@ -18,8 +18,10 @@ const (
 	FieldUsername = "username"
 	// FieldPassword holds the string denoting the password field in the database.
 	FieldPassword = "password"
-	// FieldState holds the string denoting the state field in the database.
-	FieldState = "state"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// Table holds the table name of the user in the database.
@@ -32,7 +34,8 @@ var Columns = []string{
 	FieldInternalID,
 	FieldUsername,
 	FieldPassword,
-	FieldState,
+	FieldStatus,
+	FieldType,
 	FieldCreatedAt,
 }
 
@@ -51,25 +54,47 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
-// State defines the type for the "state" enum field.
-type State string
+// Status defines the type for the "status" enum field.
+type Status string
 
-// State values.
+// Status values.
 const (
-	StateActive   State = "active"
-	StateDisabled State = "disabled"
+	StatusActive  Status = "active"
+	StatusBlocked Status = "blocked"
 )
 
-func (s State) String() string {
+func (s Status) String() string {
 	return string(s)
 }
 
-// StateValidator is a validator for the "state" field enum values. It is called by the builders before save.
-func StateValidator(s State) error {
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s Status) error {
 	switch s {
-	case StateActive, StateDisabled:
+	case StatusActive, StatusBlocked:
 		return nil
 	default:
-		return fmt.Errorf("user: invalid enum value for state field: %q", s)
+		return fmt.Errorf("user: invalid enum value for status field: %q", s)
+	}
+}
+
+// Type defines the type for the "type" enum field.
+type Type string
+
+// Type values.
+const (
+	TypeAdmin Type = "admin"
+)
+
+func (_type Type) String() string {
+	return string(_type)
+}
+
+// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
+func TypeValidator(_type Type) error {
+	switch _type {
+	case TypeAdmin:
+		return nil
+	default:
+		return fmt.Errorf("user: invalid enum value for type field: %q", _type)
 	}
 }
