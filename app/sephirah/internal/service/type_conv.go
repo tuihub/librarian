@@ -1,7 +1,8 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
@@ -36,26 +37,26 @@ func toLibAuthUserTypeList(tl []pb.UserType) []libauth.UserType {
 	return res
 }
 
-func toBizUserStatus(s pb.UserStatus) biz.UserStatus {
+func toBizUserStatus(s pb.UserStatus) biztiphereth.UserStatus {
 	switch s {
 	case pb.UserStatus_USER_STATUS_ACTIVE:
-		return biz.UserStatusActive
+		return biztiphereth.UserStatusActive
 	case pb.UserStatus_USER_STATUS_BLOCKED:
-		return biz.UserStatusBlocked
+		return biztiphereth.UserStatusBlocked
 	default:
-		return biz.UserStatusUnspecified
+		return biztiphereth.UserStatusUnspecified
 	}
 }
 
-func toBizUserStatusList(sl []pb.UserStatus) []biz.UserStatus {
-	res := make([]biz.UserStatus, len(sl))
+func toBizUserStatusList(sl []pb.UserStatus) []biztiphereth.UserStatus {
+	res := make([]biztiphereth.UserStatus, len(sl))
 	for i, s := range sl {
 		res[i] = toBizUserStatus(s)
 	}
 	return res
 }
 
-func toPBUser(u biz.User) pb.ListUserResponse_User {
+func toPBUser(u biztiphereth.User) pb.ListUserResponse_User {
 	return pb.ListUserResponse_User{
 		Id:       &pb.InternalID{Id: u.InternalID},
 		Username: u.PassWord,
@@ -63,7 +64,7 @@ func toPBUser(u biz.User) pb.ListUserResponse_User {
 	}
 }
 
-func toPBUserList(ul []*biz.User) []*pb.ListUserResponse_User {
+func toPBUserList(ul []*biztiphereth.User) []*pb.ListUserResponse_User {
 	res := make([]*pb.ListUserResponse_User, len(ul))
 	for i, u := range ul {
 		if u != nil {
@@ -74,20 +75,20 @@ func toPBUserList(ul []*biz.User) []*pb.ListUserResponse_User {
 	return res
 }
 
-func toBizAppType(t pb.AppType) biz.AppType {
+func toBizAppType(t pb.AppType) bizgebura.AppType {
 	switch t {
 	case pb.AppType_APP_TYPE_GAME:
-		return biz.AppTypeGame
+		return bizgebura.AppTypeGame
 	default:
-		return biz.AppTypeGeneral
+		return bizgebura.AppTypeGeneral
 	}
 }
 
-func toBizAppDetail(d *pb.AppDetails) *biz.AppDetails {
+func toBizAppDetail(d *pb.AppDetails) *bizgebura.AppDetails {
 	if d == nil {
 		return nil
 	}
-	return &biz.AppDetails{
+	return &bizgebura.AppDetails{
 		Description: d.GetDescription(),
 		ReleaseDate: d.GetReleaseDate(),
 		Developer:   d.GetDeveloper(),

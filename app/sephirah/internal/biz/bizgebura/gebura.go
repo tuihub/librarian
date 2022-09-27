@@ -1,8 +1,9 @@
-package biz
+package bizgebura
 
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -61,8 +62,18 @@ type GeburaUseCase struct {
 }
 
 // NewGeburaUseCase new an App use case.
-func NewGeburaUseCase(repo GeburaRepo, auth *libauth.Auth, mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient, sClient searcher.LibrarianSearcherServiceClient) *GeburaUseCase {
+func NewGeburaUseCase(
+	repo GeburaRepo,
+	auth *libauth.Auth,
+	block bizbinah.CallbackControlBlock,
+	mClient mapper.LibrarianMapperServiceClient,
+	pClient porter.LibrarianPorterServiceClient,
+	sClient searcher.LibrarianSearcherServiceClient,
+) *GeburaUseCase {
+	block.RegisterUploadCallback(bizbinah.UploadCallback{
+		ID:   bizbinah.UploadArtifacts,
+		Func: UploadArtifactsCallback,
+	})
 	return &GeburaUseCase{auth: auth, repo: repo, mapper: mClient, porter: pClient, searcher: sClient}
 }
 
@@ -81,4 +92,8 @@ func (g *GeburaUseCase) CreateApp(ctx context.Context, app *App) (*App, *errors.
 		return nil, pb.ErrorErrorReasonUnspecified("create failed")
 	}
 	return app, nil
+}
+
+func UploadArtifactsCallback(file *bizbinah.UploadFile) error {
+	panic("not impl")
 }

@@ -7,7 +7,9 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -32,10 +34,12 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, libr
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUseCase := biz.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianSearcherServiceClient)
+	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianSearcherServiceClient)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	geburaUseCase := biz.NewGeburaUseCase(geburaRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase)
+	callbackControlBlock := bizbinah.NewCallbackControl()
+	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase, binahUseCase)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

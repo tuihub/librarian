@@ -4,7 +4,9 @@ import (
 	"context"
 	"io"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -14,21 +16,26 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	t *biz.TipherethUseCase
-	g *biz.GeburaUseCase
+	t *biztiphereth.TipherethUseCase
+	g *bizgebura.GeburaUseCase
+	b *bizbinah.BinahUseCase
 }
 
 func NewLibrarianSephirahServiceService(
-	t *biz.TipherethUseCase, g *biz.GeburaUseCase) pb.LibrarianSephirahServiceServer {
+	t *biztiphereth.TipherethUseCase,
+	g *bizgebura.GeburaUseCase,
+	b *bizbinah.BinahUseCase,
+) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		t: t,
 		g: g,
+		b: b,
 	}
 }
 
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error) {
-	accessToken, refreshToken, err := s.t.GetToken(ctx, &biz.User{
+	accessToken, refreshToken, err := s.t.GetToken(ctx, &biztiphereth.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
 	})
@@ -55,11 +62,11 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 }
 func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req *pb.GenerateTokenRequest) (
 	*pb.GenerateTokenResponse, error) {
-	return nil, pb.ErrorErrorReasonNotImplemented("")
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error) {
-	u, err := s.t.AddUser(ctx, &biz.User{
+	u, err := s.t.AddUser(ctx, &biztiphereth.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
 		UserType: toLibAuthUserType(req.GetType()),
@@ -78,7 +85,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
 	*pb.ListUserResponse, error) {
 	u, err := s.t.ListUser(ctx,
-		biz.Paging{
+		biztiphereth.Paging{
 			PageSize: int(req.GetPageSize()),
 			PageNum:  int(req.GetPageNum()),
 		},
@@ -94,61 +101,38 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error) {
-	return nil, pb.ErrorErrorReasonNotImplemented("")
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error) {
-	return nil, pb.ErrorErrorReasonNotImplemented("")
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountRequest) (
 	*pb.ListLinkAccountResponse, error) {
-	return nil, pb.ErrorErrorReasonNotImplemented("")
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UploadFile(conn pb.LibrarianSephirahService_UploadFileServer) error {
-	for {
-		_, err := conn.Recv()
-		if errors.Is(err, io.EOF) {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-
-		err = conn.Send(&pb.UploadFileResponse{})
-		if err != nil {
-			return err
-		}
-	}
+	return pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) DownloadFile(conn pb.LibrarianSephirahService_DownloadFileServer) error {
-	for {
-		_, err := conn.Recv()
-		if errors.Is(err, io.EOF) {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-
-		err = conn.Send(&pb.DownloadFileResponse{})
-		if err != nil {
-			return err
-		}
-	}
+	return pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 	conn pb.LibrarianSephirahService_SimpleUploadFileServer) error {
+	file, bizErr := s.b.NewUploadFile(conn.Context())
+	if bizErr != nil {
+		return bizErr
+	}
 	for {
-		_, err := conn.Recv()
-		if errors.Is(err, io.EOF) {
-			return nil
-		}
-		if err != nil {
+		if req, err := conn.Recv(); err != nil {
+			if errors.Is(err, io.EOF) {
+				return file.Finish()
+			}
+			return err
+		} else if _, err = file.Writer.Write(req.Data); err != nil {
 			return err
 		}
-
-		err = conn.Send(&pb.SimpleUploadFileResponse{})
-		if err != nil {
+		if err := conn.Send(&pb.SimpleUploadFileResponse{}); err != nil {
 			return err
 		}
 	}
@@ -176,7 +160,7 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 	if app == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
-	a, err := s.g.CreateApp(ctx, &biz.App{
+	a, err := s.g.CreateApp(ctx, &bizgebura.App{
 		Name:            app.GetName(),
 		Type:            toBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
@@ -200,15 +184,15 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 }
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
 	*pb.BindAppResponse, error) {
-	return &pb.BindAppResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UnBindApp(ctx context.Context, req *pb.UnBindAppRequest) (
 	*pb.UnBindAppResponse, error) {
-	return &pb.UnBindAppResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
 	*pb.RefreshAppResponse, error) {
-	return &pb.RefreshAppResponse{}, nil
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UploadArtifacts(ctx context.Context, req *pb.UploadArtifactsRequest) (
 	*pb.UploadArtifactsResponse, error) {

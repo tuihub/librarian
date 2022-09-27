@@ -8,7 +8,9 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
@@ -37,8 +39,9 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUseCase := biz.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianSearcherServiceClient)
+	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianSearcherServiceClient)
 	geburaRepo := data.NewGeburaRepo(dataData)
+	callbackControlBlock := bizbinah.NewCallbackControl()
 	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup()
@@ -49,8 +52,9 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	geburaUseCase := biz.NewGeburaUseCase(geburaRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase)
+	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase, binahUseCase)
 	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

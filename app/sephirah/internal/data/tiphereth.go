@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
@@ -14,13 +14,13 @@ type tipherethRepo struct {
 }
 
 // NewTipherethRepo .
-func NewTipherethRepo(data *Data) biz.TipherethRepo {
+func NewTipherethRepo(data *Data) biztiphereth.TipherethRepo {
 	return &tipherethRepo{
 		data: data,
 	}
 }
 
-func (t tipherethRepo) UserActive(ctx context.Context, userData *biz.User) (bool, error) {
+func (t tipherethRepo) UserActive(ctx context.Context, userData *biztiphereth.User) (bool, error) {
 	u, err := t.data.db.User.Query().Where(
 		user.UsernameEQ(userData.UserName),
 		user.PasswordEQ(userData.PassWord),
@@ -34,7 +34,10 @@ func (t tipherethRepo) UserActive(ctx context.Context, userData *biz.User) (bool
 	return false, err
 }
 
-func (t tipherethRepo) FetchUserByPassword(ctx context.Context, userData *biz.User) (*biz.User, error) {
+func (t tipherethRepo) FetchUserByPassword(
+	ctx context.Context,
+	userData *biztiphereth.User,
+) (*biztiphereth.User, error) {
 	u, err := t.data.db.User.Query().Where(
 		user.UsernameEQ(userData.UserName),
 		user.PasswordEQ(userData.PassWord),
@@ -50,7 +53,7 @@ func (t tipherethRepo) FetchUserByPassword(ctx context.Context, userData *biz.Us
 	return nil, errors.New("invalid user")
 }
 
-func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) error {
+func (t tipherethRepo) AddUser(ctx context.Context, userData *biztiphereth.User) error {
 	userType := toEntUserType(userData.UserType)
 	_, err := t.data.db.User.Create().
 		SetInternalID(userData.InternalID).
@@ -62,8 +65,12 @@ func (t tipherethRepo) AddUser(ctx context.Context, userData *biz.User) error {
 	return err
 }
 
-func (t tipherethRepo) ListUser(ctx context.Context,
-	paging biz.Paging, types []libauth.UserType, statuses []biz.UserStatus) ([]*biz.User, error) {
+func (t tipherethRepo) ListUser(
+	ctx context.Context,
+	paging biztiphereth.Paging,
+	types []libauth.UserType,
+	statuses []biztiphereth.UserStatus,
+) ([]*biztiphereth.User, error) {
 	var typeFilter []user.Type
 	for _, userType := range types {
 		typeFilter = append(typeFilter, toEntUserType(userType))
@@ -83,7 +90,7 @@ func (t tipherethRepo) ListUser(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	var users []*biz.User
+	var users []*biztiphereth.User
 	for _, su := range u {
 		users = append(users, toBizUser(su))
 	}

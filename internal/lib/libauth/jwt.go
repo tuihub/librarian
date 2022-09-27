@@ -10,9 +10,10 @@ import (
 )
 
 type Claims struct {
-	ID       int64
-	Type     ClaimsType
-	UserType UserType
+	ID               int64             `json:"id"`
+	Type             ClaimsType        `json:"ct"`
+	UserType         UserType          `json:"ut"`
+	TransferMetadata *TransferMetadata `json:"tm,omitempty"`
 	jwtv4.RegisteredClaims
 }
 
@@ -22,6 +23,8 @@ const (
 	ClaimsTypeUnspecified ClaimsType = iota
 	ClaimsTypeAccessToken
 	ClaimsTypeRefreshToken
+	ClaimsTypeUploadToken
+	ClaimsTypeDownloadToken
 )
 
 type UserType int
@@ -32,6 +35,13 @@ const (
 	UserTypeNormal
 	UserTypeSentinel
 )
+
+type TransferMetadata struct {
+	Name      string `json:"n"`
+	Size      int64  `json:"s"`
+	ChunkSize int64  `json:"cs"`
+	CallBack  int    `json:"cb"`
+}
 
 func KeyFunc(key string, ty ClaimsType) jwtv4.Keyfunc {
 	return func(token *jwtv4.Token) (interface{}, error) {
@@ -52,13 +62,16 @@ func FromContext(ctx context.Context) (*Claims, bool) {
 	return nil, false
 }
 
-func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType, expire time.Duration) (string, error) {
+func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
+	transferMetadata *TransferMetadata, expire time.Duration) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
 
 	claims := Claims{
-		ID:   id,
-		Type: claimsType,
+		ID:               id,
+		Type:             claimsType,
+		UserType:         userType,
+		TransferMetadata: transferMetadata,
 		RegisteredClaims: jwtv4.RegisteredClaims{
 			ExpiresAt: jwtv4.NewNumericDate(expireTime),
 			Issuer:    a.config.Issuer,

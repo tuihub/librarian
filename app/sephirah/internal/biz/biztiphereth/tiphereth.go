@@ -1,4 +1,4 @@
-package biz
+package biztiphereth
 
 import (
 	"context"
@@ -80,13 +80,13 @@ func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToke
 	}
 	var accessToken, refreshToken string
 	accessToken, err = t.auth.GenerateToken(user.InternalID,
-		libauth.ClaimsTypeAccessToken, user.UserType, time.Hour)
+		libauth.ClaimsTypeAccessToken, user.UserType, nil, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(user.InternalID,
-		libauth.ClaimsTypeRefreshToken, user.UserType, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, user.UserType, nil, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -101,13 +101,13 @@ func (t *TipherethUseCase) RefreshToken(ctx context.Context) (AccessToken, Refre
 	}
 	var accessToken, refreshToken string
 	accessToken, err := t.auth.GenerateToken(claims.ID,
-		libauth.ClaimsTypeAccessToken, claims.UserType, time.Hour)
+		libauth.ClaimsTypeAccessToken, claims.UserType, nil, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(claims.ID,
-		libauth.ClaimsTypeRefreshToken, claims.UserType, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, claims.UserType, nil, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
