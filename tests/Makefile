@@ -12,5 +12,6 @@ build:
 test:
 	cd bin && goc server &
 	cd bin && ./librarian &
-	cd bin && ./client
+	sleep 5s
+	-cd bin && ./client
 	goc profile -o ../coverage-goc.out
