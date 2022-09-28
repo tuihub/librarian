@@ -19,6 +19,7 @@ init:
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.49.0
+	cd tests && make init
 
 .PHONY: config
 # generate internal proto
@@ -51,10 +52,19 @@ all:
 lint:
 	golangci-lint run --fix
 
-.PHONY: test
+.PHONY: test-unit
 # run go test
-test:
-	go test ./... -race
+test-unit:
+	go test -coverpkg=./... -race -coverprofile=coverage-unit.out -covermode=atomic ./...
+
+.PHONY: test-goc
+# run goc test
+test-goc:
+	cd tests && make all
+
+.PHONY: test-all
+# run all test
+test-all: test-unit test-goc
 
 .PHONY: run
 # run server
