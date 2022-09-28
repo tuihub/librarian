@@ -47,10 +47,8 @@ func main() {
 		StatusFilter: nil,
 	}, cred); err != nil {
 		panic(err)
-	} else {
-		if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id != userID {
-			panic("inconsistent user id")
-		}
+	} else if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id != userID {
+		panic("inconsistent user id")
 	}
 }
 
