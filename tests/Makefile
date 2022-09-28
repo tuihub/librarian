@@ -11,7 +11,8 @@ build:
 
 test:
 	cd bin && goc server &
-	cd bin && ./librarian &
+	cd bin && UNLOCK_CREATE=true ./librarian &
 	sleep 5s
 	-cd bin && ./client
+	sleep 5s
 	goc profile -o ../coverage-goc.out

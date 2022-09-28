@@ -46,7 +46,9 @@ func main() {
 		TypeFilter:   nil,
 		StatusFilter: nil,
 	}, cred); err != nil {
-		if len(resp.UserList) != 1 || resp.UserList[0].Id != userID {
+		panic(err)
+	} else {
+		if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id != userID {
 			panic("inconsistent user id")
 		}
 	}
