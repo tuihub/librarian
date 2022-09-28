@@ -81,8 +81,8 @@ func (aq *AppQuery) FirstX(ctx context.Context) *App {
 	return node
 }
 
-// FirstID returns the first App ID from the query.
-// Returns a *NotFoundError when no App ID was found.
+// FirstID returns the first App InternalID from the query.
+// Returns a *NotFoundError when no App InternalID was found.
 func (aq *AppQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = aq.Limit(1).IDs(ctx); err != nil {
@@ -131,8 +131,8 @@ func (aq *AppQuery) OnlyX(ctx context.Context) *App {
 	return node
 }
 
-// OnlyID is like Only, but returns the only App ID in the query.
-// Returns a *NotSingularError when more than one App ID is found.
+// OnlyID is like Only, but returns the only App InternalID in the query.
+// Returns a *NotSingularError when more than one App InternalID is found.
 // Returns a *NotFoundError when no entities are found.
 func (aq *AppQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int

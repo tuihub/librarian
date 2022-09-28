@@ -12,6 +12,7 @@ import (
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -19,6 +20,24 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Sephirah_Server, *conf.Sephirah_Data, *conf.Mapper_Data, *conf.Searcher_Data, *conf.Porter_Data, *conf.Auth) (*kratos.App, func(), error) {
-	panic(wire.Build(sephirahService.ProviderSet, mapperService.ProviderSet, searcherService.ProviderSet, porterService.ProviderSet, server.ProviderSet, inprocgrpc.ProviderSet, newApp))
+func wireApp(
+	*conf.Sephirah_Server,
+	*conf.Sephirah_Data,
+	*conf.Mapper_Data,
+	*conf.Searcher_Data,
+	*conf.Porter_Data,
+	*conf.Auth,
+) (*kratos.App, func(), error) {
+	panic(
+		wire.Build(
+			sephirahService.ProviderSet,
+			mapperService.ProviderSet,
+			searcherService.ProviderSet,
+			porterService.ProviderSet,
+			server.ProviderSet,
+			inprocgrpc.ProviderSet,
+			libauth.ProviderSet,
+			newApp,
+		),
+	)
 }

@@ -23,17 +23,16 @@ import (
 
 // wireApp init kratos application.
 func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth) (*kratos.App, func(), error) {
+	libauthAuth, err := libauth.NewAuth(auth)
+	if err != nil {
+		return nil, nil, err
+	}
 	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	libauthAuth, err := libauth.NewAuth(auth)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	librarianSearcherServiceClient, err := client.NewSearcherClient()
 	if err != nil {
 		cleanup()
@@ -55,7 +54,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase, binahUseCase)
-	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
+	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {
 		cleanup()

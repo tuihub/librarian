@@ -86,21 +86,24 @@ func (t tipherethRepo) ListUser(
 	types []libauth.UserType,
 	statuses []biztiphereth.UserStatus,
 ) ([]*biztiphereth.User, error) {
-	typeFilter := make([]user.Type, len(types))
-	for i, userType := range types {
-		typeFilter[i] = toEntUserType(userType)
+	q := t.data.db.User.Query()
+	if len(types) > 0 {
+		typeFilter := make([]user.Type, len(types))
+		for i, userType := range types {
+			typeFilter[i] = toEntUserType(userType)
+		}
+		q.Where(user.TypeIn(typeFilter...))
 	}
-	statusFilter := make([]user.Status, len(statuses))
-	for i, userStatus := range statuses {
-		statusFilter[i] = toEntUserStatus(userStatus)
+	if len(statuses) > 0 {
+		statusFilter := make([]user.Status, len(statuses))
+		for i, userStatus := range statuses {
+			statusFilter[i] = toEntUserStatus(userStatus)
+		}
+		q.Where(user.StatusIn(statusFilter...))
 	}
-	u, err := t.data.db.User.Query().
-		Where(
-			user.TypeIn(typeFilter...),
-			user.StatusIn(statusFilter...),
-		).
+	u, err := q.
 		Limit(paging.PageSize).
-		Offset((paging.PageSize - 1) * paging.PageNum).
+		Offset((paging.PageNum - 1) * paging.PageSize).
 		All(ctx)
 	if err != nil {
 		return nil, err

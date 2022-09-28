@@ -4,7 +4,7 @@ package kratos.api;
 option go_package = "Librarian/internal/conf;conf";
 
 message Auth {
-  string Salt = 1;
-  string Issuer = 2;
-  string JwtSecret = 3;
+  string salt = 1;
+  string issuer = 2;
+  string jwt_secret = 3;
 }

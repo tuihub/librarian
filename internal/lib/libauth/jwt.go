@@ -10,7 +10,7 @@ import (
 )
 
 type Claims struct {
-	ID               int64             `json:"id"`
+	InternalID       int64             `json:"iid"`
 	Type             ClaimsType        `json:"ct"`
 	UserType         UserType          `json:"ut"`
 	TransferMetadata *TransferMetadata `json:"tm,omitempty"`
@@ -43,23 +43,27 @@ type TransferMetadata struct {
 	CallBack  int    `json:"cb"`
 }
 
-func KeyFunc(key string, ty ClaimsType) jwtv4.Keyfunc {
+func (a *Auth) KeyFunc(t ClaimsType) jwtv4.Keyfunc {
 	return func(token *jwtv4.Token) (interface{}, error) {
-		return fmt.Sprintf("%s%d", key, ty), nil
+		return a.generateSecret(t), nil
 	}
 }
 
 func NewClaims() jwtv4.Claims {
-	return Claims{}
+	return &Claims{}
 }
 
 func FromContext(ctx context.Context) (*Claims, bool) {
 	if token, ok := jwt.FromContext(ctx); ok {
-		if claims, met := token.(Claims); met {
-			return &claims, true
+		if claims, met := token.(*Claims); met {
+			return claims, true
 		}
 	}
 	return nil, false
+}
+
+func (a *Auth) generateSecret(t ClaimsType) interface{} {
+	return []byte(fmt.Sprintf("%s%d", a.config.JwtSecret, t))
 }
 
 func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
@@ -68,7 +72,7 @@ func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
 	expireTime := nowTime.Add(expire)
 
 	claims := Claims{
-		ID:               id,
+		InternalID:       id,
 		Type:             claimsType,
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
@@ -80,6 +84,6 @@ func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
 
 	tokenClaims := jwtv4.NewWithClaims(jwtv4.SigningMethodHS256, claims)
 
-	token, err := tokenClaims.SignedString([]byte(a.config.JwtSecret))
+	token, err := tokenClaims.SignedString(a.generateSecret(claimsType))
 	return token, err
 }

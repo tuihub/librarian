@@ -102,13 +102,13 @@ func (t *TipherethUseCase) RefreshToken(ctx context.Context) (AccessToken, Refre
 		return "", "", pb.ErrorErrorReasonUnauthorized("empty token")
 	}
 	var accessToken, refreshToken string
-	accessToken, err := t.auth.GenerateToken(claims.ID,
+	accessToken, err := t.auth.GenerateToken(claims.InternalID,
 		libauth.ClaimsTypeAccessToken, claims.UserType, nil, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	refreshToken, err = t.auth.GenerateToken(claims.ID,
+	refreshToken, err = t.auth.GenerateToken(claims.InternalID,
 		libauth.ClaimsTypeRefreshToken, claims.UserType, nil, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
@@ -130,6 +130,7 @@ func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *err
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	user.InternalID = resp.Id
+	user.Status = UserStatusActive
 	err = t.repo.AddUser(ctx, user)
 	if err != nil {
 		logger.Infof("repo AddUser failed: %s", err.Error())

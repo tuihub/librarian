@@ -61,22 +61,27 @@ func (g geburaRepo) ListApp(
 	types []bizgebura.AppType,
 	ids []int64,
 	containDetails bool) ([]*bizgebura.App, error) {
-	sourceFilter := make([]app.Source, len(sources))
-	for i, appSource := range sources {
-		sourceFilter[i] = toEntAppSource(appSource)
+	q := g.data.db.App.Query()
+	if len(sources) > 0 {
+		sourceFilter := make([]app.Source, len(sources))
+		for i, appSource := range sources {
+			sourceFilter[i] = toEntAppSource(appSource)
+		}
+		q.Where(app.SourceIn(sourceFilter...))
 	}
-	typeFilter := make([]app.Type, len(types))
-	for i, appType := range types {
-		typeFilter[i] = toEntAppType(appType)
+	if len(types) > 0 {
+		typeFilter := make([]app.Type, len(types))
+		for i, appType := range types {
+			typeFilter[i] = toEntAppType(appType)
+		}
+		q.Where(app.TypeIn(typeFilter...))
 	}
-	a, err := g.data.db.App.Query().
-		Where(
-			app.SourceIn(sourceFilter...),
-			app.TypeIn(typeFilter...),
-			app.InternalIDIn(ids...),
-		).
+	if len(ids) > 0 {
+		q.Where(app.InternalIDIn(ids...))
+	}
+	a, err := q.
 		Limit(paging.PageSize).
-		Offset((paging.PageSize - 1) * paging.PageNum).
+		Offset((paging.PageNum - 1) * paging.PageSize).
 		All(ctx)
 	if err != nil {
 		return nil, err

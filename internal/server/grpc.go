@@ -12,29 +12,32 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Sephirah_Server, greeter pb.LibrarianSephirahServiceServer) *grpc.Server {
+func NewGRPCServer(
+	c *conf.Sephirah_Server,
+	auth *libauth.Auth,
+	greeter pb.LibrarianSephirahServiceServer,
+) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
-			recovery.Recovery(),
+			// recovery.Recovery(),
 			logging.Server(log.GetLogger()),
 			ratelimit.Server(),
 			selector.Server(
 				jwt.Server(
-					libauth.KeyFunc("", libauth.ClaimsTypeAccessToken),
+					auth.KeyFunc(libauth.ClaimsTypeAccessToken),
 					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
 					jwt.WithClaims(libauth.NewClaims),
 				),
 			).Match(NewWhiteListMatcher()).Build(),
 			selector.Server(
 				jwt.Server(
-					libauth.KeyFunc("", libauth.ClaimsTypeRefreshToken),
+					auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
 					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
 					jwt.WithClaims(libauth.NewClaims),
 				),

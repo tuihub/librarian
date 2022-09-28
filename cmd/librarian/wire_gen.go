@@ -14,6 +14,7 @@ import (
 	service4 "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/server"
 )
 
@@ -21,6 +22,10 @@ import (
 
 // wireApp init kratos application.
 func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth) (*kratos.App, func(), error) {
+	libauthAuth, err := libauth.NewAuth(auth)
+	if err != nil {
+		return nil, nil, err
+	}
 	librarianMapperServiceServer, cleanup, err := service.NewMapperService(mapper_Data)
 	if err != nil {
 		return nil, nil, err
@@ -46,7 +51,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	grpcServer := server.NewGRPCServer(sephirah_Server, librarianSephirahServiceServer)
+	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {
 		cleanup4()
