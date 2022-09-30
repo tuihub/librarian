@@ -19,7 +19,10 @@ func NewGeburaRepo(data *Data) bizgebura.GeburaRepo {
 }
 
 func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
-	return g.data.db.App.Create().
+	if a.Details == nil {
+		a.Details = &bizgebura.AppDetails{}
+	}
+	q := g.data.db.App.Create().
 		SetInternalID(a.InternalID).
 		SetSource(toEntAppSource(a.Source)).
 		SetSourceAppID(a.SourceAppID).
@@ -31,12 +34,12 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 		SetDescription(a.Details.Description).
 		SetReleaseDate(a.Details.ReleaseDate).
 		SetDeveloper(a.Details.Developer).
-		SetPublisher(a.Details.Publisher).
-		Exec(ctx)
+		SetPublisher(a.Details.Publisher)
+	return q.Exec(ctx)
 }
 
 func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
-	return g.data.db.App.Update().
+	q := g.data.db.App.Update().
 		Where(
 			app.InternalIDEQ(a.InternalID),
 			app.SourceEQ(toEntAppSource(a.Source)),
@@ -46,12 +49,15 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 		SetName(a.Name).
 		SetType(toEntAppType(a.Type)).
 		SetShortDescription(a.ShorDescription).
-		SetImageURL(a.ImageURL).
-		SetDescription(a.Details.Description).
-		SetReleaseDate(a.Details.ReleaseDate).
-		SetDeveloper(a.Details.Developer).
-		SetPublisher(a.Details.Publisher).
-		Exec(ctx)
+		SetImageURL(a.ImageURL)
+	if a.Details != nil {
+		q.
+			SetDescription(a.Details.Description).
+			SetReleaseDate(a.Details.ReleaseDate).
+			SetDeveloper(a.Details.Developer).
+			SetPublisher(a.Details.Publisher)
+	}
+	return q.Exec(ctx)
 }
 
 func (g geburaRepo) ListApp(

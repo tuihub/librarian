@@ -2,54 +2,35 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"golang.org/x/oauth2"
-	grpc2 "google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/oauth"
+	"google.golang.org/grpc/metadata"
 )
 
+const (
+	username = "testUser"
+	password = "testPass"
+	userType = pb.UserType_USER_TYPE_ADMIN
+)
+
+type Client struct {
+	cli    pb.LibrarianSephirahServiceClient
+	userID *pb.InternalID
+}
+
 func main() {
-	cli := NewSephirahClient()
 	ctx := context.Background()
-	const (
-		username = "testUser"
-		password = "testPass"
-		userType = pb.UserType_USER_TYPE_ADMIN
-	)
-	var userID *pb.InternalID
-	var accessToken string
-	if resp, err := cli.CreateUser(ctx, &pb.CreateUserRequest{
-		Username: username,
-		Password: password,
-		Type:     userType,
-	}); err != nil {
-		panic(err)
-	} else {
-		userID = resp.Id
+	c := Client{
+		cli:    NewSephirahClient(),
+		userID: nil,
 	}
-	if resp, err := cli.GetToken(ctx, &pb.GetTokenRequest{
-		Username: username,
-		Password: password,
-	}); err != nil {
-		panic(err)
-	} else {
-		accessToken = resp.AccessToken
-	}
-	cred := grpc2.PerRPCCredentials(oauth.NewOauthAccess(&oauth2.Token{AccessToken: accessToken}))
-	if resp, err := cli.ListUser(ctx, &pb.ListUserRequest{
-		PageNum:      1,
-		PageSize:     1,
-		TypeFilter:   nil,
-		StatusFilter: nil,
-	}, cred); err != nil {
-		panic(err)
-	} else if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id != userID {
-		panic("inconsistent user id")
-	}
+	ctx = c.CreateDefaultUserAndLogin(ctx)
+	c.TestUser(ctx)
+	c.TestApp(ctx)
 }
 
 func NewSephirahClient() pb.LibrarianSephirahServiceClient {
@@ -65,4 +46,97 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 	}
 	cli := pb.NewLibrarianSephirahServiceClient(conn)
 	return cli
+}
+
+func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context {
+	var accessToken, refreshToken string
+	if resp, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{
+		Username: username,
+		Password: password,
+		Type:     userType,
+	}); err != nil {
+		panic(err)
+	} else {
+		c.userID = resp.Id
+	}
+	if resp, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{
+		Username: username,
+		Password: password,
+	}); err != nil {
+		panic(err)
+	} else {
+		refreshToken = resp.RefreshToken
+	}
+	ctxForRefresh := metadata.NewOutgoingContext(
+		ctx,
+		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", refreshToken)),
+	)
+	if resp, err := c.cli.RefreshToken(ctxForRefresh, &pb.RefreshTokenRequest{}); err != nil {
+		panic(err)
+	} else {
+		accessToken = resp.AccessToken
+	}
+	return metadata.NewOutgoingContext(
+		ctx,
+		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", accessToken)),
+	)
+}
+
+func (c *Client) TestUser(ctx context.Context) {
+	if resp, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
+		PageNum:      1,
+		PageSize:     1,
+		TypeFilter:   nil,
+		StatusFilter: nil,
+	}); err != nil {
+		panic(err)
+	} else if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id.GetId() != c.userID.GetId() {
+		panic("inconsistent user id")
+	}
+}
+
+func (c *Client) TestApp(ctx context.Context) {
+	var appID *pb.InternalID
+	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &pb.App{
+		Id:               nil,
+		Source:           pb.AppSource_APP_SOURCE_INTERNAL,
+		SourceAppId:      nil,
+		SourceUrl:        nil,
+		Name:             "test app 1",
+		Type:             pb.AppType_APP_TYPE_GAME,
+		ShortDescription: "test app description",
+		ImageUrl:         "",
+		Details:          nil,
+	}}); err != nil {
+		panic(err)
+	} else {
+		appID = resp.Id
+	}
+	if resp, err := c.cli.ListApp(ctx, &pb.ListAppRequest{
+		PageNum:        1,
+		PageSize:       1,
+		SourceFilter:   nil,
+		TypeFilter:     nil,
+		IdFilter:       nil,
+		ContainDetails: false,
+		WithBind:       false,
+	}); err != nil {
+		panic(err)
+	} else if len(resp.GetWithoutBind().GetAppList()) != 1 ||
+		resp.GetWithoutBind().GetAppList()[0].GetId().GetId() != appID.GetId() {
+		panic("inconsistent app id")
+	}
+	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &pb.App{
+		Id:               appID,
+		Source:           pb.AppSource_APP_SOURCE_INTERNAL,
+		SourceAppId:      nil,
+		SourceUrl:        nil,
+		Name:             "test app 1",
+		Type:             pb.AppType_APP_TYPE_GAME,
+		ShortDescription: "test app description update",
+		ImageUrl:         "",
+		Details:          nil,
+	}}); err != nil {
+		panic(err)
+	}
 }

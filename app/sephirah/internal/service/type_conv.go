@@ -168,10 +168,7 @@ func toPBApp(a *bizgebura.App, containDetails bool) *pb.App {
 		ImageUrl:         a.ImageURL,
 	}
 	if containDetails {
-		appDetails := toPBAppDetails(a.Details)
-		app.XDetails = &pb.App_Details{
-			Details: appDetails,
-		}
+		app.Details = toPBAppDetails(a.Details)
 	}
 	return app
 }

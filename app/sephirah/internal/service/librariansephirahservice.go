@@ -34,7 +34,8 @@ func NewLibrarianSephirahServiceService(
 }
 
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
-	*pb.GetTokenResponse, error) {
+	*pb.GetTokenResponse, error,
+) {
 	accessToken, refreshToken, err := s.t.GetToken(ctx, &biztiphereth.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
@@ -49,7 +50,8 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
-	*pb.RefreshTokenResponse, error) {
+	*pb.RefreshTokenResponse, error,
+) {
 	accessToken, refreshToken, err := s.t.RefreshToken(ctx)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
@@ -61,11 +63,13 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req *pb.GenerateTokenRequest) (
-	*pb.GenerateTokenResponse, error) {
+	*pb.GenerateTokenResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
-	*pb.CreateUserResponse, error) {
+	*pb.CreateUserResponse, error,
+) {
 	u, err := s.t.AddUser(ctx, &biztiphereth.User{
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
@@ -79,7 +83,8 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
-	*pb.UpdateUserResponse, error) {
+	*pb.UpdateUserResponse, error,
+) {
 	if req.GetId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("id required")
 	}
@@ -95,7 +100,8 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	return &pb.UpdateUserResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
-	*pb.ListUserResponse, error) {
+	*pb.ListUserResponse, error,
+) {
 	u, err := s.t.ListUser(ctx,
 		biztiphereth.Paging{
 			PageSize: int(req.GetPageSize()),
@@ -112,15 +118,18 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
-	*pb.LinkAccountResponse, error) {
+	*pb.LinkAccountResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
-	*pb.UnLinkAccountResponse, error) {
+	*pb.UnLinkAccountResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountRequest) (
-	*pb.ListLinkAccountResponse, error) {
+	*pb.ListLinkAccountResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UploadFile(conn pb.LibrarianSephirahService_UploadFileServer) error {
@@ -130,7 +139,8 @@ func (s *LibrarianSephirahServiceService) DownloadFile(conn pb.LibrarianSephirah
 	return pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) SimpleUploadFile(
-	conn pb.LibrarianSephirahService_SimpleUploadFileServer) error {
+	conn pb.LibrarianSephirahService_SimpleUploadFileServer,
+) error {
 	file, bizErr := s.b.NewUploadFile(conn.Context())
 	if bizErr != nil {
 		return bizErr
@@ -150,24 +160,13 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 	}
 }
 func (s *LibrarianSephirahServiceService) SimpleDownloadFile(
-	conn pb.LibrarianSephirahService_SimpleDownloadFileServer) error {
-	for {
-		_, err := conn.Recv()
-		if errors.Is(err, io.EOF) {
-			return nil
-		}
-		if err != nil {
-			return err
-		}
-
-		err = conn.Send(&pb.SimpleDownloadFileResponse{})
-		if err != nil {
-			return err
-		}
-	}
+	conn pb.LibrarianSephirahService_SimpleDownloadFileServer,
+) error {
+	return pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb.CreateAppRequest) (
-	*pb.CreateAppResponse, error) {
+	*pb.CreateAppResponse, error,
+) {
 	app := req.GetApp()
 	if app == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
@@ -187,7 +186,8 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (
-	*pb.UpdateAppResponse, error) {
+	*pb.UpdateAppResponse, error,
+) {
 	app := req.GetApp()
 	if app == nil || app.GetId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app and internal_id required")
@@ -206,7 +206,8 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	return &pb.UpdateAppResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.ListAppRequest) (
-	*pb.ListAppResponse, error) {
+	*pb.ListAppResponse, error,
+) {
 	a, err := s.g.ListApp(ctx,
 		bizgebura.Paging{
 			PageSize: int(req.GetPageSize()),
@@ -229,26 +230,32 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
-	*pb.BindAppResponse, error) {
+	*pb.BindAppResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UnBindApp(ctx context.Context, req *pb.UnBindAppRequest) (
-	*pb.UnBindAppResponse, error) {
+	*pb.UnBindAppResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
-	*pb.RefreshAppResponse, error) {
+	*pb.RefreshAppResponse, error,
+) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) UploadArtifacts(ctx context.Context, req *pb.UploadArtifactsRequest) (
-	*pb.UploadArtifactsResponse, error) {
-	return &pb.UploadArtifactsResponse{}, nil
+	*pb.UploadArtifactsResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) DownloadArtifacts(ctx context.Context, req *pb.DownloadArtifactsRequest) (
-	*pb.DownloadArtifactsResponse, error) {
-	return &pb.DownloadArtifactsResponse{}, nil
+	*pb.DownloadArtifactsResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) ListArtifacts(ctx context.Context, req *pb.ListArtifactsRequest) (
-	*pb.ListArtifactsResponse, error) {
-	return &pb.ListArtifactsResponse{}, nil
+	*pb.ListArtifactsResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
