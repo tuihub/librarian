@@ -5,6 +5,8 @@ import (
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	pb "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type LibrarianMapperServiceService struct {
@@ -21,6 +23,16 @@ func NewLibrarianMapperServiceService(uc *biz.MapperUseCase) pb.LibrarianMapperS
 
 func (s *LibrarianMapperServiceService) InsertVertex(ctx context.Context, req *pb.InsertVertexRequest) (
 	*pb.InsertVertexResponse, error) {
+	if len(req.GetVertexList()) != 1 {
+		return nil, errors.BadRequest("", "")
+	}
+	err := s.uc.InsertVertex(ctx, biz.Vertex{
+		ID:   req.GetVertexList()[0].GetVid(),
+		Type: toBizVertexType(req.GetVertexList()[0].GetType()),
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &pb.InsertVertexResponse{}, nil
 }
 func (s *LibrarianMapperServiceService) DeleteVertex(ctx context.Context, req *pb.DeleteVertexRequest) (
@@ -33,6 +45,17 @@ func (s *LibrarianMapperServiceService) UpdateVertex(ctx context.Context, req *p
 }
 func (s *LibrarianMapperServiceService) InsertEdge(ctx context.Context, req *pb.InsertEdgeRequest) (
 	*pb.InsertEdgeResponse, error) {
+	if len(req.GetEdgeList()) != 1 {
+		return nil, errors.BadRequest("", "")
+	}
+	err := s.uc.InsertEdge(ctx, biz.Edge{
+		SourceID:      req.GetEdgeList()[0].GetSrcVid(),
+		DestinationID: req.GetEdgeList()[0].GetDstVid(),
+		Type:          toBizEdgeType(req.GetEdgeList()[0].GetType()),
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &pb.InsertEdgeResponse{}, nil
 }
 func (s *LibrarianMapperServiceService) DeleteEdge(ctx context.Context, req *pb.DeleteEdgeRequest) (
@@ -49,7 +72,15 @@ func (s *LibrarianMapperServiceService) GoFromVertex(ctx context.Context, req *p
 }
 func (s *LibrarianMapperServiceService) FetchEqualVertex(ctx context.Context, req *pb.FetchEqualVertexRequest) (
 	*pb.FetchEqualVertexResponse, error) {
-	return &pb.FetchEqualVertexResponse{}, nil
+	vl, err := s.uc.FetchEqualVertex(ctx, biz.Vertex{
+		ID: req.GetSrcVid(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FetchEqualVertexResponse{
+		VertexList: toPBVertexList(vl),
+	}, nil
 }
 func (s *LibrarianMapperServiceService) FetchEqualVertexNeighbor(ctx context.Context,
 	req *pb.FetchEqualVertexNeighborRequest) (*pb.FetchEqualVertexNeighborResponse, error) {

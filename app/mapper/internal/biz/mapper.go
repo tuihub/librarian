@@ -2,18 +2,48 @@ package biz
 
 import (
 	"context"
-
-	"github.com/go-kratos/kratos/v2/log"
 )
 
-// Mapper is a Mapper model.
-type Mapper struct {
-	Hello string
+type Vertex struct {
+	ID   int64
+	Type VertexType
 }
+
+type VertexType int
+
+const (
+	VertexTypeUnspecified VertexType = iota
+	VertexTypeAbstract
+	VertexTypeEntity
+	VertexTypeMessage
+	VertexTypeObject
+)
+
+type Edge struct {
+	SourceID      int64
+	DestinationID int64
+	Type          EdgeType
+}
+
+type EdgeType int
+
+const (
+	EdgeTypeUnspecified EdgeType = iota
+	EdgeTypeGeneral
+	EdgeTypeEqual
+	EdgeTypeCreate
+	EdgeTypeEnjoy
+	EdgeTypeMention
+	EdgeTypeDerive
+	EdgeTypeControl
+	EdgeTypeFollow
+)
 
 // MapperRepo is a Greater repo.
 type MapperRepo interface {
-	Save(context.Context, *Mapper) (*Mapper, error)
+	InsertVertex(context.Context, Vertex) error
+	InsertEdge(context.Context, Edge) error
+	FetchEqualVertex(context.Context, Vertex) ([]*Vertex, error)
 }
 
 // MapperUseCase is a Mapper use case.
@@ -26,8 +56,14 @@ func NewMapperUseCase(repo MapperRepo) *MapperUseCase {
 	return &MapperUseCase{repo: repo}
 }
 
-// CreateMapper creates a Mapper, and returns the new Mapper.
-func (uc *MapperUseCase) CreateMapper(ctx context.Context, g *Mapper) (*Mapper, error) {
-	log.Context(ctx).Infof("CreateMapper: %v", g.Hello)
-	return uc.repo.Save(ctx, g)
+func (m *MapperUseCase) InsertVertex(ctx context.Context, v Vertex) error {
+	return m.repo.InsertVertex(ctx, v)
+}
+
+func (m *MapperUseCase) InsertEdge(ctx context.Context, e Edge) error {
+	return m.repo.InsertEdge(ctx, e)
+}
+
+func (m *MapperUseCase) FetchEqualVertex(ctx context.Context, v Vertex) ([]*Vertex, error) {
+	return m.repo.FetchEqualVertex(ctx, v)
 }

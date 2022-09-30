@@ -5,6 +5,7 @@ go 1.18
 require (
 	entgo.io/ent v0.11.2
 	github.com/cayleygraph/cayley v0.7.7
+	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-kratos/kratos/v2 v2.5.0
 	github.com/golang-jwt/jwt/v4 v4.4.2
@@ -25,7 +26,6 @@ require (
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/cayleygraph/quad v1.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-kratos/aegis v0.1.2 // indirect
 	github.com/go-ole/go-ole v1.2.5 // indirect
@@ -35,6 +35,7 @@ require (
 	github.com/gobuffalo/packd v0.3.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.7.1 // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
+	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jhump/protoreflect v1.11.0 // indirect

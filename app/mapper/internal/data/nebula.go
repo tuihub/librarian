@@ -13,11 +13,22 @@ import (
 )
 
 type nebulaMapperRepo struct {
-	data *Data
+	db *norm.DB
 }
 
-func (r *nebulaMapperRepo) Save(ctx context.Context, g *biz.Mapper) (*biz.Mapper, error) {
-	return g, nil
+func (r *nebulaMapperRepo) InsertVertex(ctx context.Context, vertex biz.Vertex) error {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (r *nebulaMapperRepo) InsertEdge(ctx context.Context, edge biz.Edge) error {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (r *nebulaMapperRepo) FetchEqualVertex(ctx context.Context, vertices biz.Vertex) ([]*biz.Vertex, error) {
+	// TODO implement me
+	panic("implement me")
 }
 
 // NewNebula .

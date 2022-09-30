@@ -11,32 +11,18 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewNebula, NewCayley, NewMapperRepo)
-
-// Data .
-type Data struct {
-	ndb *norm.DB
-	cdb *cayley.Handle
-}
-
-// NewData .
-func NewData(ndb *norm.DB, cdb *cayley.Handle) *Data {
-	return &Data{
-		ndb,
-		cdb,
-	}
-}
+var ProviderSet = wire.NewSet(NewNebula, NewCayley, NewMapperRepo)
 
 // NewMapperRepo .
-func NewMapperRepo(data *Data) (biz.MapperRepo, error) {
-	if data.ndb != nil {
+func NewMapperRepo(n *norm.DB, c *cayley.Handle) (biz.MapperRepo, error) {
+	if n != nil {
 		return &nebulaMapperRepo{
-			data: data,
+			db: n,
 		}, nil
 	}
-	if data.cdb != nil {
+	if c != nil {
 		return &cayleyMapperRepo{
-			data: data,
+			db: c,
 		}, nil
 	}
 	return nil, errors.New("no valid db backend")
