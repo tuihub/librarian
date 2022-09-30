@@ -10,6 +10,7 @@ jobs:
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
+          command: manifest
           release-type: go
           package-name: librarian
           bump-minor-pre-major: true
