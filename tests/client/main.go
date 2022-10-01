@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb2 "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -19,7 +20,7 @@ const (
 
 type Client struct {
 	cli    pb.LibrarianSephirahServiceClient
-	userID *pb.InternalID
+	userID *pb2.InternalID
 }
 
 func main() {
@@ -51,9 +52,11 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context {
 	var accessToken, refreshToken string
 	if resp, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{
-		Username: username,
-		Password: password,
-		Type:     userType,
+		User: &pb.User{
+			Username: username,
+			Password: password,
+			Type:     userType,
+		},
 	}); err != nil {
 		panic(err)
 	} else {
@@ -96,14 +99,14 @@ func (c *Client) TestUser(ctx context.Context) {
 }
 
 func (c *Client) TestApp(ctx context.Context) {
-	var appID *pb.InternalID
-	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &pb.App{
+	var appID *pb2.InternalID
+	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &pb2.App{
 		Id:               nil,
-		Source:           pb.AppSource_APP_SOURCE_INTERNAL,
-		SourceAppId:      nil,
+		Source:           pb2.AppSource_APP_SOURCE_INTERNAL,
+		SourceAppId:      "",
 		SourceUrl:        nil,
 		Name:             "test app 1",
-		Type:             pb.AppType_APP_TYPE_GAME,
+		Type:             pb2.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
 		ImageUrl:         "",
 		Details:          nil,
@@ -126,13 +129,13 @@ func (c *Client) TestApp(ctx context.Context) {
 		resp.GetWithoutBind().GetAppList()[0].GetId().GetId() != appID.GetId() {
 		panic("inconsistent app id")
 	}
-	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &pb.App{
+	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &pb2.App{
 		Id:               appID,
-		Source:           pb.AppSource_APP_SOURCE_INTERNAL,
-		SourceAppId:      nil,
+		Source:           pb2.AppSource_APP_SOURCE_INTERNAL,
+		SourceAppId:      "",
 		SourceUrl:        nil,
 		Name:             "test app 1",
-		Type:             pb.AppType_APP_TYPE_GAME,
+		Type:             pb2.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description update",
 		ImageUrl:         "",
 		Details:          nil,

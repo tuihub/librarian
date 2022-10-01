@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb2 "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -71,28 +72,28 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	*pb.CreateUserResponse, error,
 ) {
 	u, err := s.t.AddUser(ctx, &biztiphereth.User{
-		UserName: req.GetUsername(),
-		PassWord: req.GetPassword(),
-		Type:     toLibAuthUserType(req.GetType()),
+		UserName: req.GetUser().GetUsername(),
+		PassWord: req.GetUser().GetPassword(),
+		Type:     toLibAuthUserType(req.GetUser().GetType()),
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &pb.InternalID{Id: u.InternalID},
+		Id: &pb2.InternalID{Id: u.InternalID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
 	*pb.UpdateUserResponse, error,
 ) {
-	if req.GetId() == nil {
+	if req.GetUser().GetId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("id required")
 	}
 	err := s.t.UpdateUser(ctx, &biztiphereth.User{
-		InternalID: req.GetId().GetId(),
-		UserName:   req.GetUsername(),
-		PassWord:   req.GetPassword(),
-		Status:     toBizUserStatus(req.GetStatus()),
+		InternalID: req.GetUser().GetId().GetId(),
+		UserName:   req.GetUser().GetUsername(),
+		PassWord:   req.GetUser().GetPassword(),
+		Status:     toBizUserStatus(req.GetUser().GetStatus()),
 	})
 	if err != nil {
 		return nil, err
@@ -182,7 +183,7 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, err
 	}
 	return &pb.CreateAppResponse{
-		Id: &pb.InternalID{Id: a.InternalID},
+		Id: &pb2.InternalID{Id: a.InternalID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (

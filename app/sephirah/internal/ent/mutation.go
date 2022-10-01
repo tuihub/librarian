@@ -74,7 +74,7 @@ func newAppMutation(c config, op Op, opts ...appOption) *AppMutation {
 	return m
 }
 
-// withAppID sets the InternalID field of the mutation.
+// withAppID sets the ID field of the mutation.
 func withAppID(id int) appOption {
 	return func(m *AppMutation) {
 		var (
@@ -176,7 +176,7 @@ func (m *AppMutation) OldInternalID(ctx context.Context) (v int64, err error) {
 		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an InternalID field in the mutation")
+		return v, errors.New("OldInternalID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -231,7 +231,7 @@ func (m *AppMutation) OldSource(ctx context.Context) (v app.Source, err error) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSource requires an InternalID field in the mutation")
+		return v, errors.New("OldSource requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -267,7 +267,7 @@ func (m *AppMutation) OldSourceAppID(ctx context.Context) (v string, err error) 
 		return v, errors.New("OldSourceAppID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceAppID requires an InternalID field in the mutation")
+		return v, errors.New("OldSourceAppID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -303,7 +303,7 @@ func (m *AppMutation) OldSourceURL(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldSourceURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceURL requires an InternalID field in the mutation")
+		return v, errors.New("OldSourceURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -339,7 +339,7 @@ func (m *AppMutation) OldName(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an InternalID field in the mutation")
+		return v, errors.New("OldName requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -375,7 +375,7 @@ func (m *AppMutation) OldType(ctx context.Context) (v app.Type, err error) {
 		return v, errors.New("OldType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an InternalID field in the mutation")
+		return v, errors.New("OldType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -411,7 +411,7 @@ func (m *AppMutation) OldShortDescription(ctx context.Context) (v string, err er
 		return v, errors.New("OldShortDescription is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldShortDescription requires an InternalID field in the mutation")
+		return v, errors.New("OldShortDescription requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -447,7 +447,7 @@ func (m *AppMutation) OldDescription(ctx context.Context) (v string, err error) 
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDescription requires an InternalID field in the mutation")
+		return v, errors.New("OldDescription requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -483,7 +483,7 @@ func (m *AppMutation) OldImageURL(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImageURL requires an InternalID field in the mutation")
+		return v, errors.New("OldImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -519,7 +519,7 @@ func (m *AppMutation) OldReleaseDate(ctx context.Context) (v string, err error) 
 		return v, errors.New("OldReleaseDate is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldReleaseDate requires an InternalID field in the mutation")
+		return v, errors.New("OldReleaseDate requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -555,7 +555,7 @@ func (m *AppMutation) OldDeveloper(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldDeveloper is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeveloper requires an InternalID field in the mutation")
+		return v, errors.New("OldDeveloper requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -591,7 +591,7 @@ func (m *AppMutation) OldPublisher(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldPublisher is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublisher requires an InternalID field in the mutation")
+		return v, errors.New("OldPublisher requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -627,7 +627,7 @@ func (m *AppMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error)
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an InternalID field in the mutation")
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1062,7 +1062,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 	return m
 }
 
-// withUserID sets the InternalID field of the mutation.
+// withUserID sets the ID field of the mutation.
 func withUserID(id int) userOption {
 	return func(m *UserMutation) {
 		var (
@@ -1164,7 +1164,7 @@ func (m *UserMutation) OldInternalID(ctx context.Context) (v int64, err error) {
 		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an InternalID field in the mutation")
+		return v, errors.New("OldInternalID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1219,7 +1219,7 @@ func (m *UserMutation) OldUsername(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldUsername is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUsername requires an InternalID field in the mutation")
+		return v, errors.New("OldUsername requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1255,7 +1255,7 @@ func (m *UserMutation) OldPassword(ctx context.Context) (v string, err error) {
 		return v, errors.New("OldPassword is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPassword requires an InternalID field in the mutation")
+		return v, errors.New("OldPassword requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1291,7 +1291,7 @@ func (m *UserMutation) OldStatus(ctx context.Context) (v user.Status, err error)
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStatus requires an InternalID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1327,7 +1327,7 @@ func (m *UserMutation) OldType(ctx context.Context) (v user.Type, err error) {
 		return v, errors.New("OldType is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an InternalID field in the mutation")
+		return v, errors.New("OldType requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
@@ -1363,7 +1363,7 @@ func (m *UserMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an InternalID field in the mutation")
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
