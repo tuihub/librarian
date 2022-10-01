@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
@@ -23,6 +24,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
+	a *bizangela.AngelaBase,
 	t *biztiphereth.TipherethUseCase,
 	g *bizgebura.GeburaUseCase,
 	b *bizbinah.BinahUseCase,

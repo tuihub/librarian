@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -27,11 +27,12 @@ type TipherethRepo interface {
 
 // TipherethUseCase is a User use case.
 type TipherethUseCase struct {
-	auth     *libauth.Auth
-	repo     TipherethRepo
-	mapper   mapper.LibrarianMapperServiceClient
-	searcher searcher.LibrarianSearcherServiceClient
-	porter   porter.LibrarianPorterServiceClient
+	auth        *libauth.Auth
+	repo        TipherethRepo
+	mapper      mapper.LibrarianMapperServiceClient
+	searcher    searcher.LibrarianSearcherServiceClient
+	porter      porter.LibrarianPorterServiceClient
+	pullAccount *libmq.TopicImpl[PullAccountInfo]
 }
 
 // NewTipherethUseCase new a User use case.
@@ -41,14 +42,16 @@ func NewTipherethUseCase(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-) *TipherethUseCase {
+	pullAccount *libmq.TopicImpl[PullAccountInfo],
+) (*TipherethUseCase, error) {
 	return &TipherethUseCase{
-		auth:     auth,
-		repo:     repo,
-		mapper:   mClient,
-		porter:   pClient,
-		searcher: sClient,
-	}
+		auth:        auth,
+		repo:        repo,
+		mapper:      mClient,
+		porter:      pClient,
+		searcher:    sClient,
+		pullAccount: pullAccount,
+	}, nil
 }
 
 func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToken, RefreshToken, *errors.Error) {
@@ -163,6 +166,10 @@ func (t *TipherethUseCase) ListUser(
 }
 
 func (t *TipherethUseCase) LinkAccount(ctx context.Context, a Account) (*Account, *errors.Error) {
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return nil, pb.ErrorErrorReasonUnauthorized("invalid token")
+	}
 	if resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{}); err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -172,15 +179,21 @@ func (t *TipherethUseCase) LinkAccount(ctx context.Context, a Account) (*Account
 	if err := t.repo.CreateAccount(ctx, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if resp, err := t.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
-		Platform:          toLibrarianAccountPlatform(a.Platform),
-		PlatformAccountId: a.PlatformAccountID,
+	if _, err := t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
+		{
+			SrcVid: claims.InternalID,
+			DstVid: a.InternalID,
+			Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
+			Prop:   nil,
+		},
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	} else {
-		a.Name = resp.GetAccount().GetName()
-		a.ProfileURL = resp.GetAccount().GetProfileUrl()
-		a.AvatarURL = resp.GetAccount().GetAvatarUrl()
+	}
+	if err := t.pullAccount.Publish(PullAccountInfo{
+		Platform:          a.Platform,
+		PlatformAccountID: a.PlatformAccountID,
+	}); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &a, nil
 }

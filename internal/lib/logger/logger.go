@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"runtime"
 
@@ -13,6 +14,10 @@ const defaultCallerKey = "logger"
 func getCaller() string {
 	pc, _, _, _ := runtime.Caller(2) //nolint:gomnd //get external caller
 	return runtime.FuncForPC(pc).Name()
+}
+
+func NewWriter() io.Writer {
+	return log.NewWriter(log.GetLogger())
 }
 
 // Debug logs a message at debug level.

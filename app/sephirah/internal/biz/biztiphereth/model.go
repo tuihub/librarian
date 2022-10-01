@@ -42,3 +42,8 @@ const (
 	AccountPlatformUnspecified AccountPlatform = iota
 	AccountPlatformSteam
 )
+
+type PullAccountInfo struct {
+	Platform          AccountPlatform
+	PlatformAccountID string
+}
