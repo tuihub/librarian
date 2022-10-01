@@ -6,36 +6,13 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
-
-// User is a User model.
-type User struct {
-	InternalID int64
-	UserName   string
-	PassWord   string
-	Type       libauth.UserType
-	Status     UserStatus
-}
-
-type UserStatus int
-
-const (
-	UserStatusUnspecified UserStatus = iota
-	UserStatusActive
-	UserStatusBlocked
-)
-
-type AccessToken string
-type RefreshToken string
-
-type Paging struct {
-	PageSize int
-	PageNum  int
-}
 
 // TipherethRepo is a User repo.
 type TipherethRepo interface {
@@ -44,6 +21,7 @@ type TipherethRepo interface {
 	AddUser(context.Context, *User) error
 	UpdateUser(context.Context, *User) error
 	ListUser(context.Context, Paging, []libauth.UserType, []UserStatus) ([]*User, error)
+	CreateAccount(context.Context, Account) error
 }
 
 // TipherethUseCase is a User use case.
@@ -51,12 +29,22 @@ type TipherethUseCase struct {
 	auth     *libauth.Auth
 	repo     TipherethRepo
 	searcher searcher.LibrarianSearcherServiceClient
+	porter   porter.LibrarianPorterServiceClient
 }
 
 // NewTipherethUseCase new a User use case.
-func NewTipherethUseCase(repo TipherethRepo, auth *libauth.Auth,
-	sClient searcher.LibrarianSearcherServiceClient) *TipherethUseCase {
-	return &TipherethUseCase{auth: auth, repo: repo, searcher: sClient}
+func NewTipherethUseCase(
+	repo TipherethRepo,
+	auth *libauth.Auth,
+	pClient porter.LibrarianPorterServiceClient,
+	sClient searcher.LibrarianSearcherServiceClient,
+) *TipherethUseCase {
+	return &TipherethUseCase{
+		auth:     auth,
+		repo:     repo,
+		porter:   pClient,
+		searcher: sClient,
+	}
 }
 
 func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToken, RefreshToken, *errors.Error) {
@@ -157,11 +145,38 @@ func (t *TipherethUseCase) UpdateUser(ctx context.Context, user *User) *errors.E
 	return nil
 }
 
-func (t *TipherethUseCase) ListUser(ctx context.Context,
-	paging Paging, types []libauth.UserType, statuses []UserStatus) ([]*User, *errors.Error) {
+func (t *TipherethUseCase) ListUser(
+	ctx context.Context,
+	paging Paging,
+	types []libauth.UserType,
+	statuses []UserStatus,
+) ([]*User, *errors.Error) {
 	users, err := t.repo.ListUser(ctx, paging, types, statuses)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return users, nil
+}
+
+func (t *TipherethUseCase) LinkAccount(ctx context.Context, a Account) (*Account, *errors.Error) {
+	if resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{}); err != nil {
+		logger.Infof("NewID failed: %s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	} else {
+		a.InternalID = resp.Id
+	}
+	if err := t.repo.CreateAccount(ctx, a); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if resp, err := t.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
+		Platform:          toLibrarianAccountPlatform(a.Platform),
+		PlatformAccountId: a.PlatformAccountID,
+	}}); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	} else {
+		a.Name = resp.GetAccount().GetName()
+		a.ProfileURL = resp.GetAccount().GetProfileUrl()
+		a.AvatarURL = resp.GetAccount().GetAvatarUrl()
+	}
+	return &a, nil
 }

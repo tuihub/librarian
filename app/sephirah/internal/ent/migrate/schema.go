@@ -8,6 +8,30 @@ import (
 )
 
 var (
+	// AccountsColumns holds the columns for the "accounts" table.
+	AccountsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
+		{Name: "platform", Type: field.TypeEnum, Enums: []string{"steam"}},
+		{Name: "platform_account_id", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "profile_url", Type: field.TypeString},
+		{Name: "avatar_url", Type: field.TypeString},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// AccountsTable holds the schema information for the "accounts" table.
+	AccountsTable = &schema.Table{
+		Name:       "accounts",
+		Columns:    AccountsColumns,
+		PrimaryKey: []*schema.Column{AccountsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "account_platform_platform_account_id",
+				Unique:  true,
+				Columns: []*schema.Column{AccountsColumns[2], AccountsColumns[3]},
+			},
+		},
+	}
 	// AppsColumns holds the columns for the "apps" table.
 	AppsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -30,6 +54,13 @@ var (
 		Name:       "apps",
 		Columns:    AppsColumns,
 		PrimaryKey: []*schema.Column{AppsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "app_source_source_app_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppsColumns[2], AppsColumns[3]},
+			},
+		},
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
@@ -49,6 +80,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		AccountsTable,
 		AppsTable,
 		UsersTable,
 	}

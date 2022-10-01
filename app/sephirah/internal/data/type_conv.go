@@ -4,6 +4,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -108,5 +109,14 @@ func toBizApp(a *ent.App) *bizgebura.App {
 		Type:            toBizAppType(a.Type),
 		ShorDescription: a.ShortDescription,
 		ImageURL:        a.ImageURL,
+	}
+}
+
+func toEntAccountPlatform(t biztiphereth.AccountPlatform) account.Platform {
+	switch t {
+	case biztiphereth.AccountPlatformSteam:
+		return account.PlatformSteam
+	default:
+		return ""
 	}
 }

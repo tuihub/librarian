@@ -55,13 +55,13 @@ func (t tipherethRepo) FetchUserByPassword(
 
 func (t tipherethRepo) AddUser(ctx context.Context, userData *biztiphereth.User) error {
 	userType := toEntUserType(userData.Type)
-	_, err := t.data.db.User.Create().
+	err := t.data.db.User.Create().
 		SetInternalID(userData.InternalID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
 		SetStatus(toEntUserStatus(userData.Status)).
 		SetType(userType).
-		Save(ctx)
+		Exec(ctx)
 	return err
 }
 
@@ -113,4 +113,15 @@ func (t tipherethRepo) ListUser(
 		users[i] = toBizUser(su)
 	}
 	return users, nil
+}
+
+func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account) error {
+	return t.data.db.Account.Create().
+		SetInternalID(a.InternalID).
+		SetPlatform(toEntAccountPlatform(a.Platform)).
+		SetPlatformAccountID(a.PlatformAccountID).
+		SetName(a.Name).
+		SetAvatarURL(a.AvatarURL).
+		SetProfileURL(a.ProfileURL).
+		Exec(ctx)
 }

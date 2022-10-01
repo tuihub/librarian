@@ -169,7 +169,11 @@ linters-settings:
     # even if all enum members are not listed.
     # Default: false
     default-signifies-exhaustive: true
-
+  revive:
+    # Sets the default severity.
+    # See https://github.com/mgechev/revive#configuration
+    # Default: warning
+    severity: warning
 
 linters:
   disable-all: true

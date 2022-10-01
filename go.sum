@@ -385,8 +385,8 @@ github.com/tklauser/go-sysconf v0.3.9/go.mod h1:11DU/5sG7UexIrp/O6g35hrWzu0JxlwQ
 github.com/tklauser/numcpus v0.3.0 h1:ILuRUQBtssgnxw0XXIjKUC56fgnOrFoQQ/4+DeU2biQ=
 github.com/tklauser/numcpus v0.3.0/go.mod h1:yFGUr7TUHQRAhyqBcEg0Ge34zDBAsIvJJcyE6boqnA8=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
-github.com/tuihub/protos v0.0.0-20221001042612-fa066ad8dbca h1:quOIsRfrPNiUnM7Ra4tyqpWqKtBCnDMT7Se80BWTYPo=
-github.com/tuihub/protos v0.0.0-20221001042612-fa066ad8dbca/go.mod h1:3VhFEjOoTk7kTvVtSmcm2SVVflEY+BvNih9t66r001Y=
+github.com/tuihub/protos v0.0.0-20221001074056-7e91b1054983 h1:FQcIXRHPe+tdlMOppVdMi7317qu/oDoovaslfAYqP8o=
+github.com/tuihub/protos v0.0.0-20221001074056-7e91b1054983/go.mod h1:3VhFEjOoTk7kTvVtSmcm2SVVflEY+BvNih9t66r001Y=
 github.com/tylertreat/BoomFilters v0.0.0-20181028192813-611b3dbe80e8/go.mod h1:OYRfF6eb5wY9VRFkXJH8FFBi3plw2v+giaIu7P054pM=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=

@@ -5,7 +5,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	pb2 "github.com/tuihub/protos/pkg/librarian/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func toLibAuthUserType(u pb.UserType) libauth.UserType {
@@ -59,7 +59,7 @@ func toBizUserStatusList(sl []pb.UserStatus) []biztiphereth.UserStatus {
 
 func toPBUser(u biztiphereth.User) pb.User {
 	return pb.User{
-		Id:       &pb2.InternalID{Id: u.InternalID},
+		Id:       &librarian.InternalID{Id: u.InternalID},
 		Username: u.PassWord,
 		Type:     toPBUserType(u.Type),
 	}
@@ -76,25 +76,25 @@ func toPBUserList(ul []*biztiphereth.User) []*pb.User {
 	return res
 }
 
-func toPBAppType(t bizgebura.AppType) pb2.AppType {
+func toPBAppType(t bizgebura.AppType) librarian.AppType {
 	switch t {
 	case bizgebura.AppTypeGame:
-		return pb2.AppType_APP_TYPE_GAME
+		return librarian.AppType_APP_TYPE_GAME
 	default:
-		return pb2.AppType_APP_TYPE_UNSPECIFIED
+		return librarian.AppType_APP_TYPE_UNSPECIFIED
 	}
 }
 
-func toBizAppType(t pb2.AppType) bizgebura.AppType {
+func toBizAppType(t librarian.AppType) bizgebura.AppType {
 	switch t {
-	case pb2.AppType_APP_TYPE_GAME:
+	case librarian.AppType_APP_TYPE_GAME:
 		return bizgebura.AppTypeGame
 	default:
 		return bizgebura.AppTypeGeneral
 	}
 }
 
-func toBizAppTypeList(tl []pb2.AppType) []bizgebura.AppType {
+func toBizAppTypeList(tl []librarian.AppType) []bizgebura.AppType {
 	res := make([]bizgebura.AppType, len(tl))
 	for i, s := range tl {
 		res[i] = toBizAppType(s)
@@ -102,29 +102,29 @@ func toBizAppTypeList(tl []pb2.AppType) []bizgebura.AppType {
 	return res
 }
 
-func toPBAppSource(s bizgebura.AppSource) pb2.AppSource {
+func toPBAppSource(s bizgebura.AppSource) librarian.AppSource {
 	switch s {
 	case bizgebura.AppSourceInternal:
-		return pb2.AppSource_APP_SOURCE_INTERNAL
+		return librarian.AppSource_APP_SOURCE_INTERNAL
 	case bizgebura.AppSourceSteam:
-		return pb2.AppSource_APP_SOURCE_STEAM
+		return librarian.AppSource_APP_SOURCE_STEAM
 	default:
-		return pb2.AppSource_APP_SOURCE_UNSPECIFIED
+		return librarian.AppSource_APP_SOURCE_UNSPECIFIED
 	}
 }
 
-func toBizAppSource(s pb2.AppSource) bizgebura.AppSource {
+func toBizAppSource(s librarian.AppSource) bizgebura.AppSource {
 	switch s {
-	case pb2.AppSource_APP_SOURCE_INTERNAL:
+	case librarian.AppSource_APP_SOURCE_INTERNAL:
 		return bizgebura.AppSourceInternal
-	case pb2.AppSource_APP_SOURCE_STEAM:
+	case librarian.AppSource_APP_SOURCE_STEAM:
 		return bizgebura.AppSourceSteam
 	default:
 		return bizgebura.AppSourceUnspecified
 	}
 }
 
-func toBizAppSourceList(sl []pb2.AppSource) []bizgebura.AppSource {
+func toBizAppSourceList(sl []librarian.AppSource) []bizgebura.AppSource {
 	res := make([]bizgebura.AppSource, len(sl))
 	for i, s := range sl {
 		res[i] = toBizAppSource(s)
@@ -132,7 +132,7 @@ func toBizAppSourceList(sl []pb2.AppSource) []bizgebura.AppSource {
 	return res
 }
 
-func toBizAppDetail(d *pb2.AppDetails) *bizgebura.AppDetails {
+func toBizAppDetail(d *librarian.AppDetails) *bizgebura.AppDetails {
 	if d == nil {
 		return nil
 	}
@@ -144,11 +144,11 @@ func toBizAppDetail(d *pb2.AppDetails) *bizgebura.AppDetails {
 	}
 }
 
-func toPBAppDetails(d *bizgebura.AppDetails) *pb2.AppDetails {
+func toPBAppDetails(d *bizgebura.AppDetails) *librarian.AppDetails {
 	if d == nil {
 		return nil
 	}
-	return &pb2.AppDetails{
+	return &librarian.AppDetails{
 		Description: d.Description,
 		ReleaseDate: d.ReleaseDate,
 		Developer:   d.Developer,
@@ -156,12 +156,12 @@ func toPBAppDetails(d *bizgebura.AppDetails) *pb2.AppDetails {
 	}
 }
 
-func toPBApp(a *bizgebura.App, containDetails bool) *pb2.App {
+func toPBApp(a *bizgebura.App, containDetails bool) *librarian.App {
 	if a == nil {
 		return nil
 	}
-	app := &pb2.App{
-		Id:               &pb2.InternalID{Id: a.InternalID},
+	app := &librarian.App{
+		Id:               &librarian.InternalID{Id: a.InternalID},
 		Source:           toPBAppSource(a.Source),
 		Name:             a.Name,
 		Type:             toPBAppType(a.Type),
@@ -174,10 +174,19 @@ func toPBApp(a *bizgebura.App, containDetails bool) *pb2.App {
 	return app
 }
 
-func toPBAppList(al []*bizgebura.App, containDetails bool) []*pb2.App {
-	res := make([]*pb2.App, len(al))
+func toPBAppList(al []*bizgebura.App, containDetails bool) []*librarian.App {
+	res := make([]*librarian.App, len(al))
 	for i, a := range al {
 		res[i] = toPBApp(a, containDetails)
 	}
 	return res
+}
+
+func toBizAccountPlatform(p librarian.AccountPlatform) biztiphereth.AccountPlatform {
+	switch p {
+	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
+		return biztiphereth.AccountPlatformSteam
+	default:
+		return biztiphereth.AccountPlatformUnspecified
+	}
 }

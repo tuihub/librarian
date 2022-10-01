@@ -5,6 +5,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // App holds the schema definition for the App entity.
@@ -32,6 +33,13 @@ func (App) Fields() []ent.Field {
 		field.String("publisher"),
 		field.Time("created_at").
 			Default(time.Now),
+	}
+}
+
+func (App) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("source", "source_app_id").
+			Unique(),
 	}
 }
 

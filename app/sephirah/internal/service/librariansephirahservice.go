@@ -9,7 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	pb2 "github.com/tuihub/protos/pkg/librarian/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -80,7 +80,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &pb2.InternalID{Id: u.InternalID},
+		Id: &librarian.InternalID{Id: u.InternalID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
@@ -121,7 +121,14 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
+		Platform:          toBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.LinkAccountResponse{AccountId: &librarian.InternalID{Id: a.InternalID}}, nil
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error,
@@ -183,7 +190,7 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, err
 	}
 	return &pb.CreateAppResponse{
-		Id: &pb2.InternalID{Id: a.InternalID},
+		Id: &librarian.InternalID{Id: a.InternalID},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (
