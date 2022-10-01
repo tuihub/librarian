@@ -34,7 +34,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, libr
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianPorterServiceClient, librarianSearcherServiceClient)
+	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	geburaRepo := data.NewGeburaRepo(dataData)
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)

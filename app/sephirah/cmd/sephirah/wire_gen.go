@@ -33,6 +33,11 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
+	librarianMapperServiceClient, err := client.NewMapperClient()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	librarianPorterServiceClient, err := client.NewPorterClient()
 	if err != nil {
 		cleanup()
@@ -43,14 +48,9 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianPorterServiceClient, librarianSearcherServiceClient)
+	tipherethUseCase := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	geburaRepo := data.NewGeburaRepo(dataData)
 	callbackControlBlock := bizbinah.NewCallbackControl()
-	librarianMapperServiceClient, err := client.NewMapperClient()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tipherethUseCase, geburaUseCase, binahUseCase)

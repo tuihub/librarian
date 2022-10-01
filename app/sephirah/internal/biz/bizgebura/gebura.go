@@ -132,6 +132,19 @@ func (g *GeburaUseCase) ListApp(
 	return apps, nil
 }
 
+func (g *GeburaUseCase) BindApp(ctx context.Context, internal App, bind App) (*App, *errors.Error) {
+	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	if err != nil {
+		logger.Infof("NewID failed: %s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	bind.InternalID = resp.Id
+	if err = g.repo.CreateApp(ctx, &bind); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return &bind, nil
+}
+
 func UploadArtifactsCallback(file *bizbinah.UploadFile) error {
 	panic("not impl")
 }

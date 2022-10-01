@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -28,6 +29,7 @@ type TipherethRepo interface {
 type TipherethUseCase struct {
 	auth     *libauth.Auth
 	repo     TipherethRepo
+	mapper   mapper.LibrarianMapperServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
 	porter   porter.LibrarianPorterServiceClient
 }
@@ -36,12 +38,14 @@ type TipherethUseCase struct {
 func NewTipherethUseCase(
 	repo TipherethRepo,
 	auth *libauth.Auth,
+	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
 ) *TipherethUseCase {
 	return &TipherethUseCase{
 		auth:     auth,
 		repo:     repo,
+		mapper:   mClient,
 		porter:   pClient,
 		searcher: sClient,
 	}

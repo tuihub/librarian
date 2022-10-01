@@ -240,7 +240,20 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
 	*pb.BindAppResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	a, err := s.g.BindApp(ctx,
+		bizgebura.App{
+			InternalID: req.GetInternalAppId().GetId(),
+		},
+		bizgebura.App{
+			Source:      toBizAppSource(req.GetBindAppId().GetSource()),
+			SourceAppID: req.GetBindAppId().GetSourceAppId(),
+		})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.BindAppResponse{BindAppId: &librarian.InternalID{
+		Id: a.InternalID,
+	}}, nil
 }
 func (s *LibrarianSephirahServiceService) UnBindApp(ctx context.Context, req *pb.UnBindAppRequest) (
 	*pb.UnBindAppResponse, error,
