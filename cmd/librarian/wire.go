@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -37,6 +38,7 @@ func wireApp(
 			server.ProviderSet,
 			inprocgrpc.ProviderSet,
 			libauth.ProviderSet,
+			libmq.ProviderSet,
 			newApp,
 		),
 	)

@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 
 	"github.com/go-kratos/kratos/contrib/log/zap/v2"
@@ -16,14 +17,14 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
-func newApp(gs *grpc.Server) *kratos.App {
+func newApp(gs *grpc.Server, mq *libmq.MQ) *kratos.App {
 	metadata := libapp.GetAppMetadata()
 	return kratos.New(
 		kratos.ID(metadata.ID),
 		kratos.Name(metadata.Name),
 		kratos.Version(metadata.Version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs),
+		kratos.Server(gs, mq),
 	)
 }
 

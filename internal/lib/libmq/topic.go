@@ -46,7 +46,7 @@ func (t *TopicImpl[T]) Publish(i T) error {
 
 func (t *TopicImpl[T]) Consume(i []byte) error {
 	p := t.Payload()
-	err := json.Unmarshal(i, p)
+	err := json.Unmarshal(i, &p)
 	if err != nil {
 		return err
 	}

@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v1_2 "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -23,8 +24,14 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	angelaBase, err := bizangela.NewAngelaBase(librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	if err != nil {
+		return nil, nil, err
+	}
+	topicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase)
+	libmqTopicImpl := bizangela.NewPullAccountTopic(angelaBase, topicImpl)
+	angela, err := bizangela.NewAngela(mq, libmqTopicImpl, topicImpl)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -34,23 +41,16 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, libr
 	}
 	dataData := data.NewData(client)
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	libauthAuth, err := libauth.NewAuth(auth)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	topicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase)
-	libmqTopicImpl := bizangela.NewPullAccountTopic(angelaBase, topicImpl)
-	tipherethUseCase, err := biztiphereth.NewTipherethUseCase(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, libmqTopicImpl)
+	tipherethUseCase, err := biztiphereth.NewTipherethUseCase(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, libmqTopicImpl)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	geburaRepo := data.NewGeburaRepo(dataData)
 	callbackControlBlock := bizbinah.NewCallbackControl()
-	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angelaBase, tipherethUseCase, geburaUseCase, binahUseCase)
+	geburaUseCase := bizgebura.NewGeburaUseCase(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	binahUseCase := bizbinah.NewBinahUseCase(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tipherethUseCase, geburaUseCase, binahUseCase)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

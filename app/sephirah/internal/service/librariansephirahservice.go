@@ -24,7 +24,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
-	a *bizangela.AngelaBase,
+	a *bizangela.Angela,
 	t *biztiphereth.TipherethUseCase,
 	g *bizgebura.GeburaUseCase,
 	b *bizbinah.BinahUseCase,

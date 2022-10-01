@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 )
 
@@ -26,34 +27,43 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	if err != nil {
 		return nil, nil, err
 	}
-	librarianMapperServiceServer, cleanup, err := service.NewMapperService(mapper_Data)
+	mq, cleanup, err := libmq.NewMQ()
 	if err != nil {
 		return nil, nil, err
 	}
-	librarianMapperServiceClient := inprocgrpc.NewInprocMapperChannel(librarianMapperServiceServer)
-	librarianSearcherServiceServer, cleanup2, err := service2.NewSearcherService(searcher_Data)
+	librarianMapperServiceServer, cleanup2, err := service.NewMapperService(mapper_Data)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSearcherServiceClient := inprocgrpc.NewInprocSearcherChannel(librarianSearcherServiceServer)
-	librarianPorterServiceServer, cleanup3, err := service3.NewPorterService(porter_Data)
+	librarianMapperServiceClient := inprocgrpc.NewInprocMapperChannel(librarianMapperServiceServer)
+	librarianSearcherServiceServer, cleanup3, err := service2.NewSearcherService(searcher_Data)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
-	librarianSephirahServiceServer, cleanup4, err := service4.NewSephirahService(sephirah_Data, auth, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSearcherServiceClient := inprocgrpc.NewInprocSearcherChannel(librarianSearcherServiceServer)
+	librarianPorterServiceServer, cleanup4, err := service3.NewPorterService(porter_Data)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
+	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, mq, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
-	app := newApp(grpcServer)
+	app := newApp(grpcServer, mq)
 	return app, func() {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()

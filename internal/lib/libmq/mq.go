@@ -1,13 +1,16 @@
 package libmq
 
 import (
+	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
+	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
 	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/google/wire"
 )
@@ -27,14 +30,31 @@ func NewMQ() (*MQ, func(), error) {
 		gochannel.Config{},
 		loggerAdapter,
 	)
+	router.AddMiddleware(
+		middleware.CorrelationID,
+		middleware.Retry{
+			MaxRetries:      3,                      //nolint:gomnd //TODO
+			InitialInterval: time.Millisecond * 100, //nolint:gomnd //TODO
+			Logger:          loggerAdapter,
+		}.Middleware,
+		// middleware.Recoverer,
+	)
 	cleanup := func() {
 		_ = pubSub.Close()
 		_ = router.Close()
 	}
 	return &MQ{
-		router: router,
-		pubSub: pubSub,
+		router:    router,
+		pubSub:    pubSub,
+		topicList: make(map[string]bool),
 	}, cleanup, err
+}
+
+func (a *MQ) Start(ctx context.Context) error {
+	return a.router.Run(ctx)
+}
+func (a *MQ) Stop(ctx context.Context) error {
+	return a.router.Close()
 }
 
 func (a *MQ) RegisterTopic(topic Topic) error {
