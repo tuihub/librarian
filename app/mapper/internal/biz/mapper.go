@@ -39,31 +39,28 @@ const (
 	EdgeTypeFollow
 )
 
-// MapperRepo is a Greater repo.
 type MapperRepo interface {
 	InsertVertex(context.Context, Vertex) error
 	InsertEdge(context.Context, Edge) error
 	FetchEqualVertex(context.Context, Vertex) ([]*Vertex, error)
 }
 
-// MapperUseCase is a Mapper use case.
-type MapperUseCase struct {
+type Mapper struct {
 	repo MapperRepo
 }
 
-// NewMapperUseCase new a Mapper use case.
-func NewMapperUseCase(repo MapperRepo) *MapperUseCase {
-	return &MapperUseCase{repo: repo}
+func NewMapper(repo MapperRepo) *Mapper {
+	return &Mapper{repo: repo}
 }
 
-func (m *MapperUseCase) InsertVertex(ctx context.Context, v Vertex) error {
+func (m *Mapper) InsertVertex(ctx context.Context, v Vertex) error {
 	return m.repo.InsertVertex(ctx, v)
 }
 
-func (m *MapperUseCase) InsertEdge(ctx context.Context, e Edge) error {
+func (m *Mapper) InsertEdge(ctx context.Context, e Edge) error {
 	return m.repo.InsertEdge(ctx, e)
 }
 
-func (m *MapperUseCase) FetchEqualVertex(ctx context.Context, v Vertex) ([]*Vertex, error) {
+func (m *Mapper) FetchEqualVertex(ctx context.Context, v Vertex) ([]*Vertex, error) {
 	return m.repo.FetchEqualVertex(ctx, v)
 }

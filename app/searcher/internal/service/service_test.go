@@ -13,18 +13,18 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type mockedGreeterRepo struct {
+type mockedSearcherRepo struct {
 	mock.Mock
 }
 
-func (m *mockedGreeterRepo) NewID(ctx context.Context) (int64, error) {
+func (m *mockedSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	args := m.Called(ctx)
 	return args.Get(0).(int64), args.Error(1)
 }
 
 func TestLibrarianSearcherServiceService_NewID(t *testing.T) {
-	m := mockedGreeterRepo{}
-	s := service.NewLibrarianSearcherServiceService(biz.NewGreeterUseCase(&m))
+	m := mockedSearcherRepo{}
+	s := service.NewLibrarianSearcherServiceService(biz.NewSearcher(&m))
 
 	mc := m.On("NewID", context.Background()).Return((int64)(123), nil)
 	id, err := s.NewID(context.Background(), &searcher.NewIDRequest{})

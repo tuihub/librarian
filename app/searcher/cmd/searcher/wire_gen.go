@@ -23,9 +23,9 @@ func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUseCase := biz.NewGreeterUseCase(greeterRepo)
-	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(greeterUseCase)
+	searcherRepo := data.NewSearcherRepo(dataData)
+	searcher := biz.NewSearcher(searcherRepo)
+	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

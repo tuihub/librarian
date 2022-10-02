@@ -25,12 +25,10 @@ func (f *UploadFile) Finish() error {
 	return f.callback(f)
 }
 
-// BinahRepo is an App repo.
 type BinahRepo interface {
 }
 
-// BinahUseCase is an App use case.
-type BinahUseCase struct {
+type Binah struct {
 	callback CallbackControlBlock
 	auth     *libauth.Auth
 	mapper   mapper.LibrarianMapperServiceClient
@@ -38,10 +36,9 @@ type BinahUseCase struct {
 	searcher searcher.LibrarianSearcherServiceClient
 }
 
-// NewBinahUseCase new an App use case.
-func NewBinahUseCase(callback CallbackControlBlock, auth *libauth.Auth, mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient, sClient searcher.LibrarianSearcherServiceClient) *BinahUseCase {
-	return &BinahUseCase{
+func NewBinah(callback CallbackControlBlock, auth *libauth.Auth, mClient mapper.LibrarianMapperServiceClient,
+	pClient porter.LibrarianPorterServiceClient, sClient searcher.LibrarianSearcherServiceClient) *Binah {
+	return &Binah{
 		callback: callback,
 		auth:     auth,
 		mapper:   mClient,
@@ -50,7 +47,7 @@ func NewBinahUseCase(callback CallbackControlBlock, auth *libauth.Auth, mClient 
 	}
 }
 
-func (b *BinahUseCase) getUploadCallback(id UploadCallbackID) UploadCallbackFunc {
+func (b *Binah) getUploadCallback(id UploadCallbackID) UploadCallbackFunc {
 	f, exist := b.callback.uploadCallbackMap[id]
 	if exist {
 		return f
@@ -58,7 +55,7 @@ func (b *BinahUseCase) getUploadCallback(id UploadCallbackID) UploadCallbackFunc
 	return emptyUploadCallback
 }
 
-func (b *BinahUseCase) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) {
+func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) {
 	claims, exist := libauth.FromContext(ctx)
 	if !exist || claims == nil || claims.TransferMetadata == nil {
 		return nil, pb.ErrorErrorReasonUnauthorized("token required")

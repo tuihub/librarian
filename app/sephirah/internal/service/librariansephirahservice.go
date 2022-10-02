@@ -18,16 +18,16 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	t *biztiphereth.TipherethUseCase
-	g *bizgebura.GeburaUseCase
-	b *bizbinah.BinahUseCase
+	t *biztiphereth.Tiphereth
+	g *bizgebura.Gebura
+	b *bizbinah.Binah
 }
 
 func NewLibrarianSephirahServiceService(
 	a *bizangela.Angela,
-	t *biztiphereth.TipherethUseCase,
-	g *bizgebura.GeburaUseCase,
-	b *bizbinah.BinahUseCase,
+	t *biztiphereth.Tiphereth,
+	g *bizgebura.Gebura,
+	b *bizbinah.Binah,
 ) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		t: t,

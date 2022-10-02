@@ -53,15 +53,13 @@ type Paging struct {
 	PageNum  int
 }
 
-// GeburaRepo is an App repo.
 type GeburaRepo interface {
 	CreateApp(context.Context, *App) error
 	UpdateApp(context.Context, *App) error
 	ListApp(context.Context, Paging, []AppSource, []AppType, []int64, bool) ([]*App, error)
 }
 
-// GeburaUseCase is an App use case.
-type GeburaUseCase struct {
+type Gebura struct {
 	auth     *libauth.Auth
 	repo     GeburaRepo
 	mapper   mapper.LibrarianMapperServiceClient
@@ -69,23 +67,22 @@ type GeburaUseCase struct {
 	searcher searcher.LibrarianSearcherServiceClient
 }
 
-// NewGeburaUseCase new an App use case.
-func NewGeburaUseCase(
+func NewGebura(
 	repo GeburaRepo,
 	auth *libauth.Auth,
 	block bizbinah.CallbackControlBlock,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-) *GeburaUseCase {
+) *Gebura {
 	block.RegisterUploadCallback(bizbinah.UploadCallback{
 		ID:   bizbinah.UploadArtifacts,
 		Func: UploadArtifactsCallback,
 	})
-	return &GeburaUseCase{auth: auth, repo: repo, mapper: mClient, porter: pClient, searcher: sClient}
+	return &Gebura{auth: auth, repo: repo, mapper: mClient, porter: pClient, searcher: sClient}
 }
 
-func (g *GeburaUseCase) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) {
+func (g *Gebura) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) {
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
@@ -102,7 +99,7 @@ func (g *GeburaUseCase) CreateApp(ctx context.Context, app *App) (*App, *errors.
 	return app, nil
 }
 
-func (g *GeburaUseCase) UpdateApp(ctx context.Context, app *App) *errors.Error {
+func (g *Gebura) UpdateApp(ctx context.Context, app *App) *errors.Error {
 	app.Source = AppSourceInternal
 	app.SourceAppID = ""
 	app.SourceURL = ""
@@ -113,7 +110,7 @@ func (g *GeburaUseCase) UpdateApp(ctx context.Context, app *App) *errors.Error {
 	return nil
 }
 
-func (g *GeburaUseCase) ListApp(
+func (g *Gebura) ListApp(
 	ctx context.Context,
 	paging Paging,
 	sources []AppSource,
@@ -132,7 +129,7 @@ func (g *GeburaUseCase) ListApp(
 	return apps, nil
 }
 
-func (g *GeburaUseCase) BindApp(ctx context.Context, internal App, bind App) (*App, *errors.Error) {
+func (g *Gebura) BindApp(ctx context.Context, internal App, bind App) (*App, *errors.Error) {
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())

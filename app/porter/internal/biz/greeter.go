@@ -1,10 +1,5 @@
 package biz
 
-// Greeter is a Greeter model.
-type Greeter struct {
-	Hello string
-}
-
 // GreeterRepo is a Greater repo.
 type GreeterRepo interface {
 }

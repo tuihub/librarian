@@ -27,8 +27,8 @@ func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data) (
 		cleanup()
 		return nil, nil, err
 	}
-	mapperUseCase := biz.NewMapperUseCase(mapperRepo)
-	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapperUseCase)
+	mapper := biz.NewMapper(mapperRepo)
+	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapper)
 	grpcServer := server.NewGRPCServer(mapper_Server, librarianMapperServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {

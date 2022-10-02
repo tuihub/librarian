@@ -2,7 +2,6 @@ package biztiphereth
 
 import "github.com/tuihub/librarian/internal/lib/libauth"
 
-// User is a User model.
 type User struct {
 	InternalID int64
 	UserName   string

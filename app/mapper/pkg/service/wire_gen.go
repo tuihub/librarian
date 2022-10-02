@@ -25,8 +25,8 @@ func NewMapperService(mapper_Data *conf.Mapper_Data) (v1.LibrarianMapperServiceS
 		cleanup()
 		return nil, nil, err
 	}
-	mapperUseCase := biz.NewMapperUseCase(mapperRepo)
-	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapperUseCase)
+	mapper := biz.NewMapper(mapperRepo)
+	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapper)
 	return librarianMapperServiceServer, func() {
 		cleanup2()
 		cleanup()

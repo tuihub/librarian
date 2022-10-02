@@ -15,7 +15,6 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-// TipherethRepo is a User repo.
 type TipherethRepo interface {
 	UserActive(context.Context, *User) (bool, error)
 	FetchUserByPassword(context.Context, *User) (*User, error)
@@ -25,8 +24,7 @@ type TipherethRepo interface {
 	CreateAccount(context.Context, Account) error
 }
 
-// TipherethUseCase is a User use case.
-type TipherethUseCase struct {
+type Tiphereth struct {
 	auth        *libauth.Auth
 	repo        TipherethRepo
 	mapper      mapper.LibrarianMapperServiceClient
@@ -35,16 +33,15 @@ type TipherethUseCase struct {
 	pullAccount *libmq.TopicImpl[PullAccountInfo]
 }
 
-// NewTipherethUseCase new a User use case.
-func NewTipherethUseCase(
+func NewTiphereth(
 	repo TipherethRepo,
 	auth *libauth.Auth,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
 	pullAccount *libmq.TopicImpl[PullAccountInfo],
-) (*TipherethUseCase, error) {
-	return &TipherethUseCase{
+) (*Tiphereth, error) {
+	return &Tiphereth{
 		auth:        auth,
 		repo:        repo,
 		mapper:      mClient,
@@ -54,7 +51,7 @@ func NewTipherethUseCase(
 	}, nil
 }
 
-func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToken, RefreshToken, *errors.Error) {
+func (t *Tiphereth) GetToken(ctx context.Context, user *User) (AccessToken, RefreshToken, *errors.Error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -91,7 +88,7 @@ func (t *TipherethUseCase) GetToken(ctx context.Context, user *User) (AccessToke
 	return AccessToken(accessToken), RefreshToken(refreshToken), nil
 }
 
-func (t *TipherethUseCase) RefreshToken(ctx context.Context) (AccessToken, RefreshToken, *errors.Error) {
+func (t *Tiphereth) RefreshToken(ctx context.Context) (AccessToken, RefreshToken, *errors.Error) {
 	claims, exist := libauth.FromContext(ctx)
 	if !exist {
 		return "", "", pb.ErrorErrorReasonUnauthorized("empty token")
@@ -112,7 +109,7 @@ func (t *TipherethUseCase) RefreshToken(ctx context.Context) (AccessToken, Refre
 	return AccessToken(accessToken), RefreshToken(refreshToken), nil
 }
 
-func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *errors.Error) {
+func (t *Tiphereth) AddUser(ctx context.Context, user *User) (*User, *errors.Error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -136,7 +133,7 @@ func (t *TipherethUseCase) AddUser(ctx context.Context, user *User) (*User, *err
 	}, nil
 }
 
-func (t *TipherethUseCase) UpdateUser(ctx context.Context, user *User) *errors.Error {
+func (t *Tiphereth) UpdateUser(ctx context.Context, user *User) *errors.Error {
 	if user.PassWord != "" {
 		password, err := t.auth.GeneratePassword(user.PassWord)
 		if err != nil {
@@ -152,7 +149,7 @@ func (t *TipherethUseCase) UpdateUser(ctx context.Context, user *User) *errors.E
 	return nil
 }
 
-func (t *TipherethUseCase) ListUser(
+func (t *Tiphereth) ListUser(
 	ctx context.Context,
 	paging Paging,
 	types []libauth.UserType,
@@ -165,7 +162,7 @@ func (t *TipherethUseCase) ListUser(
 	return users, nil
 }
 
-func (t *TipherethUseCase) LinkAccount(ctx context.Context, a Account) (*Account, *errors.Error) {
+func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *errors.Error) {
 	claims, exist := libauth.FromContext(ctx)
 	if !exist {
 		return nil, pb.ErrorErrorReasonUnauthorized("invalid token")

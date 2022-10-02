@@ -10,10 +10,10 @@ import (
 type LibrarianSearcherServiceService struct {
 	pb.UnimplementedLibrarianSearcherServiceServer
 
-	uc *biz.GreeterUseCase
+	uc *biz.Searcher
 }
 
-func NewLibrarianSearcherServiceService(uc *biz.GreeterUseCase) pb.LibrarianSearcherServiceServer {
+func NewLibrarianSearcherServiceService(uc *biz.Searcher) pb.LibrarianSearcherServiceServer {
 	return &LibrarianSearcherServiceService{uc: uc}
 }
 

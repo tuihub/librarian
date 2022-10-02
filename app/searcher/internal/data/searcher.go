@@ -8,25 +8,24 @@ import (
 	"github.com/sony/sonyflake"
 )
 
-type greeterRepo struct {
+type searcherRepo struct {
 	data *Data
 	sf   *sonyflake.Sonyflake
 }
 
-// NewGreeterRepo .
-func NewGreeterRepo(data *Data) biz.GreeterRepo {
+func NewSearcherRepo(data *Data) biz.SearcherRepo {
 	sf := sonyflake.NewSonyflake(sonyflake.Settings{
 		MachineID: func() (uint16, error) {
 			return 0, nil
 		},
 	})
-	return &greeterRepo{
+	return &searcherRepo{
 		data,
 		sf,
 	}
 }
 
-func (r *greeterRepo) NewID(ctx context.Context) (int64, error) {
+func (r *searcherRepo) NewID(ctx context.Context) (int64, error) {
 	id, err := r.sf.NextID()
 	return int64(id), err
 }

@@ -12,12 +12,12 @@ import (
 type LibrarianMapperServiceService struct {
 	pb.UnimplementedLibrarianMapperServiceServer
 
-	uc *biz.MapperUseCase
+	m *biz.Mapper
 }
 
-func NewLibrarianMapperServiceService(uc *biz.MapperUseCase) pb.LibrarianMapperServiceServer {
+func NewLibrarianMapperServiceService(m *biz.Mapper) pb.LibrarianMapperServiceServer {
 	return &LibrarianMapperServiceService{
-		uc: uc,
+		m: m,
 	}
 }
 
@@ -26,7 +26,7 @@ func (s *LibrarianMapperServiceService) InsertVertex(ctx context.Context, req *p
 	if len(req.GetVertexList()) != 1 {
 		return nil, errors.BadRequest("", "")
 	}
-	err := s.uc.InsertVertex(ctx, biz.Vertex{
+	err := s.m.InsertVertex(ctx, biz.Vertex{
 		ID:   req.GetVertexList()[0].GetVid(),
 		Type: toBizVertexType(req.GetVertexList()[0].GetType()),
 	})
@@ -48,7 +48,7 @@ func (s *LibrarianMapperServiceService) InsertEdge(ctx context.Context, req *pb.
 	if len(req.GetEdgeList()) != 1 {
 		return nil, errors.BadRequest("", "")
 	}
-	err := s.uc.InsertEdge(ctx, biz.Edge{
+	err := s.m.InsertEdge(ctx, biz.Edge{
 		SourceID:      req.GetEdgeList()[0].GetSrcVid(),
 		DestinationID: req.GetEdgeList()[0].GetDstVid(),
 		Type:          toBizEdgeType(req.GetEdgeList()[0].GetType()),
@@ -72,7 +72,7 @@ func (s *LibrarianMapperServiceService) GoFromVertex(ctx context.Context, req *p
 }
 func (s *LibrarianMapperServiceService) FetchEqualVertex(ctx context.Context, req *pb.FetchEqualVertexRequest) (
 	*pb.FetchEqualVertexResponse, error) {
-	vl, err := s.uc.FetchEqualVertex(ctx, biz.Vertex{
+	vl, err := s.m.FetchEqualVertex(ctx, biz.Vertex{
 		ID: req.GetSrcVid(),
 	})
 	if err != nil {
