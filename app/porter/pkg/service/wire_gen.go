@@ -7,7 +7,8 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/porter/internal/biz"
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
+	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -17,13 +18,15 @@ import (
 // Injectors from wire.go:
 
 func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceServer, func(), error) {
+	storeAPI := steam.NewStoreAPI()
+	webAPI := steam.NewWebAPI(porter_Data)
+	steamSteam := steam.NewSteam(storeAPI, webAPI)
 	dataData, cleanup, err := data.NewData(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(greeterUsecase)
+	steamUseCase := bizsteam.NewSteamUseCase(steamSteam, dataData)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase)
 	return librarianPorterServiceServer, func() {
 		cleanup()
 	}, nil

@@ -7,6 +7,7 @@ package service
 
 import (
 	"github.com/tuihub/librarian/app/porter/internal/biz"
+	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -16,5 +17,10 @@ import (
 )
 
 func NewPorterService(*conf.Porter_Data) (pb.LibrarianPorterServiceServer, func(), error) {
-	panic(wire.Build(data.ProviderSet, biz.ProviderSet, service.ProviderSet))
+	panic(wire.Build(
+		data.ProviderSet,
+		biz.ProviderSet,
+		client.ProviderSet,
+		service.ProviderSet,
+	))
 }

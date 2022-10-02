@@ -21,6 +21,7 @@ message Porter {
       string source = 2;
     }
     Database database = 1;
+    string steam_api_key = 2;
   }
 
   Server server = 1;

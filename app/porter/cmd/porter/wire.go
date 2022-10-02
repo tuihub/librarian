@@ -7,6 +7,7 @@ package main
 
 import (
 	"github.com/tuihub/librarian/app/porter/internal/biz"
+	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/server"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -18,5 +19,12 @@ import (
 
 // wireApp init kratos application.
 func wireApp(*conf.Porter_Server, *conf.Porter_Data) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(
+		server.ProviderSet,
+		data.ProviderSet,
+		biz.ProviderSet,
+		client.ProviderSet,
+		service.ProviderSet,
+		newApp,
+	))
 }
