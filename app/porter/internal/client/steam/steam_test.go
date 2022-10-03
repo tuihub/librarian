@@ -31,13 +31,13 @@ func getAppID() int {
 }
 
 func TestWebAPI_GetPlayerSummary(t *testing.T) {
-	r := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
+	r, _ := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
 	res, err := r.GetPlayerSummary(context.Background(), model.GetPlayerSummariesRequest{SteamID: getSteamID()})
 	logger.Infof("res %+v, err: %+v", res, err)
 }
 
 func TestWebAPI_GetOwnedGames(t *testing.T) {
-	r := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
+	r, _ := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
 	res, err := r.GetOwnedGames(context.Background(), model.GetOwnedGamesRequest{
 		SteamID: getSteamID(),
 	})
@@ -45,7 +45,7 @@ func TestWebAPI_GetOwnedGames(t *testing.T) {
 }
 
 func TestStoreAPI_GetAppDetails(t *testing.T) {
-	r := steam.NewStoreAPI()
+	r, _ := steam.NewStoreAPI()
 	res, err := r.GetAppDetails(context.Background(), model.GetAppDetailsRequest{
 		AppIDs:      []int{getAppID()},
 		CountryCode: model.ProductCCUS,

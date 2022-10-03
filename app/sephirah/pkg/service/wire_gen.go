@@ -25,28 +25,31 @@ import (
 // Injectors from wire.go:
 
 func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
-	angelaBase, err := bizangela.NewAngelaBase(librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	if err != nil {
-		return nil, nil, err
-	}
-	topicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase)
-	libmqTopicImpl := bizangela.NewPullAccountTopic(angelaBase, topicImpl)
-	angela, err := bizangela.NewAngela(mq, libmqTopicImpl, topicImpl)
-	if err != nil {
-		return nil, nil, err
-	}
 	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(client)
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, libmqTopicImpl)
+	geburaRepo := data.NewGeburaRepo(dataData)
+	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	geburaRepo := data.NewGeburaRepo(dataData)
+	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
+	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
+	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
+	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	gebura := bizgebura.NewGebura(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)

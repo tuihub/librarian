@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly/v2/debug"
 	"github.com/google/go-querystring/query"
 )
 
@@ -17,24 +20,33 @@ type StoreAPI struct {
 	c *colly.Collector
 }
 
-func NewStoreAPI() *StoreAPI {
+func NewStoreAPI() (*StoreAPI, error) {
 	c := colly.NewCollector(
-	// colly.Debugger(&debug.LogDebugger{
-	//	Output: logger.NewWriter(),
-	//	Prefix: "[colly]",
-	//	Flag:   0,
-	// }),
+		colly.Debugger(&debug.LogDebugger{
+			Output: logger.NewWriter(),
+			Prefix: "[colly]",
+			Flag:   0,
+		}),
+		colly.AllowURLRevisit(),
 	)
+	err := c.Limit(&colly.LimitRule{
+		DomainGlob:  "*store.steampowered.com*",
+		Parallelism: 1,
+		Delay:       5 * time.Second, //nolint:gomnd // This API is now rate limited to 200 requests per 5 minutes
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &StoreAPI{
 		c: c,
-	}
+	}, nil
 }
 
 func (s *StoreAPI) GetAppDetails(
 	ctx context.Context,
 	req model.GetAppDetailsRequest,
-) (map[string]model.AppDetails, error) {
-	res := map[string]model.AppDetails{}
+) (map[string]model.AppDetailsBasic, error) {
+	res := map[string]model.AppDetailsBasic{}
 	reqStr, err := query.Values(req)
 	if err != nil {
 		return nil, err

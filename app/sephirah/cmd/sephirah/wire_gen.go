@@ -33,33 +33,6 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	if err != nil {
 		return nil, nil, err
 	}
-	librarianMapperServiceClient, err := client.NewMapperClient()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	librarianPorterServiceClient, err := client.NewPorterClient()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	librarianSearcherServiceClient, err := client.NewSearcherClient()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	angelaBase, err := bizangela.NewAngelaBase(librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	topicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase)
-	libmqTopicImpl := bizangela.NewPullAccountTopic(angelaBase, topicImpl)
-	angela, err := bizangela.NewAngela(mq, libmqTopicImpl, topicImpl)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	entClient, cleanup2, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		cleanup()
@@ -67,13 +40,46 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, libmqTopicImpl)
+	geburaRepo := data.NewGeburaRepo(dataData)
+	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	geburaRepo := data.NewGeburaRepo(dataData)
+	librarianPorterServiceClient, err := client.NewPorterClient()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	librarianSearcherServiceClient, err := client.NewSearcherClient()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
+	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
+	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
+	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)

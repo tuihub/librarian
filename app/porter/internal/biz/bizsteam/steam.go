@@ -116,23 +116,26 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 	}
 	var res *App
 	for _, app := range resp {
-		if !app.Success {
-			return nil, errors.New("not found")
-		}
 		res = &App{
-			AppID:            uint(app.Data.AppID),
-			StoreURL:         fmt.Sprintf("https://store.steampowered.com/app/%d", app.Data.AppID),
-			Name:             app.Data.Name,
-			Type:             AppType(app.Data.Type),
-			ShortDescription: app.Data.ShortDescription,
-			ImageURL:         app.Data.HeaderImage,
-			Description:      app.Data.DetailedDescription,
-			ReleaseDate:      "Coming Soon",
-			Developer:        strings.Join(app.Data.Developers, ","),
-			Publisher:        strings.Join(app.Data.Publishers, ","),
+			AppID:    uint(appID),
+			StoreURL: fmt.Sprintf("https://store.steampowered.com/app/%d", appID),
 		}
-		if !app.Data.ReleaseDate.ComingSoon {
-			res.ReleaseDate = app.Data.ReleaseDate.Date
+		if app.Success {
+			res = &App{
+				AppID:            uint(app.Data.AppID),
+				StoreURL:         fmt.Sprintf("https://store.steampowered.com/app/%d", app.Data.AppID),
+				Name:             app.Data.Name,
+				Type:             AppType(app.Data.Type),
+				ShortDescription: app.Data.ShortDescription,
+				ImageURL:         app.Data.HeaderImage,
+				Description:      app.Data.DetailedDescription,
+				ReleaseDate:      "Coming Soon",
+				Developer:        strings.Join(app.Data.Developers, ","),
+				Publisher:        strings.Join(app.Data.Publishers, ","),
+			}
+			if !app.Data.ReleaseDate.ComingSoon {
+				res.ReleaseDate = app.Data.ReleaseDate.Date
+			}
 		}
 		break
 	}

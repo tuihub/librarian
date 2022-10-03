@@ -4,7 +4,10 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+
+	"entgo.io/ent/dialect/sql"
 )
 
 type geburaRepo struct {
@@ -58,6 +61,38 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 			SetPublisher(a.Details.Publisher)
 	}
 	return q.Exec(ctx)
+}
+
+func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
+	apps := make([]*ent.AppCreate, len(al))
+	for i, a := range al {
+		if a.Details == nil {
+			a.Details = &bizgebura.AppDetails{}
+		}
+		apps[i] = g.data.db.App.Create().
+			SetInternalID(a.InternalID).
+			SetSource(toEntAppSource(a.Source)).
+			SetSourceAppID(a.SourceAppID).
+			SetSourceURL(a.SourceURL).
+			SetName(a.Name).
+			SetType(toEntAppType(a.Type)).
+			SetShortDescription(a.ShorDescription).
+			SetImageURL(a.ImageURL)
+		if a.Details != nil {
+			apps[i].
+				SetDescription(a.Details.Description).
+				SetReleaseDate(a.Details.ReleaseDate).
+				SetDeveloper(a.Details.Developer).
+				SetPublisher(a.Details.Publisher)
+		}
+	}
+	return g.data.db.App.
+		CreateBulk(apps...).
+		OnConflict(
+			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
+			sql.ResolveWithIgnore(),
+		).
+		Exec(ctx)
 }
 
 func (g geburaRepo) ListApp(

@@ -56,6 +56,7 @@ type Paging struct {
 type GeburaRepo interface {
 	CreateApp(context.Context, *App) error
 	UpdateApp(context.Context, *App) error
+	UpsertApp(context.Context, []*App) error
 	ListApp(context.Context, Paging, []AppSource, []AppType, []int64, bool) ([]*App, error)
 }
 
@@ -100,14 +101,27 @@ func (g *Gebura) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) 
 }
 
 func (g *Gebura) UpdateApp(ctx context.Context, app *App) *errors.Error {
-	app.Source = AppSourceInternal
-	app.SourceAppID = ""
-	app.SourceURL = ""
 	err := g.repo.UpdateApp(ctx, app)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
+}
+
+func (g *Gebura) UpsertApp(ctx context.Context, app []*App) ([]*App, *errors.Error) {
+	for _, a := range app {
+		resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
+		if err != nil {
+			logger.Infof("NewID failed: %s", err.Error())
+			return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		}
+		a.InternalID = resp.Id
+	}
+	err := g.repo.UpsertApp(ctx, app)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return app, nil
 }
 
 func (g *Gebura) ListApp(
@@ -136,7 +150,7 @@ func (g *Gebura) BindApp(ctx context.Context, internal App, bind App) (*App, *er
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	bind.InternalID = resp.Id
-	if err = g.repo.CreateApp(ctx, &bind); err != nil {
+	if err = g.repo.UpsertApp(ctx, []*App{&bind}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &bind, nil

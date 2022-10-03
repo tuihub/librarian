@@ -20,8 +20,14 @@ import (
 
 // wireApp init kratos application.
 func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data) (*kratos.App, func(), error) {
-	storeAPI := steam.NewStoreAPI()
-	webAPI := steam.NewWebAPI(porter_Data)
+	storeAPI, err := steam.NewStoreAPI()
+	if err != nil {
+		return nil, nil, err
+	}
+	webAPI, err := steam.NewWebAPI(porter_Data)
+	if err != nil {
+		return nil, nil, err
+	}
 	steamSteam := steam.NewSteam(storeAPI, webAPI)
 	dataData, cleanup, err := data.NewData(porter_Data)
 	if err != nil {

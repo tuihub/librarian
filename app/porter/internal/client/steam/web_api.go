@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly/v2/debug"
 	"github.com/google/go-querystring/query"
 )
 
@@ -19,18 +22,27 @@ type WebAPI struct {
 	c   *colly.Collector
 }
 
-func NewWebAPI(config *conf.Porter_Data) *WebAPI {
+func NewWebAPI(config *conf.Porter_Data) (*WebAPI, error) {
 	c := colly.NewCollector(
-	// colly.Debugger(&debug.LogDebugger{
-	//	Output: logger.NewWriter(),
-	//	Prefix: "[colly]",
-	//	Flag:   0,
-	// }),
+		colly.Debugger(&debug.LogDebugger{
+			Output: logger.NewWriter(),
+			Prefix: "[colly]",
+			Flag:   0,
+		}),
+		colly.AllowURLRevisit(),
 	)
+	err := c.Limit(&colly.LimitRule{
+		DomainGlob:  "*api.steampowered.com*",
+		Parallelism: 1,
+		Delay:       time.Second,
+	})
+	if err != nil {
+		return nil, err
+	}
 	return &WebAPI{
 		key: config.SteamApiKey,
 		c:   c,
-	}
+	}, nil
 }
 
 func (s *WebAPI) GetPlayerSummary(

@@ -76,7 +76,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	u, err := s.t.AddUser(ctx, &biztiphereth.User{
 		UserName: req.GetUser().GetUsername(),
 		PassWord: req.GetUser().GetPassword(),
-		Type:     toLibAuthUserType(req.GetUser().GetType()),
+		Type:     biztiphereth.ToLibAuthUserType(req.GetUser().GetType()),
 	})
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 		InternalID: req.GetUser().GetId().GetId(),
 		UserName:   req.GetUser().GetUsername(),
 		PassWord:   req.GetUser().GetPassword(),
-		Status:     toBizUserStatus(req.GetUser().GetStatus()),
+		Status:     biztiphereth.ToBizUserStatus(req.GetUser().GetStatus()),
 	})
 	if err != nil {
 		return nil, err
@@ -110,21 +110,21 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 			PageSize: int(req.GetPageSize()),
 			PageNum:  int(req.GetPageNum()),
 		},
-		toLibAuthUserTypeList(req.GetTypeFilter()),
-		toBizUserStatusList(req.GetStatusFilter()),
+		biztiphereth.ToLibAuthUserTypeList(req.GetTypeFilter()),
+		biztiphereth.ToBizUserStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListUserResponse{
-		UserList: toPBUserList(u),
+		UserList: biztiphereth.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
 ) {
 	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
-		Platform:          toBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		Platform:          biztiphereth.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 	})
 	if err != nil {
@@ -182,11 +182,14 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
 	a, err := s.g.CreateApp(ctx, &bizgebura.App{
+		Source:          bizgebura.AppSourceInternal,
+		SourceAppID:     "",
+		SourceURL:       "",
 		Name:            app.GetName(),
-		Type:            toBizAppType(app.GetType()),
+		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
 		ImageURL:        app.GetImageUrl(),
-		Details:         toBizAppDetail(app.GetDetails()),
+		Details:         bizgebura.ToBizAppDetail(app.GetDetails()),
 	})
 	if err != nil {
 		return nil, err
@@ -204,11 +207,14 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	}
 	err := s.g.UpdateApp(ctx, &bizgebura.App{
 		InternalID:      app.GetId().GetId(),
+		Source:          bizgebura.AppSourceInternal,
+		SourceAppID:     "",
+		SourceURL:       "",
 		Name:            app.GetName(),
-		Type:            toBizAppType(app.GetType()),
+		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
 		ImageURL:        app.GetImageUrl(),
-		Details:         toBizAppDetail(app.GetDetails()),
+		Details:         bizgebura.ToBizAppDetail(app.GetDetails()),
 	})
 	if err != nil {
 		return nil, err
@@ -223,8 +229,8 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 			PageSize: int(req.GetPageSize()),
 			PageNum:  int(req.GetPageNum()),
 		},
-		toBizAppSourceList(req.GetSourceFilter()),
-		toBizAppTypeList(req.GetTypeFilter()),
+		bizgebura.ToBizAppSourceList(req.GetSourceFilter()),
+		bizgebura.ToBizAppTypeList(req.GetTypeFilter()),
 		req.GetIdFilter(),
 		req.GetContainDetails(),
 		req.GetWithBind())
@@ -234,7 +240,7 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 	return &pb.ListAppResponse{
 		Content: &pb.ListAppResponse_WithoutBind{
 			WithoutBind: &pb.ListAppResponse_AppList{
-				AppList: toPBAppList(a, req.GetContainDetails()),
+				AppList: bizgebura.ToPBAppList(a, req.GetContainDetails()),
 			},
 		},
 	}, nil
@@ -247,7 +253,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 			InternalID: req.GetInternalAppId().GetId(),
 		},
 		bizgebura.App{
-			Source:      toBizAppSource(req.GetBindAppId().GetSource()),
+			Source:      bizgebura.ToBizAppSource(req.GetBindAppId().GetSource()),
 			SourceAppID: req.GetBindAppId().GetSourceAppId(),
 		})
 	if err != nil {

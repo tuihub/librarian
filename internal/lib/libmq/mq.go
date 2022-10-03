@@ -33,7 +33,7 @@ func NewMQ() (*MQ, func(), error) {
 	router.AddMiddleware(
 		middleware.CorrelationID,
 		middleware.Retry{
-			MaxRetries:      3,                      //nolint:gomnd //TODO
+			MaxRetries:      5,                      //nolint:gomnd //TODO
 			InitialInterval: time.Millisecond * 100, //nolint:gomnd //TODO
 			Logger:          loggerAdapter,
 		}.Middleware,
@@ -67,7 +67,7 @@ func (a *MQ) RegisterTopic(topic Topic) error {
 		topic.Name(),
 		a.pubSub,
 		func(msg *message.Message) error {
-			err := topic.Consume(msg.Payload)
+			err := topic.Consume(msg.Context(), msg.Payload)
 			if err != nil {
 				return err
 			}
@@ -78,11 +78,12 @@ func (a *MQ) RegisterTopic(topic Topic) error {
 	return nil
 }
 
-func (a *MQ) Publish(topic string, payload []byte) error {
+func (a *MQ) Publish(ctx context.Context, topic string, payload []byte) error {
 	_, exist := a.topicList[topic]
 	if !exist {
 		return errors.New("unregistered topic")
 	}
 	msg := message.NewMessage(watermill.NewUUID(), payload)
+	msg.SetContext(ctx)
 	return a.pubSub.Publish(topic, msg)
 }

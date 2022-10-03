@@ -1,14 +1,17 @@
 package libmq
 
-import "encoding/json"
+import (
+	"context"
+	"encoding/json"
+)
 
 type Topic interface {
 	Name() string
-	Consume([]byte) error
+	Consume(context.Context, []byte) error
 	SetMQ(*MQ)
 }
 
-func NewTopic[T any](topic string, payloadFunc func() T, consumerFunc func(T) error) *TopicImpl[T] {
+func NewTopic[T any](topic string, payloadFunc func() T, consumerFunc func(context.Context, T) error) *TopicImpl[T] {
 	return &TopicImpl[T]{
 		mq:           nil,
 		topicName:    topic,
@@ -21,7 +24,7 @@ type TopicImpl[T any] struct {
 	mq           *MQ
 	topicName    string
 	payloadFunc  func() T
-	consumerFunc func(T) error
+	consumerFunc func(context.Context, T) error
 }
 
 func (t *TopicImpl[T]) SetMQ(mq *MQ) {
@@ -36,19 +39,19 @@ func (t *TopicImpl[T]) Payload() T {
 	return t.payloadFunc()
 }
 
-func (t *TopicImpl[T]) Publish(i T) error {
+func (t *TopicImpl[T]) Publish(ctx context.Context, i T) error {
 	p, err := json.Marshal(i)
 	if err != nil {
 		return err
 	}
-	return t.mq.Publish(t.topicName, p)
+	return t.mq.Publish(ctx, t.topicName, p)
 }
 
-func (t *TopicImpl[T]) Consume(i []byte) error {
+func (t *TopicImpl[T]) Consume(ctx context.Context, i []byte) error {
 	p := t.Payload()
 	err := json.Unmarshal(i, &p)
 	if err != nil {
 		return err
 	}
-	return t.consumerFunc(p)
+	return t.consumerFunc(ctx, p)
 }

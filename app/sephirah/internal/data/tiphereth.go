@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
@@ -123,5 +124,17 @@ func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account
 		SetName(a.Name).
 		SetAvatarURL(a.AvatarURL).
 		SetProfileURL(a.ProfileURL).
+		Exec(ctx)
+}
+
+func (t tipherethRepo) UpdateAccount(ctx context.Context, a biztiphereth.Account) error {
+	return t.data.db.Account.Update().Where(
+		account.InternalIDEQ(a.InternalID),
+		account.PlatformEQ(toEntAccountPlatform(a.Platform)),
+		account.PlatformAccountIDEQ(a.PlatformAccountID),
+	).
+		SetName(a.Name).
+		SetProfileURL(a.ProfileURL).
+		SetAvatarURL(a.AvatarURL).
 		Exec(ctx)
 }

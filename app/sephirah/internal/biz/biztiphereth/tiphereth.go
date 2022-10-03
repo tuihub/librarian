@@ -22,6 +22,7 @@ type TipherethRepo interface {
 	UpdateUser(context.Context, *User) error
 	ListUser(context.Context, Paging, []libauth.UserType, []UserStatus) ([]*User, error)
 	CreateAccount(context.Context, Account) error
+	UpdateAccount(context.Context, Account) error
 }
 
 type Tiphereth struct {
@@ -186,7 +187,7 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.pullAccount.Publish(PullAccountInfo{
+	if err := t.pullAccount.Publish(ctx, PullAccountInfo{
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
 	}); err != nil {

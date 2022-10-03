@@ -18,8 +18,14 @@ import (
 // Injectors from wire.go:
 
 func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceServer, func(), error) {
-	storeAPI := steam.NewStoreAPI()
-	webAPI := steam.NewWebAPI(porter_Data)
+	storeAPI, err := steam.NewStoreAPI()
+	if err != nil {
+		return nil, nil, err
+	}
+	webAPI, err := steam.NewWebAPI(porter_Data)
+	if err != nil {
+		return nil, nil, err
+	}
 	steamSteam := steam.NewSteam(storeAPI, webAPI)
 	dataData, cleanup, err := data.NewData(porter_Data)
 	if err != nil {

@@ -133,48 +133,61 @@ type OwnedGames struct {
 
 type GetAppDetailsRequest struct {
 	AppIDs      []int           `url:"appids"`
-	CountryCode ProductCC       `url:"cc"`
-	Language    LanguageCodeWeb `url:"language"`
+	CountryCode ProductCC       `url:"cc,omitempty"`
+	Language    LanguageCodeWeb `url:"language,omitempty"`
+}
+
+type AppDetailsBase struct {
+	Type                string   `json:"type"`
+	Name                string   `json:"name"`
+	AppID               int      `json:"steam_appid"`
+	IsFree              bool     `json:"is_free"`
+	ControllerSupport   string   `json:"controller_support"`
+	DetailedDescription string   `json:"detailed_description"`
+	AboutTheGame        string   `json:"about_the_game"`
+	ShortDescription    string   `json:"short_description"`
+	SupportedLanguages  string   `json:"supported_languages"`
+	Reviews             string   `json:"reviews"`
+	HeaderImage         string   `json:"header_image"`
+	Website             string   `json:"website"`
+	Developers          []string `json:"developers"`
+	Publishers          []string `json:"publishers"`
+	ReleaseDate         struct {
+		ComingSoon bool   `json:"coming_soon"`
+		Date       string `json:"date"`
+	} `json:"release_date"`
+}
+
+type AppDetailsBasic struct {
+	Success bool            `json:"success"`
+	Data    *AppDetailsBase `json:"data"`
 }
 
 type AppDetails struct {
 	Success bool `json:"success"`
 	Data    *struct {
-		Type                string `json:"type"`
-		Name                string `json:"name"`
-		AppID               int    `json:"steam_appid"`
-		RequiredAge         int    `json:"required_age"`
-		IsFree              bool   `json:"is_free"`
-		DLC                 []int  `json:"dlc"`
-		ControllerSupport   string `json:"controller_support"`
-		DetailedDescription string `json:"detailed_description"`
-		AboutTheGame        string `json:"about_the_game"`
-		ShortDescription    string `json:"short_description"`
-		Fullgame            struct {
+		AppDetailsBase
+		RequiredAge int   `json:"required_age"` // may be string in some time
+		DLC         []int `json:"dlc"`
+		Fullgame    struct {
 			AppID int    `json:"appid,string"`
 			Name  string `json:"name"`
 		} `json:"fullgame"`
-		SupportedLanguages string `json:"supported_languages"`
-		Reviews            string `json:"reviews"`
-		HeaderImage        string `json:"header_image"`
-		Website            string `json:"website"`
-		PcRequirements     struct {
+		PcRequirements struct {
 			Minimum     string `json:"minimum"`
 			Recommended string `json:"recommended"`
 		} `json:"pc_requirements"`
-		MacRequirements struct {
+		MacRequirements struct { // may be an empty slice some time
 			Minimum     string `json:"minimum"`
 			Recommended string `json:"recommended"`
 		} `json:"mac_requirements"`
-		LinuxRequirements struct {
+		LinuxRequirements struct { // may be an empty slice some time
 			Minimum     string `json:"minimum"`
 			Recommended string `json:"recommended"`
 		} `json:"linux_requirements"`
-		LegalNotice          string   `json:"legal_notice"`
-		ExtUserAccountNotice string   `json:"ext_user_account_notice"`
-		DRMNotice            string   `json:"drm_notice"`
-		Developers           []string `json:"developers"`
-		Publishers           []string `json:"publishers"`
+		LegalNotice          string `json:"legal_notice"`
+		ExtUserAccountNotice string `json:"ext_user_account_notice"`
+		DRMNotice            string `json:"drm_notice"`
 		Demos                []struct {
 			AppID       int    `json:"appid,string"`
 			Description string `json:"description"`
@@ -245,10 +258,6 @@ type AppDetails struct {
 				Path string `json:"path"`
 			} `json:"highlighted"`
 		} `json:"achievements"`
-		ReleaseDate struct {
-			ComingSoon bool   `json:"coming_soon"`
-			Date       string `json:"date"`
-		} `json:"release_date"`
 		SupportInfo struct {
 			URL   string `json:"url"`
 			Email string `json:"email"`

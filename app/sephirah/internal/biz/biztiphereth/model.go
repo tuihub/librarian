@@ -43,6 +43,7 @@ const (
 )
 
 type PullAccountInfo struct {
+	InternalID        int64
 	Platform          AccountPlatform
 	PlatformAccountID string
 }
