@@ -3,7 +3,7 @@ module github.com/tuihub/librarian
 go 1.18
 
 require (
-	entgo.io/ent v0.11.2
+	entgo.io/ent v0.11.3
 	github.com/ThreeDotsLabs/watermill v1.1.1
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
@@ -17,15 +17,15 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.0
-	github.com/tuihub/protos v0.0.0-20221001074056-7e91b1054983
+	github.com/tuihub/protos v0.0.0-20221006162235-2b99027814b2
 	github.com/zhihu/norm v0.1.11
-	golang.org/x/crypto v0.0.0-20220829220503-c86fa9a7ed90
+	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
 	google.golang.org/grpc v1.49.0
 	google.golang.org/protobuf v1.28.1
 )
 
 require (
-	ariga.io/atlas v0.5.1-0.20220717122844-8593d7eb1a8e // indirect
+	ariga.io/atlas v0.7.2-0.20220927111110-867ee0cca56a // indirect
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/StackExchange/wmi v1.2.1 // indirect
 	github.com/agext/levenshtein v1.2.1 // indirect
@@ -47,10 +47,9 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/go-cmp v0.5.8 // indirect
-	github.com/google/subcommands v1.0.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.0.0 // indirect
-	github.com/hashicorp/hcl/v2 v2.10.0 // indirect
+	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jhump/protoreflect v1.11.0 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
