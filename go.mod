@@ -17,7 +17,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.0
-	github.com/tuihub/protos v0.0.0-20221006162235-2b99027814b2
+	github.com/tuihub/protos v0.1.1
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
 	google.golang.org/grpc v1.49.0

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	pb2 "github.com/tuihub/protos/pkg/librarian/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -20,7 +20,7 @@ const (
 
 type Client struct {
 	cli    pb.LibrarianSephirahServiceClient
-	userID *pb2.InternalID
+	userID *librarian.InternalID
 }
 
 func main() {
@@ -87,8 +87,10 @@ func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context 
 
 func (c *Client) TestUser(ctx context.Context) {
 	if resp, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
-		PageNum:      1,
-		PageSize:     1,
+		Paging: &librarian.PagingRequest{
+			PageNum:  1,
+			PageSize: 1,
+		},
 		TypeFilter:   nil,
 		StatusFilter: nil,
 	}); err != nil {
@@ -99,14 +101,14 @@ func (c *Client) TestUser(ctx context.Context) {
 }
 
 func (c *Client) TestApp(ctx context.Context) {
-	var appID *pb2.InternalID
-	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &pb2.App{
+	var appID *librarian.InternalID
+	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,
-		Source:           pb2.AppSource_APP_SOURCE_INTERNAL,
+		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 		SourceAppId:      "",
 		SourceUrl:        nil,
 		Name:             "test app 1",
-		Type:             pb2.AppType_APP_TYPE_GAME,
+		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
 		ImageUrl:         "",
 		Details:          nil,
@@ -116,8 +118,10 @@ func (c *Client) TestApp(ctx context.Context) {
 		appID = resp.Id
 	}
 	if resp, err := c.cli.ListApp(ctx, &pb.ListAppRequest{
-		PageNum:        1,
-		PageSize:       1,
+		Paging: &librarian.PagingRequest{
+			PageNum:  1,
+			PageSize: 1,
+		},
 		SourceFilter:   nil,
 		TypeFilter:     nil,
 		IdFilter:       nil,
@@ -129,13 +133,13 @@ func (c *Client) TestApp(ctx context.Context) {
 		resp.GetWithoutBind().GetAppList()[0].GetId().GetId() != appID.GetId() {
 		panic("inconsistent app id")
 	}
-	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &pb2.App{
+	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &librarian.App{
 		Id:               appID,
-		Source:           pb2.AppSource_APP_SOURCE_INTERNAL,
+		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 		SourceAppId:      "",
 		SourceUrl:        nil,
 		Name:             "test app 1",
-		Type:             pb2.AppType_APP_TYPE_GAME,
+		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description update",
 		ImageUrl:         "",
 		Details:          nil,
