@@ -8,7 +8,7 @@ require (
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-kratos/kratos/v2 v2.5.0
+	github.com/go-kratos/kratos/v2 v2.5.1
 	github.com/gocolly/colly/v2 v2.1.1-0.20220706081359-947eeead97b3
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/google/go-querystring v1.1.0
@@ -20,7 +20,7 @@ require (
 	github.com/tuihub/protos v0.1.1
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.0.0-20221005025214-4161e89ecf1b
-	google.golang.org/grpc v1.49.0
+	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.28.1
 )
 
