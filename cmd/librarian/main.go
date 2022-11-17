@@ -15,16 +15,17 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
-func newApp(gs *grpc.Server, mq *libmq.MQ) *kratos.App {
+func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ) *kratos.App {
 	metadata := libapp.GetAppMetadata()
 	return kratos.New(
 		kratos.ID(metadata.ID),
 		kratos.Name(metadata.Name),
 		kratos.Version(metadata.Version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs, mq),
+		kratos.Server(gs, hs, mq),
 	)
 }
 

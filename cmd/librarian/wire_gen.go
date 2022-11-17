@@ -61,7 +61,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
-	app := newApp(grpcServer, mq)
+	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
+	app := newApp(grpcServer, httpServer, mq)
 	return app, func() {
 		cleanup5()
 		cleanup4()

@@ -33,7 +33,7 @@ func IDNEQ(id int) predicate.App {
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...int) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -44,7 +44,7 @@ func IDIn(ids ...int) predicate.App {
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...int) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -173,7 +173,7 @@ func InternalIDNEQ(v int64) predicate.App {
 
 // InternalIDIn applies the In predicate on the "internal_id" field.
 func InternalIDIn(vs ...int64) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -184,7 +184,7 @@ func InternalIDIn(vs ...int64) predicate.App {
 
 // InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
 func InternalIDNotIn(vs ...int64) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -237,7 +237,7 @@ func SourceNEQ(v Source) predicate.App {
 
 // SourceIn applies the In predicate on the "source" field.
 func SourceIn(vs ...Source) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -248,7 +248,7 @@ func SourceIn(vs ...Source) predicate.App {
 
 // SourceNotIn applies the NotIn predicate on the "source" field.
 func SourceNotIn(vs ...Source) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -273,7 +273,7 @@ func SourceAppIDNEQ(v string) predicate.App {
 
 // SourceAppIDIn applies the In predicate on the "source_app_id" field.
 func SourceAppIDIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -284,7 +284,7 @@ func SourceAppIDIn(vs ...string) predicate.App {
 
 // SourceAppIDNotIn applies the NotIn predicate on the "source_app_id" field.
 func SourceAppIDNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -372,7 +372,7 @@ func SourceURLNEQ(v string) predicate.App {
 
 // SourceURLIn applies the In predicate on the "source_url" field.
 func SourceURLIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -383,7 +383,7 @@ func SourceURLIn(vs ...string) predicate.App {
 
 // SourceURLNotIn applies the NotIn predicate on the "source_url" field.
 func SourceURLNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -471,7 +471,7 @@ func NameNEQ(v string) predicate.App {
 
 // NameIn applies the In predicate on the "name" field.
 func NameIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -482,7 +482,7 @@ func NameIn(vs ...string) predicate.App {
 
 // NameNotIn applies the NotIn predicate on the "name" field.
 func NameNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -570,7 +570,7 @@ func TypeNEQ(v Type) predicate.App {
 
 // TypeIn applies the In predicate on the "type" field.
 func TypeIn(vs ...Type) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -581,7 +581,7 @@ func TypeIn(vs ...Type) predicate.App {
 
 // TypeNotIn applies the NotIn predicate on the "type" field.
 func TypeNotIn(vs ...Type) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -606,7 +606,7 @@ func ShortDescriptionNEQ(v string) predicate.App {
 
 // ShortDescriptionIn applies the In predicate on the "short_description" field.
 func ShortDescriptionIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -617,7 +617,7 @@ func ShortDescriptionIn(vs ...string) predicate.App {
 
 // ShortDescriptionNotIn applies the NotIn predicate on the "short_description" field.
 func ShortDescriptionNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -705,7 +705,7 @@ func DescriptionNEQ(v string) predicate.App {
 
 // DescriptionIn applies the In predicate on the "description" field.
 func DescriptionIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -716,7 +716,7 @@ func DescriptionIn(vs ...string) predicate.App {
 
 // DescriptionNotIn applies the NotIn predicate on the "description" field.
 func DescriptionNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -804,7 +804,7 @@ func ImageURLNEQ(v string) predicate.App {
 
 // ImageURLIn applies the In predicate on the "image_url" field.
 func ImageURLIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -815,7 +815,7 @@ func ImageURLIn(vs ...string) predicate.App {
 
 // ImageURLNotIn applies the NotIn predicate on the "image_url" field.
 func ImageURLNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -903,7 +903,7 @@ func ReleaseDateNEQ(v string) predicate.App {
 
 // ReleaseDateIn applies the In predicate on the "release_date" field.
 func ReleaseDateIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -914,7 +914,7 @@ func ReleaseDateIn(vs ...string) predicate.App {
 
 // ReleaseDateNotIn applies the NotIn predicate on the "release_date" field.
 func ReleaseDateNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1002,7 +1002,7 @@ func DeveloperNEQ(v string) predicate.App {
 
 // DeveloperIn applies the In predicate on the "developer" field.
 func DeveloperIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1013,7 +1013,7 @@ func DeveloperIn(vs ...string) predicate.App {
 
 // DeveloperNotIn applies the NotIn predicate on the "developer" field.
 func DeveloperNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1101,7 +1101,7 @@ func PublisherNEQ(v string) predicate.App {
 
 // PublisherIn applies the In predicate on the "publisher" field.
 func PublisherIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1112,7 +1112,7 @@ func PublisherIn(vs ...string) predicate.App {
 
 // PublisherNotIn applies the NotIn predicate on the "publisher" field.
 func PublisherNotIn(vs ...string) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1200,7 +1200,7 @@ func CreatedAtNEQ(v time.Time) predicate.App {
 
 // CreatedAtIn applies the In predicate on the "created_at" field.
 func CreatedAtIn(vs ...time.Time) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -1211,7 +1211,7 @@ func CreatedAtIn(vs ...time.Time) predicate.App {
 
 // CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
 func CreatedAtNotIn(vs ...time.Time) predicate.App {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}

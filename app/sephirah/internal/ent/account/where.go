@@ -33,7 +33,7 @@ func IDNEQ(id int) predicate.Account {
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...int) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -44,7 +44,7 @@ func IDIn(ids ...int) predicate.Account {
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...int) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -138,7 +138,7 @@ func InternalIDNEQ(v int64) predicate.Account {
 
 // InternalIDIn applies the In predicate on the "internal_id" field.
 func InternalIDIn(vs ...int64) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -149,7 +149,7 @@ func InternalIDIn(vs ...int64) predicate.Account {
 
 // InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
 func InternalIDNotIn(vs ...int64) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -202,7 +202,7 @@ func PlatformNEQ(v Platform) predicate.Account {
 
 // PlatformIn applies the In predicate on the "platform" field.
 func PlatformIn(vs ...Platform) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -213,7 +213,7 @@ func PlatformIn(vs ...Platform) predicate.Account {
 
 // PlatformNotIn applies the NotIn predicate on the "platform" field.
 func PlatformNotIn(vs ...Platform) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -238,7 +238,7 @@ func PlatformAccountIDNEQ(v string) predicate.Account {
 
 // PlatformAccountIDIn applies the In predicate on the "platform_account_id" field.
 func PlatformAccountIDIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -249,7 +249,7 @@ func PlatformAccountIDIn(vs ...string) predicate.Account {
 
 // PlatformAccountIDNotIn applies the NotIn predicate on the "platform_account_id" field.
 func PlatformAccountIDNotIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -337,7 +337,7 @@ func NameNEQ(v string) predicate.Account {
 
 // NameIn applies the In predicate on the "name" field.
 func NameIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -348,7 +348,7 @@ func NameIn(vs ...string) predicate.Account {
 
 // NameNotIn applies the NotIn predicate on the "name" field.
 func NameNotIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -436,7 +436,7 @@ func ProfileURLNEQ(v string) predicate.Account {
 
 // ProfileURLIn applies the In predicate on the "profile_url" field.
 func ProfileURLIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -447,7 +447,7 @@ func ProfileURLIn(vs ...string) predicate.Account {
 
 // ProfileURLNotIn applies the NotIn predicate on the "profile_url" field.
 func ProfileURLNotIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -535,7 +535,7 @@ func AvatarURLNEQ(v string) predicate.Account {
 
 // AvatarURLIn applies the In predicate on the "avatar_url" field.
 func AvatarURLIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -546,7 +546,7 @@ func AvatarURLIn(vs ...string) predicate.Account {
 
 // AvatarURLNotIn applies the NotIn predicate on the "avatar_url" field.
 func AvatarURLNotIn(vs ...string) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -634,7 +634,7 @@ func CreatedAtNEQ(v time.Time) predicate.Account {
 
 // CreatedAtIn applies the In predicate on the "created_at" field.
 func CreatedAtIn(vs ...time.Time) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -645,7 +645,7 @@ func CreatedAtIn(vs ...time.Time) predicate.Account {
 
 // CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
 func CreatedAtNotIn(vs ...time.Time) predicate.Account {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}

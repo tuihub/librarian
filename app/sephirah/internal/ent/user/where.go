@@ -33,7 +33,7 @@ func IDNEQ(id int) predicate.User {
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -44,7 +44,7 @@ func IDIn(ids ...int) predicate.User {
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...int) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		v := make([]interface{}, len(ids))
+		v := make([]any, len(ids))
 		for i := range v {
 			v[i] = ids[i]
 		}
@@ -124,7 +124,7 @@ func InternalIDNEQ(v int64) predicate.User {
 
 // InternalIDIn applies the In predicate on the "internal_id" field.
 func InternalIDIn(vs ...int64) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -135,7 +135,7 @@ func InternalIDIn(vs ...int64) predicate.User {
 
 // InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
 func InternalIDNotIn(vs ...int64) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -188,7 +188,7 @@ func UsernameNEQ(v string) predicate.User {
 
 // UsernameIn applies the In predicate on the "username" field.
 func UsernameIn(vs ...string) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -199,7 +199,7 @@ func UsernameIn(vs ...string) predicate.User {
 
 // UsernameNotIn applies the NotIn predicate on the "username" field.
 func UsernameNotIn(vs ...string) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -287,7 +287,7 @@ func PasswordNEQ(v string) predicate.User {
 
 // PasswordIn applies the In predicate on the "password" field.
 func PasswordIn(vs ...string) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -298,7 +298,7 @@ func PasswordIn(vs ...string) predicate.User {
 
 // PasswordNotIn applies the NotIn predicate on the "password" field.
 func PasswordNotIn(vs ...string) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -386,7 +386,7 @@ func StatusNEQ(v Status) predicate.User {
 
 // StatusIn applies the In predicate on the "status" field.
 func StatusIn(vs ...Status) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -397,7 +397,7 @@ func StatusIn(vs ...Status) predicate.User {
 
 // StatusNotIn applies the NotIn predicate on the "status" field.
 func StatusNotIn(vs ...Status) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -422,7 +422,7 @@ func TypeNEQ(v Type) predicate.User {
 
 // TypeIn applies the In predicate on the "type" field.
 func TypeIn(vs ...Type) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -433,7 +433,7 @@ func TypeIn(vs ...Type) predicate.User {
 
 // TypeNotIn applies the NotIn predicate on the "type" field.
 func TypeNotIn(vs ...Type) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -458,7 +458,7 @@ func CreatedAtNEQ(v time.Time) predicate.User {
 
 // CreatedAtIn applies the In predicate on the "created_at" field.
 func CreatedAtIn(vs ...time.Time) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
@@ -469,7 +469,7 @@ func CreatedAtIn(vs ...time.Time) predicate.User {
 
 // CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
 func CreatedAtNotIn(vs ...time.Time) predicate.User {
-	v := make([]interface{}, len(vs))
+	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
 	}
