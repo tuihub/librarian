@@ -105,6 +105,15 @@ func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *p
 ) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
+func (s *LibrarianSephirahServiceService) ListBindApp(ctx context.Context, req *pb.ListBindAppRequest) (
+	*pb.ListBindAppResponse, error,
+) {
+	al, err := s.g.ListBindApp(ctx, req.GetAppId().GetId())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListBindAppResponse{AppList: bizgebura.ToPBAppList(al, true)}, nil
+}
 
 func (s *LibrarianSephirahServiceService) CreateAppPackage(
 	ctx context.Context,

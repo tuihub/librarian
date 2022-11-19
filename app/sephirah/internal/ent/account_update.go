@@ -179,60 +179,28 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := au.mutation.InternalID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: account.FieldInternalID,
-		})
+		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := au.mutation.AddedInternalID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: account.FieldInternalID,
-		})
+		_spec.AddField(account.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := au.mutation.Platform(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: account.FieldPlatform,
-		})
+		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
 	}
 	if value, ok := au.mutation.PlatformAccountID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldPlatformAccountID,
-		})
+		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 	}
 	if value, ok := au.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldName,
-		})
+		_spec.SetField(account.FieldName, field.TypeString, value)
 	}
 	if value, ok := au.mutation.ProfileURL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldProfileURL,
-		})
+		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 	}
 	if value, ok := au.mutation.AvatarURL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldAvatarURL,
-		})
+		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 	}
 	if value, ok := au.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: account.FieldCreatedAt,
-		})
+		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -434,60 +402,28 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 	}
 	if value, ok := auo.mutation.InternalID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: account.FieldInternalID,
-		})
+		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := auo.mutation.AddedInternalID(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: account.FieldInternalID,
-		})
+		_spec.AddField(account.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := auo.mutation.Platform(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: account.FieldPlatform,
-		})
+		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
 	}
 	if value, ok := auo.mutation.PlatformAccountID(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldPlatformAccountID,
-		})
+		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.Name(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldName,
-		})
+		_spec.SetField(account.FieldName, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.ProfileURL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldProfileURL,
-		})
+		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.AvatarURL(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldAvatarURL,
-		})
+		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: account.FieldCreatedAt,
-		})
+		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
 	_node = &Account{config: auo.config}
 	_spec.Assign = _node.assignValues

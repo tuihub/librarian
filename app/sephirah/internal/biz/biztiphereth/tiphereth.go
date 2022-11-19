@@ -205,6 +205,7 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if err := t.pullAccount.Publish(ctx, PullAccountInfo{
+		InternalID:        a.InternalID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
 	}); err != nil {

@@ -20,7 +20,11 @@ import (
 // wireApp init kratos application.
 func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data) (*kratos.App, func(), error) {
 	db, cleanup := data.NewNebula(mapper_Data)
-	handle, cleanup2 := data.NewCayley(mapper_Data)
+	handle, cleanup2, err := data.NewCayley(mapper_Data)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	mapperRepo, err := data.NewMapperRepo(db, handle)
 	if err != nil {
 		cleanup2()

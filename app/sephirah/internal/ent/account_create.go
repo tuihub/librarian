@@ -212,59 +212,31 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	)
 	_spec.OnConflict = ac.conflict
 	if value, ok := ac.mutation.InternalID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: account.FieldInternalID,
-		})
+		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
 		_node.InternalID = value
 	}
 	if value, ok := ac.mutation.Platform(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: account.FieldPlatform,
-		})
+		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
 		_node.Platform = value
 	}
 	if value, ok := ac.mutation.PlatformAccountID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldPlatformAccountID,
-		})
+		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
 		_node.PlatformAccountID = value
 	}
 	if value, ok := ac.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldName,
-		})
+		_spec.SetField(account.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := ac.mutation.ProfileURL(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldProfileURL,
-		})
+		_spec.SetField(account.FieldProfileURL, field.TypeString, value)
 		_node.ProfileURL = value
 	}
 	if value, ok := ac.mutation.AvatarURL(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: account.FieldAvatarURL,
-		})
+		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 		_node.AvatarURL = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: account.FieldCreatedAt,
-		})
+		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	return _node, _spec

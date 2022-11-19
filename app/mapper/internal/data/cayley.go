@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
@@ -16,6 +17,8 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 
+	// Import sqlite to save graph to sqlite file.
+	_ "github.com/cayleygraph/cayley/graph/sql/sqlite"
 	// Import RDF vocabulary definitions to be able to expand IRIs like rdf:label.
 	_ "github.com/cayleygraph/quad/voc/core"
 )
@@ -30,6 +33,44 @@ type Vertex struct {
 	ID           quad.IRI       `json:"@id"`
 	Type         biz.VertexType `json:"ex:type"`
 	OriginalType biz.VertexType `json:"ex:oType"`
+}
+
+// NewCayley .
+func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func(), error) {
+	if c == nil || c.GetCayley() == nil {
+		return nil, func() {}, nil
+	}
+	var db *cayley.Handle
+	var err error
+	switch c.GetCayley().GetStore() {
+	case "memory":
+		db, err = cayley.NewMemoryGraph()
+		if err != nil {
+			return nil, func() {}, err
+		}
+	case "sqlite":
+		dbpath := "cayley.db"
+		_, err = os.Stat(dbpath)
+		if err != nil {
+			err = graph.InitQuadStore("sqlite", dbpath, nil)
+			if err != nil {
+				return nil, func() {}, err
+			}
+		}
+		db, err = cayley.NewGraph("sqlite", dbpath, nil)
+		if err != nil {
+			return nil, func() {}, err
+		}
+	default:
+		return nil, func() {}, err
+	}
+
+	voc.RegisterPrefix("ex:", "github.com/tuihub/librarian")
+
+	return db, func() {
+		log.Info("closing the data resources")
+		_ = db.Close()
+	}, nil
 }
 
 func (r *cayleyMapperRepo) InsertVertex(ctx context.Context, vl []*biz.Vertex) error {
@@ -107,28 +148,6 @@ func (r *cayleyMapperRepo) loadOutVertex(ctx context.Context, id quad.IRI, ty bi
 		return nil, err
 	}
 	return v, nil
-}
-
-// NewCayley .
-func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func()) {
-	if c == nil || c.GetCayley() == nil {
-		return nil, func() {}
-	}
-	if c.GetCayley().GetStore() != "memory" {
-		log.Errorf("Unsupported cayley store: %s, skip initialize", c.GetCayley().GetStore())
-		return nil, func() {}
-	}
-
-	db, err := cayley.NewMemoryGraph()
-	if err != nil {
-		log.Errorf("Failed to initialize Cayley DB, %s", err.Error())
-	}
-	voc.RegisterPrefix("ex:", "github.com/tuihub/librarian")
-
-	return db, func() {
-		log.Info("closing the data resources")
-		_ = db.Close()
-	}
 }
 
 func (r *cayleyMapperRepo) applyEdgeRules( //nolint:gocognit // edge rule is complex

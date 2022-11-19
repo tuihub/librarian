@@ -2,6 +2,7 @@ package bizangela
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
@@ -131,7 +132,7 @@ func NewPullSteamAccountAppRelationTopic(
 			if err != nil {
 				return err
 			}
-			steamApps := make([]*bizgebura.App, len(resp.GetAppList()))
+			steamApps := make([]*bizgebura.App, 0, len(resp.GetAppList()))
 			internalApps := make([]*bizgebura.App, len(resp.GetAppList()))
 			for i, app := range resp.GetAppList() {
 				resp2, err2 := a.searcher.NewID(ctx, &searcher.NewIDRequest{})
@@ -139,9 +140,10 @@ func NewPullSteamAccountAppRelationTopic(
 					return err2
 				}
 				internalApps[i] = &bizgebura.App{
-					InternalID: resp2.Id,
-					Source:     bizgebura.AppSourceInternal,
-					Name:       app.GetName(),
+					InternalID:  resp2.Id,
+					Source:      bizgebura.AppSourceInternal,
+					SourceAppID: strconv.FormatInt(resp2.Id, 10),
+					Name:        app.GetName(),
 				}
 				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
@@ -186,7 +188,7 @@ func NewPullSteamAccountAppRelationTopic(
 			if _, err = a.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: el}); err != nil {
 				return err
 			}
-			if err = a.g.UpsertApp(ctx, steamApps); err != nil {
+			if err = a.g.UpsertApp(ctx, append(steamApps, internalApps...)); err != nil {
 				return err
 			}
 			for _, app := range steamApps {

@@ -159,6 +159,36 @@ func (g *Gebura) BindApp(ctx context.Context, internal App, bind App) (*App, *er
 	return &bind, nil
 }
 
+func (g *Gebura) ListBindApp(ctx context.Context, id int64) ([]*App, *errors.Error) {
+	app, err := g.repo.ListApp(ctx, Paging{
+		PageSize: 1,
+		PageNum:  1,
+	}, nil, nil, []int64{id}, false)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if len(app) != 1 {
+		return nil, pb.ErrorErrorReasonBadRequest("No such app")
+	}
+	resp, err := g.mapper.FetchEqualVertex(ctx, &mapper.FetchEqualVertexRequest{SrcVid: id})
+	if err != nil {
+		logger.Infof("Fetch Equal Vertex failed: %s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	appids := make([]int64, len(resp.GetVertexList()))
+	for i, v := range resp.GetVertexList() {
+		appids[i] = v.GetVid()
+	}
+	apps, err := g.repo.ListApp(ctx, Paging{
+		PageSize: 99, //nolint:gomnd //TODO
+		PageNum:  1,
+	}, nil, nil, appids, true)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return apps, nil
+}
+
 func UploadArtifactsCallback(file *bizbinah.UploadFile) error {
 	panic("not impl")
 }

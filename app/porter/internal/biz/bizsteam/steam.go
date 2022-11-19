@@ -90,6 +90,7 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 		SteamID:                id,
 		IncludePlayedFreeGames: true,
 		IncludeFreeSub:         true,
+		IncludeAppInfo:         true,
 	})
 	if err != nil {
 		return nil, err

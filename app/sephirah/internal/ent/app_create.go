@@ -271,107 +271,55 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	)
 	_spec.OnConflict = ac.conflict
 	if value, ok := ac.mutation.InternalID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: app.FieldInternalID,
-		})
+		_spec.SetField(app.FieldInternalID, field.TypeInt64, value)
 		_node.InternalID = value
 	}
 	if value, ok := ac.mutation.Source(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: app.FieldSource,
-		})
+		_spec.SetField(app.FieldSource, field.TypeEnum, value)
 		_node.Source = value
 	}
 	if value, ok := ac.mutation.SourceAppID(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldSourceAppID,
-		})
+		_spec.SetField(app.FieldSourceAppID, field.TypeString, value)
 		_node.SourceAppID = value
 	}
 	if value, ok := ac.mutation.SourceURL(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldSourceURL,
-		})
+		_spec.SetField(app.FieldSourceURL, field.TypeString, value)
 		_node.SourceURL = value
 	}
 	if value, ok := ac.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldName,
-		})
+		_spec.SetField(app.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
 	if value, ok := ac.mutation.GetType(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: app.FieldType,
-		})
+		_spec.SetField(app.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
 	if value, ok := ac.mutation.ShortDescription(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldShortDescription,
-		})
+		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 		_node.ShortDescription = value
 	}
 	if value, ok := ac.mutation.Description(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldDescription,
-		})
+		_spec.SetField(app.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
 	if value, ok := ac.mutation.ImageURL(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldImageURL,
-		})
+		_spec.SetField(app.FieldImageURL, field.TypeString, value)
 		_node.ImageURL = value
 	}
 	if value, ok := ac.mutation.ReleaseDate(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldReleaseDate,
-		})
+		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
 		_node.ReleaseDate = value
 	}
 	if value, ok := ac.mutation.Developer(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldDeveloper,
-		})
+		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 		_node.Developer = value
 	}
 	if value, ok := ac.mutation.Publisher(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: app.FieldPublisher,
-		})
+		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: app.FieldCreatedAt,
-		})
+		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
 	return _node, _spec

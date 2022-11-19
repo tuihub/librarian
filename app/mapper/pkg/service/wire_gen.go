@@ -18,7 +18,11 @@ import (
 
 func NewMapperService(mapper_Data *conf.Mapper_Data) (v1.LibrarianMapperServiceServer, func(), error) {
 	db, cleanup := data.NewNebula(mapper_Data)
-	handle, cleanup2 := data.NewCayley(mapper_Data)
+	handle, cleanup2, err := data.NewCayley(mapper_Data)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	mapperRepo, err := data.NewMapperRepo(db, handle)
 	if err != nil {
 		cleanup2()

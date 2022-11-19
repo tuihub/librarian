@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/internal/conf"
@@ -36,7 +37,16 @@ func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 	case "sqlite3":
 		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
 	case "postgres":
-		dataSourceName = "host=<host> port=<port> user=<user> dbname=<database> password=<pass>"
+		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
+			c.Database.Host,
+			c.Database.Port,
+			c.Database.User,
+			c.Database.Dbname,
+			c.Database.Password,
+		)
+		if c.Database.NoSsl {
+			dataSourceName += " sslmode=disable"
+		}
 	default:
 		return nil, func() {}, errors.New("unsupported sql database")
 	}
