@@ -17,6 +17,7 @@
   "prBodyNotes": [
     "{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"
   ],
+  "commitMessagePrefix": "chore: ",
   "major": {
     "dependencyDashboardApproval": true
   },
@@ -32,7 +33,7 @@
         "digest"
       ],
       "matchManagers": ["gomod"],
-      "stabilityDays": 7,
+      "stabilityDays": 3,
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
       "automerge": true
