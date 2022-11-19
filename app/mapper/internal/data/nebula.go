@@ -16,12 +16,12 @@ type nebulaMapperRepo struct {
 	db *norm.DB
 }
 
-func (r *nebulaMapperRepo) InsertVertex(ctx context.Context, vertex biz.Vertex) error {
+func (r *nebulaMapperRepo) InsertVertex(ctx context.Context, vertex []*biz.Vertex) error {
 	// TODO implement me
 	panic("implement me")
 }
 
-func (r *nebulaMapperRepo) InsertEdge(ctx context.Context, edge biz.Edge) error {
+func (r *nebulaMapperRepo) InsertEdge(ctx context.Context, edge []*biz.Edge) error {
 	// TODO implement me
 	panic("implement me")
 }

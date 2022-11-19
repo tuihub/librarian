@@ -17,6 +17,7 @@ const (
 	VertexTypeEntity
 	VertexTypeMessage
 	VertexTypeObject
+	VertexTypeMetadata
 )
 
 type Edge struct {
@@ -37,11 +38,12 @@ const (
 	EdgeTypeDerive
 	EdgeTypeControl
 	EdgeTypeFollow
+	EdgeTypeDescribe
 )
 
 type MapperRepo interface {
-	InsertVertex(context.Context, Vertex) error
-	InsertEdge(context.Context, Edge) error
+	InsertVertex(context.Context, []*Vertex) error
+	InsertEdge(context.Context, []*Edge) error
 	FetchEqualVertex(context.Context, Vertex) ([]*Vertex, error)
 }
 
@@ -53,11 +55,11 @@ func NewMapper(repo MapperRepo) *Mapper {
 	return &Mapper{repo: repo}
 }
 
-func (m *Mapper) InsertVertex(ctx context.Context, v Vertex) error {
+func (m *Mapper) InsertVertex(ctx context.Context, v []*Vertex) error {
 	return m.repo.InsertVertex(ctx, v)
 }
 
-func (m *Mapper) InsertEdge(ctx context.Context, e Edge) error {
+func (m *Mapper) InsertEdge(ctx context.Context, e []*Edge) error {
 	return m.repo.InsertEdge(ctx, e)
 }
 

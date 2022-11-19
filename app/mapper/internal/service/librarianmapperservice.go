@@ -5,8 +5,6 @@ import (
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	pb "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-
-	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type LibrarianMapperServiceService struct {
@@ -23,13 +21,7 @@ func NewLibrarianMapperServiceService(m *biz.Mapper) pb.LibrarianMapperServiceSe
 
 func (s *LibrarianMapperServiceService) InsertVertex(ctx context.Context, req *pb.InsertVertexRequest) (
 	*pb.InsertVertexResponse, error) {
-	if len(req.GetVertexList()) != 1 {
-		return nil, errors.BadRequest("", "")
-	}
-	err := s.m.InsertVertex(ctx, biz.Vertex{
-		ID:   req.GetVertexList()[0].GetVid(),
-		Type: toBizVertexType(req.GetVertexList()[0].GetType()),
-	})
+	err := s.m.InsertVertex(ctx, toBizVertexList(req.GetVertexList()))
 	if err != nil {
 		return nil, err
 	}
@@ -45,14 +37,7 @@ func (s *LibrarianMapperServiceService) UpdateVertex(ctx context.Context, req *p
 }
 func (s *LibrarianMapperServiceService) InsertEdge(ctx context.Context, req *pb.InsertEdgeRequest) (
 	*pb.InsertEdgeResponse, error) {
-	if len(req.GetEdgeList()) != 1 {
-		return nil, errors.BadRequest("", "")
-	}
-	err := s.m.InsertEdge(ctx, biz.Edge{
-		SourceID:      req.GetEdgeList()[0].GetSrcVid(),
-		DestinationID: req.GetEdgeList()[0].GetDstVid(),
-		Type:          toBizEdgeType(req.GetEdgeList()[0].GetType()),
-	})
+	err := s.m.InsertEdge(ctx, toBizEdgeList(req.GetEdgeList()))
 	if err != nil {
 		return nil, err
 	}
