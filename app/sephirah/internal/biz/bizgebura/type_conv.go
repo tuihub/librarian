@@ -18,7 +18,7 @@ func ToBizAppType(t librarian.AppType) AppType {
 	case librarian.AppType_APP_TYPE_GAME:
 		return AppTypeGame
 	default:
-		return AppTypeGeneral
+		return AppTypeUnspecified
 	}
 }
 

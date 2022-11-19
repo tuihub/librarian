@@ -99,6 +99,7 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 		res[i] = &App{
 			AppID: game.AppID,
 			Type:  AppTypeGame,
+			Name:  game.Name,
 		}
 	}
 	return res, nil

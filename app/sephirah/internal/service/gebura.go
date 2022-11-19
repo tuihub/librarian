@@ -69,17 +69,12 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 		bizgebura.ToBizAppSourceList(req.GetSourceFilter()),
 		bizgebura.ToBizAppTypeList(req.GetTypeFilter()),
 		toBizInternalIDList(req.GetIdFilter()),
-		req.GetContainDetails(),
-		req.GetWithBind())
+		req.GetContainDetails())
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListAppResponse{
-		Content: &pb.ListAppResponse_WithoutBind{
-			WithoutBind: &pb.ListAppResponse_AppList{
-				AppList: bizgebura.ToPBAppList(a, req.GetContainDetails()),
-			},
-		},
+		AppList: bizgebura.ToPBAppList(a, req.GetContainDetails()),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (

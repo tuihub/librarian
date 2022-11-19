@@ -39,6 +39,17 @@ func toEntUserStatus(s biztiphereth.UserStatus) user.Status {
 	}
 }
 
+func toBizUserStatus(s user.Status) biztiphereth.UserStatus {
+	switch s {
+	case user.StatusActive:
+		return biztiphereth.UserStatusActive
+	case user.StatusBlocked:
+		return biztiphereth.UserStatusBlocked
+	default:
+		return biztiphereth.UserStatusUnspecified
+	}
+}
+
 func toBizUser(u *ent.User) *biztiphereth.User {
 	if u == nil {
 		return nil
@@ -47,6 +58,7 @@ func toBizUser(u *ent.User) *biztiphereth.User {
 		InternalID: u.InternalID,
 		UserName:   u.Username,
 		Type:       toLibAuthUserType(u.Type),
+		Status:     toBizUserStatus(u.Status),
 	}
 }
 
@@ -75,7 +87,7 @@ func toBizAppType(t app.Type) bizgebura.AppType {
 	case app.TypeGame:
 		return bizgebura.AppTypeGame
 	default:
-		return bizgebura.AppTypeGeneral
+		return bizgebura.AppTypeUnspecified
 	}
 }
 

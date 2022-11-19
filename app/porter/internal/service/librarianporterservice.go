@@ -114,6 +114,7 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 			appList[i] = &librarian.App{
 				Source:      librarian.AppSource_APP_SOURCE_STEAM,
 				SourceAppId: strconv.Itoa(int(a.AppID)),
+				Name:        a.Name,
 			}
 		}
 		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil

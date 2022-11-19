@@ -44,7 +44,7 @@ const (
 type AppType int
 
 const (
-	AppTypeGeneral AppType = iota
+	AppTypeUnspecified AppType = iota
 	AppTypeGame
 )
 
@@ -93,8 +93,15 @@ func (g *Gebura) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) 
 	app.Source = AppSourceInternal
 	app.SourceAppID = ""
 	app.SourceURL = ""
-	err = g.repo.CreateApp(ctx, app)
-	if err != nil {
+	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
+		VertexList: []*mapper.Vertex{{
+			Vid:  app.InternalID,
+			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+		}},
+	}); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if err = g.repo.CreateApp(ctx, app); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return app, nil
@@ -131,11 +138,7 @@ func (g *Gebura) ListApp(
 	types []AppType,
 	ids []int64,
 	containDetails bool,
-	withBind bool,
 ) ([]*App, *errors.Error) {
-	if withBind {
-		return nil, pb.ErrorErrorReasonNotImplemented("not support")
-	}
 	apps, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())

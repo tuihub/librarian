@@ -100,7 +100,10 @@ func NewPullAccountTopic(
 					return err
 				}
 				return sr.
-					Publish(ctx, PullSteamAccountAppRelation{SteamID: info.PlatformAccountID})
+					Publish(ctx, PullSteamAccountAppRelation{
+						InternalID: info.InternalID,
+						SteamID:    info.PlatformAccountID,
+					})
 			default:
 				return nil
 			}
@@ -128,23 +131,65 @@ func NewPullSteamAccountAppRelationTopic(
 			if err != nil {
 				return err
 			}
-			apps := make([]*bizgebura.App, len(resp.GetAppList()))
+			steamApps := make([]*bizgebura.App, len(resp.GetAppList()))
+			internalApps := make([]*bizgebura.App, len(resp.GetAppList()))
 			for i, app := range resp.GetAppList() {
 				resp2, err2 := a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
-				apps[i] = &bizgebura.App{
+				internalApps[i] = &bizgebura.App{
+					InternalID: resp2.Id,
+					Source:     bizgebura.AppSourceInternal,
+					Name:       app.GetName(),
+				}
+				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
+				if err2 != nil {
+					return err2
+				}
+				steamApps[i] = &bizgebura.App{
 					InternalID:  resp2.Id,
 					Source:      bizgebura.AppSourceSteam,
 					SourceAppID: app.GetSourceAppId(),
+					Name:        app.GetName(),
 				}
 			}
-			err = a.g.UpsertApp(ctx, apps)
-			if err != nil {
+			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
+			el := make([]*mapper.Edge, len(steamApps)*2)   //nolint:gomnd // double
+			for i := range steamApps {
+				vl[i*2] = &mapper.Vertex{
+					Vid:  internalApps[i].InternalID,
+					Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+					Prop: nil,
+				}
+				vl[i*2+1] = &mapper.Vertex{
+					Vid:  steamApps[i].InternalID,
+					Type: mapper.VertexType_VERTEX_TYPE_OBJECT,
+					Prop: nil,
+				}
+				el[i*2] = &mapper.Edge{
+					SrcVid: internalApps[i].InternalID,
+					DstVid: steamApps[i].InternalID,
+					Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
+					Prop:   nil,
+				}
+				el[i*2+1] = &mapper.Edge{
+					SrcVid: r.InternalID,
+					DstVid: steamApps[i].InternalID,
+					Type:   mapper.EdgeType_EDGE_TYPE_ENJOY,
+					Prop:   nil,
+				}
+			}
+			if _, err = a.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 				return err
 			}
-			for _, app := range apps {
+			if _, err = a.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: el}); err != nil {
+				return err
+			}
+			if err = a.g.UpsertApp(ctx, steamApps); err != nil {
+				return err
+			}
+			for _, app := range steamApps {
 				_ = sa.Publish(ctx, PullSteamApp{
 					InternalID: app.InternalID,
 					AppID:      app.SourceAppID,

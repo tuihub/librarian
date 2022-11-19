@@ -1,7 +1,8 @@
 package bizangela
 
 type PullSteamAccountAppRelation struct {
-	SteamID string
+	InternalID int64
+	SteamID    string
 }
 
 type PullSteamApp struct {

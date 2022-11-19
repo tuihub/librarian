@@ -124,8 +124,16 @@ func (t *Tiphereth) AddUser(ctx context.Context, user *User) (*User, *errors.Err
 	}
 	user.InternalID = resp.Id
 	user.Status = UserStatusActive
-	err = t.repo.AddUser(ctx, user)
-	if err != nil {
+	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+		{
+			Vid:  user.InternalID,
+			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+			Prop: nil,
+		},
+	}}); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if err = t.repo.AddUser(ctx, user); err != nil {
 		logger.Infof("repo AddUser failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -174,7 +182,13 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 	} else {
 		a.InternalID = resp.Id
 	}
-	if err := t.repo.CreateAccount(ctx, a); err != nil {
+	if _, err := t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+		{
+			Vid:  a.InternalID,
+			Type: mapper.VertexType_VERTEX_TYPE_ENTITY,
+			Prop: nil,
+		},
+	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if _, err := t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
@@ -185,6 +199,9 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 			Prop:   nil,
 		},
 	}}); err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if err := t.repo.CreateAccount(ctx, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if err := t.pullAccount.Publish(ctx, PullAccountInfo{

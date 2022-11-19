@@ -126,11 +126,10 @@ func (c *Client) TestApp(ctx context.Context) {
 		TypeFilter:     nil,
 		IdFilter:       nil,
 		ContainDetails: false,
-		WithBind:       false,
 	}); err != nil {
 		panic(err)
-	} else if len(resp.GetWithoutBind().GetAppList()) != 1 ||
-		resp.GetWithoutBind().GetAppList()[0].GetId().GetId() != appID.GetId() {
+	} else if len(resp.GetAppList()) != 1 ||
+		resp.GetAppList()[0].GetId().GetId() != appID.GetId() {
 		panic("inconsistent app id")
 	}
 	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &librarian.App{

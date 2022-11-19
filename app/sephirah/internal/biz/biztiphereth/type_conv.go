@@ -47,6 +47,17 @@ func ToBizUserStatus(s pb.UserStatus) UserStatus {
 	}
 }
 
+func ToPBUserStatus(s UserStatus) pb.UserStatus {
+	switch s {
+	case UserStatusActive:
+		return pb.UserStatus_USER_STATUS_ACTIVE
+	case UserStatusBlocked:
+		return pb.UserStatus_USER_STATUS_BLOCKED
+	default:
+		return pb.UserStatus_USER_STATUS_UNSPECIFIED
+	}
+}
+
 func ToBizUserStatusList(sl []pb.UserStatus) []UserStatus {
 	res := make([]UserStatus, len(sl))
 	for i, s := range sl {
@@ -58,8 +69,9 @@ func ToBizUserStatusList(sl []pb.UserStatus) []UserStatus {
 func ToPBUser(u User) pb.User {
 	return pb.User{
 		Id:       &librarian.InternalID{Id: u.InternalID},
-		Username: u.PassWord,
+		Username: u.UserName,
 		Type:     ToPBUserType(u.Type),
+		Status:   ToPBUserStatus(u.Status),
 	}
 }
 
