@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.0.3](https://github.com/TuiHub/Librarian/compare/v0.0.2...v0.0.3) (2022-11-19)
+
+
+### Features
+
+* add grpc_web support ([0832d3a](https://github.com/TuiHub/Librarian/commit/0832d3a6c515b6abe305b9caa3d692636ca58a6c))
+* add grpc_web support ([643dd26](https://github.com/TuiHub/Librarian/commit/643dd26bdbb49cb43a665ed7ac7407252988417f))
+* Mapper: impl edge rules ([d144d30](https://github.com/TuiHub/Librarian/commit/d144d30d7105c9c51633ff7f14167acd597ebe02))
+* Sephirah: complete mapper function call for existing port ([0e2d07b](https://github.com/TuiHub/Librarian/commit/0e2d07b63e4f4c73494dfd9c60368631f20d18e2))
+
+
+### Bug Fixes
+
+* Tested link steam account with Mapper working ([7b29091](https://github.com/TuiHub/Librarian/commit/7b29091c639dfa603bb8b26d262b4477ca4cd76a))
+
 ## [0.0.2](https://github.com/TuiHub/Librarian/compare/v0.0.1...v0.0.2) (2022-10-03)
 
 
