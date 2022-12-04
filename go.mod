@@ -10,7 +10,7 @@ require (
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-kratos/kratos/v2 v2.5.3
 	github.com/gocolly/colly/v2 v2.1.1-0.20220706081359-947eeead97b3
-	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
 	github.com/improbable-eng/grpc-web v0.15.0
@@ -105,7 +105,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.11.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
-	go.uber.org/zap v1.23.0
+	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.2.0 // indirect
