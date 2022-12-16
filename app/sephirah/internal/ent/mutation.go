@@ -11,6 +11,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 
@@ -26,9 +27,10 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccount = "Account"
-	TypeApp     = "App"
-	TypeUser    = "User"
+	TypeAccount    = "Account"
+	TypeApp        = "App"
+	TypeAppPackage = "AppPackage"
+	TypeUser       = "User"
 )
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
@@ -1695,6 +1697,872 @@ func (m *AppMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AppMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown App edge %s", name)
+}
+
+// AppPackageMutation represents an operation that mutates the AppPackage nodes in the graph.
+type AppPackageMutation struct {
+	config
+	op                Op
+	typ               string
+	id                *int
+	internal_id       *int64
+	addinternal_id    *int64
+	source            *apppackage.Source
+	source_id         *int64
+	addsource_id      *int64
+	source_package_id *string
+	name              *string
+	description       *string
+	binary_name       *string
+	binary_size       *string
+	updated_at        *time.Time
+	created_at        *time.Time
+	clearedFields     map[string]struct{}
+	done              bool
+	oldValue          func(context.Context) (*AppPackage, error)
+	predicates        []predicate.AppPackage
+}
+
+var _ ent.Mutation = (*AppPackageMutation)(nil)
+
+// apppackageOption allows management of the mutation configuration using functional options.
+type apppackageOption func(*AppPackageMutation)
+
+// newAppPackageMutation creates new mutation for the AppPackage entity.
+func newAppPackageMutation(c config, op Op, opts ...apppackageOption) *AppPackageMutation {
+	m := &AppPackageMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppPackage,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppPackageID sets the ID field of the mutation.
+func withAppPackageID(id int) apppackageOption {
+	return func(m *AppPackageMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppPackage
+		)
+		m.oldValue = func(ctx context.Context) (*AppPackage, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppPackage.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppPackage sets the old AppPackage of the mutation.
+func withAppPackage(node *AppPackage) apppackageOption {
+	return func(m *AppPackageMutation) {
+		m.oldValue = func(context.Context) (*AppPackage, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppPackageMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppPackageMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppPackageMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppPackageMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppPackage.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetInternalID sets the "internal_id" field.
+func (m *AppPackageMutation) SetInternalID(i int64) {
+	m.internal_id = &i
+	m.addinternal_id = nil
+}
+
+// InternalID returns the value of the "internal_id" field in the mutation.
+func (m *AppPackageMutation) InternalID() (r int64, exists bool) {
+	v := m.internal_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInternalID returns the old "internal_id" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldInternalID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInternalID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
+	}
+	return oldValue.InternalID, nil
+}
+
+// AddInternalID adds i to the "internal_id" field.
+func (m *AppPackageMutation) AddInternalID(i int64) {
+	if m.addinternal_id != nil {
+		*m.addinternal_id += i
+	} else {
+		m.addinternal_id = &i
+	}
+}
+
+// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
+func (m *AppPackageMutation) AddedInternalID() (r int64, exists bool) {
+	v := m.addinternal_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetInternalID resets all changes to the "internal_id" field.
+func (m *AppPackageMutation) ResetInternalID() {
+	m.internal_id = nil
+	m.addinternal_id = nil
+}
+
+// SetSource sets the "source" field.
+func (m *AppPackageMutation) SetSource(a apppackage.Source) {
+	m.source = &a
+}
+
+// Source returns the value of the "source" field in the mutation.
+func (m *AppPackageMutation) Source() (r apppackage.Source, exists bool) {
+	v := m.source
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSource returns the old "source" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldSource(ctx context.Context) (v apppackage.Source, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSource is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSource requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSource: %w", err)
+	}
+	return oldValue.Source, nil
+}
+
+// ResetSource resets all changes to the "source" field.
+func (m *AppPackageMutation) ResetSource() {
+	m.source = nil
+}
+
+// SetSourceID sets the "source_id" field.
+func (m *AppPackageMutation) SetSourceID(i int64) {
+	m.source_id = &i
+	m.addsource_id = nil
+}
+
+// SourceID returns the value of the "source_id" field in the mutation.
+func (m *AppPackageMutation) SourceID() (r int64, exists bool) {
+	v := m.source_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceID returns the old "source_id" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldSourceID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceID: %w", err)
+	}
+	return oldValue.SourceID, nil
+}
+
+// AddSourceID adds i to the "source_id" field.
+func (m *AppPackageMutation) AddSourceID(i int64) {
+	if m.addsource_id != nil {
+		*m.addsource_id += i
+	} else {
+		m.addsource_id = &i
+	}
+}
+
+// AddedSourceID returns the value that was added to the "source_id" field in this mutation.
+func (m *AppPackageMutation) AddedSourceID() (r int64, exists bool) {
+	v := m.addsource_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSourceID resets all changes to the "source_id" field.
+func (m *AppPackageMutation) ResetSourceID() {
+	m.source_id = nil
+	m.addsource_id = nil
+}
+
+// SetSourcePackageID sets the "source_package_id" field.
+func (m *AppPackageMutation) SetSourcePackageID(s string) {
+	m.source_package_id = &s
+}
+
+// SourcePackageID returns the value of the "source_package_id" field in the mutation.
+func (m *AppPackageMutation) SourcePackageID() (r string, exists bool) {
+	v := m.source_package_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourcePackageID returns the old "source_package_id" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldSourcePackageID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourcePackageID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourcePackageID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourcePackageID: %w", err)
+	}
+	return oldValue.SourcePackageID, nil
+}
+
+// ResetSourcePackageID resets all changes to the "source_package_id" field.
+func (m *AppPackageMutation) ResetSourcePackageID() {
+	m.source_package_id = nil
+}
+
+// SetName sets the "name" field.
+func (m *AppPackageMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *AppPackageMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *AppPackageMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *AppPackageMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *AppPackageMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *AppPackageMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetBinaryName sets the "binary_name" field.
+func (m *AppPackageMutation) SetBinaryName(s string) {
+	m.binary_name = &s
+}
+
+// BinaryName returns the value of the "binary_name" field in the mutation.
+func (m *AppPackageMutation) BinaryName() (r string, exists bool) {
+	v := m.binary_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBinaryName returns the old "binary_name" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldBinaryName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBinaryName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBinaryName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBinaryName: %w", err)
+	}
+	return oldValue.BinaryName, nil
+}
+
+// ResetBinaryName resets all changes to the "binary_name" field.
+func (m *AppPackageMutation) ResetBinaryName() {
+	m.binary_name = nil
+}
+
+// SetBinarySize sets the "binary_size" field.
+func (m *AppPackageMutation) SetBinarySize(s string) {
+	m.binary_size = &s
+}
+
+// BinarySize returns the value of the "binary_size" field in the mutation.
+func (m *AppPackageMutation) BinarySize() (r string, exists bool) {
+	v := m.binary_size
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBinarySize returns the old "binary_size" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldBinarySize(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBinarySize is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBinarySize requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBinarySize: %w", err)
+	}
+	return oldValue.BinarySize, nil
+}
+
+// ResetBinarySize resets all changes to the "binary_size" field.
+func (m *AppPackageMutation) ResetBinarySize() {
+	m.binary_size = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppPackageMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppPackageMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppPackageMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppPackageMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppPackageMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppPackageMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the AppPackageMutation builder.
+func (m *AppPackageMutation) Where(ps ...predicate.AppPackage) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// Op returns the operation name.
+func (m *AppPackageMutation) Op() Op {
+	return m.op
+}
+
+// Type returns the node type of this mutation (AppPackage).
+func (m *AppPackageMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppPackageMutation) Fields() []string {
+	fields := make([]string, 0, 10)
+	if m.internal_id != nil {
+		fields = append(fields, apppackage.FieldInternalID)
+	}
+	if m.source != nil {
+		fields = append(fields, apppackage.FieldSource)
+	}
+	if m.source_id != nil {
+		fields = append(fields, apppackage.FieldSourceID)
+	}
+	if m.source_package_id != nil {
+		fields = append(fields, apppackage.FieldSourcePackageID)
+	}
+	if m.name != nil {
+		fields = append(fields, apppackage.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, apppackage.FieldDescription)
+	}
+	if m.binary_name != nil {
+		fields = append(fields, apppackage.FieldBinaryName)
+	}
+	if m.binary_size != nil {
+		fields = append(fields, apppackage.FieldBinarySize)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, apppackage.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, apppackage.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case apppackage.FieldInternalID:
+		return m.InternalID()
+	case apppackage.FieldSource:
+		return m.Source()
+	case apppackage.FieldSourceID:
+		return m.SourceID()
+	case apppackage.FieldSourcePackageID:
+		return m.SourcePackageID()
+	case apppackage.FieldName:
+		return m.Name()
+	case apppackage.FieldDescription:
+		return m.Description()
+	case apppackage.FieldBinaryName:
+		return m.BinaryName()
+	case apppackage.FieldBinarySize:
+		return m.BinarySize()
+	case apppackage.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case apppackage.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case apppackage.FieldInternalID:
+		return m.OldInternalID(ctx)
+	case apppackage.FieldSource:
+		return m.OldSource(ctx)
+	case apppackage.FieldSourceID:
+		return m.OldSourceID(ctx)
+	case apppackage.FieldSourcePackageID:
+		return m.OldSourcePackageID(ctx)
+	case apppackage.FieldName:
+		return m.OldName(ctx)
+	case apppackage.FieldDescription:
+		return m.OldDescription(ctx)
+	case apppackage.FieldBinaryName:
+		return m.OldBinaryName(ctx)
+	case apppackage.FieldBinarySize:
+		return m.OldBinarySize(ctx)
+	case apppackage.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case apppackage.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppPackage field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case apppackage.FieldInternalID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInternalID(v)
+		return nil
+	case apppackage.FieldSource:
+		v, ok := value.(apppackage.Source)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSource(v)
+		return nil
+	case apppackage.FieldSourceID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceID(v)
+		return nil
+	case apppackage.FieldSourcePackageID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourcePackageID(v)
+		return nil
+	case apppackage.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case apppackage.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case apppackage.FieldBinaryName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBinaryName(v)
+		return nil
+	case apppackage.FieldBinarySize:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBinarySize(v)
+		return nil
+	case apppackage.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case apppackage.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppPackage field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppPackageMutation) AddedFields() []string {
+	var fields []string
+	if m.addinternal_id != nil {
+		fields = append(fields, apppackage.FieldInternalID)
+	}
+	if m.addsource_id != nil {
+		fields = append(fields, apppackage.FieldSourceID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case apppackage.FieldInternalID:
+		return m.AddedInternalID()
+	case apppackage.FieldSourceID:
+		return m.AddedSourceID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case apppackage.FieldInternalID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddInternalID(v)
+		return nil
+	case apppackage.FieldSourceID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSourceID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppPackage numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppPackageMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppPackageMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppPackageMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AppPackage nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppPackageMutation) ResetField(name string) error {
+	switch name {
+	case apppackage.FieldInternalID:
+		m.ResetInternalID()
+		return nil
+	case apppackage.FieldSource:
+		m.ResetSource()
+		return nil
+	case apppackage.FieldSourceID:
+		m.ResetSourceID()
+		return nil
+	case apppackage.FieldSourcePackageID:
+		m.ResetSourcePackageID()
+		return nil
+	case apppackage.FieldName:
+		m.ResetName()
+		return nil
+	case apppackage.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case apppackage.FieldBinaryName:
+		m.ResetBinaryName()
+		return nil
+	case apppackage.FieldBinarySize:
+		m.ResetBinarySize()
+		return nil
+	case apppackage.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case apppackage.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown AppPackage field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppPackageMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppPackageMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppPackageMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppPackageMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppPackageMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppPackageMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppPackageMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown AppPackage unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppPackageMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown AppPackage edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.

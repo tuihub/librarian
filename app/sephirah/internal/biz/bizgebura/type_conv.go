@@ -111,3 +111,58 @@ func ToPBAppList(al []*App, containDetails bool) []*librarian.App {
 	}
 	return res
 }
+
+func ToBizAppPackageSource(a librarian.AppPackageSource) AppPackageSource {
+	switch a {
+	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_MANUAL:
+		return AppPackageSourceManual
+	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL:
+		return AppPackageSourceSentinel
+	default:
+		return AppPackageSourceUnspecified
+	}
+}
+
+func ToBizAppPackageSourceList(al []librarian.AppPackageSource) []AppPackageSource {
+	res := make([]AppPackageSource, len(al))
+	for i, a := range al {
+		res[i] = ToBizAppPackageSource(a)
+	}
+	return res
+}
+
+func ToPBAppPackageSource(a AppPackageSource) librarian.AppPackageSource {
+	switch a {
+	case AppPackageSourceManual:
+		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_MANUAL
+	case AppPackageSourceSentinel:
+		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL
+	default:
+		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED
+	}
+}
+
+func ToPBAppPackage(a *AppPackage) *librarian.AppPackage {
+	return &librarian.AppPackage{
+		Id:              &librarian.InternalID{Id: a.InternalID},
+		Source:          ToPBAppPackageSource(a.Source),
+		SourceId:        &librarian.InternalID{Id: a.SourceID},
+		SourcePackageId: a.SourcePackageID,
+		Name:            a.Name,
+		Description:     a.Description,
+		Binary: &librarian.AppPackageBinary{
+			Name:      a.Binary.Name,
+			Size:      a.Binary.Size,
+			PublicUrl: "",
+		},
+		SourceBindApp: nil,
+	}
+}
+
+func ToPBAppPackageList(al []*AppPackage) []*librarian.AppPackage {
+	res := make([]*librarian.AppPackage, len(al))
+	for i, a := range al {
+		res[i] = ToPBAppPackage(a)
+	}
+	return res
+}

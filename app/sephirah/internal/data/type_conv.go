@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
@@ -131,4 +132,49 @@ func toEntAccountPlatform(t biztiphereth.AccountPlatform) account.Platform {
 	default:
 		return ""
 	}
+}
+
+func toEntAppPackageSource(a bizgebura.AppPackageSource) apppackage.Source {
+	switch a {
+	case bizgebura.AppPackageSourceManual:
+		return apppackage.SourceManual
+	case bizgebura.AppPackageSourceSentinel:
+		return apppackage.SourceSentinel
+	default:
+		return ""
+	}
+}
+
+func toBizAppPackageSource(a apppackage.Source) bizgebura.AppPackageSource {
+	switch a {
+	case apppackage.SourceManual:
+		return bizgebura.AppPackageSourceManual
+	case apppackage.SourceSentinel:
+		return bizgebura.AppPackageSourceSentinel
+	default:
+		return bizgebura.AppPackageSourceUnspecified
+	}
+}
+
+func toBizAppPackage(a *ent.AppPackage) *bizgebura.AppPackage {
+	return &bizgebura.AppPackage{
+		InternalID:      a.InternalID,
+		Source:          toBizAppPackageSource(a.Source),
+		SourceID:        a.SourceID,
+		SourcePackageID: a.SourcePackageID,
+		Name:            a.Name,
+		Description:     a.Description,
+		Binary: bizgebura.AppPackageBinary{
+			Name: a.BinaryName,
+			Size: a.BinarySize,
+		},
+	}
+}
+
+func toBizAppPackages(al []*ent.AppPackage) []*bizgebura.AppPackage {
+	res := make([]*bizgebura.AppPackage, len(al))
+	for i, a := range al {
+		res[i] = toBizAppPackage(a)
+	}
+	return res
 }

@@ -62,6 +62,33 @@ var (
 			},
 		},
 	}
+	// AppPackagesColumns holds the columns for the "app_packages" table.
+	AppPackagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
+		{Name: "source", Type: field.TypeEnum, Enums: []string{"manual", "sentinel"}},
+		{Name: "source_id", Type: field.TypeInt64},
+		{Name: "source_package_id", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString, Size: 2147483647},
+		{Name: "binary_name", Type: field.TypeString},
+		{Name: "binary_size", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// AppPackagesTable holds the schema information for the "app_packages" table.
+	AppPackagesTable = &schema.Table{
+		Name:       "app_packages",
+		Columns:    AppPackagesColumns,
+		PrimaryKey: []*schema.Column{AppPackagesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "apppackage_source_source_id_source_package_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppPackagesColumns[2], AppPackagesColumns[3], AppPackagesColumns[4]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -82,6 +109,7 @@ var (
 	Tables = []*schema.Table{
 		AccountsTable,
 		AppsTable,
+		AppPackagesTable,
 		UsersTable,
 	}
 )

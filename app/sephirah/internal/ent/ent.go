@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
@@ -33,9 +34,10 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		account.Table: account.ValidColumn,
-		app.Table:     app.ValidColumn,
-		user.Table:    user.ValidColumn,
+		account.Table:    account.ValidColumn,
+		app.Table:        app.ValidColumn,
+		apppackage.Table: apppackage.ValidColumn,
+		user.Table:       user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

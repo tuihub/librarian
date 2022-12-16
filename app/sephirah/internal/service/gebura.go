@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"io"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
+	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -19,9 +21,6 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
 	a, err := s.g.CreateApp(ctx, &bizgebura.App{
-		Source:          bizgebura.AppSourceInternal,
-		SourceAppID:     "",
-		SourceURL:       "",
 		Name:            app.GetName(),
 		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
@@ -44,9 +43,6 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	}
 	err := s.g.UpdateApp(ctx, &bizgebura.App{
 		InternalID:      app.GetId().GetId(),
-		Source:          bizgebura.AppSourceInternal,
-		SourceAppID:     "",
-		SourceURL:       "",
 		Name:            app.GetName(),
 		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
@@ -119,25 +115,70 @@ func (s *LibrarianSephirahServiceService) CreateAppPackage(
 	ctx context.Context,
 	req *pb.CreateAppPackageRequest,
 ) (*pb.CreateAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateAppPackage not implemented")
+	ap, err := s.g.CreateAppPackage(ctx, &bizgebura.AppPackage{
+		Name:        req.GetAppPackage().GetName(),
+		Description: req.GetAppPackage().GetDescription(),
+		Binary: bizgebura.AppPackageBinary{
+			Name: req.GetAppPackage().GetBinary().GetName(),
+			Size: req.GetAppPackage().GetBinary().GetSize(),
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateAppPackageResponse{Id: &librarian.InternalID{Id: ap.InternalID}}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	ctx context.Context,
 	req *pb.UpdateAppPackageRequest,
 ) (*pb.UpdateAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAppPackage not implemented")
+	err := s.g.UpdateAppPackage(ctx, &bizgebura.AppPackage{
+		InternalID:  req.GetAppPackage().GetId().GetId(),
+		Name:        req.GetAppPackage().GetName(),
+		Description: req.GetAppPackage().GetDescription(),
+		Binary: bizgebura.AppPackageBinary{
+			Name: req.GetAppPackage().GetBinary().GetName(),
+			Size: req.GetAppPackage().GetBinary().GetSize(),
+		},
+	})
+	if err == nil {
+		return nil, err
+	}
+	return &pb.UpdateAppPackageResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListAppPackage(
 	ctx context.Context,
 	req *pb.ListAppPackageRequest,
 ) (*pb.ListAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListAppPackage not implemented")
+	ap, err := s.g.ListAppPackage(ctx,
+		bizgebura.Paging{
+			PageSize: int(req.GetPaging().GetPageSize()),
+			PageNum:  int(req.GetPaging().GetPageNum()),
+		},
+		bizgebura.ToBizAppPackageSourceList(req.GetSourceFilter()),
+		toBizInternalIDList(req.GetIdFilter()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListAppPackageResponse{
+		Paging:         nil,
+		AppPackageList: bizgebura.ToPBAppPackageList(ap),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) BindAppPackage(
 	ctx context.Context,
 	req *pb.BindAppPackageRequest,
 ) (*pb.BindAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BindAppPackage not implemented")
+	err := s.g.AssignAppPackage(ctx, bizgebura.App{
+		InternalID: req.GetAppId().GetId(),
+	}, bizgebura.AppPackage{
+		InternalID: req.GetAppPackageId().GetId(),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.BindAppPackageResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) UnBindAppPackage(
 	ctx context.Context,
@@ -146,10 +187,37 @@ func (s *LibrarianSephirahServiceService) UnBindAppPackage(
 	return nil, status.Errorf(codes.Unimplemented, "method UnBindAppPackage not implemented")
 }
 func (s *LibrarianSephirahServiceService) ReportAppPackage(
-	ctx context.Context,
-	req *pb.ReportAppPackageRequest,
-) (*pb.ReportAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReportAppPackage not implemented")
+	conn pb.LibrarianSephirahService_ReportAppPackageServer,
+) error {
+	handler, err0 := s.g.NewReportAppPackageHandler(conn.Context())
+	if err0 != nil {
+		return err0
+	}
+	for {
+		var apl []*bizgebura.AppPackage
+		if req, err := conn.Recv(); err != nil {
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+			return err
+		} else {
+			for id, a := range req.GetAppPackageList() {
+				apl = append(apl, &bizgebura.AppPackage{
+					SourcePackageID: id,
+					Binary: bizgebura.AppPackageBinary{
+						Name: a.GetName(),
+						Size: a.GetSize(),
+					},
+				})
+			}
+		}
+		if err := handler.Handle(conn.Context(), apl); err != nil {
+			return err
+		}
+		if err := conn.Send(&pb.ReportAppPackageResponse{}); err != nil {
+			return err
+		}
+	}
 }
 func (s *LibrarianSephirahServiceService) UploadGameSaveFile(
 	ctx context.Context,

@@ -16,6 +16,8 @@ type Tx struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
+	// AppPackage is the client for interacting with the AppPackage builders.
+	AppPackage *AppPackageClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -151,6 +153,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.App = NewAppClient(tx.config)
+	tx.AppPackage = NewAppPackageClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

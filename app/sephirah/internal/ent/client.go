@@ -12,6 +12,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -27,6 +28,8 @@ type Client struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
+	// AppPackage is the client for interacting with the AppPackage builders.
+	AppPackage *AppPackageClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -44,6 +47,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Account = NewAccountClient(c.config)
 	c.App = NewAppClient(c.config)
+	c.AppPackage = NewAppPackageClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -76,11 +80,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Account: NewAccountClient(cfg),
-		App:     NewAppClient(cfg),
-		User:    NewUserClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Account:    NewAccountClient(cfg),
+		App:        NewAppClient(cfg),
+		AppPackage: NewAppPackageClient(cfg),
+		User:       NewUserClient(cfg),
 	}, nil
 }
 
@@ -98,11 +103,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:     ctx,
-		config:  cfg,
-		Account: NewAccountClient(cfg),
-		App:     NewAppClient(cfg),
-		User:    NewUserClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Account:    NewAccountClient(cfg),
+		App:        NewAppClient(cfg),
+		AppPackage: NewAppPackageClient(cfg),
+		User:       NewUserClient(cfg),
 	}, nil
 }
 
@@ -134,6 +140,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Account.Use(hooks...)
 	c.App.Use(hooks...)
+	c.AppPackage.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -315,6 +322,96 @@ func (c *AppClient) GetX(ctx context.Context, id int) *App {
 // Hooks returns the client hooks.
 func (c *AppClient) Hooks() []Hook {
 	return c.hooks.App
+}
+
+// AppPackageClient is a client for the AppPackage schema.
+type AppPackageClient struct {
+	config
+}
+
+// NewAppPackageClient returns a client for the AppPackage from the given config.
+func NewAppPackageClient(c config) *AppPackageClient {
+	return &AppPackageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `apppackage.Hooks(f(g(h())))`.
+func (c *AppPackageClient) Use(hooks ...Hook) {
+	c.hooks.AppPackage = append(c.hooks.AppPackage, hooks...)
+}
+
+// Create returns a builder for creating a AppPackage entity.
+func (c *AppPackageClient) Create() *AppPackageCreate {
+	mutation := newAppPackageMutation(c.config, OpCreate)
+	return &AppPackageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppPackage entities.
+func (c *AppPackageClient) CreateBulk(builders ...*AppPackageCreate) *AppPackageCreateBulk {
+	return &AppPackageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppPackage.
+func (c *AppPackageClient) Update() *AppPackageUpdate {
+	mutation := newAppPackageMutation(c.config, OpUpdate)
+	return &AppPackageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppPackageClient) UpdateOne(ap *AppPackage) *AppPackageUpdateOne {
+	mutation := newAppPackageMutation(c.config, OpUpdateOne, withAppPackage(ap))
+	return &AppPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppPackageClient) UpdateOneID(id int) *AppPackageUpdateOne {
+	mutation := newAppPackageMutation(c.config, OpUpdateOne, withAppPackageID(id))
+	return &AppPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppPackage.
+func (c *AppPackageClient) Delete() *AppPackageDelete {
+	mutation := newAppPackageMutation(c.config, OpDelete)
+	return &AppPackageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppPackageClient) DeleteOne(ap *AppPackage) *AppPackageDeleteOne {
+	return c.DeleteOneID(ap.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppPackageClient) DeleteOneID(id int) *AppPackageDeleteOne {
+	builder := c.Delete().Where(apppackage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppPackageDeleteOne{builder}
+}
+
+// Query returns a query builder for AppPackage.
+func (c *AppPackageClient) Query() *AppPackageQuery {
+	return &AppPackageQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AppPackage entity by its id.
+func (c *AppPackageClient) Get(ctx context.Context, id int) (*AppPackage, error) {
+	return c.Query().Where(apppackage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppPackageClient) GetX(ctx context.Context, id int) *AppPackage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppPackageClient) Hooks() []Hook {
+	return c.hooks.AppPackage
 }
 
 // UserClient is a client for the User schema.
