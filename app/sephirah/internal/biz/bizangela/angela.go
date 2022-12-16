@@ -166,7 +166,7 @@ func NewPullSteamAccountAppRelationTopic(
 				}
 				vl[i*2+1] = &mapper.Vertex{
 					Vid:  steamApps[i].InternalID,
-					Type: mapper.VertexType_VERTEX_TYPE_OBJECT,
+					Type: mapper.VertexType_VERTEX_TYPE_METADATA,
 					Prop: nil,
 				}
 				el[i*2] = &mapper.Edge{
