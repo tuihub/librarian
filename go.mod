@@ -21,7 +21,7 @@ require (
 	github.com/tuihub/protos v0.2.2
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.4.0
-	golang.org/x/exp v0.0.0-20221217163422-3c43f8badb15
+	golang.org/x/exp v0.0.0-20221230185412-738e83a70c30
 	google.golang.org/grpc v1.51.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -94,7 +94,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20221220065744-a017ab09576f
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230101121918-b26023888d05
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
