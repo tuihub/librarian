@@ -3,7 +3,7 @@ module github.com/tuihub/librarian
 go 1.18
 
 require (
-	entgo.io/ent v0.11.4
+	entgo.io/ent v0.11.5
 	github.com/ThreeDotsLabs/watermill v1.1.1
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
@@ -21,13 +21,13 @@ require (
 	github.com/tuihub/protos v0.2.2
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.5.0
-	golang.org/x/exp v0.0.0-20230105202349-8879d0199aa3
-	google.golang.org/grpc v1.51.0
+	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4
+	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
 )
 
 require (
-	ariga.io/atlas v0.8.2 // indirect
+	ariga.io/atlas v0.8.4-0.20221212165942-e53dd27a603d // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
@@ -85,7 +85,7 @@ require (
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	golang.org/x/mod v0.7.0 // indirect
 	golang.org/x/term v0.4.0 // indirect
-	golang.org/x/tools v0.3.0 // indirect
+	golang.org/x/tools v0.3.1-0.20221202221704-aa9f4b2f3d57 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
@@ -94,7 +94,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230105091250-eafbe908a84d
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230113095809-bebea0c103a8
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
