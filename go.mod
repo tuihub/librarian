@@ -3,13 +3,13 @@ module github.com/tuihub/librarian
 go 1.18
 
 require (
-	entgo.io/ent v0.11.5
+	entgo.io/ent v0.11.6
 	github.com/ThreeDotsLabs/watermill v1.1.1
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-kratos/kratos/v2 v2.5.3
-	github.com/gocolly/colly/v2 v2.1.1-0.20230105210829-9a6de69e9de5
+	github.com/go-kratos/kratos/v2 v2.5.4
+	github.com/gocolly/colly/v2 v2.1.1-0.20230116162851-487ef118797d
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
@@ -21,13 +21,13 @@ require (
 	github.com/tuihub/protos v0.2.2
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.5.0
-	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4
+	golang.org/x/exp v0.0.0-20230124195608-d38c7dcee874
 	google.golang.org/grpc v1.52.0
 	google.golang.org/protobuf v1.28.1
 )
 
 require (
-	ariga.io/atlas v0.8.4-0.20221212165942-e53dd27a603d // indirect
+	ariga.io/atlas v0.9.1-0.20230119123307-a3ab6808892b // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
@@ -94,7 +94,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230113095809-bebea0c103a8
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230118034735-63b23af41844
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
