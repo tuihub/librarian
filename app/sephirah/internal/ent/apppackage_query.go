@@ -17,11 +17,9 @@ import (
 // AppPackageQuery is the builder for querying AppPackage entities.
 type AppPackageQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
+	ctx        *QueryContext
 	order      []OrderFunc
-	fields     []string
+	inters     []Interceptor
 	predicates []predicate.AppPackage
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -34,26 +32,26 @@ func (apq *AppPackageQuery) Where(ps ...predicate.AppPackage) *AppPackageQuery {
 	return apq
 }
 
-// Limit adds a limit step to the query.
+// Limit the number of records to be returned by this query.
 func (apq *AppPackageQuery) Limit(limit int) *AppPackageQuery {
-	apq.limit = &limit
+	apq.ctx.Limit = &limit
 	return apq
 }
 
-// Offset adds an offset step to the query.
+// Offset to start from.
 func (apq *AppPackageQuery) Offset(offset int) *AppPackageQuery {
-	apq.offset = &offset
+	apq.ctx.Offset = &offset
 	return apq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (apq *AppPackageQuery) Unique(unique bool) *AppPackageQuery {
-	apq.unique = &unique
+	apq.ctx.Unique = &unique
 	return apq
 }
 
-// Order adds an order step to the query.
+// Order specifies how the records should be ordered.
 func (apq *AppPackageQuery) Order(o ...OrderFunc) *AppPackageQuery {
 	apq.order = append(apq.order, o...)
 	return apq
@@ -62,7 +60,7 @@ func (apq *AppPackageQuery) Order(o ...OrderFunc) *AppPackageQuery {
 // First returns the first AppPackage entity from the query.
 // Returns a *NotFoundError when no AppPackage was found.
 func (apq *AppPackageQuery) First(ctx context.Context) (*AppPackage, error) {
-	nodes, err := apq.Limit(1).All(ctx)
+	nodes, err := apq.Limit(1).All(setContextOp(ctx, apq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +83,7 @@ func (apq *AppPackageQuery) FirstX(ctx context.Context) *AppPackage {
 // Returns a *NotFoundError when no AppPackage ID was found.
 func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apq.Limit(1).IDs(ctx); err != nil {
+	if ids, err = apq.Limit(1).IDs(setContextOp(ctx, apq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -108,7 +106,7 @@ func (apq *AppPackageQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppPackage entity is found.
 // Returns a *NotFoundError when no AppPackage entities are found.
 func (apq *AppPackageQuery) Only(ctx context.Context) (*AppPackage, error) {
-	nodes, err := apq.Limit(2).All(ctx)
+	nodes, err := apq.Limit(2).All(setContextOp(ctx, apq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +134,7 @@ func (apq *AppPackageQuery) OnlyX(ctx context.Context) *AppPackage {
 // Returns a *NotFoundError when no entities are found.
 func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = apq.Limit(2).IDs(ctx); err != nil {
+	if ids, err = apq.Limit(2).IDs(setContextOp(ctx, apq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -161,10 +159,12 @@ func (apq *AppPackageQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppPackages.
 func (apq *AppPackageQuery) All(ctx context.Context) ([]*AppPackage, error) {
+	ctx = setContextOp(ctx, apq.ctx, "All")
 	if err := apq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	return apq.sqlAll(ctx)
+	qr := querierAll[[]*AppPackage, *AppPackageQuery]()
+	return withInterceptors[[]*AppPackage](ctx, apq, qr, apq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
@@ -179,6 +179,7 @@ func (apq *AppPackageQuery) AllX(ctx context.Context) []*AppPackage {
 // IDs executes the query and returns a list of AppPackage IDs.
 func (apq *AppPackageQuery) IDs(ctx context.Context) ([]int, error) {
 	var ids []int
+	ctx = setContextOp(ctx, apq.ctx, "IDs")
 	if err := apq.Select(apppackage.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -196,10 +197,11 @@ func (apq *AppPackageQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (apq *AppPackageQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, apq.ctx, "Count")
 	if err := apq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return apq.sqlCount(ctx)
+	return withInterceptors[int](ctx, apq, querierCount[*AppPackageQuery](), apq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
@@ -213,10 +215,15 @@ func (apq *AppPackageQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (apq *AppPackageQuery) Exist(ctx context.Context) (bool, error) {
-	if err := apq.prepareQuery(ctx); err != nil {
-		return false, err
+	ctx = setContextOp(ctx, apq.ctx, "Exist")
+	switch _, err := apq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("ent: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return apq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -236,14 +243,13 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 	}
 	return &AppPackageQuery{
 		config:     apq.config,
-		limit:      apq.limit,
-		offset:     apq.offset,
+		ctx:        apq.ctx.Clone(),
 		order:      append([]OrderFunc{}, apq.order...),
+		inters:     append([]Interceptor{}, apq.inters...),
 		predicates: append([]predicate.AppPackage{}, apq.predicates...),
 		// clone intermediate query.
-		sql:    apq.sql.Clone(),
-		path:   apq.path,
-		unique: apq.unique,
+		sql:  apq.sql.Clone(),
+		path: apq.path,
 	}
 }
 
@@ -263,16 +269,11 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 //		Scan(ctx, &v)
 //
 func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageGroupBy {
-	grbuild := &AppPackageGroupBy{config: apq.config}
-	grbuild.fields = append([]string{field}, fields...)
-	grbuild.path = func(ctx context.Context) (prev *sql.Selector, err error) {
-		if err := apq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		return apq.sqlQuery(ctx), nil
-	}
+	apq.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppPackageGroupBy{build: apq}
+	grbuild.flds = &apq.ctx.Fields
 	grbuild.label = apppackage.Label
-	grbuild.flds, grbuild.scan = &grbuild.fields, grbuild.Scan
+	grbuild.scan = grbuild.Scan
 	return grbuild
 }
 
@@ -290,11 +291,11 @@ func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageG
 //		Scan(ctx, &v)
 //
 func (apq *AppPackageQuery) Select(fields ...string) *AppPackageSelect {
-	apq.fields = append(apq.fields, fields...)
-	selbuild := &AppPackageSelect{AppPackageQuery: apq}
-	selbuild.label = apppackage.Label
-	selbuild.flds, selbuild.scan = &apq.fields, selbuild.Scan
-	return selbuild
+	apq.ctx.Fields = append(apq.ctx.Fields, fields...)
+	sbuild := &AppPackageSelect{AppPackageQuery: apq}
+	sbuild.label = apppackage.Label
+	sbuild.flds, sbuild.scan = &apq.ctx.Fields, sbuild.Scan
+	return sbuild
 }
 
 // Aggregate returns a AppPackageSelect configured with the given aggregations.
@@ -303,7 +304,17 @@ func (apq *AppPackageQuery) Aggregate(fns ...AggregateFunc) *AppPackageSelect {
 }
 
 func (apq *AppPackageQuery) prepareQuery(ctx context.Context) error {
-	for _, f := range apq.fields {
+	for _, inter := range apq.inters {
+		if inter == nil {
+			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
+		}
+		if trv, ok := inter.(Traverser); ok {
+			if err := trv.Traverse(ctx, apq); err != nil {
+				return err
+			}
+		}
+	}
+	for _, f := range apq.ctx.Fields {
 		if !apppackage.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -345,22 +356,11 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 
 func (apq *AppPackageQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := apq.querySpec()
-	_spec.Node.Columns = apq.fields
-	if len(apq.fields) > 0 {
-		_spec.Unique = apq.unique != nil && *apq.unique
+	_spec.Node.Columns = apq.ctx.Fields
+	if len(apq.ctx.Fields) > 0 {
+		_spec.Unique = apq.ctx.Unique != nil && *apq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, apq.driver, _spec)
-}
-
-func (apq *AppPackageQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := apq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("ent: check existence: %w", err)
-	default:
-		return true, nil
-	}
 }
 
 func (apq *AppPackageQuery) querySpec() *sqlgraph.QuerySpec {
@@ -376,10 +376,10 @@ func (apq *AppPackageQuery) querySpec() *sqlgraph.QuerySpec {
 		From:   apq.sql,
 		Unique: true,
 	}
-	if unique := apq.unique; unique != nil {
+	if unique := apq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
 	}
-	if fields := apq.fields; len(fields) > 0 {
+	if fields := apq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, apppackage.FieldID)
 		for i := range fields {
@@ -395,10 +395,10 @@ func (apq *AppPackageQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := apq.limit; limit != nil {
+	if limit := apq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := apq.offset; offset != nil {
+	if offset := apq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := apq.order; len(ps) > 0 {
@@ -414,7 +414,7 @@ func (apq *AppPackageQuery) querySpec() *sqlgraph.QuerySpec {
 func (apq *AppPackageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(apq.driver.Dialect())
 	t1 := builder.Table(apppackage.Table)
-	columns := apq.fields
+	columns := apq.ctx.Fields
 	if len(columns) == 0 {
 		columns = apppackage.Columns
 	}
@@ -423,7 +423,7 @@ func (apq *AppPackageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector = apq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if apq.unique != nil && *apq.unique {
+	if apq.ctx.Unique != nil && *apq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range apq.predicates {
@@ -432,12 +432,12 @@ func (apq *AppPackageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	for _, p := range apq.order {
 		p(selector)
 	}
-	if offset := apq.offset; offset != nil {
+	if offset := apq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := apq.limit; limit != nil {
+	if limit := apq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -445,13 +445,8 @@ func (apq *AppPackageQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // AppPackageGroupBy is the group-by builder for AppPackage entities.
 type AppPackageGroupBy struct {
-	config
 	selector
-	fields []string
-	fns    []AggregateFunc
-	// intermediate query (i.e. traversal path).
-	sql  *sql.Selector
-	path func(context.Context) (*sql.Selector, error)
+	build *AppPackageQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
@@ -460,58 +455,46 @@ func (apgb *AppPackageGroupBy) Aggregate(fns ...AggregateFunc) *AppPackageGroupB
 	return apgb
 }
 
-// Scan applies the group-by query and scans the result into the given value.
+// Scan applies the selector query and scans the result into the given value.
 func (apgb *AppPackageGroupBy) Scan(ctx context.Context, v any) error {
-	query, err := apgb.path(ctx)
-	if err != nil {
+	ctx = setContextOp(ctx, apgb.build.ctx, "GroupBy")
+	if err := apgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	apgb.sql = query
-	return apgb.sqlScan(ctx, v)
+	return scanWithInterceptors[*AppPackageQuery, *AppPackageGroupBy](ctx, apgb.build, apgb, apgb.build.inters, v)
 }
 
-func (apgb *AppPackageGroupBy) sqlScan(ctx context.Context, v any) error {
-	for _, f := range apgb.fields {
-		if !apppackage.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
-		}
+func (apgb *AppPackageGroupBy) sqlScan(ctx context.Context, root *AppPackageQuery, v any) error {
+	selector := root.sqlQuery(ctx).Select()
+	aggregation := make([]string, 0, len(apgb.fns))
+	for _, fn := range apgb.fns {
+		aggregation = append(aggregation, fn(selector))
 	}
-	selector := apgb.sqlQuery()
+	if len(selector.SelectedColumns()) == 0 {
+		columns := make([]string, 0, len(*apgb.flds)+len(apgb.fns))
+		for _, f := range *apgb.flds {
+			columns = append(columns, selector.C(f))
+		}
+		columns = append(columns, aggregation...)
+		selector.Select(columns...)
+	}
+	selector.GroupBy(selector.Columns(*apgb.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := apgb.driver.Query(ctx, query, args, rows); err != nil {
+	if err := apgb.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
 }
 
-func (apgb *AppPackageGroupBy) sqlQuery() *sql.Selector {
-	selector := apgb.sql.Select()
-	aggregation := make([]string, 0, len(apgb.fns))
-	for _, fn := range apgb.fns {
-		aggregation = append(aggregation, fn(selector))
-	}
-	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(apgb.fields)+len(apgb.fns))
-		for _, f := range apgb.fields {
-			columns = append(columns, selector.C(f))
-		}
-		columns = append(columns, aggregation...)
-		selector.Select(columns...)
-	}
-	return selector.GroupBy(selector.Columns(apgb.fields...)...)
-}
-
 // AppPackageSelect is the builder for selecting fields of AppPackage entities.
 type AppPackageSelect struct {
 	*AppPackageQuery
 	selector
-	// intermediate query (i.e. traversal path).
-	sql *sql.Selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
@@ -522,26 +505,27 @@ func (aps *AppPackageSelect) Aggregate(fns ...AggregateFunc) *AppPackageSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (aps *AppPackageSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, aps.ctx, "Select")
 	if err := aps.prepareQuery(ctx); err != nil {
 		return err
 	}
-	aps.sql = aps.AppPackageQuery.sqlQuery(ctx)
-	return aps.sqlScan(ctx, v)
+	return scanWithInterceptors[*AppPackageQuery, *AppPackageSelect](ctx, aps.AppPackageQuery, aps, aps.inters, v)
 }
 
-func (aps *AppPackageSelect) sqlScan(ctx context.Context, v any) error {
+func (aps *AppPackageSelect) sqlScan(ctx context.Context, root *AppPackageQuery, v any) error {
+	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(aps.fns))
 	for _, fn := range aps.fns {
-		aggregation = append(aggregation, fn(aps.sql))
+		aggregation = append(aggregation, fn(selector))
 	}
 	switch n := len(*aps.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
-		aps.sql.Select(aggregation...)
+		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
-		aps.sql.AppendSelect(aggregation...)
+		selector.AppendSelect(aggregation...)
 	}
 	rows := &sql.Rows{}
-	query, args := aps.sql.Query()
+	query, args := selector.Query()
 	if err := aps.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}

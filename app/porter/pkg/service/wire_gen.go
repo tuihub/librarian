@@ -7,6 +7,7 @@
 package service
 
 import (
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
@@ -27,13 +28,14 @@ func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceS
 		return nil, nil, err
 	}
 	steamSteam := steam.NewSteam(storeAPI, webAPI)
-	dataData, cleanup, err := data.NewData(porter_Data)
+	dataData, err := data.NewData(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	steamUseCase := bizsteam.NewSteamUseCase(steamSteam, dataData)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase)
+	s3Repo := data.NewS3Repo(dataData)
+	s3 := bizs3.NewS3(s3Repo)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase, s3)
 	return librarianPorterServiceServer, func() {
-		cleanup()
 	}, nil
 }

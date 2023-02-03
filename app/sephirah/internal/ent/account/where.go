@@ -11,675 +11,437 @@ import (
 
 // ID filters vertices based on their ID field.
 func ID(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
 func IDEQ(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
 func IDNEQ(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
 func IDIn(ids ...int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		v := make([]any, len(ids))
-		for i := range v {
-			v[i] = ids[i]
-		}
-		s.Where(sql.In(s.C(FieldID), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
 func IDNotIn(ids ...int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		v := make([]any, len(ids))
-		for i := range v {
-			v[i] = ids[i]
-		}
-		s.Where(sql.NotIn(s.C(FieldID), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
 func IDGT(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
 func IDGTE(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
 func IDLT(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
 func IDLTE(id int) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldID), id))
-	})
+	return predicate.Account(sql.FieldLTE(FieldID, id))
 }
 
 // InternalID applies equality check predicate on the "internal_id" field. It's identical to InternalIDEQ.
 func InternalID(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldInternalID, v))
 }
 
 // PlatformAccountID applies equality check predicate on the "platform_account_id" field. It's identical to PlatformAccountIDEQ.
 func PlatformAccountID(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldPlatformAccountID, v))
 }
 
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldName, v))
 }
 
 // ProfileURL applies equality check predicate on the "profile_url" field. It's identical to ProfileURLEQ.
 func ProfileURL(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldProfileURL, v))
 }
 
 // AvatarURL applies equality check predicate on the "avatar_url" field. It's identical to AvatarURLEQ.
 func AvatarURL(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldAvatarURL, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // InternalIDEQ applies the EQ predicate on the "internal_id" field.
 func InternalIDEQ(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldInternalID, v))
 }
 
 // InternalIDNEQ applies the NEQ predicate on the "internal_id" field.
 func InternalIDNEQ(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldInternalID, v))
 }
 
 // InternalIDIn applies the In predicate on the "internal_id" field.
 func InternalIDIn(vs ...int64) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldInternalID), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldInternalID, vs...))
 }
 
 // InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
 func InternalIDNotIn(vs ...int64) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldInternalID), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldInternalID, vs...))
 }
 
 // InternalIDGT applies the GT predicate on the "internal_id" field.
 func InternalIDGT(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldInternalID, v))
 }
 
 // InternalIDGTE applies the GTE predicate on the "internal_id" field.
 func InternalIDGTE(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldInternalID, v))
 }
 
 // InternalIDLT applies the LT predicate on the "internal_id" field.
 func InternalIDLT(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldInternalID, v))
 }
 
 // InternalIDLTE applies the LTE predicate on the "internal_id" field.
 func InternalIDLTE(v int64) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldInternalID), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldInternalID, v))
 }
 
 // PlatformEQ applies the EQ predicate on the "platform" field.
 func PlatformEQ(v Platform) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPlatform), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldPlatform, v))
 }
 
 // PlatformNEQ applies the NEQ predicate on the "platform" field.
 func PlatformNEQ(v Platform) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPlatform), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldPlatform, v))
 }
 
 // PlatformIn applies the In predicate on the "platform" field.
 func PlatformIn(vs ...Platform) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldPlatform), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldPlatform, vs...))
 }
 
 // PlatformNotIn applies the NotIn predicate on the "platform" field.
 func PlatformNotIn(vs ...Platform) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldPlatform), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldPlatform, vs...))
 }
 
 // PlatformAccountIDEQ applies the EQ predicate on the "platform_account_id" field.
 func PlatformAccountIDEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDNEQ applies the NEQ predicate on the "platform_account_id" field.
 func PlatformAccountIDNEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDIn applies the In predicate on the "platform_account_id" field.
 func PlatformAccountIDIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldPlatformAccountID), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldPlatformAccountID, vs...))
 }
 
 // PlatformAccountIDNotIn applies the NotIn predicate on the "platform_account_id" field.
 func PlatformAccountIDNotIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldPlatformAccountID), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldPlatformAccountID, vs...))
 }
 
 // PlatformAccountIDGT applies the GT predicate on the "platform_account_id" field.
 func PlatformAccountIDGT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDGTE applies the GTE predicate on the "platform_account_id" field.
 func PlatformAccountIDGTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDLT applies the LT predicate on the "platform_account_id" field.
 func PlatformAccountIDLT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDLTE applies the LTE predicate on the "platform_account_id" field.
 func PlatformAccountIDLTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDContains applies the Contains predicate on the "platform_account_id" field.
 func PlatformAccountIDContains(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldContains(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDHasPrefix applies the HasPrefix predicate on the "platform_account_id" field.
 func PlatformAccountIDHasPrefix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldHasPrefix(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDHasSuffix applies the HasSuffix predicate on the "platform_account_id" field.
 func PlatformAccountIDHasSuffix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldHasSuffix(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDEqualFold applies the EqualFold predicate on the "platform_account_id" field.
 func PlatformAccountIDEqualFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldEqualFold(FieldPlatformAccountID, v))
 }
 
 // PlatformAccountIDContainsFold applies the ContainsFold predicate on the "platform_account_id" field.
 func PlatformAccountIDContainsFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldPlatformAccountID), v))
-	})
+	return predicate.Account(sql.FieldContainsFold(FieldPlatformAccountID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldName, v))
 }
 
 // NameNEQ applies the NEQ predicate on the "name" field.
 func NameNEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldName, v))
 }
 
 // NameIn applies the In predicate on the "name" field.
 func NameIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldName), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldName, vs...))
 }
 
 // NameNotIn applies the NotIn predicate on the "name" field.
 func NameNotIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldName), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldName, vs...))
 }
 
 // NameGT applies the GT predicate on the "name" field.
 func NameGT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldName, v))
 }
 
 // NameGTE applies the GTE predicate on the "name" field.
 func NameGTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldName, v))
 }
 
 // NameLT applies the LT predicate on the "name" field.
 func NameLT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldName, v))
 }
 
 // NameLTE applies the LTE predicate on the "name" field.
 func NameLTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldName, v))
 }
 
 // NameContains applies the Contains predicate on the "name" field.
 func NameContains(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldContains(FieldName, v))
 }
 
 // NameHasPrefix applies the HasPrefix predicate on the "name" field.
 func NameHasPrefix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldHasPrefix(FieldName, v))
 }
 
 // NameHasSuffix applies the HasSuffix predicate on the "name" field.
 func NameHasSuffix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldHasSuffix(FieldName, v))
 }
 
 // NameEqualFold applies the EqualFold predicate on the "name" field.
 func NameEqualFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldEqualFold(FieldName, v))
 }
 
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldName), v))
-	})
+	return predicate.Account(sql.FieldContainsFold(FieldName, v))
 }
 
 // ProfileURLEQ applies the EQ predicate on the "profile_url" field.
 func ProfileURLEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldProfileURL, v))
 }
 
 // ProfileURLNEQ applies the NEQ predicate on the "profile_url" field.
 func ProfileURLNEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldProfileURL, v))
 }
 
 // ProfileURLIn applies the In predicate on the "profile_url" field.
 func ProfileURLIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldProfileURL), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldProfileURL, vs...))
 }
 
 // ProfileURLNotIn applies the NotIn predicate on the "profile_url" field.
 func ProfileURLNotIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldProfileURL), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldProfileURL, vs...))
 }
 
 // ProfileURLGT applies the GT predicate on the "profile_url" field.
 func ProfileURLGT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldProfileURL, v))
 }
 
 // ProfileURLGTE applies the GTE predicate on the "profile_url" field.
 func ProfileURLGTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldProfileURL, v))
 }
 
 // ProfileURLLT applies the LT predicate on the "profile_url" field.
 func ProfileURLLT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldProfileURL, v))
 }
 
 // ProfileURLLTE applies the LTE predicate on the "profile_url" field.
 func ProfileURLLTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldProfileURL, v))
 }
 
 // ProfileURLContains applies the Contains predicate on the "profile_url" field.
 func ProfileURLContains(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldContains(FieldProfileURL, v))
 }
 
 // ProfileURLHasPrefix applies the HasPrefix predicate on the "profile_url" field.
 func ProfileURLHasPrefix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldHasPrefix(FieldProfileURL, v))
 }
 
 // ProfileURLHasSuffix applies the HasSuffix predicate on the "profile_url" field.
 func ProfileURLHasSuffix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldHasSuffix(FieldProfileURL, v))
 }
 
 // ProfileURLEqualFold applies the EqualFold predicate on the "profile_url" field.
 func ProfileURLEqualFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldEqualFold(FieldProfileURL, v))
 }
 
 // ProfileURLContainsFold applies the ContainsFold predicate on the "profile_url" field.
 func ProfileURLContainsFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldProfileURL), v))
-	})
+	return predicate.Account(sql.FieldContainsFold(FieldProfileURL, v))
 }
 
 // AvatarURLEQ applies the EQ predicate on the "avatar_url" field.
 func AvatarURLEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldAvatarURL, v))
 }
 
 // AvatarURLNEQ applies the NEQ predicate on the "avatar_url" field.
 func AvatarURLNEQ(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldAvatarURL, v))
 }
 
 // AvatarURLIn applies the In predicate on the "avatar_url" field.
 func AvatarURLIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldAvatarURL), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldAvatarURL, vs...))
 }
 
 // AvatarURLNotIn applies the NotIn predicate on the "avatar_url" field.
 func AvatarURLNotIn(vs ...string) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldAvatarURL), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldAvatarURL, vs...))
 }
 
 // AvatarURLGT applies the GT predicate on the "avatar_url" field.
 func AvatarURLGT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldAvatarURL, v))
 }
 
 // AvatarURLGTE applies the GTE predicate on the "avatar_url" field.
 func AvatarURLGTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldAvatarURL, v))
 }
 
 // AvatarURLLT applies the LT predicate on the "avatar_url" field.
 func AvatarURLLT(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldAvatarURL, v))
 }
 
 // AvatarURLLTE applies the LTE predicate on the "avatar_url" field.
 func AvatarURLLTE(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldAvatarURL, v))
 }
 
 // AvatarURLContains applies the Contains predicate on the "avatar_url" field.
 func AvatarURLContains(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldContains(FieldAvatarURL, v))
 }
 
 // AvatarURLHasPrefix applies the HasPrefix predicate on the "avatar_url" field.
 func AvatarURLHasPrefix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldHasPrefix(FieldAvatarURL, v))
 }
 
 // AvatarURLHasSuffix applies the HasSuffix predicate on the "avatar_url" field.
 func AvatarURLHasSuffix(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldHasSuffix(FieldAvatarURL, v))
 }
 
 // AvatarURLEqualFold applies the EqualFold predicate on the "avatar_url" field.
 func AvatarURLEqualFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldEqualFold(FieldAvatarURL, v))
 }
 
 // AvatarURLContainsFold applies the ContainsFold predicate on the "avatar_url" field.
 func AvatarURLContainsFold(v string) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldAvatarURL), v))
-	})
+	return predicate.Account(sql.FieldContainsFold(FieldAvatarURL, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
 func CreatedAtNEQ(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldNEQ(FieldCreatedAt, v))
 }
 
 // CreatedAtIn applies the In predicate on the "created_at" field.
 func CreatedAtIn(vs ...time.Time) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldCreatedAt), v...))
-	})
+	return predicate.Account(sql.FieldIn(FieldCreatedAt, vs...))
 }
 
 // CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
 func CreatedAtNotIn(vs ...time.Time) predicate.Account {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldCreatedAt), v...))
-	})
+	return predicate.Account(sql.FieldNotIn(FieldCreatedAt, vs...))
 }
 
 // CreatedAtGT applies the GT predicate on the "created_at" field.
 func CreatedAtGT(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldGT(FieldCreatedAt, v))
 }
 
 // CreatedAtGTE applies the GTE predicate on the "created_at" field.
 func CreatedAtGTE(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldGTE(FieldCreatedAt, v))
 }
 
 // CreatedAtLT applies the LT predicate on the "created_at" field.
 func CreatedAtLT(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldLT(FieldCreatedAt, v))
 }
 
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCreatedAt), v))
-	})
+	return predicate.Account(sql.FieldLTE(FieldCreatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

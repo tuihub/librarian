@@ -163,7 +163,7 @@ func (a *App) assignValues(columns []string, values []any) error {
 // Note that you need to call App.Unwrap() before calling this method if this App
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (a *App) Update() *AppUpdateOne {
-	return (&AppClient{config: a.config}).UpdateOne(a)
+	return NewAppClient(a.config).UpdateOne(a)
 }
 
 // Unwrap unwraps the App entity that was returned from a transaction after it was closed,

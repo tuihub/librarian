@@ -97,50 +97,8 @@ func (apc *AppPackageCreate) Mutation() *AppPackageMutation {
 
 // Save creates the AppPackage in the database.
 func (apc *AppPackageCreate) Save(ctx context.Context) (*AppPackage, error) {
-	var (
-		err  error
-		node *AppPackage
-	)
 	apc.defaults()
-	if len(apc.hooks) == 0 {
-		if err = apc.check(); err != nil {
-			return nil, err
-		}
-		node, err = apc.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AppPackageMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = apc.check(); err != nil {
-				return nil, err
-			}
-			apc.mutation = mutation
-			if node, err = apc.sqlSave(ctx); err != nil {
-				return nil, err
-			}
-			mutation.id = &node.ID
-			mutation.done = true
-			return node, err
-		})
-		for i := len(apc.hooks) - 1; i >= 0; i-- {
-			if apc.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = apc.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, apc.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*AppPackage)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from AppPackageMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*AppPackage, AppPackageMutation](ctx, apc.sqlSave, apc.mutation, apc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -214,6 +172,9 @@ func (apc *AppPackageCreate) check() error {
 }
 
 func (apc *AppPackageCreate) sqlSave(ctx context.Context) (*AppPackage, error) {
+	if err := apc.check(); err != nil {
+		return nil, err
+	}
 	_node, _spec := apc.createSpec()
 	if err := sqlgraph.CreateNode(ctx, apc.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
@@ -223,6 +184,8 @@ func (apc *AppPackageCreate) sqlSave(ctx context.Context) (*AppPackage, error) {
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
+	apc.mutation.id = &_node.ID
+	apc.mutation.done = true
 	return _node, nil
 }
 

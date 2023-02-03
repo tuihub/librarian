@@ -17,11 +17,9 @@ import (
 // AppQuery is the builder for querying App entities.
 type AppQuery struct {
 	config
-	limit      *int
-	offset     *int
-	unique     *bool
+	ctx        *QueryContext
 	order      []OrderFunc
-	fields     []string
+	inters     []Interceptor
 	predicates []predicate.App
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -34,26 +32,26 @@ func (aq *AppQuery) Where(ps ...predicate.App) *AppQuery {
 	return aq
 }
 
-// Limit adds a limit step to the query.
+// Limit the number of records to be returned by this query.
 func (aq *AppQuery) Limit(limit int) *AppQuery {
-	aq.limit = &limit
+	aq.ctx.Limit = &limit
 	return aq
 }
 
-// Offset adds an offset step to the query.
+// Offset to start from.
 func (aq *AppQuery) Offset(offset int) *AppQuery {
-	aq.offset = &offset
+	aq.ctx.Offset = &offset
 	return aq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
 func (aq *AppQuery) Unique(unique bool) *AppQuery {
-	aq.unique = &unique
+	aq.ctx.Unique = &unique
 	return aq
 }
 
-// Order adds an order step to the query.
+// Order specifies how the records should be ordered.
 func (aq *AppQuery) Order(o ...OrderFunc) *AppQuery {
 	aq.order = append(aq.order, o...)
 	return aq
@@ -62,7 +60,7 @@ func (aq *AppQuery) Order(o ...OrderFunc) *AppQuery {
 // First returns the first App entity from the query.
 // Returns a *NotFoundError when no App was found.
 func (aq *AppQuery) First(ctx context.Context) (*App, error) {
-	nodes, err := aq.Limit(1).All(ctx)
+	nodes, err := aq.Limit(1).All(setContextOp(ctx, aq.ctx, "First"))
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +83,7 @@ func (aq *AppQuery) FirstX(ctx context.Context) *App {
 // Returns a *NotFoundError when no App ID was found.
 func (aq *AppQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aq.Limit(1).IDs(ctx); err != nil {
+	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, "FirstID")); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -108,7 +106,7 @@ func (aq *AppQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one App entity is found.
 // Returns a *NotFoundError when no App entities are found.
 func (aq *AppQuery) Only(ctx context.Context) (*App, error) {
-	nodes, err := aq.Limit(2).All(ctx)
+	nodes, err := aq.Limit(2).All(setContextOp(ctx, aq.ctx, "Only"))
 	if err != nil {
 		return nil, err
 	}
@@ -136,7 +134,7 @@ func (aq *AppQuery) OnlyX(ctx context.Context) *App {
 // Returns a *NotFoundError when no entities are found.
 func (aq *AppQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = aq.Limit(2).IDs(ctx); err != nil {
+	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, "OnlyID")); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -161,10 +159,12 @@ func (aq *AppQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of Apps.
 func (aq *AppQuery) All(ctx context.Context) ([]*App, error) {
+	ctx = setContextOp(ctx, aq.ctx, "All")
 	if err := aq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	return aq.sqlAll(ctx)
+	qr := querierAll[[]*App, *AppQuery]()
+	return withInterceptors[[]*App](ctx, aq, qr, aq.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
@@ -179,6 +179,7 @@ func (aq *AppQuery) AllX(ctx context.Context) []*App {
 // IDs executes the query and returns a list of App IDs.
 func (aq *AppQuery) IDs(ctx context.Context) ([]int, error) {
 	var ids []int
+	ctx = setContextOp(ctx, aq.ctx, "IDs")
 	if err := aq.Select(app.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -196,10 +197,11 @@ func (aq *AppQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (aq *AppQuery) Count(ctx context.Context) (int, error) {
+	ctx = setContextOp(ctx, aq.ctx, "Count")
 	if err := aq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return aq.sqlCount(ctx)
+	return withInterceptors[int](ctx, aq, querierCount[*AppQuery](), aq.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
@@ -213,10 +215,15 @@ func (aq *AppQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (aq *AppQuery) Exist(ctx context.Context) (bool, error) {
-	if err := aq.prepareQuery(ctx); err != nil {
-		return false, err
+	ctx = setContextOp(ctx, aq.ctx, "Exist")
+	switch _, err := aq.FirstID(ctx); {
+	case IsNotFound(err):
+		return false, nil
+	case err != nil:
+		return false, fmt.Errorf("ent: check existence: %w", err)
+	default:
+		return true, nil
 	}
-	return aq.sqlExist(ctx)
 }
 
 // ExistX is like Exist, but panics if an error occurs.
@@ -236,14 +243,13 @@ func (aq *AppQuery) Clone() *AppQuery {
 	}
 	return &AppQuery{
 		config:     aq.config,
-		limit:      aq.limit,
-		offset:     aq.offset,
+		ctx:        aq.ctx.Clone(),
 		order:      append([]OrderFunc{}, aq.order...),
+		inters:     append([]Interceptor{}, aq.inters...),
 		predicates: append([]predicate.App{}, aq.predicates...),
 		// clone intermediate query.
-		sql:    aq.sql.Clone(),
-		path:   aq.path,
-		unique: aq.unique,
+		sql:  aq.sql.Clone(),
+		path: aq.path,
 	}
 }
 
@@ -263,16 +269,11 @@ func (aq *AppQuery) Clone() *AppQuery {
 //		Scan(ctx, &v)
 //
 func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
-	grbuild := &AppGroupBy{config: aq.config}
-	grbuild.fields = append([]string{field}, fields...)
-	grbuild.path = func(ctx context.Context) (prev *sql.Selector, err error) {
-		if err := aq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		return aq.sqlQuery(ctx), nil
-	}
+	aq.ctx.Fields = append([]string{field}, fields...)
+	grbuild := &AppGroupBy{build: aq}
+	grbuild.flds = &aq.ctx.Fields
 	grbuild.label = app.Label
-	grbuild.flds, grbuild.scan = &grbuild.fields, grbuild.Scan
+	grbuild.scan = grbuild.Scan
 	return grbuild
 }
 
@@ -290,11 +291,11 @@ func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 //		Scan(ctx, &v)
 //
 func (aq *AppQuery) Select(fields ...string) *AppSelect {
-	aq.fields = append(aq.fields, fields...)
-	selbuild := &AppSelect{AppQuery: aq}
-	selbuild.label = app.Label
-	selbuild.flds, selbuild.scan = &aq.fields, selbuild.Scan
-	return selbuild
+	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
+	sbuild := &AppSelect{AppQuery: aq}
+	sbuild.label = app.Label
+	sbuild.flds, sbuild.scan = &aq.ctx.Fields, sbuild.Scan
+	return sbuild
 }
 
 // Aggregate returns a AppSelect configured with the given aggregations.
@@ -303,7 +304,17 @@ func (aq *AppQuery) Aggregate(fns ...AggregateFunc) *AppSelect {
 }
 
 func (aq *AppQuery) prepareQuery(ctx context.Context) error {
-	for _, f := range aq.fields {
+	for _, inter := range aq.inters {
+		if inter == nil {
+			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
+		}
+		if trv, ok := inter.(Traverser); ok {
+			if err := trv.Traverse(ctx, aq); err != nil {
+				return err
+			}
+		}
+	}
+	for _, f := range aq.ctx.Fields {
 		if !app.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
@@ -345,22 +356,11 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 
 func (aq *AppQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := aq.querySpec()
-	_spec.Node.Columns = aq.fields
-	if len(aq.fields) > 0 {
-		_spec.Unique = aq.unique != nil && *aq.unique
+	_spec.Node.Columns = aq.ctx.Fields
+	if len(aq.ctx.Fields) > 0 {
+		_spec.Unique = aq.ctx.Unique != nil && *aq.ctx.Unique
 	}
 	return sqlgraph.CountNodes(ctx, aq.driver, _spec)
-}
-
-func (aq *AppQuery) sqlExist(ctx context.Context) (bool, error) {
-	switch _, err := aq.FirstID(ctx); {
-	case IsNotFound(err):
-		return false, nil
-	case err != nil:
-		return false, fmt.Errorf("ent: check existence: %w", err)
-	default:
-		return true, nil
-	}
 }
 
 func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
@@ -376,10 +376,10 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 		From:   aq.sql,
 		Unique: true,
 	}
-	if unique := aq.unique; unique != nil {
+	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
 	}
-	if fields := aq.fields; len(fields) > 0 {
+	if fields := aq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, app.FieldID)
 		for i := range fields {
@@ -395,10 +395,10 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 			}
 		}
 	}
-	if limit := aq.limit; limit != nil {
+	if limit := aq.ctx.Limit; limit != nil {
 		_spec.Limit = *limit
 	}
-	if offset := aq.offset; offset != nil {
+	if offset := aq.ctx.Offset; offset != nil {
 		_spec.Offset = *offset
 	}
 	if ps := aq.order; len(ps) > 0 {
@@ -414,7 +414,7 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(aq.driver.Dialect())
 	t1 := builder.Table(app.Table)
-	columns := aq.fields
+	columns := aq.ctx.Fields
 	if len(columns) == 0 {
 		columns = app.Columns
 	}
@@ -423,7 +423,7 @@ func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector = aq.sql
 		selector.Select(selector.Columns(columns...)...)
 	}
-	if aq.unique != nil && *aq.unique {
+	if aq.ctx.Unique != nil && *aq.ctx.Unique {
 		selector.Distinct()
 	}
 	for _, p := range aq.predicates {
@@ -432,12 +432,12 @@ func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	for _, p := range aq.order {
 		p(selector)
 	}
-	if offset := aq.offset; offset != nil {
+	if offset := aq.ctx.Offset; offset != nil {
 		// limit is mandatory for offset clause. We start
 		// with default value, and override it below if needed.
 		selector.Offset(*offset).Limit(math.MaxInt32)
 	}
-	if limit := aq.limit; limit != nil {
+	if limit := aq.ctx.Limit; limit != nil {
 		selector.Limit(*limit)
 	}
 	return selector
@@ -445,13 +445,8 @@ func (aq *AppQuery) sqlQuery(ctx context.Context) *sql.Selector {
 
 // AppGroupBy is the group-by builder for App entities.
 type AppGroupBy struct {
-	config
 	selector
-	fields []string
-	fns    []AggregateFunc
-	// intermediate query (i.e. traversal path).
-	sql  *sql.Selector
-	path func(context.Context) (*sql.Selector, error)
+	build *AppQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
@@ -460,58 +455,46 @@ func (agb *AppGroupBy) Aggregate(fns ...AggregateFunc) *AppGroupBy {
 	return agb
 }
 
-// Scan applies the group-by query and scans the result into the given value.
+// Scan applies the selector query and scans the result into the given value.
 func (agb *AppGroupBy) Scan(ctx context.Context, v any) error {
-	query, err := agb.path(ctx)
-	if err != nil {
+	ctx = setContextOp(ctx, agb.build.ctx, "GroupBy")
+	if err := agb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	agb.sql = query
-	return agb.sqlScan(ctx, v)
+	return scanWithInterceptors[*AppQuery, *AppGroupBy](ctx, agb.build, agb, agb.build.inters, v)
 }
 
-func (agb *AppGroupBy) sqlScan(ctx context.Context, v any) error {
-	for _, f := range agb.fields {
-		if !app.ValidColumn(f) {
-			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
-		}
+func (agb *AppGroupBy) sqlScan(ctx context.Context, root *AppQuery, v any) error {
+	selector := root.sqlQuery(ctx).Select()
+	aggregation := make([]string, 0, len(agb.fns))
+	for _, fn := range agb.fns {
+		aggregation = append(aggregation, fn(selector))
 	}
-	selector := agb.sqlQuery()
+	if len(selector.SelectedColumns()) == 0 {
+		columns := make([]string, 0, len(*agb.flds)+len(agb.fns))
+		for _, f := range *agb.flds {
+			columns = append(columns, selector.C(f))
+		}
+		columns = append(columns, aggregation...)
+		selector.Select(columns...)
+	}
+	selector.GroupBy(selector.Columns(*agb.flds...)...)
 	if err := selector.Err(); err != nil {
 		return err
 	}
 	rows := &sql.Rows{}
 	query, args := selector.Query()
-	if err := agb.driver.Query(ctx, query, args, rows); err != nil {
+	if err := agb.build.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}
 	defer rows.Close()
 	return sql.ScanSlice(rows, v)
 }
 
-func (agb *AppGroupBy) sqlQuery() *sql.Selector {
-	selector := agb.sql.Select()
-	aggregation := make([]string, 0, len(agb.fns))
-	for _, fn := range agb.fns {
-		aggregation = append(aggregation, fn(selector))
-	}
-	if len(selector.SelectedColumns()) == 0 {
-		columns := make([]string, 0, len(agb.fields)+len(agb.fns))
-		for _, f := range agb.fields {
-			columns = append(columns, selector.C(f))
-		}
-		columns = append(columns, aggregation...)
-		selector.Select(columns...)
-	}
-	return selector.GroupBy(selector.Columns(agb.fields...)...)
-}
-
 // AppSelect is the builder for selecting fields of App entities.
 type AppSelect struct {
 	*AppQuery
 	selector
-	// intermediate query (i.e. traversal path).
-	sql *sql.Selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
@@ -522,26 +505,27 @@ func (as *AppSelect) Aggregate(fns ...AggregateFunc) *AppSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (as *AppSelect) Scan(ctx context.Context, v any) error {
+	ctx = setContextOp(ctx, as.ctx, "Select")
 	if err := as.prepareQuery(ctx); err != nil {
 		return err
 	}
-	as.sql = as.AppQuery.sqlQuery(ctx)
-	return as.sqlScan(ctx, v)
+	return scanWithInterceptors[*AppQuery, *AppSelect](ctx, as.AppQuery, as, as.inters, v)
 }
 
-func (as *AppSelect) sqlScan(ctx context.Context, v any) error {
+func (as *AppSelect) sqlScan(ctx context.Context, root *AppQuery, v any) error {
+	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(as.fns))
 	for _, fn := range as.fns {
-		aggregation = append(aggregation, fn(as.sql))
+		aggregation = append(aggregation, fn(selector))
 	}
 	switch n := len(*as.selector.flds); {
 	case n == 0 && len(aggregation) > 0:
-		as.sql.Select(aggregation...)
+		selector.Select(aggregation...)
 	case n != 0 && len(aggregation) > 0:
-		as.sql.AppendSelect(aggregation...)
+		selector.AppendSelect(aggregation...)
 	}
 	rows := &sql.Rows{}
-	query, args := as.sql.Query()
+	query, args := selector.Query()
 	if err := as.driver.Query(ctx, query, args, rows); err != nil {
 		return err
 	}

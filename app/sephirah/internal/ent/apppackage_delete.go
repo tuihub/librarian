@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"fmt"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -28,34 +27,7 @@ func (apd *AppPackageDelete) Where(ps ...predicate.AppPackage) *AppPackageDelete
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (apd *AppPackageDelete) Exec(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(apd.hooks) == 0 {
-		affected, err = apd.sqlExec(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AppPackageMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			apd.mutation = mutation
-			affected, err = apd.sqlExec(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(apd.hooks) - 1; i >= 0; i-- {
-			if apd.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = apd.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, apd.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, AppPackageMutation](ctx, apd.sqlExec, apd.mutation, apd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
@@ -88,12 +60,19 @@ func (apd *AppPackageDelete) sqlExec(ctx context.Context) (int, error) {
 	if err != nil && sqlgraph.IsConstraintError(err) {
 		err = &ConstraintError{msg: err.Error(), wrap: err}
 	}
+	apd.mutation.done = true
 	return affected, err
 }
 
 // AppPackageDeleteOne is the builder for deleting a single AppPackage entity.
 type AppPackageDeleteOne struct {
 	apd *AppPackageDelete
+}
+
+// Where appends a list predicates to the AppPackageDelete builder.
+func (apdo *AppPackageDeleteOne) Where(ps ...predicate.AppPackage) *AppPackageDeleteOne {
+	apdo.apd.mutation.Where(ps...)
+	return apdo
 }
 
 // Exec executes the deletion query.
@@ -111,5 +90,7 @@ func (apdo *AppPackageDeleteOne) Exec(ctx context.Context) error {
 
 // ExecX is like Exec, but panics if an error occurs.
 func (apdo *AppPackageDeleteOne) ExecX(ctx context.Context) {
-	apdo.apd.ExecX(ctx)
+	if err := apdo.Exec(ctx); err != nil {
+		panic(err)
+	}
 }

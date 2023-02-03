@@ -1,10 +1,10 @@
 sephirah:
   server:
     grpc:
-      addr: 0.0.0.0:9000
+      addr: 0.0.0.0:10000
       timeout: 1s
     grpc_web:
-      addr: 0.0.0.0:9001
+      addr: 0.0.0.0:10001
       timeout: 1s
   data:
     database:
@@ -29,7 +29,9 @@ searcher:
       source: root:root@tcp(127.0.0.1:3306)/test
 porter:
   data:
-    database:
-      driver: mysql
-      source: root:root@tcp(127.0.0.1:3306)/test
+    s3:
+      end_point: 127.0.0.1:9000
+      access_key: test
+      secret_key: testtest
+      use_ssl: false
     steam_api_key:

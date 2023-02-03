@@ -1,24 +1,74 @@
 package data
 
 import (
-	"github.com/tuihub/librarian/internal/conf"
+	"context"
+	"errors"
 
-	"github.com/go-kratos/kratos/v2/log"
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
+	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/logger"
+
 	"github.com/google/wire"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData)
+var ProviderSet = wire.NewSet(NewData, NewS3Repo)
 
 // Data .
 type Data struct {
-	// TODO wrapped database client
+	mc      *minio.Client
+	buckets map[bizs3.Bucket]string
 }
 
 // NewData .
-func NewData(c *conf.Porter_Data) (*Data, func(), error) {
-	cleanup := func() {
-		log.Info("closing the data resources")
+func NewData(c *conf.Porter_Data) (*Data, error) {
+	if c.S3 == nil {
+		return nil, errors.New("missing s3 config")
 	}
-	return &Data{}, cleanup, nil
+	minioClient, err := minio.New(c.S3.EndPoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(c.S3.AccessKey, c.S3.SecretKey, ""),
+		Secure: c.S3.UseSsl,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	bucketName := defaultBucketName()
+	location := "us-east-1"
+	for _, v := range bucketName {
+		if err = initBucket(minioClient, v, location); err != nil {
+			return nil, err
+		}
+	}
+
+	return &Data{
+		mc:      minioClient,
+		buckets: bucketName,
+	}, nil
+}
+
+func initBucket(mc *minio.Client, bucketName, location string) error {
+	err := mc.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{Region: location})
+	if err != nil {
+		// Check to see if we already own this bucket (which happens if you run this twice)
+		exists, errBucketExists := mc.BucketExists(context.Background(), bucketName)
+		if errBucketExists == nil && exists {
+			logger.Infof("We already own %s\n", bucketName)
+		} else {
+			logger.Fatal(err)
+			return err
+		}
+	} else {
+		logger.Infof("Successfully created %s\n", bucketName)
+	}
+	return nil
+}
+
+func defaultBucketName() map[bizs3.Bucket]string {
+	return map[bizs3.Bucket]string{
+		bizs3.BucketUnspecified: "",
+		bizs3.BucketDefault:     "default",
+	}
 }

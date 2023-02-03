@@ -5,6 +5,7 @@ import (
 	"io"
 	"strconv"
 
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -18,10 +19,14 @@ type LibrarianPorterServiceService struct {
 	pb.UnimplementedLibrarianPorterServiceServer
 
 	uc *bizsteam.SteamUseCase
+	s3 *bizs3.S3
 }
 
-func NewLibrarianPorterServiceService(uc *bizsteam.SteamUseCase) pb.LibrarianPorterServiceServer {
-	return &LibrarianPorterServiceService{uc: uc}
+func NewLibrarianPorterServiceService(uc *bizsteam.SteamUseCase, s3 *bizs3.S3) pb.LibrarianPorterServiceServer {
+	return &LibrarianPorterServiceService{
+		uc: uc,
+		s3: s3,
+	}
 }
 
 func (s *LibrarianPorterServiceService) PullFeed(ctx context.Context, req *pb.PullFeedRequest) (
@@ -123,12 +128,34 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 	}
 }
 func (s *LibrarianPorterServiceService) PushData(conn pb.LibrarianPorterService_PushDataServer) error {
-	for {
-		_, err := conn.Recv()
-		if errors.Is(err, io.EOF) {
-			return conn.SendAndClose(&pb.PushDataResponse{})
-		}
+	var file *bizs3.PutObject
+	{
+		req, err := conn.Recv()
 		if err != nil {
+			return err
+		}
+		if req.GetMetadata() == nil {
+			return errors.BadRequest("missing metadata", "")
+		}
+		file, err = s.s3.NewPushData(
+			conn.Context(),
+			toBizBucket(req.GetMetadata().GetSource()),
+			req.GetMetadata().GetContentId(),
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	for {
+		if req, err := conn.Recv(); err != nil {
+			if errors.Is(err, io.EOF) {
+				return file.Close()
+			}
+			return err
+		} else if len(req.GetData()) == 0 {
+			return file.Close()
+		} else if _, err = file.Write(req.GetData()); err != nil {
 			return err
 		}
 	}

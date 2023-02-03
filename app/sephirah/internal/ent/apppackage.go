@@ -139,7 +139,7 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 // Note that you need to call AppPackage.Unwrap() before calling this method if this AppPackage
 // was returned from a transaction, and the transaction was committed or rolled back.
 func (ap *AppPackage) Update() *AppPackageUpdateOne {
-	return (&AppPackageClient{config: ap.config}).UpdateOne(ap)
+	return NewAppPackageClient(ap.config).UpdateOne(ap)
 }
 
 // Unwrap unwraps the AppPackage entity that was returned from a transaction after it was closed,

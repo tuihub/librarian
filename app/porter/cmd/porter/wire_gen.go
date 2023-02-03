@@ -8,6 +8,7 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
@@ -29,15 +30,16 @@ func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data) (
 		return nil, nil, err
 	}
 	steamSteam := steam.NewSteam(storeAPI, webAPI)
-	dataData, cleanup, err := data.NewData(porter_Data)
+	dataData, err := data.NewData(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	steamUseCase := bizsteam.NewSteamUseCase(steamSteam, dataData)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase)
+	s3Repo := data.NewS3Repo(dataData)
+	s3 := bizs3.NewS3(s3Repo)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase, s3)
 	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }

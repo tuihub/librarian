@@ -117,40 +117,7 @@ func (apu *AppPackageUpdate) Mutation() *AppPackageMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (apu *AppPackageUpdate) Save(ctx context.Context) (int, error) {
-	var (
-		err      error
-		affected int
-	)
-	if len(apu.hooks) == 0 {
-		if err = apu.check(); err != nil {
-			return 0, err
-		}
-		affected, err = apu.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AppPackageMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = apu.check(); err != nil {
-				return 0, err
-			}
-			apu.mutation = mutation
-			affected, err = apu.sqlSave(ctx)
-			mutation.done = true
-			return affected, err
-		})
-		for i := len(apu.hooks) - 1; i >= 0; i-- {
-			if apu.hooks[i] == nil {
-				return 0, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = apu.hooks[i](mut)
-		}
-		if _, err := mut.Mutate(ctx, apu.mutation); err != nil {
-			return 0, err
-		}
-	}
-	return affected, err
+	return withHooks[int, AppPackageMutation](ctx, apu.sqlSave, apu.mutation, apu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -186,6 +153,9 @@ func (apu *AppPackageUpdate) check() error {
 }
 
 func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := apu.check(); err != nil {
+		return n, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   apppackage.Table,
@@ -247,6 +217,7 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
+	apu.mutation.done = true
 	return n, nil
 }
 
@@ -354,46 +325,7 @@ func (apuo *AppPackageUpdateOne) Select(field string, fields ...string) *AppPack
 
 // Save executes the query and returns the updated AppPackage entity.
 func (apuo *AppPackageUpdateOne) Save(ctx context.Context) (*AppPackage, error) {
-	var (
-		err  error
-		node *AppPackage
-	)
-	if len(apuo.hooks) == 0 {
-		if err = apuo.check(); err != nil {
-			return nil, err
-		}
-		node, err = apuo.sqlSave(ctx)
-	} else {
-		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*AppPackageMutation)
-			if !ok {
-				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = apuo.check(); err != nil {
-				return nil, err
-			}
-			apuo.mutation = mutation
-			node, err = apuo.sqlSave(ctx)
-			mutation.done = true
-			return node, err
-		})
-		for i := len(apuo.hooks) - 1; i >= 0; i-- {
-			if apuo.hooks[i] == nil {
-				return nil, fmt.Errorf("ent: uninitialized hook (forgotten import ent/runtime?)")
-			}
-			mut = apuo.hooks[i](mut)
-		}
-		v, err := mut.Mutate(ctx, apuo.mutation)
-		if err != nil {
-			return nil, err
-		}
-		nv, ok := v.(*AppPackage)
-		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from AppPackageMutation", v)
-		}
-		node = nv
-	}
-	return node, err
+	return withHooks[*AppPackage, AppPackageMutation](ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -429,6 +361,9 @@ func (apuo *AppPackageUpdateOne) check() error {
 }
 
 func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage, err error) {
+	if err := apuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   apppackage.Table,
@@ -510,5 +445,6 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 		}
 		return nil, err
 	}
+	apuo.mutation.done = true
 	return _node, nil
 }

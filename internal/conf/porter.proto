@@ -16,11 +16,13 @@ message Porter {
   }
 
   message Data {
-    message Database {
-      string driver = 1;
-      string source = 2;
+    message S3 {
+      string end_point = 1;
+      string access_key = 2;
+      string secret_key = 3;
+      bool use_ssl = 4;
     }
-    Database database = 1;
+    S3 s3 = 1;
     string steam_api_key = 2;
   }
 
