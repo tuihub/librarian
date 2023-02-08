@@ -3,10 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
+	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"google.golang.org/grpc/metadata"
@@ -25,10 +28,12 @@ type Client struct {
 
 func main() {
 	ctx := context.Background()
+
 	c := Client{
 		cli:    NewSephirahClient(),
 		userID: nil,
 	}
+	c.WaitServerOnline(ctx)
 	ctx = c.CreateDefaultUserAndLogin(ctx)
 	c.TestUser(ctx)
 	c.TestApp(ctx)
@@ -47,6 +52,15 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 	}
 	cli := pb.NewLibrarianSephirahServiceClient(conn)
 	return cli
+}
+
+func (c *Client) WaitServerOnline(ctx context.Context) {
+	_, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{})
+	for errors.IsServiceUnavailable(err) {
+		time.Sleep(time.Second)
+		log.Infof("Waiting server online %s", err.Error())
+		_, err = c.cli.GetToken(ctx, &pb.GetTokenRequest{})
+	}
 }
 
 func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context {

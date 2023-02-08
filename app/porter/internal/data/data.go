@@ -57,7 +57,7 @@ func initBucket(mc *minio.Client, bucketName, location string) error {
 		if errBucketExists == nil && exists {
 			logger.Infof("We already own %s\n", bucketName)
 		} else {
-			logger.Fatal(err)
+			logger.Error(err)
 			return err
 		}
 	} else {
@@ -68,7 +68,6 @@ func initBucket(mc *minio.Client, bucketName, location string) error {
 
 func defaultBucketName() map[bizs3.Bucket]string {
 	return map[bizs3.Bucket]string{
-		bizs3.BucketUnspecified: "",
-		bizs3.BucketDefault:     "default",
+		bizs3.BucketDefault: "default",
 	}
 }

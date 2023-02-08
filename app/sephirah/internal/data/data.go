@@ -52,11 +52,13 @@ func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 	}
 	client, err := ent.Open(driverName, dataSourceName)
 	if err != nil {
-		logger.Fatalf("failed opening connection to postgres: %v", err)
+		logger.Errorf("failed opening connection to postgres: %v", err)
+		return nil, func() {}, err
 	}
 	// Run the auto migration tool.
 	if err = client.Schema.Create(context.Background()); err != nil {
-		logger.Fatalf("failed creating schema resources: %v", err)
+		logger.Errorf("failed creating schema resources: %v", err)
+		return nil, func() {}, err
 	}
 	return client, func() {
 		client.Close()

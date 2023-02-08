@@ -7,12 +7,13 @@ init:
 
 build:
 	mkdir -p bin/ && cd ../cmd/librarian && goc build --buildflags="-ldflags '-X main.Version=$(VERSION)'" -o ../../tests/bin/ .
+	cd ./fakes3 && go build -o ../bin/ .
 	cd ./client && go build -o ../bin/ .
 
 test:
 	cd bin && goc server &
+	cd bin && ./fakes3 &
+	sleep 1s
 	cd bin && UNLOCK_CREATE=true ./librarian &
-	sleep 5s
 	cd bin && ./client
-	sleep 5s
 	goc profile -o ../coverage-goc.out
