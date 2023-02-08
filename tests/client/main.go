@@ -37,7 +37,7 @@ func main() {
 func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("127.0.0.1:9000"),
+		grpc.WithEndpoint("127.0.0.1:10000"),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
 		),
