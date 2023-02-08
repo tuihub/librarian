@@ -242,8 +242,8 @@ github.com/go-kivik/pouchdb v1.3.5/go.mod h1:U+siUrqLCVxeMU3QjQTYIC3/F/e6EUKm+o5
 github.com/go-kratos/aegis v0.1.2/go.mod h1:jYeSQ3Gesba478zEnujOiG5QdsyF3Xk/8owFUeKcHxw=
 github.com/go-kratos/aegis v0.1.4 h1:rVLXJNohV1d2GUFi7TwPReF23clhaAtAzrz03IP6GMo=
 github.com/go-kratos/aegis v0.1.4/go.mod h1:Lk2PFCRyeYiXMJhCYgvJLXdc5AZEDk1Pik66SAIv0gY=
-github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230208022920-50da181d6956 h1:HDKmuM+cNTaOQ2nch1s8iFTvchV/aERBzlcwg5ysziY=
-github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230208022920-50da181d6956/go.mod h1:CE1b1wSHgKxPy+dCygwIMorFwHWd3Z5EMN9T6zKBptU=
+github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230208105924-7def38acde51 h1:wpNC0QuhA2uDqGwhSdI7gyBr7MefN2z563bCJq6ItoY=
+github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230208105924-7def38acde51/go.mod h1:CE1b1wSHgKxPy+dCygwIMorFwHWd3Z5EMN9T6zKBptU=
 github.com/go-kratos/kratos/v2 v2.5.3/go.mod h1:5acyLj4EgY428AJnZl2EwCrMV1OVlttQFBum+SghMiA=
 github.com/go-kratos/kratos/v2 v2.5.4 h1:tZeZXqEQ6nUPxE82TENDCzJ5y/295oo/vFg6P4G2tQY=
 github.com/go-kratos/kratos/v2 v2.5.4/go.mod h1:5acyLj4EgY428AJnZl2EwCrMV1OVlttQFBum+SghMiA=
