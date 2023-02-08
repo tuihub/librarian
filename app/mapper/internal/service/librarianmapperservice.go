@@ -15,6 +15,7 @@ type LibrarianMapperServiceService struct {
 
 func NewLibrarianMapperServiceService(m *biz.Mapper) pb.LibrarianMapperServiceServer {
 	return &LibrarianMapperServiceService{
+		UnimplementedLibrarianMapperServiceServer: pb.UnimplementedLibrarianMapperServiceServer{},
 		m: m,
 	}
 }
@@ -27,14 +28,6 @@ func (s *LibrarianMapperServiceService) InsertVertex(ctx context.Context, req *p
 	}
 	return &pb.InsertVertexResponse{}, nil
 }
-func (s *LibrarianMapperServiceService) DeleteVertex(ctx context.Context, req *pb.DeleteVertexRequest) (
-	*pb.DeleteVertexResponse, error) {
-	return &pb.DeleteVertexResponse{}, nil
-}
-func (s *LibrarianMapperServiceService) UpdateVertex(ctx context.Context, req *pb.UpdateVertexRequest) (
-	*pb.UpdateVertexResponse, error) {
-	return &pb.UpdateVertexResponse{}, nil
-}
 func (s *LibrarianMapperServiceService) InsertEdge(ctx context.Context, req *pb.InsertEdgeRequest) (
 	*pb.InsertEdgeResponse, error) {
 	err := s.m.InsertEdge(ctx, toBizEdgeList(req.GetEdgeList()))
@@ -43,22 +36,11 @@ func (s *LibrarianMapperServiceService) InsertEdge(ctx context.Context, req *pb.
 	}
 	return &pb.InsertEdgeResponse{}, nil
 }
-func (s *LibrarianMapperServiceService) DeleteEdge(ctx context.Context, req *pb.DeleteEdgeRequest) (
-	*pb.DeleteEdgeResponse, error) {
-	return &pb.DeleteEdgeResponse{}, nil
-}
-func (s *LibrarianMapperServiceService) UpdateEdge(ctx context.Context, req *pb.UpdateEdgeRequest) (
-	*pb.UpdateEdgeResponse, error) {
-	return &pb.UpdateEdgeResponse{}, nil
-}
-func (s *LibrarianMapperServiceService) GoFromVertex(ctx context.Context, req *pb.GoFromVertexRequest) (
-	*pb.GoFromVertexResponse, error) {
-	return &pb.GoFromVertexResponse{}, nil
-}
 func (s *LibrarianMapperServiceService) FetchEqualVertex(ctx context.Context, req *pb.FetchEqualVertexRequest) (
 	*pb.FetchEqualVertexResponse, error) {
 	vl, err := s.m.FetchEqualVertex(ctx, biz.Vertex{
-		ID: req.GetSrcVid(),
+		ID:   req.GetSrcVid(),
+		Type: 0,
 	})
 	if err != nil {
 		return nil, err
@@ -66,12 +48,4 @@ func (s *LibrarianMapperServiceService) FetchEqualVertex(ctx context.Context, re
 	return &pb.FetchEqualVertexResponse{
 		VertexList: toPBVertexList(vl),
 	}, nil
-}
-func (s *LibrarianMapperServiceService) FetchEqualVertexNeighbor(ctx context.Context,
-	req *pb.FetchEqualVertexNeighborRequest) (*pb.FetchEqualVertexNeighborResponse, error) {
-	return &pb.FetchEqualVertexNeighborResponse{}, nil
-}
-func (s *LibrarianMapperServiceService) FindPath(ctx context.Context, req *pb.FindPathRequest) (
-	*pb.FindPathResponse, error) {
-	return &pb.FindPathResponse{}, nil
 }

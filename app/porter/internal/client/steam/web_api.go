@@ -32,15 +32,17 @@ func NewWebAPI(config *conf.Porter_Data) (*WebAPI, error) {
 		colly.AllowURLRevisit(),
 	)
 	err := c.Limit(&colly.LimitRule{
-		DomainGlob:  "*api.steampowered.com*",
-		Parallelism: 1,
-		Delay:       time.Second,
+		DomainRegexp: "",
+		DomainGlob:   "*api.steampowered.com*",
+		Delay:        time.Second,
+		RandomDelay:  0,
+		Parallelism:  1,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &WebAPI{
-		key: config.SteamApiKey,
+		key: config.Steam.ApiKey,
 		c:   c,
 	}, nil
 }
@@ -49,12 +51,12 @@ func (s *WebAPI) GetPlayerSummary(
 	ctx context.Context,
 	req model.GetPlayerSummariesRequest,
 ) (*model.PlayerSummary, error) {
-	res := model.GetPlayerSummariesResponse{}
+	res := new(model.GetPlayerSummariesResponse)
 	reqStr, err := query.Values(req)
 	if err != nil {
 		return nil, err
 	}
-	err = s.Get(ctx, "ISteamUser/GetPlayerSummaries/v2", reqStr, &res)
+	err = s.Get(ctx, "ISteamUser/GetPlayerSummaries/v2", reqStr, res)
 	if err != nil {
 		return nil, err
 	}
@@ -63,12 +65,12 @@ func (s *WebAPI) GetPlayerSummary(
 }
 
 func (s *WebAPI) GetOwnedGames(ctx context.Context, req model.GetOwnedGamesRequest) (*model.OwnedGames, error) {
-	res := model.GetOwnedGamesResponse{}
+	res := new(model.GetOwnedGamesResponse)
 	reqStr, err := query.Values(req)
 	if err != nil {
 		return nil, err
 	}
-	err = s.Get(ctx, "IPlayerService/GetOwnedGames/v1", reqStr, &res)
+	err = s.Get(ctx, "IPlayerService/GetOwnedGames/v1", reqStr, res)
 	if err != nil {
 		return nil, err
 	}

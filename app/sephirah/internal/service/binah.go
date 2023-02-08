@@ -29,7 +29,9 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 		} else if _, err = file.Writer.Write(req.Data); err != nil {
 			return err
 		}
-		if err := conn.Send(&pb.SimpleUploadFileResponse{}); err != nil {
+		if err := conn.Send(&pb.SimpleUploadFileResponse{
+			Status: pb.FileTransferStatus_FILE_TRANSFER_STATUS_IN_PROGRESS,
+		}); err != nil {
 			return err
 		}
 	}

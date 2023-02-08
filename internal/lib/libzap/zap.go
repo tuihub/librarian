@@ -55,8 +55,9 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 		w := zapcore.AddSync(&lumberjack.Logger{
 			Filename:   opt.Filename,
 			MaxSize:    opt.Rotate.MaxSize,
-			MaxBackups: opt.Rotate.MaxBackups,
 			MaxAge:     opt.Rotate.MaxAge,
+			MaxBackups: opt.Rotate.MaxBackups,
+			LocalTime:  false,
 			Compress:   opt.Rotate.Compress,
 		})
 

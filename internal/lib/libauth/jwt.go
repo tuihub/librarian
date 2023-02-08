@@ -50,7 +50,7 @@ func (a *Auth) KeyFunc(t ClaimsType) jwtv4.Keyfunc {
 }
 
 func NewClaims() jwtv4.Claims {
-	return &Claims{}
+	return new(Claims)
 }
 
 func FromContext(ctx context.Context) (*Claims, bool) {
@@ -77,8 +77,13 @@ func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
 		RegisteredClaims: jwtv4.RegisteredClaims{
-			ExpiresAt: jwtv4.NewNumericDate(expireTime),
 			Issuer:    a.config.Issuer,
+			Subject:   "",
+			Audience:  nil,
+			ExpiresAt: jwtv4.NewNumericDate(expireTime),
+			NotBefore: nil,
+			IssuedAt:  nil,
+			ID:        "",
 		},
 	}
 

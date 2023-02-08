@@ -19,23 +19,35 @@ var ProviderSet = wire.NewSet(NewMQ)
 
 type MQ struct {
 	router    *message.Router
-	pubSub    *gochannel.GoChannel
+	pubSub    *gochannel.GoChannel // TODO https://github.com/ThreeDotsLabs/watermill/issues/296
 	topicList map[string]bool
 }
 
 func NewMQ() (*MQ, func(), error) {
 	loggerAdapter := watermill.NewStdLoggerWithOut(logger.NewWriter(), false, false)
-	router, err := message.NewRouter(message.RouterConfig{}, loggerAdapter)
+	router, err := message.NewRouter(
+		message.RouterConfig{CloseTimeout: 0},
+		loggerAdapter,
+	)
 	pubSub := gochannel.NewGoChannel(
-		gochannel.Config{},
+		gochannel.Config{
+			OutputChannelBuffer:            0,
+			Persistent:                     false,
+			BlockPublishUntilSubscriberAck: false,
+		},
 		loggerAdapter,
 	)
 	router.AddMiddleware(
 		middleware.CorrelationID,
 		middleware.Retry{
-			MaxRetries:      5,                      //nolint:gomnd //TODO
-			InitialInterval: time.Millisecond * 100, //nolint:gomnd //TODO
-			Logger:          loggerAdapter,
+			MaxRetries:          5,                      //nolint:gomnd //TODO
+			InitialInterval:     time.Millisecond * 100, //nolint:gomnd //TODO
+			MaxInterval:         0,
+			Multiplier:          0,
+			MaxElapsedTime:      0,
+			RandomizationFactor: 0,
+			OnRetryHook:         nil,
+			Logger:              loggerAdapter,
 		}.Middleware,
 		// middleware.Recoverer,
 	)

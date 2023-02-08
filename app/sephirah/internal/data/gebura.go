@@ -41,7 +41,7 @@ func (g geburaRepo) IsApp(ctx context.Context, id int64) error {
 
 func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 	if a.Details == nil {
-		a.Details = &bizgebura.AppDetails{}
+		a.Details = new(bizgebura.AppDetails)
 	}
 	q := g.data.db.App.Create().
 		SetInternalID(a.InternalID).
@@ -85,7 +85,7 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 	apps := make([]*ent.AppCreate, len(al))
 	for i, a := range al {
 		if a.Details == nil {
-			a.Details = &bizgebura.AppDetails{}
+			a.Details = new(bizgebura.AppDetails)
 		}
 		apps[i] = g.data.db.App.Create().
 			SetInternalID(a.InternalID).

@@ -23,6 +23,7 @@ func NewLibrarianSephirahServiceService(
 	b *bizbinah.Binah,
 ) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
+		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		t: t,
 		g: g,
 		b: b,

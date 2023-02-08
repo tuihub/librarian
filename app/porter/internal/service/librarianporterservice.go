@@ -24,32 +24,12 @@ type LibrarianPorterServiceService struct {
 
 func NewLibrarianPorterServiceService(uc *bizsteam.SteamUseCase, s3 *bizs3.S3) pb.LibrarianPorterServiceServer {
 	return &LibrarianPorterServiceService{
+		UnimplementedLibrarianPorterServiceServer: pb.UnimplementedLibrarianPorterServiceServer{},
 		uc: uc,
 		s3: s3,
 	}
 }
 
-func (s *LibrarianPorterServiceService) PullFeed(ctx context.Context, req *pb.PullFeedRequest) (
-	*pb.PullFeedResponse, error) {
-	return &pb.PullFeedResponse{}, nil
-}
-func (s *LibrarianPorterServiceService) PullDB(ctx context.Context, req *pb.PullDBRequest) (
-	*pb.PullDBResponse, error) {
-	return &pb.PullDBResponse{}, nil
-}
-func (s *LibrarianPorterServiceService) PullWiki(ctx context.Context, req *pb.PullWikiRequest) (
-	*pb.PullWikiResponse, error) {
-	return &pb.PullWikiResponse{}, nil
-}
-func (s *LibrarianPorterServiceService) PullData(req *pb.PullDataRequest,
-	conn pb.LibrarianPorterService_PullDataServer) error {
-	for {
-		err := conn.Send(&pb.PullDataResponse{})
-		if err != nil {
-			return err
-		}
-	}
-}
 func (s *LibrarianPorterServiceService) PullAccount(
 	ctx context.Context,
 	req *pb.PullAccountRequest,
@@ -61,6 +41,7 @@ func (s *LibrarianPorterServiceService) PullAccount(
 			return nil, err
 		}
 		return &pb.PullAccountResponse{Account: &librarian.Account{
+			Id:                nil,
 			Platform:          req.GetAccountId().GetPlatform(),
 			PlatformAccountId: req.GetAccountId().GetPlatformAccountId(),
 			Name:              u.Name,
@@ -86,6 +67,7 @@ func (s *LibrarianPorterServiceService) PullApp(
 			return nil, err
 		}
 		return &pb.PullAppResponse{App: &librarian.App{
+			Id:               nil,
 			Source:           req.GetAppId().GetSource(),
 			SourceAppId:      req.GetAppId().GetSourceAppId(),
 			SourceUrl:        &a.StoreURL,
@@ -93,11 +75,12 @@ func (s *LibrarianPorterServiceService) PullApp(
 			Type:             toPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
 			ImageUrl:         a.ImageURL,
-			Details: &librarian.AppDetails{
+			Details: &librarian.AppDetails{ // TODO
 				Description: a.Description,
 				ReleaseDate: a.ReleaseDate,
 				Developer:   a.Developer,
 				Publisher:   a.Publisher,
+				Version:     "",
 			},
 		}}, nil
 	default:
@@ -116,10 +99,16 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 		}
 		appList := make([]*librarian.App, len(al))
 		for i, a := range al {
-			appList[i] = &librarian.App{
-				Source:      librarian.AppSource_APP_SOURCE_STEAM,
-				SourceAppId: strconv.Itoa(int(a.AppID)),
-				Name:        a.Name,
+			appList[i] = &librarian.App{ // TODO
+				Id:               nil,
+				Source:           librarian.AppSource_APP_SOURCE_STEAM,
+				SourceAppId:      strconv.Itoa(int(a.AppID)),
+				SourceUrl:        nil,
+				Name:             a.Name,
+				Type:             0,
+				ShortDescription: "",
+				ImageUrl:         "",
+				Details:          nil,
 			}
 		}
 		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil

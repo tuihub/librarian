@@ -38,18 +38,27 @@ func NewNebula(c *conf.Mapper_Data) (*norm.DB, func()) {
 	}
 
 	dialector, err := dialectors.NewNebulaDialector(dialectors.DialectorConfig{
-		Addresses: c.GetNebula().GetAddress(),
-		Timeout:   time.Second * 5, //nolint:gomnd //TODO
-		Space:     c.GetNebula().GetSpace(),
-		Username:  c.GetNebula().GetUsername(),
-		Password:  c.GetNebula().GetPassword(),
+		Username:        c.GetNebula().GetUsername(),
+		Password:        c.GetNebula().GetPassword(),
+		Space:           c.GetNebula().GetSpace(),
+		Timeout:         time.Second * 5, //nolint:gomnd //TODO
+		IdleTime:        0,
+		MaxConnPoolSize: 0,
+		MinConnPoolSize: 0,
+		Addresses:       c.GetNebula().GetAddress(),
 	})
 	if err != nil {
 		logger.Errorf("Failed to initialize Nebula Dialector, %s", err.Error())
 		return nil, nil
 	}
 
-	db, err := norm.Open(dialector, norm.Config{}, norm.WithLogger(NebulaLoggerWrapper{}))
+	db, err := norm.Open(
+		dialector,
+		norm.Config{
+			DebugMode: false,
+		},
+		norm.WithLogger(NebulaLoggerWrapper{}),
+	)
 	if err != nil {
 		logger.Errorf("Failed to initialize Nebula DB, %s", err.Error())
 		return nil, nil

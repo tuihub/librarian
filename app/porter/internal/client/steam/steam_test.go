@@ -31,15 +31,27 @@ func getAppID() int {
 }
 
 func TestWebAPI_GetPlayerSummary(t *testing.T) {
-	r, _ := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
+	r, _ := steam.NewWebAPI(&conf.Porter_Data{
+		S3:    nil,
+		Steam: &conf.Porter_Data_Steam{ApiKey: getAPIKey()},
+	})
 	res, err := r.GetPlayerSummary(context.Background(), model.GetPlayerSummariesRequest{SteamID: getSteamID()})
 	logger.Infof("res %+v, err: %+v", res, err)
 }
 
 func TestWebAPI_GetOwnedGames(t *testing.T) {
-	r, _ := steam.NewWebAPI(&conf.Porter_Data{SteamApiKey: getAPIKey()})
+	r, _ := steam.NewWebAPI(&conf.Porter_Data{
+		S3:    nil,
+		Steam: &conf.Porter_Data_Steam{ApiKey: getAPIKey()},
+	})
 	res, err := r.GetOwnedGames(context.Background(), model.GetOwnedGamesRequest{
-		SteamID: getSteamID(),
+		SteamID:                getSteamID(),
+		IncludeAppInfo:         false,
+		IncludePlayedFreeGames: false,
+		IncludeFreeSub:         false,
+		SkipUnvettedApps:       false,
+		Language:               "",
+		IncludeExtendedAppInfo: false,
 	})
 	logger.Infof("res %+v, err: %+v", res, err)
 }

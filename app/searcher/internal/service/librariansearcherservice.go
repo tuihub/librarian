@@ -14,7 +14,10 @@ type LibrarianSearcherServiceService struct {
 }
 
 func NewLibrarianSearcherServiceService(uc *biz.Searcher) pb.LibrarianSearcherServiceServer {
-	return &LibrarianSearcherServiceService{uc: uc}
+	return &LibrarianSearcherServiceService{
+		UnimplementedLibrarianSearcherServiceServer: pb.UnimplementedLibrarianSearcherServiceServer{},
+		uc: uc,
+	}
 }
 
 func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.NewIDRequest) (
@@ -26,12 +29,4 @@ func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.New
 	return &pb.NewIDResponse{
 		Id: id,
 	}, nil
-}
-func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *pb.DescribeIDRequest) (
-	*pb.DescribeIDResponse, error) {
-	return &pb.DescribeIDResponse{}, nil
-}
-func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.SearchIDRequest) (
-	*pb.SearchIDResponse, error) {
-	return &pb.SearchIDResponse{}, nil
 }

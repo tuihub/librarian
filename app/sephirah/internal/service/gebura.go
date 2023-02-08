@@ -21,6 +21,10 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
 	a, err := s.g.CreateApp(ctx, &bizgebura.App{
+		InternalID:      0,
+		Source:          0,
+		SourceAppID:     "",
+		SourceURL:       "",
 		Name:            app.GetName(),
 		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
@@ -43,6 +47,9 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	}
 	err := s.g.UpdateApp(ctx, &bizgebura.App{
 		InternalID:      app.GetId().GetId(),
+		Source:          0,
+		SourceAppID:     "",
+		SourceURL:       "",
 		Name:            app.GetName(),
 		Type:            bizgebura.ToBizAppType(app.GetType()),
 		ShorDescription: app.GetShortDescription(),
@@ -69,20 +76,36 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListAppResponse{
+	return &pb.ListAppResponse{ // TODO
+		Paging:  nil,
 		AppList: bizgebura.ToPBAppList(a, req.GetContainDetails()),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
 	*pb.BindAppResponse, error,
 ) {
-	a, err := s.g.BindApp(ctx,
+	a, err := s.g.BindApp(ctx, // TODO
 		bizgebura.App{
-			InternalID: req.GetInternalAppId().GetId(),
+			InternalID:      req.GetInternalAppId().GetId(),
+			Source:          0,
+			SourceAppID:     "",
+			SourceURL:       "",
+			Name:            "",
+			Type:            0,
+			ShorDescription: "",
+			ImageURL:        "",
+			Details:         nil,
 		},
 		bizgebura.App{
-			Source:      bizgebura.ToBizAppSource(req.GetBindAppId().GetSource()),
-			SourceAppID: req.GetBindAppId().GetSourceAppId(),
+			InternalID:      0,
+			Source:          bizgebura.ToBizAppSource(req.GetBindAppId().GetSource()),
+			SourceAppID:     req.GetBindAppId().GetSourceAppId(),
+			SourceURL:       "",
+			Name:            "",
+			Type:            0,
+			ShorDescription: "",
+			ImageURL:        "",
+			Details:         nil,
 		})
 	if err != nil {
 		return nil, err
@@ -116,8 +139,12 @@ func (s *LibrarianSephirahServiceService) CreateAppPackage(
 	req *pb.CreateAppPackageRequest,
 ) (*pb.CreateAppPackageResponse, error) {
 	ap, err := s.g.CreateAppPackage(ctx, &bizgebura.AppPackage{
-		Name:        req.GetAppPackage().GetName(),
-		Description: req.GetAppPackage().GetDescription(),
+		InternalID:      0,
+		Source:          0,
+		SourceID:        0,
+		SourcePackageID: "",
+		Name:            req.GetAppPackage().GetName(),
+		Description:     req.GetAppPackage().GetDescription(),
 		Binary: bizgebura.AppPackageBinary{
 			Name: req.GetAppPackage().GetBinary().GetName(),
 			Size: req.GetAppPackage().GetBinary().GetSize(),
@@ -133,9 +160,12 @@ func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	req *pb.UpdateAppPackageRequest,
 ) (*pb.UpdateAppPackageResponse, error) {
 	err := s.g.UpdateAppPackage(ctx, &bizgebura.AppPackage{
-		InternalID:  req.GetAppPackage().GetId().GetId(),
-		Name:        req.GetAppPackage().GetName(),
-		Description: req.GetAppPackage().GetDescription(),
+		InternalID:      req.GetAppPackage().GetId().GetId(),
+		Source:          0,
+		SourceID:        0,
+		SourcePackageID: "",
+		Name:            req.GetAppPackage().GetName(),
+		Description:     req.GetAppPackage().GetDescription(),
 		Binary: bizgebura.AppPackageBinary{
 			Name: req.GetAppPackage().GetBinary().GetName(),
 			Size: req.GetAppPackage().GetBinary().GetSize(),
@@ -170,10 +200,27 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 	ctx context.Context,
 	req *pb.BindAppPackageRequest,
 ) (*pb.BindAppPackageResponse, error) {
-	err := s.g.AssignAppPackage(ctx, bizgebura.App{
-		InternalID: req.GetAppId().GetId(),
+	err := s.g.AssignAppPackage(ctx, bizgebura.App{ // TODO
+		InternalID:      req.GetAppId().GetId(),
+		Source:          0,
+		SourceAppID:     "",
+		SourceURL:       "",
+		Name:            "",
+		Type:            0,
+		ShorDescription: "",
+		ImageURL:        "",
+		Details:         nil,
 	}, bizgebura.AppPackage{
-		InternalID: req.GetAppPackageId().GetId(),
+		InternalID:      req.GetAppPackageId().GetId(),
+		Source:          0,
+		SourceID:        0,
+		SourcePackageID: "",
+		Name:            "",
+		Description:     "",
+		Binary: bizgebura.AppPackageBinary{
+			Name: "",
+			Size: "",
+		},
 	})
 	if err != nil {
 		return nil, err
@@ -202,8 +249,13 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 			return err
 		} else {
 			for id, a := range req.GetAppPackageList() {
-				apl = append(apl, &bizgebura.AppPackage{
+				apl = append(apl, &bizgebura.AppPackage{ // TODO
+					InternalID:      0,
+					Source:          0,
+					SourceID:        0,
 					SourcePackageID: id,
+					Name:            "",
+					Description:     "",
 					Binary: bizgebura.AppPackageBinary{
 						Name: a.GetName(),
 						Size: a.GetSize(),

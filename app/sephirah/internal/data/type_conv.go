@@ -58,6 +58,7 @@ func toBizUser(u *ent.User) *biztiphereth.User {
 	return &biztiphereth.User{
 		InternalID: u.InternalID,
 		UserName:   u.Username,
+		PassWord:   "",
 		Type:       toLibAuthUserType(u.Type),
 		Status:     toBizUserStatus(u.Status),
 	}
@@ -122,6 +123,7 @@ func toBizApp(a *ent.App) *bizgebura.App {
 		Type:            toBizAppType(a.Type),
 		ShorDescription: a.ShortDescription,
 		ImageURL:        a.ImageURL,
+		Details:         nil,
 	}
 }
 

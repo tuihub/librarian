@@ -13,8 +13,11 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 	*pb.GetTokenResponse, error,
 ) {
 	accessToken, refreshToken, err := s.t.GetToken(ctx, &biztiphereth.User{
-		UserName: req.GetUsername(),
-		PassWord: req.GetPassword(),
+		InternalID: 0,
+		UserName:   req.GetUsername(),
+		PassWord:   req.GetPassword(),
+		Type:       0,
+		Status:     0,
 	})
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
@@ -47,9 +50,11 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	*pb.CreateUserResponse, error,
 ) {
 	u, err := s.t.AddUser(ctx, &biztiphereth.User{
-		UserName: req.GetUser().GetUsername(),
-		PassWord: req.GetUser().GetPassword(),
-		Type:     biztiphereth.ToLibAuthUserType(req.GetUser().GetType()),
+		InternalID: 0,
+		UserName:   req.GetUser().GetUsername(),
+		PassWord:   req.GetUser().GetPassword(),
+		Type:       biztiphereth.ToLibAuthUserType(req.GetUser().GetType()),
+		Status:     0,
 	})
 	if err != nil {
 		return nil, err
@@ -68,6 +73,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 		InternalID: req.GetUser().GetId().GetId(),
 		UserName:   req.GetUser().GetUsername(),
 		PassWord:   req.GetUser().GetPassword(),
+		Type:       0,
 		Status:     biztiphereth.ToBizUserStatus(req.GetUser().GetStatus()),
 	})
 	if err != nil {
@@ -89,7 +95,8 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListUserResponse{
+	return &pb.ListUserResponse{ // TODO
+		Paging:   nil,
 		UserList: biztiphereth.ToPBUserList(u),
 	}, nil
 }
@@ -97,8 +104,12 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 	*pb.LinkAccountResponse, error,
 ) {
 	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
+		InternalID:        0,
 		Platform:          biztiphereth.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
+		Name:              "",
+		ProfileURL:        "",
+		AvatarURL:         "",
 	})
 	if err != nil {
 		return nil, err

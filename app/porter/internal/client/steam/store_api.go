@@ -30,9 +30,11 @@ func NewStoreAPI() (*StoreAPI, error) {
 		colly.AllowURLRevisit(),
 	)
 	err := c.Limit(&colly.LimitRule{
-		DomainGlob:  "*store.steampowered.com*",
-		Parallelism: 1,
-		Delay:       5 * time.Second, //nolint:gomnd // This API is now rate limited to 200 requests per 5 minutes
+		DomainRegexp: "",
+		DomainGlob:   "*store.steampowered.com*",
+		Delay:        5 * time.Second, //nolint:gomnd // This API is now rate limited to 200 requests per 5 minutes
+		RandomDelay:  0,
+		Parallelism:  1,
 	})
 	if err != nil {
 		return nil, err

@@ -28,8 +28,14 @@ func NewData(c *conf.Porter_Data) (*Data, error) {
 		return nil, errors.New("missing s3 config")
 	}
 	minioClient, err := minio.New(c.S3.EndPoint, &minio.Options{
-		Creds:  credentials.NewStaticV4(c.S3.AccessKey, c.S3.SecretKey, ""),
-		Secure: c.S3.UseSsl,
+		Creds:           credentials.NewStaticV4(c.S3.AccessKey, c.S3.SecretKey, ""),
+		Secure:          c.S3.UseSsl,
+		Transport:       nil,
+		Region:          "",
+		BucketLookup:    0,
+		TrailingHeaders: false,
+		CustomMD5:       nil,
+		CustomSHA256:    nil,
 	})
 	if err != nil {
 		return nil, err
@@ -53,7 +59,14 @@ func NewData(c *conf.Porter_Data) (*Data, error) {
 }
 
 func initBucket(mc *minio.Client, bucketName, location string) error {
-	err := mc.MakeBucket(context.Background(), bucketName, minio.MakeBucketOptions{Region: location})
+	err := mc.MakeBucket(
+		context.Background(),
+		bucketName,
+		minio.MakeBucketOptions{
+			Region:        location,
+			ObjectLocking: false,
+		},
+	)
 	if err != nil {
 		// Check to see if we already own this bucket (which happens if you run this twice)
 		exists, errBucketExists := mc.BucketExists(context.Background(), bucketName)

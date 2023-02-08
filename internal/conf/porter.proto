@@ -22,8 +22,11 @@ message Porter {
       string secret_key = 3;
       bool use_ssl = 4;
     }
+    message Steam {
+      string api_key = 1;
+    }
     S3 s3 = 1;
-    string steam_api_key = 2;
+    Steam steam = 2;
   }
 
   Server server = 1;

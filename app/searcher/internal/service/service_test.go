@@ -23,7 +23,12 @@ func (m *mockedSearcherRepo) NewID(ctx context.Context) (int64, error) {
 }
 
 func TestLibrarianSearcherServiceService_NewID(t *testing.T) {
-	m := mockedSearcherRepo{}
+	m := mockedSearcherRepo{
+		Mock: mock.Mock{
+			ExpectedCalls: nil,
+			Calls:         nil,
+		},
+	}
 	s := service.NewLibrarianSearcherServiceService(biz.NewSearcher(&m))
 
 	mc := m.On("NewID", context.Background()).Return((int64)(123), nil)

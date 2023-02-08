@@ -81,6 +81,7 @@ func ToPBAppDetails(d *AppDetails) *librarian.AppDetails {
 		ReleaseDate: d.ReleaseDate,
 		Developer:   d.Developer,
 		Publisher:   d.Publisher,
+		Version:     "", // TODO
 	}
 }
 
@@ -97,6 +98,7 @@ func ToPBApp(a *App, containDetails bool) *librarian.App {
 		Type:             ToPBAppType(a.Type),
 		ShortDescription: a.ShorDescription,
 		ImageUrl:         a.ImageURL,
+		Details:          nil,
 	}
 	if containDetails {
 		app.Details = ToPBAppDetails(a.Details)

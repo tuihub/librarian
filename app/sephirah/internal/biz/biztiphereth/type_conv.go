@@ -70,6 +70,7 @@ func ToPBUser(u User) pb.User {
 	return pb.User{
 		Id:       &librarian.InternalID{Id: u.InternalID},
 		Username: u.UserName,
+		Password: "",
 		Type:     ToPBUserType(u.Type),
 		Status:   ToPBUserStatus(u.Status),
 	}

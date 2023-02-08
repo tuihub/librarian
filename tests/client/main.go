@@ -55,11 +55,11 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 }
 
 func (c *Client) WaitServerOnline(ctx context.Context) {
-	_, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{})
+	_, err := c.cli.GetToken(ctx, new(pb.GetTokenRequest))
 	for errors.IsServiceUnavailable(err) {
 		time.Sleep(time.Second)
 		log.Infof("Waiting server online %s", err.Error())
-		_, err = c.cli.GetToken(ctx, &pb.GetTokenRequest{})
+		_, err = c.cli.GetToken(ctx, new(pb.GetTokenRequest))
 	}
 }
 
@@ -67,9 +67,11 @@ func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context 
 	var accessToken, refreshToken string
 	if resp, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{
 		User: &pb.User{
+			Id:       nil,
 			Username: username,
 			Password: password,
 			Type:     userType,
+			Status:   0,
 		},
 	}); err != nil {
 		panic(err)

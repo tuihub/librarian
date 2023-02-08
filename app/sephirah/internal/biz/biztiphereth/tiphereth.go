@@ -139,6 +139,10 @@ func (t *Tiphereth) AddUser(ctx context.Context, user *User) (*User, *errors.Err
 	}
 	return &User{
 		InternalID: resp.Id,
+		UserName:   "",
+		PassWord:   "",
+		Type:       0,
+		Status:     0,
 	}, nil
 }
 

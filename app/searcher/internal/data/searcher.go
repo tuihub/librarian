@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
 
@@ -15,9 +16,11 @@ type searcherRepo struct {
 
 func NewSearcherRepo(data *Data) biz.SearcherRepo {
 	sf := sonyflake.NewSonyflake(sonyflake.Settings{
-		MachineID: func() (uint16, error) {
+		StartTime: time.Time{},
+		MachineID: func() (uint16, error) { // TODO
 			return 0, nil
 		},
+		CheckMachineID: nil,
 	})
 	return &searcherRepo{
 		data,

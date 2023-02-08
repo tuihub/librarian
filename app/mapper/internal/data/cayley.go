@@ -29,7 +29,7 @@ type cayleyMapperRepo struct {
 
 type Vertex struct {
 	// dummy field to enforce all object to have a <id> <rdf:type> <ex:Person> relation
-	rdfType      struct{}       `quad:"@type > ex:Vertex"` //nolint:unused // means nothing for Go itself
+	rdfType      struct{}       `quad:"@type > ex:Vertex"`
 	ID           quad.IRI       `json:"@id"`
 	Type         biz.VertexType `json:"ex:type"`
 	OriginalType biz.VertexType `json:"ex:oType"`
@@ -76,6 +76,7 @@ func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func(), error) {
 func (r *cayleyMapperRepo) InsertVertex(ctx context.Context, vl []*biz.Vertex) error {
 	for _, v := range vl {
 		err := r.writeVertex(Vertex{
+			rdfType:      struct{}{},
 			ID:           toIRI(v.ID),
 			Type:         v.Type,
 			OriginalType: v.Type,
@@ -90,12 +91,22 @@ func (r *cayleyMapperRepo) InsertVertex(ctx context.Context, vl []*biz.Vertex) e
 func (r *cayleyMapperRepo) InsertEdge(ctx context.Context, el []*biz.Edge) error {
 	var q []quad.Quad
 	for _, e := range el {
-		src := Vertex{ID: toIRI(e.SourceID)}
+		src := Vertex{
+			rdfType:      struct{}{},
+			ID:           toIRI(e.SourceID),
+			Type:         0,
+			OriginalType: 0,
+		}
 		err := r.readVertex(ctx, &src)
 		if err != nil {
 			return err
 		}
-		dst := Vertex{ID: toIRI(e.DestinationID)}
+		dst := Vertex{
+			rdfType:      struct{}{},
+			ID:           toIRI(e.DestinationID),
+			Type:         0,
+			OriginalType: 0,
+		}
 		err = r.readVertex(ctx, &dst)
 		if err != nil {
 			return err

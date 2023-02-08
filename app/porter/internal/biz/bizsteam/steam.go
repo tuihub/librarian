@@ -88,9 +88,12 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 	}
 	resp, err := s.c.WebAPI.GetOwnedGames(ctx, model.GetOwnedGamesRequest{
 		SteamID:                id,
+		IncludeAppInfo:         true,
 		IncludePlayedFreeGames: true,
 		IncludeFreeSub:         true,
-		IncludeAppInfo:         true,
+		SkipUnvettedApps:       false,
+		Language:               "",
+		IncludeExtendedAppInfo: false,
 	})
 	if err != nil {
 		return nil, err
@@ -98,9 +101,16 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 	res := make([]*App, len(resp.Games))
 	for i, game := range resp.Games {
 		res[i] = &App{
-			AppID: game.AppID,
-			Type:  AppTypeGame,
-			Name:  game.Name,
+			AppID:            game.AppID,
+			StoreURL:         "",
+			Name:             game.Name,
+			Type:             AppTypeGame,
+			ShortDescription: "",
+			ImageURL:         "",
+			Description:      "",
+			ReleaseDate:      "",
+			Developer:        "",
+			Publisher:        "",
 		}
 	}
 	return res, nil
@@ -108,7 +118,9 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 
 func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, error) {
 	resp, err := s.c.StoreAPI.GetAppDetails(ctx, model.GetAppDetailsRequest{
-		AppIDs: []int{appID},
+		AppIDs:      []int{appID},
+		CountryCode: "",
+		Language:    "",
 	})
 	if err != nil {
 		return nil, err
@@ -119,8 +131,16 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 	var res *App
 	for _, app := range resp {
 		res = &App{
-			AppID:    uint(appID),
-			StoreURL: fmt.Sprintf("https://store.steampowered.com/app/%d", appID),
+			AppID:            uint(appID),
+			StoreURL:         fmt.Sprintf("https://store.steampowered.com/app/%d", appID),
+			Name:             "",
+			Type:             "",
+			ShortDescription: "",
+			ImageURL:         "",
+			Description:      "",
+			ReleaseDate:      "",
+			Developer:        "",
+			Publisher:        "",
 		}
 		if app.Success {
 			res = &App{

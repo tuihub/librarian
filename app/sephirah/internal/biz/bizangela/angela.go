@@ -77,7 +77,11 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[biztiphereth.PullAccountInfo](
 		"PullAccountInfo",
 		func() biztiphereth.PullAccountInfo {
-			return biztiphereth.PullAccountInfo{}
+			return biztiphereth.PullAccountInfo{
+				InternalID:        0,
+				Platform:          0,
+				PlatformAccountID: "",
+			}
 		},
 		func(ctx context.Context, info biztiphereth.PullAccountInfo) error {
 			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
@@ -119,7 +123,10 @@ func NewPullSteamAccountAppRelationTopic(
 	return libmq.NewTopic[PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
 		func() PullSteamAccountAppRelation {
-			return PullSteamAccountAppRelation{}
+			return PullSteamAccountAppRelation{
+				InternalID: 0,
+				SteamID:    "",
+			}
 		},
 		func(ctx context.Context, r PullSteamAccountAppRelation) error {
 			resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
@@ -139,21 +146,31 @@ func NewPullSteamAccountAppRelationTopic(
 				if err2 != nil {
 					return err2
 				}
-				internalApps[i] = &bizgebura.App{
-					InternalID:  resp2.Id,
-					Source:      bizgebura.AppSourceInternal,
-					SourceAppID: strconv.FormatInt(resp2.Id, 10),
-					Name:        app.GetName(),
+				internalApps[i] = &bizgebura.App{ // TODO
+					InternalID:      resp2.Id,
+					Source:          bizgebura.AppSourceInternal,
+					SourceAppID:     strconv.FormatInt(resp2.Id, 10),
+					SourceURL:       "",
+					Name:            app.GetName(),
+					Type:            0,
+					ShorDescription: "",
+					ImageURL:        "",
+					Details:         nil,
 				}
 				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
-				steamApps[i] = &bizgebura.App{
-					InternalID:  resp2.Id,
-					Source:      bizgebura.AppSourceSteam,
-					SourceAppID: app.GetSourceAppId(),
-					Name:        app.GetName(),
+				steamApps[i] = &bizgebura.App{ // TODO
+					InternalID:      resp2.Id,
+					Source:          bizgebura.AppSourceSteam,
+					SourceAppID:     app.GetSourceAppId(),
+					SourceURL:       "",
+					Name:            app.GetName(),
+					Type:            0,
+					ShorDescription: "",
+					ImageURL:        "",
+					Details:         nil,
 				}
 			}
 			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
@@ -208,7 +225,10 @@ func NewPullSteamAppTopic(
 	return libmq.NewTopic[PullSteamApp](
 		"PullSteamApp",
 		func() PullSteamApp {
-			return PullSteamApp{}
+			return PullSteamApp{
+				InternalID: 0,
+				AppID:      "",
+			}
 		},
 		func(ctx context.Context, r PullSteamApp) error {
 			resp, err := a.porter.PullApp(ctx, &porter.PullAppRequest{AppId: &librarian.AppID{
