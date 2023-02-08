@@ -267,7 +267,6 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 //		GroupBy(apppackage.FieldInternalID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageGroupBy {
 	apq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &AppPackageGroupBy{build: apq}
@@ -289,7 +288,6 @@ func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageG
 //	client.AppPackage.Query().
 //		Select(apppackage.FieldInternalID).
 //		Scan(ctx, &v)
-//
 func (apq *AppPackageQuery) Select(fields ...string) *AppPackageSelect {
 	apq.ctx.Fields = append(apq.ctx.Fields, fields...)
 	sbuild := &AppPackageSelect{AppPackageQuery: apq}

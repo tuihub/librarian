@@ -260,7 +260,6 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 //			SetInternalID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (apc *AppPackageCreate) OnConflict(opts ...sql.ConflictOption) *AppPackageUpsertOne {
 	apc.conflict = opts
 	return &AppPackageUpsertOne{
@@ -274,7 +273,6 @@ func (apc *AppPackageCreate) OnConflict(opts ...sql.ConflictOption) *AppPackageU
 //	client.AppPackage.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (apc *AppPackageCreate) OnConflictColumns(columns ...string) *AppPackageUpsertOne {
 	apc.conflict = append(apc.conflict, sql.ConflictColumns(columns...))
 	return &AppPackageUpsertOne{
@@ -435,7 +433,6 @@ func (u *AppPackageUpsert) UpdateCreatedAt() *AppPackageUpsert {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-//
 func (u *AppPackageUpsertOne) UpdateNewValues() *AppPackageUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	return u
@@ -444,10 +441,9 @@ func (u *AppPackageUpsertOne) UpdateNewValues() *AppPackageUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.AppPackage.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.AppPackage.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *AppPackageUpsertOne) Ignore() *AppPackageUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -757,7 +753,6 @@ func (apcb *AppPackageCreateBulk) ExecX(ctx context.Context) {
 //			SetInternalID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (apcb *AppPackageCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPackageUpsertBulk {
 	apcb.conflict = opts
 	return &AppPackageUpsertBulk{
@@ -771,7 +766,6 @@ func (apcb *AppPackageCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPac
 //	client.AppPackage.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (apcb *AppPackageCreateBulk) OnConflictColumns(columns ...string) *AppPackageUpsertBulk {
 	apcb.conflict = append(apcb.conflict, sql.ConflictColumns(columns...))
 	return &AppPackageUpsertBulk{
@@ -793,7 +787,6 @@ type AppPackageUpsertBulk struct {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-//
 func (u *AppPackageUpsertBulk) UpdateNewValues() *AppPackageUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	return u
@@ -805,7 +798,6 @@ func (u *AppPackageUpsertBulk) UpdateNewValues() *AppPackageUpsertBulk {
 //	client.AppPackage.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *AppPackageUpsertBulk) Ignore() *AppPackageUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

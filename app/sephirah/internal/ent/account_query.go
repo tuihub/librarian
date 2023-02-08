@@ -267,7 +267,6 @@ func (aq *AccountQuery) Clone() *AccountQuery {
 //		GroupBy(account.FieldInternalID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (aq *AccountQuery) GroupBy(field string, fields ...string) *AccountGroupBy {
 	aq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &AccountGroupBy{build: aq}
@@ -289,7 +288,6 @@ func (aq *AccountQuery) GroupBy(field string, fields ...string) *AccountGroupBy 
 //	client.Account.Query().
 //		Select(account.FieldInternalID).
 //		Scan(ctx, &v)
-//
 func (aq *AccountQuery) Select(fields ...string) *AccountSelect {
 	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
 	sbuild := &AccountSelect{AccountQuery: aq}
