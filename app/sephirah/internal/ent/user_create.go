@@ -213,7 +213,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 //			SetInternalID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (uc *UserCreate) OnConflict(opts ...sql.ConflictOption) *UserUpsertOne {
 	uc.conflict = opts
 	return &UserUpsertOne{
@@ -227,7 +226,6 @@ func (uc *UserCreate) OnConflict(opts ...sql.ConflictOption) *UserUpsertOne {
 //	client.User.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (uc *UserCreate) OnConflictColumns(columns ...string) *UserUpsertOne {
 	uc.conflict = append(uc.conflict, sql.ConflictColumns(columns...))
 	return &UserUpsertOne{
@@ -334,7 +332,6 @@ func (u *UserUpsert) UpdateCreatedAt() *UserUpsert {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-//
 func (u *UserUpsertOne) UpdateNewValues() *UserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	return u
@@ -343,10 +340,9 @@ func (u *UserUpsertOne) UpdateNewValues() *UserUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//  client.User.Create().
-//      OnConflict(sql.ResolveWithIgnore()).
-//      Exec(ctx)
-//
+//	client.User.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
 func (u *UserUpsertOne) Ignore() *UserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
@@ -593,7 +589,6 @@ func (ucb *UserCreateBulk) ExecX(ctx context.Context) {
 //			SetInternalID(v+v).
 //		}).
 //		Exec(ctx)
-//
 func (ucb *UserCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserUpsertBulk {
 	ucb.conflict = opts
 	return &UserUpsertBulk{
@@ -607,7 +602,6 @@ func (ucb *UserCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserUpsertBul
 //	client.User.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-//
 func (ucb *UserCreateBulk) OnConflictColumns(columns ...string) *UserUpsertBulk {
 	ucb.conflict = append(ucb.conflict, sql.ConflictColumns(columns...))
 	return &UserUpsertBulk{
@@ -629,7 +623,6 @@ type UserUpsertBulk struct {
 //			sql.ResolveWithNewValues(),
 //		).
 //		Exec(ctx)
-//
 func (u *UserUpsertBulk) UpdateNewValues() *UserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	return u
@@ -641,7 +634,6 @@ func (u *UserUpsertBulk) UpdateNewValues() *UserUpsertBulk {
 //	client.User.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-//
 func (u *UserUpsertBulk) Ignore() *UserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u

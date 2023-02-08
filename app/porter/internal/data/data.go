@@ -37,7 +37,10 @@ func NewData(c *conf.Porter_Data) (*Data, error) {
 
 	bucketName := defaultBucketName()
 	location := "us-east-1"
-	for _, v := range bucketName {
+	for i, v := range bucketName {
+		if i == bizs3.BucketUnspecified {
+			continue
+		}
 		if err = initBucket(minioClient, v, location); err != nil {
 			return nil, err
 		}
@@ -68,6 +71,7 @@ func initBucket(mc *minio.Client, bucketName, location string) error {
 
 func defaultBucketName() map[bizs3.Bucket]string {
 	return map[bizs3.Bucket]string{
-		bizs3.BucketDefault: "default",
+		bizs3.BucketUnspecified: "",
+		bizs3.BucketDefault:     "default",
 	}
 }

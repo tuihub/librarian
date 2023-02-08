@@ -267,7 +267,6 @@ func (aq *AppQuery) Clone() *AppQuery {
 //		GroupBy(app.FieldInternalID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-//
 func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 	aq.ctx.Fields = append([]string{field}, fields...)
 	grbuild := &AppGroupBy{build: aq}
@@ -289,7 +288,6 @@ func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 //	client.App.Query().
 //		Select(app.FieldInternalID).
 //		Scan(ctx, &v)
-//
 func (aq *AppQuery) Select(fields ...string) *AppSelect {
 	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
 	sbuild := &AppSelect{AppQuery: aq}

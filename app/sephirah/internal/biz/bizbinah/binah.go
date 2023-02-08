@@ -3,7 +3,6 @@ package bizbinah
 import (
 	"context"
 	"io"
-	"io/ioutil"
 	"os"
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -60,7 +59,7 @@ func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) 
 	if !exist || claims == nil || claims.TransferMetadata == nil {
 		return nil, pb.ErrorErrorReasonUnauthorized("token required")
 	}
-	f, err := ioutil.TempFile("", claims.TransferMetadata.Name)
+	f, err := os.CreateTemp("", claims.TransferMetadata.Name)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("create temp file failed")
 	}
