@@ -34,4 +34,5 @@ porter:
       access_key: test
       secret_key: testtest
       use_ssl: false
-    steam_api_key:
+    steam:
+      api_key:

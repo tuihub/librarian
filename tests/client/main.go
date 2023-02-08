@@ -56,8 +56,10 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 
 func (c *Client) WaitServerOnline(ctx context.Context) {
 	_, err := c.cli.GetToken(ctx, new(pb.GetTokenRequest))
-	for errors.IsServiceUnavailable(err) {
+	i := 1
+	for errors.IsServiceUnavailable(err) && i < 30 {
 		time.Sleep(time.Second)
+		i += 1
 		log.Infof("Waiting server online %s", err.Error())
 		_, err = c.cli.GetToken(ctx, new(pb.GetTokenRequest))
 	}
