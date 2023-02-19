@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
 	"github.com/tuihub/librarian/internal/conf"
@@ -31,7 +32,7 @@ func getAppID() int {
 }
 
 func TestWebAPI_GetPlayerSummary(t *testing.T) {
-	r, _ := steam.NewWebAPI(&conf.Porter_Data{
+	r, _ := steam.NewWebAPI(client.NewColly(), &conf.Porter_Data{
 		S3:    nil,
 		Steam: &conf.Porter_Data_Steam{ApiKey: getAPIKey()},
 	})
@@ -40,7 +41,7 @@ func TestWebAPI_GetPlayerSummary(t *testing.T) {
 }
 
 func TestWebAPI_GetOwnedGames(t *testing.T) {
-	r, _ := steam.NewWebAPI(&conf.Porter_Data{
+	r, _ := steam.NewWebAPI(client.NewColly(), &conf.Porter_Data{
 		S3:    nil,
 		Steam: &conf.Porter_Data_Steam{ApiKey: getAPIKey()},
 	})
@@ -57,7 +58,7 @@ func TestWebAPI_GetOwnedGames(t *testing.T) {
 }
 
 func TestStoreAPI_GetAppDetails(t *testing.T) {
-	r, _ := steam.NewStoreAPI()
+	r, _ := steam.NewStoreAPI(client.NewColly())
 	res, err := r.GetAppDetails(context.Background(), model.GetAppDetailsRequest{
 		AppIDs:      []int{getAppID()},
 		CountryCode: model.ProductCCUS,

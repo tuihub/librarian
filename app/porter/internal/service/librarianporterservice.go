@@ -30,6 +30,13 @@ func NewLibrarianPorterServiceService(uc *bizsteam.SteamUseCase, s3 *bizs3.S3) p
 	}
 }
 
+func (s *LibrarianPorterServiceService) PullFeed(
+	ctx context.Context,
+	req *pb.PullFeedRequest,
+) (*pb.PullFeedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PullFeed not implemented")
+}
+
 func (s *LibrarianPorterServiceService) PullAccount(
 	ctx context.Context,
 	req *pb.PullAccountRequest,

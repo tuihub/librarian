@@ -9,6 +9,7 @@ package service
 import (
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
+	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -19,11 +20,12 @@ import (
 // Injectors from wire.go:
 
 func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceServer, func(), error) {
-	storeAPI, err := steam.NewStoreAPI()
+	collector := client.NewColly()
+	storeAPI, err := steam.NewStoreAPI(collector)
 	if err != nil {
 		return nil, nil, err
 	}
-	webAPI, err := steam.NewWebAPI(porter_Data)
+	webAPI, err := steam.NewWebAPI(collector, porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}

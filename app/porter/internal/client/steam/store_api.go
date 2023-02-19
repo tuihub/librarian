@@ -9,10 +9,8 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
-	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/gocolly/colly/v2"
-	"github.com/gocolly/colly/v2/debug"
 	"github.com/google/go-querystring/query"
 )
 
@@ -20,15 +18,7 @@ type StoreAPI struct {
 	c *colly.Collector
 }
 
-func NewStoreAPI() (*StoreAPI, error) {
-	c := colly.NewCollector(
-		colly.Debugger(&debug.LogDebugger{
-			Output: logger.NewWriter(),
-			Prefix: "[colly]",
-			Flag:   0,
-		}),
-		colly.AllowURLRevisit(),
-	)
+func NewStoreAPI(c *colly.Collector) (*StoreAPI, error) {
 	err := c.Limit(&colly.LimitRule{
 		DomainRegexp: "",
 		DomainGlob:   "*store.steampowered.com*",

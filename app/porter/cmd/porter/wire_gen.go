@@ -10,6 +10,7 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
+	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/server"
@@ -21,11 +22,12 @@ import (
 
 // wireApp init kratos application.
 func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data) (*kratos.App, func(), error) {
-	storeAPI, err := steam.NewStoreAPI()
+	collector := client.NewColly()
+	storeAPI, err := steam.NewStoreAPI(collector)
 	if err != nil {
 		return nil, nil, err
 	}
-	webAPI, err := steam.NewWebAPI(porter_Data)
+	webAPI, err := steam.NewWebAPI(collector, porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
