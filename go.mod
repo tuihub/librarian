@@ -3,27 +3,27 @@ module github.com/tuihub/librarian
 go 1.19
 
 require (
-	entgo.io/ent v0.11.7
+	entgo.io/ent v0.11.8
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-kratos/kratos/v2 v2.5.4
 	github.com/gocolly/colly/v2 v2.1.1-0.20230116162851-487ef118797d
-	github.com/golang-jwt/jwt/v4 v4.4.3
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230129080941-f6a8a9ae6fd3
 	github.com/lib/pq v1.10.7
 	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/minio/minio-go/v7 v7.0.47
+	github.com/minio/minio-go/v7 v7.0.48
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.1
-	github.com/tuihub/protos v0.2.3
+	github.com/tuihub/protos v0.2.4
 	github.com/zhihu/norm v0.1.11
-	golang.org/x/crypto v0.5.0
-	golang.org/x/exp v0.0.0-20230206171751-46f607a40771
+	golang.org/x/crypto v0.6.0
+	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 	google.golang.org/grpc v1.53.0
 	google.golang.org/protobuf v1.28.1
 )
@@ -108,7 +108,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230208105924-7def38acde51
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230213033822-0a076443cba1
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
@@ -121,10 +121,10 @@ require (
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
