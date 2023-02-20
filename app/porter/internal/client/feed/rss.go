@@ -1,6 +1,7 @@
 package feed
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -24,9 +25,9 @@ func NewRSSRepo(c *colly.Collector) (bizfeed.RSSRepo, error) {
 	}, nil
 }
 
-func (s *rssRepo) Parse(data []byte) (*bizfeed.Feed, error) {
+func (s *rssRepo) Parse(data string) (*bizfeed.Feed, error) {
 	fp := gofeed.NewParser()
-	feed, err := fp.ParseString(string(data))
+	feed, err := fp.ParseString(data)
 	if err != nil {
 		return nil, err
 	}
@@ -42,18 +43,25 @@ func (s *rssRepo) Parse(data []byte) (*bizfeed.Feed, error) {
 	return res, nil
 }
 
-func (s *rssRepo) Get(url string, data []byte) error {
+func (s *rssRepo) Get(url string) (string, error) {
 	c := s.c.Clone()
 	var err error
+	var data string
 	c.OnResponse(func(response *colly.Response) {
 		if response.StatusCode != http.StatusOK {
 			err = fmt.Errorf("request %s failed with code %d", url, response.StatusCode)
 		}
-		data = response.Body
+		data = string(response.Body)
 	})
 	if err2 := c.Visit(url); err2 != nil {
-		return err2
+		return "", err2
 	}
 	c.Wait()
-	return err
+	if err != nil {
+		return "", err
+	}
+	if len(data) == 0 {
+		return "", errors.New("empty response")
+	}
+	return data, nil
 }

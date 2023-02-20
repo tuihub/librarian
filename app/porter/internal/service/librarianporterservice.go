@@ -5,6 +5,7 @@ import (
 	"io"
 	"strconv"
 
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -18,15 +19,21 @@ import (
 type LibrarianPorterServiceService struct {
 	pb.UnimplementedLibrarianPorterServiceServer
 
-	uc *bizsteam.SteamUseCase
-	s3 *bizs3.S3
+	feed  *bizfeed.FeedUseCase
+	steam *bizsteam.SteamUseCase
+	s3    *bizs3.S3
 }
 
-func NewLibrarianPorterServiceService(uc *bizsteam.SteamUseCase, s3 *bizs3.S3) pb.LibrarianPorterServiceServer {
+func NewLibrarianPorterServiceService(
+	feed *bizfeed.FeedUseCase,
+	steam *bizsteam.SteamUseCase,
+	s3 *bizs3.S3,
+) pb.LibrarianPorterServiceServer {
 	return &LibrarianPorterServiceService{
 		UnimplementedLibrarianPorterServiceServer: pb.UnimplementedLibrarianPorterServiceServer{},
-		uc: uc,
-		s3: s3,
+		feed:  feed,
+		steam: steam,
+		s3:    s3,
 	}
 }
 
@@ -34,7 +41,22 @@ func (s *LibrarianPorterServiceService) PullFeed(
 	ctx context.Context,
 	req *pb.PullFeedRequest,
 ) (*pb.PullFeedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PullFeed not implemented")
+	switch req.GetSource() {
+	case pb.FeedSource_FEED_SOURCE_COMMON:
+		{
+			feed, err := s.feed.GetFeed(ctx, req.GetContentId())
+			if err != nil {
+				return nil, err
+			}
+			res, err := toPBFeed(feed)
+			if err != nil {
+				return nil, err
+			}
+			return &pb.PullFeedResponse{Data: res}, nil
+		}
+	default:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
+	}
 }
 
 func (s *LibrarianPorterServiceService) PullAccount(
@@ -43,7 +65,7 @@ func (s *LibrarianPorterServiceService) PullAccount(
 ) (*pb.PullAccountResponse, error) {
 	switch req.GetAccountId().GetPlatform() {
 	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
-		u, err := s.uc.GetUser(ctx, req.GetAccountId().GetPlatformAccountId())
+		u, err := s.steam.GetUser(ctx, req.GetAccountId().GetPlatformAccountId())
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +91,7 @@ func (s *LibrarianPorterServiceService) PullApp(
 		if err != nil {
 			return nil, err
 		}
-		a, err := s.uc.GetAppDetails(ctx, int(appID))
+		a, err := s.steam.GetAppDetails(ctx, int(appID))
 		if err != nil {
 			return nil, err
 		}
@@ -100,7 +122,7 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 ) (*pb.PullAccountAppRelationResponse, error) {
 	switch req.GetAccountId().GetPlatform() {
 	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
-		al, err := s.uc.GetOwnedGames(ctx, req.GetAccountId().GetPlatformAccountId())
+		al, err := s.steam.GetOwnedGames(ctx, req.GetAccountId().GetPlatformAccountId())
 		if err != nil {
 			return nil, err
 		}

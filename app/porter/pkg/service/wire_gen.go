@@ -7,9 +7,11 @@
 package service
 
 import (
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/app/porter/internal/client"
+	"github.com/tuihub/librarian/app/porter/internal/client/feed"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -21,6 +23,11 @@ import (
 
 func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceServer, func(), error) {
 	collector := client.NewColly()
+	rssRepo, err := feed.NewRSSRepo(collector)
+	if err != nil {
+		return nil, nil, err
+	}
+	feedUseCase := bizfeed.NewFeed(rssRepo)
 	storeAPI, err := steam.NewStoreAPI(collector)
 	if err != nil {
 		return nil, nil, err
@@ -37,7 +44,7 @@ func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceS
 	steamUseCase := bizsteam.NewSteamUseCase(steamSteam, dataData)
 	s3Repo := data.NewS3Repo(dataData)
 	s3 := bizs3.NewS3(s3Repo)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(steamUseCase, s3)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, steamUseCase, s3)
 	return librarianPorterServiceServer, func() {
 	}, nil
 }
