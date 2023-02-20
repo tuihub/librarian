@@ -3,7 +3,7 @@ VERSION=$(shell git describe --tags --always)
 all: build test
 
 init:
-	curl -s https://api.github.com/repos/qiniu/goc/releases/latest | grep "browser_download_url.*-linux-amd64.tar.gz" | cut -d : -f 2,3 | tr -d \" | xargs -n 1 curl -L | tar -zx && chmod +x goc && mv goc /usr/local/bin
+	curl -L https://github.com/qiniu/goc/releases/download/v1.4.4/goc-v1.4.4-linux-amd64.tar.gz | tar -zx && chmod +x goc && mv goc /usr/local/bin
 
 build:
 	mkdir -p bin/ && cd ../cmd/librarian && goc build --buildflags="-ldflags '-X main.Version=$(VERSION)'" -o ../../tests/bin/ .
