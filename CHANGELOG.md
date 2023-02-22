@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.4](https://github.com/TuiHub/Librarian/compare/v0.0.3...v0.0.4) (2023-02-22)
+
+
+### Features
+
+* **gebura:** impl CreateAppPackage UpdateAppPackage ListAppPackage BindAppPackage ReportAppPackage ([4258ee5](https://github.com/TuiHub/Librarian/commit/4258ee5a76f8301f62798e92733febd9395693f0))
+* **porter:** add s3 support ([3300e1e](https://github.com/TuiHub/Librarian/commit/3300e1efc426e4a53d7333069f7d3929683d5d51))
+* upgrade to go 1.19 && golangci-lint 1.50.1 ([#25](https://github.com/TuiHub/Librarian/issues/25)) ([59c28de](https://github.com/TuiHub/Librarian/commit/59c28de3aedea456d20417a302ef3479d012c354))
+
+
+### Bug Fixes
+
+* **sephirah:** set right vertex type ([27a834f](https://github.com/TuiHub/Librarian/commit/27a834fac35e035ed86aa28c2c49fc507e18803e))
+
 ## [0.0.3](https://github.com/TuiHub/Librarian/compare/v0.0.2...v0.0.3) (2022-11-19)
 
 
