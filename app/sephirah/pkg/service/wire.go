@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -25,6 +26,7 @@ func NewSephirahService(
 	*conf.Sephirah_Data,
 	*libauth.Auth,
 	*libmq.MQ,
+	*libcron.Cron,
 	mapper.LibrarianMapperServiceClient,
 	searcher.LibrarianSearcherServiceClient,
 	porter.LibrarianPorterServiceClient,

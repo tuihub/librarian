@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 )
@@ -85,7 +86,9 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	binah := bizbinah.NewBinah(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah)
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
-	app := newApp(grpcServer)
+	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
+	cron := libcron.NewCron()
+	app := newApp(grpcServer, httpServer, mq, cron)
 	return app, func() {
 		cleanup2()
 		cleanup()

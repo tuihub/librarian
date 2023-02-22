@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 )
@@ -31,6 +32,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	if err != nil {
 		return nil, nil, err
 	}
+	cron := libcron.NewCron()
 	librarianMapperServiceServer, cleanup2, err := service.NewMapperService(mapper_Data)
 	if err != nil {
 		cleanup()
@@ -52,7 +54,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, mq, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, mq, cron, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -62,7 +64,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
-	app := newApp(grpcServer, httpServer, mq)
+	app := newApp(grpcServer, httpServer, mq, cron)
 	return app, func() {
 		cleanup5()
 		cleanup4()

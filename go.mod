@@ -8,6 +8,7 @@ require (
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1
+	github.com/go-co-op/gocron v1.18.0
 	github.com/go-kratos/kratos/v2 v2.5.4
 	github.com/gocolly/colly/v2 v2.1.1-0.20230116162851-487ef118797d
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -81,6 +82,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/rs/cors v1.8.3 // indirect
 	github.com/rs/xid v1.4.0 // indirect

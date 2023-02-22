@@ -12,6 +12,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 
@@ -33,6 +34,7 @@ func wireApp(
 		service.ProviderSet,
 		libauth.ProviderSet,
 		libmq.ProviderSet,
+		libcron.ProviderSet,
 		newApp,
 	))
 }

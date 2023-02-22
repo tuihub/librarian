@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 
@@ -39,6 +40,7 @@ func wireApp(
 			inprocgrpc.ProviderSet,
 			libauth.ProviderSet,
 			libmq.ProviderSet,
+			libcron.ProviderSet,
 			newApp,
 		),
 	)

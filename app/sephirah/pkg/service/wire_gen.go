@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -24,7 +25,7 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
