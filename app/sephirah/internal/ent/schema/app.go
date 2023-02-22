@@ -31,6 +31,8 @@ func (App) Fields() []ent.Field {
 		field.String("release_date"),
 		field.String("developer"),
 		field.String("publisher"),
+		field.Time("updated_at").
+			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
 	}

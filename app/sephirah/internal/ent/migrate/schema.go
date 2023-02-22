@@ -17,6 +17,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "profile_url", Type: field.TypeString},
 		{Name: "avatar_url", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
@@ -47,6 +48,7 @@ var (
 		{Name: "release_date", Type: field.TypeString},
 		{Name: "developer", Type: field.TypeString},
 		{Name: "publisher", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
 	// AppsTable holds the schema information for the "apps" table.
@@ -89,6 +91,68 @@ var (
 			},
 		},
 	}
+	// FeedsColumns holds the columns for the "feeds" table.
+	FeedsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "link", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "language", Type: field.TypeString},
+		{Name: "authors", Type: field.TypeJSON},
+		{Name: "images", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// FeedsTable holds the schema information for the "feeds" table.
+	FeedsTable = &schema.Table{
+		Name:       "feeds",
+		Columns:    FeedsColumns,
+		PrimaryKey: []*schema.Column{FeedsColumns[0]},
+	}
+	// FeedConfigsColumns holds the columns for the "feed_configs" table.
+	FeedConfigsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
+		{Name: "feed_url", Type: field.TypeString},
+		{Name: "author_account", Type: field.TypeInt64},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
+		{Name: "pull_interval", Type: field.TypeTime},
+		{Name: "last_pull_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// FeedConfigsTable holds the schema information for the "feed_configs" table.
+	FeedConfigsTable = &schema.Table{
+		Name:       "feed_configs",
+		Columns:    FeedConfigsColumns,
+		PrimaryKey: []*schema.Column{FeedConfigsColumns[0]},
+	}
+	// FeedItemsColumns holds the columns for the "feed_items" table.
+	FeedItemsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
+		{Name: "title", Type: field.TypeString},
+		{Name: "authors", Type: field.TypeJSON},
+		{Name: "description", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "guid", Type: field.TypeString},
+		{Name: "link", Type: field.TypeString},
+		{Name: "images", Type: field.TypeJSON},
+		{Name: "published", Type: field.TypeString},
+		{Name: "published_parsed", Type: field.TypeTime},
+		{Name: "updated", Type: field.TypeString},
+		{Name: "updated_parsed", Type: field.TypeTime},
+		{Name: "enclosure", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// FeedItemsTable holds the schema information for the "feed_items" table.
+	FeedItemsTable = &schema.Table{
+		Name:       "feed_items",
+		Columns:    FeedItemsColumns,
+		PrimaryKey: []*schema.Column{FeedItemsColumns[0]},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -97,6 +161,7 @@ var (
 		{Name: "password", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin"}},
+		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -110,6 +175,9 @@ var (
 		AccountsTable,
 		AppsTable,
 		AppPackagesTable,
+		FeedsTable,
+		FeedConfigsTable,
+		FeedItemsTable,
 		UsersTable,
 	}
 )

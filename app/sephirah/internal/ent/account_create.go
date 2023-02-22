@@ -58,6 +58,20 @@ func (ac *AccountCreate) SetAvatarURL(s string) *AccountCreate {
 	return ac
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (ac *AccountCreate) SetUpdatedAt(t time.Time) *AccountCreate {
+	ac.mutation.SetUpdatedAt(t)
+	return ac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ac *AccountCreate) SetNillableUpdatedAt(t *time.Time) *AccountCreate {
+	if t != nil {
+		ac.SetUpdatedAt(*t)
+	}
+	return ac
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (ac *AccountCreate) SetCreatedAt(t time.Time) *AccountCreate {
 	ac.mutation.SetCreatedAt(t)
@@ -107,6 +121,10 @@ func (ac *AccountCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ac *AccountCreate) defaults() {
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		v := account.DefaultUpdatedAt()
+		ac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		v := account.DefaultCreatedAt()
 		ac.mutation.SetCreatedAt(v)
@@ -137,6 +155,9 @@ func (ac *AccountCreate) check() error {
 	}
 	if _, ok := ac.mutation.AvatarURL(); !ok {
 		return &ValidationError{Name: "avatar_url", err: errors.New(`ent: missing required field "Account.avatar_url"`)}
+	}
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Account.updated_at"`)}
 	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Account.created_at"`)}
@@ -197,6 +218,10 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
 		_node.AvatarURL = value
+	}
+	if value, ok := ac.mutation.UpdatedAt(); ok {
+		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
@@ -329,6 +354,18 @@ func (u *AccountUpsert) SetAvatarURL(v string) *AccountUpsert {
 // UpdateAvatarURL sets the "avatar_url" field to the value that was provided on create.
 func (u *AccountUpsert) UpdateAvatarURL() *AccountUpsert {
 	u.SetExcluded(account.FieldAvatarURL)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AccountUpsert) SetUpdatedAt(v time.Time) *AccountUpsert {
+	u.Set(account.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AccountUpsert) UpdateUpdatedAt() *AccountUpsert {
+	u.SetExcluded(account.FieldUpdatedAt)
 	return u
 }
 
@@ -472,6 +509,20 @@ func (u *AccountUpsertOne) SetAvatarURL(v string) *AccountUpsertOne {
 func (u *AccountUpsertOne) UpdateAvatarURL() *AccountUpsertOne {
 	return u.Update(func(s *AccountUpsert) {
 		s.UpdateAvatarURL()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AccountUpsertOne) SetUpdatedAt(v time.Time) *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AccountUpsertOne) UpdateUpdatedAt() *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateUpdatedAt()
 	})
 }
 
@@ -777,6 +828,20 @@ func (u *AccountUpsertBulk) SetAvatarURL(v string) *AccountUpsertBulk {
 func (u *AccountUpsertBulk) UpdateAvatarURL() *AccountUpsertBulk {
 	return u.Update(func(s *AccountUpsert) {
 		s.UpdateAvatarURL()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AccountUpsertBulk) SetUpdatedAt(v time.Time) *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AccountUpsertBulk) UpdateUpdatedAt() *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateUpdatedAt()
 	})
 }
 

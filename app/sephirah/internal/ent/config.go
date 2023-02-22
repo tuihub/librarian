@@ -30,12 +30,18 @@ type (
 		Account    []ent.Hook
 		App        []ent.Hook
 		AppPackage []ent.Hook
+		Feed       []ent.Hook
+		FeedConfig []ent.Hook
+		FeedItem   []ent.Hook
 		User       []ent.Hook
 	}
 	inters struct {
 		Account    []ent.Interceptor
 		App        []ent.Interceptor
 		AppPackage []ent.Interceptor
+		Feed       []ent.Interceptor
+		FeedConfig []ent.Interceptor
+		FeedItem   []ent.Interceptor
 		User       []ent.Interceptor
 	}
 )

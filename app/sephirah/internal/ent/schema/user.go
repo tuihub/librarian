@@ -24,6 +24,8 @@ func (User) Fields() []ent.Field {
 			Values("active", "blocked"),
 		field.Enum("type").
 			Values("admin"),
+		field.Time("updated_at").
+			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
 	}

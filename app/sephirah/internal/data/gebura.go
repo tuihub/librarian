@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
@@ -191,8 +190,7 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPacka
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySize(ap.Binary.Size).
-		SetUpdatedAt(time.Now())
+		SetBinarySize(ap.Binary.Size)
 	return q.Exec(ctx)
 }
 
@@ -205,8 +203,7 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *bizgebura.AppPacka
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySize(ap.Binary.Size).
-		SetUpdatedAt(time.Now())
+		SetBinarySize(ap.Binary.Size)
 	return q.Exec(ctx)
 }
 
@@ -217,8 +214,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 			SetInternalID(ap.InternalID).
 			SetSource(toEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
-			SetSourcePackageID(ap.SourcePackageID).
-			SetUpdatedAt(time.Now())
+			SetSourcePackageID(ap.SourcePackageID)
 		if len(ap.Name) > 0 {
 			appPackages[i].SetName(ap.Name)
 		}

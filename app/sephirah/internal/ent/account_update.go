@@ -71,6 +71,12 @@ func (au *AccountUpdate) SetAvatarURL(s string) *AccountUpdate {
 	return au
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (au *AccountUpdate) SetUpdatedAt(t time.Time) *AccountUpdate {
+	au.mutation.SetUpdatedAt(t)
+	return au
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (au *AccountUpdate) SetCreatedAt(t time.Time) *AccountUpdate {
 	au.mutation.SetCreatedAt(t)
@@ -92,6 +98,7 @@ func (au *AccountUpdate) Mutation() *AccountMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *AccountUpdate) Save(ctx context.Context) (int, error) {
+	au.defaults()
 	return withHooks[int, AccountMutation](ctx, au.sqlSave, au.mutation, au.hooks)
 }
 
@@ -114,6 +121,14 @@ func (au *AccountUpdate) Exec(ctx context.Context) error {
 func (au *AccountUpdate) ExecX(ctx context.Context) {
 	if err := au.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (au *AccountUpdate) defaults() {
+	if _, ok := au.mutation.UpdatedAt(); !ok {
+		v := account.UpdateDefaultUpdatedAt()
+		au.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -168,6 +183,9 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
+	}
+	if value, ok := au.mutation.UpdatedAt(); ok {
+		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
@@ -235,6 +253,12 @@ func (auo *AccountUpdateOne) SetAvatarURL(s string) *AccountUpdateOne {
 	return auo
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (auo *AccountUpdateOne) SetUpdatedAt(t time.Time) *AccountUpdateOne {
+	auo.mutation.SetUpdatedAt(t)
+	return auo
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (auo *AccountUpdateOne) SetCreatedAt(t time.Time) *AccountUpdateOne {
 	auo.mutation.SetCreatedAt(t)
@@ -263,6 +287,7 @@ func (auo *AccountUpdateOne) Select(field string, fields ...string) *AccountUpda
 
 // Save executes the query and returns the updated Account entity.
 func (auo *AccountUpdateOne) Save(ctx context.Context) (*Account, error) {
+	auo.defaults()
 	return withHooks[*Account, AccountMutation](ctx, auo.sqlSave, auo.mutation, auo.hooks)
 }
 
@@ -285,6 +310,14 @@ func (auo *AccountUpdateOne) Exec(ctx context.Context) error {
 func (auo *AccountUpdateOne) ExecX(ctx context.Context) {
 	if err := auo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (auo *AccountUpdateOne) defaults() {
+	if _, ok := auo.mutation.UpdatedAt(); !ok {
+		v := account.UpdateDefaultUpdatedAt()
+		auo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -356,6 +389,9 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	}
 	if value, ok := auo.mutation.AvatarURL(); ok {
 		_spec.SetField(account.FieldAvatarURL, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.UpdatedAt(); ok {
+		_spec.SetField(account.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)

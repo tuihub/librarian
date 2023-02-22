@@ -24,6 +24,8 @@ const (
 	FieldProfileURL = "profile_url"
 	// FieldAvatarURL holds the string denoting the avatar_url field in the database.
 	FieldAvatarURL = "avatar_url"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// Table holds the table name of the account in the database.
@@ -39,6 +41,7 @@ var Columns = []string{
 	FieldName,
 	FieldProfileURL,
 	FieldAvatarURL,
+	FieldUpdatedAt,
 	FieldCreatedAt,
 }
 
@@ -53,6 +56,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )

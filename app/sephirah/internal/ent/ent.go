@@ -14,6 +14,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
@@ -45,6 +48,9 @@ func columnChecker(table string) func(string) error {
 		account.Table:    account.ValidColumn,
 		app.Table:        app.ValidColumn,
 		apppackage.Table: apppackage.ValidColumn,
+		feed.Table:       feed.ValidColumn,
+		feedconfig.Table: feedconfig.ValidColumn,
+		feeditem.Table:   feeditem.ValidColumn,
 		user.Table:       user.ValidColumn,
 	}
 	check, ok := checks[table]

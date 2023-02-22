@@ -45,6 +45,42 @@ func (f AppPackageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPackageMutation", m)
 }
 
+// The FeedFunc type is an adapter to allow the use of ordinary
+// function as Feed mutator.
+type FeedFunc func(context.Context, *ent.FeedMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeedFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedMutation", m)
+}
+
+// The FeedConfigFunc type is an adapter to allow the use of ordinary
+// function as FeedConfig mutator.
+type FeedConfigFunc func(context.Context, *ent.FeedConfigMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeedConfigFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedConfigMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedConfigMutation", m)
+}
+
+// The FeedItemFunc type is an adapter to allow the use of ordinary
+// function as FeedItem mutator.
+type FeedItemFunc func(context.Context, *ent.FeedItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeedItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedItemMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedItemMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

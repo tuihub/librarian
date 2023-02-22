@@ -40,6 +40,8 @@ type App struct {
 	Developer string `json:"developer,omitempty"`
 	// Publisher holds the value of the "publisher" field.
 	Publisher string `json:"publisher,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 }
@@ -53,7 +55,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher:
 			values[i] = new(sql.NullString)
-		case app.FieldCreatedAt:
+		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type App", columns[i])
@@ -148,6 +150,12 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Publisher = value.String
 			}
+		case app.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				a.UpdatedAt = value.Time
+			}
 		case app.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -217,6 +225,9 @@ func (a *App) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
 	builder.WriteString(a.Publisher)
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(a.CreatedAt.Format(time.ANSIC))

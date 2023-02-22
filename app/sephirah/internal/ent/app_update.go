@@ -107,6 +107,12 @@ func (au *AppUpdate) SetPublisher(s string) *AppUpdate {
 	return au
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (au *AppUpdate) SetUpdatedAt(t time.Time) *AppUpdate {
+	au.mutation.SetUpdatedAt(t)
+	return au
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (au *AppUpdate) SetCreatedAt(t time.Time) *AppUpdate {
 	au.mutation.SetCreatedAt(t)
@@ -128,6 +134,7 @@ func (au *AppUpdate) Mutation() *AppMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (au *AppUpdate) Save(ctx context.Context) (int, error) {
+	au.defaults()
 	return withHooks[int, AppMutation](ctx, au.sqlSave, au.mutation, au.hooks)
 }
 
@@ -150,6 +157,14 @@ func (au *AppUpdate) Exec(ctx context.Context) error {
 func (au *AppUpdate) ExecX(ctx context.Context) {
 	if err := au.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (au *AppUpdate) defaults() {
+	if _, ok := au.mutation.UpdatedAt(); !ok {
+		v := app.UpdateDefaultUpdatedAt()
+		au.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -227,6 +242,9 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := au.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
+	}
+	if value, ok := au.mutation.UpdatedAt(); ok {
+		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
@@ -330,6 +348,12 @@ func (auo *AppUpdateOne) SetPublisher(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (auo *AppUpdateOne) SetUpdatedAt(t time.Time) *AppUpdateOne {
+	auo.mutation.SetUpdatedAt(t)
+	return auo
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (auo *AppUpdateOne) SetCreatedAt(t time.Time) *AppUpdateOne {
 	auo.mutation.SetCreatedAt(t)
@@ -358,6 +382,7 @@ func (auo *AppUpdateOne) Select(field string, fields ...string) *AppUpdateOne {
 
 // Save executes the query and returns the updated App entity.
 func (auo *AppUpdateOne) Save(ctx context.Context) (*App, error) {
+	auo.defaults()
 	return withHooks[*App, AppMutation](ctx, auo.sqlSave, auo.mutation, auo.hooks)
 }
 
@@ -380,6 +405,14 @@ func (auo *AppUpdateOne) Exec(ctx context.Context) error {
 func (auo *AppUpdateOne) ExecX(ctx context.Context) {
 	if err := auo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (auo *AppUpdateOne) defaults() {
+	if _, ok := auo.mutation.UpdatedAt(); !ok {
+		v := app.UpdateDefaultUpdatedAt()
+		auo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -474,6 +507,9 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if value, ok := auo.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.UpdatedAt(); ok {
+		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)

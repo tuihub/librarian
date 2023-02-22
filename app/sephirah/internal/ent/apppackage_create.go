@@ -76,6 +76,14 @@ func (apc *AppPackageCreate) SetUpdatedAt(t time.Time) *AppPackageCreate {
 	return apc
 }
 
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (apc *AppPackageCreate) SetNillableUpdatedAt(t *time.Time) *AppPackageCreate {
+	if t != nil {
+		apc.SetUpdatedAt(*t)
+	}
+	return apc
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (apc *AppPackageCreate) SetCreatedAt(t time.Time) *AppPackageCreate {
 	apc.mutation.SetCreatedAt(t)
@@ -125,6 +133,10 @@ func (apc *AppPackageCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (apc *AppPackageCreate) defaults() {
+	if _, ok := apc.mutation.UpdatedAt(); !ok {
+		v := apppackage.DefaultUpdatedAt()
+		apc.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := apc.mutation.CreatedAt(); !ok {
 		v := apppackage.DefaultCreatedAt()
 		apc.mutation.SetCreatedAt(v)

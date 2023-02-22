@@ -36,6 +36,8 @@ const (
 	FieldDeveloper = "developer"
 	// FieldPublisher holds the string denoting the publisher field in the database.
 	FieldPublisher = "publisher"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// Table holds the table name of the app in the database.
@@ -57,6 +59,7 @@ var Columns = []string{
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
+	FieldUpdatedAt,
 	FieldCreatedAt,
 }
 
@@ -71,6 +74,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )

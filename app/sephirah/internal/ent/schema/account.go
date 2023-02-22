@@ -24,6 +24,8 @@ func (Account) Fields() []ent.Field {
 		field.String("name"),
 		field.String("profile_url"),
 		field.String("avatar_url"),
+		field.Time("updated_at").
+			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
 	}

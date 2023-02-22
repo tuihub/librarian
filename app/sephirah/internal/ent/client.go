@@ -13,6 +13,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 
 	"entgo.io/ent/dialect"
@@ -30,6 +33,12 @@ type Client struct {
 	App *AppClient
 	// AppPackage is the client for interacting with the AppPackage builders.
 	AppPackage *AppPackageClient
+	// Feed is the client for interacting with the Feed builders.
+	Feed *FeedClient
+	// FeedConfig is the client for interacting with the FeedConfig builders.
+	FeedConfig *FeedConfigClient
+	// FeedItem is the client for interacting with the FeedItem builders.
+	FeedItem *FeedItemClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -48,6 +57,9 @@ func (c *Client) init() {
 	c.Account = NewAccountClient(c.config)
 	c.App = NewAppClient(c.config)
 	c.AppPackage = NewAppPackageClient(c.config)
+	c.Feed = NewFeedClient(c.config)
+	c.FeedConfig = NewFeedConfigClient(c.config)
+	c.FeedItem = NewFeedItemClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -85,6 +97,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Account:    NewAccountClient(cfg),
 		App:        NewAppClient(cfg),
 		AppPackage: NewAppPackageClient(cfg),
+		Feed:       NewFeedClient(cfg),
+		FeedConfig: NewFeedConfigClient(cfg),
+		FeedItem:   NewFeedItemClient(cfg),
 		User:       NewUserClient(cfg),
 	}, nil
 }
@@ -108,6 +123,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Account:    NewAccountClient(cfg),
 		App:        NewAppClient(cfg),
 		AppPackage: NewAppPackageClient(cfg),
+		Feed:       NewFeedClient(cfg),
+		FeedConfig: NewFeedConfigClient(cfg),
+		FeedItem:   NewFeedItemClient(cfg),
 		User:       NewUserClient(cfg),
 	}, nil
 }
@@ -140,6 +158,9 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Account.Use(hooks...)
 	c.App.Use(hooks...)
 	c.AppPackage.Use(hooks...)
+	c.Feed.Use(hooks...)
+	c.FeedConfig.Use(hooks...)
+	c.FeedItem.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -149,6 +170,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Account.Intercept(interceptors...)
 	c.App.Intercept(interceptors...)
 	c.AppPackage.Intercept(interceptors...)
+	c.Feed.Intercept(interceptors...)
+	c.FeedConfig.Intercept(interceptors...)
+	c.FeedItem.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
 
@@ -161,6 +185,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.App.mutate(ctx, m)
 	case *AppPackageMutation:
 		return c.AppPackage.mutate(ctx, m)
+	case *FeedMutation:
+		return c.Feed.mutate(ctx, m)
+	case *FeedConfigMutation:
+		return c.FeedConfig.mutate(ctx, m)
+	case *FeedItemMutation:
+		return c.FeedItem.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -519,6 +549,360 @@ func (c *AppPackageClient) mutate(ctx context.Context, m *AppPackageMutation) (V
 		return (&AppPackageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppPackage mutation op: %q", m.Op())
+	}
+}
+
+// FeedClient is a client for the Feed schema.
+type FeedClient struct {
+	config
+}
+
+// NewFeedClient returns a client for the Feed from the given config.
+func NewFeedClient(c config) *FeedClient {
+	return &FeedClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feed.Hooks(f(g(h())))`.
+func (c *FeedClient) Use(hooks ...Hook) {
+	c.hooks.Feed = append(c.hooks.Feed, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feed.Intercept(f(g(h())))`.
+func (c *FeedClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Feed = append(c.inters.Feed, interceptors...)
+}
+
+// Create returns a builder for creating a Feed entity.
+func (c *FeedClient) Create() *FeedCreate {
+	mutation := newFeedMutation(c.config, OpCreate)
+	return &FeedCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Feed entities.
+func (c *FeedClient) CreateBulk(builders ...*FeedCreate) *FeedCreateBulk {
+	return &FeedCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Feed.
+func (c *FeedClient) Update() *FeedUpdate {
+	mutation := newFeedMutation(c.config, OpUpdate)
+	return &FeedUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedClient) UpdateOne(f *Feed) *FeedUpdateOne {
+	mutation := newFeedMutation(c.config, OpUpdateOne, withFeed(f))
+	return &FeedUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedClient) UpdateOneID(id int) *FeedUpdateOne {
+	mutation := newFeedMutation(c.config, OpUpdateOne, withFeedID(id))
+	return &FeedUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Feed.
+func (c *FeedClient) Delete() *FeedDelete {
+	mutation := newFeedMutation(c.config, OpDelete)
+	return &FeedDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedClient) DeleteOne(f *Feed) *FeedDeleteOne {
+	return c.DeleteOneID(f.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedClient) DeleteOneID(id int) *FeedDeleteOne {
+	builder := c.Delete().Where(feed.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedDeleteOne{builder}
+}
+
+// Query returns a query builder for Feed.
+func (c *FeedClient) Query() *FeedQuery {
+	return &FeedQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeed},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Feed entity by its id.
+func (c *FeedClient) Get(ctx context.Context, id int) (*Feed, error) {
+	return c.Query().Where(feed.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedClient) GetX(ctx context.Context, id int) *Feed {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *FeedClient) Hooks() []Hook {
+	return c.hooks.Feed
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedClient) Interceptors() []Interceptor {
+	return c.inters.Feed
+}
+
+func (c *FeedClient) mutate(ctx context.Context, m *FeedMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Feed mutation op: %q", m.Op())
+	}
+}
+
+// FeedConfigClient is a client for the FeedConfig schema.
+type FeedConfigClient struct {
+	config
+}
+
+// NewFeedConfigClient returns a client for the FeedConfig from the given config.
+func NewFeedConfigClient(c config) *FeedConfigClient {
+	return &FeedConfigClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feedconfig.Hooks(f(g(h())))`.
+func (c *FeedConfigClient) Use(hooks ...Hook) {
+	c.hooks.FeedConfig = append(c.hooks.FeedConfig, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feedconfig.Intercept(f(g(h())))`.
+func (c *FeedConfigClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedConfig = append(c.inters.FeedConfig, interceptors...)
+}
+
+// Create returns a builder for creating a FeedConfig entity.
+func (c *FeedConfigClient) Create() *FeedConfigCreate {
+	mutation := newFeedConfigMutation(c.config, OpCreate)
+	return &FeedConfigCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedConfig entities.
+func (c *FeedConfigClient) CreateBulk(builders ...*FeedConfigCreate) *FeedConfigCreateBulk {
+	return &FeedConfigCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedConfig.
+func (c *FeedConfigClient) Update() *FeedConfigUpdate {
+	mutation := newFeedConfigMutation(c.config, OpUpdate)
+	return &FeedConfigUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedConfigClient) UpdateOne(fc *FeedConfig) *FeedConfigUpdateOne {
+	mutation := newFeedConfigMutation(c.config, OpUpdateOne, withFeedConfig(fc))
+	return &FeedConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedConfigClient) UpdateOneID(id int) *FeedConfigUpdateOne {
+	mutation := newFeedConfigMutation(c.config, OpUpdateOne, withFeedConfigID(id))
+	return &FeedConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedConfig.
+func (c *FeedConfigClient) Delete() *FeedConfigDelete {
+	mutation := newFeedConfigMutation(c.config, OpDelete)
+	return &FeedConfigDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedConfigClient) DeleteOne(fc *FeedConfig) *FeedConfigDeleteOne {
+	return c.DeleteOneID(fc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedConfigClient) DeleteOneID(id int) *FeedConfigDeleteOne {
+	builder := c.Delete().Where(feedconfig.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedConfigDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedConfig.
+func (c *FeedConfigClient) Query() *FeedConfigQuery {
+	return &FeedConfigQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeedConfig},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedConfig entity by its id.
+func (c *FeedConfigClient) Get(ctx context.Context, id int) (*FeedConfig, error) {
+	return c.Query().Where(feedconfig.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedConfigClient) GetX(ctx context.Context, id int) *FeedConfig {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *FeedConfigClient) Hooks() []Hook {
+	return c.hooks.FeedConfig
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedConfigClient) Interceptors() []Interceptor {
+	return c.inters.FeedConfig
+}
+
+func (c *FeedConfigClient) mutate(ctx context.Context, m *FeedConfigMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedConfigCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedConfigUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedConfigDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedConfig mutation op: %q", m.Op())
+	}
+}
+
+// FeedItemClient is a client for the FeedItem schema.
+type FeedItemClient struct {
+	config
+}
+
+// NewFeedItemClient returns a client for the FeedItem from the given config.
+func NewFeedItemClient(c config) *FeedItemClient {
+	return &FeedItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feeditem.Hooks(f(g(h())))`.
+func (c *FeedItemClient) Use(hooks ...Hook) {
+	c.hooks.FeedItem = append(c.hooks.FeedItem, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feeditem.Intercept(f(g(h())))`.
+func (c *FeedItemClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedItem = append(c.inters.FeedItem, interceptors...)
+}
+
+// Create returns a builder for creating a FeedItem entity.
+func (c *FeedItemClient) Create() *FeedItemCreate {
+	mutation := newFeedItemMutation(c.config, OpCreate)
+	return &FeedItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedItem entities.
+func (c *FeedItemClient) CreateBulk(builders ...*FeedItemCreate) *FeedItemCreateBulk {
+	return &FeedItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedItem.
+func (c *FeedItemClient) Update() *FeedItemUpdate {
+	mutation := newFeedItemMutation(c.config, OpUpdate)
+	return &FeedItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedItemClient) UpdateOne(fi *FeedItem) *FeedItemUpdateOne {
+	mutation := newFeedItemMutation(c.config, OpUpdateOne, withFeedItem(fi))
+	return &FeedItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedItemClient) UpdateOneID(id int) *FeedItemUpdateOne {
+	mutation := newFeedItemMutation(c.config, OpUpdateOne, withFeedItemID(id))
+	return &FeedItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedItem.
+func (c *FeedItemClient) Delete() *FeedItemDelete {
+	mutation := newFeedItemMutation(c.config, OpDelete)
+	return &FeedItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedItemClient) DeleteOne(fi *FeedItem) *FeedItemDeleteOne {
+	return c.DeleteOneID(fi.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedItemClient) DeleteOneID(id int) *FeedItemDeleteOne {
+	builder := c.Delete().Where(feeditem.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedItemDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedItem.
+func (c *FeedItemClient) Query() *FeedItemQuery {
+	return &FeedItemQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeedItem},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedItem entity by its id.
+func (c *FeedItemClient) Get(ctx context.Context, id int) (*FeedItem, error) {
+	return c.Query().Where(feeditem.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedItemClient) GetX(ctx context.Context, id int) *FeedItem {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *FeedItemClient) Hooks() []Hook {
+	return c.hooks.FeedItem
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedItemClient) Interceptors() []Interceptor {
+	return c.inters.FeedItem
+}
+
+func (c *FeedItemClient) mutate(ctx context.Context, m *FeedItemMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedItemCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedItemUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedItem mutation op: %q", m.Op())
 	}
 }
 

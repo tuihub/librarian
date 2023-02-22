@@ -94,6 +94,20 @@ func (ac *AppCreate) SetPublisher(s string) *AppCreate {
 	return ac
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (ac *AppCreate) SetUpdatedAt(t time.Time) *AppCreate {
+	ac.mutation.SetUpdatedAt(t)
+	return ac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ac *AppCreate) SetNillableUpdatedAt(t *time.Time) *AppCreate {
+	if t != nil {
+		ac.SetUpdatedAt(*t)
+	}
+	return ac
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (ac *AppCreate) SetCreatedAt(t time.Time) *AppCreate {
 	ac.mutation.SetCreatedAt(t)
@@ -143,6 +157,10 @@ func (ac *AppCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ac *AppCreate) defaults() {
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		v := app.DefaultUpdatedAt()
+		ac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		v := app.DefaultCreatedAt()
 		ac.mutation.SetCreatedAt(v)
@@ -196,6 +214,9 @@ func (ac *AppCreate) check() error {
 	}
 	if _, ok := ac.mutation.Publisher(); !ok {
 		return &ValidationError{Name: "publisher", err: errors.New(`ent: missing required field "App.publisher"`)}
+	}
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "App.updated_at"`)}
 	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
@@ -280,6 +301,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
+	}
+	if value, ok := ac.mutation.UpdatedAt(); ok {
+		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
 	}
 	if value, ok := ac.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
@@ -484,6 +509,18 @@ func (u *AppUpsert) SetPublisher(v string) *AppUpsert {
 // UpdatePublisher sets the "publisher" field to the value that was provided on create.
 func (u *AppUpsert) UpdatePublisher() *AppUpsert {
 	u.SetExcluded(app.FieldPublisher)
+	return u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsert) SetUpdatedAt(v time.Time) *AppUpsert {
+	u.Set(app.FieldUpdatedAt, v)
+	return u
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsert) UpdateUpdatedAt() *AppUpsert {
+	u.SetExcluded(app.FieldUpdatedAt)
 	return u
 }
 
@@ -711,6 +748,20 @@ func (u *AppUpsertOne) SetPublisher(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdatePublisher() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdatePublisher()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsertOne) SetUpdatedAt(v time.Time) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateUpdatedAt() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedAt()
 	})
 }
 
@@ -1100,6 +1151,20 @@ func (u *AppUpsertBulk) SetPublisher(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdatePublisher() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdatePublisher()
+	})
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (u *AppUpsertBulk) SetUpdatedAt(v time.Time) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUpdatedAt(v)
+	})
+}
+
+// UpdateUpdatedAt sets the "updated_at" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateUpdatedAt() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUpdatedAt()
 	})
 }
 

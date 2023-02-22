@@ -117,6 +117,7 @@ func (apu *AppPackageUpdate) Mutation() *AppPackageMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (apu *AppPackageUpdate) Save(ctx context.Context) (int, error) {
+	apu.defaults()
 	return withHooks[int, AppPackageMutation](ctx, apu.sqlSave, apu.mutation, apu.hooks)
 }
 
@@ -139,6 +140,14 @@ func (apu *AppPackageUpdate) Exec(ctx context.Context) error {
 func (apu *AppPackageUpdate) ExecX(ctx context.Context) {
 	if err := apu.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (apu *AppPackageUpdate) defaults() {
+	if _, ok := apu.mutation.UpdatedAt(); !ok {
+		v := apppackage.UpdateDefaultUpdatedAt()
+		apu.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -325,6 +334,7 @@ func (apuo *AppPackageUpdateOne) Select(field string, fields ...string) *AppPack
 
 // Save executes the query and returns the updated AppPackage entity.
 func (apuo *AppPackageUpdateOne) Save(ctx context.Context) (*AppPackage, error) {
+	apuo.defaults()
 	return withHooks[*AppPackage, AppPackageMutation](ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
 }
 
@@ -347,6 +357,14 @@ func (apuo *AppPackageUpdateOne) Exec(ctx context.Context) error {
 func (apuo *AppPackageUpdateOne) ExecX(ctx context.Context) {
 	if err := apuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (apuo *AppPackageUpdateOne) defaults() {
+	if _, ok := apuo.mutation.UpdatedAt(); !ok {
+		v := apppackage.UpdateDefaultUpdatedAt()
+		apuo.mutation.SetUpdatedAt(v)
 	}
 }
 
