@@ -18,25 +18,19 @@ jobs:
           package-name: librarian
           bump-minor-pre-major: true
           bump-patch-for-minor-pre-major: true
-  build:
-    name: release ${{ matrix.goos }} ${{ matrix.goarch }}
+  goreleaser:
     runs-on: ubuntu-latest
     needs: release-please
-    if: ${{ needs.release-please.outputs.releases_created }}
-    strategy:
-      fail-fast: false
-      matrix:
-        goos: [ linux, windows, darwin ]
-        goarch: [ amd64, arm64 ]
+    #if: ${{ needs.release-please.outputs.releases_created }}
     steps:
       - uses: actions/checkout@v3
-      - uses: wangyoucao577/go-release-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          goos: ${{ matrix.goos }}
-          goarch: ${{ matrix.goarch }}
-          goversion: "https://dl.google.com/go/go1.19.6.linux-amd64.tar.gz"
-          project_path: "./cmd/librarian"
-          binary_name: "librarian"
-          extra_files: LICENSE README.md configs/config.yaml
-          release_tag: ${{ needs.release-please.outputs.tag_name }}
+          fetch-depth: 0
+      - run: git fetch --force --tags
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.19.6'
+          cache: true
+      - name: release publish
+        run: make release
+      - run: ls ./dist

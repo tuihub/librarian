@@ -1,6 +1,8 @@
+PACKAGE_NAME := github.com/tuihub/librarian
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
+GOLANG_CROSS_VERSION  ?= v1.19.6
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -72,6 +74,17 @@ test-all: test-unit test-goc
 # run server
 run:
 	kratos run
+
+.PHONY: release
+release:
+	docker run \
+		--rm \
+		-e CGO_ENABLED=1 \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
+		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		release
 
 # show help
 help:
