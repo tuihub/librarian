@@ -1,0 +1,78 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    #- go generate ./...
+builds:
+  - id: librarian
+    main: ./cmd/librarian
+    goos:
+      - darwin
+      - windows
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    goamd64:
+      - v1
+      - v3
+    env:
+      - CGO_ENABLED=1
+      - CC_darwin_amd64=o64-clang
+      - CXX_darwin_amd64=o64-clang+
+      - CC_darwin_arm64=oa64-clang
+      - CXX_darwin_arm64=oa64-clang++
+      - CC_windows_amd64=x86_64-w64-mingw32-gcc
+      - CXX_windows_amd64=x86_64-w64-mingw32-g++
+      - CC_windows_arm64=/llvm-mingw/bin/aarch64-w64-mingw32-gcc
+      - CXX_windows_arm64=/llvm-mingw/bin/aarch64-w64-mingw32-g++
+      - CC_linux_amd64=x86_64-linux-gnu-gcc
+      - CXX_linux_amd64=x86_64-linux-gnu-g++
+      - CC_linux_arm64=aarch64-linux-gnu-gcc
+      - CXX_linux_arm64=aarch64-linux-gnu-g++
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    #buildmode: c-archive
+
+archives:
+  - format: tar.gz
+    # this name template makes the OS and Arch compatible with the results of uname.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}_v{{ .Arm }}{{ end }}
+      {{- if .Amd64 }}_{{ .Amd64 }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+    - goos: windows
+      format: zip
+    # Additional files/template/globs you want to add to the archive.
+    # Defaults are any files matching `LICENSE*`, `README*`, `CHANGELOG*`,
+    #  `license*`, `readme*` and `changelog*`.
+    files:
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+# The lines beneath this are called `modelines`. See `:help modeline`
+# Feel free to remove those if you don't want/use them.
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# vim: set ts=2 sw=2 tw=0 fo=cnqoj
