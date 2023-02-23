@@ -7,20 +7,37 @@ before:
     # you may remove this if you don't need go generate
     #- go generate ./...
 builds:
-  - id: darwin-amd64
+  - id: librarian
     main: ./cmd/librarian
-    binary: golang-cross
     goos:
       - darwin
+      - windows
+      - linux
     goarch:
       - amd64
-    #env:
-      #- CC=o64-clang
-      #- CXX=o64-clang++
-    flags:
-      - -mod=readonly
+      - arm64
+    goamd64:
+      - v1
+      - v3
+    env:
+      - CGO_ENABLED=1
+      - CC_darwin_amd64=o64-clang
+      - CXX_darwin_amd64=o64-clang+
+      - CC_darwin_arm64=aarch64-apple-darwin20.2-clang
+      - CXX_darwin_arm64=aarch64-apple-darwin20.2-clang++
+      - CC_windows_amd64=x86_64-w64-mingw32-gc
+      - CXX_windows_amd64=x86_64-w64-mingw32-g++
+      - CC_windows_arm64=/llvm-mingw/bin/aarch64-w64-mingw32-gcc
+      - CXX_windows_arm64=/llvm-mingw/bin/aarch64-w64-mingw32-g++
+      - CC_linux_amd64=x86_64-linux-gnu-gcc
+      - CXX_linux_amd64=x86_64-linux-gnu-g++
+      - CC_linux_arm64=aarch64-linux-gnu-gcc
+      - CXX_linux_arm64=aarch64-linux-gnu-g++
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
     ldflags:
       - -s -w -X main.version={{.Version}}
+    buildmode: c-archive
 
 archives:
   - format: tar.gz
