@@ -85,8 +85,15 @@ func (apu *AppPackageUpdate) SetBinaryName(s string) *AppPackageUpdate {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (apu *AppPackageUpdate) SetBinarySize(s string) *AppPackageUpdate {
-	apu.mutation.SetBinarySize(s)
+func (apu *AppPackageUpdate) SetBinarySize(i int64) *AppPackageUpdate {
+	apu.mutation.ResetBinarySize()
+	apu.mutation.SetBinarySize(i)
+	return apu
+}
+
+// AddBinarySize adds i to the "binary_size" field.
+func (apu *AppPackageUpdate) AddBinarySize(i int64) *AppPackageUpdate {
+	apu.mutation.AddBinarySize(i)
 	return apu
 }
 
@@ -201,7 +208,10 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
 	if value, ok := apu.mutation.BinarySize(); ok {
-		_spec.SetField(apppackage.FieldBinarySize, field.TypeString, value)
+		_spec.SetField(apppackage.FieldBinarySize, field.TypeInt64, value)
+	}
+	if value, ok := apu.mutation.AddedBinarySize(); ok {
+		_spec.AddField(apppackage.FieldBinarySize, field.TypeInt64, value)
 	}
 	if value, ok := apu.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -286,8 +296,15 @@ func (apuo *AppPackageUpdateOne) SetBinaryName(s string) *AppPackageUpdateOne {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (apuo *AppPackageUpdateOne) SetBinarySize(s string) *AppPackageUpdateOne {
-	apuo.mutation.SetBinarySize(s)
+func (apuo *AppPackageUpdateOne) SetBinarySize(i int64) *AppPackageUpdateOne {
+	apuo.mutation.ResetBinarySize()
+	apuo.mutation.SetBinarySize(i)
+	return apuo
+}
+
+// AddBinarySize adds i to the "binary_size" field.
+func (apuo *AppPackageUpdateOne) AddBinarySize(i int64) *AppPackageUpdateOne {
+	apuo.mutation.AddBinarySize(i)
 	return apuo
 }
 
@@ -432,7 +449,10 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
 	if value, ok := apuo.mutation.BinarySize(); ok {
-		_spec.SetField(apppackage.FieldBinarySize, field.TypeString, value)
+		_spec.SetField(apppackage.FieldBinarySize, field.TypeInt64, value)
+	}
+	if value, ok := apuo.mutation.AddedBinarySize(); ok {
+		_spec.AddField(apppackage.FieldBinarySize, field.TypeInt64, value)
 	}
 	if value, ok := apuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)

@@ -198,8 +198,8 @@ func (s *LibrarianSephirahServiceService) ListAppPackage(
 }
 func (s *LibrarianSephirahServiceService) BindAppPackage(
 	ctx context.Context,
-	req *pb.BindAppPackageRequest,
-) (*pb.BindAppPackageResponse, error) {
+	req *pb.AssignAppPackageRequest,
+) (*pb.AssignAppPackageResponse, error) {
 	err := s.g.AssignAppPackage(ctx, bizgebura.App{ // TODO
 		InternalID:      req.GetAppId().GetId(),
 		Source:          0,
@@ -219,18 +219,18 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 		Description:     "",
 		Binary: bizgebura.AppPackageBinary{
 			Name: "",
-			Size: "",
+			Size: 0,
 		},
 	})
 	if err != nil {
 		return nil, err
 	}
-	return &pb.BindAppPackageResponse{}, nil
+	return &pb.AssignAppPackageResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) UnBindAppPackage(
 	ctx context.Context,
-	req *pb.UnBindAppPackageRequest,
-) (*pb.UnBindAppPackageResponse, error) {
+	req *pb.UnAssignAppPackageRequest,
+) (*pb.UnAssignAppPackageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnBindAppPackage not implemented")
 }
 func (s *LibrarianSephirahServiceService) ReportAppPackage(

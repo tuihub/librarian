@@ -74,7 +74,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
 		{Name: "binary_name", Type: field.TypeString},
-		{Name: "binary_size", Type: field.TypeString},
+		{Name: "binary_size", Type: field.TypeInt64},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}

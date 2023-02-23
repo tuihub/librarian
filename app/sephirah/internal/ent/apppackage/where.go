@@ -85,7 +85,7 @@ func BinaryName(v string) predicate.AppPackage {
 }
 
 // BinarySize applies equality check predicate on the "binary_size" field. It's identical to BinarySizeEQ.
-func BinarySize(v string) predicate.AppPackage {
+func BinarySize(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinarySize, v))
 }
 
@@ -460,68 +460,43 @@ func BinaryNameContainsFold(v string) predicate.AppPackage {
 }
 
 // BinarySizeEQ applies the EQ predicate on the "binary_size" field.
-func BinarySizeEQ(v string) predicate.AppPackage {
+func BinarySizeEQ(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinarySize, v))
 }
 
 // BinarySizeNEQ applies the NEQ predicate on the "binary_size" field.
-func BinarySizeNEQ(v string) predicate.AppPackage {
+func BinarySizeNEQ(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldNEQ(FieldBinarySize, v))
 }
 
 // BinarySizeIn applies the In predicate on the "binary_size" field.
-func BinarySizeIn(vs ...string) predicate.AppPackage {
+func BinarySizeIn(vs ...int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldIn(FieldBinarySize, vs...))
 }
 
 // BinarySizeNotIn applies the NotIn predicate on the "binary_size" field.
-func BinarySizeNotIn(vs ...string) predicate.AppPackage {
+func BinarySizeNotIn(vs ...int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldNotIn(FieldBinarySize, vs...))
 }
 
 // BinarySizeGT applies the GT predicate on the "binary_size" field.
-func BinarySizeGT(v string) predicate.AppPackage {
+func BinarySizeGT(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldGT(FieldBinarySize, v))
 }
 
 // BinarySizeGTE applies the GTE predicate on the "binary_size" field.
-func BinarySizeGTE(v string) predicate.AppPackage {
+func BinarySizeGTE(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldGTE(FieldBinarySize, v))
 }
 
 // BinarySizeLT applies the LT predicate on the "binary_size" field.
-func BinarySizeLT(v string) predicate.AppPackage {
+func BinarySizeLT(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLT(FieldBinarySize, v))
 }
 
 // BinarySizeLTE applies the LTE predicate on the "binary_size" field.
-func BinarySizeLTE(v string) predicate.AppPackage {
+func BinarySizeLTE(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldBinarySize, v))
-}
-
-// BinarySizeContains applies the Contains predicate on the "binary_size" field.
-func BinarySizeContains(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldContains(FieldBinarySize, v))
-}
-
-// BinarySizeHasPrefix applies the HasPrefix predicate on the "binary_size" field.
-func BinarySizeHasPrefix(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldHasPrefix(FieldBinarySize, v))
-}
-
-// BinarySizeHasSuffix applies the HasSuffix predicate on the "binary_size" field.
-func BinarySizeHasSuffix(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldHasSuffix(FieldBinarySize, v))
-}
-
-// BinarySizeEqualFold applies the EqualFold predicate on the "binary_size" field.
-func BinarySizeEqualFold(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEqualFold(FieldBinarySize, v))
-}
-
-// BinarySizeContainsFold applies the ContainsFold predicate on the "binary_size" field.
-func BinarySizeContainsFold(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldContainsFold(FieldBinarySize, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

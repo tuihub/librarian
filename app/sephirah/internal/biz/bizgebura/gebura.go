@@ -58,7 +58,7 @@ type AppPackage struct {
 
 type AppPackageBinary struct {
 	Name string
-	Size string
+	Size int64
 }
 
 type AppPackageSource int

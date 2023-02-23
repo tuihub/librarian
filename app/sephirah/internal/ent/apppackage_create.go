@@ -65,8 +65,8 @@ func (apc *AppPackageCreate) SetBinaryName(s string) *AppPackageCreate {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (apc *AppPackageCreate) SetBinarySize(s string) *AppPackageCreate {
-	apc.mutation.SetBinarySize(s)
+func (apc *AppPackageCreate) SetBinarySize(i int64) *AppPackageCreate {
+	apc.mutation.SetBinarySize(i)
 	return apc
 }
 
@@ -236,7 +236,7 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 		_node.BinaryName = value
 	}
 	if value, ok := apc.mutation.BinarySize(); ok {
-		_spec.SetField(apppackage.FieldBinarySize, field.TypeString, value)
+		_spec.SetField(apppackage.FieldBinarySize, field.TypeInt64, value)
 		_node.BinarySize = value
 	}
 	if value, ok := apc.mutation.UpdatedAt(); ok {
@@ -396,7 +396,7 @@ func (u *AppPackageUpsert) UpdateBinaryName() *AppPackageUpsert {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsert) SetBinarySize(v string) *AppPackageUpsert {
+func (u *AppPackageUpsert) SetBinarySize(v int64) *AppPackageUpsert {
 	u.Set(apppackage.FieldBinarySize, v)
 	return u
 }
@@ -404,6 +404,12 @@ func (u *AppPackageUpsert) SetBinarySize(v string) *AppPackageUpsert {
 // UpdateBinarySize sets the "binary_size" field to the value that was provided on create.
 func (u *AppPackageUpsert) UpdateBinarySize() *AppPackageUpsert {
 	u.SetExcluded(apppackage.FieldBinarySize)
+	return u
+}
+
+// AddBinarySize adds v to the "binary_size" field.
+func (u *AppPackageUpsert) AddBinarySize(v int64) *AppPackageUpsert {
+	u.Add(apppackage.FieldBinarySize, v)
 	return u
 }
 
@@ -584,9 +590,16 @@ func (u *AppPackageUpsertOne) UpdateBinaryName() *AppPackageUpsertOne {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsertOne) SetBinarySize(v string) *AppPackageUpsertOne {
+func (u *AppPackageUpsertOne) SetBinarySize(v int64) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.SetBinarySize(v)
+	})
+}
+
+// AddBinarySize adds v to the "binary_size" field.
+func (u *AppPackageUpsertOne) AddBinarySize(v int64) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.AddBinarySize(v)
 	})
 }
 
@@ -938,9 +951,16 @@ func (u *AppPackageUpsertBulk) UpdateBinaryName() *AppPackageUpsertBulk {
 }
 
 // SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsertBulk) SetBinarySize(v string) *AppPackageUpsertBulk {
+func (u *AppPackageUpsertBulk) SetBinarySize(v int64) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.SetBinarySize(v)
+	})
+}
+
+// AddBinarySize adds v to the "binary_size" field.
+func (u *AppPackageUpsertBulk) AddBinarySize(v int64) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.AddBinarySize(v)
 	})
 }
 

@@ -224,7 +224,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 		if len(ap.Binary.Name) > 0 {
 			appPackages[i].SetBinaryName(ap.Binary.Name)
 		}
-		if len(ap.Binary.Size) > 0 {
+		if ap.Binary.Size > 0 {
 			appPackages[i].SetBinarySize(ap.Binary.Size)
 		}
 	}

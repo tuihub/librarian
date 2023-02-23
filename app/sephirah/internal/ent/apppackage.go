@@ -31,7 +31,7 @@ type AppPackage struct {
 	// BinaryName holds the value of the "binary_name" field.
 	BinaryName string `json:"binary_name,omitempty"`
 	// BinarySize holds the value of the "binary_size" field.
-	BinarySize string `json:"binary_size,omitempty"`
+	BinarySize int64 `json:"binary_size,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -43,9 +43,9 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case apppackage.FieldID, apppackage.FieldInternalID, apppackage.FieldSourceID:
+		case apppackage.FieldID, apppackage.FieldInternalID, apppackage.FieldSourceID, apppackage.FieldBinarySize:
 			values[i] = new(sql.NullInt64)
-		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinarySize:
+		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName:
 			values[i] = new(sql.NullString)
 		case apppackage.FieldUpdatedAt, apppackage.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -113,10 +113,10 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 				ap.BinaryName = value.String
 			}
 		case apppackage.FieldBinarySize:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field binary_size", values[i])
 			} else if value.Valid {
-				ap.BinarySize = value.String
+				ap.BinarySize = value.Int64
 			}
 		case apppackage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -180,7 +180,7 @@ func (ap *AppPackage) String() string {
 	builder.WriteString(ap.BinaryName)
 	builder.WriteString(", ")
 	builder.WriteString("binary_size=")
-	builder.WriteString(ap.BinarySize)
+	builder.WriteString(fmt.Sprintf("%v", ap.BinarySize))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ap.UpdatedAt.Format(time.ANSIC))
