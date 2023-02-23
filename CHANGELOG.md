@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4-3](https://github.com/TuiHub/Librarian/compare/v0.0.4-2...v0.0.4-3) (2023-02-23)
+
+
+### Miscellaneous Chores
+
+* **ci:** use goreleaser to build binaries ([#29](https://github.com/TuiHub/Librarian/issues/29)) ([d766868](https://github.com/TuiHub/Librarian/commit/d7668681452754d239fe1cba2b7413a32e747a17))
+
 ## [0.0.4-2](https://github.com/TuiHub/Librarian/compare/v0.0.4-1...v0.0.4-2) (2023-02-22)
 
 
