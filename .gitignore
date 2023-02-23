@@ -36,3 +36,4 @@ bin/
 *.swp
 
 dist/
+.release-env
