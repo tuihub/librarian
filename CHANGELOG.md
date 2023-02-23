@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.4-4](https://github.com/TuiHub/Librarian/compare/v0.0.4-3...v0.0.4-4) (2023-02-23)
+
+
+### Miscellaneous Chores
+
+* **ci:** fix config ([785549b](https://github.com/TuiHub/Librarian/commit/785549b09de5ef136acb02ce3db00d70331bb24a))
+
 ## [0.0.4-3](https://github.com/TuiHub/Librarian/compare/v0.0.4-2...v0.0.4-3) (2023-02-23)
 
 
