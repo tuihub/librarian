@@ -14,9 +14,9 @@ builds:
       - darwin
     goarch:
       - amd64
-    env:
-      - CC=o64-clang
-      - CXX=o64-clang++
+    #env:
+      #- CC=o64-clang
+      #- CXX=o64-clang++
     flags:
       - -mod=readonly
     ldflags:
