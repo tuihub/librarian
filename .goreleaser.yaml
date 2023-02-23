@@ -61,8 +61,6 @@ archives:
       - LICENSE
       - README.md
       - CHANGELOG.md
-      - src: '*.md'
-        dst: docs
 checksum:
   name_template: 'checksums.txt'
 snapshot:
