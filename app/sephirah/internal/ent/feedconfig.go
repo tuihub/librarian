@@ -171,9 +171,3 @@ func (fc *FeedConfig) String() string {
 
 // FeedConfigs is a parsable slice of FeedConfig.
 type FeedConfigs []*FeedConfig
-
-func (fc FeedConfigs) config(cfg config) {
-	for _i := range fc {
-		fc[_i].config = cfg
-	}
-}

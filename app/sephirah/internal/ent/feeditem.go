@@ -258,9 +258,3 @@ func (fi *FeedItem) String() string {
 
 // FeedItems is a parsable slice of FeedItem.
 type FeedItems []*FeedItem
-
-func (fi FeedItems) config(cfg config) {
-	for _i := range fi {
-		fi[_i].config = cfg
-	}
-}

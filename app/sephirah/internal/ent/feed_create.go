@@ -191,13 +191,7 @@ func (fc *FeedCreate) sqlSave(ctx context.Context) (*Feed, error) {
 func (fc *FeedCreate) createSpec() (*Feed, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Feed{config: fc.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: feed.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feed.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(feed.Table, sqlgraph.NewFieldSpec(feed.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = fc.conflict
 	if value, ok := fc.mutation.InternalID(); ok {

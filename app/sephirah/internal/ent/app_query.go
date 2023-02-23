@@ -177,10 +177,12 @@ func (aq *AppQuery) AllX(ctx context.Context) []*App {
 }
 
 // IDs executes the query and returns a list of App IDs.
-func (aq *AppQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (aq *AppQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if aq.ctx.Unique == nil && aq.path != nil {
+		aq.Unique(true)
+	}
 	ctx = setContextOp(ctx, aq.ctx, "IDs")
-	if err := aq.Select(app.FieldID).Scan(ctx, &ids); err != nil {
+	if err = aq.Select(app.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -362,20 +364,12 @@ func (aq *AppQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   app.Table,
-			Columns: app.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: app.FieldID,
-			},
-		},
-		From:   aq.sql,
-		Unique: true,
-	}
+	_spec := sqlgraph.NewQuerySpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
+	_spec.From = aq.sql
 	if unique := aq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if aq.path != nil {
+		_spec.Unique = true
 	}
 	if fields := aq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))

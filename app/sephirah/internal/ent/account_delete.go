@@ -40,15 +40,7 @@ func (ad *AccountDelete) ExecX(ctx context.Context) int {
 }
 
 func (ad *AccountDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := &sqlgraph.DeleteSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table: account.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: account.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewDeleteSpec(account.Table, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt))
 	if ps := ad.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

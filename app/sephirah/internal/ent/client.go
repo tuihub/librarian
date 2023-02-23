@@ -214,7 +214,7 @@ func (c *AccountClient) Use(hooks ...Hook) {
 	c.hooks.Account = append(c.hooks.Account, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `account.Intercept(f(g(h())))`.
 func (c *AccountClient) Intercept(interceptors ...Interceptor) {
 	c.inters.Account = append(c.inters.Account, interceptors...)
@@ -332,7 +332,7 @@ func (c *AppClient) Use(hooks ...Hook) {
 	c.hooks.App = append(c.hooks.App, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `app.Intercept(f(g(h())))`.
 func (c *AppClient) Intercept(interceptors ...Interceptor) {
 	c.inters.App = append(c.inters.App, interceptors...)
@@ -450,7 +450,7 @@ func (c *AppPackageClient) Use(hooks ...Hook) {
 	c.hooks.AppPackage = append(c.hooks.AppPackage, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `apppackage.Intercept(f(g(h())))`.
 func (c *AppPackageClient) Intercept(interceptors ...Interceptor) {
 	c.inters.AppPackage = append(c.inters.AppPackage, interceptors...)
@@ -568,7 +568,7 @@ func (c *FeedClient) Use(hooks ...Hook) {
 	c.hooks.Feed = append(c.hooks.Feed, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `feed.Intercept(f(g(h())))`.
 func (c *FeedClient) Intercept(interceptors ...Interceptor) {
 	c.inters.Feed = append(c.inters.Feed, interceptors...)
@@ -686,7 +686,7 @@ func (c *FeedConfigClient) Use(hooks ...Hook) {
 	c.hooks.FeedConfig = append(c.hooks.FeedConfig, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `feedconfig.Intercept(f(g(h())))`.
 func (c *FeedConfigClient) Intercept(interceptors ...Interceptor) {
 	c.inters.FeedConfig = append(c.inters.FeedConfig, interceptors...)
@@ -804,7 +804,7 @@ func (c *FeedItemClient) Use(hooks ...Hook) {
 	c.hooks.FeedItem = append(c.hooks.FeedItem, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `feeditem.Intercept(f(g(h())))`.
 func (c *FeedItemClient) Intercept(interceptors ...Interceptor) {
 	c.inters.FeedItem = append(c.inters.FeedItem, interceptors...)
@@ -922,7 +922,7 @@ func (c *UserClient) Use(hooks ...Hook) {
 	c.hooks.User = append(c.hooks.User, hooks...)
 }
 
-// Use adds a list of query interceptors to the interceptors stack.
+// Intercept adds a list of query interceptors to the interceptors stack.
 // A call to `Intercept(f, g, h)` equals to `user.Intercept(f(g(h())))`.
 func (c *UserClient) Intercept(interceptors ...Interceptor) {
 	c.inters.User = append(c.inters.User, interceptors...)

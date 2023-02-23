@@ -37,3 +37,4 @@ bin/
 
 dist/
 .release-env
+*.db

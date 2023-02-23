@@ -165,16 +165,7 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := apu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   apppackage.Table,
-			Columns: apppackage.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: apppackage.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
 	if ps := apu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -325,6 +316,12 @@ func (apuo *AppPackageUpdateOne) Mutation() *AppPackageMutation {
 	return apuo.mutation
 }
 
+// Where appends a list predicates to the AppPackageUpdate builder.
+func (apuo *AppPackageUpdateOne) Where(ps ...predicate.AppPackage) *AppPackageUpdateOne {
+	apuo.mutation.Where(ps...)
+	return apuo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (apuo *AppPackageUpdateOne) Select(field string, fields ...string) *AppPackageUpdateOne {
@@ -382,16 +379,7 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	if err := apuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   apppackage.Table,
-			Columns: apppackage.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: apppackage.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
 	id, ok := apuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppPackage.id" for update`)}

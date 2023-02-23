@@ -153,16 +153,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := fcu.check(); err != nil {
 		return n, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedconfig.Table,
-			Columns: feedconfig.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedconfig.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
 	if ps := fcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -295,6 +286,12 @@ func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
 	return fcuo.mutation
 }
 
+// Where appends a list predicates to the FeedConfigUpdate builder.
+func (fcuo *FeedConfigUpdateOne) Where(ps ...predicate.FeedConfig) *FeedConfigUpdateOne {
+	fcuo.mutation.Where(ps...)
+	return fcuo
+}
+
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
 func (fcuo *FeedConfigUpdateOne) Select(field string, fields ...string) *FeedConfigUpdateOne {
@@ -352,16 +349,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	if err := fcuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := &sqlgraph.UpdateSpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedconfig.Table,
-			Columns: feedconfig.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedconfig.FieldID,
-			},
-		},
-	}
+	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
 	id, ok := fcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedConfig.id" for update`)}

@@ -193,9 +193,3 @@ func (ap *AppPackage) String() string {
 
 // AppPackages is a parsable slice of AppPackage.
 type AppPackages []*AppPackage
-
-func (ap AppPackages) config(cfg config) {
-	for _i := range ap {
-		ap[_i].config = cfg
-	}
-}

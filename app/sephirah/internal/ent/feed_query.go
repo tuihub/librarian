@@ -177,10 +177,12 @@ func (fq *FeedQuery) AllX(ctx context.Context) []*Feed {
 }
 
 // IDs executes the query and returns a list of Feed IDs.
-func (fq *FeedQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (fq *FeedQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if fq.ctx.Unique == nil && fq.path != nil {
+		fq.Unique(true)
+	}
 	ctx = setContextOp(ctx, fq.ctx, "IDs")
-	if err := fq.Select(feed.FieldID).Scan(ctx, &ids); err != nil {
+	if err = fq.Select(feed.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -362,20 +364,12 @@ func (fq *FeedQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (fq *FeedQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feed.Table,
-			Columns: feed.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feed.FieldID,
-			},
-		},
-		From:   fq.sql,
-		Unique: true,
-	}
+	_spec := sqlgraph.NewQuerySpec(feed.Table, feed.Columns, sqlgraph.NewFieldSpec(feed.FieldID, field.TypeInt))
+	_spec.From = fq.sql
 	if unique := fq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if fq.path != nil {
+		_spec.Unique = true
 	}
 	if fields := fq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))

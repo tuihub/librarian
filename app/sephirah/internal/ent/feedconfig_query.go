@@ -177,10 +177,12 @@ func (fcq *FeedConfigQuery) AllX(ctx context.Context) []*FeedConfig {
 }
 
 // IDs executes the query and returns a list of FeedConfig IDs.
-func (fcq *FeedConfigQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if fcq.ctx.Unique == nil && fcq.path != nil {
+		fcq.Unique(true)
+	}
 	ctx = setContextOp(ctx, fcq.ctx, "IDs")
-	if err := fcq.Select(feedconfig.FieldID).Scan(ctx, &ids); err != nil {
+	if err = fcq.Select(feedconfig.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -362,20 +364,12 @@ func (fcq *FeedConfigQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (fcq *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feedconfig.Table,
-			Columns: feedconfig.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feedconfig.FieldID,
-			},
-		},
-		From:   fcq.sql,
-		Unique: true,
-	}
+	_spec := sqlgraph.NewQuerySpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
+	_spec.From = fcq.sql
 	if unique := fcq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if fcq.path != nil {
+		_spec.Unique = true
 	}
 	if fields := fcq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))

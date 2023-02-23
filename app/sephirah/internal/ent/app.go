@@ -237,9 +237,3 @@ func (a *App) String() string {
 
 // Apps is a parsable slice of App.
 type Apps []*App
-
-func (a Apps) config(cfg config) {
-	for _i := range a {
-		a[_i].config = cfg
-	}
-}

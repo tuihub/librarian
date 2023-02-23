@@ -245,13 +245,7 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	var (
 		_node = &App{config: ac.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: app.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: app.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = ac.conflict
 	if value, ok := ac.mutation.InternalID(); ok {

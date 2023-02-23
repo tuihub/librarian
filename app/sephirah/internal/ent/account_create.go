@@ -186,13 +186,7 @@ func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
 func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Account{config: ac.config}
-		_spec = &sqlgraph.CreateSpec{
-			Table: account.Table,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: account.FieldID,
-			},
-		}
+		_spec = sqlgraph.NewCreateSpec(account.Table, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = ac.conflict
 	if value, ok := ac.mutation.InternalID(); ok {

@@ -177,10 +177,12 @@ func (fiq *FeedItemQuery) AllX(ctx context.Context) []*FeedItem {
 }
 
 // IDs executes the query and returns a list of FeedItem IDs.
-func (fiq *FeedItemQuery) IDs(ctx context.Context) ([]int, error) {
-	var ids []int
+func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int, err error) {
+	if fiq.ctx.Unique == nil && fiq.path != nil {
+		fiq.Unique(true)
+	}
 	ctx = setContextOp(ctx, fiq.ctx, "IDs")
-	if err := fiq.Select(feeditem.FieldID).Scan(ctx, &ids); err != nil {
+	if err = fiq.Select(feeditem.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
@@ -362,20 +364,12 @@ func (fiq *FeedItemQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (fiq *FeedItemQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := &sqlgraph.QuerySpec{
-		Node: &sqlgraph.NodeSpec{
-			Table:   feeditem.Table,
-			Columns: feeditem.Columns,
-			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt,
-				Column: feeditem.FieldID,
-			},
-		},
-		From:   fiq.sql,
-		Unique: true,
-	}
+	_spec := sqlgraph.NewQuerySpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt))
+	_spec.From = fiq.sql
 	if unique := fiq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
+	} else if fiq.path != nil {
+		_spec.Unique = true
 	}
 	if fields := fiq.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
