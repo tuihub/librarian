@@ -75,6 +75,17 @@ test-all: test-unit test-goc
 run:
 	kratos run
 
+.PHONY: release-dry-run
+release-dry-run:
+	@docker run \
+		--rm \
+		-e CGO_ENABLED=1 \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/$(PACKAGE_NAME) \
+		-w /go/src/$(PACKAGE_NAME) \
+		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
+		release --clean --skip-validate --skip-publish
+
 .PHONY: release
 release:
 	@if [ ! -f ".release-env" ]; then \
