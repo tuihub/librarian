@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
-	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/app/porter/internal/client/feed/converter"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/google/wire"
@@ -31,15 +31,7 @@ func (s *rssRepo) Parse(data string) (*bizfeed.Feed, error) {
 	if err != nil {
 		return nil, err
 	}
-	feedJSON, err := libcodec.Marshal(libcodec.JSON, feed)
-	if err != nil {
-		return nil, err
-	}
-	res := new(bizfeed.Feed)
-	err = libcodec.Unmarshal(libcodec.JSON, feedJSON, res)
-	if err != nil {
-		return nil, err
-	}
+	res := converter.NewConverter().ToPBFeed(feed)
 	return res, nil
 }
 

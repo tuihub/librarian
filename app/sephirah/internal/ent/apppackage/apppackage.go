@@ -28,6 +28,8 @@ const (
 	FieldBinaryName = "binary_name"
 	// FieldBinarySize holds the string denoting the binary_size field in the database.
 	FieldBinarySize = "binary_size"
+	// FieldBinaryPublicURL holds the string denoting the binary_public_url field in the database.
+	FieldBinaryPublicURL = "binary_public_url"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -47,6 +49,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldBinaryName,
 	FieldBinarySize,
+	FieldBinaryPublicURL,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }

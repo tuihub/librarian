@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -15,7 +14,7 @@ func (s *LibrarianSephirahServiceService) CreateFeedConfig(
 	ctx context.Context,
 	req *pb.CreateFeedConfigRequest,
 ) (*pb.CreateFeedConfigResponse, error) {
-	id, err := s.y.CreateFeedConfig(ctx, bizyesod.ToBizFeedConfig(req.GetConfig()))
+	id, err := s.y.CreateFeedConfig(ctx, s.converter.ToBizFeedConfig(req.GetConfig()))
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +26,7 @@ func (s *LibrarianSephirahServiceService) UpdateFeedConfig(
 	ctx context.Context,
 	req *pb.UpdateFeedConfigRequest,
 ) (*pb.UpdateFeedConfigResponse, error) {
-	err := s.y.UpdateFeedConfig(ctx, bizyesod.ToBizFeedConfig(req.GetConfig()))
+	err := s.y.UpdateFeedConfig(ctx, s.converter.ToBizFeedConfig(req.GetConfig()))
 	if err != nil {
 		return nil, err
 	}

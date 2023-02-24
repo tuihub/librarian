@@ -42,11 +42,6 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
 	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
 	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
-	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
 	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
 	if err != nil {
 		cleanup()
@@ -62,7 +57,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tiphereth, gebura, binah, yesod)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

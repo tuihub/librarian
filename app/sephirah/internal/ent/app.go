@@ -40,6 +40,8 @@ type App struct {
 	Developer string `json:"developer,omitempty"`
 	// Publisher holds the value of the "publisher" field.
 	Publisher string `json:"publisher,omitempty"`
+	// Version holds the value of the "version" field.
+	Version string `json:"version,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -53,7 +55,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case app.FieldID, app.FieldInternalID:
 			values[i] = new(sql.NullInt64)
-		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher:
+		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
 			values[i] = new(sql.NullString)
 		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -150,6 +152,12 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Publisher = value.String
 			}
+		case app.FieldVersion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field version", values[i])
+			} else if value.Valid {
+				a.Version = value.String
+			}
 		case app.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -225,6 +233,9 @@ func (a *App) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("publisher=")
 	builder.WriteString(a.Publisher)
+	builder.WriteString(", ")
+	builder.WriteString("version=")
+	builder.WriteString(a.Version)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))

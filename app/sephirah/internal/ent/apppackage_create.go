@@ -70,6 +70,12 @@ func (apc *AppPackageCreate) SetBinarySize(i int64) *AppPackageCreate {
 	return apc
 }
 
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (apc *AppPackageCreate) SetBinaryPublicURL(s string) *AppPackageCreate {
+	apc.mutation.SetBinaryPublicURL(s)
+	return apc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (apc *AppPackageCreate) SetUpdatedAt(t time.Time) *AppPackageCreate {
 	apc.mutation.SetUpdatedAt(t)
@@ -174,6 +180,9 @@ func (apc *AppPackageCreate) check() error {
 	if _, ok := apc.mutation.BinarySize(); !ok {
 		return &ValidationError{Name: "binary_size", err: errors.New(`ent: missing required field "AppPackage.binary_size"`)}
 	}
+	if _, ok := apc.mutation.BinaryPublicURL(); !ok {
+		return &ValidationError{Name: "binary_public_url", err: errors.New(`ent: missing required field "AppPackage.binary_public_url"`)}
+	}
 	if _, ok := apc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppPackage.updated_at"`)}
 	}
@@ -238,6 +247,10 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 	if value, ok := apc.mutation.BinarySize(); ok {
 		_spec.SetField(apppackage.FieldBinarySize, field.TypeInt64, value)
 		_node.BinarySize = value
+	}
+	if value, ok := apc.mutation.BinaryPublicURL(); ok {
+		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
+		_node.BinaryPublicURL = value
 	}
 	if value, ok := apc.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -410,6 +423,18 @@ func (u *AppPackageUpsert) UpdateBinarySize() *AppPackageUpsert {
 // AddBinarySize adds v to the "binary_size" field.
 func (u *AppPackageUpsert) AddBinarySize(v int64) *AppPackageUpsert {
 	u.Add(apppackage.FieldBinarySize, v)
+	return u
+}
+
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (u *AppPackageUpsert) SetBinaryPublicURL(v string) *AppPackageUpsert {
+	u.Set(apppackage.FieldBinaryPublicURL, v)
+	return u
+}
+
+// UpdateBinaryPublicURL sets the "binary_public_url" field to the value that was provided on create.
+func (u *AppPackageUpsert) UpdateBinaryPublicURL() *AppPackageUpsert {
+	u.SetExcluded(apppackage.FieldBinaryPublicURL)
 	return u
 }
 
@@ -607,6 +632,20 @@ func (u *AppPackageUpsertOne) AddBinarySize(v int64) *AppPackageUpsertOne {
 func (u *AppPackageUpsertOne) UpdateBinarySize() *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.UpdateBinarySize()
+	})
+}
+
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (u *AppPackageUpsertOne) SetBinaryPublicURL(v string) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetBinaryPublicURL(v)
+	})
+}
+
+// UpdateBinaryPublicURL sets the "binary_public_url" field to the value that was provided on create.
+func (u *AppPackageUpsertOne) UpdateBinaryPublicURL() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateBinaryPublicURL()
 	})
 }
 
@@ -968,6 +1007,20 @@ func (u *AppPackageUpsertBulk) AddBinarySize(v int64) *AppPackageUpsertBulk {
 func (u *AppPackageUpsertBulk) UpdateBinarySize() *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.UpdateBinarySize()
+	})
+}
+
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (u *AppPackageUpsertBulk) SetBinaryPublicURL(v string) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetBinaryPublicURL(v)
+	})
+}
+
+// UpdateBinaryPublicURL sets the "binary_public_url" field to the value that was provided on create.
+func (u *AppPackageUpsertBulk) UpdateBinaryPublicURL() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateBinaryPublicURL()
 	})
 }
 

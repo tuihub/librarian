@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -49,13 +50,7 @@ func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error,
 ) {
-	u, err := s.t.AddUser(ctx, &biztiphereth.User{
-		InternalID: 0,
-		UserName:   req.GetUser().GetUsername(),
-		PassWord:   req.GetUser().GetPassword(),
-		Type:       biztiphereth.ToLibAuthUserType(req.GetUser().GetType()),
-		Status:     0,
-	})
+	u, err := s.t.AddUser(ctx, s.converter.ToBizUser(req.GetUser()))
 	if err != nil {
 		return nil, err
 	}
@@ -69,13 +64,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	if req.GetUser().GetId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("id required")
 	}
-	err := s.t.UpdateUser(ctx, &biztiphereth.User{
-		InternalID: req.GetUser().GetId().GetId(),
-		UserName:   req.GetUser().GetUsername(),
-		PassWord:   req.GetUser().GetPassword(),
-		Type:       0,
-		Status:     biztiphereth.ToBizUserStatus(req.GetUser().GetStatus()),
-	})
+	err := s.t.UpdateUser(ctx, s.converter.ToBizUser(req.GetUser()))
 	if err != nil {
 		return nil, err
 	}
@@ -89,15 +78,15 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		biztiphereth.ToLibAuthUserTypeList(req.GetTypeFilter()),
-		biztiphereth.ToBizUserStatusList(req.GetStatusFilter()),
+		s.converter.ToLibAuthUserTypeList(req.GetTypeFilter()),
+		s.converter.ToBizUserStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListUserResponse{ // TODO
 		Paging:   nil,
-		UserList: biztiphereth.ToPBUserList(u),
+		UserList: s.converter.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
@@ -105,7 +94,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 ) {
 	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
 		InternalID:        0,
-		Platform:          biztiphereth.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 		Name:              "",
 		ProfileURL:        "",

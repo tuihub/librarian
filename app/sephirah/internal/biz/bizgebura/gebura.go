@@ -13,15 +13,15 @@ import (
 )
 
 type App struct {
-	InternalID      int64
-	Source          AppSource
-	SourceAppID     string
-	SourceURL       string
-	Name            string
-	Type            AppType
-	ShorDescription string
-	ImageURL        string
-	Details         *AppDetails
+	InternalID       int64
+	Source           AppSource
+	SourceAppID      string
+	SourceURL        string
+	Name             string
+	Type             AppType
+	ShortDescription string
+	ImageURL         string
+	Details          *AppDetails
 }
 
 type AppDetails struct {
@@ -29,6 +29,7 @@ type AppDetails struct {
 	ReleaseDate string
 	Developer   string
 	Publisher   string
+	Version     string
 }
 
 type AppSource int
@@ -53,12 +54,13 @@ type AppPackage struct {
 	SourcePackageID string
 	Name            string
 	Description     string
-	Binary          AppPackageBinary
+	Binary          *AppPackageBinary
 }
 
 type AppPackageBinary struct {
-	Name string
-	Size int64
+	Name      string
+	Size      int64
+	PublicURL string
 }
 
 type AppPackageSource int

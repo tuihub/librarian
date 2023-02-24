@@ -34,25 +34,25 @@ func init() {
 	appFields := schema.App{}.Fields()
 	_ = appFields
 	// appDescUpdatedAt is the schema descriptor for updated_at field.
-	appDescUpdatedAt := appFields[12].Descriptor()
+	appDescUpdatedAt := appFields[13].Descriptor()
 	// app.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	app.DefaultUpdatedAt = appDescUpdatedAt.Default.(func() time.Time)
 	// app.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	app.UpdateDefaultUpdatedAt = appDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// appDescCreatedAt is the schema descriptor for created_at field.
-	appDescCreatedAt := appFields[13].Descriptor()
+	appDescCreatedAt := appFields[14].Descriptor()
 	// app.DefaultCreatedAt holds the default value on creation for the created_at field.
 	app.DefaultCreatedAt = appDescCreatedAt.Default.(func() time.Time)
 	apppackageFields := schema.AppPackage{}.Fields()
 	_ = apppackageFields
 	// apppackageDescUpdatedAt is the schema descriptor for updated_at field.
-	apppackageDescUpdatedAt := apppackageFields[8].Descriptor()
+	apppackageDescUpdatedAt := apppackageFields[9].Descriptor()
 	// apppackage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	apppackage.DefaultUpdatedAt = apppackageDescUpdatedAt.Default.(func() time.Time)
 	// apppackage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	apppackage.UpdateDefaultUpdatedAt = apppackageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// apppackageDescCreatedAt is the schema descriptor for created_at field.
-	apppackageDescCreatedAt := apppackageFields[9].Descriptor()
+	apppackageDescCreatedAt := apppackageFields[10].Descriptor()
 	// apppackage.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppackage.DefaultCreatedAt = apppackageDescCreatedAt.Default.(func() time.Time)
 	feedFields := schema.Feed{}.Fields()

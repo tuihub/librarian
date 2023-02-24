@@ -31,54 +31,38 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	if err != nil {
 		return nil, nil, err
 	}
-	mq, cleanup, err := libmq.NewMQ()
+	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
-		return nil, nil, err
-	}
-	entClient, cleanup2, err := data.NewSQLClient(sephirah_Data)
-	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	geburaRepo := data.NewGeburaRepo(dataData)
 	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	librarianPorterServiceClient, err := client.NewPorterClient()
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	librarianSearcherServiceClient, err := client.NewSearcherClient()
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
+	geburaRepo := data.NewGeburaRepo(dataData)
 	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
 	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
 	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
-	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
@@ -90,13 +74,17 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl3)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tiphereth, gebura, binah, yesod)
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
+	mq, cleanup2, err := libmq.NewMQ()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	app := newApp(grpcServer, httpServer, mq, cron)
 	return app, func() {
 		cleanup2()

@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
+	"github.com/tuihub/librarian/app/porter/internal/service/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -42,16 +43,15 @@ func (s *LibrarianPorterServiceService) PullFeed(
 	req *pb.PullFeedRequest,
 ) (*pb.PullFeedResponse, error) {
 	switch req.GetSource() {
+	case pb.FeedSource_FEED_SOURCE_UNSPECIFIED:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	case pb.FeedSource_FEED_SOURCE_COMMON:
 		{
 			feed, err := s.feed.GetFeed(ctx, req.GetContentId())
 			if err != nil {
 				return nil, err
 			}
-			res, err := toPBFeed(feed)
-			if err != nil {
-				return nil, err
-			}
+			res := converter.NewConverter().ToPBFeed(feed)
 			return &pb.PullFeedResponse{Data: res}, nil
 		}
 	default:
@@ -64,6 +64,8 @@ func (s *LibrarianPorterServiceService) PullAccount(
 	req *pb.PullAccountRequest,
 ) (*pb.PullAccountResponse, error) {
 	switch req.GetAccountId().GetPlatform() {
+	case librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED:
+		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
 	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
 		u, err := s.steam.GetUser(ctx, req.GetAccountId().GetPlatformAccountId())
 		if err != nil {
@@ -86,6 +88,10 @@ func (s *LibrarianPorterServiceService) PullApp(
 	req *pb.PullAppRequest,
 ) (*pb.PullAppResponse, error) {
 	switch req.GetAppId().GetSource() {
+	case librarian.AppSource_APP_SOURCE_UNSPECIFIED:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
+	case librarian.AppSource_APP_SOURCE_INTERNAL:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	case librarian.AppSource_APP_SOURCE_STEAM:
 		appID, err := strconv.ParseInt(req.GetAppId().GetSourceAppId(), 10, 64)
 		if err != nil {
@@ -101,7 +107,7 @@ func (s *LibrarianPorterServiceService) PullApp(
 			SourceAppId:      req.GetAppId().GetSourceAppId(),
 			SourceUrl:        &a.StoreURL,
 			Name:             a.Name,
-			Type:             toPBAppType(a.Type),
+			Type:             converter.ToPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
 			ImageUrl:         a.ImageURL,
 			Details: &librarian.AppDetails{ // TODO
@@ -121,6 +127,8 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 	req *pb.PullAccountAppRelationRequest,
 ) (*pb.PullAccountAppRelationResponse, error) {
 	switch req.GetAccountId().GetPlatform() {
+	case librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED:
+		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
 	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
 		al, err := s.steam.GetOwnedGames(ctx, req.GetAccountId().GetPlatformAccountId())
 		if err != nil {
@@ -157,7 +165,7 @@ func (s *LibrarianPorterServiceService) PushData(conn pb.LibrarianPorterService_
 		}
 		file, err = s.s3.NewPushData(
 			conn.Context(),
-			toBizBucket(req.GetMetadata().GetSource()),
+			converter.ToBizBucket(req.GetMetadata().GetSource()),
 			req.GetMetadata().GetContentId(),
 		)
 		if err != nil {

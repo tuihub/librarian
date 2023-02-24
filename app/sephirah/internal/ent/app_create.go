@@ -94,6 +94,12 @@ func (ac *AppCreate) SetPublisher(s string) *AppCreate {
 	return ac
 }
 
+// SetVersion sets the "version" field.
+func (ac *AppCreate) SetVersion(s string) *AppCreate {
+	ac.mutation.SetVersion(s)
+	return ac
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (ac *AppCreate) SetUpdatedAt(t time.Time) *AppCreate {
 	ac.mutation.SetUpdatedAt(t)
@@ -215,6 +221,9 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.Publisher(); !ok {
 		return &ValidationError{Name: "publisher", err: errors.New(`ent: missing required field "App.publisher"`)}
 	}
+	if _, ok := ac.mutation.Version(); !ok {
+		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "App.version"`)}
+	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "App.updated_at"`)}
 	}
@@ -295,6 +304,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
+	}
+	if value, ok := ac.mutation.Version(); ok {
+		_spec.SetField(app.FieldVersion, field.TypeString, value)
+		_node.Version = value
 	}
 	if value, ok := ac.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
@@ -503,6 +516,18 @@ func (u *AppUpsert) SetPublisher(v string) *AppUpsert {
 // UpdatePublisher sets the "publisher" field to the value that was provided on create.
 func (u *AppUpsert) UpdatePublisher() *AppUpsert {
 	u.SetExcluded(app.FieldPublisher)
+	return u
+}
+
+// SetVersion sets the "version" field.
+func (u *AppUpsert) SetVersion(v string) *AppUpsert {
+	u.Set(app.FieldVersion, v)
+	return u
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppUpsert) UpdateVersion() *AppUpsert {
+	u.SetExcluded(app.FieldVersion)
 	return u
 }
 
@@ -742,6 +767,20 @@ func (u *AppUpsertOne) SetPublisher(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdatePublisher() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdatePublisher()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *AppUpsertOne) SetVersion(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateVersion() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersion()
 	})
 }
 
@@ -1145,6 +1184,20 @@ func (u *AppUpsertBulk) SetPublisher(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdatePublisher() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdatePublisher()
+	})
+}
+
+// SetVersion sets the "version" field.
+func (u *AppUpsertBulk) SetVersion(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersion(v)
+	})
+}
+
+// UpdateVersion sets the "version" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateVersion() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersion()
 	})
 }
 

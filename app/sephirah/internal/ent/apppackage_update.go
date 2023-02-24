@@ -97,6 +97,12 @@ func (apu *AppPackageUpdate) AddBinarySize(i int64) *AppPackageUpdate {
 	return apu
 }
 
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (apu *AppPackageUpdate) SetBinaryPublicURL(s string) *AppPackageUpdate {
+	apu.mutation.SetBinaryPublicURL(s)
+	return apu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (apu *AppPackageUpdate) SetUpdatedAt(t time.Time) *AppPackageUpdate {
 	apu.mutation.SetUpdatedAt(t)
@@ -213,6 +219,9 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.AddedBinarySize(); ok {
 		_spec.AddField(apppackage.FieldBinarySize, field.TypeInt64, value)
 	}
+	if value, ok := apu.mutation.BinaryPublicURL(); ok {
+		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
+	}
 	if value, ok := apu.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
 	}
@@ -305,6 +314,12 @@ func (apuo *AppPackageUpdateOne) SetBinarySize(i int64) *AppPackageUpdateOne {
 // AddBinarySize adds i to the "binary_size" field.
 func (apuo *AppPackageUpdateOne) AddBinarySize(i int64) *AppPackageUpdateOne {
 	apuo.mutation.AddBinarySize(i)
+	return apuo
+}
+
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (apuo *AppPackageUpdateOne) SetBinaryPublicURL(s string) *AppPackageUpdateOne {
+	apuo.mutation.SetBinaryPublicURL(s)
 	return apuo
 }
 
@@ -453,6 +468,9 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	}
 	if value, ok := apuo.mutation.AddedBinarySize(); ok {
 		_spec.AddField(apppackage.FieldBinarySize, field.TypeInt64, value)
+	}
+	if value, ok := apuo.mutation.BinaryPublicURL(); ok {
+		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
 	}
 	if value, ok := apuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)

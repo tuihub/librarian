@@ -41,13 +41,14 @@ var (
 		{Name: "source_app_id", Type: field.TypeString},
 		{Name: "source_url", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"general", "game"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"game"}},
 		{Name: "short_description", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
 		{Name: "image_url", Type: field.TypeString},
 		{Name: "release_date", Type: field.TypeString},
 		{Name: "developer", Type: field.TypeString},
 		{Name: "publisher", Type: field.TypeString},
+		{Name: "version", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
@@ -75,6 +76,7 @@ var (
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
 		{Name: "binary_name", Type: field.TypeString},
 		{Name: "binary_size", Type: field.TypeInt64},
+		{Name: "binary_public_url", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}

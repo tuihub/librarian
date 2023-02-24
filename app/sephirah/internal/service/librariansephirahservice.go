@@ -1,16 +1,18 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
+
+	converter converter.Converter
 
 	t *biztiphereth.Tiphereth
 	g *bizgebura.Gebura
@@ -19,7 +21,6 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
-	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,
@@ -27,9 +28,10 @@ func NewLibrarianSephirahServiceService(
 ) pb.LibrarianSephirahServiceServer {
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
-		t: t,
-		g: g,
-		b: b,
-		y: y,
+		converter: converter.NewConverter(),
+		t:         t,
+		g:         g,
+		b:         b,
+		y:         y,
 	}
 }

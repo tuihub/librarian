@@ -37,10 +37,6 @@ linters-settings:
     check:
       - switch
       - map
-    # Presence of "default" case in switch statements satisfies exhaustiveness,
-    # even if all enum members are not listed.
-    # Default: false
-    default-signifies-exhaustive: true
 
   funlen:
     # Checks the number of lines in a function.

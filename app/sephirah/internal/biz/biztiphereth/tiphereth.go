@@ -172,6 +172,9 @@ func (t *Tiphereth) ListUser(
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
+	for i := range users {
+		users[i].PassWord = ""
+	}
 	return users, nil
 }
 

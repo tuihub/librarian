@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 )
 
@@ -24,8 +25,8 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig
 		SetInternalID(c.InternalID).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
-		SetSource(toEntFeedConfigSource(c.Source)).
-		SetStatus(toEntFeedConfigStatus(c.Status)).
+		SetSource(converter.ToEntFeedConfigSource(c.Source)).
+		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
 		SetPullInterval(c.PullInterval)
 	return q.Exec(ctx)
 }
@@ -35,8 +36,8 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig
 		Where(feedconfig.InternalIDEQ(c.InternalID)).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
-		SetSource(toEntFeedConfigSource(c.Source)).
-		SetStatus(toEntFeedConfigStatus(c.Status)).
+		SetSource(converter.ToEntFeedConfigSource(c.Source)).
+		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
 		SetPullInterval(c.PullInterval)
 	return q.Exec(ctx)
 }

@@ -792,8 +792,8 @@ github.com/tklauser/numcpus v0.6.0 h1:kebhY2Qt+3U6RNK7UqpYNA+tJ23IBEGKkB7JQBfDYm
 github.com/tklauser/numcpus v0.6.0/go.mod h1:FEZLMke0lhOUG6w2JadTzp0a+Nl8PF/GFkQ5UVIcaL4=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20170815181823-89b8d40f7ca8/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
-github.com/tuihub/protos v0.2.5 h1:AJ2q/at+7H32gbraBULhtg4NJOA3PVXkj4AYxwvY5cA=
-github.com/tuihub/protos v0.2.5/go.mod h1:lpO6noWDyiOi5RmC6m15CHa9wlbN/t52eHe7WrGZ5ys=
+github.com/tuihub/protos v0.2.6 h1:pEAdHAURT16zpCup97aaOdzZzVivvWdgN1+hgUNbJtY=
+github.com/tuihub/protos v0.2.6/go.mod h1:lpO6noWDyiOi5RmC6m15CHa9wlbN/t52eHe7WrGZ5ys=
 github.com/tylertreat/BoomFilters v0.0.0-20181028192813-611b3dbe80e8/go.mod h1:OYRfF6eb5wY9VRFkXJH8FFBi3plw2v+giaIu7P054pM=
 github.com/ugorji/go v1.1.4/go.mod h1:uQMGLiO92mf5W77hV/PUCpI3pbzQx3CRekS0kk+RGrc=
 github.com/ugorji/go v1.1.7 h1:/68gy2h+1mWMrwZFeD1kQialdSzAb432dtpeJ42ovdo=

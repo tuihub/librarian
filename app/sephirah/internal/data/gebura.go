@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
@@ -44,12 +45,12 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 	}
 	q := g.data.db.App.Create().
 		SetInternalID(a.InternalID).
-		SetSource(toEntAppSource(a.Source)).
+		SetSource(converter.ToEntAppSource(a.Source)).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
 		SetName(a.Name).
-		SetType(toEntAppType(a.Type)).
-		SetShortDescription(a.ShorDescription).
+		SetType(converter.ToEntAppType(a.Type)).
+		SetShortDescription(a.ShortDescription).
 		SetImageURL(a.ImageURL).
 		SetDescription(a.Details.Description).
 		SetReleaseDate(a.Details.ReleaseDate).
@@ -62,13 +63,13 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 	q := g.data.db.App.Update().
 		Where(
 			app.InternalIDEQ(a.InternalID),
-			app.SourceEQ(toEntAppSource(a.Source)),
+			app.SourceEQ(converter.ToEntAppSource(a.Source)),
 		).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
 		SetName(a.Name).
-		SetType(toEntAppType(a.Type)).
-		SetShortDescription(a.ShorDescription).
+		SetType(converter.ToEntAppType(a.Type)).
+		SetShortDescription(a.ShortDescription).
 		SetImageURL(a.ImageURL)
 	if a.Details != nil {
 		q.
@@ -88,12 +89,12 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 		}
 		apps[i] = g.data.db.App.Create().
 			SetInternalID(a.InternalID).
-			SetSource(toEntAppSource(a.Source)).
+			SetSource(converter.ToEntAppSource(a.Source)).
 			SetSourceAppID(a.SourceAppID).
 			SetSourceURL(a.SourceURL).
 			SetName(a.Name).
-			SetType(toEntAppType(a.Type)).
-			SetShortDescription(a.ShorDescription).
+			SetType(converter.ToEntAppType(a.Type)).
+			SetShortDescription(a.ShortDescription).
 			SetImageURL(a.ImageURL)
 		if a.Details != nil {
 			apps[i].
@@ -136,14 +137,14 @@ func (g geburaRepo) ListApp(
 	if len(sources) > 0 {
 		sourceFilter := make([]app.Source, len(sources))
 		for i, appSource := range sources {
-			sourceFilter[i] = toEntAppSource(appSource)
+			sourceFilter[i] = converter.ToEntAppSource(appSource)
 		}
 		q.Where(app.SourceIn(sourceFilter...))
 	}
 	if len(types) > 0 {
 		typeFilter := make([]app.Type, len(types))
 		for i, appType := range types {
-			typeFilter[i] = toEntAppType(appType)
+			typeFilter[i] = converter.ToEntAppType(appType)
 		}
 		q.Where(app.TypeIn(typeFilter...))
 	}
@@ -159,9 +160,9 @@ func (g geburaRepo) ListApp(
 	}
 	apps := make([]*bizgebura.App, len(a))
 	for i, sa := range a {
-		apps[i] = toBizApp(sa)
-		if containDetails {
-			apps[i].Details = toBizAppDetails(sa)
+		apps[i] = g.data.converter.ToBizApp(sa)
+		if !containDetails {
+			apps[i].Details = nil
 		}
 	}
 	return apps, nil
@@ -184,7 +185,7 @@ func (g geburaRepo) IsAppPackage(ctx context.Context, id int64) error {
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Create().
 		SetInternalID(ap.InternalID).
-		SetSource(toEntAppPackageSource(ap.Source)).
+		SetSource(converter.ToEntAppPackageSource(ap.Source)).
 		SetSourceID(ap.SourceID).
 		SetSourcePackageID(ap.SourcePackageID).
 		SetName(ap.Name).
@@ -198,7 +199,7 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *bizgebura.AppPacka
 	q := g.data.db.AppPackage.Update().
 		Where(
 			apppackage.InternalIDEQ(ap.InternalID),
-			apppackage.SourceEQ(toEntAppPackageSource(ap.Source)),
+			apppackage.SourceEQ(converter.ToEntAppPackageSource(ap.Source)),
 		).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
@@ -212,7 +213,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 	for i, ap := range apl {
 		appPackages[i] = g.data.db.AppPackage.Create().
 			SetInternalID(ap.InternalID).
-			SetSource(toEntAppPackageSource(ap.Source)).
+			SetSource(converter.ToEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
 			SetSourcePackageID(ap.SourcePackageID)
 		if len(ap.Name) > 0 {
@@ -260,7 +261,7 @@ func (g geburaRepo) ListAppPackage(
 	if len(sources) > 0 {
 		sourceFilter := make([]apppackage.Source, len(sources))
 		for i, apSource := range sources {
-			sourceFilter[i] = toEntAppPackageSource(apSource)
+			sourceFilter[i] = converter.ToEntAppPackageSource(apSource)
 		}
 		q.Where(apppackage.SourceIn(sourceFilter...))
 	}
@@ -274,7 +275,7 @@ func (g geburaRepo) ListAppPackage(
 	if err != nil {
 		return nil, err
 	}
-	return toBizAppPackages(ap), nil
+	return g.data.converter.ToBizAppPackageList(ap), nil
 }
 
 func (g geburaRepo) ListAllAppPackageIDOfOneSource(
@@ -284,7 +285,7 @@ func (g geburaRepo) ListAllAppPackageIDOfOneSource(
 ) ([]string, error) {
 	return g.data.db.AppPackage.Query().
 		Where(
-			apppackage.SourceEQ(toEntAppPackageSource(source)),
+			apppackage.SourceEQ(converter.ToEntAppPackageSource(source)),
 			apppackage.SourceIDEQ(sourceID),
 		).
 		Unique(true).

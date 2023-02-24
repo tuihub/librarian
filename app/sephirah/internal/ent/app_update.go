@@ -107,6 +107,12 @@ func (au *AppUpdate) SetPublisher(s string) *AppUpdate {
 	return au
 }
 
+// SetVersion sets the "version" field.
+func (au *AppUpdate) SetVersion(s string) *AppUpdate {
+	au.mutation.SetVersion(s)
+	return au
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (au *AppUpdate) SetUpdatedAt(t time.Time) *AppUpdate {
 	au.mutation.SetUpdatedAt(t)
@@ -234,6 +240,9 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 	}
+	if value, ok := au.mutation.Version(); ok {
+		_spec.SetField(app.FieldVersion, field.TypeString, value)
+	}
 	if value, ok := au.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
 	}
@@ -336,6 +345,12 @@ func (auo *AppUpdateOne) SetDeveloper(s string) *AppUpdateOne {
 // SetPublisher sets the "publisher" field.
 func (auo *AppUpdateOne) SetPublisher(s string) *AppUpdateOne {
 	auo.mutation.SetPublisher(s)
+	return auo
+}
+
+// SetVersion sets the "version" field.
+func (auo *AppUpdateOne) SetVersion(s string) *AppUpdateOne {
+	auo.mutation.SetVersion(s)
 	return auo
 }
 
@@ -495,6 +510,9 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if value, ok := auo.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.Version(); ok {
+		_spec.SetField(app.FieldVersion, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)

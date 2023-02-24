@@ -32,6 +32,8 @@ type AppPackage struct {
 	BinaryName string `json:"binary_name,omitempty"`
 	// BinarySize holds the value of the "binary_size" field.
 	BinarySize int64 `json:"binary_size,omitempty"`
+	// BinaryPublicURL holds the value of the "binary_public_url" field.
+	BinaryPublicURL string `json:"binary_public_url,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -45,7 +47,7 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case apppackage.FieldID, apppackage.FieldInternalID, apppackage.FieldSourceID, apppackage.FieldBinarySize:
 			values[i] = new(sql.NullInt64)
-		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName:
+		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
 		case apppackage.FieldUpdatedAt, apppackage.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -118,6 +120,12 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.BinarySize = value.Int64
 			}
+		case apppackage.FieldBinaryPublicURL:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field binary_public_url", values[i])
+			} else if value.Valid {
+				ap.BinaryPublicURL = value.String
+			}
 		case apppackage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -181,6 +189,9 @@ func (ap *AppPackage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("binary_size=")
 	builder.WriteString(fmt.Sprintf("%v", ap.BinarySize))
+	builder.WriteString(", ")
+	builder.WriteString("binary_public_url=")
+	builder.WriteString(ap.BinaryPublicURL)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ap.UpdatedAt.Format(time.ANSIC))

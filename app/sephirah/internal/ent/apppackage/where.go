@@ -89,6 +89,11 @@ func BinarySize(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinarySize, v))
 }
 
+// BinaryPublicURL applies equality check predicate on the "binary_public_url" field. It's identical to BinaryPublicURLEQ.
+func BinaryPublicURL(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinaryPublicURL, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldUpdatedAt, v))
@@ -497,6 +502,71 @@ func BinarySizeLT(v int64) predicate.AppPackage {
 // BinarySizeLTE applies the LTE predicate on the "binary_size" field.
 func BinarySizeLTE(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldBinarySize, v))
+}
+
+// BinaryPublicURLEQ applies the EQ predicate on the "binary_public_url" field.
+func BinaryPublicURLEQ(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLNEQ applies the NEQ predicate on the "binary_public_url" field.
+func BinaryPublicURLNEQ(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNEQ(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLIn applies the In predicate on the "binary_public_url" field.
+func BinaryPublicURLIn(vs ...string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIn(FieldBinaryPublicURL, vs...))
+}
+
+// BinaryPublicURLNotIn applies the NotIn predicate on the "binary_public_url" field.
+func BinaryPublicURLNotIn(vs ...string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotIn(FieldBinaryPublicURL, vs...))
+}
+
+// BinaryPublicURLGT applies the GT predicate on the "binary_public_url" field.
+func BinaryPublicURLGT(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGT(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLGTE applies the GTE predicate on the "binary_public_url" field.
+func BinaryPublicURLGTE(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGTE(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLLT applies the LT predicate on the "binary_public_url" field.
+func BinaryPublicURLLT(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLT(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLLTE applies the LTE predicate on the "binary_public_url" field.
+func BinaryPublicURLLTE(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLTE(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLContains applies the Contains predicate on the "binary_public_url" field.
+func BinaryPublicURLContains(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldContains(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLHasPrefix applies the HasPrefix predicate on the "binary_public_url" field.
+func BinaryPublicURLHasPrefix(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldHasPrefix(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLHasSuffix applies the HasSuffix predicate on the "binary_public_url" field.
+func BinaryPublicURLHasSuffix(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldHasSuffix(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLEqualFold applies the EqualFold predicate on the "binary_public_url" field.
+func BinaryPublicURLEqualFold(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEqualFold(FieldBinaryPublicURL, v))
+}
+
+// BinaryPublicURLContainsFold applies the ContainsFold predicate on the "binary_public_url" field.
+func BinaryPublicURLContainsFold(v string) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldContainsFold(FieldBinaryPublicURL, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

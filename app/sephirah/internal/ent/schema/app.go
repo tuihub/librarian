@@ -24,13 +24,14 @@ func (App) Fields() []ent.Field {
 		field.String("source_url"),
 		field.String("name"),
 		field.Enum("type").
-			Values("general", "game"),
+			Values("game"),
 		field.String("short_description"),
 		field.Text("description"),
 		field.String("image_url"),
 		field.String("release_date"),
 		field.String("developer"),
 		field.String("publisher"),
+		field.String("version"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

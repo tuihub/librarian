@@ -26,6 +26,7 @@ func (AppPackage) Fields() []ent.Field {
 		field.Text("description"),
 		field.String("binary_name"),
 		field.Int64("binary_size"),
+		field.String("binary_public_url"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

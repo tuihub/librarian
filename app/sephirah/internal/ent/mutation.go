@@ -800,6 +800,7 @@ type AppMutation struct {
 	release_date      *string
 	developer         *string
 	publisher         *string
+	version           *string
 	updated_at        *time.Time
 	created_at        *time.Time
 	clearedFields     map[string]struct{}
@@ -1358,6 +1359,42 @@ func (m *AppMutation) ResetPublisher() {
 	m.publisher = nil
 }
 
+// SetVersion sets the "version" field.
+func (m *AppMutation) SetVersion(s string) {
+	m.version = &s
+}
+
+// Version returns the value of the "version" field in the mutation.
+func (m *AppMutation) Version() (r string, exists bool) {
+	v := m.version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersion returns the old "version" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
+	}
+	return oldValue.Version, nil
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *AppMutation) ResetVersion() {
+	m.version = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *AppMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -1464,7 +1501,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.internal_id != nil {
 		fields = append(fields, app.FieldInternalID)
 	}
@@ -1500,6 +1537,9 @@ func (m *AppMutation) Fields() []string {
 	}
 	if m.publisher != nil {
 		fields = append(fields, app.FieldPublisher)
+	}
+	if m.version != nil {
+		fields = append(fields, app.FieldVersion)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, app.FieldUpdatedAt)
@@ -1539,6 +1579,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Developer()
 	case app.FieldPublisher:
 		return m.Publisher()
+	case app.FieldVersion:
+		return m.Version()
 	case app.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case app.FieldCreatedAt:
@@ -1576,6 +1618,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldDeveloper(ctx)
 	case app.FieldPublisher:
 		return m.OldPublisher(ctx)
+	case app.FieldVersion:
+		return m.OldVersion(ctx)
 	case app.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case app.FieldCreatedAt:
@@ -1672,6 +1716,13 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPublisher(v)
+		return nil
+	case app.FieldVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersion(v)
 		return nil
 	case app.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -1787,6 +1838,9 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldPublisher:
 		m.ResetPublisher()
 		return nil
+	case app.FieldVersion:
+		m.ResetVersion()
+		return nil
 	case app.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
@@ -1862,6 +1916,7 @@ type AppPackageMutation struct {
 	binary_name       *string
 	binary_size       *int64
 	addbinary_size    *int64
+	binary_public_url *string
 	updated_at        *time.Time
 	created_at        *time.Time
 	clearedFields     map[string]struct{}
@@ -2316,6 +2371,42 @@ func (m *AppPackageMutation) ResetBinarySize() {
 	m.addbinary_size = nil
 }
 
+// SetBinaryPublicURL sets the "binary_public_url" field.
+func (m *AppPackageMutation) SetBinaryPublicURL(s string) {
+	m.binary_public_url = &s
+}
+
+// BinaryPublicURL returns the value of the "binary_public_url" field in the mutation.
+func (m *AppPackageMutation) BinaryPublicURL() (r string, exists bool) {
+	v := m.binary_public_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBinaryPublicURL returns the old "binary_public_url" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldBinaryPublicURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBinaryPublicURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBinaryPublicURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBinaryPublicURL: %w", err)
+	}
+	return oldValue.BinaryPublicURL, nil
+}
+
+// ResetBinaryPublicURL resets all changes to the "binary_public_url" field.
+func (m *AppPackageMutation) ResetBinaryPublicURL() {
+	m.binary_public_url = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *AppPackageMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -2422,7 +2513,7 @@ func (m *AppPackageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppPackageMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.internal_id != nil {
 		fields = append(fields, apppackage.FieldInternalID)
 	}
@@ -2446,6 +2537,9 @@ func (m *AppPackageMutation) Fields() []string {
 	}
 	if m.binary_size != nil {
 		fields = append(fields, apppackage.FieldBinarySize)
+	}
+	if m.binary_public_url != nil {
+		fields = append(fields, apppackage.FieldBinaryPublicURL)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, apppackage.FieldUpdatedAt)
@@ -2477,6 +2571,8 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.BinaryName()
 	case apppackage.FieldBinarySize:
 		return m.BinarySize()
+	case apppackage.FieldBinaryPublicURL:
+		return m.BinaryPublicURL()
 	case apppackage.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case apppackage.FieldCreatedAt:
@@ -2506,6 +2602,8 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldBinaryName(ctx)
 	case apppackage.FieldBinarySize:
 		return m.OldBinarySize(ctx)
+	case apppackage.FieldBinaryPublicURL:
+		return m.OldBinaryPublicURL(ctx)
 	case apppackage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case apppackage.FieldCreatedAt:
@@ -2574,6 +2672,13 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBinarySize(v)
+		return nil
+	case apppackage.FieldBinaryPublicURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBinaryPublicURL(v)
 		return nil
 	case apppackage.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -2700,6 +2805,9 @@ func (m *AppPackageMutation) ResetField(name string) error {
 		return nil
 	case apppackage.FieldBinarySize:
 		m.ResetBinarySize()
+		return nil
+	case apppackage.FieldBinaryPublicURL:
+		m.ResetBinaryPublicURL()
 		return nil
 	case apppackage.FieldUpdatedAt:
 		m.ResetUpdatedAt()

@@ -1,6 +1,8 @@
 package biztiphereth
 
-import "github.com/tuihub/librarian/internal/lib/libauth"
+import (
+	"github.com/tuihub/librarian/internal/lib/libauth"
+)
 
 type User struct {
 	InternalID int64

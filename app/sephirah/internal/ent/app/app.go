@@ -36,6 +36,8 @@ const (
 	FieldDeveloper = "developer"
 	// FieldPublisher holds the string denoting the publisher field in the database.
 	FieldPublisher = "publisher"
+	// FieldVersion holds the string denoting the version field in the database.
+	FieldVersion = "version"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -59,6 +61,7 @@ var Columns = []string{
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
+	FieldVersion,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -110,8 +113,7 @@ type Type string
 
 // Type values.
 const (
-	TypeGeneral Type = "general"
-	TypeGame    Type = "game"
+	TypeGame Type = "game"
 )
 
 func (_type Type) String() string {
@@ -121,7 +123,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeGeneral, TypeGame:
+	case TypeGame:
 		return nil
 	default:
 		return fmt.Errorf("app: invalid enum value for type field: %q", _type)

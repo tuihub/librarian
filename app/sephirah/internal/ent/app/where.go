@@ -104,6 +104,11 @@ func Publisher(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldPublisher, v))
 }
 
+// Version applies equality check predicate on the "version" field. It's identical to VersionEQ.
+func Version(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersion, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldUpdatedAt, v))
@@ -777,6 +782,71 @@ func PublisherEqualFold(v string) predicate.App {
 // PublisherContainsFold applies the ContainsFold predicate on the "publisher" field.
 func PublisherContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldPublisher, v))
+}
+
+// VersionEQ applies the EQ predicate on the "version" field.
+func VersionEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersion, v))
+}
+
+// VersionNEQ applies the NEQ predicate on the "version" field.
+func VersionNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldVersion, v))
+}
+
+// VersionIn applies the In predicate on the "version" field.
+func VersionIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldVersion, vs...))
+}
+
+// VersionNotIn applies the NotIn predicate on the "version" field.
+func VersionNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldVersion, vs...))
+}
+
+// VersionGT applies the GT predicate on the "version" field.
+func VersionGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldVersion, v))
+}
+
+// VersionGTE applies the GTE predicate on the "version" field.
+func VersionGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldVersion, v))
+}
+
+// VersionLT applies the LT predicate on the "version" field.
+func VersionLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldVersion, v))
+}
+
+// VersionLTE applies the LTE predicate on the "version" field.
+func VersionLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldVersion, v))
+}
+
+// VersionContains applies the Contains predicate on the "version" field.
+func VersionContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldVersion, v))
+}
+
+// VersionHasPrefix applies the HasPrefix predicate on the "version" field.
+func VersionHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldVersion, v))
+}
+
+// VersionHasSuffix applies the HasSuffix predicate on the "version" field.
+func VersionHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldVersion, v))
+}
+
+// VersionEqualFold applies the EqualFold predicate on the "version" field.
+func VersionEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldVersion, v))
+}
+
+// VersionContainsFold applies the ContainsFold predicate on the "version" field.
+func VersionContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldVersion, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

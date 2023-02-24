@@ -129,6 +129,7 @@ type Mapper_Data struct {
 	unknownFields protoimpl.UnknownFields
 
 	// Types that are assignable to GraphDB:
+	//
 	//	*Mapper_Data_Nebula
 	//	*Mapper_Data_Cayley
 	GraphDB isMapper_Data_GraphDB `protobuf_oneof:"GraphDB"`

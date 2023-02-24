@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -48,19 +49,19 @@ func (t tipherethRepo) FetchUserByPassword(
 	}
 	if u != nil {
 		userData.InternalID = u.InternalID
-		userData.Type = toLibAuthUserType(u.Type)
+		userData.Type = converter.ToLibAuthUserType(u.Type)
 		return userData, nil
 	}
 	return nil, errors.New("invalid user")
 }
 
 func (t tipherethRepo) AddUser(ctx context.Context, userData *biztiphereth.User) error {
-	userType := toEntUserType(userData.Type)
+	userType := converter.ToEntUserType(userData.Type)
 	err := t.data.db.User.Create().
 		SetInternalID(userData.InternalID).
 		SetUsername(userData.UserName).
 		SetPassword(userData.PassWord).
-		SetStatus(toEntUserStatus(userData.Status)).
+		SetStatus(converter.ToEntUserStatus(userData.Status)).
 		SetType(userType).
 		Exec(ctx)
 	return err
@@ -76,7 +77,7 @@ func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User) err
 		update = update.SetPassword(u.PassWord)
 	}
 	if u.Status != biztiphereth.UserStatusUnspecified {
-		update = update.SetStatus(toEntUserStatus(u.Status))
+		update = update.SetStatus(converter.ToEntUserStatus(u.Status))
 	}
 	return update.Exec(ctx)
 }
@@ -91,14 +92,14 @@ func (t tipherethRepo) ListUser(
 	if len(types) > 0 {
 		typeFilter := make([]user.Type, len(types))
 		for i, userType := range types {
-			typeFilter[i] = toEntUserType(userType)
+			typeFilter[i] = converter.ToEntUserType(userType)
 		}
 		q.Where(user.TypeIn(typeFilter...))
 	}
 	if len(statuses) > 0 {
 		statusFilter := make([]user.Status, len(statuses))
 		for i, userStatus := range statuses {
-			statusFilter[i] = toEntUserStatus(userStatus)
+			statusFilter[i] = converter.ToEntUserStatus(userStatus)
 		}
 		q.Where(user.StatusIn(statusFilter...))
 	}
@@ -111,7 +112,7 @@ func (t tipherethRepo) ListUser(
 	}
 	users := make([]*biztiphereth.User, len(u))
 	for i, su := range u {
-		users[i] = toBizUser(su)
+		users[i] = t.data.converter.ToBizUser(su)
 	}
 	return users, nil
 }
@@ -119,7 +120,7 @@ func (t tipherethRepo) ListUser(
 func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account) error {
 	return t.data.db.Account.Create().
 		SetInternalID(a.InternalID).
-		SetPlatform(toEntAccountPlatform(a.Platform)).
+		SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
 		SetPlatformAccountID(a.PlatformAccountID).
 		SetName(a.Name).
 		SetAvatarURL(a.AvatarURL).
@@ -130,7 +131,7 @@ func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account
 func (t tipherethRepo) UpdateAccount(ctx context.Context, a biztiphereth.Account) error {
 	return t.data.db.Account.Update().Where(
 		account.InternalIDEQ(a.InternalID),
-		account.PlatformEQ(toEntAccountPlatform(a.Platform)),
+		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
 	).
 		SetName(a.Name).

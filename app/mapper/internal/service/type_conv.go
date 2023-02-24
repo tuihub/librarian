@@ -7,6 +7,8 @@ import (
 
 func toBizVertexType(t pb.VertexType) biz.VertexType {
 	switch t {
+	case pb.VertexType_VERTEX_TYPE_UNSPECIFIED:
+		return biz.VertexTypeUnspecified
 	case pb.VertexType_VERTEX_TYPE_ABSTRACT:
 		return biz.VertexTypeAbstract
 	case pb.VertexType_VERTEX_TYPE_ENTITY:
@@ -24,6 +26,8 @@ func toBizVertexType(t pb.VertexType) biz.VertexType {
 
 func toPBVertexType(t biz.VertexType) pb.VertexType {
 	switch t {
+	case biz.VertexTypeUnspecified:
+		return pb.VertexType_VERTEX_TYPE_UNSPECIFIED
 	case biz.VertexTypeAbstract:
 		return pb.VertexType_VERTEX_TYPE_ABSTRACT
 	case biz.VertexTypeEntity:
@@ -41,6 +45,8 @@ func toPBVertexType(t biz.VertexType) pb.VertexType {
 
 func toBizEdgeType(t pb.EdgeType) biz.EdgeType {
 	switch t {
+	case pb.EdgeType_EDGE_TYPE_UNSPECIFIED:
+		return biz.EdgeTypeUnspecified
 	case pb.EdgeType_EDGE_TYPE_GENERAL:
 		return biz.EdgeTypeGeneral
 	case pb.EdgeType_EDGE_TYPE_EQUAL:

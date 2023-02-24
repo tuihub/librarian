@@ -175,6 +175,10 @@ func (r *cayleyMapperRepo) applyEdgeRules( //nolint:gocognit // edge rule is com
 		}
 	}
 	switch edgeType {
+	case biz.EdgeTypeUnspecified:
+		return nil, errors.BadRequest("Unsupported edge type", "")
+	case biz.EdgeTypeGeneral:
+		return nil, errors.BadRequest("Unsupported edge type", "")
 	case biz.EdgeTypeEqual:
 		if src.Type != dst.Type {
 			return nil, errors.BadRequest("illegal edge", "EQUAL must link vertex with same type")

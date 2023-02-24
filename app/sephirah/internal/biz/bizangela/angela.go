@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -29,11 +30,12 @@ type Angela struct {
 	mq *libmq.MQ
 }
 type AngelaBase struct {
-	t        biztiphereth.TipherethRepo
-	g        bizgebura.GeburaRepo
-	mapper   mapper.LibrarianMapperServiceClient
-	searcher searcher.LibrarianSearcherServiceClient
-	porter   porter.LibrarianPorterServiceClient
+	converter converter.Converter
+	t         biztiphereth.TipherethRepo
+	g         bizgebura.GeburaRepo
+	mapper    mapper.LibrarianMapperServiceClient
+	searcher  searcher.LibrarianSearcherServiceClient
+	porter    porter.LibrarianPorterServiceClient
 }
 
 func NewAngelaBase(
@@ -44,11 +46,12 @@ func NewAngelaBase(
 	sClient searcher.LibrarianSearcherServiceClient,
 ) (*AngelaBase, error) {
 	return &AngelaBase{
-		t:        t,
-		g:        g,
-		mapper:   mClient,
-		porter:   pClient,
-		searcher: sClient,
+		converter: converter.NewConverter(),
+		t:         t,
+		g:         g,
+		mapper:    mClient,
+		porter:    pClient,
+		searcher:  sClient,
 	}, nil
 }
 
@@ -57,6 +60,7 @@ func NewAngela(
 	pullAccount *libmq.TopicImpl[biztiphereth.PullAccountInfo],
 	pullSteamAccountAppRelation *libmq.TopicImpl[PullSteamAccountAppRelation],
 	pullSteamApp *libmq.TopicImpl[PullSteamApp],
+	pullFeed *libmq.TopicImpl[bizyesod.PullFeed],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -65,6 +69,9 @@ func NewAngela(
 		return nil, err
 	}
 	if err := mq.RegisterTopic(pullSteamApp); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(pullFeed); err != nil {
 		return nil, err
 	}
 	return &Angela{
@@ -87,13 +94,15 @@ func NewPullAccountTopic(
 		},
 		func(ctx context.Context, info biztiphereth.PullAccountInfo) error {
 			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
-				Platform:          biztiphereth.ToPBAccountPlatform(info.Platform),
+				Platform:          converter.ToPBAccountPlatform(info.Platform),
 				PlatformAccountId: info.PlatformAccountID,
 			}})
 			if err != nil {
 				return err
 			}
 			switch info.Platform {
+			case biztiphereth.AccountPlatformUnspecified:
+				return nil
 			case biztiphereth.AccountPlatformSteam:
 				err = a.t.UpdateAccount(ctx, biztiphereth.Account{
 					InternalID:        info.InternalID,
@@ -149,30 +158,30 @@ func NewPullSteamAccountAppRelationTopic(
 					return err2
 				}
 				internalApps[i] = &bizgebura.App{ // TODO
-					InternalID:      resp2.Id,
-					Source:          bizgebura.AppSourceInternal,
-					SourceAppID:     strconv.FormatInt(resp2.Id, 10),
-					SourceURL:       "",
-					Name:            app.GetName(),
-					Type:            0,
-					ShorDescription: "",
-					ImageURL:        "",
-					Details:         nil,
+					InternalID:       resp2.Id,
+					Source:           bizgebura.AppSourceInternal,
+					SourceAppID:      strconv.FormatInt(resp2.Id, 10),
+					SourceURL:        "",
+					Name:             app.GetName(),
+					Type:             0,
+					ShortDescription: "",
+					ImageURL:         "",
+					Details:          nil,
 				}
 				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
 				steamApps[i] = &bizgebura.App{ // TODO
-					InternalID:      resp2.Id,
-					Source:          bizgebura.AppSourceSteam,
-					SourceAppID:     app.GetSourceAppId(),
-					SourceURL:       "",
-					Name:            app.GetName(),
-					Type:            0,
-					ShorDescription: "",
-					ImageURL:        "",
-					Details:         nil,
+					InternalID:       resp2.Id,
+					Source:           bizgebura.AppSourceSteam,
+					SourceAppID:      app.GetSourceAppId(),
+					SourceURL:        "",
+					Name:             app.GetName(),
+					Type:             0,
+					ShortDescription: "",
+					ImageURL:         "",
+					Details:          nil,
 				}
 			}
 			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
@@ -240,23 +249,10 @@ func NewPullSteamAppTopic(
 			if err != nil {
 				return err
 			}
-			app := resp.GetApp()
-			err = a.g.UpdateApp(ctx, &bizgebura.App{
-				InternalID:      r.InternalID,
-				Source:          bizgebura.AppSourceSteam,
-				SourceAppID:     app.GetSourceAppId(),
-				SourceURL:       app.GetSourceUrl(),
-				Name:            app.GetName(),
-				Type:            bizgebura.ToBizAppType(app.GetType()),
-				ShorDescription: app.GetShortDescription(),
-				ImageURL:        app.GetImageUrl(),
-				Details: &bizgebura.AppDetails{
-					Description: app.GetDetails().GetDescription(),
-					ReleaseDate: app.GetDetails().GetReleaseDate(),
-					Developer:   app.GetDetails().GetDeveloper(),
-					Publisher:   app.GetDetails().GetPublisher(),
-				},
-			})
+			app := a.converter.ToBizApp(resp.GetApp())
+			app.InternalID = r.InternalID
+			app.Source = bizgebura.AppSourceSteam
+			err = a.g.UpdateApp(ctx, app)
 			if err != nil {
 				return err
 			}
