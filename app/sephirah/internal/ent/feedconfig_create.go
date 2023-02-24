@@ -40,6 +40,12 @@ func (fcc *FeedConfigCreate) SetAuthorAccount(i int64) *FeedConfigCreate {
 	return fcc
 }
 
+// SetSource sets the "source" field.
+func (fcc *FeedConfigCreate) SetSource(f feedconfig.Source) *FeedConfigCreate {
+	fcc.mutation.SetSource(f)
+	return fcc
+}
+
 // SetStatus sets the "status" field.
 func (fcc *FeedConfigCreate) SetStatus(f feedconfig.Status) *FeedConfigCreate {
 	fcc.mutation.SetStatus(f)
@@ -142,6 +148,14 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.AuthorAccount(); !ok {
 		return &ValidationError{Name: "author_account", err: errors.New(`ent: missing required field "FeedConfig.author_account"`)}
 	}
+	if _, ok := fcc.mutation.Source(); !ok {
+		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "FeedConfig.source"`)}
+	}
+	if v, ok := fcc.mutation.Source(); ok {
+		if err := feedconfig.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
+		}
+	}
 	if _, ok := fcc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "FeedConfig.status"`)}
 	}
@@ -200,6 +214,10 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.AuthorAccount(); ok {
 		_spec.SetField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
 		_node.AuthorAccount = value
+	}
+	if value, ok := fcc.mutation.Source(); ok {
+		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
+		_node.Source = value
 	}
 	if value, ok := fcc.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
@@ -318,6 +336,18 @@ func (u *FeedConfigUpsert) UpdateAuthorAccount() *FeedConfigUpsert {
 // AddAuthorAccount adds v to the "author_account" field.
 func (u *FeedConfigUpsert) AddAuthorAccount(v int64) *FeedConfigUpsert {
 	u.Add(feedconfig.FieldAuthorAccount, v)
+	return u
+}
+
+// SetSource sets the "source" field.
+func (u *FeedConfigUpsert) SetSource(v feedconfig.Source) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldSource, v)
+	return u
+}
+
+// UpdateSource sets the "source" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateSource() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldSource)
 	return u
 }
 
@@ -474,6 +504,20 @@ func (u *FeedConfigUpsertOne) AddAuthorAccount(v int64) *FeedConfigUpsertOne {
 func (u *FeedConfigUpsertOne) UpdateAuthorAccount() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateAuthorAccount()
+	})
+}
+
+// SetSource sets the "source" field.
+func (u *FeedConfigUpsertOne) SetSource(v feedconfig.Source) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetSource(v)
+	})
+}
+
+// UpdateSource sets the "source" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateSource() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateSource()
 	})
 }
 
@@ -800,6 +844,20 @@ func (u *FeedConfigUpsertBulk) AddAuthorAccount(v int64) *FeedConfigUpsertBulk {
 func (u *FeedConfigUpsertBulk) UpdateAuthorAccount() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateAuthorAccount()
+	})
+}
+
+// SetSource sets the "source" field.
+func (u *FeedConfigUpsertBulk) SetSource(v feedconfig.Source) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetSource(v)
+	})
+}
+
+// UpdateSource sets the "source" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateSource() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateSource()
 	})
 }
 

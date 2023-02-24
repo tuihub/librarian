@@ -3,10 +3,12 @@ package data
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
@@ -179,4 +181,24 @@ func toBizAppPackages(al []*ent.AppPackage) []*bizgebura.AppPackage {
 		res[i] = toBizAppPackage(a)
 	}
 	return res
+}
+
+func toEntFeedConfigStatus(s bizyesod.FeedConfigStatus) feedconfig.Status {
+	switch s {
+	case bizyesod.FeedConfigStatusActive:
+		return feedconfig.StatusActive
+	case bizyesod.FeedConfigStatusSuspend:
+		return feedconfig.StatusSuspend
+	default:
+		return ""
+	}
+}
+
+func toEntFeedConfigSource(s bizyesod.FeedConfigSource) feedconfig.Source {
+	switch s {
+	case bizyesod.FeedConfigSourceCommon:
+		return feedconfig.SourceCommon
+	default:
+		return ""
+	}
 }

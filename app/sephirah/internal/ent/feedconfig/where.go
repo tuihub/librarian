@@ -234,6 +234,26 @@ func AuthorAccountLTE(v int64) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldAuthorAccount, v))
 }
 
+// SourceEQ applies the EQ predicate on the "source" field.
+func SourceEQ(v Source) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldSource, v))
+}
+
+// SourceNEQ applies the NEQ predicate on the "source" field.
+func SourceNEQ(v Source) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldSource, v))
+}
+
+// SourceIn applies the In predicate on the "source" field.
+func SourceIn(vs ...Source) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldSource, vs...))
+}
+
+// SourceNotIn applies the NotIn predicate on the "source" field.
+func SourceNotIn(vs ...Source) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldSource, vs...))
+}
+
 // StatusEQ applies the EQ predicate on the "status" field.
 func StatusEQ(v Status) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldStatus, v))

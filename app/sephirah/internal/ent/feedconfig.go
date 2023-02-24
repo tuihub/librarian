@@ -22,6 +22,8 @@ type FeedConfig struct {
 	FeedURL string `json:"feed_url,omitempty"`
 	// AuthorAccount holds the value of the "author_account" field.
 	AuthorAccount int64 `json:"author_account,omitempty"`
+	// Source holds the value of the "source" field.
+	Source feedconfig.Source `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// PullInterval holds the value of the "pull_interval" field.
@@ -41,7 +43,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feedconfig.FieldID, feedconfig.FieldInternalID, feedconfig.FieldAuthorAccount:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldFeedURL, feedconfig.FieldStatus:
+		case feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldPullInterval, feedconfig.FieldLastPullAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -83,6 +85,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field author_account", values[i])
 			} else if value.Valid {
 				fc.AuthorAccount = value.Int64
+			}
+		case feedconfig.FieldSource:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field source", values[i])
+			} else if value.Valid {
+				fc.Source = feedconfig.Source(value.String)
 			}
 		case feedconfig.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -150,6 +158,9 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("author_account=")
 	builder.WriteString(fmt.Sprintf("%v", fc.AuthorAccount))
+	builder.WriteString(", ")
+	builder.WriteString("source=")
+	builder.WriteString(fmt.Sprintf("%v", fc.Source))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", fc.Status))

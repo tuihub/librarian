@@ -60,6 +60,12 @@ func (fcu *FeedConfigUpdate) AddAuthorAccount(i int64) *FeedConfigUpdate {
 	return fcu
 }
 
+// SetSource sets the "source" field.
+func (fcu *FeedConfigUpdate) SetSource(f feedconfig.Source) *FeedConfigUpdate {
+	fcu.mutation.SetSource(f)
+	return fcu
+}
+
 // SetStatus sets the "status" field.
 func (fcu *FeedConfigUpdate) SetStatus(f feedconfig.Status) *FeedConfigUpdate {
 	fcu.mutation.SetStatus(f)
@@ -141,6 +147,11 @@ func (fcu *FeedConfigUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcu *FeedConfigUpdate) check() error {
+	if v, ok := fcu.mutation.Source(); ok {
+		if err := feedconfig.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
+		}
+	}
 	if v, ok := fcu.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
@@ -175,6 +186,9 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fcu.mutation.AddedAuthorAccount(); ok {
 		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
+	}
+	if value, ok := fcu.mutation.Source(); ok {
+		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
 	}
 	if value, ok := fcu.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
@@ -240,6 +254,12 @@ func (fcuo *FeedConfigUpdateOne) SetAuthorAccount(i int64) *FeedConfigUpdateOne 
 // AddAuthorAccount adds i to the "author_account" field.
 func (fcuo *FeedConfigUpdateOne) AddAuthorAccount(i int64) *FeedConfigUpdateOne {
 	fcuo.mutation.AddAuthorAccount(i)
+	return fcuo
+}
+
+// SetSource sets the "source" field.
+func (fcuo *FeedConfigUpdateOne) SetSource(f feedconfig.Source) *FeedConfigUpdateOne {
+	fcuo.mutation.SetSource(f)
 	return fcuo
 }
 
@@ -337,6 +357,11 @@ func (fcuo *FeedConfigUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcuo *FeedConfigUpdateOne) check() error {
+	if v, ok := fcuo.mutation.Source(); ok {
+		if err := feedconfig.SourceValidator(v); err != nil {
+			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
+		}
+	}
 	if v, ok := fcuo.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
@@ -388,6 +413,9 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.AddedAuthorAccount(); ok {
 		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
+	}
+	if value, ok := fcuo.mutation.Source(); ok {
+		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
 	}
 	if value, ok := fcuo.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)

@@ -70,13 +70,13 @@ func init() {
 	feedconfigFields := schema.FeedConfig{}.Fields()
 	_ = feedconfigFields
 	// feedconfigDescUpdatedAt is the schema descriptor for updated_at field.
-	feedconfigDescUpdatedAt := feedconfigFields[6].Descriptor()
+	feedconfigDescUpdatedAt := feedconfigFields[7].Descriptor()
 	// feedconfig.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	feedconfig.DefaultUpdatedAt = feedconfigDescUpdatedAt.Default.(func() time.Time)
 	// feedconfig.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feedconfig.UpdateDefaultUpdatedAt = feedconfigDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// feedconfigDescCreatedAt is the schema descriptor for created_at field.
-	feedconfigDescCreatedAt := feedconfigFields[7].Descriptor()
+	feedconfigDescCreatedAt := feedconfigFields[8].Descriptor()
 	// feedconfig.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feedconfig.DefaultCreatedAt = feedconfigDescCreatedAt.Default.(func() time.Time)
 	feeditemFields := schema.FeedItem{}.Fields()

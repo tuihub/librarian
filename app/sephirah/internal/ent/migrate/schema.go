@@ -116,6 +116,7 @@ var (
 		{Name: "internal_id", Type: field.TypeInt64, Unique: true},
 		{Name: "feed_url", Type: field.TypeString},
 		{Name: "author_account", Type: field.TypeInt64},
+		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "pull_interval", Type: field.TypeTime},
 		{Name: "last_pull_at", Type: field.TypeTime},

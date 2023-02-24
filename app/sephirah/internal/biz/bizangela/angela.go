@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -21,6 +22,7 @@ var ProviderSet = wire.NewSet(
 	NewPullAccountTopic,
 	NewPullSteamAccountAppRelationTopic,
 	NewPullSteamAppTopic,
+	NewPullFeedTopic,
 )
 
 type Angela struct {
@@ -254,6 +256,27 @@ func NewPullSteamAppTopic(
 					Developer:   app.GetDetails().GetDeveloper(),
 					Publisher:   app.GetDetails().GetPublisher(),
 				},
+			})
+			if err != nil {
+				return err
+			}
+			return nil
+		},
+	)
+}
+
+func NewPullFeedTopic(
+	a *AngelaBase,
+) *libmq.TopicImpl[bizyesod.PullFeed] {
+	return libmq.NewTopic[bizyesod.PullFeed](
+		"PullFeed",
+		func() bizyesod.PullFeed {
+			return bizyesod.PullFeed{URL: "", Source: bizyesod.FeedConfigSourceCommon}
+		},
+		func(ctx context.Context, p bizyesod.PullFeed) error {
+			_, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
+				Source:    porter.FeedSource_FEED_SOURCE_COMMON,
+				ContentId: p.URL,
 			})
 			if err != nil {
 				return err

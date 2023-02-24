@@ -19,6 +19,7 @@ func (FeedConfig) Fields() []ent.Field {
 			Unique(),
 		field.String("feed_url"),
 		field.Int64("author_account"),
+		field.Enum("source").Values("common"),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.Time("pull_interval"),

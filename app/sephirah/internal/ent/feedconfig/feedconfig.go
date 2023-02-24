@@ -18,6 +18,8 @@ const (
 	FieldFeedURL = "feed_url"
 	// FieldAuthorAccount holds the string denoting the author_account field in the database.
 	FieldAuthorAccount = "author_account"
+	// FieldSource holds the string denoting the source field in the database.
+	FieldSource = "source"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldPullInterval holds the string denoting the pull_interval field in the database.
@@ -38,6 +40,7 @@ var Columns = []string{
 	FieldInternalID,
 	FieldFeedURL,
 	FieldAuthorAccount,
+	FieldSource,
 	FieldStatus,
 	FieldPullInterval,
 	FieldLastPullAt,
@@ -63,6 +66,28 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
+
+// Source defines the type for the "source" enum field.
+type Source string
+
+// Source values.
+const (
+	SourceCommon Source = "common"
+)
+
+func (s Source) String() string {
+	return string(s)
+}
+
+// SourceValidator is a validator for the "source" field enum values. It is called by the builders before save.
+func SourceValidator(s Source) error {
+	switch s {
+	case SourceCommon:
+		return nil
+	default:
+		return fmt.Errorf("feedconfig: invalid enum value for source field: %q", s)
+	}
+}
 
 // Status defines the type for the "status" enum field.
 type Status string

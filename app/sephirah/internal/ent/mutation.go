@@ -3596,6 +3596,7 @@ type FeedConfigMutation struct {
 	feed_url          *string
 	author_account    *int64
 	addauthor_account *int64
+	source            *feedconfig.Source
 	status            *feedconfig.Status
 	pull_interval     *time.Time
 	last_pull_at      *time.Time
@@ -3853,6 +3854,42 @@ func (m *FeedConfigMutation) ResetAuthorAccount() {
 	m.addauthor_account = nil
 }
 
+// SetSource sets the "source" field.
+func (m *FeedConfigMutation) SetSource(f feedconfig.Source) {
+	m.source = &f
+}
+
+// Source returns the value of the "source" field in the mutation.
+func (m *FeedConfigMutation) Source() (r feedconfig.Source, exists bool) {
+	v := m.source
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSource returns the old "source" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldSource(ctx context.Context) (v feedconfig.Source, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSource is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSource requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSource: %w", err)
+	}
+	return oldValue.Source, nil
+}
+
+// ResetSource resets all changes to the "source" field.
+func (m *FeedConfigMutation) ResetSource() {
+	m.source = nil
+}
+
 // SetStatus sets the "status" field.
 func (m *FeedConfigMutation) SetStatus(f feedconfig.Status) {
 	m.status = &f
@@ -4067,7 +4104,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.internal_id != nil {
 		fields = append(fields, feedconfig.FieldInternalID)
 	}
@@ -4076,6 +4113,9 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.author_account != nil {
 		fields = append(fields, feedconfig.FieldAuthorAccount)
+	}
+	if m.source != nil {
+		fields = append(fields, feedconfig.FieldSource)
 	}
 	if m.status != nil {
 		fields = append(fields, feedconfig.FieldStatus)
@@ -4106,6 +4146,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.FeedURL()
 	case feedconfig.FieldAuthorAccount:
 		return m.AuthorAccount()
+	case feedconfig.FieldSource:
+		return m.Source()
 	case feedconfig.FieldStatus:
 		return m.Status()
 	case feedconfig.FieldPullInterval:
@@ -4131,6 +4173,8 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldFeedURL(ctx)
 	case feedconfig.FieldAuthorAccount:
 		return m.OldAuthorAccount(ctx)
+	case feedconfig.FieldSource:
+		return m.OldSource(ctx)
 	case feedconfig.FieldStatus:
 		return m.OldStatus(ctx)
 	case feedconfig.FieldPullInterval:
@@ -4170,6 +4214,13 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAuthorAccount(v)
+		return nil
+	case feedconfig.FieldSource:
+		v, ok := value.(feedconfig.Source)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSource(v)
 		return nil
 	case feedconfig.FieldStatus:
 		v, ok := value.(feedconfig.Status)
@@ -4290,6 +4341,9 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldAuthorAccount:
 		m.ResetAuthorAccount()
+		return nil
+	case feedconfig.FieldSource:
+		m.ResetSource()
 		return nil
 	case feedconfig.FieldStatus:
 		m.ResetStatus()
