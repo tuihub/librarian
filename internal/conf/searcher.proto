@@ -15,13 +15,7 @@ message Searcher {
     GRPC grpc = 1;
   }
 
-  message Data {
-    message Database {
-      string driver = 1;
-      string source = 2;
-    }
-    Database database = 1;
-  }
+  message Data {}
 
   Server server = 1;
   Data data = 2;

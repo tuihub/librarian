@@ -14,7 +14,7 @@ func main() {
 	ts := NewFakeS3()
 	err := ts.Start(context.Background())
 	if err != nil {
-		return
+		panic(err)
 	}
 }
 

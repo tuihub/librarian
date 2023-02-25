@@ -1,0 +1,36 @@
+sephirah:
+  server:
+    grpc:
+      addr: 0.0.0.0:10000
+      timeout: 1s
+    grpc_web:
+      addr: 0.0.0.0:10001
+      timeout: 1s
+  data:
+    database:
+      driver: postgres
+      host: localhost
+      port: 5432
+      dbname: librarian
+      user: librarian
+      password: librarian
+      no_ssl: true
+  auth:
+    salt: test
+    issuer: test
+    jwt_secret: test
+mapper:
+  data:
+    cayley:
+      store: sqlite
+searcher:
+  data:
+porter:
+  data:
+    s3:
+      end_point: 127.0.0.1:9000
+      access_key: test
+      secret_key: testtest
+      use_ssl: false
+    steam:
+      api_key:

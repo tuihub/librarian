@@ -55,7 +55,8 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 		SetDescription(a.Details.Description).
 		SetReleaseDate(a.Details.ReleaseDate).
 		SetDeveloper(a.Details.Developer).
-		SetPublisher(a.Details.Publisher)
+		SetPublisher(a.Details.Publisher).
+		SetVersion(a.Details.Version)
 	return q.Exec(ctx)
 }
 
@@ -76,7 +77,8 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 			SetDescription(a.Details.Description).
 			SetReleaseDate(a.Details.ReleaseDate).
 			SetDeveloper(a.Details.Developer).
-			SetPublisher(a.Details.Publisher)
+			SetPublisher(a.Details.Publisher).
+			SetVersion(a.Details.Version)
 	}
 	return q.Exec(ctx)
 }
@@ -101,7 +103,8 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 				SetDescription(a.Details.Description).
 				SetReleaseDate(a.Details.ReleaseDate).
 				SetDeveloper(a.Details.Developer).
-				SetPublisher(a.Details.Publisher)
+				SetPublisher(a.Details.Publisher).
+				SetVersion(a.Details.Version)
 		}
 	}
 	return g.data.db.App.
