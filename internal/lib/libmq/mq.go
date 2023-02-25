@@ -24,7 +24,7 @@ type MQ struct {
 }
 
 func NewMQ() (*MQ, func(), error) {
-	loggerAdapter := watermill.NewStdLoggerWithOut(logger.NewWriter(), false, false)
+	loggerAdapter := new(MQLogger)
 	router, err := message.NewRouter(
 		message.RouterConfig{CloseTimeout: 0},
 		loggerAdapter,
@@ -87,7 +87,7 @@ func (a *MQ) RegisterTopic(topic Topic) error {
 		},
 	)
 	topic.SetMQ(a)
-	logger.Infof("topic %s registered", topic)
+	logger.Infof("topic %s registered", topic.Name())
 	return nil
 }
 

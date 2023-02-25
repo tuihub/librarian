@@ -17,7 +17,6 @@ import (
 // goverter:extend ToBizAppSource
 // goverter:extend PtrToString
 // goverter:extend ToBizAppPackageSource
-// goverter:extend TimeStampToTime
 // goverter:extend DurationPBToDuration
 type toBizConverter interface {
 	ToBizInternalIDList(idl []*librarian.InternalID) []int64
