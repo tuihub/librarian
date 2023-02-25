@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.0.5](https://github.com/TuiHub/Librarian/compare/v0.0.4-4...v0.0.5) (2023-02-25)
+
+
+### Features
+
+* add gocron ([560f4a6](https://github.com/TuiHub/Librarian/commit/560f4a6a08bb9a6f069ac1cffc6ef19590ce53af))
+* add gofeed ([ec1ce3d](https://github.com/TuiHub/Librarian/commit/ec1ce3d1155ddaccb82798e5645f3964ab8b7184))
+* add new ent schema ([97600cc](https://github.com/TuiHub/Librarian/commit/97600cc06bac766eddab4dcc1873ab628a9f0134))
+* impl CreateFeedConfig UpdateFeedConfig ([5dec242](https://github.com/TuiHub/Librarian/commit/5dec24202385d38af2a5dd787eb9e3a61b998866))
+* use goverter to convert struct ([1b055b3](https://github.com/TuiHub/Librarian/commit/1b055b33a624484191e12d367879ed0c7db3b76b))
+
+
+### Bug Fixes
+
+* better log format ([5291f48](https://github.com/TuiHub/Librarian/commit/5291f4891e9228f52d8e3954fcc12db0741abffb))
+* tested PullFeed ([26ca088](https://github.com/TuiHub/Librarian/commit/26ca0884358e71c20fe1e4b08b2b3b76032cc5c9))
+* tested PullFeed cron ([543389d](https://github.com/TuiHub/Librarian/commit/543389df1050447db6c4fb0544c72327339c9832))
+
+
+### Miscellaneous Chores
+
+* release 0.0.5 ([4700a19](https://github.com/TuiHub/Librarian/commit/4700a19c8788e6c82d4b7799e2aa399de981dd07))
+
 ## [0.0.4-4](https://github.com/TuiHub/Librarian/compare/v0.0.4-3...v0.0.4-4) (2023-02-23)
 
 
