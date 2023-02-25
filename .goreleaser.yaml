@@ -16,9 +16,17 @@ builds:
     goarch:
       - amd64
       - arm64
+      - arm
     goamd64:
       - v1
       - v3
+    goarm:
+      - 6
+    ignore:
+      - goos: darwin
+        goarch: arm
+      - goos: windows
+        goarch: arm
     env:
       - CGO_ENABLED=1
       - CC_darwin_amd64=o64-clang
@@ -33,6 +41,8 @@ builds:
       - CXX_linux_amd64=x86_64-linux-gnu-g++
       - CC_linux_arm64=aarch64-linux-gnu-gcc
       - CXX_linux_arm64=aarch64-linux-gnu-g++
+      - CC_linux_arm=arm-linux-gnueabihf-gcc
+      - CXX_linux_arm=arm-linux-gnueabihf-g++
       - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
       - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
     ldflags:
