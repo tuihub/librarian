@@ -1,13 +1,17 @@
 package bizfeed
 
-import "context"
+import (
+	"context"
+
+	"github.com/tuihub/librarian/internal/model/modelfeed"
+)
 
 type FeedUseCase struct {
 	rss RSSRepo
 }
 
 type RSSRepo interface {
-	Parse(string) (*Feed, error)
+	Parse(string) (*modelfeed.Feed, error)
 	Get(string) (string, error)
 }
 
@@ -17,7 +21,7 @@ func NewFeed(rss RSSRepo) *FeedUseCase {
 	}
 }
 
-func (f *FeedUseCase) GetFeed(ctx context.Context, url string) (*Feed, error) {
+func (f *FeedUseCase) GetFeed(ctx context.Context, url string) (*modelfeed.Feed, error) {
 	data, err := f.rss.Get(url)
 	if err != nil {
 		return nil, err

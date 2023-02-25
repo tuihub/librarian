@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -19,6 +20,7 @@ type YesodRepo interface {
 		[]FeedConfigStatus, ListFeedOrder, Paging) ([]*FeedConfig, error)
 	ListFeedConfigNeedPull(context.Context, []FeedConfigSource, []FeedConfigStatus,
 		ListFeedOrder, time.Time, int) ([]*FeedConfig, error)
+	UpsertFeed(context.Context, *modelfeed.Feed) error
 }
 
 type Yesod struct {
@@ -57,7 +59,7 @@ type FeedConfig struct {
 	AuthorAccount int64
 	Source        FeedConfigSource
 	Status        FeedConfigStatus
-	PullInterval  time.Time
+	PullInterval  time.Duration
 }
 
 type FeedConfigSource int
@@ -88,8 +90,9 @@ type Paging struct {
 }
 
 type PullFeed struct {
-	URL    string
-	Source FeedConfigSource
+	InternalID int64
+	URL        string
+	Source     FeedConfigSource
 }
 
 func (y *Yesod) PullFeeds(ctx context.Context) {
@@ -101,8 +104,9 @@ func (y *Yesod) PullFeeds(ctx context.Context) {
 	}
 	for _, c := range configs {
 		err = y.pullFeed.Publish(ctx, PullFeed{
-			URL:    c.FeedURL,
-			Source: c.Source,
+			InternalID: c.InternalID,
+			URL:        c.FeedURL,
+			Source:     c.Source,
 		})
 		if err != nil {
 			logger.Errorf("%s", err.Error())

@@ -4,104 +4,104 @@ package converter
 
 import (
 	gofeed "github.com/mmcdole/gofeed"
-	bizfeed "github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
+	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) ToPBFeed(source *gofeed.Feed) *bizfeed.Feed {
-	var pBizfeedFeed *bizfeed.Feed
+func (c *ConverterImpl) ToPBFeed(source *gofeed.Feed) *modelfeed.Feed {
+	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {
-		var bizfeedFeed bizfeed.Feed
-		bizfeedFeed.Title = (*source).Title
-		bizfeedFeed.Description = (*source).Description
-		bizfeedFeed.Link = (*source).Link
-		var pBizfeedPersonList []*bizfeed.Person
+		var modelfeedFeed modelfeed.Feed
+		modelfeedFeed.Title = (*source).Title
+		modelfeedFeed.Description = (*source).Description
+		modelfeedFeed.Link = (*source).Link
+		var pModelfeedPersonList []*modelfeed.Person
 		if (*source).Authors != nil {
-			pBizfeedPersonList = make([]*bizfeed.Person, len((*source).Authors))
+			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pBizfeedPersonList[i] = c.pGofeedPersonToPBizfeedPerson((*source).Authors[i])
+				pModelfeedPersonList[i] = c.pGofeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		bizfeedFeed.Authors = pBizfeedPersonList
-		bizfeedFeed.Language = (*source).Language
-		bizfeedFeed.Image = c.pGofeedImageToPBizfeedImage((*source).Image)
-		var pBizfeedItemList []*bizfeed.Item
+		modelfeedFeed.Authors = pModelfeedPersonList
+		modelfeedFeed.Language = (*source).Language
+		modelfeedFeed.Image = c.pGofeedImageToPModelfeedImage((*source).Image)
+		var pModelfeedItemList []*modelfeed.Item
 		if (*source).Items != nil {
-			pBizfeedItemList = make([]*bizfeed.Item, len((*source).Items))
+			pModelfeedItemList = make([]*modelfeed.Item, len((*source).Items))
 			for j := 0; j < len((*source).Items); j++ {
-				pBizfeedItemList[j] = c.ToPBFeedItem((*source).Items[j])
+				pModelfeedItemList[j] = c.ToPBFeedItem((*source).Items[j])
 			}
 		}
-		bizfeedFeed.Items = pBizfeedItemList
-		bizfeedFeed.FeedType = (*source).FeedType
-		bizfeedFeed.FeedVersion = (*source).FeedVersion
-		pBizfeedFeed = &bizfeedFeed
+		modelfeedFeed.Items = pModelfeedItemList
+		modelfeedFeed.FeedType = (*source).FeedType
+		modelfeedFeed.FeedVersion = (*source).FeedVersion
+		pModelfeedFeed = &modelfeedFeed
 	}
-	return pBizfeedFeed
+	return pModelfeedFeed
 }
-func (c *ConverterImpl) ToPBFeedItem(source *gofeed.Item) *bizfeed.Item {
-	var pBizfeedItem *bizfeed.Item
+func (c *ConverterImpl) ToPBFeedItem(source *gofeed.Item) *modelfeed.Item {
+	var pModelfeedItem *modelfeed.Item
 	if source != nil {
-		var bizfeedItem bizfeed.Item
-		bizfeedItem.Title = (*source).Title
-		bizfeedItem.Description = (*source).Description
-		bizfeedItem.Content = (*source).Content
-		bizfeedItem.Link = (*source).Link
-		bizfeedItem.Updated = (*source).Updated
-		bizfeedItem.UpdatedParsed = TimeToTime((*source).UpdatedParsed)
-		bizfeedItem.Published = (*source).Published
-		bizfeedItem.PublishedParsed = TimeToTime((*source).PublishedParsed)
-		var pBizfeedPersonList []*bizfeed.Person
+		var modelfeedItem modelfeed.Item
+		modelfeedItem.Title = (*source).Title
+		modelfeedItem.Description = (*source).Description
+		modelfeedItem.Content = (*source).Content
+		modelfeedItem.Link = (*source).Link
+		modelfeedItem.Updated = (*source).Updated
+		modelfeedItem.UpdatedParsed = TimeToTime((*source).UpdatedParsed)
+		modelfeedItem.Published = (*source).Published
+		modelfeedItem.PublishedParsed = TimeToTime((*source).PublishedParsed)
+		var pModelfeedPersonList []*modelfeed.Person
 		if (*source).Authors != nil {
-			pBizfeedPersonList = make([]*bizfeed.Person, len((*source).Authors))
+			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pBizfeedPersonList[i] = c.pGofeedPersonToPBizfeedPerson((*source).Authors[i])
+				pModelfeedPersonList[i] = c.pGofeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		bizfeedItem.Authors = pBizfeedPersonList
-		bizfeedItem.GUID = (*source).GUID
-		bizfeedItem.Image = c.pGofeedImageToPBizfeedImage((*source).Image)
-		var pBizfeedEnclosureList []*bizfeed.Enclosure
+		modelfeedItem.Authors = pModelfeedPersonList
+		modelfeedItem.GUID = (*source).GUID
+		modelfeedItem.Image = c.pGofeedImageToPModelfeedImage((*source).Image)
+		var pModelfeedEnclosureList []*modelfeed.Enclosure
 		if (*source).Enclosures != nil {
-			pBizfeedEnclosureList = make([]*bizfeed.Enclosure, len((*source).Enclosures))
+			pModelfeedEnclosureList = make([]*modelfeed.Enclosure, len((*source).Enclosures))
 			for j := 0; j < len((*source).Enclosures); j++ {
-				pBizfeedEnclosureList[j] = c.pGofeedEnclosureToPBizfeedEnclosure((*source).Enclosures[j])
+				pModelfeedEnclosureList[j] = c.pGofeedEnclosureToPModelfeedEnclosure((*source).Enclosures[j])
 			}
 		}
-		bizfeedItem.Enclosures = pBizfeedEnclosureList
-		pBizfeedItem = &bizfeedItem
+		modelfeedItem.Enclosures = pModelfeedEnclosureList
+		pModelfeedItem = &modelfeedItem
 	}
-	return pBizfeedItem
+	return pModelfeedItem
 }
-func (c *ConverterImpl) pGofeedEnclosureToPBizfeedEnclosure(source *gofeed.Enclosure) *bizfeed.Enclosure {
-	var pBizfeedEnclosure *bizfeed.Enclosure
+func (c *ConverterImpl) pGofeedEnclosureToPModelfeedEnclosure(source *gofeed.Enclosure) *modelfeed.Enclosure {
+	var pModelfeedEnclosure *modelfeed.Enclosure
 	if source != nil {
-		var bizfeedEnclosure bizfeed.Enclosure
-		bizfeedEnclosure.URL = (*source).URL
-		bizfeedEnclosure.Length = (*source).Length
-		bizfeedEnclosure.Type = (*source).Type
-		pBizfeedEnclosure = &bizfeedEnclosure
+		var modelfeedEnclosure modelfeed.Enclosure
+		modelfeedEnclosure.URL = (*source).URL
+		modelfeedEnclosure.Length = (*source).Length
+		modelfeedEnclosure.Type = (*source).Type
+		pModelfeedEnclosure = &modelfeedEnclosure
 	}
-	return pBizfeedEnclosure
+	return pModelfeedEnclosure
 }
-func (c *ConverterImpl) pGofeedImageToPBizfeedImage(source *gofeed.Image) *bizfeed.Image {
-	var pBizfeedImage *bizfeed.Image
+func (c *ConverterImpl) pGofeedImageToPModelfeedImage(source *gofeed.Image) *modelfeed.Image {
+	var pModelfeedImage *modelfeed.Image
 	if source != nil {
-		var bizfeedImage bizfeed.Image
-		bizfeedImage.URL = (*source).URL
-		bizfeedImage.Title = (*source).Title
-		pBizfeedImage = &bizfeedImage
+		var modelfeedImage modelfeed.Image
+		modelfeedImage.URL = (*source).URL
+		modelfeedImage.Title = (*source).Title
+		pModelfeedImage = &modelfeedImage
 	}
-	return pBizfeedImage
+	return pModelfeedImage
 }
-func (c *ConverterImpl) pGofeedPersonToPBizfeedPerson(source *gofeed.Person) *bizfeed.Person {
-	var pBizfeedPerson *bizfeed.Person
+func (c *ConverterImpl) pGofeedPersonToPModelfeedPerson(source *gofeed.Person) *modelfeed.Person {
+	var pModelfeedPerson *modelfeed.Person
 	if source != nil {
-		var bizfeedPerson bizfeed.Person
-		bizfeedPerson.Name = (*source).Name
-		bizfeedPerson.Email = (*source).Email
-		pBizfeedPerson = &bizfeedPerson
+		var modelfeedPerson modelfeed.Person
+		modelfeedPerson.Name = (*source).Name
+		modelfeedPerson.Email = (*source).Email
+		pModelfeedPerson = &modelfeedPerson
 	}
-	return pBizfeedPerson
+	return pModelfeedPerson
 }

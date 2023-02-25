@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model/modelfeed"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 )
@@ -18,28 +20,22 @@ func (FeedItem) Fields() []ent.Field {
 		field.Int64("internal_id").
 			Unique(),
 		field.String("title"),
-		field.JSON("authors", []Person{}),
+		field.JSON("authors", []modelfeed.Person{}),
 		field.String("description"),
 		field.String("content"),
 		field.String("guid"),
 		field.String("link"),
-		field.JSON("images", []Image{}),
+		field.JSON("image", new(modelfeed.Image)),
 		field.String("published"),
 		field.Time("published_parsed"),
 		field.String("updated"),
 		field.Time("updated_parsed"),
-		field.JSON("enclosure", []Enclosure{}),
+		field.JSON("enclosure", []modelfeed.Enclosure{}),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
 	}
-}
-
-type Enclosure struct {
-	URL    string
-	Length string
-	Type   string
 }
 
 // Edges of the FeedItem.

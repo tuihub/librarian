@@ -25,8 +25,8 @@ const (
 	FieldGUID = "guid"
 	// FieldLink holds the string denoting the link field in the database.
 	FieldLink = "link"
-	// FieldImages holds the string denoting the images field in the database.
-	FieldImages = "images"
+	// FieldImage holds the string denoting the image field in the database.
+	FieldImage = "image"
 	// FieldPublished holds the string denoting the published field in the database.
 	FieldPublished = "published"
 	// FieldPublishedParsed holds the string denoting the published_parsed field in the database.
@@ -55,7 +55,7 @@ var Columns = []string{
 	FieldContent,
 	FieldGUID,
 	FieldLink,
-	FieldImages,
+	FieldImage,
 	FieldPublished,
 	FieldPublishedParsed,
 	FieldUpdated,

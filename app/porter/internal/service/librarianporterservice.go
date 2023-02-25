@@ -8,7 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
-	"github.com/tuihub/librarian/app/porter/internal/service/converter"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -51,7 +51,7 @@ func (s *LibrarianPorterServiceService) PullFeed(
 			if err != nil {
 				return nil, err
 			}
-			res := converter.NewConverter().ToPBFeed(feed)
+			res := modelfeed.NewConverter().ToPBFeed(feed)
 			return &pb.PullFeedResponse{Data: res}, nil
 		}
 	default:
@@ -107,7 +107,7 @@ func (s *LibrarianPorterServiceService) PullApp(
 			SourceAppId:      req.GetAppId().GetSourceAppId(),
 			SourceUrl:        &a.StoreURL,
 			Name:             a.Name,
-			Type:             converter.ToPBAppType(a.Type),
+			Type:             ToPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
 			ImageUrl:         a.ImageURL,
 			Details: &librarian.AppDetails{ // TODO
@@ -165,7 +165,7 @@ func (s *LibrarianPorterServiceService) PushData(conn pb.LibrarianPorterService_
 		}
 		file, err = s.s3.NewPushData(
 			conn.Context(),
-			converter.ToBizBucket(req.GetMetadata().GetSource()),
+			ToBizBucket(req.GetMetadata().GetSource()),
 			req.GetMetadata().GetContentId(),
 		)
 		if err != nil {

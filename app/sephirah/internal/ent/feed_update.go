@@ -13,8 +13,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedUpdate is the builder for updating Feed entities.
@@ -68,26 +69,20 @@ func (fu *FeedUpdate) SetLanguage(s string) *FeedUpdate {
 }
 
 // SetAuthors sets the "authors" field.
-func (fu *FeedUpdate) SetAuthors(s []schema.Person) *FeedUpdate {
-	fu.mutation.SetAuthors(s)
+func (fu *FeedUpdate) SetAuthors(m []*modelfeed.Person) *FeedUpdate {
+	fu.mutation.SetAuthors(m)
 	return fu
 }
 
-// AppendAuthors appends s to the "authors" field.
-func (fu *FeedUpdate) AppendAuthors(s []schema.Person) *FeedUpdate {
-	fu.mutation.AppendAuthors(s)
+// AppendAuthors appends m to the "authors" field.
+func (fu *FeedUpdate) AppendAuthors(m []*modelfeed.Person) *FeedUpdate {
+	fu.mutation.AppendAuthors(m)
 	return fu
 }
 
-// SetImages sets the "images" field.
-func (fu *FeedUpdate) SetImages(s []schema.Image) *FeedUpdate {
-	fu.mutation.SetImages(s)
-	return fu
-}
-
-// AppendImages appends s to the "images" field.
-func (fu *FeedUpdate) AppendImages(s []schema.Image) *FeedUpdate {
-	fu.mutation.AppendImages(s)
+// SetImage sets the "image" field.
+func (fu *FeedUpdate) SetImage(m *modelfeed.Image) *FeedUpdate {
+	fu.mutation.SetImage(m)
 	return fu
 }
 
@@ -111,9 +106,26 @@ func (fu *FeedUpdate) SetNillableCreatedAt(t *time.Time) *FeedUpdate {
 	return fu
 }
 
+// SetConfigID sets the "config" edge to the FeedConfig entity by ID.
+func (fu *FeedUpdate) SetConfigID(id int) *FeedUpdate {
+	fu.mutation.SetConfigID(id)
+	return fu
+}
+
+// SetConfig sets the "config" edge to the FeedConfig entity.
+func (fu *FeedUpdate) SetConfig(f *FeedConfig) *FeedUpdate {
+	return fu.SetConfigID(f.ID)
+}
+
 // Mutation returns the FeedMutation object of the builder.
 func (fu *FeedUpdate) Mutation() *FeedMutation {
 	return fu.mutation
+}
+
+// ClearConfig clears the "config" edge to the FeedConfig entity.
+func (fu *FeedUpdate) ClearConfig() *FeedUpdate {
+	fu.mutation.ClearConfig()
+	return fu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -152,7 +164,18 @@ func (fu *FeedUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (fu *FeedUpdate) check() error {
+	if _, ok := fu.mutation.ConfigID(); fu.mutation.ConfigCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Feed.config"`)
+	}
+	return nil
+}
+
 func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := fu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(feed.Table, feed.Columns, sqlgraph.NewFieldSpec(feed.FieldID, field.TypeInt))
 	if ps := fu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -187,19 +210,49 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, feed.FieldAuthors, value)
 		})
 	}
-	if value, ok := fu.mutation.Images(); ok {
-		_spec.SetField(feed.FieldImages, field.TypeJSON, value)
-	}
-	if value, ok := fu.mutation.AppendedImages(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feed.FieldImages, value)
-		})
+	if value, ok := fu.mutation.Image(); ok {
+		_spec.SetField(feed.FieldImage, field.TypeJSON, value)
 	}
 	if value, ok := fu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feed.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fu.mutation.CreatedAt(); ok {
 		_spec.SetField(feed.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fu.mutation.ConfigCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feed.ConfigTable,
+			Columns: []string{feed.ConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fu.mutation.ConfigIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feed.ConfigTable,
+			Columns: []string{feed.ConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -259,26 +312,20 @@ func (fuo *FeedUpdateOne) SetLanguage(s string) *FeedUpdateOne {
 }
 
 // SetAuthors sets the "authors" field.
-func (fuo *FeedUpdateOne) SetAuthors(s []schema.Person) *FeedUpdateOne {
-	fuo.mutation.SetAuthors(s)
+func (fuo *FeedUpdateOne) SetAuthors(m []*modelfeed.Person) *FeedUpdateOne {
+	fuo.mutation.SetAuthors(m)
 	return fuo
 }
 
-// AppendAuthors appends s to the "authors" field.
-func (fuo *FeedUpdateOne) AppendAuthors(s []schema.Person) *FeedUpdateOne {
-	fuo.mutation.AppendAuthors(s)
+// AppendAuthors appends m to the "authors" field.
+func (fuo *FeedUpdateOne) AppendAuthors(m []*modelfeed.Person) *FeedUpdateOne {
+	fuo.mutation.AppendAuthors(m)
 	return fuo
 }
 
-// SetImages sets the "images" field.
-func (fuo *FeedUpdateOne) SetImages(s []schema.Image) *FeedUpdateOne {
-	fuo.mutation.SetImages(s)
-	return fuo
-}
-
-// AppendImages appends s to the "images" field.
-func (fuo *FeedUpdateOne) AppendImages(s []schema.Image) *FeedUpdateOne {
-	fuo.mutation.AppendImages(s)
+// SetImage sets the "image" field.
+func (fuo *FeedUpdateOne) SetImage(m *modelfeed.Image) *FeedUpdateOne {
+	fuo.mutation.SetImage(m)
 	return fuo
 }
 
@@ -302,9 +349,26 @@ func (fuo *FeedUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedUpdateOne {
 	return fuo
 }
 
+// SetConfigID sets the "config" edge to the FeedConfig entity by ID.
+func (fuo *FeedUpdateOne) SetConfigID(id int) *FeedUpdateOne {
+	fuo.mutation.SetConfigID(id)
+	return fuo
+}
+
+// SetConfig sets the "config" edge to the FeedConfig entity.
+func (fuo *FeedUpdateOne) SetConfig(f *FeedConfig) *FeedUpdateOne {
+	return fuo.SetConfigID(f.ID)
+}
+
 // Mutation returns the FeedMutation object of the builder.
 func (fuo *FeedUpdateOne) Mutation() *FeedMutation {
 	return fuo.mutation
+}
+
+// ClearConfig clears the "config" edge to the FeedConfig entity.
+func (fuo *FeedUpdateOne) ClearConfig() *FeedUpdateOne {
+	fuo.mutation.ClearConfig()
+	return fuo
 }
 
 // Where appends a list predicates to the FeedUpdate builder.
@@ -356,7 +420,18 @@ func (fuo *FeedUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (fuo *FeedUpdateOne) check() error {
+	if _, ok := fuo.mutation.ConfigID(); fuo.mutation.ConfigCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "Feed.config"`)
+	}
+	return nil
+}
+
 func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) {
+	if err := fuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(feed.Table, feed.Columns, sqlgraph.NewFieldSpec(feed.FieldID, field.TypeInt))
 	id, ok := fuo.mutation.ID()
 	if !ok {
@@ -408,19 +483,49 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			sqljson.Append(u, feed.FieldAuthors, value)
 		})
 	}
-	if value, ok := fuo.mutation.Images(); ok {
-		_spec.SetField(feed.FieldImages, field.TypeJSON, value)
-	}
-	if value, ok := fuo.mutation.AppendedImages(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feed.FieldImages, value)
-		})
+	if value, ok := fuo.mutation.Image(); ok {
+		_spec.SetField(feed.FieldImage, field.TypeJSON, value)
 	}
 	if value, ok := fuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feed.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feed.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fuo.mutation.ConfigCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feed.ConfigTable,
+			Columns: []string{feed.ConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fuo.mutation.ConfigIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feed.ConfigTable,
+			Columns: []string{feed.ConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Feed{config: fuo.config}
 	_spec.Assign = _node.assignValues

@@ -3,7 +3,7 @@ package converter
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"github.com/mmcdole/gofeed"
 )
@@ -13,11 +13,13 @@ import (
 // goverter:converter
 type Converter interface {
 	// goverter:matchIgnoreCase
-	ToPBFeed(t *gofeed.Feed) *bizfeed.Feed
+	// goverter:ignore InternalID
+	ToPBFeed(t *gofeed.Feed) *modelfeed.Feed
 	// goverter:matchIgnoreCase
+	// goverter:ignore InternalID
 	// goverter:map UpdatedParsed | TimeToTime
 	// goverter:map PublishedParsed | TimeToTime
-	ToPBFeedItem(t *gofeed.Item) *bizfeed.Item
+	ToPBFeedItem(t *gofeed.Item) *modelfeed.Item
 }
 
 func NewConverter() Converter {

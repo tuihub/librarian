@@ -95,7 +95,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *bizyesod.F
 		bizyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
 		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		bizyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
-		bizyesodFeedConfig.PullInterval = TimeStampToTime((*source).PullInterval)
+		bizyesodFeedConfig.PullInterval = DurationPBToDuration((*source).PullInterval)
 		pBizyesodFeedConfig = &bizyesodFeedConfig
 	}
 	return pBizyesodFeedConfig

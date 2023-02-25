@@ -1,11 +1,12 @@
 package service
 
 import (
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
@@ -21,6 +22,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
+	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,

@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
@@ -21,6 +23,7 @@ type FeedConfigQuery struct {
 	order      []OrderFunc
 	inters     []Interceptor
 	predicates []predicate.FeedConfig
+	withFeed   *FeedQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +58,28 @@ func (fcq *FeedConfigQuery) Unique(unique bool) *FeedConfigQuery {
 func (fcq *FeedConfigQuery) Order(o ...OrderFunc) *FeedConfigQuery {
 	fcq.order = append(fcq.order, o...)
 	return fcq
+}
+
+// QueryFeed chains the current query on the "feed" edge.
+func (fcq *FeedConfigQuery) QueryFeed() *FeedQuery {
+	query := (&FeedClient{config: fcq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fcq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fcq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, selector),
+			sqlgraph.To(feed.Table, feed.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.FeedTable, feedconfig.FeedColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first FeedConfig entity from the query.
@@ -249,10 +274,22 @@ func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
 		order:      append([]OrderFunc{}, fcq.order...),
 		inters:     append([]Interceptor{}, fcq.inters...),
 		predicates: append([]predicate.FeedConfig{}, fcq.predicates...),
+		withFeed:   fcq.withFeed.Clone(),
 		// clone intermediate query.
 		sql:  fcq.sql.Clone(),
 		path: fcq.path,
 	}
+}
+
+// WithFeed tells the query-builder to eager-load the nodes that are connected to
+// the "feed" edge. The optional arguments are used to configure the query builder of the edge.
+func (fcq *FeedConfigQuery) WithFeed(opts ...func(*FeedQuery)) *FeedConfigQuery {
+	query := (&FeedClient{config: fcq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fcq.withFeed = query
+	return fcq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -331,8 +368,11 @@ func (fcq *FeedConfigQuery) prepareQuery(ctx context.Context) error {
 
 func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedConfig, error) {
 	var (
-		nodes = []*FeedConfig{}
-		_spec = fcq.querySpec()
+		nodes       = []*FeedConfig{}
+		_spec       = fcq.querySpec()
+		loadedTypes = [1]bool{
+			fcq.withFeed != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FeedConfig).scanValues(nil, columns)
@@ -340,6 +380,7 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &FeedConfig{config: fcq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +392,46 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := fcq.withFeed; query != nil {
+		if err := fcq.loadFeed(ctx, query, nodes,
+			func(n *FeedConfig) { n.Edges.Feed = []*Feed{} },
+			func(n *FeedConfig, e *Feed) { n.Edges.Feed = append(n.Edges.Feed, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *Feed)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int]*FeedConfig)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Feed(func(s *sql.Selector) {
+		s.Where(sql.InValues(feedconfig.FeedColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.feed_config_feed
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "feed_config_feed" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "feed_config_feed" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (fcq *FeedConfigQuery) sqlCount(ctx context.Context) (int, error) {

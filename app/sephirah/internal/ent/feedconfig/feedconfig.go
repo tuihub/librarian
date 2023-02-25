@@ -24,14 +24,23 @@ const (
 	FieldStatus = "status"
 	// FieldPullInterval holds the string denoting the pull_interval field in the database.
 	FieldPullInterval = "pull_interval"
-	// FieldLastPullAt holds the string denoting the last_pull_at field in the database.
-	FieldLastPullAt = "last_pull_at"
+	// FieldNextPullBeginAt holds the string denoting the next_pull_begin_at field in the database.
+	FieldNextPullBeginAt = "next_pull_begin_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeFeed holds the string denoting the feed edge name in mutations.
+	EdgeFeed = "feed"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
+	// FeedTable is the table that holds the feed relation/edge.
+	FeedTable = "feeds"
+	// FeedInverseTable is the table name for the Feed entity.
+	// It exists in this package in order to avoid circular dependency with the "feed" package.
+	FeedInverseTable = "feeds"
+	// FeedColumn is the table column denoting the feed relation/edge.
+	FeedColumn = "feed_config_feed"
 )
 
 // Columns holds all SQL columns for feedconfig fields.
@@ -43,7 +52,7 @@ var Columns = []string{
 	FieldSource,
 	FieldStatus,
 	FieldPullInterval,
-	FieldLastPullAt,
+	FieldNextPullBeginAt,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -59,6 +68,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultNextPullBeginAt holds the default value on creation for the "next_pull_begin_at" field.
+	DefaultNextPullBeginAt time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.

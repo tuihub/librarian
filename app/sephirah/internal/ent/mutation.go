@@ -16,8 +16,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -2879,13 +2879,14 @@ type FeedMutation struct {
 	link           *string
 	description    *string
 	language       *string
-	authors        *[]schema.Person
-	appendauthors  []schema.Person
-	images         *[]schema.Image
-	appendimages   []schema.Image
+	authors        *[]*modelfeed.Person
+	appendauthors  []*modelfeed.Person
+	image          **modelfeed.Image
 	updated_at     *time.Time
 	created_at     *time.Time
 	clearedFields  map[string]struct{}
+	_config        *int
+	cleared_config bool
 	done           bool
 	oldValue       func(context.Context) (*Feed, error)
 	predicates     []predicate.Feed
@@ -3190,13 +3191,13 @@ func (m *FeedMutation) ResetLanguage() {
 }
 
 // SetAuthors sets the "authors" field.
-func (m *FeedMutation) SetAuthors(s []schema.Person) {
-	m.authors = &s
+func (m *FeedMutation) SetAuthors(value []*modelfeed.Person) {
+	m.authors = &value
 	m.appendauthors = nil
 }
 
 // Authors returns the value of the "authors" field in the mutation.
-func (m *FeedMutation) Authors() (r []schema.Person, exists bool) {
+func (m *FeedMutation) Authors() (r []*modelfeed.Person, exists bool) {
 	v := m.authors
 	if v == nil {
 		return
@@ -3207,7 +3208,7 @@ func (m *FeedMutation) Authors() (r []schema.Person, exists bool) {
 // OldAuthors returns the old "authors" field's value of the Feed entity.
 // If the Feed object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedMutation) OldAuthors(ctx context.Context) (v []schema.Person, err error) {
+func (m *FeedMutation) OldAuthors(ctx context.Context) (v []*modelfeed.Person, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAuthors is only allowed on UpdateOne operations")
 	}
@@ -3221,13 +3222,13 @@ func (m *FeedMutation) OldAuthors(ctx context.Context) (v []schema.Person, err e
 	return oldValue.Authors, nil
 }
 
-// AppendAuthors adds s to the "authors" field.
-func (m *FeedMutation) AppendAuthors(s []schema.Person) {
-	m.appendauthors = append(m.appendauthors, s...)
+// AppendAuthors adds value to the "authors" field.
+func (m *FeedMutation) AppendAuthors(value []*modelfeed.Person) {
+	m.appendauthors = append(m.appendauthors, value...)
 }
 
 // AppendedAuthors returns the list of values that were appended to the "authors" field in this mutation.
-func (m *FeedMutation) AppendedAuthors() ([]schema.Person, bool) {
+func (m *FeedMutation) AppendedAuthors() ([]*modelfeed.Person, bool) {
 	if len(m.appendauthors) == 0 {
 		return nil, false
 	}
@@ -3240,55 +3241,40 @@ func (m *FeedMutation) ResetAuthors() {
 	m.appendauthors = nil
 }
 
-// SetImages sets the "images" field.
-func (m *FeedMutation) SetImages(s []schema.Image) {
-	m.images = &s
-	m.appendimages = nil
+// SetImage sets the "image" field.
+func (m *FeedMutation) SetImage(value *modelfeed.Image) {
+	m.image = &value
 }
 
-// Images returns the value of the "images" field in the mutation.
-func (m *FeedMutation) Images() (r []schema.Image, exists bool) {
-	v := m.images
+// Image returns the value of the "image" field in the mutation.
+func (m *FeedMutation) Image() (r *modelfeed.Image, exists bool) {
+	v := m.image
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImages returns the old "images" field's value of the Feed entity.
+// OldImage returns the old "image" field's value of the Feed entity.
 // If the Feed object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedMutation) OldImages(ctx context.Context) (v []schema.Image, err error) {
+func (m *FeedMutation) OldImage(ctx context.Context) (v *modelfeed.Image, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImages is only allowed on UpdateOne operations")
+		return v, errors.New("OldImage is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImages requires an ID field in the mutation")
+		return v, errors.New("OldImage requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImages: %w", err)
+		return v, fmt.Errorf("querying old value for OldImage: %w", err)
 	}
-	return oldValue.Images, nil
+	return oldValue.Image, nil
 }
 
-// AppendImages adds s to the "images" field.
-func (m *FeedMutation) AppendImages(s []schema.Image) {
-	m.appendimages = append(m.appendimages, s...)
-}
-
-// AppendedImages returns the list of values that were appended to the "images" field in this mutation.
-func (m *FeedMutation) AppendedImages() ([]schema.Image, bool) {
-	if len(m.appendimages) == 0 {
-		return nil, false
-	}
-	return m.appendimages, true
-}
-
-// ResetImages resets all changes to the "images" field.
-func (m *FeedMutation) ResetImages() {
-	m.images = nil
-	m.appendimages = nil
+// ResetImage resets all changes to the "image" field.
+func (m *FeedMutation) ResetImage() {
+	m.image = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -3363,6 +3349,45 @@ func (m *FeedMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetConfigID sets the "config" edge to the FeedConfig entity by id.
+func (m *FeedMutation) SetConfigID(id int) {
+	m._config = &id
+}
+
+// ClearConfig clears the "config" edge to the FeedConfig entity.
+func (m *FeedMutation) ClearConfig() {
+	m.cleared_config = true
+}
+
+// ConfigCleared reports if the "config" edge to the FeedConfig entity was cleared.
+func (m *FeedMutation) ConfigCleared() bool {
+	return m.cleared_config
+}
+
+// ConfigID returns the "config" edge ID in the mutation.
+func (m *FeedMutation) ConfigID() (id int, exists bool) {
+	if m._config != nil {
+		return *m._config, true
+	}
+	return
+}
+
+// ConfigIDs returns the "config" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// ConfigID instead. It exists only for internal usage by the builders.
+func (m *FeedMutation) ConfigIDs() (ids []int) {
+	if id := m._config; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetConfig resets all changes to the "config" edge.
+func (m *FeedMutation) ResetConfig() {
+	m._config = nil
+	m.cleared_config = false
+}
+
 // Where appends a list predicates to the FeedMutation builder.
 func (m *FeedMutation) Where(ps ...predicate.Feed) {
 	m.predicates = append(m.predicates, ps...)
@@ -3416,8 +3441,8 @@ func (m *FeedMutation) Fields() []string {
 	if m.authors != nil {
 		fields = append(fields, feed.FieldAuthors)
 	}
-	if m.images != nil {
-		fields = append(fields, feed.FieldImages)
+	if m.image != nil {
+		fields = append(fields, feed.FieldImage)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, feed.FieldUpdatedAt)
@@ -3445,8 +3470,8 @@ func (m *FeedMutation) Field(name string) (ent.Value, bool) {
 		return m.Language()
 	case feed.FieldAuthors:
 		return m.Authors()
-	case feed.FieldImages:
-		return m.Images()
+	case feed.FieldImage:
+		return m.Image()
 	case feed.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case feed.FieldCreatedAt:
@@ -3472,8 +3497,8 @@ func (m *FeedMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldLanguage(ctx)
 	case feed.FieldAuthors:
 		return m.OldAuthors(ctx)
-	case feed.FieldImages:
-		return m.OldImages(ctx)
+	case feed.FieldImage:
+		return m.OldImage(ctx)
 	case feed.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case feed.FieldCreatedAt:
@@ -3523,18 +3548,18 @@ func (m *FeedMutation) SetField(name string, value ent.Value) error {
 		m.SetLanguage(v)
 		return nil
 	case feed.FieldAuthors:
-		v, ok := value.([]schema.Person)
+		v, ok := value.([]*modelfeed.Person)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAuthors(v)
 		return nil
-	case feed.FieldImages:
-		v, ok := value.([]schema.Image)
+	case feed.FieldImage:
+		v, ok := value.(*modelfeed.Image)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImages(v)
+		m.SetImage(v)
 		return nil
 	case feed.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -3632,8 +3657,8 @@ func (m *FeedMutation) ResetField(name string) error {
 	case feed.FieldAuthors:
 		m.ResetAuthors()
 		return nil
-	case feed.FieldImages:
-		m.ResetImages()
+	case feed.FieldImage:
+		m.ResetImage()
 		return nil
 	case feed.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -3647,19 +3672,28 @@ func (m *FeedMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m._config != nil {
+		edges = append(edges, feed.EdgeConfig)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *FeedMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feed.EdgeConfig:
+		if id := m._config; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -3671,49 +3705,70 @@ func (m *FeedMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.cleared_config {
+		edges = append(edges, feed.EdgeConfig)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *FeedMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feed.EdgeConfig:
+		return m.cleared_config
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *FeedMutation) ClearEdge(name string) error {
+	switch name {
+	case feed.EdgeConfig:
+		m.ClearConfig()
+		return nil
+	}
 	return fmt.Errorf("unknown Feed unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *FeedMutation) ResetEdge(name string) error {
+	switch name {
+	case feed.EdgeConfig:
+		m.ResetConfig()
+		return nil
+	}
 	return fmt.Errorf("unknown Feed edge %s", name)
 }
 
 // FeedConfigMutation represents an operation that mutates the FeedConfig nodes in the graph.
 type FeedConfigMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	internal_id       *int64
-	addinternal_id    *int64
-	feed_url          *string
-	author_account    *int64
-	addauthor_account *int64
-	source            *feedconfig.Source
-	status            *feedconfig.Status
-	pull_interval     *time.Time
-	last_pull_at      *time.Time
-	updated_at        *time.Time
-	created_at        *time.Time
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*FeedConfig, error)
-	predicates        []predicate.FeedConfig
+	op                 Op
+	typ                string
+	id                 *int
+	internal_id        *int64
+	addinternal_id     *int64
+	feed_url           *string
+	author_account     *int64
+	addauthor_account  *int64
+	source             *feedconfig.Source
+	status             *feedconfig.Status
+	pull_interval      *time.Duration
+	addpull_interval   *time.Duration
+	next_pull_begin_at *time.Time
+	updated_at         *time.Time
+	created_at         *time.Time
+	clearedFields      map[string]struct{}
+	feed               map[int]struct{}
+	removedfeed        map[int]struct{}
+	clearedfeed        bool
+	done               bool
+	oldValue           func(context.Context) (*FeedConfig, error)
+	predicates         []predicate.FeedConfig
 }
 
 var _ ent.Mutation = (*FeedConfigMutation)(nil)
@@ -4035,12 +4090,13 @@ func (m *FeedConfigMutation) ResetStatus() {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (m *FeedConfigMutation) SetPullInterval(t time.Time) {
+func (m *FeedConfigMutation) SetPullInterval(t time.Duration) {
 	m.pull_interval = &t
+	m.addpull_interval = nil
 }
 
 // PullInterval returns the value of the "pull_interval" field in the mutation.
-func (m *FeedConfigMutation) PullInterval() (r time.Time, exists bool) {
+func (m *FeedConfigMutation) PullInterval() (r time.Duration, exists bool) {
 	v := m.pull_interval
 	if v == nil {
 		return
@@ -4051,7 +4107,7 @@ func (m *FeedConfigMutation) PullInterval() (r time.Time, exists bool) {
 // OldPullInterval returns the old "pull_interval" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldPullInterval(ctx context.Context) (v time.Time, err error) {
+func (m *FeedConfigMutation) OldPullInterval(ctx context.Context) (v time.Duration, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPullInterval is only allowed on UpdateOne operations")
 	}
@@ -4065,45 +4121,64 @@ func (m *FeedConfigMutation) OldPullInterval(ctx context.Context) (v time.Time, 
 	return oldValue.PullInterval, nil
 }
 
-// ResetPullInterval resets all changes to the "pull_interval" field.
-func (m *FeedConfigMutation) ResetPullInterval() {
-	m.pull_interval = nil
+// AddPullInterval adds t to the "pull_interval" field.
+func (m *FeedConfigMutation) AddPullInterval(t time.Duration) {
+	if m.addpull_interval != nil {
+		*m.addpull_interval += t
+	} else {
+		m.addpull_interval = &t
+	}
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (m *FeedConfigMutation) SetLastPullAt(t time.Time) {
-	m.last_pull_at = &t
-}
-
-// LastPullAt returns the value of the "last_pull_at" field in the mutation.
-func (m *FeedConfigMutation) LastPullAt() (r time.Time, exists bool) {
-	v := m.last_pull_at
+// AddedPullInterval returns the value that was added to the "pull_interval" field in this mutation.
+func (m *FeedConfigMutation) AddedPullInterval() (r time.Duration, exists bool) {
+	v := m.addpull_interval
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLastPullAt returns the old "last_pull_at" field's value of the FeedConfig entity.
+// ResetPullInterval resets all changes to the "pull_interval" field.
+func (m *FeedConfigMutation) ResetPullInterval() {
+	m.pull_interval = nil
+	m.addpull_interval = nil
+}
+
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (m *FeedConfigMutation) SetNextPullBeginAt(t time.Time) {
+	m.next_pull_begin_at = &t
+}
+
+// NextPullBeginAt returns the value of the "next_pull_begin_at" field in the mutation.
+func (m *FeedConfigMutation) NextPullBeginAt() (r time.Time, exists bool) {
+	v := m.next_pull_begin_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNextPullBeginAt returns the old "next_pull_begin_at" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldLastPullAt(ctx context.Context) (v time.Time, err error) {
+func (m *FeedConfigMutation) OldNextPullBeginAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLastPullAt is only allowed on UpdateOne operations")
+		return v, errors.New("OldNextPullBeginAt is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLastPullAt requires an ID field in the mutation")
+		return v, errors.New("OldNextPullBeginAt requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLastPullAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldNextPullBeginAt: %w", err)
 	}
-	return oldValue.LastPullAt, nil
+	return oldValue.NextPullBeginAt, nil
 }
 
-// ResetLastPullAt resets all changes to the "last_pull_at" field.
-func (m *FeedConfigMutation) ResetLastPullAt() {
-	m.last_pull_at = nil
+// ResetNextPullBeginAt resets all changes to the "next_pull_begin_at" field.
+func (m *FeedConfigMutation) ResetNextPullBeginAt() {
+	m.next_pull_begin_at = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -4178,6 +4253,60 @@ func (m *FeedConfigMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddFeedIDs adds the "feed" edge to the Feed entity by ids.
+func (m *FeedConfigMutation) AddFeedIDs(ids ...int) {
+	if m.feed == nil {
+		m.feed = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.feed[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
+func (m *FeedConfigMutation) ClearFeed() {
+	m.clearedfeed = true
+}
+
+// FeedCleared reports if the "feed" edge to the Feed entity was cleared.
+func (m *FeedConfigMutation) FeedCleared() bool {
+	return m.clearedfeed
+}
+
+// RemoveFeedIDs removes the "feed" edge to the Feed entity by IDs.
+func (m *FeedConfigMutation) RemoveFeedIDs(ids ...int) {
+	if m.removedfeed == nil {
+		m.removedfeed = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.feed, ids[i])
+		m.removedfeed[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeed returns the removed IDs of the "feed" edge to the Feed entity.
+func (m *FeedConfigMutation) RemovedFeedIDs() (ids []int) {
+	for id := range m.removedfeed {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedIDs returns the "feed" edge IDs in the mutation.
+func (m *FeedConfigMutation) FeedIDs() (ids []int) {
+	for id := range m.feed {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeed resets all changes to the "feed" edge.
+func (m *FeedConfigMutation) ResetFeed() {
+	m.feed = nil
+	m.clearedfeed = false
+	m.removedfeed = nil
+}
+
 // Where appends a list predicates to the FeedConfigMutation builder.
 func (m *FeedConfigMutation) Where(ps ...predicate.FeedConfig) {
 	m.predicates = append(m.predicates, ps...)
@@ -4231,8 +4360,8 @@ func (m *FeedConfigMutation) Fields() []string {
 	if m.pull_interval != nil {
 		fields = append(fields, feedconfig.FieldPullInterval)
 	}
-	if m.last_pull_at != nil {
-		fields = append(fields, feedconfig.FieldLastPullAt)
+	if m.next_pull_begin_at != nil {
+		fields = append(fields, feedconfig.FieldNextPullBeginAt)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, feedconfig.FieldUpdatedAt)
@@ -4260,8 +4389,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.Status()
 	case feedconfig.FieldPullInterval:
 		return m.PullInterval()
-	case feedconfig.FieldLastPullAt:
-		return m.LastPullAt()
+	case feedconfig.FieldNextPullBeginAt:
+		return m.NextPullBeginAt()
 	case feedconfig.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case feedconfig.FieldCreatedAt:
@@ -4287,8 +4416,8 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldStatus(ctx)
 	case feedconfig.FieldPullInterval:
 		return m.OldPullInterval(ctx)
-	case feedconfig.FieldLastPullAt:
-		return m.OldLastPullAt(ctx)
+	case feedconfig.FieldNextPullBeginAt:
+		return m.OldNextPullBeginAt(ctx)
 	case feedconfig.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case feedconfig.FieldCreatedAt:
@@ -4338,18 +4467,18 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		m.SetStatus(v)
 		return nil
 	case feedconfig.FieldPullInterval:
-		v, ok := value.(time.Time)
+		v, ok := value.(time.Duration)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPullInterval(v)
 		return nil
-	case feedconfig.FieldLastPullAt:
+	case feedconfig.FieldNextPullBeginAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLastPullAt(v)
+		m.SetNextPullBeginAt(v)
 		return nil
 	case feedconfig.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -4379,6 +4508,9 @@ func (m *FeedConfigMutation) AddedFields() []string {
 	if m.addauthor_account != nil {
 		fields = append(fields, feedconfig.FieldAuthorAccount)
 	}
+	if m.addpull_interval != nil {
+		fields = append(fields, feedconfig.FieldPullInterval)
+	}
 	return fields
 }
 
@@ -4391,6 +4523,8 @@ func (m *FeedConfigMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedInternalID()
 	case feedconfig.FieldAuthorAccount:
 		return m.AddedAuthorAccount()
+	case feedconfig.FieldPullInterval:
+		return m.AddedPullInterval()
 	}
 	return nil, false
 }
@@ -4413,6 +4547,13 @@ func (m *FeedConfigMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddAuthorAccount(v)
+		return nil
+	case feedconfig.FieldPullInterval:
+		v, ok := value.(time.Duration)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPullInterval(v)
 		return nil
 	}
 	return fmt.Errorf("unknown FeedConfig numeric field %s", name)
@@ -4459,8 +4600,8 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 	case feedconfig.FieldPullInterval:
 		m.ResetPullInterval()
 		return nil
-	case feedconfig.FieldLastPullAt:
-		m.ResetLastPullAt()
+	case feedconfig.FieldNextPullBeginAt:
+		m.ResetNextPullBeginAt()
 		return nil
 	case feedconfig.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -4474,49 +4615,85 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedConfigMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.feed != nil {
+		edges = append(edges, feedconfig.EdgeFeed)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feedconfig.EdgeFeed:
+		ids := make([]ent.Value, 0, len(m.feed))
+		for id := range m.feed {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedConfigMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.removedfeed != nil {
+		edges = append(edges, feedconfig.EdgeFeed)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feedconfig.EdgeFeed:
+		ids := make([]ent.Value, 0, len(m.removedfeed))
+		for id := range m.removedfeed {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedConfigMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedfeed {
+		edges = append(edges, feedconfig.EdgeFeed)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *FeedConfigMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feedconfig.EdgeFeed:
+		return m.clearedfeed
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *FeedConfigMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown FeedConfig unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *FeedConfigMutation) ResetEdge(name string) error {
+	switch name {
+	case feedconfig.EdgeFeed:
+		m.ResetFeed()
+		return nil
+	}
 	return fmt.Errorf("unknown FeedConfig edge %s", name)
 }
 
@@ -4529,20 +4706,19 @@ type FeedItemMutation struct {
 	internal_id      *int64
 	addinternal_id   *int64
 	title            *string
-	authors          *[]schema.Person
-	appendauthors    []schema.Person
+	authors          *[]modelfeed.Person
+	appendauthors    []modelfeed.Person
 	description      *string
 	content          *string
 	guid             *string
 	link             *string
-	images           *[]schema.Image
-	appendimages     []schema.Image
+	image            **modelfeed.Image
 	published        *string
 	published_parsed *time.Time
 	updated          *string
 	updated_parsed   *time.Time
-	enclosure        *[]schema.Enclosure
-	appendenclosure  []schema.Enclosure
+	enclosure        *[]modelfeed.Enclosure
+	appendenclosure  []modelfeed.Enclosure
 	updated_at       *time.Time
 	created_at       *time.Time
 	clearedFields    map[string]struct{}
@@ -4742,13 +4918,13 @@ func (m *FeedItemMutation) ResetTitle() {
 }
 
 // SetAuthors sets the "authors" field.
-func (m *FeedItemMutation) SetAuthors(s []schema.Person) {
-	m.authors = &s
+func (m *FeedItemMutation) SetAuthors(value []modelfeed.Person) {
+	m.authors = &value
 	m.appendauthors = nil
 }
 
 // Authors returns the value of the "authors" field in the mutation.
-func (m *FeedItemMutation) Authors() (r []schema.Person, exists bool) {
+func (m *FeedItemMutation) Authors() (r []modelfeed.Person, exists bool) {
 	v := m.authors
 	if v == nil {
 		return
@@ -4759,7 +4935,7 @@ func (m *FeedItemMutation) Authors() (r []schema.Person, exists bool) {
 // OldAuthors returns the old "authors" field's value of the FeedItem entity.
 // If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldAuthors(ctx context.Context) (v []schema.Person, err error) {
+func (m *FeedItemMutation) OldAuthors(ctx context.Context) (v []modelfeed.Person, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAuthors is only allowed on UpdateOne operations")
 	}
@@ -4773,13 +4949,13 @@ func (m *FeedItemMutation) OldAuthors(ctx context.Context) (v []schema.Person, e
 	return oldValue.Authors, nil
 }
 
-// AppendAuthors adds s to the "authors" field.
-func (m *FeedItemMutation) AppendAuthors(s []schema.Person) {
-	m.appendauthors = append(m.appendauthors, s...)
+// AppendAuthors adds value to the "authors" field.
+func (m *FeedItemMutation) AppendAuthors(value []modelfeed.Person) {
+	m.appendauthors = append(m.appendauthors, value...)
 }
 
 // AppendedAuthors returns the list of values that were appended to the "authors" field in this mutation.
-func (m *FeedItemMutation) AppendedAuthors() ([]schema.Person, bool) {
+func (m *FeedItemMutation) AppendedAuthors() ([]modelfeed.Person, bool) {
 	if len(m.appendauthors) == 0 {
 		return nil, false
 	}
@@ -4936,55 +5112,40 @@ func (m *FeedItemMutation) ResetLink() {
 	m.link = nil
 }
 
-// SetImages sets the "images" field.
-func (m *FeedItemMutation) SetImages(s []schema.Image) {
-	m.images = &s
-	m.appendimages = nil
+// SetImage sets the "image" field.
+func (m *FeedItemMutation) SetImage(value *modelfeed.Image) {
+	m.image = &value
 }
 
-// Images returns the value of the "images" field in the mutation.
-func (m *FeedItemMutation) Images() (r []schema.Image, exists bool) {
-	v := m.images
+// Image returns the value of the "image" field in the mutation.
+func (m *FeedItemMutation) Image() (r *modelfeed.Image, exists bool) {
+	v := m.image
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImages returns the old "images" field's value of the FeedItem entity.
+// OldImage returns the old "image" field's value of the FeedItem entity.
 // If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldImages(ctx context.Context) (v []schema.Image, err error) {
+func (m *FeedItemMutation) OldImage(ctx context.Context) (v *modelfeed.Image, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImages is only allowed on UpdateOne operations")
+		return v, errors.New("OldImage is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImages requires an ID field in the mutation")
+		return v, errors.New("OldImage requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImages: %w", err)
+		return v, fmt.Errorf("querying old value for OldImage: %w", err)
 	}
-	return oldValue.Images, nil
+	return oldValue.Image, nil
 }
 
-// AppendImages adds s to the "images" field.
-func (m *FeedItemMutation) AppendImages(s []schema.Image) {
-	m.appendimages = append(m.appendimages, s...)
-}
-
-// AppendedImages returns the list of values that were appended to the "images" field in this mutation.
-func (m *FeedItemMutation) AppendedImages() ([]schema.Image, bool) {
-	if len(m.appendimages) == 0 {
-		return nil, false
-	}
-	return m.appendimages, true
-}
-
-// ResetImages resets all changes to the "images" field.
-func (m *FeedItemMutation) ResetImages() {
-	m.images = nil
-	m.appendimages = nil
+// ResetImage resets all changes to the "image" field.
+func (m *FeedItemMutation) ResetImage() {
+	m.image = nil
 }
 
 // SetPublished sets the "published" field.
@@ -5132,13 +5293,13 @@ func (m *FeedItemMutation) ResetUpdatedParsed() {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (m *FeedItemMutation) SetEnclosure(s []schema.Enclosure) {
-	m.enclosure = &s
+func (m *FeedItemMutation) SetEnclosure(value []modelfeed.Enclosure) {
+	m.enclosure = &value
 	m.appendenclosure = nil
 }
 
 // Enclosure returns the value of the "enclosure" field in the mutation.
-func (m *FeedItemMutation) Enclosure() (r []schema.Enclosure, exists bool) {
+func (m *FeedItemMutation) Enclosure() (r []modelfeed.Enclosure, exists bool) {
 	v := m.enclosure
 	if v == nil {
 		return
@@ -5149,7 +5310,7 @@ func (m *FeedItemMutation) Enclosure() (r []schema.Enclosure, exists bool) {
 // OldEnclosure returns the old "enclosure" field's value of the FeedItem entity.
 // If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldEnclosure(ctx context.Context) (v []schema.Enclosure, err error) {
+func (m *FeedItemMutation) OldEnclosure(ctx context.Context) (v []modelfeed.Enclosure, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldEnclosure is only allowed on UpdateOne operations")
 	}
@@ -5163,13 +5324,13 @@ func (m *FeedItemMutation) OldEnclosure(ctx context.Context) (v []schema.Enclosu
 	return oldValue.Enclosure, nil
 }
 
-// AppendEnclosure adds s to the "enclosure" field.
-func (m *FeedItemMutation) AppendEnclosure(s []schema.Enclosure) {
-	m.appendenclosure = append(m.appendenclosure, s...)
+// AppendEnclosure adds value to the "enclosure" field.
+func (m *FeedItemMutation) AppendEnclosure(value []modelfeed.Enclosure) {
+	m.appendenclosure = append(m.appendenclosure, value...)
 }
 
 // AppendedEnclosure returns the list of values that were appended to the "enclosure" field in this mutation.
-func (m *FeedItemMutation) AppendedEnclosure() ([]schema.Enclosure, bool) {
+func (m *FeedItemMutation) AppendedEnclosure() ([]modelfeed.Enclosure, bool) {
 	if len(m.appendenclosure) == 0 {
 		return nil, false
 	}
@@ -5310,8 +5471,8 @@ func (m *FeedItemMutation) Fields() []string {
 	if m.link != nil {
 		fields = append(fields, feeditem.FieldLink)
 	}
-	if m.images != nil {
-		fields = append(fields, feeditem.FieldImages)
+	if m.image != nil {
+		fields = append(fields, feeditem.FieldImage)
 	}
 	if m.published != nil {
 		fields = append(fields, feeditem.FieldPublished)
@@ -5356,8 +5517,8 @@ func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 		return m.GUID()
 	case feeditem.FieldLink:
 		return m.Link()
-	case feeditem.FieldImages:
-		return m.Images()
+	case feeditem.FieldImage:
+		return m.Image()
 	case feeditem.FieldPublished:
 		return m.Published()
 	case feeditem.FieldPublishedParsed:
@@ -5395,8 +5556,8 @@ func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldGUID(ctx)
 	case feeditem.FieldLink:
 		return m.OldLink(ctx)
-	case feeditem.FieldImages:
-		return m.OldImages(ctx)
+	case feeditem.FieldImage:
+		return m.OldImage(ctx)
 	case feeditem.FieldPublished:
 		return m.OldPublished(ctx)
 	case feeditem.FieldPublishedParsed:
@@ -5435,7 +5596,7 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		m.SetTitle(v)
 		return nil
 	case feeditem.FieldAuthors:
-		v, ok := value.([]schema.Person)
+		v, ok := value.([]modelfeed.Person)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -5469,12 +5630,12 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetLink(v)
 		return nil
-	case feeditem.FieldImages:
-		v, ok := value.([]schema.Image)
+	case feeditem.FieldImage:
+		v, ok := value.(*modelfeed.Image)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImages(v)
+		m.SetImage(v)
 		return nil
 	case feeditem.FieldPublished:
 		v, ok := value.(string)
@@ -5505,7 +5666,7 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		m.SetUpdatedParsed(v)
 		return nil
 	case feeditem.FieldEnclosure:
-		v, ok := value.([]schema.Enclosure)
+		v, ok := value.([]modelfeed.Enclosure)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -5610,8 +5771,8 @@ func (m *FeedItemMutation) ResetField(name string) error {
 	case feeditem.FieldLink:
 		m.ResetLink()
 		return nil
-	case feeditem.FieldImages:
-		m.ResetImages()
+	case feeditem.FieldImage:
+		m.ResetImage()
 		return nil
 	case feeditem.FieldPublished:
 		m.ResetPublished()

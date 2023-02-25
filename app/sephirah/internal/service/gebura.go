@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 

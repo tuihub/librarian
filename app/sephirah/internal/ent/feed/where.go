@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
 
@@ -467,6 +468,33 @@ func CreatedAtLT(v time.Time) predicate.Feed {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.Feed {
 	return predicate.Feed(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasConfig applies the HasEdge predicate on the "config" edge.
+func HasConfig() predicate.Feed {
+	return predicate.Feed(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ConfigTable, ConfigColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasConfigWith applies the HasEdge predicate on the "config" edge with a given conditions (other predicates).
+func HasConfigWith(preds ...predicate.FeedConfig) predicate.Feed {
+	return predicate.Feed(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(ConfigInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, ConfigTable, ConfigColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

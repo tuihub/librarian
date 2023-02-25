@@ -20,6 +20,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -645,6 +646,22 @@ func (c *FeedClient) GetX(ctx context.Context, id int) *Feed {
 	return obj
 }
 
+// QueryConfig queries the config edge of a Feed.
+func (c *FeedClient) QueryConfig(f *Feed) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feed.Table, feed.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feed.ConfigTable, feed.ConfigColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FeedClient) Hooks() []Hook {
 	return c.hooks.Feed
@@ -761,6 +778,22 @@ func (c *FeedConfigClient) GetX(ctx context.Context, id int) *FeedConfig {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryFeed queries the feed edge of a FeedConfig.
+func (c *FeedConfigClient) QueryFeed(fc *FeedConfig) *FeedQuery {
+	query := (&FeedClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
+			sqlgraph.To(feed.Table, feed.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.FeedTable, feedconfig.FeedColumn),
+		)
+		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

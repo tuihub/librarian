@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
 
@@ -70,13 +71,14 @@ func AuthorAccount(v int64) predicate.FeedConfig {
 }
 
 // PullInterval applies equality check predicate on the "pull_interval" field. It's identical to PullIntervalEQ.
-func PullInterval(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, v))
+func PullInterval(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, vc))
 }
 
-// LastPullAt applies equality check predicate on the "last_pull_at" field. It's identical to LastPullAtEQ.
-func LastPullAt(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldLastPullAt, v))
+// NextPullBeginAt applies equality check predicate on the "next_pull_begin_at" field. It's identical to NextPullBeginAtEQ.
+func NextPullBeginAt(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldNextPullBeginAt, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -275,83 +277,97 @@ func StatusNotIn(vs ...Status) predicate.FeedConfig {
 }
 
 // PullIntervalEQ applies the EQ predicate on the "pull_interval" field.
-func PullIntervalEQ(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, v))
+func PullIntervalEQ(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, vc))
 }
 
 // PullIntervalNEQ applies the NEQ predicate on the "pull_interval" field.
-func PullIntervalNEQ(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNEQ(FieldPullInterval, v))
+func PullIntervalNEQ(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldNEQ(FieldPullInterval, vc))
 }
 
 // PullIntervalIn applies the In predicate on the "pull_interval" field.
-func PullIntervalIn(vs ...time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldIn(FieldPullInterval, vs...))
+func PullIntervalIn(vs ...time.Duration) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldIn(FieldPullInterval, v...))
 }
 
 // PullIntervalNotIn applies the NotIn predicate on the "pull_interval" field.
-func PullIntervalNotIn(vs ...time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNotIn(FieldPullInterval, vs...))
+func PullIntervalNotIn(vs ...time.Duration) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldNotIn(FieldPullInterval, v...))
 }
 
 // PullIntervalGT applies the GT predicate on the "pull_interval" field.
-func PullIntervalGT(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGT(FieldPullInterval, v))
+func PullIntervalGT(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldGT(FieldPullInterval, vc))
 }
 
 // PullIntervalGTE applies the GTE predicate on the "pull_interval" field.
-func PullIntervalGTE(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGTE(FieldPullInterval, v))
+func PullIntervalGTE(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldGTE(FieldPullInterval, vc))
 }
 
 // PullIntervalLT applies the LT predicate on the "pull_interval" field.
-func PullIntervalLT(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLT(FieldPullInterval, v))
+func PullIntervalLT(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldLT(FieldPullInterval, vc))
 }
 
 // PullIntervalLTE applies the LTE predicate on the "pull_interval" field.
-func PullIntervalLTE(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLTE(FieldPullInterval, v))
+func PullIntervalLTE(v time.Duration) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldLTE(FieldPullInterval, vc))
 }
 
-// LastPullAtEQ applies the EQ predicate on the "last_pull_at" field.
-func LastPullAtEQ(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldLastPullAt, v))
+// NextPullBeginAtEQ applies the EQ predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtEQ(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldNextPullBeginAt, v))
 }
 
-// LastPullAtNEQ applies the NEQ predicate on the "last_pull_at" field.
-func LastPullAtNEQ(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNEQ(FieldLastPullAt, v))
+// NextPullBeginAtNEQ applies the NEQ predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtNEQ(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldNextPullBeginAt, v))
 }
 
-// LastPullAtIn applies the In predicate on the "last_pull_at" field.
-func LastPullAtIn(vs ...time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldIn(FieldLastPullAt, vs...))
+// NextPullBeginAtIn applies the In predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtIn(vs ...time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldNextPullBeginAt, vs...))
 }
 
-// LastPullAtNotIn applies the NotIn predicate on the "last_pull_at" field.
-func LastPullAtNotIn(vs ...time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNotIn(FieldLastPullAt, vs...))
+// NextPullBeginAtNotIn applies the NotIn predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtNotIn(vs ...time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldNextPullBeginAt, vs...))
 }
 
-// LastPullAtGT applies the GT predicate on the "last_pull_at" field.
-func LastPullAtGT(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGT(FieldLastPullAt, v))
+// NextPullBeginAtGT applies the GT predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtGT(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldNextPullBeginAt, v))
 }
 
-// LastPullAtGTE applies the GTE predicate on the "last_pull_at" field.
-func LastPullAtGTE(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGTE(FieldLastPullAt, v))
+// NextPullBeginAtGTE applies the GTE predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtGTE(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldNextPullBeginAt, v))
 }
 
-// LastPullAtLT applies the LT predicate on the "last_pull_at" field.
-func LastPullAtLT(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLT(FieldLastPullAt, v))
+// NextPullBeginAtLT applies the LT predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtLT(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldNextPullBeginAt, v))
 }
 
-// LastPullAtLTE applies the LTE predicate on the "last_pull_at" field.
-func LastPullAtLTE(v time.Time) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLTE(FieldLastPullAt, v))
+// NextPullBeginAtLTE applies the LTE predicate on the "next_pull_begin_at" field.
+func NextPullBeginAtLTE(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldNextPullBeginAt, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -432,6 +448,33 @@ func CreatedAtLT(v time.Time) predicate.FeedConfig {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasFeed applies the HasEdge predicate on the "feed" edge.
+func HasFeed() predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FeedTable, FeedColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedWith applies the HasEdge predicate on the "feed" edge with a given conditions (other predicates).
+func HasFeedWith(preds ...predicate.Feed) predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FeedInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FeedTable, FeedColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

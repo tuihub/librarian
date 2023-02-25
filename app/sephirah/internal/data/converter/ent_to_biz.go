@@ -3,15 +3,17 @@ package converter
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
 
 // goverter:converter
-type Converter interface {
+type toBizConverter interface {
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
@@ -32,6 +34,12 @@ type Converter interface {
 	// goverter:map BinaryPublicURL PublicURL
 	ToBizAppPacakgeBinary(ent.AppPackage) bizgebura.AppPackageBinary
 	ToBizAppPackageList([]*ent.AppPackage) []*bizgebura.AppPackage
+
+	// goverter:matchIgnoreCase
+	// goverter:map Source | ToBizFeedConfigSource
+	// goverter:map Status | ToBizFeedConfigStatus
+	ToBizFeedConfig(*ent.FeedConfig) *bizyesod.FeedConfig
+	ToBizFeedConfigList([]*ent.FeedConfig) []*bizyesod.FeedConfig
 }
 
 func ToLibAuthUserType(t user.Type) libauth.UserType {
@@ -82,5 +90,25 @@ func ToBizAppPackageSource(a apppackage.Source) bizgebura.AppPackageSource {
 		return bizgebura.AppPackageSourceSentinel
 	default:
 		return bizgebura.AppPackageSourceUnspecified
+	}
+}
+
+func ToBizFeedConfigSource(s feedconfig.Source) bizyesod.FeedConfigSource {
+	switch s {
+	case feedconfig.SourceCommon:
+		return bizyesod.FeedConfigSourceCommon
+	default:
+		return bizyesod.FeedConfigSourceUnspecified
+	}
+}
+
+func ToBizFeedConfigStatus(s feedconfig.Status) bizyesod.FeedConfigStatus {
+	switch s {
+	case feedconfig.StatusActive:
+		return bizyesod.FeedConfigStatusActive
+	case feedconfig.StatusSuspend:
+		return bizyesod.FeedConfigStatusSuspend
+	default:
+		return bizyesod.FeedConfigStatusUnspecified
 	}
 }

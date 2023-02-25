@@ -14,7 +14,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedItemUpdate is the builder for updating FeedItem entities.
@@ -50,14 +50,14 @@ func (fiu *FeedItemUpdate) SetTitle(s string) *FeedItemUpdate {
 }
 
 // SetAuthors sets the "authors" field.
-func (fiu *FeedItemUpdate) SetAuthors(s []schema.Person) *FeedItemUpdate {
-	fiu.mutation.SetAuthors(s)
+func (fiu *FeedItemUpdate) SetAuthors(m []modelfeed.Person) *FeedItemUpdate {
+	fiu.mutation.SetAuthors(m)
 	return fiu
 }
 
-// AppendAuthors appends s to the "authors" field.
-func (fiu *FeedItemUpdate) AppendAuthors(s []schema.Person) *FeedItemUpdate {
-	fiu.mutation.AppendAuthors(s)
+// AppendAuthors appends m to the "authors" field.
+func (fiu *FeedItemUpdate) AppendAuthors(m []modelfeed.Person) *FeedItemUpdate {
+	fiu.mutation.AppendAuthors(m)
 	return fiu
 }
 
@@ -85,15 +85,9 @@ func (fiu *FeedItemUpdate) SetLink(s string) *FeedItemUpdate {
 	return fiu
 }
 
-// SetImages sets the "images" field.
-func (fiu *FeedItemUpdate) SetImages(s []schema.Image) *FeedItemUpdate {
-	fiu.mutation.SetImages(s)
-	return fiu
-}
-
-// AppendImages appends s to the "images" field.
-func (fiu *FeedItemUpdate) AppendImages(s []schema.Image) *FeedItemUpdate {
-	fiu.mutation.AppendImages(s)
+// SetImage sets the "image" field.
+func (fiu *FeedItemUpdate) SetImage(m *modelfeed.Image) *FeedItemUpdate {
+	fiu.mutation.SetImage(m)
 	return fiu
 }
 
@@ -122,14 +116,14 @@ func (fiu *FeedItemUpdate) SetUpdatedParsed(t time.Time) *FeedItemUpdate {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (fiu *FeedItemUpdate) SetEnclosure(s []schema.Enclosure) *FeedItemUpdate {
-	fiu.mutation.SetEnclosure(s)
+func (fiu *FeedItemUpdate) SetEnclosure(m []modelfeed.Enclosure) *FeedItemUpdate {
+	fiu.mutation.SetEnclosure(m)
 	return fiu
 }
 
-// AppendEnclosure appends s to the "enclosure" field.
-func (fiu *FeedItemUpdate) AppendEnclosure(s []schema.Enclosure) *FeedItemUpdate {
-	fiu.mutation.AppendEnclosure(s)
+// AppendEnclosure appends m to the "enclosure" field.
+func (fiu *FeedItemUpdate) AppendEnclosure(m []modelfeed.Enclosure) *FeedItemUpdate {
+	fiu.mutation.AppendEnclosure(m)
 	return fiu
 }
 
@@ -232,13 +226,8 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fiu.mutation.Link(); ok {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 	}
-	if value, ok := fiu.mutation.Images(); ok {
-		_spec.SetField(feeditem.FieldImages, field.TypeJSON, value)
-	}
-	if value, ok := fiu.mutation.AppendedImages(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feeditem.FieldImages, value)
-		})
+	if value, ok := fiu.mutation.Image(); ok {
+		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
 	}
 	if value, ok := fiu.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)
@@ -306,14 +295,14 @@ func (fiuo *FeedItemUpdateOne) SetTitle(s string) *FeedItemUpdateOne {
 }
 
 // SetAuthors sets the "authors" field.
-func (fiuo *FeedItemUpdateOne) SetAuthors(s []schema.Person) *FeedItemUpdateOne {
-	fiuo.mutation.SetAuthors(s)
+func (fiuo *FeedItemUpdateOne) SetAuthors(m []modelfeed.Person) *FeedItemUpdateOne {
+	fiuo.mutation.SetAuthors(m)
 	return fiuo
 }
 
-// AppendAuthors appends s to the "authors" field.
-func (fiuo *FeedItemUpdateOne) AppendAuthors(s []schema.Person) *FeedItemUpdateOne {
-	fiuo.mutation.AppendAuthors(s)
+// AppendAuthors appends m to the "authors" field.
+func (fiuo *FeedItemUpdateOne) AppendAuthors(m []modelfeed.Person) *FeedItemUpdateOne {
+	fiuo.mutation.AppendAuthors(m)
 	return fiuo
 }
 
@@ -341,15 +330,9 @@ func (fiuo *FeedItemUpdateOne) SetLink(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
-// SetImages sets the "images" field.
-func (fiuo *FeedItemUpdateOne) SetImages(s []schema.Image) *FeedItemUpdateOne {
-	fiuo.mutation.SetImages(s)
-	return fiuo
-}
-
-// AppendImages appends s to the "images" field.
-func (fiuo *FeedItemUpdateOne) AppendImages(s []schema.Image) *FeedItemUpdateOne {
-	fiuo.mutation.AppendImages(s)
+// SetImage sets the "image" field.
+func (fiuo *FeedItemUpdateOne) SetImage(m *modelfeed.Image) *FeedItemUpdateOne {
+	fiuo.mutation.SetImage(m)
 	return fiuo
 }
 
@@ -378,14 +361,14 @@ func (fiuo *FeedItemUpdateOne) SetUpdatedParsed(t time.Time) *FeedItemUpdateOne 
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) SetEnclosure(s []schema.Enclosure) *FeedItemUpdateOne {
-	fiuo.mutation.SetEnclosure(s)
+func (fiuo *FeedItemUpdateOne) SetEnclosure(m []modelfeed.Enclosure) *FeedItemUpdateOne {
+	fiuo.mutation.SetEnclosure(m)
 	return fiuo
 }
 
-// AppendEnclosure appends s to the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) AppendEnclosure(s []schema.Enclosure) *FeedItemUpdateOne {
-	fiuo.mutation.AppendEnclosure(s)
+// AppendEnclosure appends m to the "enclosure" field.
+func (fiuo *FeedItemUpdateOne) AppendEnclosure(m []modelfeed.Enclosure) *FeedItemUpdateOne {
+	fiuo.mutation.AppendEnclosure(m)
 	return fiuo
 }
 
@@ -518,13 +501,8 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	if value, ok := fiuo.mutation.Link(); ok {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 	}
-	if value, ok := fiuo.mutation.Images(); ok {
-		_spec.SetField(feeditem.FieldImages, field.TypeJSON, value)
-	}
-	if value, ok := fiuo.mutation.AppendedImages(); ok {
-		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feeditem.FieldImages, value)
-		})
+	if value, ok := fiuo.mutation.Image(); ok {
+		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
 	}
 	if value, ok := fiuo.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)

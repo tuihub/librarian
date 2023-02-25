@@ -69,6 +69,10 @@ func init() {
 	feed.DefaultCreatedAt = feedDescCreatedAt.Default.(func() time.Time)
 	feedconfigFields := schema.FeedConfig{}.Fields()
 	_ = feedconfigFields
+	// feedconfigDescNextPullBeginAt is the schema descriptor for next_pull_begin_at field.
+	feedconfigDescNextPullBeginAt := feedconfigFields[6].Descriptor()
+	// feedconfig.DefaultNextPullBeginAt holds the default value on creation for the next_pull_begin_at field.
+	feedconfig.DefaultNextPullBeginAt = feedconfigDescNextPullBeginAt.Default.(time.Time)
 	// feedconfigDescUpdatedAt is the schema descriptor for updated_at field.
 	feedconfigDescUpdatedAt := feedconfigFields[7].Descriptor()
 	// feedconfig.DefaultUpdatedAt holds the default value on creation for the updated_at field.

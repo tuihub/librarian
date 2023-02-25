@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -22,8 +23,10 @@ func (FeedConfig) Fields() []ent.Field {
 		field.Enum("source").Values("common"),
 		field.Enum("status").
 			Values("active", "suspend"),
-		field.Time("pull_interval"),
-		field.Time("last_pull_at"),
+		field.Int64("pull_interval").
+			GoType(time.Duration(0)),
+		field.Time("next_pull_begin_at").
+			Default(time.UnixMicro(0)),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -33,5 +36,7 @@ func (FeedConfig) Fields() []ent.Field {
 
 // Edges of the FeedConfig.
 func (FeedConfig) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("feed", Feed.Type),
+	}
 }

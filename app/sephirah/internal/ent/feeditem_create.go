@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedItemCreate is the builder for creating a FeedItem entity.
@@ -36,8 +36,8 @@ func (fic *FeedItemCreate) SetTitle(s string) *FeedItemCreate {
 }
 
 // SetAuthors sets the "authors" field.
-func (fic *FeedItemCreate) SetAuthors(s []schema.Person) *FeedItemCreate {
-	fic.mutation.SetAuthors(s)
+func (fic *FeedItemCreate) SetAuthors(m []modelfeed.Person) *FeedItemCreate {
+	fic.mutation.SetAuthors(m)
 	return fic
 }
 
@@ -65,9 +65,9 @@ func (fic *FeedItemCreate) SetLink(s string) *FeedItemCreate {
 	return fic
 }
 
-// SetImages sets the "images" field.
-func (fic *FeedItemCreate) SetImages(s []schema.Image) *FeedItemCreate {
-	fic.mutation.SetImages(s)
+// SetImage sets the "image" field.
+func (fic *FeedItemCreate) SetImage(m *modelfeed.Image) *FeedItemCreate {
+	fic.mutation.SetImage(m)
 	return fic
 }
 
@@ -96,8 +96,8 @@ func (fic *FeedItemCreate) SetUpdatedParsed(t time.Time) *FeedItemCreate {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (fic *FeedItemCreate) SetEnclosure(s []schema.Enclosure) *FeedItemCreate {
-	fic.mutation.SetEnclosure(s)
+func (fic *FeedItemCreate) SetEnclosure(m []modelfeed.Enclosure) *FeedItemCreate {
+	fic.mutation.SetEnclosure(m)
 	return fic
 }
 
@@ -197,8 +197,8 @@ func (fic *FeedItemCreate) check() error {
 	if _, ok := fic.mutation.Link(); !ok {
 		return &ValidationError{Name: "link", err: errors.New(`ent: missing required field "FeedItem.link"`)}
 	}
-	if _, ok := fic.mutation.Images(); !ok {
-		return &ValidationError{Name: "images", err: errors.New(`ent: missing required field "FeedItem.images"`)}
+	if _, ok := fic.mutation.Image(); !ok {
+		return &ValidationError{Name: "image", err: errors.New(`ent: missing required field "FeedItem.image"`)}
 	}
 	if _, ok := fic.mutation.Published(); !ok {
 		return &ValidationError{Name: "published", err: errors.New(`ent: missing required field "FeedItem.published"`)}
@@ -276,9 +276,9 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 		_node.Link = value
 	}
-	if value, ok := fic.mutation.Images(); ok {
-		_spec.SetField(feeditem.FieldImages, field.TypeJSON, value)
-		_node.Images = value
+	if value, ok := fic.mutation.Image(); ok {
+		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
+		_node.Image = value
 	}
 	if value, ok := fic.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)
@@ -391,7 +391,7 @@ func (u *FeedItemUpsert) UpdateTitle() *FeedItemUpsert {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsert) SetAuthors(v []schema.Person) *FeedItemUpsert {
+func (u *FeedItemUpsert) SetAuthors(v []modelfeed.Person) *FeedItemUpsert {
 	u.Set(feeditem.FieldAuthors, v)
 	return u
 }
@@ -450,15 +450,15 @@ func (u *FeedItemUpsert) UpdateLink() *FeedItemUpsert {
 	return u
 }
 
-// SetImages sets the "images" field.
-func (u *FeedItemUpsert) SetImages(v []schema.Image) *FeedItemUpsert {
-	u.Set(feeditem.FieldImages, v)
+// SetImage sets the "image" field.
+func (u *FeedItemUpsert) SetImage(v *modelfeed.Image) *FeedItemUpsert {
+	u.Set(feeditem.FieldImage, v)
 	return u
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedItemUpsert) UpdateImages() *FeedItemUpsert {
-	u.SetExcluded(feeditem.FieldImages)
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdateImage() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldImage)
 	return u
 }
 
@@ -511,7 +511,7 @@ func (u *FeedItemUpsert) UpdateUpdatedParsed() *FeedItemUpsert {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsert) SetEnclosure(v []schema.Enclosure) *FeedItemUpsert {
+func (u *FeedItemUpsert) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsert {
 	u.Set(feeditem.FieldEnclosure, v)
 	return u
 }
@@ -622,7 +622,7 @@ func (u *FeedItemUpsertOne) UpdateTitle() *FeedItemUpsertOne {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsertOne) SetAuthors(v []schema.Person) *FeedItemUpsertOne {
+func (u *FeedItemUpsertOne) SetAuthors(v []modelfeed.Person) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetAuthors(v)
 	})
@@ -691,17 +691,17 @@ func (u *FeedItemUpsertOne) UpdateLink() *FeedItemUpsertOne {
 	})
 }
 
-// SetImages sets the "images" field.
-func (u *FeedItemUpsertOne) SetImages(v []schema.Image) *FeedItemUpsertOne {
+// SetImage sets the "image" field.
+func (u *FeedItemUpsertOne) SetImage(v *modelfeed.Image) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetImages(v)
+		s.SetImage(v)
 	})
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedItemUpsertOne) UpdateImages() *FeedItemUpsertOne {
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdateImage() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateImages()
+		s.UpdateImage()
 	})
 }
 
@@ -762,7 +762,7 @@ func (u *FeedItemUpsertOne) UpdateUpdatedParsed() *FeedItemUpsertOne {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertOne) SetEnclosure(v []schema.Enclosure) *FeedItemUpsertOne {
+func (u *FeedItemUpsertOne) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetEnclosure(v)
 	})
@@ -1039,7 +1039,7 @@ func (u *FeedItemUpsertBulk) UpdateTitle() *FeedItemUpsertBulk {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsertBulk) SetAuthors(v []schema.Person) *FeedItemUpsertBulk {
+func (u *FeedItemUpsertBulk) SetAuthors(v []modelfeed.Person) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetAuthors(v)
 	})
@@ -1108,17 +1108,17 @@ func (u *FeedItemUpsertBulk) UpdateLink() *FeedItemUpsertBulk {
 	})
 }
 
-// SetImages sets the "images" field.
-func (u *FeedItemUpsertBulk) SetImages(v []schema.Image) *FeedItemUpsertBulk {
+// SetImage sets the "image" field.
+func (u *FeedItemUpsertBulk) SetImage(v *modelfeed.Image) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetImages(v)
+		s.SetImage(v)
 	})
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedItemUpsertBulk) UpdateImages() *FeedItemUpsertBulk {
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdateImage() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateImages()
+		s.UpdateImage()
 	})
 }
 
@@ -1179,7 +1179,7 @@ func (u *FeedItemUpsertBulk) UpdateUpdatedParsed() *FeedItemUpsertBulk {
 }
 
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertBulk) SetEnclosure(v []schema.Enclosure) *FeedItemUpsertBulk {
+func (u *FeedItemUpsertBulk) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetEnclosure(v)
 	})

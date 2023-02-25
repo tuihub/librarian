@@ -3,7 +3,10 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model/modelfeed"
+
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -21,8 +24,8 @@ func (Feed) Fields() []ent.Field {
 		field.String("link"),
 		field.String("description"),
 		field.String("language"),
-		field.JSON("authors", []Person{}),
-		field.JSON("images", []Image{}),
+		field.JSON("authors", []*modelfeed.Person{}),
+		field.JSON("image", new(modelfeed.Image)),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -30,17 +33,12 @@ func (Feed) Fields() []ent.Field {
 	}
 }
 
-type Person struct {
-	Name  string
-	EMail string
-}
-
-type Image struct {
-	URL   string
-	Title string
-}
-
 // Edges of the Feed.
 func (Feed) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("config", FeedConfig.Type).
+			Ref("feed").
+			Unique().
+			Required(),
+	}
 }

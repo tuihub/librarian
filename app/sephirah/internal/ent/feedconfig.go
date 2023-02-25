@@ -27,13 +27,34 @@ type FeedConfig struct {
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// PullInterval holds the value of the "pull_interval" field.
-	PullInterval time.Time `json:"pull_interval,omitempty"`
-	// LastPullAt holds the value of the "last_pull_at" field.
-	LastPullAt time.Time `json:"last_pull_at,omitempty"`
+	PullInterval time.Duration `json:"pull_interval,omitempty"`
+	// NextPullBeginAt holds the value of the "next_pull_begin_at" field.
+	NextPullBeginAt time.Time `json:"next_pull_begin_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the FeedConfigQuery when eager-loading is set.
+	Edges FeedConfigEdges `json:"edges"`
+}
+
+// FeedConfigEdges holds the relations/edges for other nodes in the graph.
+type FeedConfigEdges struct {
+	// Feed holds the value of the feed edge.
+	Feed []*Feed `json:"feed,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// FeedOrErr returns the Feed value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedConfigEdges) FeedOrErr() ([]*Feed, error) {
+	if e.loadedTypes[0] {
+		return e.Feed, nil
+	}
+	return nil, &NotLoadedError{edge: "feed"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -41,11 +62,11 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feedconfig.FieldID, feedconfig.FieldInternalID, feedconfig.FieldAuthorAccount:
+		case feedconfig.FieldID, feedconfig.FieldInternalID, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
 		case feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
-		case feedconfig.FieldPullInterval, feedconfig.FieldLastPullAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
+		case feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FeedConfig", columns[i])
@@ -99,16 +120,16 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				fc.Status = feedconfig.Status(value.String)
 			}
 		case feedconfig.FieldPullInterval:
-			if value, ok := values[i].(*sql.NullTime); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pull_interval", values[i])
 			} else if value.Valid {
-				fc.PullInterval = value.Time
+				fc.PullInterval = time.Duration(value.Int64)
 			}
-		case feedconfig.FieldLastPullAt:
+		case feedconfig.FieldNextPullBeginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field last_pull_at", values[i])
+				return fmt.Errorf("unexpected type %T for field next_pull_begin_at", values[i])
 			} else if value.Valid {
-				fc.LastPullAt = value.Time
+				fc.NextPullBeginAt = value.Time
 			}
 		case feedconfig.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -125,6 +146,11 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 		}
 	}
 	return nil
+}
+
+// QueryFeed queries the "feed" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryFeed() *FeedQuery {
+	return NewFeedConfigClient(fc.config).QueryFeed(fc)
 }
 
 // Update returns a builder for updating this FeedConfig.
@@ -166,10 +192,10 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(fmt.Sprintf("%v", fc.Status))
 	builder.WriteString(", ")
 	builder.WriteString("pull_interval=")
-	builder.WriteString(fc.PullInterval.Format(time.ANSIC))
+	builder.WriteString(fmt.Sprintf("%v", fc.PullInterval))
 	builder.WriteString(", ")
-	builder.WriteString("last_pull_at=")
-	builder.WriteString(fc.LastPullAt.Format(time.ANSIC))
+	builder.WriteString("next_pull_begin_at=")
+	builder.WriteString(fc.NextPullBeginAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fc.UpdatedAt.Format(time.ANSIC))

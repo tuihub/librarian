@@ -34,7 +34,8 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	dataData := data.NewData(client)
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	yesodRepo := data.NewYesodRepo(dataData)
+	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, yesodRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -42,6 +43,12 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
 	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
 	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
+	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
+	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl, topicImpl3)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
 	if err != nil {
 		cleanup()
@@ -50,14 +57,12 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	gebura := bizgebura.NewGebura(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	yesodRepo := data.NewYesodRepo(dataData)
-	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(tiphereth, gebura, binah, yesod)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

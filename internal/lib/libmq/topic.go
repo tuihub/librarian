@@ -3,6 +3,7 @@ package libmq
 import (
 	"context"
 	"encoding/json"
+	"errors"
 )
 
 type Topic interface {
@@ -40,6 +41,9 @@ func (t *TopicImpl[T]) Payload() T {
 }
 
 func (t *TopicImpl[T]) Publish(ctx context.Context, i T) error {
+	if t.mq == nil {
+		return errors.New("topic not registered")
+	}
 	p, err := json.Marshal(i)
 	if err != nil {
 		return err

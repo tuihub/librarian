@@ -7,8 +7,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -33,6 +34,7 @@ type AngelaBase struct {
 	converter converter.Converter
 	t         biztiphereth.TipherethRepo
 	g         bizgebura.GeburaRepo
+	y         bizyesod.YesodRepo
 	mapper    mapper.LibrarianMapperServiceClient
 	searcher  searcher.LibrarianSearcherServiceClient
 	porter    porter.LibrarianPorterServiceClient
@@ -41,6 +43,7 @@ type AngelaBase struct {
 func NewAngelaBase(
 	t biztiphereth.TipherethRepo,
 	g bizgebura.GeburaRepo,
+	y bizyesod.YesodRepo,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
@@ -49,6 +52,7 @@ func NewAngelaBase(
 		converter: converter.NewConverter(),
 		t:         t,
 		g:         g,
+		y:         y,
 		mapper:    mClient,
 		porter:    pClient,
 		searcher:  sClient,
@@ -267,17 +271,20 @@ func NewPullFeedTopic(
 	return libmq.NewTopic[bizyesod.PullFeed](
 		"PullFeed",
 		func() bizyesod.PullFeed {
-			return bizyesod.PullFeed{URL: "", Source: bizyesod.FeedConfigSourceCommon}
+			return bizyesod.PullFeed{InternalID: 0, URL: "", Source: 0}
 		},
 		func(ctx context.Context, p bizyesod.PullFeed) error {
-			_, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
+			resp, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
 				Source:    porter.FeedSource_FEED_SOURCE_COMMON,
 				ContentId: p.URL,
 			})
 			if err != nil {
 				return err
 			}
-			return nil
+			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
+			feed.InternalID = p.InternalID
+			// TODO add InternalID to feed item
+			return a.y.UpsertFeed(ctx, feed)
 		},
 	)
 }

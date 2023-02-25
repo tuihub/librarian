@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
@@ -73,14 +74,29 @@ func (fcu *FeedConfigUpdate) SetStatus(f feedconfig.Status) *FeedConfigUpdate {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcu *FeedConfigUpdate) SetPullInterval(t time.Time) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetPullInterval(t time.Duration) *FeedConfigUpdate {
+	fcu.mutation.ResetPullInterval()
 	fcu.mutation.SetPullInterval(t)
 	return fcu
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (fcu *FeedConfigUpdate) SetLastPullAt(t time.Time) *FeedConfigUpdate {
-	fcu.mutation.SetLastPullAt(t)
+// AddPullInterval adds t to the "pull_interval" field.
+func (fcu *FeedConfigUpdate) AddPullInterval(t time.Duration) *FeedConfigUpdate {
+	fcu.mutation.AddPullInterval(t)
+	return fcu
+}
+
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (fcu *FeedConfigUpdate) SetNextPullBeginAt(t time.Time) *FeedConfigUpdate {
+	fcu.mutation.SetNextPullBeginAt(t)
+	return fcu
+}
+
+// SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigUpdate {
+	if t != nil {
+		fcu.SetNextPullBeginAt(*t)
+	}
 	return fcu
 }
 
@@ -104,9 +120,45 @@ func (fcu *FeedConfigUpdate) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdat
 	return fcu
 }
 
+// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
+func (fcu *FeedConfigUpdate) AddFeedIDs(ids ...int) *FeedConfigUpdate {
+	fcu.mutation.AddFeedIDs(ids...)
+	return fcu
+}
+
+// AddFeed adds the "feed" edges to the Feed entity.
+func (fcu *FeedConfigUpdate) AddFeed(f ...*Feed) *FeedConfigUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.AddFeedIDs(ids...)
+}
+
 // Mutation returns the FeedConfigMutation object of the builder.
 func (fcu *FeedConfigUpdate) Mutation() *FeedConfigMutation {
 	return fcu.mutation
+}
+
+// ClearFeed clears all "feed" edges to the Feed entity.
+func (fcu *FeedConfigUpdate) ClearFeed() *FeedConfigUpdate {
+	fcu.mutation.ClearFeed()
+	return fcu
+}
+
+// RemoveFeedIDs removes the "feed" edge to Feed entities by IDs.
+func (fcu *FeedConfigUpdate) RemoveFeedIDs(ids ...int) *FeedConfigUpdate {
+	fcu.mutation.RemoveFeedIDs(ids...)
+	return fcu
+}
+
+// RemoveFeed removes "feed" edges to Feed entities.
+func (fcu *FeedConfigUpdate) RemoveFeed(f ...*Feed) *FeedConfigUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.RemoveFeedIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -194,16 +246,73 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := fcu.mutation.PullInterval(); ok {
-		_spec.SetField(feedconfig.FieldPullInterval, field.TypeTime, value)
+		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcu.mutation.LastPullAt(); ok {
-		_spec.SetField(feedconfig.FieldLastPullAt, field.TypeTime, value)
+	if value, ok := fcu.mutation.AddedPullInterval(); ok {
+		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
+	}
+	if value, ok := fcu.mutation.NextPullBeginAt(); ok {
+		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 	}
 	if value, ok := fcu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fcu.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fcu.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.RemovedFeedIDs(); len(nodes) > 0 && !fcu.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fcu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -270,14 +379,29 @@ func (fcuo *FeedConfigUpdateOne) SetStatus(f feedconfig.Status) *FeedConfigUpdat
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcuo *FeedConfigUpdateOne) SetPullInterval(t time.Time) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetPullInterval(t time.Duration) *FeedConfigUpdateOne {
+	fcuo.mutation.ResetPullInterval()
 	fcuo.mutation.SetPullInterval(t)
 	return fcuo
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (fcuo *FeedConfigUpdateOne) SetLastPullAt(t time.Time) *FeedConfigUpdateOne {
-	fcuo.mutation.SetLastPullAt(t)
+// AddPullInterval adds t to the "pull_interval" field.
+func (fcuo *FeedConfigUpdateOne) AddPullInterval(t time.Duration) *FeedConfigUpdateOne {
+	fcuo.mutation.AddPullInterval(t)
+	return fcuo
+}
+
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (fcuo *FeedConfigUpdateOne) SetNextPullBeginAt(t time.Time) *FeedConfigUpdateOne {
+	fcuo.mutation.SetNextPullBeginAt(t)
+	return fcuo
+}
+
+// SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigUpdateOne {
+	if t != nil {
+		fcuo.SetNextPullBeginAt(*t)
+	}
 	return fcuo
 }
 
@@ -301,9 +425,45 @@ func (fcuo *FeedConfigUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedConfigU
 	return fcuo
 }
 
+// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
+func (fcuo *FeedConfigUpdateOne) AddFeedIDs(ids ...int) *FeedConfigUpdateOne {
+	fcuo.mutation.AddFeedIDs(ids...)
+	return fcuo
+}
+
+// AddFeed adds the "feed" edges to the Feed entity.
+func (fcuo *FeedConfigUpdateOne) AddFeed(f ...*Feed) *FeedConfigUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.AddFeedIDs(ids...)
+}
+
 // Mutation returns the FeedConfigMutation object of the builder.
 func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
 	return fcuo.mutation
+}
+
+// ClearFeed clears all "feed" edges to the Feed entity.
+func (fcuo *FeedConfigUpdateOne) ClearFeed() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearFeed()
+	return fcuo
+}
+
+// RemoveFeedIDs removes the "feed" edge to Feed entities by IDs.
+func (fcuo *FeedConfigUpdateOne) RemoveFeedIDs(ids ...int) *FeedConfigUpdateOne {
+	fcuo.mutation.RemoveFeedIDs(ids...)
+	return fcuo
+}
+
+// RemoveFeed removes "feed" edges to Feed entities.
+func (fcuo *FeedConfigUpdateOne) RemoveFeed(f ...*Feed) *FeedConfigUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.RemoveFeedIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
@@ -421,16 +581,73 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := fcuo.mutation.PullInterval(); ok {
-		_spec.SetField(feedconfig.FieldPullInterval, field.TypeTime, value)
+		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
-	if value, ok := fcuo.mutation.LastPullAt(); ok {
-		_spec.SetField(feedconfig.FieldLastPullAt, field.TypeTime, value)
+	if value, ok := fcuo.mutation.AddedPullInterval(); ok {
+		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
+	}
+	if value, ok := fcuo.mutation.NextPullBeginAt(); ok {
+		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 	}
 	if value, ok := fcuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fcuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fcuo.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.RemovedFeedIDs(); len(nodes) > 0 && !fcuo.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &FeedConfig{config: fcuo.config}
 	_spec.Assign = _node.assignValues

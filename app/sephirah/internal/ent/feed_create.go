@@ -12,7 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedCreate is the builder for creating a Feed entity.
@@ -54,14 +55,14 @@ func (fc *FeedCreate) SetLanguage(s string) *FeedCreate {
 }
 
 // SetAuthors sets the "authors" field.
-func (fc *FeedCreate) SetAuthors(s []schema.Person) *FeedCreate {
-	fc.mutation.SetAuthors(s)
+func (fc *FeedCreate) SetAuthors(m []*modelfeed.Person) *FeedCreate {
+	fc.mutation.SetAuthors(m)
 	return fc
 }
 
-// SetImages sets the "images" field.
-func (fc *FeedCreate) SetImages(s []schema.Image) *FeedCreate {
-	fc.mutation.SetImages(s)
+// SetImage sets the "image" field.
+func (fc *FeedCreate) SetImage(m *modelfeed.Image) *FeedCreate {
+	fc.mutation.SetImage(m)
 	return fc
 }
 
@@ -91,6 +92,17 @@ func (fc *FeedCreate) SetNillableCreatedAt(t *time.Time) *FeedCreate {
 		fc.SetCreatedAt(*t)
 	}
 	return fc
+}
+
+// SetConfigID sets the "config" edge to the FeedConfig entity by ID.
+func (fc *FeedCreate) SetConfigID(id int) *FeedCreate {
+	fc.mutation.SetConfigID(id)
+	return fc
+}
+
+// SetConfig sets the "config" edge to the FeedConfig entity.
+func (fc *FeedCreate) SetConfig(f *FeedConfig) *FeedCreate {
+	return fc.SetConfigID(f.ID)
 }
 
 // Mutation returns the FeedMutation object of the builder.
@@ -158,14 +170,17 @@ func (fc *FeedCreate) check() error {
 	if _, ok := fc.mutation.Authors(); !ok {
 		return &ValidationError{Name: "authors", err: errors.New(`ent: missing required field "Feed.authors"`)}
 	}
-	if _, ok := fc.mutation.Images(); !ok {
-		return &ValidationError{Name: "images", err: errors.New(`ent: missing required field "Feed.images"`)}
+	if _, ok := fc.mutation.Image(); !ok {
+		return &ValidationError{Name: "image", err: errors.New(`ent: missing required field "Feed.image"`)}
 	}
 	if _, ok := fc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Feed.updated_at"`)}
 	}
 	if _, ok := fc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Feed.created_at"`)}
+	}
+	if _, ok := fc.mutation.ConfigID(); !ok {
+		return &ValidationError{Name: "config", err: errors.New(`ent: missing required edge "Feed.config"`)}
 	}
 	return nil
 }
@@ -218,9 +233,9 @@ func (fc *FeedCreate) createSpec() (*Feed, *sqlgraph.CreateSpec) {
 		_spec.SetField(feed.FieldAuthors, field.TypeJSON, value)
 		_node.Authors = value
 	}
-	if value, ok := fc.mutation.Images(); ok {
-		_spec.SetField(feed.FieldImages, field.TypeJSON, value)
-		_node.Images = value
+	if value, ok := fc.mutation.Image(); ok {
+		_spec.SetField(feed.FieldImage, field.TypeJSON, value)
+		_node.Image = value
 	}
 	if value, ok := fc.mutation.UpdatedAt(); ok {
 		_spec.SetField(feed.FieldUpdatedAt, field.TypeTime, value)
@@ -229,6 +244,26 @@ func (fc *FeedCreate) createSpec() (*Feed, *sqlgraph.CreateSpec) {
 	if value, ok := fc.mutation.CreatedAt(); ok {
 		_spec.SetField(feed.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := fc.mutation.ConfigIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feed.ConfigTable,
+			Columns: []string{feed.ConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.feed_config_feed = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -349,7 +384,7 @@ func (u *FeedUpsert) UpdateLanguage() *FeedUpsert {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedUpsert) SetAuthors(v []schema.Person) *FeedUpsert {
+func (u *FeedUpsert) SetAuthors(v []*modelfeed.Person) *FeedUpsert {
 	u.Set(feed.FieldAuthors, v)
 	return u
 }
@@ -360,15 +395,15 @@ func (u *FeedUpsert) UpdateAuthors() *FeedUpsert {
 	return u
 }
 
-// SetImages sets the "images" field.
-func (u *FeedUpsert) SetImages(v []schema.Image) *FeedUpsert {
-	u.Set(feed.FieldImages, v)
+// SetImage sets the "image" field.
+func (u *FeedUpsert) SetImage(v *modelfeed.Image) *FeedUpsert {
+	u.Set(feed.FieldImage, v)
 	return u
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedUpsert) UpdateImages() *FeedUpsert {
-	u.SetExcluded(feed.FieldImages)
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedUpsert) UpdateImage() *FeedUpsert {
+	u.SetExcluded(feed.FieldImage)
 	return u
 }
 
@@ -514,7 +549,7 @@ func (u *FeedUpsertOne) UpdateLanguage() *FeedUpsertOne {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedUpsertOne) SetAuthors(v []schema.Person) *FeedUpsertOne {
+func (u *FeedUpsertOne) SetAuthors(v []*modelfeed.Person) *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
 		s.SetAuthors(v)
 	})
@@ -527,17 +562,17 @@ func (u *FeedUpsertOne) UpdateAuthors() *FeedUpsertOne {
 	})
 }
 
-// SetImages sets the "images" field.
-func (u *FeedUpsertOne) SetImages(v []schema.Image) *FeedUpsertOne {
+// SetImage sets the "image" field.
+func (u *FeedUpsertOne) SetImage(v *modelfeed.Image) *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
-		s.SetImages(v)
+		s.SetImage(v)
 	})
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedUpsertOne) UpdateImages() *FeedUpsertOne {
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedUpsertOne) UpdateImage() *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
-		s.UpdateImages()
+		s.UpdateImage()
 	})
 }
 
@@ -847,7 +882,7 @@ func (u *FeedUpsertBulk) UpdateLanguage() *FeedUpsertBulk {
 }
 
 // SetAuthors sets the "authors" field.
-func (u *FeedUpsertBulk) SetAuthors(v []schema.Person) *FeedUpsertBulk {
+func (u *FeedUpsertBulk) SetAuthors(v []*modelfeed.Person) *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
 		s.SetAuthors(v)
 	})
@@ -860,17 +895,17 @@ func (u *FeedUpsertBulk) UpdateAuthors() *FeedUpsertBulk {
 	})
 }
 
-// SetImages sets the "images" field.
-func (u *FeedUpsertBulk) SetImages(v []schema.Image) *FeedUpsertBulk {
+// SetImage sets the "image" field.
+func (u *FeedUpsertBulk) SetImage(v *modelfeed.Image) *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
-		s.SetImages(v)
+		s.SetImage(v)
 	})
 }
 
-// UpdateImages sets the "images" field to the value that was provided on create.
-func (u *FeedUpsertBulk) UpdateImages() *FeedUpsertBulk {
+// UpdateImage sets the "image" field to the value that was provided on create.
+func (u *FeedUpsertBulk) UpdateImage() *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
-		s.UpdateImages()
+		s.UpdateImage()
 	})
 }
 

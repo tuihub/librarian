@@ -102,15 +102,24 @@ var (
 		{Name: "description", Type: field.TypeString},
 		{Name: "language", Type: field.TypeString},
 		{Name: "authors", Type: field.TypeJSON},
-		{Name: "images", Type: field.TypeJSON},
+		{Name: "image", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "feed_config_feed", Type: field.TypeInt},
 	}
 	// FeedsTable holds the schema information for the "feeds" table.
 	FeedsTable = &schema.Table{
 		Name:       "feeds",
 		Columns:    FeedsColumns,
 		PrimaryKey: []*schema.Column{FeedsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feeds_feed_configs_feed",
+				Columns:    []*schema.Column{FeedsColumns[10]},
+				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 	}
 	// FeedConfigsColumns holds the columns for the "feed_configs" table.
 	FeedConfigsColumns = []*schema.Column{
@@ -120,8 +129,8 @@ var (
 		{Name: "author_account", Type: field.TypeInt64},
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
-		{Name: "pull_interval", Type: field.TypeTime},
-		{Name: "last_pull_at", Type: field.TypeTime},
+		{Name: "pull_interval", Type: field.TypeInt64},
+		{Name: "next_pull_begin_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
@@ -141,7 +150,7 @@ var (
 		{Name: "content", Type: field.TypeString},
 		{Name: "guid", Type: field.TypeString},
 		{Name: "link", Type: field.TypeString},
-		{Name: "images", Type: field.TypeJSON},
+		{Name: "image", Type: field.TypeJSON},
 		{Name: "published", Type: field.TypeString},
 		{Name: "published_parsed", Type: field.TypeTime},
 		{Name: "updated", Type: field.TypeString},
@@ -186,4 +195,5 @@ var (
 )
 
 func init() {
+	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 }

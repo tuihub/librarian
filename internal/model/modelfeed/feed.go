@@ -1,8 +1,9 @@
-package bizfeed
+package modelfeed
 
 import "time"
 
 type Feed struct {
+	InternalID  int64     `json:"internal_id,omitempty"`
 	Title       string    `json:"title,omitempty"`
 	Description string    `json:"description,omitempty"`
 	Link        string    `json:"link,omitempty"`
@@ -15,6 +16,7 @@ type Feed struct {
 }
 
 type Item struct {
+	InternalID      int64        `json:"internal_id,omitempty"`
 	Title           string       `json:"title,omitempty"`
 	Description     string       `json:"description,omitempty"`
 	Content         string       `json:"content,omitempty"`

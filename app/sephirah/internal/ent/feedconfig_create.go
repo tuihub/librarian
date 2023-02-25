@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 )
 
@@ -53,14 +54,22 @@ func (fcc *FeedConfigCreate) SetStatus(f feedconfig.Status) *FeedConfigCreate {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (fcc *FeedConfigCreate) SetPullInterval(t time.Time) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetPullInterval(t time.Duration) *FeedConfigCreate {
 	fcc.mutation.SetPullInterval(t)
 	return fcc
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (fcc *FeedConfigCreate) SetLastPullAt(t time.Time) *FeedConfigCreate {
-	fcc.mutation.SetLastPullAt(t)
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (fcc *FeedConfigCreate) SetNextPullBeginAt(t time.Time) *FeedConfigCreate {
+	fcc.mutation.SetNextPullBeginAt(t)
+	return fcc
+}
+
+// SetNillableNextPullBeginAt sets the "next_pull_begin_at" field if the given value is not nil.
+func (fcc *FeedConfigCreate) SetNillableNextPullBeginAt(t *time.Time) *FeedConfigCreate {
+	if t != nil {
+		fcc.SetNextPullBeginAt(*t)
+	}
 	return fcc
 }
 
@@ -90,6 +99,21 @@ func (fcc *FeedConfigCreate) SetNillableCreatedAt(t *time.Time) *FeedConfigCreat
 		fcc.SetCreatedAt(*t)
 	}
 	return fcc
+}
+
+// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
+func (fcc *FeedConfigCreate) AddFeedIDs(ids ...int) *FeedConfigCreate {
+	fcc.mutation.AddFeedIDs(ids...)
+	return fcc
+}
+
+// AddFeed adds the "feed" edges to the Feed entity.
+func (fcc *FeedConfigCreate) AddFeed(f ...*Feed) *FeedConfigCreate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcc.AddFeedIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -127,6 +151,10 @@ func (fcc *FeedConfigCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fcc *FeedConfigCreate) defaults() {
+	if _, ok := fcc.mutation.NextPullBeginAt(); !ok {
+		v := feedconfig.DefaultNextPullBeginAt
+		fcc.mutation.SetNextPullBeginAt(v)
+	}
 	if _, ok := fcc.mutation.UpdatedAt(); !ok {
 		v := feedconfig.DefaultUpdatedAt()
 		fcc.mutation.SetUpdatedAt(v)
@@ -167,8 +195,8 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.PullInterval(); !ok {
 		return &ValidationError{Name: "pull_interval", err: errors.New(`ent: missing required field "FeedConfig.pull_interval"`)}
 	}
-	if _, ok := fcc.mutation.LastPullAt(); !ok {
-		return &ValidationError{Name: "last_pull_at", err: errors.New(`ent: missing required field "FeedConfig.last_pull_at"`)}
+	if _, ok := fcc.mutation.NextPullBeginAt(); !ok {
+		return &ValidationError{Name: "next_pull_begin_at", err: errors.New(`ent: missing required field "FeedConfig.next_pull_begin_at"`)}
 	}
 	if _, ok := fcc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedConfig.updated_at"`)}
@@ -224,12 +252,12 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_node.Status = value
 	}
 	if value, ok := fcc.mutation.PullInterval(); ok {
-		_spec.SetField(feedconfig.FieldPullInterval, field.TypeTime, value)
+		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 		_node.PullInterval = value
 	}
-	if value, ok := fcc.mutation.LastPullAt(); ok {
-		_spec.SetField(feedconfig.FieldLastPullAt, field.TypeTime, value)
-		_node.LastPullAt = value
+	if value, ok := fcc.mutation.NextPullBeginAt(); ok {
+		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
+		_node.NextPullBeginAt = value
 	}
 	if value, ok := fcc.mutation.UpdatedAt(); ok {
 		_spec.SetField(feedconfig.FieldUpdatedAt, field.TypeTime, value)
@@ -238,6 +266,25 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := fcc.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -364,7 +411,7 @@ func (u *FeedConfigUpsert) UpdateStatus() *FeedConfigUpsert {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (u *FeedConfigUpsert) SetPullInterval(v time.Time) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetPullInterval(v time.Duration) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldPullInterval, v)
 	return u
 }
@@ -375,15 +422,21 @@ func (u *FeedConfigUpsert) UpdatePullInterval() *FeedConfigUpsert {
 	return u
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (u *FeedConfigUpsert) SetLastPullAt(v time.Time) *FeedConfigUpsert {
-	u.Set(feedconfig.FieldLastPullAt, v)
+// AddPullInterval adds v to the "pull_interval" field.
+func (u *FeedConfigUpsert) AddPullInterval(v time.Duration) *FeedConfigUpsert {
+	u.Add(feedconfig.FieldPullInterval, v)
 	return u
 }
 
-// UpdateLastPullAt sets the "last_pull_at" field to the value that was provided on create.
-func (u *FeedConfigUpsert) UpdateLastPullAt() *FeedConfigUpsert {
-	u.SetExcluded(feedconfig.FieldLastPullAt)
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (u *FeedConfigUpsert) SetNextPullBeginAt(v time.Time) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldNextPullBeginAt, v)
+	return u
+}
+
+// UpdateNextPullBeginAt sets the "next_pull_begin_at" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateNextPullBeginAt() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldNextPullBeginAt)
 	return u
 }
 
@@ -536,9 +589,16 @@ func (u *FeedConfigUpsertOne) UpdateStatus() *FeedConfigUpsertOne {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (u *FeedConfigUpsertOne) SetPullInterval(v time.Time) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetPullInterval(v time.Duration) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetPullInterval(v)
+	})
+}
+
+// AddPullInterval adds v to the "pull_interval" field.
+func (u *FeedConfigUpsertOne) AddPullInterval(v time.Duration) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.AddPullInterval(v)
 	})
 }
 
@@ -549,17 +609,17 @@ func (u *FeedConfigUpsertOne) UpdatePullInterval() *FeedConfigUpsertOne {
 	})
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (u *FeedConfigUpsertOne) SetLastPullAt(v time.Time) *FeedConfigUpsertOne {
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (u *FeedConfigUpsertOne) SetNextPullBeginAt(v time.Time) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetLastPullAt(v)
+		s.SetNextPullBeginAt(v)
 	})
 }
 
-// UpdateLastPullAt sets the "last_pull_at" field to the value that was provided on create.
-func (u *FeedConfigUpsertOne) UpdateLastPullAt() *FeedConfigUpsertOne {
+// UpdateNextPullBeginAt sets the "next_pull_begin_at" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateNextPullBeginAt() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateLastPullAt()
+		s.UpdateNextPullBeginAt()
 	})
 }
 
@@ -876,9 +936,16 @@ func (u *FeedConfigUpsertBulk) UpdateStatus() *FeedConfigUpsertBulk {
 }
 
 // SetPullInterval sets the "pull_interval" field.
-func (u *FeedConfigUpsertBulk) SetPullInterval(v time.Time) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetPullInterval(v time.Duration) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetPullInterval(v)
+	})
+}
+
+// AddPullInterval adds v to the "pull_interval" field.
+func (u *FeedConfigUpsertBulk) AddPullInterval(v time.Duration) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.AddPullInterval(v)
 	})
 }
 
@@ -889,17 +956,17 @@ func (u *FeedConfigUpsertBulk) UpdatePullInterval() *FeedConfigUpsertBulk {
 	})
 }
 
-// SetLastPullAt sets the "last_pull_at" field.
-func (u *FeedConfigUpsertBulk) SetLastPullAt(v time.Time) *FeedConfigUpsertBulk {
+// SetNextPullBeginAt sets the "next_pull_begin_at" field.
+func (u *FeedConfigUpsertBulk) SetNextPullBeginAt(v time.Time) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetLastPullAt(v)
+		s.SetNextPullBeginAt(v)
 	})
 }
 
-// UpdateLastPullAt sets the "last_pull_at" field to the value that was provided on create.
-func (u *FeedConfigUpsertBulk) UpdateLastPullAt() *FeedConfigUpsertBulk {
+// UpdateNextPullBeginAt sets the "next_pull_begin_at" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateNextPullBeginAt() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateLastPullAt()
+		s.UpdateNextPullBeginAt()
 	})
 }
 

@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/schema"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedItem is the model entity for the FeedItem schema.
@@ -23,7 +23,7 @@ type FeedItem struct {
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Authors holds the value of the "authors" field.
-	Authors []schema.Person `json:"authors,omitempty"`
+	Authors []modelfeed.Person `json:"authors,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Content holds the value of the "content" field.
@@ -32,8 +32,8 @@ type FeedItem struct {
 	GUID string `json:"guid,omitempty"`
 	// Link holds the value of the "link" field.
 	Link string `json:"link,omitempty"`
-	// Images holds the value of the "images" field.
-	Images []schema.Image `json:"images,omitempty"`
+	// Image holds the value of the "image" field.
+	Image *modelfeed.Image `json:"image,omitempty"`
 	// Published holds the value of the "published" field.
 	Published string `json:"published,omitempty"`
 	// PublishedParsed holds the value of the "published_parsed" field.
@@ -43,7 +43,7 @@ type FeedItem struct {
 	// UpdatedParsed holds the value of the "updated_parsed" field.
 	UpdatedParsed time.Time `json:"updated_parsed,omitempty"`
 	// Enclosure holds the value of the "enclosure" field.
-	Enclosure []schema.Enclosure `json:"enclosure,omitempty"`
+	Enclosure []modelfeed.Enclosure `json:"enclosure,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -55,7 +55,7 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feeditem.FieldAuthors, feeditem.FieldImages, feeditem.FieldEnclosure:
+		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosure:
 			values[i] = new([]byte)
 		case feeditem.FieldID, feeditem.FieldInternalID:
 			values[i] = new(sql.NullInt64)
@@ -128,12 +128,12 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fi.Link = value.String
 			}
-		case feeditem.FieldImages:
+		case feeditem.FieldImage:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field images", values[i])
+				return fmt.Errorf("unexpected type %T for field image", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &fi.Images); err != nil {
-					return fmt.Errorf("unmarshal field images: %w", err)
+				if err := json.Unmarshal(*value, &fi.Image); err != nil {
+					return fmt.Errorf("unmarshal field image: %w", err)
 				}
 			}
 		case feeditem.FieldPublished:
@@ -229,8 +229,8 @@ func (fi *FeedItem) String() string {
 	builder.WriteString("link=")
 	builder.WriteString(fi.Link)
 	builder.WriteString(", ")
-	builder.WriteString("images=")
-	builder.WriteString(fmt.Sprintf("%v", fi.Images))
+	builder.WriteString("image=")
+	builder.WriteString(fmt.Sprintf("%v", fi.Image))
 	builder.WriteString(", ")
 	builder.WriteString("published=")
 	builder.WriteString(fi.Published)

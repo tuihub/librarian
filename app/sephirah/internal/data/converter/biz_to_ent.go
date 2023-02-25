@@ -12,6 +12,14 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 )
 
+// goverter:converter
+// goverter:extend ToEntFeedConfigSource
+// goverter:extend ToEntFeedConfigStatus
+type toEntConverter interface {
+	ToEntFeedConfigSourceList([]bizyesod.FeedConfigSource) []feedconfig.Source
+	ToEntFeedConfigStatusList([]bizyesod.FeedConfigStatus) []feedconfig.Status
+}
+
 func ToEntUserType(t libauth.UserType) user.Type {
 	switch t { //nolint:exhaustive // TODO
 	case libauth.UserTypeAdmin:

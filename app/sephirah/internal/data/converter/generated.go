@@ -5,12 +5,15 @@ package converter
 import (
 	bizgebura "github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	biztiphereth "github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
+	bizyesod "github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	ent "github.com/tuihub/librarian/app/sephirah/internal/ent"
+	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"time"
 )
 
-type ConverterImpl struct{}
+type toBizConverterImpl struct{}
 
-func (c *ConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
+func (c *toBizConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
 	var pBizgeburaApp *bizgebura.App
 	if source != nil {
 		var bizgeburaApp bizgebura.App
@@ -27,14 +30,14 @@ func (c *ConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
 	}
 	return pBizgeburaApp
 }
-func (c *ConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) bizgebura.AppPackageBinary {
+func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) bizgebura.AppPackageBinary {
 	var bizgeburaAppPackageBinary bizgebura.AppPackageBinary
 	bizgeburaAppPackageBinary.Name = source.BinaryName
 	bizgeburaAppPackageBinary.Size = source.BinarySize
 	bizgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
 	return bizgeburaAppPackageBinary
 }
-func (c *ConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.AppPackage {
+func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.AppPackage {
 	var pBizgeburaAppPackage *bizgebura.AppPackage
 	if source != nil {
 		var bizgeburaAppPackage bizgebura.AppPackage
@@ -49,7 +52,7 @@ func (c *ConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.AppPa
 	}
 	return pBizgeburaAppPackage
 }
-func (c *ConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*bizgebura.AppPackage {
+func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*bizgebura.AppPackage {
 	var pBizgeburaAppPackageList []*bizgebura.AppPackage
 	if source != nil {
 		pBizgeburaAppPackageList = make([]*bizgebura.AppPackage, len(source))
@@ -59,7 +62,31 @@ func (c *ConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*bizgebu
 	}
 	return pBizgeburaAppPackageList
 }
-func (c *ConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
+func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *bizyesod.FeedConfig {
+	var pBizyesodFeedConfig *bizyesod.FeedConfig
+	if source != nil {
+		var bizyesodFeedConfig bizyesod.FeedConfig
+		bizyesodFeedConfig.InternalID = (*source).InternalID
+		bizyesodFeedConfig.FeedURL = (*source).FeedURL
+		bizyesodFeedConfig.AuthorAccount = (*source).AuthorAccount
+		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
+		bizyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
+		bizyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
+		pBizyesodFeedConfig = &bizyesodFeedConfig
+	}
+	return pBizyesodFeedConfig
+}
+func (c *toBizConverterImpl) ToBizFeedConfigList(source []*ent.FeedConfig) []*bizyesod.FeedConfig {
+	var pBizyesodFeedConfigList []*bizyesod.FeedConfig
+	if source != nil {
+		pBizyesodFeedConfigList = make([]*bizyesod.FeedConfig, len(source))
+		for i := 0; i < len(source); i++ {
+			pBizyesodFeedConfigList[i] = c.ToBizFeedConfig(source[i])
+		}
+	}
+	return pBizyesodFeedConfigList
+}
+func (c *toBizConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
 	var pBiztipherethUser *biztiphereth.User
 	if source != nil {
 		var biztipherethUser biztiphereth.User
@@ -72,11 +99,11 @@ func (c *ConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
 	}
 	return pBiztipherethUser
 }
-func (c *ConverterImpl) entAppPackageToPBizgeburaAppPackageBinary(source ent.AppPackage) *bizgebura.AppPackageBinary {
+func (c *toBizConverterImpl) entAppPackageToPBizgeburaAppPackageBinary(source ent.AppPackage) *bizgebura.AppPackageBinary {
 	bizgeburaAppPackageBinary := c.ToBizAppPacakgeBinary(source)
 	return &bizgeburaAppPackageBinary
 }
-func (c *ConverterImpl) entAppToBizgeburaAppDetails(source ent.App) bizgebura.AppDetails {
+func (c *toBizConverterImpl) entAppToBizgeburaAppDetails(source ent.App) bizgebura.AppDetails {
 	var bizgeburaAppDetails bizgebura.AppDetails
 	bizgeburaAppDetails.Description = source.Description
 	bizgeburaAppDetails.ReleaseDate = source.ReleaseDate
@@ -85,7 +112,30 @@ func (c *ConverterImpl) entAppToBizgeburaAppDetails(source ent.App) bizgebura.Ap
 	bizgeburaAppDetails.Version = source.Version
 	return bizgeburaAppDetails
 }
-func (c *ConverterImpl) entAppToPBizgeburaAppDetails(source ent.App) *bizgebura.AppDetails {
+func (c *toBizConverterImpl) entAppToPBizgeburaAppDetails(source ent.App) *bizgebura.AppDetails {
 	bizgeburaAppDetails := c.entAppToBizgeburaAppDetails(source)
 	return &bizgeburaAppDetails
+}
+
+type toEntConverterImpl struct{}
+
+func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []bizyesod.FeedConfigSource) []feedconfig.Source {
+	var feedconfigSourceList []feedconfig.Source
+	if source != nil {
+		feedconfigSourceList = make([]feedconfig.Source, len(source))
+		for i := 0; i < len(source); i++ {
+			feedconfigSourceList[i] = ToEntFeedConfigSource(source[i])
+		}
+	}
+	return feedconfigSourceList
+}
+func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []bizyesod.FeedConfigStatus) []feedconfig.Status {
+	var feedconfigStatusList []feedconfig.Status
+	if source != nil {
+		feedconfigStatusList = make([]feedconfig.Status, len(source))
+		for i := 0; i < len(source); i++ {
+			feedconfigStatusList[i] = ToEntFeedConfigStatus(source[i])
+		}
+	}
+	return feedconfigStatusList
 }

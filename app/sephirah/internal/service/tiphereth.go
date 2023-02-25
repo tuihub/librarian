@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/service/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"

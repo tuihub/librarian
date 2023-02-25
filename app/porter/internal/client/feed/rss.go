@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/client/feed/converter"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/google/wire"
@@ -25,7 +26,7 @@ func NewRSSRepo(c *colly.Collector) (bizfeed.RSSRepo, error) {
 	}, nil
 }
 
-func (s *rssRepo) Parse(data string) (*bizfeed.Feed, error) {
+func (s *rssRepo) Parse(data string) (*modelfeed.Feed, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseString(data)
 	if err != nil {

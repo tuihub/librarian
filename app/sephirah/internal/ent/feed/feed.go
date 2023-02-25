@@ -23,14 +23,23 @@ const (
 	FieldLanguage = "language"
 	// FieldAuthors holds the string denoting the authors field in the database.
 	FieldAuthors = "authors"
-	// FieldImages holds the string denoting the images field in the database.
-	FieldImages = "images"
+	// FieldImage holds the string denoting the image field in the database.
+	FieldImage = "image"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeConfig holds the string denoting the config edge name in mutations.
+	EdgeConfig = "config"
 	// Table holds the table name of the feed in the database.
 	Table = "feeds"
+	// ConfigTable is the table that holds the config relation/edge.
+	ConfigTable = "feeds"
+	// ConfigInverseTable is the table name for the FeedConfig entity.
+	// It exists in this package in order to avoid circular dependency with the "feedconfig" package.
+	ConfigInverseTable = "feed_configs"
+	// ConfigColumn is the table column denoting the config relation/edge.
+	ConfigColumn = "feed_config_feed"
 )
 
 // Columns holds all SQL columns for feed fields.
@@ -42,15 +51,26 @@ var Columns = []string{
 	FieldDescription,
 	FieldLanguage,
 	FieldAuthors,
-	FieldImages,
+	FieldImage,
 	FieldUpdatedAt,
 	FieldCreatedAt,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "feeds"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"feed_config_feed",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

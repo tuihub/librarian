@@ -87,6 +87,7 @@ func (a *MQ) RegisterTopic(topic Topic) error {
 		},
 	)
 	topic.SetMQ(a)
+	logger.Infof("topic %s registered", topic)
 	return nil
 }
 
