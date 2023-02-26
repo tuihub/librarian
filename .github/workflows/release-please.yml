@@ -33,7 +33,7 @@ jobs:
           cache: true
       - name: setup release environment
         run: |-
-          echo -e 'GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}\nVERSION=${{ needs.release-please.outputs.tag_name }}' > .release-env
+          echo -e 'GITHUB_TOKEN=${{secrets.GITHUB_TOKEN}}' > .release-env
       - name: release publish
         run: make release
       - run: ls ./dist

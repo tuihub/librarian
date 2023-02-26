@@ -46,14 +46,14 @@ builds:
       - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
       - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
     ldflags:
-      - -s -w -X main.version={{.Version}}
+      - -s -w -X main.name={{.ProjectName}} -X main.version={{.Summary}}
     #buildmode: c-archive
 
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
     name_template: >-
-      {{ .ProjectName }}_
+      {{ .ProjectName }}_{{ .Version }}_
       {{- title .Os }}_
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386

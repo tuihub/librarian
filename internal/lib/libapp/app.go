@@ -1,27 +1,40 @@
 package libapp
 
-import "os"
-
-// go build -ldflags "-X main.version=x.y.z".
-var (
-	// name is the name of the compiled software.
-	name string //nolint:gochecknoglobals //TODO
-	// version is the version of the compiled software.
-	version string
-
-	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
+import (
+	"github.com/go-kratos/kratos/contrib/log/zap/v2"
+	"github.com/go-kratos/kratos/v2/config"
+	"github.com/go-kratos/kratos/v2/config/file"
+	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/tuihub/librarian/internal/lib/libzap"
 )
 
-type Metadata struct {
-	Name    string
-	Version string
-	ID      string
+func InitLogger(id, name, version string) {
+	logger := log.With(zap.NewLogger(libzap.NewDefaultLogger()),
+		"ts", log.DefaultTimestamp,
+		"caller", log.DefaultCaller,
+		"service.id", id,
+		"service.name", name,
+		"service.version", version,
+		"trace.id", tracing.TraceID(),
+		"span.id", tracing.SpanID(),
+	)
+	log.SetLogger(logger)
 }
 
-func GetAppMetadata() Metadata {
-	return Metadata{
-		Name:    name,
-		Version: version,
-		ID:      id,
+func LoadConfig(flagconf string, conf interface{}) {
+	c := config.New(
+		config.WithSource(
+			file.NewSource(flagconf),
+		),
+	)
+	defer c.Close()
+
+	if err := c.Load(); err != nil {
+		panic(err)
+	}
+
+	if err := c.Scan(conf); err != nil {
+		panic(err)
 	}
 }

@@ -2,26 +2,29 @@ package main
 
 import (
 	"flag"
+	"os"
 
+	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
-	"github.com/tuihub/librarian/internal/lib/libzap"
+)
 
-	"github.com/go-kratos/kratos/contrib/log/zap/v2"
-	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
+// go build -ldflags "-X main.version=x.y.z".
+var (
+	// name is the name of the compiled software.
+	name string //nolint:gochecknoglobals //TODO
+	// version is the version of the compiled software.
+	version string
+
+	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
 )
 
 func newApp(gs *grpc.Server) *kratos.App {
-	metadata := libapp.GetAppMetadata()
 	return kratos.New(
-		kratos.ID(metadata.ID),
-		kratos.Name(metadata.Name),
-		kratos.Version(metadata.Version),
+		kratos.ID(id),
+		kratos.Name(name),
+		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs),
 	)
@@ -32,33 +35,10 @@ func main() {
 	var flagconf string
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 	flag.Parse()
-	metadata := libapp.GetAppMetadata()
-	logger := log.With(zap.NewLogger(libzap.NewDefaultLogger()),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", metadata.ID,
-		"service.name", metadata.Name,
-		"service.version", metadata.Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
-	log.SetLogger(logger)
-
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
-		),
-	)
-	defer c.Close()
-
-	if err := c.Load(); err != nil {
-		panic(err)
-	}
+	libapp.InitLogger(id, name, version)
 
 	var bc conf.Mapper
-	if err := c.Scan(&bc); err != nil {
-		panic(err)
-	}
+	libapp.LoadConfig(flagconf, &bc)
 
 	app, cleanup, err := wireApp(bc.Server, bc.Data)
 	if err != nil {
