@@ -1,24 +1,11 @@
-FROM golang:1.16 AS builder
+FROM scratch
 
-COPY . /src
-WORKDIR /src
-
-RUN GOPROXY=https://goproxy.cn make build
-
-FROM debian:stable-slim
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-		ca-certificates  \
-        netbase \
-        && rm -rf /var/lib/apt/lists/ \
-        && apt-get autoremove -y && apt-get autoclean -y
-
-COPY --from=builder /src/bin /app
+COPY server /app/server
 
 WORKDIR /app
 
-EXPOSE 8000
-EXPOSE 9000
+EXPOSE 10000
+EXPOSE 10001
 VOLUME /data/conf
 
 CMD ["./server", "-conf", "/data/conf"]

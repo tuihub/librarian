@@ -9,6 +9,7 @@ before:
 builds:
   - id: librarian
     main: ./cmd/librarian
+    binary: server
     goos:
       - darwin
       - windows
@@ -81,6 +82,11 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+
+dockers:
+  - image_templates:
+      - "ghcr.io/tuihub/librarian:latest"
+      - "ghcr.io/tuihub/librarian:{{ .Tag }}"
 
 # The lines beneath this are called `modelines`. See `:help modeline`
 # Feel free to remove those if you don't want/use them.
