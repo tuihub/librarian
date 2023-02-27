@@ -126,14 +126,6 @@ func (uu *UserUpdate) SetCreatorID(id int64) *UserUpdate {
 	return uu
 }
 
-// SetNillableCreatorID sets the "creator" edge to the User entity by ID if the given value is not nil.
-func (uu *UserUpdate) SetNillableCreatorID(id *int64) *UserUpdate {
-	if id != nil {
-		uu = uu.SetCreatorID(*id)
-	}
-	return uu
-}
-
 // SetCreator sets the "creator" edge to the User entity.
 func (uu *UserUpdate) SetCreator(u *User) *UserUpdate {
 	return uu.SetCreatorID(u.ID)
@@ -296,6 +288,9 @@ func (uu *UserUpdate) check() error {
 		if err := user.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "User.type": %w`, err)}
 		}
+	}
+	if _, ok := uu.mutation.CreatorID(); uu.mutation.CreatorCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "User.creator"`)
 	}
 	return nil
 }
@@ -696,14 +691,6 @@ func (uuo *UserUpdateOne) SetCreatorID(id int64) *UserUpdateOne {
 	return uuo
 }
 
-// SetNillableCreatorID sets the "creator" edge to the User entity by ID if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableCreatorID(id *int64) *UserUpdateOne {
-	if id != nil {
-		uuo = uuo.SetCreatorID(*id)
-	}
-	return uuo
-}
-
 // SetCreator sets the "creator" edge to the User entity.
 func (uuo *UserUpdateOne) SetCreator(u *User) *UserUpdateOne {
 	return uuo.SetCreatorID(u.ID)
@@ -879,6 +866,9 @@ func (uuo *UserUpdateOne) check() error {
 		if err := user.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "User.type": %w`, err)}
 		}
+	}
+	if _, ok := uuo.mutation.CreatorID(); uuo.mutation.CreatorCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "User.creator"`)
 	}
 	return nil
 }

@@ -3,13 +3,19 @@ package bizyesod
 import (
 	"context"
 
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
 func (y *Yesod) CreateFeedConfig(ctx context.Context, config *FeedConfig) (int64, error) {
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
+	}
 	resp, err := y.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
@@ -24,7 +30,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *FeedConfig) (int64
 	}); err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	err = y.repo.CreateFeedConfig(ctx, config)
+	err = y.repo.CreateFeedConfig(ctx, config, model.InternalID(claims.InternalID))
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+	"os"
+
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
@@ -28,6 +31,15 @@ func NewLibrarianSephirahServiceService(
 	b *bizbinah.Binah,
 	y *bizyesod.Yesod,
 ) pb.LibrarianSephirahServiceServer {
+	if _, exist := os.LookupEnv("CREATE_ADMIN"); exist {
+		t.CreateDefaultAdmin(context.Background(), &biztiphereth.User{
+			InternalID: 0,
+			UserName:   "admin",
+			PassWord:   "admin",
+			Type:       0,
+			Status:     0,
+		})
+	}
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		converter: converter.NewConverter(),

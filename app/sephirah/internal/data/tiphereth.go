@@ -37,27 +37,25 @@ func (t tipherethRepo) FetchUserByPassword(
 	return t.data.converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) CreateUser(ctx context.Context, u *biztiphereth.User, c *model.InternalID) error {
+func (t tipherethRepo) CreateUser(ctx context.Context, u *biztiphereth.User, c model.InternalID) error {
 	q := t.data.db.User.Create().
 		SetID(u.InternalID).
 		SetUsername(u.UserName).
 		SetPassword(u.PassWord).
 		SetStatus(converter.ToEntUserStatus(u.Status)).
-		SetType(converter.ToEntUserType(u.Type))
-	if c != nil {
-		q.SetCreatorID(int64(*c))
-	}
+		SetType(converter.ToEntUserType(u.Type)).
+		SetCreatorID(int64(c))
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User) error {
+func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User, password string) error {
 	q := t.data.db.User.Update().
 		Where(user.IDEQ(u.InternalID))
 	if u.UserName != "" {
 		q.SetUsername(u.UserName)
 	}
 	if u.PassWord != "" {
-		q.SetPassword(u.PassWord)
+		q.Where(user.PasswordEQ(password)).SetPassword(u.PassWord)
 	}
 	if u.Type != libauth.UserTypeUnspecified {
 		q.SetType(converter.ToEntUserType(u.Type))
@@ -76,7 +74,7 @@ func (t tipherethRepo) ListUser(
 	statuses []biztiphereth.UserStatus,
 	exclude []model.InternalID,
 	creator *model.InternalID,
-) ([]*biztiphereth.User, error) {
+) ([]*biztiphereth.User, int64, error) {
 	q := t.data.db.User.Query()
 	if creator != nil {
 		q = t.data.db.User.Query().Where(user.IDEQ(int64(*creator))).QueryCreate()
@@ -98,13 +96,18 @@ func (t tipherethRepo) ListUser(
 		Offset((paging.PageNum - 1) * paging.PageSize).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return t.data.converter.ToBizUserList(u), nil
+	count, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return t.data.converter.ToBizUserList(u), int64(count), nil
 }
 
-func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account) error {
+func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Create().
+		SetUserID(int64(u)).
 		SetID(a.InternalID).
 		SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
 		SetPlatformAccountID(a.PlatformAccountID).
@@ -124,4 +127,36 @@ func (t tipherethRepo) UpdateAccount(ctx context.Context, a biztiphereth.Account
 		SetProfileURL(a.ProfileURL).
 		SetAvatarURL(a.AvatarURL).
 		Exec(ctx)
+}
+
+func (t tipherethRepo) UnLinkAccount(ctx context.Context, a biztiphereth.Account, u model.InternalID) error {
+	return t.data.db.Account.Update().Where(
+		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
+		account.PlatformAccountIDEQ(a.PlatformAccountID),
+		account.HasUserWith(user.IDEQ(int64(u))),
+	).
+		ClearUser().
+		Exec(ctx)
+}
+
+func (t tipherethRepo) ListLinkAccount(
+	ctx context.Context,
+	paging model.Paging,
+	userID model.InternalID,
+) ([]*biztiphereth.Account, int64, error) {
+	q := t.data.db.Account.Query().Where(
+		account.HasUserWith(user.IDEQ(int64(userID))),
+	)
+	a, err := q.
+		Limit(paging.PageSize).
+		Offset((paging.PageNum - 1) * paging.PageSize).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return t.data.converter.ToBizAccountList(a), int64(total), nil
 }

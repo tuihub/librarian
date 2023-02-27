@@ -46,6 +46,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("feed_config", FeedConfig.Type),
 		edge.To("create", User.Type).
 			From("creator").
-			Unique(),
+			Unique().
+			Required(),
 	}
 }

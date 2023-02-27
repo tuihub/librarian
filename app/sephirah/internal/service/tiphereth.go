@@ -68,7 +68,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	if req.GetUser() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	err := s.t.UpdateUser(ctx, s.converter.ToBizUser(req.GetUser()))
+	err := s.t.UpdateUser(ctx, s.converter.ToBizUser(req.GetUser()), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,10 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
 	*pb.ListUserResponse, error,
 ) {
-	u, err := s.t.ListUser(ctx,
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	u, total, err := s.t.ListUser(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
@@ -88,14 +91,17 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListUserResponse{ // TODO
-		Paging:   nil,
+	return &pb.ListUserResponse{
+		Paging:   &librarian.PagingResponse{Total: total},
 		UserList: s.converter.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
 ) {
+	if req.GetAccountId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
 	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
 		InternalID:        0,
 		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
@@ -112,10 +118,33 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	if req.GetAccountId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	if err := s.t.UnLinkAccount(ctx, biztiphereth.Account{
+		InternalID:        0,
+		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
+		Name:              "",
+		ProfileURL:        "",
+		AvatarURL:         "",
+	}); err != nil {
+		return nil, err
+	}
+	return &pb.UnLinkAccountResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountRequest) (
 	*pb.ListLinkAccountResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	res, total, err := s.t.ListLinkAccount(ctx, model.Paging{
+		PageSize: int(req.GetPaging().GetPageSize()),
+		PageNum:  int(req.GetPaging().GetPageNum()),
+	}, model.InternalID(converter.ToBizInternalID(req.GetUserId())))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListLinkAccountResponse{
+		Paging:      &librarian.PagingResponse{Total: total},
+		AccountList: s.converter.ToPBAccountList(res),
+	}, nil
 }

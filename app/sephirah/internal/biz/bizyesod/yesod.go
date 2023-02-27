@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -14,7 +15,7 @@ import (
 )
 
 type YesodRepo interface {
-	CreateFeedConfig(context.Context, *FeedConfig) error
+	CreateFeedConfig(context.Context, *FeedConfig, model.InternalID) error
 	UpdateFeedConfig(context.Context, *FeedConfig) error
 	ListFeedConfig(context.Context, []int64, []int64, []FeedConfigSource,
 		[]FeedConfigStatus, ListFeedOrder, Paging) ([]*FeedConfig, error)

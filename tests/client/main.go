@@ -16,9 +16,8 @@ import (
 )
 
 const (
-	username = "testUser"
-	password = "testPass"
-	userType = pb.UserType_USER_TYPE_ADMIN
+	username = "admin"
+	password = "admin"
 )
 
 type Client struct {
@@ -34,7 +33,7 @@ func main() {
 		userID: nil,
 	}
 	c.WaitServerOnline(ctx)
-	ctx = c.CreateDefaultUserAndLogin(ctx)
+	ctx = c.LoginViaDefaultAdmin(ctx)
 	c.TestUser(ctx)
 	c.TestGebura(ctx)
 	c.TestYesod(ctx)
@@ -66,21 +65,8 @@ func (c *Client) WaitServerOnline(ctx context.Context) {
 	}
 }
 
-func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context {
+func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	var accessToken, refreshToken string
-	if resp, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{
-		User: &pb.User{
-			Id:       nil,
-			Username: username,
-			Password: password,
-			Type:     userType,
-			Status:   0,
-		},
-	}); err != nil {
-		panic(err)
-	} else {
-		c.userID = resp.Id
-	}
 	if resp, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{
 		Username: username,
 		Password: password,
@@ -105,7 +91,7 @@ func (c *Client) CreateDefaultUserAndLogin(ctx context.Context) context.Context 
 }
 
 func (c *Client) TestUser(ctx context.Context) {
-	if resp, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
+	if _, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
@@ -114,7 +100,5 @@ func (c *Client) TestUser(ctx context.Context) {
 		StatusFilter: nil,
 	}); err != nil {
 		panic(err)
-	} else if len(resp.GetUserList()) != 1 || resp.GetUserList()[0].Id.GetId() != c.userID.GetId() {
-		panic("inconsistent user id")
 	}
 }

@@ -134,14 +134,6 @@ func (uc *UserCreate) SetCreatorID(id int64) *UserCreate {
 	return uc
 }
 
-// SetNillableCreatorID sets the "creator" edge to the User entity by ID if the given value is not nil.
-func (uc *UserCreate) SetNillableCreatorID(id *int64) *UserCreate {
-	if id != nil {
-		uc = uc.SetCreatorID(*id)
-	}
-	return uc
-}
-
 // SetCreator sets the "creator" edge to the User entity.
 func (uc *UserCreate) SetCreator(u *User) *UserCreate {
 	return uc.SetCreatorID(u.ID)
@@ -236,6 +228,9 @@ func (uc *UserCreate) check() error {
 	}
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
+	}
+	if _, ok := uc.mutation.CreatorID(); !ok {
+		return &ValidationError{Name: "creator", err: errors.New(`ent: missing required edge "User.creator"`)}
 	}
 	return nil
 }

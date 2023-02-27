@@ -22,6 +22,14 @@ type toPBConverter interface {
 
 	// goverter:matchIgnoreCase
 	// goverter:mapIdentity Id
+	// goverter:map Platform | ToPBAccountPlatform
+	ToPBAccount(biztiphereth.Account) librarian.Account
+	// goverter:map InternalID Id
+	ToPBAccountInternalID(biztiphereth.Account) librarian.InternalID
+	ToPBAccountList([]*biztiphereth.Account) []*librarian.Account
+
+	// goverter:matchIgnoreCase
+	// goverter:mapIdentity Id
 	// goverter:map Source | ToPBAppSource
 	// goverter:map Type | ToPBAppType
 	ToPBApp(bizgebura.App) librarian.App

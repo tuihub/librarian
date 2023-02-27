@@ -16,6 +16,30 @@ import (
 
 type toBizConverterImpl struct{}
 
+func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *biztiphereth.Account {
+	var pBiztipherethAccount *biztiphereth.Account
+	if source != nil {
+		var biztipherethAccount biztiphereth.Account
+		biztipherethAccount.InternalID = (*source).ID
+		biztipherethAccount.Platform = ToBizAccountPlatform((*source).Platform)
+		biztipherethAccount.PlatformAccountID = (*source).PlatformAccountID
+		biztipherethAccount.Name = (*source).Name
+		biztipherethAccount.ProfileURL = (*source).ProfileURL
+		biztipherethAccount.AvatarURL = (*source).AvatarURL
+		pBiztipherethAccount = &biztipherethAccount
+	}
+	return pBiztipherethAccount
+}
+func (c *toBizConverterImpl) ToBizAccountList(source []*ent.Account) []*biztiphereth.Account {
+	var pBiztipherethAccountList []*biztiphereth.Account
+	if source != nil {
+		pBiztipherethAccountList = make([]*biztiphereth.Account, len(source))
+		for i := 0; i < len(source); i++ {
+			pBiztipherethAccountList[i] = c.ToBizAccount(source[i])
+		}
+	}
+	return pBiztipherethAccountList
+}
 func (c *toBizConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
 	var pBizgeburaApp *bizgebura.App
 	if source != nil {

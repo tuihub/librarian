@@ -159,6 +159,31 @@ func (c *toBizConverterImpl) pV1AppDetailsToPBizgeburaAppDetails(source *v1.AppD
 
 type toPBConverterImpl struct{}
 
+func (c *toPBConverterImpl) ToPBAccount(source biztiphereth.Account) v1.Account {
+	var v1Account v1.Account
+	v1Account.Id = c.biztipherethAccountToPV1InternalID(source)
+	v1Account.Platform = ToPBAccountPlatform(source.Platform)
+	v1Account.PlatformAccountId = source.PlatformAccountID
+	v1Account.Name = source.Name
+	v1Account.ProfileUrl = source.ProfileURL
+	v1Account.AvatarUrl = source.AvatarURL
+	return v1Account
+}
+func (c *toPBConverterImpl) ToPBAccountInternalID(source biztiphereth.Account) v1.InternalID {
+	var v1InternalID v1.InternalID
+	v1InternalID.Id = source.InternalID
+	return v1InternalID
+}
+func (c *toPBConverterImpl) ToPBAccountList(source []*biztiphereth.Account) []*v1.Account {
+	var pV1AccountList []*v1.Account
+	if source != nil {
+		pV1AccountList = make([]*v1.Account, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1AccountList[i] = c.pBiztipherethAccountToPV1Account(source[i])
+		}
+	}
+	return pV1AccountList
+}
 func (c *toPBConverterImpl) ToPBApp(source bizgebura.App) v1.App {
 	var v1App v1.App
 	v1App.Id = c.bizgeburaAppToPV1InternalID(source)
@@ -260,6 +285,10 @@ func (c *toPBConverterImpl) bizgeburaAppToPV1InternalID(source bizgebura.App) *v
 	v1InternalID := c.ToPBAppInternalID(source)
 	return &v1InternalID
 }
+func (c *toPBConverterImpl) biztipherethAccountToPV1InternalID(source biztiphereth.Account) *v1.InternalID {
+	v1InternalID := c.ToPBAccountInternalID(source)
+	return &v1InternalID
+}
 func (c *toPBConverterImpl) biztipherethUserToPV1InternalID(source biztiphereth.User) *v1.InternalID {
 	v1InternalID := c.ToPBUserInternalID(source)
 	return &v1InternalID
@@ -284,6 +313,14 @@ func (c *toPBConverterImpl) pBizgeburaAppToPV1App(source *bizgebura.App) *v1.App
 		pV1App = &v1App
 	}
 	return pV1App
+}
+func (c *toPBConverterImpl) pBiztipherethAccountToPV1Account(source *biztiphereth.Account) *v1.Account {
+	var pV1Account *v1.Account
+	if source != nil {
+		v1Account := c.ToPBAccount((*source))
+		pV1Account = &v1Account
+	}
+	return pV1Account
 }
 func (c *toPBConverterImpl) pBiztipherethUserToPV1User(source *biztiphereth.User) *v11.User {
 	var pV1User *v11.User

@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"os"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -64,9 +63,6 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/grpc.health.v1.Health/Watch"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetToken"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
-	if _, ok := os.LookupEnv("UNLOCK_CREATE"); ok {
-		whiteList["/librarian.sephirah.v1.LibrarianSephirahService/CreateUser"] = struct{}{}
-	}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {
 			return false

@@ -5,6 +5,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
@@ -21,6 +22,12 @@ type toBizConverter interface {
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *biztiphereth.User
 	ToBizUserList([]*ent.User) []*biztiphereth.User
+
+	// goverter:matchIgnoreCase
+	// goverter:map ID InternalID
+	// goverter:map Platform | ToBizAccountPlatform
+	ToBizAccount(*ent.Account) *biztiphereth.Account
+	ToBizAccountList([]*ent.Account) []*biztiphereth.Account
 
 	// goverter:matchIgnoreCase
 	// goverter:map ID InternalID
@@ -117,5 +124,14 @@ func ToBizFeedConfigStatus(s feedconfig.Status) bizyesod.FeedConfigStatus {
 		return bizyesod.FeedConfigStatusSuspend
 	default:
 		return bizyesod.FeedConfigStatusUnspecified
+	}
+}
+
+func ToBizAccountPlatform(p account.Platform) biztiphereth.AccountPlatform {
+	switch p {
+	case account.PlatformSteam:
+		return biztiphereth.AccountPlatformSteam
+	default:
+		return biztiphereth.AccountPlatformUnspecified
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent/dialect/sql"
@@ -26,8 +27,9 @@ func NewYesodRepo(data *Data) bizyesod.YesodRepo {
 	}
 }
 
-func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig) error {
+func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig, owner model.InternalID) error {
 	q := y.data.db.FeedConfig.Create().
+		SetUserID(int64(owner)).
 		SetID(c.InternalID).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
