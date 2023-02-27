@@ -5,10 +5,10 @@ import (
 	"os"
 
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
@@ -26,7 +26,7 @@ func NewGRPCServer(
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			// recovery.Recovery(),
-			logging.Server(log.GetLogger()),
+			logging.Server(libapp.GetLogger()),
 			ratelimit.Server(),
 			selector.Server(
 				jwt.Server(

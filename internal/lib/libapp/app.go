@@ -1,6 +1,9 @@
 package libapp
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/tuihub/librarian/internal/lib/libzap"
 
 	"github.com/go-kratos/kratos/contrib/log/zap/v2"
@@ -21,6 +24,27 @@ func InitLogger(id, name, version string) {
 		"span.id", tracing.SpanID(),
 	)
 	log.SetLogger(logger)
+}
+
+func GetLogger() log.Logger {
+	fuzzyStr := "***"
+	return log.NewFilter(log.GetLogger(),
+		log.FilterKey("password"),
+		log.FilterFunc(
+			func(level log.Level, keyvals ...interface{}) bool {
+				for i := 0; i < len(keyvals); i++ {
+					if strings.Contains(fmt.Sprint(keyvals[i]), "password") {
+						if i%2 == 0 {
+							keyvals[i+1] = fuzzyStr
+						} else {
+							keyvals[i] = fuzzyStr
+						}
+					}
+				}
+				return false
+			},
+		),
+	)
 }
 
 func LoadConfig(flagconf string, conf interface{}) {
