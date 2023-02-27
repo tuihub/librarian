@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 )
 
@@ -15,9 +16,7 @@ import (
 type AppPackage struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Source holds the value of the "source" field.
 	Source apppackage.Source `json:"source,omitempty"`
 	// SourceID holds the value of the "source_id" field.
@@ -38,6 +37,32 @@ type AppPackage struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the AppPackageQuery when eager-loading is set.
+	Edges           AppPackageEdges `json:"edges"`
+	app_app_package *int64
+}
+
+// AppPackageEdges holds the relations/edges for other nodes in the graph.
+type AppPackageEdges struct {
+	// App holds the value of the app edge.
+	App *App `json:"app,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// AppOrErr returns the App value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppPackageEdges) AppOrErr() (*App, error) {
+	if e.loadedTypes[0] {
+		if e.App == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: app.Label}
+		}
+		return e.App, nil
+	}
+	return nil, &NotLoadedError{edge: "app"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -45,12 +70,14 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case apppackage.FieldID, apppackage.FieldInternalID, apppackage.FieldSourceID, apppackage.FieldBinarySize:
+		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySize:
 			values[i] = new(sql.NullInt64)
 		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
 		case apppackage.FieldUpdatedAt, apppackage.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case apppackage.ForeignKeys[0]: // app_app_package
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type AppPackage", columns[i])
 		}
@@ -71,13 +98,7 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			ap.ID = int(value.Int64)
-		case apppackage.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				ap.InternalID = value.Int64
-			}
+			ap.ID = int64(value.Int64)
 		case apppackage.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
@@ -138,9 +159,21 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.CreatedAt = value.Time
 			}
+		case apppackage.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field app_app_package", value)
+			} else if value.Valid {
+				ap.app_app_package = new(int64)
+				*ap.app_app_package = int64(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryApp queries the "app" edge of the AppPackage entity.
+func (ap *AppPackage) QueryApp() *AppQuery {
+	return NewAppPackageClient(ap.config).QueryApp(ap)
 }
 
 // Update returns a builder for updating this AppPackage.
@@ -166,9 +199,6 @@ func (ap *AppPackage) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppPackage(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ap.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", ap.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("source=")
 	builder.WriteString(fmt.Sprintf("%v", ap.Source))
 	builder.WriteString(", ")

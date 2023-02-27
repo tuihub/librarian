@@ -12,8 +12,6 @@ const (
 	Label = "feed_config"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternalID holds the string denoting the internal_id field in the database.
-	FieldInternalID = "internal_id"
 	// FieldFeedURL holds the string denoting the feed_url field in the database.
 	FieldFeedURL = "feed_url"
 	// FieldAuthorAccount holds the string denoting the author_account field in the database.
@@ -30,10 +28,19 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
 	// EdgeFeed holds the string denoting the feed edge name in mutations.
 	EdgeFeed = "feed"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "feed_configs"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "users"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_feed_config"
 	// FeedTable is the table that holds the feed relation/edge.
 	FeedTable = "feeds"
 	// FeedInverseTable is the table name for the Feed entity.
@@ -46,7 +53,6 @@ const (
 // Columns holds all SQL columns for feedconfig fields.
 var Columns = []string{
 	FieldID,
-	FieldInternalID,
 	FieldFeedURL,
 	FieldAuthorAccount,
 	FieldSource,
@@ -57,10 +63,21 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "feed_configs"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"user_feed_config",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

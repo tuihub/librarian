@@ -62,6 +62,17 @@ func FromContext(ctx context.Context) (*Claims, bool) {
 	return nil, false
 }
 
+func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) bool {
+	if c, ok := FromContext(ctx); ok {
+		for _, ut := range userTypes {
+			if c.UserType == ut {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (a *Auth) generateSecret(t ClaimsType) interface{} {
 	return []byte(fmt.Sprintf("%s%d", a.config.JwtSecret, t))
 }

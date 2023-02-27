@@ -8,16 +8,16 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // FeedConfig is the model entity for the FeedConfig schema.
 type FeedConfig struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// FeedURL holds the value of the "feed_url" field.
 	FeedURL string `json:"feed_url,omitempty"`
 	// AuthorAccount holds the value of the "author_account" field.
@@ -36,22 +36,42 @@ type FeedConfig struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedConfigQuery when eager-loading is set.
-	Edges FeedConfigEdges `json:"edges"`
+	Edges            FeedConfigEdges `json:"edges"`
+	user_feed_config *int64
 }
 
 // FeedConfigEdges holds the relations/edges for other nodes in the graph.
 type FeedConfigEdges struct {
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
 	// Feed holds the value of the feed edge.
-	Feed []*Feed `json:"feed,omitempty"`
+	Feed *Feed `json:"feed,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FeedConfigEdges) UserOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.User == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // FeedOrErr returns the Feed value or an error if the edge
-// was not loaded in eager-loading.
-func (e FeedConfigEdges) FeedOrErr() ([]*Feed, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FeedConfigEdges) FeedOrErr() (*Feed, error) {
+	if e.loadedTypes[1] {
+		if e.Feed == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: feed.Label}
+		}
 		return e.Feed, nil
 	}
 	return nil, &NotLoadedError{edge: "feed"}
@@ -62,12 +82,14 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feedconfig.FieldID, feedconfig.FieldInternalID, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
+		case feedconfig.FieldID, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
 		case feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case feedconfig.ForeignKeys[0]: // user_feed_config
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FeedConfig", columns[i])
 		}
@@ -88,13 +110,7 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			fc.ID = int(value.Int64)
-		case feedconfig.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				fc.InternalID = value.Int64
-			}
+			fc.ID = int64(value.Int64)
 		case feedconfig.FieldFeedURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_url", values[i])
@@ -143,9 +159,21 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fc.CreatedAt = value.Time
 			}
+		case feedconfig.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_feed_config", value)
+			} else if value.Valid {
+				fc.user_feed_config = new(int64)
+				*fc.user_feed_config = int64(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryUser queries the "user" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryUser() *UserQuery {
+	return NewFeedConfigClient(fc.config).QueryUser(fc)
 }
 
 // QueryFeed queries the "feed" edge of the FeedConfig entity.
@@ -176,9 +204,6 @@ func (fc *FeedConfig) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedConfig(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fc.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", fc.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("feed_url=")
 	builder.WriteString(fc.FeedURL)
 	builder.WriteString(", ")

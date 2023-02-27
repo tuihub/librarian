@@ -44,7 +44,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 		a.Details = new(bizgebura.AppDetails)
 	}
 	q := g.data.db.App.Create().
-		SetInternalID(a.InternalID).
+		SetID(a.InternalID).
 		SetSource(converter.ToEntAppSource(a.Source)).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
@@ -63,7 +63,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 	q := g.data.db.App.Update().
 		Where(
-			app.InternalIDEQ(a.InternalID),
+			app.IDEQ(a.InternalID),
 			app.SourceEQ(converter.ToEntAppSource(a.Source)),
 		).
 		SetSourceAppID(a.SourceAppID).
@@ -90,7 +90,7 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 			a.Details = new(bizgebura.AppDetails)
 		}
 		apps[i] = g.data.db.App.Create().
-			SetInternalID(a.InternalID).
+			SetID(a.InternalID).
 			SetSource(converter.ToEntAppSource(a.Source)).
 			SetSourceAppID(a.SourceAppID).
 			SetSourceURL(a.SourceURL).
@@ -114,7 +114,7 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 			sql.ResolveWithIgnore(),
 			sql.ResolveWith(func(u *sql.UpdateSet) {
 				ignores := []string{
-					app.FieldInternalID,
+					app.FieldID,
 					app.FieldSource,
 					app.FieldSourceAppID,
 				}
@@ -152,7 +152,7 @@ func (g geburaRepo) ListApp(
 		q.Where(app.TypeIn(typeFilter...))
 	}
 	if len(ids) > 0 {
-		q.Where(app.InternalIDIn(ids...))
+		q.Where(app.IDIn(ids...))
 	}
 	a, err := q.
 		Limit(paging.PageSize).
@@ -187,7 +187,7 @@ func (g geburaRepo) IsAppPackage(ctx context.Context, id int64) error {
 
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Create().
-		SetInternalID(ap.InternalID).
+		SetID(ap.InternalID).
 		SetSource(converter.ToEntAppPackageSource(ap.Source)).
 		SetSourceID(ap.SourceID).
 		SetSourcePackageID(ap.SourcePackageID).
@@ -201,7 +201,7 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPacka
 func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *bizgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Update().
 		Where(
-			apppackage.InternalIDEQ(ap.InternalID),
+			apppackage.IDEQ(ap.InternalID),
 			apppackage.SourceEQ(converter.ToEntAppPackageSource(ap.Source)),
 		).
 		SetName(ap.Name).
@@ -215,7 +215,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 	appPackages := make([]*ent.AppPackageCreate, len(apl))
 	for i, ap := range apl {
 		appPackages[i] = g.data.db.AppPackage.Create().
-			SetInternalID(ap.InternalID).
+			SetID(ap.InternalID).
 			SetSource(converter.ToEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
 			SetSourcePackageID(ap.SourcePackageID)
@@ -238,7 +238,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 			sql.ConflictColumns(apppackage.FieldSource, apppackage.FieldSourceID, apppackage.FieldSourcePackageID),
 			sql.ResolveWith(func(u *sql.UpdateSet) {
 				ignores := []string{
-					apppackage.FieldInternalID,
+					apppackage.FieldID,
 					apppackage.FieldSource,
 					apppackage.FieldSourceID,
 					apppackage.FieldSourcePackageID,
@@ -269,7 +269,7 @@ func (g geburaRepo) ListAppPackage(
 		q.Where(apppackage.SourceIn(sourceFilter...))
 	}
 	if len(ids) > 0 {
-		q.Where(apppackage.InternalIDIn(ids...))
+		q.Where(apppackage.IDIn(ids...))
 	}
 	ap, err := q.
 		Limit(paging.PageSize).

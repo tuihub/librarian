@@ -12,8 +12,6 @@ const (
 	Label = "app"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternalID holds the string denoting the internal_id field in the database.
-	FieldInternalID = "internal_id"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldSourceAppID holds the string denoting the source_app_id field in the database.
@@ -42,14 +40,29 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
+	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
+	EdgeAppPackage = "app_package"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
+	// UserTable is the table that holds the user relation/edge. The primary key declared below.
+	UserTable = "user_app"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "users"
+	// AppPackageTable is the table that holds the app_package relation/edge.
+	AppPackageTable = "app_packages"
+	// AppPackageInverseTable is the table name for the AppPackage entity.
+	// It exists in this package in order to avoid circular dependency with the "apppackage" package.
+	AppPackageInverseTable = "app_packages"
+	// AppPackageColumn is the table column denoting the app_package relation/edge.
+	AppPackageColumn = "app_app_package"
 )
 
 // Columns holds all SQL columns for app fields.
 var Columns = []string{
 	FieldID,
-	FieldInternalID,
 	FieldSource,
 	FieldSourceAppID,
 	FieldSourceURL,
@@ -65,6 +78,12 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
+
+var (
+	// UserPrimaryKey and UserColumn2 are the table columns denoting the
+	// primary key for the user relation (M2M).
+	UserPrimaryKey = []string{"user_id", "app_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

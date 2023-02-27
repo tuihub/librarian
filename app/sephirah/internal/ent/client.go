@@ -245,7 +245,7 @@ func (c *AccountClient) UpdateOne(a *Account) *AccountUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AccountClient) UpdateOneID(id int) *AccountUpdateOne {
+func (c *AccountClient) UpdateOneID(id int64) *AccountUpdateOne {
 	mutation := newAccountMutation(c.config, OpUpdateOne, withAccountID(id))
 	return &AccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -262,7 +262,7 @@ func (c *AccountClient) DeleteOne(a *Account) *AccountDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AccountClient) DeleteOneID(id int) *AccountDeleteOne {
+func (c *AccountClient) DeleteOneID(id int64) *AccountDeleteOne {
 	builder := c.Delete().Where(account.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -279,17 +279,33 @@ func (c *AccountClient) Query() *AccountQuery {
 }
 
 // Get returns a Account entity by its id.
-func (c *AccountClient) Get(ctx context.Context, id int) (*Account, error) {
+func (c *AccountClient) Get(ctx context.Context, id int64) (*Account, error) {
 	return c.Query().Where(account.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AccountClient) GetX(ctx context.Context, id int) *Account {
+func (c *AccountClient) GetX(ctx context.Context, id int64) *Account {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryUser queries the user edge of a Account.
+func (c *AccountClient) QueryUser(a *Account) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, account.UserTable, account.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -363,7 +379,7 @@ func (c *AppClient) UpdateOne(a *App) *AppUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppClient) UpdateOneID(id int) *AppUpdateOne {
+func (c *AppClient) UpdateOneID(id int64) *AppUpdateOne {
 	mutation := newAppMutation(c.config, OpUpdateOne, withAppID(id))
 	return &AppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -380,7 +396,7 @@ func (c *AppClient) DeleteOne(a *App) *AppDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppClient) DeleteOneID(id int) *AppDeleteOne {
+func (c *AppClient) DeleteOneID(id int64) *AppDeleteOne {
 	builder := c.Delete().Where(app.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -397,17 +413,49 @@ func (c *AppClient) Query() *AppQuery {
 }
 
 // Get returns a App entity by its id.
-func (c *AppClient) Get(ctx context.Context, id int) (*App, error) {
+func (c *AppClient) Get(ctx context.Context, id int64) (*App, error) {
 	return c.Query().Where(app.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppClient) GetX(ctx context.Context, id int) *App {
+func (c *AppClient) GetX(ctx context.Context, id int64) *App {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryUser queries the user edge of a App.
+func (c *AppClient) QueryUser(a *App) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.UserTable, app.UserPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPackage queries the app_package edge of a App.
+func (c *AppClient) QueryAppPackage(a *App) *AppPackageQuery {
+	query := (&AppPackageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(apppackage.Table, apppackage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.AppPackageTable, app.AppPackageColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -481,7 +529,7 @@ func (c *AppPackageClient) UpdateOne(ap *AppPackage) *AppPackageUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppPackageClient) UpdateOneID(id int) *AppPackageUpdateOne {
+func (c *AppPackageClient) UpdateOneID(id int64) *AppPackageUpdateOne {
 	mutation := newAppPackageMutation(c.config, OpUpdateOne, withAppPackageID(id))
 	return &AppPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -498,7 +546,7 @@ func (c *AppPackageClient) DeleteOne(ap *AppPackage) *AppPackageDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppPackageClient) DeleteOneID(id int) *AppPackageDeleteOne {
+func (c *AppPackageClient) DeleteOneID(id int64) *AppPackageDeleteOne {
 	builder := c.Delete().Where(apppackage.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -515,17 +563,33 @@ func (c *AppPackageClient) Query() *AppPackageQuery {
 }
 
 // Get returns a AppPackage entity by its id.
-func (c *AppPackageClient) Get(ctx context.Context, id int) (*AppPackage, error) {
+func (c *AppPackageClient) Get(ctx context.Context, id int64) (*AppPackage, error) {
 	return c.Query().Where(apppackage.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppPackageClient) GetX(ctx context.Context, id int) *AppPackage {
+func (c *AppPackageClient) GetX(ctx context.Context, id int64) *AppPackage {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryApp queries the app edge of a AppPackage.
+func (c *AppPackageClient) QueryApp(ap *AppPackage) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppackage.Table, apppackage.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppackage.AppTable, apppackage.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -599,7 +663,7 @@ func (c *FeedClient) UpdateOne(f *Feed) *FeedUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FeedClient) UpdateOneID(id int) *FeedUpdateOne {
+func (c *FeedClient) UpdateOneID(id int64) *FeedUpdateOne {
 	mutation := newFeedMutation(c.config, OpUpdateOne, withFeedID(id))
 	return &FeedUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -616,7 +680,7 @@ func (c *FeedClient) DeleteOne(f *Feed) *FeedDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FeedClient) DeleteOneID(id int) *FeedDeleteOne {
+func (c *FeedClient) DeleteOneID(id int64) *FeedDeleteOne {
 	builder := c.Delete().Where(feed.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -633,17 +697,33 @@ func (c *FeedClient) Query() *FeedQuery {
 }
 
 // Get returns a Feed entity by its id.
-func (c *FeedClient) Get(ctx context.Context, id int) (*Feed, error) {
+func (c *FeedClient) Get(ctx context.Context, id int64) (*Feed, error) {
 	return c.Query().Where(feed.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FeedClient) GetX(ctx context.Context, id int) *Feed {
+func (c *FeedClient) GetX(ctx context.Context, id int64) *Feed {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryItem queries the item edge of a Feed.
+func (c *FeedClient) QueryItem(f *Feed) *FeedItemQuery {
+	query := (&FeedItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := f.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feed.Table, feed.FieldID, id),
+			sqlgraph.To(feeditem.Table, feeditem.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, feed.ItemTable, feed.ItemColumn),
+		)
+		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryConfig queries the config edge of a Feed.
@@ -654,7 +734,7 @@ func (c *FeedClient) QueryConfig(f *Feed) *FeedConfigQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(feed.Table, feed.FieldID, id),
 			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, feed.ConfigTable, feed.ConfigColumn),
+			sqlgraph.Edge(sqlgraph.O2O, true, feed.ConfigTable, feed.ConfigColumn),
 		)
 		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
 		return fromV, nil
@@ -733,7 +813,7 @@ func (c *FeedConfigClient) UpdateOne(fc *FeedConfig) *FeedConfigUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FeedConfigClient) UpdateOneID(id int) *FeedConfigUpdateOne {
+func (c *FeedConfigClient) UpdateOneID(id int64) *FeedConfigUpdateOne {
 	mutation := newFeedConfigMutation(c.config, OpUpdateOne, withFeedConfigID(id))
 	return &FeedConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -750,7 +830,7 @@ func (c *FeedConfigClient) DeleteOne(fc *FeedConfig) *FeedConfigDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FeedConfigClient) DeleteOneID(id int) *FeedConfigDeleteOne {
+func (c *FeedConfigClient) DeleteOneID(id int64) *FeedConfigDeleteOne {
 	builder := c.Delete().Where(feedconfig.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -767,17 +847,33 @@ func (c *FeedConfigClient) Query() *FeedConfigQuery {
 }
 
 // Get returns a FeedConfig entity by its id.
-func (c *FeedConfigClient) Get(ctx context.Context, id int) (*FeedConfig, error) {
+func (c *FeedConfigClient) Get(ctx context.Context, id int64) (*FeedConfig, error) {
 	return c.Query().Where(feedconfig.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FeedConfigClient) GetX(ctx context.Context, id int) *FeedConfig {
+func (c *FeedConfigClient) GetX(ctx context.Context, id int64) *FeedConfig {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryUser queries the user edge of a FeedConfig.
+func (c *FeedConfigClient) QueryUser(fc *FeedConfig) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.UserTable, feedconfig.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // QueryFeed queries the feed edge of a FeedConfig.
@@ -788,7 +884,7 @@ func (c *FeedConfigClient) QueryFeed(fc *FeedConfig) *FeedQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
 			sqlgraph.To(feed.Table, feed.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.FeedTable, feedconfig.FeedColumn),
+			sqlgraph.Edge(sqlgraph.O2O, false, feedconfig.FeedTable, feedconfig.FeedColumn),
 		)
 		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
 		return fromV, nil
@@ -867,7 +963,7 @@ func (c *FeedItemClient) UpdateOne(fi *FeedItem) *FeedItemUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *FeedItemClient) UpdateOneID(id int) *FeedItemUpdateOne {
+func (c *FeedItemClient) UpdateOneID(id int64) *FeedItemUpdateOne {
 	mutation := newFeedItemMutation(c.config, OpUpdateOne, withFeedItemID(id))
 	return &FeedItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -884,7 +980,7 @@ func (c *FeedItemClient) DeleteOne(fi *FeedItem) *FeedItemDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FeedItemClient) DeleteOneID(id int) *FeedItemDeleteOne {
+func (c *FeedItemClient) DeleteOneID(id int64) *FeedItemDeleteOne {
 	builder := c.Delete().Where(feeditem.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -901,17 +997,33 @@ func (c *FeedItemClient) Query() *FeedItemQuery {
 }
 
 // Get returns a FeedItem entity by its id.
-func (c *FeedItemClient) Get(ctx context.Context, id int) (*FeedItem, error) {
+func (c *FeedItemClient) Get(ctx context.Context, id int64) (*FeedItem, error) {
 	return c.Query().Where(feeditem.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *FeedItemClient) GetX(ctx context.Context, id int) *FeedItem {
+func (c *FeedItemClient) GetX(ctx context.Context, id int64) *FeedItem {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryFeed queries the feed edge of a FeedItem.
+func (c *FeedItemClient) QueryFeed(fi *FeedItem) *FeedQuery {
+	query := (&FeedClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditem.Table, feeditem.FieldID, id),
+			sqlgraph.To(feed.Table, feed.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feeditem.FeedTable, feeditem.FeedColumn),
+		)
+		fromV = sqlgraph.Neighbors(fi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -985,7 +1097,7 @@ func (c *UserClient) UpdateOne(u *User) *UserUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *UserClient) UpdateOneID(id int) *UserUpdateOne {
+func (c *UserClient) UpdateOneID(id int64) *UserUpdateOne {
 	mutation := newUserMutation(c.config, OpUpdateOne, withUserID(id))
 	return &UserUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -1002,7 +1114,7 @@ func (c *UserClient) DeleteOne(u *User) *UserDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserClient) DeleteOneID(id int) *UserDeleteOne {
+func (c *UserClient) DeleteOneID(id int64) *UserDeleteOne {
 	builder := c.Delete().Where(user.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -1019,17 +1131,97 @@ func (c *UserClient) Query() *UserQuery {
 }
 
 // Get returns a User entity by its id.
-func (c *UserClient) Get(ctx context.Context, id int) (*User, error) {
+func (c *UserClient) Get(ctx context.Context, id int64) (*User, error) {
 	return c.Query().Where(user.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *UserClient) GetX(ctx context.Context, id int) *User {
+func (c *UserClient) GetX(ctx context.Context, id int64) *User {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryAccount queries the account edge of a User.
+func (c *UserClient) QueryAccount(u *User) *AccountQuery {
+	query := (&AccountClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AccountTable, user.AccountColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryApp queries the app edge of a User.
+func (c *UserClient) QueryApp(u *User) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, user.AppTable, user.AppPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedConfig queries the feed_config edge of a User.
+func (c *UserClient) QueryFeedConfig(u *User) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedConfigTable, user.FeedConfigColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCreator queries the creator edge of a User.
+func (c *UserClient) QueryCreator(u *User) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, user.CreatorTable, user.CreatorColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCreate queries the create edge of a User.
+func (c *UserClient) QueryCreate(u *User) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CreateTable, user.CreateColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.

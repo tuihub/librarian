@@ -14,6 +14,7 @@ type toPBConverter interface {
 	// goverter:mapIdentity Id
 	// goverter:map Type | ToPBUserType
 	// goverter:map Status | ToPBUserStatus
+	// goverter:ignore Password
 	ToPBUser(biztiphereth.User) pb.User
 	// goverter:map InternalID Id
 	ToPBUserInternalID(biztiphereth.User) librarian.InternalID

@@ -9,15 +9,14 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // Account is the model entity for the Account schema.
 type Account struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Platform holds the value of the "platform" field.
 	Platform account.Platform `json:"platform,omitempty"`
 	// PlatformAccountID holds the value of the "platform_account_id" field.
@@ -32,6 +31,32 @@ type Account struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the AccountQuery when eager-loading is set.
+	Edges        AccountEdges `json:"edges"`
+	user_account *int64
+}
+
+// AccountEdges holds the relations/edges for other nodes in the graph.
+type AccountEdges struct {
+	// User holds the value of the user edge.
+	User *User `json:"user,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AccountEdges) UserOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.User == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -39,12 +64,14 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case account.FieldID, account.FieldInternalID:
+		case account.FieldID:
 			values[i] = new(sql.NullInt64)
 		case account.FieldPlatform, account.FieldPlatformAccountID, account.FieldName, account.FieldProfileURL, account.FieldAvatarURL:
 			values[i] = new(sql.NullString)
 		case account.FieldUpdatedAt, account.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case account.ForeignKeys[0]: // user_account
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Account", columns[i])
 		}
@@ -65,13 +92,7 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			a.ID = int(value.Int64)
-		case account.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				a.InternalID = value.Int64
-			}
+			a.ID = int64(value.Int64)
 		case account.FieldPlatform:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
@@ -114,9 +135,21 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.CreatedAt = value.Time
 			}
+		case account.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_account", value)
+			} else if value.Valid {
+				a.user_account = new(int64)
+				*a.user_account = int64(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryUser queries the "user" edge of the Account entity.
+func (a *Account) QueryUser() *UserQuery {
+	return NewAccountClient(a.config).QueryUser(a)
 }
 
 // Update returns a builder for updating this Account.
@@ -142,9 +175,6 @@ func (a *Account) String() string {
 	var builder strings.Builder
 	builder.WriteString("Account(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", a.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("platform=")
 	builder.WriteString(fmt.Sprintf("%v", a.Platform))
 	builder.WriteString(", ")

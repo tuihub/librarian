@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // AppUpdate is the builder for updating App entities.
@@ -25,19 +27,6 @@ type AppUpdate struct {
 // Where appends a list predicates to the AppUpdate builder.
 func (au *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
 	au.mutation.Where(ps...)
-	return au
-}
-
-// SetInternalID sets the "internal_id" field.
-func (au *AppUpdate) SetInternalID(i int64) *AppUpdate {
-	au.mutation.ResetInternalID()
-	au.mutation.SetInternalID(i)
-	return au
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (au *AppUpdate) AddInternalID(i int64) *AppUpdate {
-	au.mutation.AddInternalID(i)
 	return au
 }
 
@@ -133,9 +122,81 @@ func (au *AppUpdate) SetNillableCreatedAt(t *time.Time) *AppUpdate {
 	return au
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (au *AppUpdate) AddUserIDs(ids ...int64) *AppUpdate {
+	au.mutation.AddUserIDs(ids...)
+	return au
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (au *AppUpdate) AddUser(u ...*User) *AppUpdate {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return au.AddUserIDs(ids...)
+}
+
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (au *AppUpdate) AddAppPackageIDs(ids ...int64) *AppUpdate {
+	au.mutation.AddAppPackageIDs(ids...)
+	return au
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (au *AppUpdate) AddAppPackage(a ...*AppPackage) *AppUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddAppPackageIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (au *AppUpdate) Mutation() *AppMutation {
 	return au.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (au *AppUpdate) ClearUser() *AppUpdate {
+	au.mutation.ClearUser()
+	return au
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (au *AppUpdate) RemoveUserIDs(ids ...int64) *AppUpdate {
+	au.mutation.RemoveUserIDs(ids...)
+	return au
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (au *AppUpdate) RemoveUser(u ...*User) *AppUpdate {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return au.RemoveUserIDs(ids...)
+}
+
+// ClearAppPackage clears all "app_package" edges to the AppPackage entity.
+func (au *AppUpdate) ClearAppPackage() *AppUpdate {
+	au.mutation.ClearAppPackage()
+	return au
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
+func (au *AppUpdate) RemoveAppPackageIDs(ids ...int64) *AppUpdate {
+	au.mutation.RemoveAppPackageIDs(ids...)
+	return au
+}
+
+// RemoveAppPackage removes "app_package" edges to AppPackage entities.
+func (au *AppUpdate) RemoveAppPackage(a ...*AppPackage) *AppUpdate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveAppPackageIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -193,19 +254,13 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := au.mutation.InternalID(); ok {
-		_spec.SetField(app.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := au.mutation.AddedInternalID(); ok {
-		_spec.AddField(app.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := au.mutation.Source(); ok {
 		_spec.SetField(app.FieldSource, field.TypeEnum, value)
@@ -249,6 +304,114 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 	}
+	if au.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedUserIDs(); len(nodes) > 0 && !au.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedAppPackageIDs(); len(nodes) > 0 && !au.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
@@ -267,19 +430,6 @@ type AppUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AppMutation
-}
-
-// SetInternalID sets the "internal_id" field.
-func (auo *AppUpdateOne) SetInternalID(i int64) *AppUpdateOne {
-	auo.mutation.ResetInternalID()
-	auo.mutation.SetInternalID(i)
-	return auo
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (auo *AppUpdateOne) AddInternalID(i int64) *AppUpdateOne {
-	auo.mutation.AddInternalID(i)
-	return auo
 }
 
 // SetSource sets the "source" field.
@@ -374,9 +524,81 @@ func (auo *AppUpdateOne) SetNillableCreatedAt(t *time.Time) *AppUpdateOne {
 	return auo
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (auo *AppUpdateOne) AddUserIDs(ids ...int64) *AppUpdateOne {
+	auo.mutation.AddUserIDs(ids...)
+	return auo
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (auo *AppUpdateOne) AddUser(u ...*User) *AppUpdateOne {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return auo.AddUserIDs(ids...)
+}
+
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (auo *AppUpdateOne) AddAppPackageIDs(ids ...int64) *AppUpdateOne {
+	auo.mutation.AddAppPackageIDs(ids...)
+	return auo
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (auo *AppUpdateOne) AddAppPackage(a ...*AppPackage) *AppUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddAppPackageIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (auo *AppUpdateOne) Mutation() *AppMutation {
 	return auo.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (auo *AppUpdateOne) ClearUser() *AppUpdateOne {
+	auo.mutation.ClearUser()
+	return auo
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (auo *AppUpdateOne) RemoveUserIDs(ids ...int64) *AppUpdateOne {
+	auo.mutation.RemoveUserIDs(ids...)
+	return auo
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (auo *AppUpdateOne) RemoveUser(u ...*User) *AppUpdateOne {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return auo.RemoveUserIDs(ids...)
+}
+
+// ClearAppPackage clears all "app_package" edges to the AppPackage entity.
+func (auo *AppUpdateOne) ClearAppPackage() *AppUpdateOne {
+	auo.mutation.ClearAppPackage()
+	return auo
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
+func (auo *AppUpdateOne) RemoveAppPackageIDs(ids ...int64) *AppUpdateOne {
+	auo.mutation.RemoveAppPackageIDs(ids...)
+	return auo
+}
+
+// RemoveAppPackage removes "app_package" edges to AppPackage entities.
+func (auo *AppUpdateOne) RemoveAppPackage(a ...*AppPackage) *AppUpdateOne {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveAppPackageIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
@@ -447,7 +669,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if err := auo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(app.Table, app.Columns, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
 	id, ok := auo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "App.id" for update`)}
@@ -471,12 +693,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := auo.mutation.InternalID(); ok {
-		_spec.SetField(app.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := auo.mutation.AddedInternalID(); ok {
-		_spec.AddField(app.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := auo.mutation.Source(); ok {
 		_spec.SetField(app.FieldSource, field.TypeEnum, value)
@@ -519,6 +735,114 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
+	}
+	if auo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedUserIDs(); len(nodes) > 0 && !auo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedAppPackageIDs(); len(nodes) > 0 && !auo.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &App{config: auo.config}
 	_spec.Assign = _node.assignValues

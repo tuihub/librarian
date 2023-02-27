@@ -11,8 +11,6 @@ const (
 	Label = "feed"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternalID holds the string denoting the internal_id field in the database.
-	FieldInternalID = "internal_id"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
 	// FieldLink holds the string denoting the link field in the database.
@@ -29,10 +27,19 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeItem holds the string denoting the item edge name in mutations.
+	EdgeItem = "item"
 	// EdgeConfig holds the string denoting the config edge name in mutations.
 	EdgeConfig = "config"
 	// Table holds the table name of the feed in the database.
 	Table = "feeds"
+	// ItemTable is the table that holds the item relation/edge.
+	ItemTable = "feed_items"
+	// ItemInverseTable is the table name for the FeedItem entity.
+	// It exists in this package in order to avoid circular dependency with the "feeditem" package.
+	ItemInverseTable = "feed_items"
+	// ItemColumn is the table column denoting the item relation/edge.
+	ItemColumn = "feed_item"
 	// ConfigTable is the table that holds the config relation/edge.
 	ConfigTable = "feeds"
 	// ConfigInverseTable is the table name for the FeedConfig entity.
@@ -45,7 +52,6 @@ const (
 // Columns holds all SQL columns for feed fields.
 var Columns = []string{
 	FieldID,
-	FieldInternalID,
 	FieldTitle,
 	FieldLink,
 	FieldDescription,

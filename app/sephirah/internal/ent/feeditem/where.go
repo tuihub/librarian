@@ -6,57 +6,53 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.FeedItem {
+func ID(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.FeedItem {
+func IDEQ(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.FeedItem {
+func IDNEQ(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.FeedItem {
+func IDIn(ids ...int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.FeedItem {
+func IDNotIn(ids ...int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.FeedItem {
+func IDGT(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.FeedItem {
+func IDGTE(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.FeedItem {
+func IDLT(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.FeedItem {
+func IDLTE(id int64) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldID, id))
-}
-
-// InternalID applies equality check predicate on the "internal_id" field. It's identical to InternalIDEQ.
-func InternalID(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldEQ(FieldInternalID, v))
 }
 
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
@@ -112,46 +108,6 @@ func UpdatedAt(v time.Time) predicate.FeedItem {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// InternalIDEQ applies the EQ predicate on the "internal_id" field.
-func InternalIDEQ(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldEQ(FieldInternalID, v))
-}
-
-// InternalIDNEQ applies the NEQ predicate on the "internal_id" field.
-func InternalIDNEQ(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldNEQ(FieldInternalID, v))
-}
-
-// InternalIDIn applies the In predicate on the "internal_id" field.
-func InternalIDIn(vs ...int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldIn(FieldInternalID, vs...))
-}
-
-// InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
-func InternalIDNotIn(vs ...int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldNotIn(FieldInternalID, vs...))
-}
-
-// InternalIDGT applies the GT predicate on the "internal_id" field.
-func InternalIDGT(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldGT(FieldInternalID, v))
-}
-
-// InternalIDGTE applies the GTE predicate on the "internal_id" field.
-func InternalIDGTE(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldGTE(FieldInternalID, v))
-}
-
-// InternalIDLT applies the LT predicate on the "internal_id" field.
-func InternalIDLT(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldLT(FieldInternalID, v))
-}
-
-// InternalIDLTE applies the LTE predicate on the "internal_id" field.
-func InternalIDLTE(v int64) predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldLTE(FieldInternalID, v))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -767,6 +723,33 @@ func CreatedAtLT(v time.Time) predicate.FeedItem {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasFeed applies the HasEdge predicate on the "feed" edge.
+func HasFeed() predicate.FeedItem {
+	return predicate.FeedItem(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, FeedTable, FeedColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedWith applies the HasEdge predicate on the "feed" edge with a given conditions (other predicates).
+func HasFeedWith(preds ...predicate.Feed) predicate.FeedItem {
+	return predicate.FeedItem(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(FeedInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, FeedTable, FeedColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

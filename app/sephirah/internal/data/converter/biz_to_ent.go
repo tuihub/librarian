@@ -10,14 +10,26 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // goverter:converter
+// goverter:extend ToEntInternalID
+// goverter:extend ToEntUserType
+// goverter:extend ToEntUserStatus
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
 type toEntConverter interface {
+	ToEntInternalIDList([]model.InternalID) []int64
+	ToEntUserTypeList([]libauth.UserType) []user.Type
+	ToEntUserStatusList([]biztiphereth.UserStatus) []user.Status
+
 	ToEntFeedConfigSourceList([]bizyesod.FeedConfigSource) []feedconfig.Source
 	ToEntFeedConfigStatusList([]bizyesod.FeedConfigStatus) []feedconfig.Status
+}
+
+func ToEntInternalID(id model.InternalID) int64 {
+	return int64(id)
 }
 
 func ToEntUserType(t libauth.UserType) user.Type {

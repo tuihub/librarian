@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -15,9 +16,14 @@ type FeedConfig struct {
 
 // Fields of the FeedConfig.
 func (FeedConfig) Fields() []ent.Field {
+	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("internal_id").
-			Unique(),
+		field.Int64("id").
+			Unique().
+			Immutable().
+			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
+				Incremental: &incrementalEnabled,
+			}),
 		field.String("feed_url"),
 		field.Int64("author_account"),
 		field.Enum("source").Values("common"),
@@ -37,6 +43,11 @@ func (FeedConfig) Fields() []ent.Field {
 // Edges of the FeedConfig.
 func (FeedConfig) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("feed", Feed.Type),
+		edge.From("user", User.Type).
+			Ref("feed_config").
+			Required().
+			Unique(),
+		edge.To("feed", Feed.Type).
+			Unique(),
 	}
 }

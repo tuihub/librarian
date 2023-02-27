@@ -18,9 +18,7 @@ import (
 type Feed struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Link holds the value of the "link" field.
@@ -40,22 +38,33 @@ type Feed struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedQuery when eager-loading is set.
 	Edges            FeedEdges `json:"edges"`
-	feed_config_feed *int
+	feed_config_feed *int64
 }
 
 // FeedEdges holds the relations/edges for other nodes in the graph.
 type FeedEdges struct {
+	// Item holds the value of the item edge.
+	Item []*FeedItem `json:"item,omitempty"`
 	// Config holds the value of the config edge.
 	Config *FeedConfig `json:"config,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// ItemOrErr returns the Item value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedEdges) ItemOrErr() ([]*FeedItem, error) {
+	if e.loadedTypes[0] {
+		return e.Item, nil
+	}
+	return nil, &NotLoadedError{edge: "item"}
 }
 
 // ConfigOrErr returns the Config value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e FeedEdges) ConfigOrErr() (*FeedConfig, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		if e.Config == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: feedconfig.Label}
@@ -72,7 +81,7 @@ func (*Feed) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feed.FieldAuthors, feed.FieldImage:
 			values[i] = new([]byte)
-		case feed.FieldID, feed.FieldInternalID:
+		case feed.FieldID:
 			values[i] = new(sql.NullInt64)
 		case feed.FieldTitle, feed.FieldLink, feed.FieldDescription, feed.FieldLanguage:
 			values[i] = new(sql.NullString)
@@ -100,13 +109,7 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			f.ID = int(value.Int64)
-		case feed.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				f.InternalID = value.Int64
-			}
+			f.ID = int64(value.Int64)
 		case feed.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -163,12 +166,17 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field feed_config_feed", value)
 			} else if value.Valid {
-				f.feed_config_feed = new(int)
-				*f.feed_config_feed = int(value.Int64)
+				f.feed_config_feed = new(int64)
+				*f.feed_config_feed = int64(value.Int64)
 			}
 		}
 	}
 	return nil
+}
+
+// QueryItem queries the "item" edge of the Feed entity.
+func (f *Feed) QueryItem() *FeedItemQuery {
+	return NewFeedClient(f.config).QueryItem(f)
 }
 
 // QueryConfig queries the "config" edge of the Feed entity.
@@ -199,9 +207,6 @@ func (f *Feed) String() string {
 	var builder strings.Builder
 	builder.WriteString("Feed(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", f.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", f.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(f.Title)
 	builder.WriteString(", ")

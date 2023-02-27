@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // AccountCreate is the builder for creating a Account entity.
@@ -20,12 +21,6 @@ type AccountCreate struct {
 	mutation *AccountMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (ac *AccountCreate) SetInternalID(i int64) *AccountCreate {
-	ac.mutation.SetInternalID(i)
-	return ac
 }
 
 // SetPlatform sets the "platform" field.
@@ -86,6 +81,31 @@ func (ac *AccountCreate) SetNillableCreatedAt(t *time.Time) *AccountCreate {
 	return ac
 }
 
+// SetID sets the "id" field.
+func (ac *AccountCreate) SetID(i int64) *AccountCreate {
+	ac.mutation.SetID(i)
+	return ac
+}
+
+// SetUserID sets the "user" edge to the User entity by ID.
+func (ac *AccountCreate) SetUserID(id int64) *AccountCreate {
+	ac.mutation.SetUserID(id)
+	return ac
+}
+
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (ac *AccountCreate) SetNillableUserID(id *int64) *AccountCreate {
+	if id != nil {
+		ac = ac.SetUserID(*id)
+	}
+	return ac
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (ac *AccountCreate) SetUser(u *User) *AccountCreate {
+	return ac.SetUserID(u.ID)
+}
+
 // Mutation returns the AccountMutation object of the builder.
 func (ac *AccountCreate) Mutation() *AccountMutation {
 	return ac.mutation
@@ -133,9 +153,6 @@ func (ac *AccountCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ac *AccountCreate) check() error {
-	if _, ok := ac.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "Account.internal_id"`)}
-	}
 	if _, ok := ac.mutation.Platform(); !ok {
 		return &ValidationError{Name: "platform", err: errors.New(`ent: missing required field "Account.platform"`)}
 	}
@@ -176,8 +193,10 @@ func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
 	return _node, nil
@@ -186,12 +205,12 @@ func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
 func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Account{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(account.Table, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(account.Table, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = ac.conflict
-	if value, ok := ac.mutation.InternalID(); ok {
-		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := ac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := ac.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
@@ -221,6 +240,26 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   account.UserTable,
+			Columns: []string{account.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_account = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -228,7 +267,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Account.Create().
-//		SetInternalID(v).
+//		SetPlatform(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -237,7 +276,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AccountUpsert) {
-//			SetInternalID(v+v).
+//			SetPlatform(v+v).
 //		}).
 //		Exec(ctx)
 func (ac *AccountCreate) OnConflict(opts ...sql.ConflictOption) *AccountUpsertOne {
@@ -272,24 +311,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *AccountUpsert) SetInternalID(v int64) *AccountUpsert {
-	u.Set(account.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AccountUpsert) UpdateInternalID() *AccountUpsert {
-	u.SetExcluded(account.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AccountUpsert) AddInternalID(v int64) *AccountUpsert {
-	u.Add(account.FieldInternalID, v)
-	return u
-}
 
 // SetPlatform sets the "platform" field.
 func (u *AccountUpsert) SetPlatform(v account.Platform) *AccountUpsert {
@@ -375,16 +396,24 @@ func (u *AccountUpsert) UpdateCreatedAt() *AccountUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.Account.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(account.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AccountUpsertOne) UpdateNewValues() *AccountUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(account.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -413,27 +442,6 @@ func (u *AccountUpsertOne) Update(set func(*AccountUpsert)) *AccountUpsertOne {
 		set(&AccountUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AccountUpsertOne) SetInternalID(v int64) *AccountUpsertOne {
-	return u.Update(func(s *AccountUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AccountUpsertOne) AddInternalID(v int64) *AccountUpsertOne {
-	return u.Update(func(s *AccountUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AccountUpsertOne) UpdateInternalID() *AccountUpsertOne {
-	return u.Update(func(s *AccountUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetPlatform sets the "platform" field.
@@ -550,7 +558,7 @@ func (u *AccountUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AccountUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AccountUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -559,7 +567,7 @@ func (u *AccountUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AccountUpsertOne) IDX(ctx context.Context) int {
+func (u *AccountUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -610,9 +618,9 @@ func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -665,7 +673,7 @@ func (acb *AccountCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AccountUpsert) {
-//			SetInternalID(v+v).
+//			SetPlatform(v+v).
 //		}).
 //		Exec(ctx)
 func (acb *AccountCreateBulk) OnConflict(opts ...sql.ConflictOption) *AccountUpsertBulk {
@@ -700,10 +708,20 @@ type AccountUpsertBulk struct {
 //	client.Account.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(account.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AccountUpsertBulk) UpdateNewValues() *AccountUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(account.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -732,27 +750,6 @@ func (u *AccountUpsertBulk) Update(set func(*AccountUpsert)) *AccountUpsertBulk 
 		set(&AccountUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AccountUpsertBulk) SetInternalID(v int64) *AccountUpsertBulk {
-	return u.Update(func(s *AccountUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AccountUpsertBulk) AddInternalID(v int64) *AccountUpsertBulk {
-	return u.Update(func(s *AccountUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AccountUpsertBulk) UpdateInternalID() *AccountUpsertBulk {
-	return u.Update(func(s *AccountUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetPlatform sets the "platform" field.

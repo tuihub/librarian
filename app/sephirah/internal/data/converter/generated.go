@@ -8,6 +8,9 @@ import (
 	bizyesod "github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	ent "github.com/tuihub/librarian/app/sephirah/internal/ent"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	user "github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	libauth "github.com/tuihub/librarian/internal/lib/libauth"
+	model "github.com/tuihub/librarian/internal/model"
 	"time"
 )
 
@@ -17,7 +20,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
 	var pBizgeburaApp *bizgebura.App
 	if source != nil {
 		var bizgeburaApp bizgebura.App
-		bizgeburaApp.InternalID = (*source).InternalID
+		bizgeburaApp.InternalID = (*source).ID
 		bizgeburaApp.Source = ToBizAppSource((*source).Source)
 		bizgeburaApp.SourceAppID = (*source).SourceAppID
 		bizgeburaApp.SourceURL = (*source).SourceURL
@@ -41,7 +44,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.
 	var pBizgeburaAppPackage *bizgebura.AppPackage
 	if source != nil {
 		var bizgeburaAppPackage bizgebura.AppPackage
-		bizgeburaAppPackage.InternalID = (*source).InternalID
+		bizgeburaAppPackage.InternalID = (*source).ID
 		bizgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
 		bizgeburaAppPackage.SourceID = (*source).SourceID
 		bizgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
@@ -66,7 +69,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *bizyesod.F
 	var pBizyesodFeedConfig *bizyesod.FeedConfig
 	if source != nil {
 		var bizyesodFeedConfig bizyesod.FeedConfig
-		bizyesodFeedConfig.InternalID = (*source).InternalID
+		bizyesodFeedConfig.InternalID = (*source).ID
 		bizyesodFeedConfig.FeedURL = (*source).FeedURL
 		bizyesodFeedConfig.AuthorAccount = (*source).AuthorAccount
 		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
@@ -90,14 +93,23 @@ func (c *toBizConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
 	var pBiztipherethUser *biztiphereth.User
 	if source != nil {
 		var biztipherethUser biztiphereth.User
-		biztipherethUser.InternalID = (*source).InternalID
+		biztipherethUser.InternalID = (*source).ID
 		biztipherethUser.UserName = (*source).Username
-		biztipherethUser.PassWord = (*source).Password
 		biztipherethUser.Type = ToLibAuthUserType((*source).Type)
 		biztipherethUser.Status = ToBizUserStatus((*source).Status)
 		pBiztipherethUser = &biztipherethUser
 	}
 	return pBiztipherethUser
+}
+func (c *toBizConverterImpl) ToBizUserList(source []*ent.User) []*biztiphereth.User {
+	var pBiztipherethUserList []*biztiphereth.User
+	if source != nil {
+		pBiztipherethUserList = make([]*biztiphereth.User, len(source))
+		for i := 0; i < len(source); i++ {
+			pBiztipherethUserList[i] = c.ToBizUser(source[i])
+		}
+	}
+	return pBiztipherethUserList
 }
 func (c *toBizConverterImpl) entAppPackageToPBizgeburaAppPackageBinary(source ent.AppPackage) *bizgebura.AppPackageBinary {
 	bizgeburaAppPackageBinary := c.ToBizAppPacakgeBinary(source)
@@ -138,4 +150,34 @@ func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []bizyesod.FeedCon
 		}
 	}
 	return feedconfigStatusList
+}
+func (c *toEntConverterImpl) ToEntInternalIDList(source []model.InternalID) []int64 {
+	var int64List []int64
+	if source != nil {
+		int64List = make([]int64, len(source))
+		for i := 0; i < len(source); i++ {
+			int64List[i] = ToEntInternalID(source[i])
+		}
+	}
+	return int64List
+}
+func (c *toEntConverterImpl) ToEntUserStatusList(source []biztiphereth.UserStatus) []user.Status {
+	var userStatusList []user.Status
+	if source != nil {
+		userStatusList = make([]user.Status, len(source))
+		for i := 0; i < len(source); i++ {
+			userStatusList[i] = ToEntUserStatus(source[i])
+		}
+	}
+	return userStatusList
+}
+func (c *toEntConverterImpl) ToEntUserTypeList(source []libauth.UserType) []user.Type {
+	var userTypeList []user.Type
+	if source != nil {
+		userTypeList = make([]user.Type, len(source))
+		for i := 0; i < len(source); i++ {
+			userTypeList[i] = ToEntUserType(source[i])
+		}
+	}
+	return userTypeList
 }

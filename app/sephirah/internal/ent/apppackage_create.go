@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 )
 
@@ -20,12 +21,6 @@ type AppPackageCreate struct {
 	mutation *AppPackageMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (apc *AppPackageCreate) SetInternalID(i int64) *AppPackageCreate {
-	apc.mutation.SetInternalID(i)
-	return apc
 }
 
 // SetSource sets the "source" field.
@@ -104,6 +99,31 @@ func (apc *AppPackageCreate) SetNillableCreatedAt(t *time.Time) *AppPackageCreat
 	return apc
 }
 
+// SetID sets the "id" field.
+func (apc *AppPackageCreate) SetID(i int64) *AppPackageCreate {
+	apc.mutation.SetID(i)
+	return apc
+}
+
+// SetAppID sets the "app" edge to the App entity by ID.
+func (apc *AppPackageCreate) SetAppID(id int64) *AppPackageCreate {
+	apc.mutation.SetAppID(id)
+	return apc
+}
+
+// SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
+func (apc *AppPackageCreate) SetNillableAppID(id *int64) *AppPackageCreate {
+	if id != nil {
+		apc = apc.SetAppID(*id)
+	}
+	return apc
+}
+
+// SetApp sets the "app" edge to the App entity.
+func (apc *AppPackageCreate) SetApp(a *App) *AppPackageCreate {
+	return apc.SetAppID(a.ID)
+}
+
 // Mutation returns the AppPackageMutation object of the builder.
 func (apc *AppPackageCreate) Mutation() *AppPackageMutation {
 	return apc.mutation
@@ -151,9 +171,6 @@ func (apc *AppPackageCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (apc *AppPackageCreate) check() error {
-	if _, ok := apc.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "AppPackage.internal_id"`)}
-	}
 	if _, ok := apc.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "AppPackage.source"`)}
 	}
@@ -203,8 +220,10 @@ func (apc *AppPackageCreate) sqlSave(ctx context.Context) (*AppPackage, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	apc.mutation.id = &_node.ID
 	apc.mutation.done = true
 	return _node, nil
@@ -213,12 +232,12 @@ func (apc *AppPackageCreate) sqlSave(ctx context.Context) (*AppPackage, error) {
 func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AppPackage{config: apc.config}
-		_spec = sqlgraph.NewCreateSpec(apppackage.Table, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(apppackage.Table, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = apc.conflict
-	if value, ok := apc.mutation.InternalID(); ok {
-		_spec.SetField(apppackage.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := apc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := apc.mutation.Source(); ok {
 		_spec.SetField(apppackage.FieldSource, field.TypeEnum, value)
@@ -260,6 +279,26 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := apc.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.AppTable,
+			Columns: []string{apppackage.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.app_app_package = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -267,7 +306,7 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.AppPackage.Create().
-//		SetInternalID(v).
+//		SetSource(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -276,7 +315,7 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppPackageUpsert) {
-//			SetInternalID(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (apc *AppPackageCreate) OnConflict(opts ...sql.ConflictOption) *AppPackageUpsertOne {
@@ -311,24 +350,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppPackageUpsert) SetInternalID(v int64) *AppPackageUpsert {
-	u.Set(apppackage.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppPackageUpsert) UpdateInternalID() *AppPackageUpsert {
-	u.SetExcluded(apppackage.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppPackageUpsert) AddInternalID(v int64) *AppPackageUpsert {
-	u.Add(apppackage.FieldInternalID, v)
-	return u
-}
 
 // SetSource sets the "source" field.
 func (u *AppPackageUpsert) SetSource(v apppackage.Source) *AppPackageUpsert {
@@ -462,16 +483,24 @@ func (u *AppPackageUpsert) UpdateCreatedAt() *AppPackageUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.AppPackage.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(apppackage.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppPackageUpsertOne) UpdateNewValues() *AppPackageUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(apppackage.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -500,27 +529,6 @@ func (u *AppPackageUpsertOne) Update(set func(*AppPackageUpsert)) *AppPackageUps
 		set(&AppPackageUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppPackageUpsertOne) SetInternalID(v int64) *AppPackageUpsertOne {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppPackageUpsertOne) AddInternalID(v int64) *AppPackageUpsertOne {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppPackageUpsertOne) UpdateInternalID() *AppPackageUpsertOne {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetSource sets the "source" field.
@@ -693,7 +701,7 @@ func (u *AppPackageUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppPackageUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AppPackageUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -702,7 +710,7 @@ func (u *AppPackageUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppPackageUpsertOne) IDX(ctx context.Context) int {
+func (u *AppPackageUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -753,9 +761,9 @@ func (apcb *AppPackageCreateBulk) Save(ctx context.Context) ([]*AppPackage, erro
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -808,7 +816,7 @@ func (apcb *AppPackageCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppPackageUpsert) {
-//			SetInternalID(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (apcb *AppPackageCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppPackageUpsertBulk {
@@ -843,10 +851,20 @@ type AppPackageUpsertBulk struct {
 //	client.AppPackage.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(apppackage.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppPackageUpsertBulk) UpdateNewValues() *AppPackageUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(apppackage.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -875,27 +893,6 @@ func (u *AppPackageUpsertBulk) Update(set func(*AppPackageUpsert)) *AppPackageUp
 		set(&AppPackageUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppPackageUpsertBulk) SetInternalID(v int64) *AppPackageUpsertBulk {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppPackageUpsertBulk) AddInternalID(v int64) *AppPackageUpsertBulk {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppPackageUpsertBulk) UpdateInternalID() *AppPackageUpsertBulk {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetSource sets the "source" field.

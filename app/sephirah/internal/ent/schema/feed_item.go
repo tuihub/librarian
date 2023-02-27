@@ -6,6 +6,8 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -16,9 +18,14 @@ type FeedItem struct {
 
 // Fields of the FeedItem.
 func (FeedItem) Fields() []ent.Field {
+	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("internal_id").
-			Unique(),
+		field.Int64("id").
+			Unique().
+			Immutable().
+			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
+				Incremental: &incrementalEnabled,
+			}),
 		field.String("title"),
 		field.JSON("authors", []modelfeed.Person{}),
 		field.String("description"),
@@ -40,5 +47,10 @@ func (FeedItem) Fields() []ent.Field {
 
 // Edges of the FeedItem.
 func (FeedItem) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("feed", Feed.Type).
+			Ref("item").
+			Unique().
+			Required(),
+	}
 }

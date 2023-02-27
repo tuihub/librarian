@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
@@ -21,6 +22,8 @@ type FeedItemQuery struct {
 	order      []OrderFunc
 	inters     []Interceptor
 	predicates []predicate.FeedItem
+	withFeed   *FeedQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +60,28 @@ func (fiq *FeedItemQuery) Order(o ...OrderFunc) *FeedItemQuery {
 	return fiq
 }
 
+// QueryFeed chains the current query on the "feed" edge.
+func (fiq *FeedItemQuery) QueryFeed() *FeedQuery {
+	query := (&FeedClient{config: fiq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fiq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fiq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditem.Table, feeditem.FieldID, selector),
+			sqlgraph.To(feed.Table, feed.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feeditem.FeedTable, feeditem.FeedColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fiq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first FeedItem entity from the query.
 // Returns a *NotFoundError when no FeedItem was found.
 func (fiq *FeedItemQuery) First(ctx context.Context) (*FeedItem, error) {
@@ -81,8 +106,8 @@ func (fiq *FeedItemQuery) FirstX(ctx context.Context) *FeedItem {
 
 // FirstID returns the first FeedItem ID from the query.
 // Returns a *NotFoundError when no FeedItem ID was found.
-func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -94,7 +119,7 @@ func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fiq *FeedItemQuery) FirstIDX(ctx context.Context) int {
+func (fiq *FeedItemQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := fiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -132,8 +157,8 @@ func (fiq *FeedItemQuery) OnlyX(ctx context.Context) *FeedItem {
 // OnlyID is like Only, but returns the only FeedItem ID in the query.
 // Returns a *NotSingularError when more than one FeedItem ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -149,7 +174,7 @@ func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fiq *FeedItemQuery) OnlyIDX(ctx context.Context) int {
+func (fiq *FeedItemQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := fiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,7 +202,7 @@ func (fiq *FeedItemQuery) AllX(ctx context.Context) []*FeedItem {
 }
 
 // IDs executes the query and returns a list of FeedItem IDs.
-func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if fiq.ctx.Unique == nil && fiq.path != nil {
 		fiq.Unique(true)
 	}
@@ -189,7 +214,7 @@ func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fiq *FeedItemQuery) IDsX(ctx context.Context) []int {
+func (fiq *FeedItemQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := fiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -249,10 +274,22 @@ func (fiq *FeedItemQuery) Clone() *FeedItemQuery {
 		order:      append([]OrderFunc{}, fiq.order...),
 		inters:     append([]Interceptor{}, fiq.inters...),
 		predicates: append([]predicate.FeedItem{}, fiq.predicates...),
+		withFeed:   fiq.withFeed.Clone(),
 		// clone intermediate query.
 		sql:  fiq.sql.Clone(),
 		path: fiq.path,
 	}
+}
+
+// WithFeed tells the query-builder to eager-load the nodes that are connected to
+// the "feed" edge. The optional arguments are used to configure the query builder of the edge.
+func (fiq *FeedItemQuery) WithFeed(opts ...func(*FeedQuery)) *FeedItemQuery {
+	query := (&FeedClient{config: fiq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fiq.withFeed = query
+	return fiq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -261,12 +298,12 @@ func (fiq *FeedItemQuery) Clone() *FeedItemQuery {
 // Example:
 //
 //	var v []struct {
-//		InternalID int64 `json:"internal_id,omitempty"`
+//		Title string `json:"title,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.FeedItem.Query().
-//		GroupBy(feeditem.FieldInternalID).
+//		GroupBy(feeditem.FieldTitle).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fiq *FeedItemQuery) GroupBy(field string, fields ...string) *FeedItemGroupBy {
@@ -284,11 +321,11 @@ func (fiq *FeedItemQuery) GroupBy(field string, fields ...string) *FeedItemGroup
 // Example:
 //
 //	var v []struct {
-//		InternalID int64 `json:"internal_id,omitempty"`
+//		Title string `json:"title,omitempty"`
 //	}
 //
 //	client.FeedItem.Query().
-//		Select(feeditem.FieldInternalID).
+//		Select(feeditem.FieldTitle).
 //		Scan(ctx, &v)
 func (fiq *FeedItemQuery) Select(fields ...string) *FeedItemSelect {
 	fiq.ctx.Fields = append(fiq.ctx.Fields, fields...)
@@ -331,15 +368,26 @@ func (fiq *FeedItemQuery) prepareQuery(ctx context.Context) error {
 
 func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedItem, error) {
 	var (
-		nodes = []*FeedItem{}
-		_spec = fiq.querySpec()
+		nodes       = []*FeedItem{}
+		withFKs     = fiq.withFKs
+		_spec       = fiq.querySpec()
+		loadedTypes = [1]bool{
+			fiq.withFeed != nil,
+		}
 	)
+	if fiq.withFeed != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, feeditem.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FeedItem).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &FeedItem{config: fiq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +399,46 @@ func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fe
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := fiq.withFeed; query != nil {
+		if err := fiq.loadFeed(ctx, query, nodes, nil,
+			func(n *FeedItem, e *Feed) { n.Edges.Feed = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (fiq *FeedItemQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedItem, init func(*FeedItem), assign func(*FeedItem, *Feed)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*FeedItem)
+	for i := range nodes {
+		if nodes[i].feed_item == nil {
+			continue
+		}
+		fk := *nodes[i].feed_item
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(feed.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "feed_item" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (fiq *FeedItemQuery) sqlCount(ctx context.Context) (int, error) {
@@ -364,7 +451,7 @@ func (fiq *FeedItemQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (fiq *FeedItemQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
 	_spec.From = fiq.sql
 	if unique := fiq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

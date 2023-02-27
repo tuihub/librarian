@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -15,9 +17,14 @@ type Account struct {
 
 // Fields of the Account.
 func (Account) Fields() []ent.Field {
+	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("internal_id").
-			Unique(),
+		field.Int64("id").
+			Unique().
+			Immutable().
+			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
+				Incremental: &incrementalEnabled,
+			}),
 		field.Enum("platform").
 			Values("steam"),
 		field.String("platform_account_id"),
@@ -40,5 +47,9 @@ func (Account) Indexes() []ent.Index {
 
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("user", User.Type).
+			Ref("account").
+			Unique(),
+	}
 }

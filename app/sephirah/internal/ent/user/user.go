@@ -12,8 +12,6 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternalID holds the string denoting the internal_id field in the database.
-	FieldInternalID = "internal_id"
 	// FieldUsername holds the string denoting the username field in the database.
 	FieldUsername = "username"
 	// FieldPassword holds the string denoting the password field in the database.
@@ -26,14 +24,50 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeAccount holds the string denoting the account edge name in mutations.
+	EdgeAccount = "account"
+	// EdgeApp holds the string denoting the app edge name in mutations.
+	EdgeApp = "app"
+	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
+	EdgeFeedConfig = "feed_config"
+	// EdgeCreator holds the string denoting the creator edge name in mutations.
+	EdgeCreator = "creator"
+	// EdgeCreate holds the string denoting the create edge name in mutations.
+	EdgeCreate = "create"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// AccountTable is the table that holds the account relation/edge.
+	AccountTable = "accounts"
+	// AccountInverseTable is the table name for the Account entity.
+	// It exists in this package in order to avoid circular dependency with the "account" package.
+	AccountInverseTable = "accounts"
+	// AccountColumn is the table column denoting the account relation/edge.
+	AccountColumn = "user_account"
+	// AppTable is the table that holds the app relation/edge. The primary key declared below.
+	AppTable = "user_app"
+	// AppInverseTable is the table name for the App entity.
+	// It exists in this package in order to avoid circular dependency with the "app" package.
+	AppInverseTable = "apps"
+	// FeedConfigTable is the table that holds the feed_config relation/edge.
+	FeedConfigTable = "feed_configs"
+	// FeedConfigInverseTable is the table name for the FeedConfig entity.
+	// It exists in this package in order to avoid circular dependency with the "feedconfig" package.
+	FeedConfigInverseTable = "feed_configs"
+	// FeedConfigColumn is the table column denoting the feed_config relation/edge.
+	FeedConfigColumn = "user_feed_config"
+	// CreatorTable is the table that holds the creator relation/edge.
+	CreatorTable = "users"
+	// CreatorColumn is the table column denoting the creator relation/edge.
+	CreatorColumn = "user_create"
+	// CreateTable is the table that holds the create relation/edge.
+	CreateTable = "users"
+	// CreateColumn is the table column denoting the create relation/edge.
+	CreateColumn = "user_create"
 )
 
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
-	FieldInternalID,
 	FieldUsername,
 	FieldPassword,
 	FieldStatus,
@@ -42,10 +76,27 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "users"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"user_create",
+}
+
+var (
+	// AppPrimaryKey and AppColumn2 are the table columns denoting the
+	// primary key for the app relation (M2M).
+	AppPrimaryKey = []string{"user_id", "app_id"}
+)
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

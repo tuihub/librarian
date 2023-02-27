@@ -11,6 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
@@ -20,12 +23,6 @@ type UserCreate struct {
 	mutation *UserMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (uc *UserCreate) SetInternalID(i int64) *UserCreate {
-	uc.mutation.SetInternalID(i)
-	return uc
 }
 
 // SetUsername sets the "username" field.
@@ -80,6 +77,91 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 	return uc
 }
 
+// SetID sets the "id" field.
+func (uc *UserCreate) SetID(i int64) *UserCreate {
+	uc.mutation.SetID(i)
+	return uc
+}
+
+// AddAccountIDs adds the "account" edge to the Account entity by IDs.
+func (uc *UserCreate) AddAccountIDs(ids ...int64) *UserCreate {
+	uc.mutation.AddAccountIDs(ids...)
+	return uc
+}
+
+// AddAccount adds the "account" edges to the Account entity.
+func (uc *UserCreate) AddAccount(a ...*Account) *UserCreate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uc.AddAccountIDs(ids...)
+}
+
+// AddAppIDs adds the "app" edge to the App entity by IDs.
+func (uc *UserCreate) AddAppIDs(ids ...int64) *UserCreate {
+	uc.mutation.AddAppIDs(ids...)
+	return uc
+}
+
+// AddApp adds the "app" edges to the App entity.
+func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uc.AddAppIDs(ids...)
+}
+
+// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
+func (uc *UserCreate) AddFeedConfigIDs(ids ...int64) *UserCreate {
+	uc.mutation.AddFeedConfigIDs(ids...)
+	return uc
+}
+
+// AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
+func (uc *UserCreate) AddFeedConfig(f ...*FeedConfig) *UserCreate {
+	ids := make([]int64, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uc.AddFeedConfigIDs(ids...)
+}
+
+// SetCreatorID sets the "creator" edge to the User entity by ID.
+func (uc *UserCreate) SetCreatorID(id int64) *UserCreate {
+	uc.mutation.SetCreatorID(id)
+	return uc
+}
+
+// SetNillableCreatorID sets the "creator" edge to the User entity by ID if the given value is not nil.
+func (uc *UserCreate) SetNillableCreatorID(id *int64) *UserCreate {
+	if id != nil {
+		uc = uc.SetCreatorID(*id)
+	}
+	return uc
+}
+
+// SetCreator sets the "creator" edge to the User entity.
+func (uc *UserCreate) SetCreator(u *User) *UserCreate {
+	return uc.SetCreatorID(u.ID)
+}
+
+// AddCreateIDs adds the "create" edge to the User entity by IDs.
+func (uc *UserCreate) AddCreateIDs(ids ...int64) *UserCreate {
+	uc.mutation.AddCreateIDs(ids...)
+	return uc
+}
+
+// AddCreate adds the "create" edges to the User entity.
+func (uc *UserCreate) AddCreate(u ...*User) *UserCreate {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uc.AddCreateIDs(ids...)
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uc *UserCreate) Mutation() *UserMutation {
 	return uc.mutation
@@ -127,9 +209,6 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "User.internal_id"`)}
-	}
 	if _, ok := uc.mutation.Username(); !ok {
 		return &ValidationError{Name: "username", err: errors.New(`ent: missing required field "User.username"`)}
 	}
@@ -172,8 +251,10 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	uc.mutation.id = &_node.ID
 	uc.mutation.done = true
 	return _node, nil
@@ -182,12 +263,12 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	var (
 		_node = &User{config: uc.config}
-		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(user.Table, sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = uc.conflict
-	if value, ok := uc.mutation.InternalID(); ok {
-		_spec.SetField(user.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := uc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := uc.mutation.Username(); ok {
 		_spec.SetField(user.FieldUsername, field.TypeString, value)
@@ -213,6 +294,102 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := uc.mutation.AccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: account.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   user.AppTable,
+			Columns: user.AppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.FeedConfigIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedConfigTable,
+			Columns: []string{user.FeedConfigColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feedconfig.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CreatorIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   user.CreatorTable,
+			Columns: []string{user.CreatorColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_create = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.CreateIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.CreateTable,
+			Columns: []string{user.CreateColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -220,7 +397,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.User.Create().
-//		SetInternalID(v).
+//		SetUsername(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -229,7 +406,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.UserUpsert) {
-//			SetInternalID(v+v).
+//			SetUsername(v+v).
 //		}).
 //		Exec(ctx)
 func (uc *UserCreate) OnConflict(opts ...sql.ConflictOption) *UserUpsertOne {
@@ -264,24 +441,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *UserUpsert) SetInternalID(v int64) *UserUpsert {
-	u.Set(user.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *UserUpsert) UpdateInternalID() *UserUpsert {
-	u.SetExcluded(user.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *UserUpsert) AddInternalID(v int64) *UserUpsert {
-	u.Add(user.FieldInternalID, v)
-	return u
-}
 
 // SetUsername sets the "username" field.
 func (u *UserUpsert) SetUsername(v string) *UserUpsert {
@@ -355,16 +514,24 @@ func (u *UserUpsert) UpdateCreatedAt() *UserUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.User.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(user.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *UserUpsertOne) UpdateNewValues() *UserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(user.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -393,27 +560,6 @@ func (u *UserUpsertOne) Update(set func(*UserUpsert)) *UserUpsertOne {
 		set(&UserUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *UserUpsertOne) SetInternalID(v int64) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *UserUpsertOne) AddInternalID(v int64) *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *UserUpsertOne) UpdateInternalID() *UserUpsertOne {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetUsername sets the "username" field.
@@ -516,7 +662,7 @@ func (u *UserUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *UserUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *UserUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -525,7 +671,7 @@ func (u *UserUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *UserUpsertOne) IDX(ctx context.Context) int {
+func (u *UserUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -576,9 +722,9 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -631,7 +777,7 @@ func (ucb *UserCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.UserUpsert) {
-//			SetInternalID(v+v).
+//			SetUsername(v+v).
 //		}).
 //		Exec(ctx)
 func (ucb *UserCreateBulk) OnConflict(opts ...sql.ConflictOption) *UserUpsertBulk {
@@ -666,10 +812,20 @@ type UserUpsertBulk struct {
 //	client.User.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(user.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *UserUpsertBulk) UpdateNewValues() *UserUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(user.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -698,27 +854,6 @@ func (u *UserUpsertBulk) Update(set func(*UserUpsert)) *UserUpsertBulk {
 		set(&UserUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *UserUpsertBulk) SetInternalID(v int64) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *UserUpsertBulk) AddInternalID(v int64) *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *UserUpsertBulk) UpdateInternalID() *UserUpsertBulk {
-	return u.Update(func(s *UserUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetUsername sets the "username" field.

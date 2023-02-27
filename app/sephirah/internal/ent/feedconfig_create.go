@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // FeedConfigCreate is the builder for creating a FeedConfig entity.
@@ -21,12 +22,6 @@ type FeedConfigCreate struct {
 	mutation *FeedConfigMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fcc *FeedConfigCreate) SetInternalID(i int64) *FeedConfigCreate {
-	fcc.mutation.SetInternalID(i)
-	return fcc
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -101,19 +96,40 @@ func (fcc *FeedConfigCreate) SetNillableCreatedAt(t *time.Time) *FeedConfigCreat
 	return fcc
 }
 
-// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
-func (fcc *FeedConfigCreate) AddFeedIDs(ids ...int) *FeedConfigCreate {
-	fcc.mutation.AddFeedIDs(ids...)
+// SetID sets the "id" field.
+func (fcc *FeedConfigCreate) SetID(i int64) *FeedConfigCreate {
+	fcc.mutation.SetID(i)
 	return fcc
 }
 
-// AddFeed adds the "feed" edges to the Feed entity.
-func (fcc *FeedConfigCreate) AddFeed(f ...*Feed) *FeedConfigCreate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetUserID sets the "user" edge to the User entity by ID.
+func (fcc *FeedConfigCreate) SetUserID(id int64) *FeedConfigCreate {
+	fcc.mutation.SetUserID(id)
+	return fcc
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (fcc *FeedConfigCreate) SetUser(u *User) *FeedConfigCreate {
+	return fcc.SetUserID(u.ID)
+}
+
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fcc *FeedConfigCreate) SetFeedID(id int64) *FeedConfigCreate {
+	fcc.mutation.SetFeedID(id)
+	return fcc
+}
+
+// SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
+func (fcc *FeedConfigCreate) SetNillableFeedID(id *int64) *FeedConfigCreate {
+	if id != nil {
+		fcc = fcc.SetFeedID(*id)
 	}
-	return fcc.AddFeedIDs(ids...)
+	return fcc
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fcc *FeedConfigCreate) SetFeed(f *Feed) *FeedConfigCreate {
+	return fcc.SetFeedID(f.ID)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -167,9 +183,6 @@ func (fcc *FeedConfigCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcc *FeedConfigCreate) check() error {
-	if _, ok := fcc.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "FeedConfig.internal_id"`)}
-	}
 	if _, ok := fcc.mutation.FeedURL(); !ok {
 		return &ValidationError{Name: "feed_url", err: errors.New(`ent: missing required field "FeedConfig.feed_url"`)}
 	}
@@ -204,6 +217,9 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedConfig.created_at"`)}
 	}
+	if _, ok := fcc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "FeedConfig.user"`)}
+	}
 	return nil
 }
 
@@ -218,8 +234,10 @@ func (fcc *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	fcc.mutation.id = &_node.ID
 	fcc.mutation.done = true
 	return _node, nil
@@ -228,12 +246,12 @@ func (fcc *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
 func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FeedConfig{config: fcc.config}
-		_spec = sqlgraph.NewCreateSpec(feedconfig.Table, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(feedconfig.Table, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = fcc.conflict
-	if value, ok := fcc.mutation.InternalID(); ok {
-		_spec.SetField(feedconfig.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := fcc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := fcc.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
@@ -267,16 +285,36 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := fcc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feedconfig.UserTable,
+			Columns: []string{feedconfig.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_feed_config = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := fcc.mutation.FeedIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   feedconfig.FeedTable,
 			Columns: []string{feedconfig.FeedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeInt64,
 					Column: feed.FieldID,
 				},
 			},
@@ -293,7 +331,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.FeedConfig.Create().
-//		SetInternalID(v).
+//		SetFeedURL(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -302,7 +340,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetInternalID(v+v).
+//			SetFeedURL(v+v).
 //		}).
 //		Exec(ctx)
 func (fcc *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertOne {
@@ -337,24 +375,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedConfigUpsert) SetInternalID(v int64) *FeedConfigUpsert {
-	u.Set(feedconfig.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedConfigUpsert) UpdateInternalID() *FeedConfigUpsert {
-	u.SetExcluded(feedconfig.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedConfigUpsert) AddInternalID(v int64) *FeedConfigUpsert {
-	u.Add(feedconfig.FieldInternalID, v)
-	return u
-}
 
 // SetFeedURL sets the "feed_url" field.
 func (u *FeedConfigUpsert) SetFeedURL(v string) *FeedConfigUpsert {
@@ -464,16 +484,24 @@ func (u *FeedConfigUpsert) UpdateCreatedAt() *FeedConfigUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.FeedConfig.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feedconfig.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *FeedConfigUpsertOne) UpdateNewValues() *FeedConfigUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(feedconfig.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -502,27 +530,6 @@ func (u *FeedConfigUpsertOne) Update(set func(*FeedConfigUpsert)) *FeedConfigUps
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedConfigUpsertOne) SetInternalID(v int64) *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedConfigUpsertOne) AddInternalID(v int64) *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedConfigUpsertOne) UpdateInternalID() *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -667,7 +674,7 @@ func (u *FeedConfigUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -676,7 +683,7 @@ func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeedConfigUpsertOne) IDX(ctx context.Context) int {
+func (u *FeedConfigUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -727,9 +734,9 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -782,7 +789,7 @@ func (fccb *FeedConfigCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetInternalID(v+v).
+//			SetFeedURL(v+v).
 //		}).
 //		Exec(ctx)
 func (fccb *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertBulk {
@@ -817,10 +824,20 @@ type FeedConfigUpsertBulk struct {
 //	client.FeedConfig.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feedconfig.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *FeedConfigUpsertBulk) UpdateNewValues() *FeedConfigUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(feedconfig.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -849,27 +866,6 @@ func (u *FeedConfigUpsertBulk) Update(set func(*FeedConfigUpsert)) *FeedConfigUp
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedConfigUpsertBulk) SetInternalID(v int64) *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedConfigUpsertBulk) AddInternalID(v int64) *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedConfigUpsertBulk) UpdateInternalID() *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetFeedURL sets the "feed_url" field.

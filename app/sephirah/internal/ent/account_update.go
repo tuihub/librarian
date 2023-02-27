@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // AccountUpdate is the builder for updating Account entities.
@@ -25,19 +26,6 @@ type AccountUpdate struct {
 // Where appends a list predicates to the AccountUpdate builder.
 func (au *AccountUpdate) Where(ps ...predicate.Account) *AccountUpdate {
 	au.mutation.Where(ps...)
-	return au
-}
-
-// SetInternalID sets the "internal_id" field.
-func (au *AccountUpdate) SetInternalID(i int64) *AccountUpdate {
-	au.mutation.ResetInternalID()
-	au.mutation.SetInternalID(i)
-	return au
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (au *AccountUpdate) AddInternalID(i int64) *AccountUpdate {
-	au.mutation.AddInternalID(i)
 	return au
 }
 
@@ -91,9 +79,34 @@ func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
 	return au
 }
 
+// SetUserID sets the "user" edge to the User entity by ID.
+func (au *AccountUpdate) SetUserID(id int64) *AccountUpdate {
+	au.mutation.SetUserID(id)
+	return au
+}
+
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (au *AccountUpdate) SetNillableUserID(id *int64) *AccountUpdate {
+	if id != nil {
+		au = au.SetUserID(*id)
+	}
+	return au
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (au *AccountUpdate) SetUser(u *User) *AccountUpdate {
+	return au.SetUserID(u.ID)
+}
+
 // Mutation returns the AccountMutation object of the builder.
 func (au *AccountUpdate) Mutation() *AccountMutation {
 	return au.mutation
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (au *AccountUpdate) ClearUser() *AccountUpdate {
+	au.mutation.ClearUser()
+	return au
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -146,19 +159,13 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := au.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := au.mutation.InternalID(); ok {
-		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := au.mutation.AddedInternalID(); ok {
-		_spec.AddField(account.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := au.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
@@ -181,6 +188,41 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
+	if au.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   account.UserTable,
+			Columns: []string{account.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   account.UserTable,
+			Columns: []string{account.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{account.Label}
@@ -199,19 +241,6 @@ type AccountUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AccountMutation
-}
-
-// SetInternalID sets the "internal_id" field.
-func (auo *AccountUpdateOne) SetInternalID(i int64) *AccountUpdateOne {
-	auo.mutation.ResetInternalID()
-	auo.mutation.SetInternalID(i)
-	return auo
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (auo *AccountUpdateOne) AddInternalID(i int64) *AccountUpdateOne {
-	auo.mutation.AddInternalID(i)
-	return auo
 }
 
 // SetPlatform sets the "platform" field.
@@ -264,9 +293,34 @@ func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOn
 	return auo
 }
 
+// SetUserID sets the "user" edge to the User entity by ID.
+func (auo *AccountUpdateOne) SetUserID(id int64) *AccountUpdateOne {
+	auo.mutation.SetUserID(id)
+	return auo
+}
+
+// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableUserID(id *int64) *AccountUpdateOne {
+	if id != nil {
+		auo = auo.SetUserID(*id)
+	}
+	return auo
+}
+
+// SetUser sets the "user" edge to the User entity.
+func (auo *AccountUpdateOne) SetUser(u *User) *AccountUpdateOne {
+	return auo.SetUserID(u.ID)
+}
+
 // Mutation returns the AccountMutation object of the builder.
 func (auo *AccountUpdateOne) Mutation() *AccountMutation {
 	return auo.mutation
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (auo *AccountUpdateOne) ClearUser() *AccountUpdateOne {
+	auo.mutation.ClearUser()
+	return auo
 }
 
 // Where appends a list predicates to the AccountUpdate builder.
@@ -332,7 +386,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	if err := auo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	id, ok := auo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Account.id" for update`)}
@@ -357,12 +411,6 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			}
 		}
 	}
-	if value, ok := auo.mutation.InternalID(); ok {
-		_spec.SetField(account.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := auo.mutation.AddedInternalID(); ok {
-		_spec.AddField(account.FieldInternalID, field.TypeInt64, value)
-	}
 	if value, ok := auo.mutation.Platform(); ok {
 		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
 	}
@@ -383,6 +431,41 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	}
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
+	}
+	if auo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   account.UserTable,
+			Columns: []string{account.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   account.UserTable,
+			Columns: []string{account.UserColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Account{config: auo.config}
 	_spec.Assign = _node.assignValues

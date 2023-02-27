@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // FeedConfigUpdate is the builder for updating FeedConfig entities.
@@ -26,19 +27,6 @@ type FeedConfigUpdate struct {
 // Where appends a list predicates to the FeedConfigUpdate builder.
 func (fcu *FeedConfigUpdate) Where(ps ...predicate.FeedConfig) *FeedConfigUpdate {
 	fcu.mutation.Where(ps...)
-	return fcu
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fcu *FeedConfigUpdate) SetInternalID(i int64) *FeedConfigUpdate {
-	fcu.mutation.ResetInternalID()
-	fcu.mutation.SetInternalID(i)
-	return fcu
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (fcu *FeedConfigUpdate) AddInternalID(i int64) *FeedConfigUpdate {
-	fcu.mutation.AddInternalID(i)
 	return fcu
 }
 
@@ -120,19 +108,34 @@ func (fcu *FeedConfigUpdate) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdat
 	return fcu
 }
 
-// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
-func (fcu *FeedConfigUpdate) AddFeedIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.AddFeedIDs(ids...)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (fcu *FeedConfigUpdate) SetUserID(id int64) *FeedConfigUpdate {
+	fcu.mutation.SetUserID(id)
 	return fcu
 }
 
-// AddFeed adds the "feed" edges to the Feed entity.
-func (fcu *FeedConfigUpdate) AddFeed(f ...*Feed) *FeedConfigUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetUser sets the "user" edge to the User entity.
+func (fcu *FeedConfigUpdate) SetUser(u *User) *FeedConfigUpdate {
+	return fcu.SetUserID(u.ID)
+}
+
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fcu *FeedConfigUpdate) SetFeedID(id int64) *FeedConfigUpdate {
+	fcu.mutation.SetFeedID(id)
+	return fcu
+}
+
+// SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableFeedID(id *int64) *FeedConfigUpdate {
+	if id != nil {
+		fcu = fcu.SetFeedID(*id)
 	}
-	return fcu.AddFeedIDs(ids...)
+	return fcu
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fcu *FeedConfigUpdate) SetFeed(f *Feed) *FeedConfigUpdate {
+	return fcu.SetFeedID(f.ID)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -140,25 +143,16 @@ func (fcu *FeedConfigUpdate) Mutation() *FeedConfigMutation {
 	return fcu.mutation
 }
 
-// ClearFeed clears all "feed" edges to the Feed entity.
+// ClearUser clears the "user" edge to the User entity.
+func (fcu *FeedConfigUpdate) ClearUser() *FeedConfigUpdate {
+	fcu.mutation.ClearUser()
+	return fcu
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
 func (fcu *FeedConfigUpdate) ClearFeed() *FeedConfigUpdate {
 	fcu.mutation.ClearFeed()
 	return fcu
-}
-
-// RemoveFeedIDs removes the "feed" edge to Feed entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveFeedIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.RemoveFeedIDs(ids...)
-	return fcu
-}
-
-// RemoveFeed removes "feed" edges to Feed entities.
-func (fcu *FeedConfigUpdate) RemoveFeed(f ...*Feed) *FeedConfigUpdate {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fcu.RemoveFeedIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -209,6 +203,9 @@ func (fcu *FeedConfigUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
+	if _, ok := fcu.mutation.UserID(); fcu.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedConfig.user"`)
+	}
 	return nil
 }
 
@@ -216,19 +213,13 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := fcu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
 	if ps := fcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := fcu.mutation.InternalID(); ok {
-		_spec.SetField(feedconfig.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := fcu.mutation.AddedInternalID(); ok {
-		_spec.AddField(feedconfig.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := fcu.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
@@ -260,51 +251,67 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcu.mutation.FeedCleared() {
+	if fcu.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   feedconfig.FeedTable,
-			Columns: []string{feedconfig.FeedColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feedconfig.UserTable,
+			Columns: []string{feedconfig.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feed.FieldID,
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.RemovedFeedIDs(); len(nodes) > 0 && !fcu.mutation.FeedCleared() {
+	if nodes := fcu.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   feedconfig.FeedTable,
-			Columns: []string{feedconfig.FeedColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feedconfig.UserTable,
+			Columns: []string{feedconfig.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feed.FieldID,
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := fcu.mutation.FeedIDs(); len(nodes) > 0 {
+	if fcu.mutation.FeedCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   feedconfig.FeedTable,
 			Columns: []string{feedconfig.FeedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
 					Column: feed.FieldID,
 				},
 			},
@@ -332,19 +339,6 @@ type FeedConfigUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *FeedConfigMutation
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fcuo *FeedConfigUpdateOne) SetInternalID(i int64) *FeedConfigUpdateOne {
-	fcuo.mutation.ResetInternalID()
-	fcuo.mutation.SetInternalID(i)
-	return fcuo
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (fcuo *FeedConfigUpdateOne) AddInternalID(i int64) *FeedConfigUpdateOne {
-	fcuo.mutation.AddInternalID(i)
-	return fcuo
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -425,19 +419,34 @@ func (fcuo *FeedConfigUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedConfigU
 	return fcuo
 }
 
-// AddFeedIDs adds the "feed" edge to the Feed entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddFeedIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.AddFeedIDs(ids...)
+// SetUserID sets the "user" edge to the User entity by ID.
+func (fcuo *FeedConfigUpdateOne) SetUserID(id int64) *FeedConfigUpdateOne {
+	fcuo.mutation.SetUserID(id)
 	return fcuo
 }
 
-// AddFeed adds the "feed" edges to the Feed entity.
-func (fcuo *FeedConfigUpdateOne) AddFeed(f ...*Feed) *FeedConfigUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// SetUser sets the "user" edge to the User entity.
+func (fcuo *FeedConfigUpdateOne) SetUser(u *User) *FeedConfigUpdateOne {
+	return fcuo.SetUserID(u.ID)
+}
+
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fcuo *FeedConfigUpdateOne) SetFeedID(id int64) *FeedConfigUpdateOne {
+	fcuo.mutation.SetFeedID(id)
+	return fcuo
+}
+
+// SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableFeedID(id *int64) *FeedConfigUpdateOne {
+	if id != nil {
+		fcuo = fcuo.SetFeedID(*id)
 	}
-	return fcuo.AddFeedIDs(ids...)
+	return fcuo
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fcuo *FeedConfigUpdateOne) SetFeed(f *Feed) *FeedConfigUpdateOne {
+	return fcuo.SetFeedID(f.ID)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -445,25 +454,16 @@ func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
 	return fcuo.mutation
 }
 
-// ClearFeed clears all "feed" edges to the Feed entity.
+// ClearUser clears the "user" edge to the User entity.
+func (fcuo *FeedConfigUpdateOne) ClearUser() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearUser()
+	return fcuo
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
 func (fcuo *FeedConfigUpdateOne) ClearFeed() *FeedConfigUpdateOne {
 	fcuo.mutation.ClearFeed()
 	return fcuo
-}
-
-// RemoveFeedIDs removes the "feed" edge to Feed entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveFeedIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveFeedIDs(ids...)
-	return fcuo
-}
-
-// RemoveFeed removes "feed" edges to Feed entities.
-func (fcuo *FeedConfigUpdateOne) RemoveFeed(f ...*Feed) *FeedConfigUpdateOne {
-	ids := make([]int, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
-	}
-	return fcuo.RemoveFeedIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
@@ -527,6 +527,9 @@ func (fcuo *FeedConfigUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
+	if _, ok := fcuo.mutation.UserID(); fcuo.mutation.UserCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedConfig.user"`)
+	}
 	return nil
 }
 
@@ -534,7 +537,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	if err := fcuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(feedconfig.Table, feedconfig.Columns, sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64))
 	id, ok := fcuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedConfig.id" for update`)}
@@ -558,12 +561,6 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := fcuo.mutation.InternalID(); ok {
-		_spec.SetField(feedconfig.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := fcuo.mutation.AddedInternalID(); ok {
-		_spec.AddField(feedconfig.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := fcuo.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
@@ -595,51 +592,67 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	if value, ok := fcuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcuo.mutation.FeedCleared() {
+	if fcuo.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   feedconfig.FeedTable,
-			Columns: []string{feedconfig.FeedColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feedconfig.UserTable,
+			Columns: []string{feedconfig.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feed.FieldID,
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
 				},
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.RemovedFeedIDs(); len(nodes) > 0 && !fcuo.mutation.FeedCleared() {
+	if nodes := fcuo.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   feedconfig.FeedTable,
-			Columns: []string{feedconfig.FeedColumn},
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feedconfig.UserTable,
+			Columns: []string{feedconfig.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
-					Column: feed.FieldID,
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
 				},
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if nodes := fcuo.mutation.FeedIDs(); len(nodes) > 0 {
+	if fcuo.mutation.FeedCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.O2O,
 			Inverse: false,
 			Table:   feedconfig.FeedTable,
 			Columns: []string{feedconfig.FeedColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt,
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2O,
+			Inverse: false,
+			Table:   feedconfig.FeedTable,
+			Columns: []string{feedconfig.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
 					Column: feed.FieldID,
 				},
 			},

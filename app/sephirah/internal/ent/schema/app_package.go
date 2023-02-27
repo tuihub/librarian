@@ -4,6 +4,8 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -15,9 +17,14 @@ type AppPackage struct {
 
 // Fields of the AppPackage.
 func (AppPackage) Fields() []ent.Field {
+	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("internal_id").
-			Unique(),
+		field.Int64("id").
+			Unique().
+			Immutable().
+			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
+				Incremental: &incrementalEnabled,
+			}),
 		field.Enum("source").
 			Values("manual", "sentinel"),
 		field.Int64("source_id"),
@@ -43,5 +50,9 @@ func (AppPackage) Indexes() []ent.Index {
 
 // Edges of the AppPackage.
 func (AppPackage) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("app", App.Type).
+			Ref("app_package").
+			Unique(),
+	}
 }

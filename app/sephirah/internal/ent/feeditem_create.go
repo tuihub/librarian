@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -21,12 +22,6 @@ type FeedItemCreate struct {
 	mutation *FeedItemMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fic *FeedItemCreate) SetInternalID(i int64) *FeedItemCreate {
-	fic.mutation.SetInternalID(i)
-	return fic
 }
 
 // SetTitle sets the "title" field.
@@ -129,6 +124,23 @@ func (fic *FeedItemCreate) SetNillableCreatedAt(t *time.Time) *FeedItemCreate {
 	return fic
 }
 
+// SetID sets the "id" field.
+func (fic *FeedItemCreate) SetID(i int64) *FeedItemCreate {
+	fic.mutation.SetID(i)
+	return fic
+}
+
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fic *FeedItemCreate) SetFeedID(id int64) *FeedItemCreate {
+	fic.mutation.SetFeedID(id)
+	return fic
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fic *FeedItemCreate) SetFeed(f *Feed) *FeedItemCreate {
+	return fic.SetFeedID(f.ID)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fic *FeedItemCreate) Mutation() *FeedItemMutation {
 	return fic.mutation
@@ -176,9 +188,6 @@ func (fic *FeedItemCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fic *FeedItemCreate) check() error {
-	if _, ok := fic.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "FeedItem.internal_id"`)}
-	}
 	if _, ok := fic.mutation.Title(); !ok {
 		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "FeedItem.title"`)}
 	}
@@ -221,6 +230,9 @@ func (fic *FeedItemCreate) check() error {
 	if _, ok := fic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedItem.created_at"`)}
 	}
+	if _, ok := fic.mutation.FeedID(); !ok {
+		return &ValidationError{Name: "feed", err: errors.New(`ent: missing required edge "FeedItem.feed"`)}
+	}
 	return nil
 }
 
@@ -235,8 +247,10 @@ func (fic *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	fic.mutation.id = &_node.ID
 	fic.mutation.done = true
 	return _node, nil
@@ -245,12 +259,12 @@ func (fic *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
 func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	var (
 		_node = &FeedItem{config: fic.config}
-		_spec = sqlgraph.NewCreateSpec(feeditem.Table, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(feeditem.Table, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = fic.conflict
-	if value, ok := fic.mutation.InternalID(); ok {
-		_spec.SetField(feeditem.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := fic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := fic.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
@@ -308,6 +322,26 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := fic.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feeditem.FeedTable,
+			Columns: []string{feeditem.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.feed_item = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -315,7 +349,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.FeedItem.Create().
-//		SetInternalID(v).
+//		SetTitle(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -324,7 +358,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedItemUpsert) {
-//			SetInternalID(v+v).
+//			SetTitle(v+v).
 //		}).
 //		Exec(ctx)
 func (fic *FeedItemCreate) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertOne {
@@ -359,24 +393,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedItemUpsert) SetInternalID(v int64) *FeedItemUpsert {
-	u.Set(feeditem.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedItemUpsert) UpdateInternalID() *FeedItemUpsert {
-	u.SetExcluded(feeditem.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedItemUpsert) AddInternalID(v int64) *FeedItemUpsert {
-	u.Add(feeditem.FieldInternalID, v)
-	return u
-}
 
 // SetTitle sets the "title" field.
 func (u *FeedItemUpsert) SetTitle(v string) *FeedItemUpsert {
@@ -546,16 +562,24 @@ func (u *FeedItemUpsert) UpdateCreatedAt() *FeedItemUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.FeedItem.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feeditem.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *FeedItemUpsertOne) UpdateNewValues() *FeedItemUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(feeditem.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -584,27 +608,6 @@ func (u *FeedItemUpsertOne) Update(set func(*FeedItemUpsert)) *FeedItemUpsertOne
 		set(&FeedItemUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedItemUpsertOne) SetInternalID(v int64) *FeedItemUpsertOne {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedItemUpsertOne) AddInternalID(v int64) *FeedItemUpsertOne {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedItemUpsertOne) UpdateInternalID() *FeedItemUpsertOne {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetTitle sets the "title" field.
@@ -819,7 +822,7 @@ func (u *FeedItemUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeedItemUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *FeedItemUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -828,7 +831,7 @@ func (u *FeedItemUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeedItemUpsertOne) IDX(ctx context.Context) int {
+func (u *FeedItemUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -879,9 +882,9 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -934,7 +937,7 @@ func (ficb *FeedItemCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedItemUpsert) {
-//			SetInternalID(v+v).
+//			SetTitle(v+v).
 //		}).
 //		Exec(ctx)
 func (ficb *FeedItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertBulk {
@@ -969,10 +972,20 @@ type FeedItemUpsertBulk struct {
 //	client.FeedItem.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(feeditem.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *FeedItemUpsertBulk) UpdateNewValues() *FeedItemUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(feeditem.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -1001,27 +1014,6 @@ func (u *FeedItemUpsertBulk) Update(set func(*FeedItemUpsert)) *FeedItemUpsertBu
 		set(&FeedItemUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *FeedItemUpsertBulk) SetInternalID(v int64) *FeedItemUpsertBulk {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *FeedItemUpsertBulk) AddInternalID(v int64) *FeedItemUpsertBulk {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *FeedItemUpsertBulk) UpdateInternalID() *FeedItemUpsertBulk {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetTitle sets the "title" field.

@@ -4,8 +4,6 @@ import (
 	"flag"
 	"os"
 
-	"github.com/tuihub/librarian/internal/lib/libapp"
-
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
@@ -39,7 +37,7 @@ func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) 
 func main() {
 	// flagconf is the config flag.
 	var flagconf string
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "../../configs/config.yaml", "config path, eg: -conf config.yaml")
 	flag.Parse()
 	libapp.InitLogger(id, name, version)
 

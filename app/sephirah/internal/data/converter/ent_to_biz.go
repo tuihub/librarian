@@ -15,20 +15,26 @@ import (
 // goverter:converter
 type toBizConverter interface {
 	// goverter:matchIgnoreCase
+	// goverter:map ID InternalID
 	// goverter:map Type | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
+	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *biztiphereth.User
+	ToBizUserList([]*ent.User) []*biztiphereth.User
 
 	// goverter:matchIgnoreCase
+	// goverter:map ID InternalID
 	// goverter:map Type | ToBizAppType
 	// goverter:map Source | ToBizAppSource
 	// goverter:map . Details
 	ToBizApp(*ent.App) *bizgebura.App
 
 	// goverter:matchIgnoreCase
+	// goverter:map ID InternalID
 	// goverter:map Source | ToBizAppPackageSource
 	// goverter:mapIdentity Binary
 	ToBizAppPackage(*ent.AppPackage) *bizgebura.AppPackage
+	// goverter:map ID InternalID
 	// goverter:map BinaryName Name
 	// goverter:map BinarySize Size
 	// goverter:map BinaryPublicURL PublicURL
@@ -36,6 +42,7 @@ type toBizConverter interface {
 	ToBizAppPackageList([]*ent.AppPackage) []*bizgebura.AppPackage
 
 	// goverter:matchIgnoreCase
+	// goverter:map ID InternalID
 	// goverter:map Source | ToBizFeedConfigSource
 	// goverter:map Status | ToBizFeedConfigStatus
 	ToBizFeedConfig(*ent.FeedConfig) *bizyesod.FeedConfig

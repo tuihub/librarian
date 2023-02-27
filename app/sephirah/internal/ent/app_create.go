@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 )
 
 // AppCreate is the builder for creating a App entity.
@@ -20,12 +22,6 @@ type AppCreate struct {
 	mutation *AppMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternalID sets the "internal_id" field.
-func (ac *AppCreate) SetInternalID(i int64) *AppCreate {
-	ac.mutation.SetInternalID(i)
-	return ac
 }
 
 // SetSource sets the "source" field.
@@ -128,6 +124,42 @@ func (ac *AppCreate) SetNillableCreatedAt(t *time.Time) *AppCreate {
 	return ac
 }
 
+// SetID sets the "id" field.
+func (ac *AppCreate) SetID(i int64) *AppCreate {
+	ac.mutation.SetID(i)
+	return ac
+}
+
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (ac *AppCreate) AddUserIDs(ids ...int64) *AppCreate {
+	ac.mutation.AddUserIDs(ids...)
+	return ac
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (ac *AppCreate) AddUser(u ...*User) *AppCreate {
+	ids := make([]int64, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return ac.AddUserIDs(ids...)
+}
+
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (ac *AppCreate) AddAppPackageIDs(ids ...int64) *AppCreate {
+	ac.mutation.AddAppPackageIDs(ids...)
+	return ac
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (ac *AppCreate) AddAppPackage(a ...*AppPackage) *AppCreate {
+	ids := make([]int64, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddAppPackageIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (ac *AppCreate) Mutation() *AppMutation {
 	return ac.mutation
@@ -175,9 +207,6 @@ func (ac *AppCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ac *AppCreate) check() error {
-	if _, ok := ac.mutation.InternalID(); !ok {
-		return &ValidationError{Name: "internal_id", err: errors.New(`ent: missing required field "App.internal_id"`)}
-	}
 	if _, ok := ac.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "App.source"`)}
 	}
@@ -244,8 +273,10 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = int64(id)
+	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
 	return _node, nil
@@ -254,12 +285,12 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	var (
 		_node = &App{config: ac.config}
-		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(app.Table, sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = ac.conflict
-	if value, ok := ac.mutation.InternalID(); ok {
-		_spec.SetField(app.FieldInternalID, field.TypeInt64, value)
-		_node.InternalID = value
+	if id, ok := ac.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := ac.mutation.Source(); ok {
 		_spec.SetField(app.FieldSource, field.TypeEnum, value)
@@ -317,6 +348,44 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.UserTable,
+			Columns: app.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: user.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppPackageTable,
+			Columns: []string{app.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -324,7 +393,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.App.Create().
-//		SetInternalID(v).
+//		SetSource(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -333,7 +402,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetInternalID(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
@@ -368,24 +437,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppUpsert) SetInternalID(v int64) *AppUpsert {
-	u.Set(app.FieldInternalID, v)
-	return u
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppUpsert) UpdateInternalID() *AppUpsert {
-	u.SetExcluded(app.FieldInternalID)
-	return u
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppUpsert) AddInternalID(v int64) *AppUpsert {
-	u.Add(app.FieldInternalID, v)
-	return u
-}
 
 // SetSource sets the "source" field.
 func (u *AppUpsert) SetSource(v app.Source) *AppUpsert {
@@ -555,16 +606,24 @@ func (u *AppUpsert) UpdateCreatedAt() *AppUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.App.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(app.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppUpsertOne) UpdateNewValues() *AppUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(app.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -593,27 +652,6 @@ func (u *AppUpsertOne) Update(set func(*AppUpsert)) *AppUpsertOne {
 		set(&AppUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppUpsertOne) SetInternalID(v int64) *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppUpsertOne) AddInternalID(v int64) *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateInternalID() *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetSource sets the "source" field.
@@ -828,7 +866,7 @@ func (u *AppUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AppUpsertOne) ID(ctx context.Context) (id int64, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -837,7 +875,7 @@ func (u *AppUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppUpsertOne) IDX(ctx context.Context) int {
+func (u *AppUpsertOne) IDX(ctx context.Context) int64 {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -888,9 +926,9 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = int64(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -943,7 +981,7 @@ func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetInternalID(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
@@ -978,10 +1016,20 @@ type AppUpsertBulk struct {
 //	client.App.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(app.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppUpsertBulk) UpdateNewValues() *AppUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(app.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -1010,27 +1058,6 @@ func (u *AppUpsertBulk) Update(set func(*AppUpsert)) *AppUpsertBulk {
 		set(&AppUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternalID sets the "internal_id" field.
-func (u *AppUpsertBulk) SetInternalID(v int64) *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.SetInternalID(v)
-	})
-}
-
-// AddInternalID adds v to the "internal_id" field.
-func (u *AppUpsertBulk) AddInternalID(v int64) *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.AddInternalID(v)
-	})
-}
-
-// UpdateInternalID sets the "internal_id" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateInternalID() *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateInternalID()
-	})
 }
 
 // SetSource sets the "source" field.

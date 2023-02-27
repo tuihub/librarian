@@ -23,11 +23,6 @@ const (
 type AccessToken string
 type RefreshToken string
 
-type Paging struct {
-	PageSize int
-	PageNum  int
-}
-
 type Account struct {
 	InternalID        int64
 	Platform          AccountPlatform

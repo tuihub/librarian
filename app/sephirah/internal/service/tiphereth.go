@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -50,19 +51,22 @@ func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error,
 ) {
-	u, err := s.t.AddUser(ctx, s.converter.ToBizUser(req.GetUser()))
+	if req.GetUser() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	id, err := s.t.CreateUser(ctx, s.converter.ToBizUser(req.GetUser()))
 	if err != nil {
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &librarian.InternalID{Id: u.InternalID},
+		Id: &librarian.InternalID{Id: int64(*id)},
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
 	*pb.UpdateUserResponse, error,
 ) {
-	if req.GetUser().GetId() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("id required")
+	if req.GetUser() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	err := s.t.UpdateUser(ctx, s.converter.ToBizUser(req.GetUser()))
 	if err != nil {
@@ -74,7 +78,7 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 	*pb.ListUserResponse, error,
 ) {
 	u, err := s.t.ListUser(ctx,
-		biztiphereth.Paging{
+		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},

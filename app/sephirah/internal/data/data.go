@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
@@ -59,7 +60,7 @@ func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 		return nil, func() {}, err
 	}
 	// Run the auto migration tool.
-	if err = client.Schema.Create(context.Background()); err != nil {
+	if err = client.Schema.Create(context.Background(), migrate.WithForeignKeys(false)); err != nil {
 		logger.Errorf("failed creating schema resources: %v", err)
 		return nil, func() {}, err
 	}

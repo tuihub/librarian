@@ -12,8 +12,6 @@ const (
 	Label = "app_package"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternalID holds the string denoting the internal_id field in the database.
-	FieldInternalID = "internal_id"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldSourceID holds the string denoting the source_id field in the database.
@@ -34,14 +32,22 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeApp holds the string denoting the app edge name in mutations.
+	EdgeApp = "app"
 	// Table holds the table name of the apppackage in the database.
 	Table = "app_packages"
+	// AppTable is the table that holds the app relation/edge.
+	AppTable = "app_packages"
+	// AppInverseTable is the table name for the App entity.
+	// It exists in this package in order to avoid circular dependency with the "app" package.
+	AppInverseTable = "apps"
+	// AppColumn is the table column denoting the app relation/edge.
+	AppColumn = "app_app_package"
 )
 
 // Columns holds all SQL columns for apppackage fields.
 var Columns = []string{
 	FieldID,
-	FieldInternalID,
 	FieldSource,
 	FieldSourceID,
 	FieldSourcePackageID,
@@ -54,10 +60,21 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "app_packages"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"app_app_package",
+}
+
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

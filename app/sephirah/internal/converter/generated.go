@@ -233,7 +233,6 @@ func (c *toPBConverterImpl) ToPBUser(source biztiphereth.User) v11.User {
 	var v1User v11.User
 	v1User.Id = c.biztipherethUserToPV1InternalID(source)
 	v1User.Username = source.UserName
-	v1User.Password = source.PassWord
 	v1User.Type = ToPBUserType(source.Type)
 	v1User.Status = ToPBUserStatus(source.Status)
 	return v1User

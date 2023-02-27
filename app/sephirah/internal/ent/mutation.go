@@ -46,9 +46,7 @@ type AccountMutation struct {
 	config
 	op                  Op
 	typ                 string
-	id                  *int
-	internal_id         *int64
-	addinternal_id      *int64
+	id                  *int64
 	platform            *account.Platform
 	platform_account_id *string
 	name                *string
@@ -57,6 +55,8 @@ type AccountMutation struct {
 	updated_at          *time.Time
 	created_at          *time.Time
 	clearedFields       map[string]struct{}
+	user                *int64
+	cleareduser         bool
 	done                bool
 	oldValue            func(context.Context) (*Account, error)
 	predicates          []predicate.Account
@@ -82,7 +82,7 @@ func newAccountMutation(c config, op Op, opts ...accountOption) *AccountMutation
 }
 
 // withAccountID sets the ID field of the mutation.
-func withAccountID(id int) accountOption {
+func withAccountID(id int64) accountOption {
 	return func(m *AccountMutation) {
 		var (
 			err   error
@@ -132,9 +132,15 @@ func (m AccountMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Account entities.
+func (m *AccountMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AccountMutation) ID() (id int, exists bool) {
+func (m *AccountMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -145,12 +151,12 @@ func (m *AccountMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AccountMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AccountMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -158,62 +164,6 @@ func (m *AccountMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *AccountMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *AccountMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the Account entity.
-// If the Account object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccountMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *AccountMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *AccountMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *AccountMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetPlatform sets the "platform" field.
@@ -468,6 +418,45 @@ func (m *AccountMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *AccountMutation) SetUserID(id int64) {
+	m.user = &id
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *AccountMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *AccountMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserID returns the "user" edge ID in the mutation.
+func (m *AccountMutation) UserID() (id int64, exists bool) {
+	if m.user != nil {
+		return *m.user, true
+	}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *AccountMutation) UserIDs() (ids []int64) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *AccountMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
 // Where appends a list predicates to the AccountMutation builder.
 func (m *AccountMutation) Where(ps ...predicate.Account) {
 	m.predicates = append(m.predicates, ps...)
@@ -502,10 +491,7 @@ func (m *AccountMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AccountMutation) Fields() []string {
-	fields := make([]string, 0, 8)
-	if m.internal_id != nil {
-		fields = append(fields, account.FieldInternalID)
-	}
+	fields := make([]string, 0, 7)
 	if m.platform != nil {
 		fields = append(fields, account.FieldPlatform)
 	}
@@ -535,8 +521,6 @@ func (m *AccountMutation) Fields() []string {
 // schema.
 func (m *AccountMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case account.FieldInternalID:
-		return m.InternalID()
 	case account.FieldPlatform:
 		return m.Platform()
 	case account.FieldPlatformAccountID:
@@ -560,8 +544,6 @@ func (m *AccountMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AccountMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case account.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case account.FieldPlatform:
 		return m.OldPlatform(ctx)
 	case account.FieldPlatformAccountID:
@@ -585,13 +567,6 @@ func (m *AccountMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *AccountMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case account.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case account.FieldPlatform:
 		v, ok := value.(account.Platform)
 		if !ok {
@@ -648,21 +623,13 @@ func (m *AccountMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *AccountMutation) AddedFields() []string {
-	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, account.FieldInternalID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *AccountMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case account.FieldInternalID:
-		return m.AddedInternalID()
-	}
 	return nil, false
 }
 
@@ -671,13 +638,6 @@ func (m *AccountMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AccountMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case account.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Account numeric field %s", name)
 }
@@ -705,9 +665,6 @@ func (m *AccountMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AccountMutation) ResetField(name string) error {
 	switch name {
-	case account.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case account.FieldPlatform:
 		m.ResetPlatform()
 		return nil
@@ -735,19 +692,28 @@ func (m *AccountMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AccountMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.user != nil {
+		edges = append(edges, account.EdgeUser)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AccountMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case account.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AccountMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -759,54 +725,75 @@ func (m *AccountMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AccountMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.cleareduser {
+		edges = append(edges, account.EdgeUser)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AccountMutation) EdgeCleared(name string) bool {
+	switch name {
+	case account.EdgeUser:
+		return m.cleareduser
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AccountMutation) ClearEdge(name string) error {
+	switch name {
+	case account.EdgeUser:
+		m.ClearUser()
+		return nil
+	}
 	return fmt.Errorf("unknown Account unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AccountMutation) ResetEdge(name string) error {
+	switch name {
+	case account.EdgeUser:
+		m.ResetUser()
+		return nil
+	}
 	return fmt.Errorf("unknown Account edge %s", name)
 }
 
 // AppMutation represents an operation that mutates the App nodes in the graph.
 type AppMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	internal_id       *int64
-	addinternal_id    *int64
-	source            *app.Source
-	source_app_id     *string
-	source_url        *string
-	name              *string
-	_type             *app.Type
-	short_description *string
-	description       *string
-	image_url         *string
-	release_date      *string
-	developer         *string
-	publisher         *string
-	version           *string
-	updated_at        *time.Time
-	created_at        *time.Time
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*App, error)
-	predicates        []predicate.App
+	op                 Op
+	typ                string
+	id                 *int64
+	source             *app.Source
+	source_app_id      *string
+	source_url         *string
+	name               *string
+	_type              *app.Type
+	short_description  *string
+	description        *string
+	image_url          *string
+	release_date       *string
+	developer          *string
+	publisher          *string
+	version            *string
+	updated_at         *time.Time
+	created_at         *time.Time
+	clearedFields      map[string]struct{}
+	user               map[int64]struct{}
+	removeduser        map[int64]struct{}
+	cleareduser        bool
+	app_package        map[int64]struct{}
+	removedapp_package map[int64]struct{}
+	clearedapp_package bool
+	done               bool
+	oldValue           func(context.Context) (*App, error)
+	predicates         []predicate.App
 }
 
 var _ ent.Mutation = (*AppMutation)(nil)
@@ -829,7 +816,7 @@ func newAppMutation(c config, op Op, opts ...appOption) *AppMutation {
 }
 
 // withAppID sets the ID field of the mutation.
-func withAppID(id int) appOption {
+func withAppID(id int64) appOption {
 	return func(m *AppMutation) {
 		var (
 			err   error
@@ -879,9 +866,15 @@ func (m AppMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of App entities.
+func (m *AppMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppMutation) ID() (id int, exists bool) {
+func (m *AppMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -892,12 +885,12 @@ func (m *AppMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -905,62 +898,6 @@ func (m *AppMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *AppMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *AppMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *AppMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *AppMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *AppMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetSource sets the "source" field.
@@ -1467,6 +1404,114 @@ func (m *AppMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddUserIDs adds the "user" edge to the User entity by ids.
+func (m *AppMutation) AddUserIDs(ids ...int64) {
+	if m.user == nil {
+		m.user = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.user[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *AppMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *AppMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// RemoveUserIDs removes the "user" edge to the User entity by IDs.
+func (m *AppMutation) RemoveUserIDs(ids ...int64) {
+	if m.removeduser == nil {
+		m.removeduser = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.user, ids[i])
+		m.removeduser[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUser returns the removed IDs of the "user" edge to the User entity.
+func (m *AppMutation) RemovedUserIDs() (ids []int64) {
+	for id := range m.removeduser {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+func (m *AppMutation) UserIDs() (ids []int64) {
+	for id := range m.user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *AppMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+	m.removeduser = nil
+}
+
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by ids.
+func (m *AppMutation) AddAppPackageIDs(ids ...int64) {
+	if m.app_package == nil {
+		m.app_package = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.app_package[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppPackage clears the "app_package" edge to the AppPackage entity.
+func (m *AppMutation) ClearAppPackage() {
+	m.clearedapp_package = true
+}
+
+// AppPackageCleared reports if the "app_package" edge to the AppPackage entity was cleared.
+func (m *AppMutation) AppPackageCleared() bool {
+	return m.clearedapp_package
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to the AppPackage entity by IDs.
+func (m *AppMutation) RemoveAppPackageIDs(ids ...int64) {
+	if m.removedapp_package == nil {
+		m.removedapp_package = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.app_package, ids[i])
+		m.removedapp_package[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppPackage returns the removed IDs of the "app_package" edge to the AppPackage entity.
+func (m *AppMutation) RemovedAppPackageIDs() (ids []int64) {
+	for id := range m.removedapp_package {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppPackageIDs returns the "app_package" edge IDs in the mutation.
+func (m *AppMutation) AppPackageIDs() (ids []int64) {
+	for id := range m.app_package {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppPackage resets all changes to the "app_package" edge.
+func (m *AppMutation) ResetAppPackage() {
+	m.app_package = nil
+	m.clearedapp_package = false
+	m.removedapp_package = nil
+}
+
 // Where appends a list predicates to the AppMutation builder.
 func (m *AppMutation) Where(ps ...predicate.App) {
 	m.predicates = append(m.predicates, ps...)
@@ -1501,10 +1546,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 15)
-	if m.internal_id != nil {
-		fields = append(fields, app.FieldInternalID)
-	}
+	fields := make([]string, 0, 14)
 	if m.source != nil {
 		fields = append(fields, app.FieldSource)
 	}
@@ -1555,8 +1597,6 @@ func (m *AppMutation) Fields() []string {
 // schema.
 func (m *AppMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case app.FieldInternalID:
-		return m.InternalID()
 	case app.FieldSource:
 		return m.Source()
 	case app.FieldSourceAppID:
@@ -1594,8 +1634,6 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case app.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case app.FieldSource:
 		return m.OldSource(ctx)
 	case app.FieldSourceAppID:
@@ -1633,13 +1671,6 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 // type.
 func (m *AppMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case app.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case app.FieldSource:
 		v, ok := value.(app.Source)
 		if !ok {
@@ -1745,21 +1776,13 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *AppMutation) AddedFields() []string {
-	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, app.FieldInternalID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case app.FieldInternalID:
-		return m.AddedInternalID()
-	}
 	return nil, false
 }
 
@@ -1768,13 +1791,6 @@ func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AppMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case app.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown App numeric field %s", name)
 }
@@ -1802,9 +1818,6 @@ func (m *AppMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AppMutation) ResetField(name string) error {
 	switch name {
-	case app.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case app.FieldSource:
 		m.ResetSource()
 		return nil
@@ -1853,49 +1866,111 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.user != nil {
+		edges = append(edges, app.EdgeUser)
+	}
+	if m.app_package != nil {
+		edges = append(edges, app.EdgeAppPackage)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AppMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case app.EdgeUser:
+		ids := make([]ent.Value, 0, len(m.user))
+		for id := range m.user {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgeAppPackage:
+		ids := make([]ent.Value, 0, len(m.app_package))
+		for id := range m.app_package {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.removeduser != nil {
+		edges = append(edges, app.EdgeUser)
+	}
+	if m.removedapp_package != nil {
+		edges = append(edges, app.EdgeAppPackage)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AppMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case app.EdgeUser:
+		ids := make([]ent.Value, 0, len(m.removeduser))
+		for id := range m.removeduser {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgeAppPackage:
+		ids := make([]ent.Value, 0, len(m.removedapp_package))
+		for id := range m.removedapp_package {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.cleareduser {
+		edges = append(edges, app.EdgeUser)
+	}
+	if m.clearedapp_package {
+		edges = append(edges, app.EdgeAppPackage)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AppMutation) EdgeCleared(name string) bool {
+	switch name {
+	case app.EdgeUser:
+		return m.cleareduser
+	case app.EdgeAppPackage:
+		return m.clearedapp_package
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AppMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown App unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AppMutation) ResetEdge(name string) error {
+	switch name {
+	case app.EdgeUser:
+		m.ResetUser()
+		return nil
+	case app.EdgeAppPackage:
+		m.ResetAppPackage()
+		return nil
+	}
 	return fmt.Errorf("unknown App edge %s", name)
 }
 
@@ -1904,9 +1979,7 @@ type AppPackageMutation struct {
 	config
 	op                Op
 	typ               string
-	id                *int
-	internal_id       *int64
-	addinternal_id    *int64
+	id                *int64
 	source            *apppackage.Source
 	source_id         *int64
 	addsource_id      *int64
@@ -1920,6 +1993,8 @@ type AppPackageMutation struct {
 	updated_at        *time.Time
 	created_at        *time.Time
 	clearedFields     map[string]struct{}
+	app               *int64
+	clearedapp        bool
 	done              bool
 	oldValue          func(context.Context) (*AppPackage, error)
 	predicates        []predicate.AppPackage
@@ -1945,7 +2020,7 @@ func newAppPackageMutation(c config, op Op, opts ...apppackageOption) *AppPackag
 }
 
 // withAppPackageID sets the ID field of the mutation.
-func withAppPackageID(id int) apppackageOption {
+func withAppPackageID(id int64) apppackageOption {
 	return func(m *AppPackageMutation) {
 		var (
 			err   error
@@ -1995,9 +2070,15 @@ func (m AppPackageMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppPackage entities.
+func (m *AppPackageMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppPackageMutation) ID() (id int, exists bool) {
+func (m *AppPackageMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2008,12 +2089,12 @@ func (m *AppPackageMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppPackageMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppPackageMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2021,62 +2102,6 @@ func (m *AppPackageMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *AppPackageMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *AppPackageMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *AppPackageMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *AppPackageMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *AppPackageMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetSource sets the "source" field.
@@ -2479,6 +2504,45 @@ func (m *AppPackageMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetAppID sets the "app" edge to the App entity by id.
+func (m *AppPackageMutation) SetAppID(id int64) {
+	m.app = &id
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (m *AppPackageMutation) ClearApp() {
+	m.clearedapp = true
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *AppPackageMutation) AppCleared() bool {
+	return m.clearedapp
+}
+
+// AppID returns the "app" edge ID in the mutation.
+func (m *AppPackageMutation) AppID() (id int64, exists bool) {
+	if m.app != nil {
+		return *m.app, true
+	}
+	return
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppID instead. It exists only for internal usage by the builders.
+func (m *AppPackageMutation) AppIDs() (ids []int64) {
+	if id := m.app; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *AppPackageMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+}
+
 // Where appends a list predicates to the AppPackageMutation builder.
 func (m *AppPackageMutation) Where(ps ...predicate.AppPackage) {
 	m.predicates = append(m.predicates, ps...)
@@ -2513,10 +2577,7 @@ func (m *AppPackageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppPackageMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.internal_id != nil {
-		fields = append(fields, apppackage.FieldInternalID)
-	}
+	fields := make([]string, 0, 10)
 	if m.source != nil {
 		fields = append(fields, apppackage.FieldSource)
 	}
@@ -2555,8 +2616,6 @@ func (m *AppPackageMutation) Fields() []string {
 // schema.
 func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case apppackage.FieldInternalID:
-		return m.InternalID()
 	case apppackage.FieldSource:
 		return m.Source()
 	case apppackage.FieldSourceID:
@@ -2586,8 +2645,6 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case apppackage.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case apppackage.FieldSource:
 		return m.OldSource(ctx)
 	case apppackage.FieldSourceID:
@@ -2617,13 +2674,6 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case apppackage.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case apppackage.FieldSource:
 		v, ok := value.(apppackage.Source)
 		if !ok {
@@ -2702,9 +2752,6 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *AppPackageMutation) AddedFields() []string {
 	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, apppackage.FieldInternalID)
-	}
 	if m.addsource_id != nil {
 		fields = append(fields, apppackage.FieldSourceID)
 	}
@@ -2719,8 +2766,6 @@ func (m *AppPackageMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case apppackage.FieldInternalID:
-		return m.AddedInternalID()
 	case apppackage.FieldSourceID:
 		return m.AddedSourceID()
 	case apppackage.FieldBinarySize:
@@ -2734,13 +2779,6 @@ func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case apppackage.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	case apppackage.FieldSourceID:
 		v, ok := value.(int64)
 		if !ok {
@@ -2782,9 +2820,6 @@ func (m *AppPackageMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AppPackageMutation) ResetField(name string) error {
 	switch name {
-	case apppackage.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case apppackage.FieldSource:
 		m.ResetSource()
 		return nil
@@ -2821,19 +2856,28 @@ func (m *AppPackageMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppPackageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.app != nil {
+		edges = append(edges, apppackage.EdgeApp)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AppPackageMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case apppackage.EdgeApp:
+		if id := m.app; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppPackageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -2845,25 +2889,42 @@ func (m *AppPackageMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppPackageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedapp {
+		edges = append(edges, apppackage.EdgeApp)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AppPackageMutation) EdgeCleared(name string) bool {
+	switch name {
+	case apppackage.EdgeApp:
+		return m.clearedapp
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AppPackageMutation) ClearEdge(name string) error {
+	switch name {
+	case apppackage.EdgeApp:
+		m.ClearApp()
+		return nil
+	}
 	return fmt.Errorf("unknown AppPackage unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AppPackageMutation) ResetEdge(name string) error {
+	switch name {
+	case apppackage.EdgeApp:
+		m.ResetApp()
+		return nil
+	}
 	return fmt.Errorf("unknown AppPackage edge %s", name)
 }
 
@@ -2872,9 +2933,7 @@ type FeedMutation struct {
 	config
 	op             Op
 	typ            string
-	id             *int
-	internal_id    *int64
-	addinternal_id *int64
+	id             *int64
 	title          *string
 	link           *string
 	description    *string
@@ -2885,7 +2944,10 @@ type FeedMutation struct {
 	updated_at     *time.Time
 	created_at     *time.Time
 	clearedFields  map[string]struct{}
-	_config        *int
+	item           map[int64]struct{}
+	removeditem    map[int64]struct{}
+	cleareditem    bool
+	_config        *int64
 	cleared_config bool
 	done           bool
 	oldValue       func(context.Context) (*Feed, error)
@@ -2912,7 +2974,7 @@ func newFeedMutation(c config, op Op, opts ...feedOption) *FeedMutation {
 }
 
 // withFeedID sets the ID field of the mutation.
-func withFeedID(id int) feedOption {
+func withFeedID(id int64) feedOption {
 	return func(m *FeedMutation) {
 		var (
 			err   error
@@ -2962,9 +3024,15 @@ func (m FeedMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Feed entities.
+func (m *FeedMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FeedMutation) ID() (id int, exists bool) {
+func (m *FeedMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2975,12 +3043,12 @@ func (m *FeedMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FeedMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *FeedMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -2988,62 +3056,6 @@ func (m *FeedMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *FeedMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *FeedMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the Feed entity.
-// If the Feed object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *FeedMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *FeedMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *FeedMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetTitle sets the "title" field.
@@ -3349,8 +3361,62 @@ func (m *FeedMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddItemIDs adds the "item" edge to the FeedItem entity by ids.
+func (m *FeedMutation) AddItemIDs(ids ...int64) {
+	if m.item == nil {
+		m.item = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.item[ids[i]] = struct{}{}
+	}
+}
+
+// ClearItem clears the "item" edge to the FeedItem entity.
+func (m *FeedMutation) ClearItem() {
+	m.cleareditem = true
+}
+
+// ItemCleared reports if the "item" edge to the FeedItem entity was cleared.
+func (m *FeedMutation) ItemCleared() bool {
+	return m.cleareditem
+}
+
+// RemoveItemIDs removes the "item" edge to the FeedItem entity by IDs.
+func (m *FeedMutation) RemoveItemIDs(ids ...int64) {
+	if m.removeditem == nil {
+		m.removeditem = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.item, ids[i])
+		m.removeditem[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedItem returns the removed IDs of the "item" edge to the FeedItem entity.
+func (m *FeedMutation) RemovedItemIDs() (ids []int64) {
+	for id := range m.removeditem {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ItemIDs returns the "item" edge IDs in the mutation.
+func (m *FeedMutation) ItemIDs() (ids []int64) {
+	for id := range m.item {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetItem resets all changes to the "item" edge.
+func (m *FeedMutation) ResetItem() {
+	m.item = nil
+	m.cleareditem = false
+	m.removeditem = nil
+}
+
 // SetConfigID sets the "config" edge to the FeedConfig entity by id.
-func (m *FeedMutation) SetConfigID(id int) {
+func (m *FeedMutation) SetConfigID(id int64) {
 	m._config = &id
 }
 
@@ -3365,7 +3431,7 @@ func (m *FeedMutation) ConfigCleared() bool {
 }
 
 // ConfigID returns the "config" edge ID in the mutation.
-func (m *FeedMutation) ConfigID() (id int, exists bool) {
+func (m *FeedMutation) ConfigID() (id int64, exists bool) {
 	if m._config != nil {
 		return *m._config, true
 	}
@@ -3375,7 +3441,7 @@ func (m *FeedMutation) ConfigID() (id int, exists bool) {
 // ConfigIDs returns the "config" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // ConfigID instead. It exists only for internal usage by the builders.
-func (m *FeedMutation) ConfigIDs() (ids []int) {
+func (m *FeedMutation) ConfigIDs() (ids []int64) {
 	if id := m._config; id != nil {
 		ids = append(ids, *id)
 	}
@@ -3422,10 +3488,7 @@ func (m *FeedMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedMutation) Fields() []string {
-	fields := make([]string, 0, 9)
-	if m.internal_id != nil {
-		fields = append(fields, feed.FieldInternalID)
-	}
+	fields := make([]string, 0, 8)
 	if m.title != nil {
 		fields = append(fields, feed.FieldTitle)
 	}
@@ -3458,8 +3521,6 @@ func (m *FeedMutation) Fields() []string {
 // schema.
 func (m *FeedMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case feed.FieldInternalID:
-		return m.InternalID()
 	case feed.FieldTitle:
 		return m.Title()
 	case feed.FieldLink:
@@ -3485,8 +3546,6 @@ func (m *FeedMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FeedMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case feed.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case feed.FieldTitle:
 		return m.OldTitle(ctx)
 	case feed.FieldLink:
@@ -3512,13 +3571,6 @@ func (m *FeedMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *FeedMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case feed.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case feed.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -3582,21 +3634,13 @@ func (m *FeedMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *FeedMutation) AddedFields() []string {
-	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, feed.FieldInternalID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *FeedMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case feed.FieldInternalID:
-		return m.AddedInternalID()
-	}
 	return nil, false
 }
 
@@ -3605,13 +3649,6 @@ func (m *FeedMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case feed.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Feed numeric field %s", name)
 }
@@ -3639,9 +3676,6 @@ func (m *FeedMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FeedMutation) ResetField(name string) error {
 	switch name {
-	case feed.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case feed.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -3672,7 +3706,10 @@ func (m *FeedMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.item != nil {
+		edges = append(edges, feed.EdgeItem)
+	}
 	if m._config != nil {
 		edges = append(edges, feed.EdgeConfig)
 	}
@@ -3683,6 +3720,12 @@ func (m *FeedMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *FeedMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case feed.EdgeItem:
+		ids := make([]ent.Value, 0, len(m.item))
+		for id := range m.item {
+			ids = append(ids, id)
+		}
+		return ids
 	case feed.EdgeConfig:
 		if id := m._config; id != nil {
 			return []ent.Value{*id}
@@ -3693,19 +3736,33 @@ func (m *FeedMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removeditem != nil {
+		edges = append(edges, feed.EdgeItem)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FeedMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feed.EdgeItem:
+		ids := make([]ent.Value, 0, len(m.removeditem))
+		for id := range m.removeditem {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.cleareditem {
+		edges = append(edges, feed.EdgeItem)
+	}
 	if m.cleared_config {
 		edges = append(edges, feed.EdgeConfig)
 	}
@@ -3716,6 +3773,8 @@ func (m *FeedMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *FeedMutation) EdgeCleared(name string) bool {
 	switch name {
+	case feed.EdgeItem:
+		return m.cleareditem
 	case feed.EdgeConfig:
 		return m.cleared_config
 	}
@@ -3737,6 +3796,9 @@ func (m *FeedMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *FeedMutation) ResetEdge(name string) error {
 	switch name {
+	case feed.EdgeItem:
+		m.ResetItem()
+		return nil
 	case feed.EdgeConfig:
 		m.ResetConfig()
 		return nil
@@ -3749,9 +3811,7 @@ type FeedConfigMutation struct {
 	config
 	op                 Op
 	typ                string
-	id                 *int
-	internal_id        *int64
-	addinternal_id     *int64
+	id                 *int64
 	feed_url           *string
 	author_account     *int64
 	addauthor_account  *int64
@@ -3763,8 +3823,9 @@ type FeedConfigMutation struct {
 	updated_at         *time.Time
 	created_at         *time.Time
 	clearedFields      map[string]struct{}
-	feed               map[int]struct{}
-	removedfeed        map[int]struct{}
+	user               *int64
+	cleareduser        bool
+	feed               *int64
 	clearedfeed        bool
 	done               bool
 	oldValue           func(context.Context) (*FeedConfig, error)
@@ -3791,7 +3852,7 @@ func newFeedConfigMutation(c config, op Op, opts ...feedconfigOption) *FeedConfi
 }
 
 // withFeedConfigID sets the ID field of the mutation.
-func withFeedConfigID(id int) feedconfigOption {
+func withFeedConfigID(id int64) feedconfigOption {
 	return func(m *FeedConfigMutation) {
 		var (
 			err   error
@@ -3841,9 +3902,15 @@ func (m FeedConfigMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FeedConfig entities.
+func (m *FeedConfigMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FeedConfigMutation) ID() (id int, exists bool) {
+func (m *FeedConfigMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3854,12 +3921,12 @@ func (m *FeedConfigMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FeedConfigMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *FeedConfigMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -3867,62 +3934,6 @@ func (m *FeedConfigMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *FeedConfigMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *FeedConfigMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the FeedConfig entity.
-// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *FeedConfigMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *FeedConfigMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *FeedConfigMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -4253,14 +4264,48 @@ func (m *FeedConfigMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// AddFeedIDs adds the "feed" edge to the Feed entity by ids.
-func (m *FeedConfigMutation) AddFeedIDs(ids ...int) {
-	if m.feed == nil {
-		m.feed = make(map[int]struct{})
+// SetUserID sets the "user" edge to the User entity by id.
+func (m *FeedConfigMutation) SetUserID(id int64) {
+	m.user = &id
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *FeedConfigMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *FeedConfigMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserID returns the "user" edge ID in the mutation.
+func (m *FeedConfigMutation) UserID() (id int64, exists bool) {
+	if m.user != nil {
+		return *m.user, true
 	}
-	for i := range ids {
-		m.feed[ids[i]] = struct{}{}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *FeedConfigMutation) UserIDs() (ids []int64) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
 	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *FeedConfigMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
+// SetFeedID sets the "feed" edge to the Feed entity by id.
+func (m *FeedConfigMutation) SetFeedID(id int64) {
+	m.feed = &id
 }
 
 // ClearFeed clears the "feed" edge to the Feed entity.
@@ -4273,29 +4318,20 @@ func (m *FeedConfigMutation) FeedCleared() bool {
 	return m.clearedfeed
 }
 
-// RemoveFeedIDs removes the "feed" edge to the Feed entity by IDs.
-func (m *FeedConfigMutation) RemoveFeedIDs(ids ...int) {
-	if m.removedfeed == nil {
-		m.removedfeed = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.feed, ids[i])
-		m.removedfeed[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedFeed returns the removed IDs of the "feed" edge to the Feed entity.
-func (m *FeedConfigMutation) RemovedFeedIDs() (ids []int) {
-	for id := range m.removedfeed {
-		ids = append(ids, id)
+// FeedID returns the "feed" edge ID in the mutation.
+func (m *FeedConfigMutation) FeedID() (id int64, exists bool) {
+	if m.feed != nil {
+		return *m.feed, true
 	}
 	return
 }
 
 // FeedIDs returns the "feed" edge IDs in the mutation.
-func (m *FeedConfigMutation) FeedIDs() (ids []int) {
-	for id := range m.feed {
-		ids = append(ids, id)
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedID instead. It exists only for internal usage by the builders.
+func (m *FeedConfigMutation) FeedIDs() (ids []int64) {
+	if id := m.feed; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
@@ -4304,7 +4340,6 @@ func (m *FeedConfigMutation) FeedIDs() (ids []int) {
 func (m *FeedConfigMutation) ResetFeed() {
 	m.feed = nil
 	m.clearedfeed = false
-	m.removedfeed = nil
 }
 
 // Where appends a list predicates to the FeedConfigMutation builder.
@@ -4341,10 +4376,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 9)
-	if m.internal_id != nil {
-		fields = append(fields, feedconfig.FieldInternalID)
-	}
+	fields := make([]string, 0, 8)
 	if m.feed_url != nil {
 		fields = append(fields, feedconfig.FieldFeedURL)
 	}
@@ -4377,8 +4409,6 @@ func (m *FeedConfigMutation) Fields() []string {
 // schema.
 func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case feedconfig.FieldInternalID:
-		return m.InternalID()
 	case feedconfig.FieldFeedURL:
 		return m.FeedURL()
 	case feedconfig.FieldAuthorAccount:
@@ -4404,8 +4434,6 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case feedconfig.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case feedconfig.FieldFeedURL:
 		return m.OldFeedURL(ctx)
 	case feedconfig.FieldAuthorAccount:
@@ -4431,13 +4459,6 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case feedconfig.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case feedconfig.FieldFeedURL:
 		v, ok := value.(string)
 		if !ok {
@@ -4502,9 +4523,6 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *FeedConfigMutation) AddedFields() []string {
 	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, feedconfig.FieldInternalID)
-	}
 	if m.addauthor_account != nil {
 		fields = append(fields, feedconfig.FieldAuthorAccount)
 	}
@@ -4519,8 +4537,6 @@ func (m *FeedConfigMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *FeedConfigMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case feedconfig.FieldInternalID:
-		return m.AddedInternalID()
 	case feedconfig.FieldAuthorAccount:
 		return m.AddedAuthorAccount()
 	case feedconfig.FieldPullInterval:
@@ -4534,13 +4550,6 @@ func (m *FeedConfigMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedConfigMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case feedconfig.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	case feedconfig.FieldAuthorAccount:
 		v, ok := value.(int64)
 		if !ok {
@@ -4582,9 +4591,6 @@ func (m *FeedConfigMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FeedConfigMutation) ResetField(name string) error {
 	switch name {
-	case feedconfig.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case feedconfig.FieldFeedURL:
 		m.ResetFeedURL()
 		return nil
@@ -4615,7 +4621,10 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedConfigMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.user != nil {
+		edges = append(edges, feedconfig.EdgeUser)
+	}
 	if m.feed != nil {
 		edges = append(edges, feedconfig.EdgeFeed)
 	}
@@ -4626,42 +4635,36 @@ func (m *FeedConfigMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case feedconfig.EdgeFeed:
-		ids := make([]ent.Value, 0, len(m.feed))
-		for id := range m.feed {
-			ids = append(ids, id)
+	case feedconfig.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
+	case feedconfig.EdgeFeed:
+		if id := m.feed; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedConfigMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.removedfeed != nil {
-		edges = append(edges, feedconfig.EdgeFeed)
-	}
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case feedconfig.EdgeFeed:
-		ids := make([]ent.Value, 0, len(m.removedfeed))
-		for id := range m.removedfeed {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedConfigMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.cleareduser {
+		edges = append(edges, feedconfig.EdgeUser)
+	}
 	if m.clearedfeed {
 		edges = append(edges, feedconfig.EdgeFeed)
 	}
@@ -4672,6 +4675,8 @@ func (m *FeedConfigMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *FeedConfigMutation) EdgeCleared(name string) bool {
 	switch name {
+	case feedconfig.EdgeUser:
+		return m.cleareduser
 	case feedconfig.EdgeFeed:
 		return m.clearedfeed
 	}
@@ -4682,6 +4687,12 @@ func (m *FeedConfigMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *FeedConfigMutation) ClearEdge(name string) error {
 	switch name {
+	case feedconfig.EdgeUser:
+		m.ClearUser()
+		return nil
+	case feedconfig.EdgeFeed:
+		m.ClearFeed()
+		return nil
 	}
 	return fmt.Errorf("unknown FeedConfig unique edge %s", name)
 }
@@ -4690,6 +4701,9 @@ func (m *FeedConfigMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *FeedConfigMutation) ResetEdge(name string) error {
 	switch name {
+	case feedconfig.EdgeUser:
+		m.ResetUser()
+		return nil
 	case feedconfig.EdgeFeed:
 		m.ResetFeed()
 		return nil
@@ -4702,9 +4716,7 @@ type FeedItemMutation struct {
 	config
 	op               Op
 	typ              string
-	id               *int
-	internal_id      *int64
-	addinternal_id   *int64
+	id               *int64
 	title            *string
 	authors          *[]modelfeed.Person
 	appendauthors    []modelfeed.Person
@@ -4722,6 +4734,8 @@ type FeedItemMutation struct {
 	updated_at       *time.Time
 	created_at       *time.Time
 	clearedFields    map[string]struct{}
+	feed             *int64
+	clearedfeed      bool
 	done             bool
 	oldValue         func(context.Context) (*FeedItem, error)
 	predicates       []predicate.FeedItem
@@ -4747,7 +4761,7 @@ func newFeedItemMutation(c config, op Op, opts ...feeditemOption) *FeedItemMutat
 }
 
 // withFeedItemID sets the ID field of the mutation.
-func withFeedItemID(id int) feeditemOption {
+func withFeedItemID(id int64) feeditemOption {
 	return func(m *FeedItemMutation) {
 		var (
 			err   error
@@ -4797,9 +4811,15 @@ func (m FeedItemMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FeedItem entities.
+func (m *FeedItemMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *FeedItemMutation) ID() (id int, exists bool) {
+func (m *FeedItemMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -4810,12 +4830,12 @@ func (m *FeedItemMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *FeedItemMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *FeedItemMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -4823,62 +4843,6 @@ func (m *FeedItemMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *FeedItemMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *FeedItemMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the FeedItem entity.
-// If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *FeedItemMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *FeedItemMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *FeedItemMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetTitle sets the "title" field.
@@ -5415,6 +5379,45 @@ func (m *FeedItemMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetFeedID sets the "feed" edge to the Feed entity by id.
+func (m *FeedItemMutation) SetFeedID(id int64) {
+	m.feed = &id
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
+func (m *FeedItemMutation) ClearFeed() {
+	m.clearedfeed = true
+}
+
+// FeedCleared reports if the "feed" edge to the Feed entity was cleared.
+func (m *FeedItemMutation) FeedCleared() bool {
+	return m.clearedfeed
+}
+
+// FeedID returns the "feed" edge ID in the mutation.
+func (m *FeedItemMutation) FeedID() (id int64, exists bool) {
+	if m.feed != nil {
+		return *m.feed, true
+	}
+	return
+}
+
+// FeedIDs returns the "feed" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedID instead. It exists only for internal usage by the builders.
+func (m *FeedItemMutation) FeedIDs() (ids []int64) {
+	if id := m.feed; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFeed resets all changes to the "feed" edge.
+func (m *FeedItemMutation) ResetFeed() {
+	m.feed = nil
+	m.clearedfeed = false
+}
+
 // Where appends a list predicates to the FeedItemMutation builder.
 func (m *FeedItemMutation) Where(ps ...predicate.FeedItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -5449,10 +5452,7 @@ func (m *FeedItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedItemMutation) Fields() []string {
-	fields := make([]string, 0, 15)
-	if m.internal_id != nil {
-		fields = append(fields, feeditem.FieldInternalID)
-	}
+	fields := make([]string, 0, 14)
 	if m.title != nil {
 		fields = append(fields, feeditem.FieldTitle)
 	}
@@ -5503,8 +5503,6 @@ func (m *FeedItemMutation) Fields() []string {
 // schema.
 func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case feeditem.FieldInternalID:
-		return m.InternalID()
 	case feeditem.FieldTitle:
 		return m.Title()
 	case feeditem.FieldAuthors:
@@ -5542,8 +5540,6 @@ func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case feeditem.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case feeditem.FieldTitle:
 		return m.OldTitle(ctx)
 	case feeditem.FieldAuthors:
@@ -5581,13 +5577,6 @@ func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value
 // type.
 func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case feeditem.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case feeditem.FieldTitle:
 		v, ok := value.(string)
 		if !ok {
@@ -5693,21 +5682,13 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *FeedItemMutation) AddedFields() []string {
-	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, feeditem.FieldInternalID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *FeedItemMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case feeditem.FieldInternalID:
-		return m.AddedInternalID()
-	}
 	return nil, false
 }
 
@@ -5716,13 +5697,6 @@ func (m *FeedItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case feeditem.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown FeedItem numeric field %s", name)
 }
@@ -5750,9 +5724,6 @@ func (m *FeedItemMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FeedItemMutation) ResetField(name string) error {
 	switch name {
-	case feeditem.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case feeditem.FieldTitle:
 		m.ResetTitle()
 		return nil
@@ -5801,19 +5772,28 @@ func (m *FeedItemMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.feed != nil {
+		edges = append(edges, feeditem.EdgeFeed)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *FeedItemMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feeditem.EdgeFeed:
+		if id := m.feed; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -5825,46 +5805,75 @@ func (m *FeedItemMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedfeed {
+		edges = append(edges, feeditem.EdgeFeed)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *FeedItemMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feeditem.EdgeFeed:
+		return m.clearedfeed
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *FeedItemMutation) ClearEdge(name string) error {
+	switch name {
+	case feeditem.EdgeFeed:
+		m.ClearFeed()
+		return nil
+	}
 	return fmt.Errorf("unknown FeedItem unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *FeedItemMutation) ResetEdge(name string) error {
+	switch name {
+	case feeditem.EdgeFeed:
+		m.ResetFeed()
+		return nil
+	}
 	return fmt.Errorf("unknown FeedItem edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *int
-	internal_id    *int64
-	addinternal_id *int64
-	username       *string
-	password       *string
-	status         *user.Status
-	_type          *user.Type
-	updated_at     *time.Time
-	created_at     *time.Time
-	clearedFields  map[string]struct{}
-	done           bool
-	oldValue       func(context.Context) (*User, error)
-	predicates     []predicate.User
+	op                 Op
+	typ                string
+	id                 *int64
+	username           *string
+	password           *string
+	status             *user.Status
+	_type              *user.Type
+	updated_at         *time.Time
+	created_at         *time.Time
+	clearedFields      map[string]struct{}
+	account            map[int64]struct{}
+	removedaccount     map[int64]struct{}
+	clearedaccount     bool
+	app                map[int64]struct{}
+	removedapp         map[int64]struct{}
+	clearedapp         bool
+	feed_config        map[int64]struct{}
+	removedfeed_config map[int64]struct{}
+	clearedfeed_config bool
+	creator            *int64
+	clearedcreator     bool
+	create             map[int64]struct{}
+	removedcreate      map[int64]struct{}
+	clearedcreate      bool
+	done               bool
+	oldValue           func(context.Context) (*User, error)
+	predicates         []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -5887,7 +5896,7 @@ func newUserMutation(c config, op Op, opts ...userOption) *UserMutation {
 }
 
 // withUserID sets the ID field of the mutation.
-func withUserID(id int) userOption {
+func withUserID(id int64) userOption {
 	return func(m *UserMutation) {
 		var (
 			err   error
@@ -5937,9 +5946,15 @@ func (m UserMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of User entities.
+func (m *UserMutation) SetID(id int64) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *UserMutation) ID() (id int, exists bool) {
+func (m *UserMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -5950,12 +5965,12 @@ func (m *UserMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *UserMutation) IDs(ctx context.Context) ([]int64, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []int64{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -5963,62 +5978,6 @@ func (m *UserMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetInternalID sets the "internal_id" field.
-func (m *UserMutation) SetInternalID(i int64) {
-	m.internal_id = &i
-	m.addinternal_id = nil
-}
-
-// InternalID returns the value of the "internal_id" field in the mutation.
-func (m *UserMutation) InternalID() (r int64, exists bool) {
-	v := m.internal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternalID returns the old "internal_id" field's value of the User entity.
-// If the User object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldInternalID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternalID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternalID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternalID: %w", err)
-	}
-	return oldValue.InternalID, nil
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (m *UserMutation) AddInternalID(i int64) {
-	if m.addinternal_id != nil {
-		*m.addinternal_id += i
-	} else {
-		m.addinternal_id = &i
-	}
-}
-
-// AddedInternalID returns the value that was added to the "internal_id" field in this mutation.
-func (m *UserMutation) AddedInternalID() (r int64, exists bool) {
-	v := m.addinternal_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetInternalID resets all changes to the "internal_id" field.
-func (m *UserMutation) ResetInternalID() {
-	m.internal_id = nil
-	m.addinternal_id = nil
 }
 
 // SetUsername sets the "username" field.
@@ -6237,6 +6196,261 @@ func (m *UserMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddAccountIDs adds the "account" edge to the Account entity by ids.
+func (m *UserMutation) AddAccountIDs(ids ...int64) {
+	if m.account == nil {
+		m.account = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.account[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAccount clears the "account" edge to the Account entity.
+func (m *UserMutation) ClearAccount() {
+	m.clearedaccount = true
+}
+
+// AccountCleared reports if the "account" edge to the Account entity was cleared.
+func (m *UserMutation) AccountCleared() bool {
+	return m.clearedaccount
+}
+
+// RemoveAccountIDs removes the "account" edge to the Account entity by IDs.
+func (m *UserMutation) RemoveAccountIDs(ids ...int64) {
+	if m.removedaccount == nil {
+		m.removedaccount = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.account, ids[i])
+		m.removedaccount[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAccount returns the removed IDs of the "account" edge to the Account entity.
+func (m *UserMutation) RemovedAccountIDs() (ids []int64) {
+	for id := range m.removedaccount {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AccountIDs returns the "account" edge IDs in the mutation.
+func (m *UserMutation) AccountIDs() (ids []int64) {
+	for id := range m.account {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAccount resets all changes to the "account" edge.
+func (m *UserMutation) ResetAccount() {
+	m.account = nil
+	m.clearedaccount = false
+	m.removedaccount = nil
+}
+
+// AddAppIDs adds the "app" edge to the App entity by ids.
+func (m *UserMutation) AddAppIDs(ids ...int64) {
+	if m.app == nil {
+		m.app = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.app[ids[i]] = struct{}{}
+	}
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (m *UserMutation) ClearApp() {
+	m.clearedapp = true
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *UserMutation) AppCleared() bool {
+	return m.clearedapp
+}
+
+// RemoveAppIDs removes the "app" edge to the App entity by IDs.
+func (m *UserMutation) RemoveAppIDs(ids ...int64) {
+	if m.removedapp == nil {
+		m.removedapp = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.app, ids[i])
+		m.removedapp[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedApp returns the removed IDs of the "app" edge to the App entity.
+func (m *UserMutation) RemovedAppIDs() (ids []int64) {
+	for id := range m.removedapp {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+func (m *UserMutation) AppIDs() (ids []int64) {
+	for id := range m.app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *UserMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+	m.removedapp = nil
+}
+
+// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
+func (m *UserMutation) AddFeedConfigIDs(ids ...int64) {
+	if m.feed_config == nil {
+		m.feed_config = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.feed_config[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
+func (m *UserMutation) ClearFeedConfig() {
+	m.clearedfeed_config = true
+}
+
+// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
+func (m *UserMutation) FeedConfigCleared() bool {
+	return m.clearedfeed_config
+}
+
+// RemoveFeedConfigIDs removes the "feed_config" edge to the FeedConfig entity by IDs.
+func (m *UserMutation) RemoveFeedConfigIDs(ids ...int64) {
+	if m.removedfeed_config == nil {
+		m.removedfeed_config = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_config, ids[i])
+		m.removedfeed_config[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedConfig returns the removed IDs of the "feed_config" edge to the FeedConfig entity.
+func (m *UserMutation) RemovedFeedConfigIDs() (ids []int64) {
+	for id := range m.removedfeed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
+func (m *UserMutation) FeedConfigIDs() (ids []int64) {
+	for id := range m.feed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedConfig resets all changes to the "feed_config" edge.
+func (m *UserMutation) ResetFeedConfig() {
+	m.feed_config = nil
+	m.clearedfeed_config = false
+	m.removedfeed_config = nil
+}
+
+// SetCreatorID sets the "creator" edge to the User entity by id.
+func (m *UserMutation) SetCreatorID(id int64) {
+	m.creator = &id
+}
+
+// ClearCreator clears the "creator" edge to the User entity.
+func (m *UserMutation) ClearCreator() {
+	m.clearedcreator = true
+}
+
+// CreatorCleared reports if the "creator" edge to the User entity was cleared.
+func (m *UserMutation) CreatorCleared() bool {
+	return m.clearedcreator
+}
+
+// CreatorID returns the "creator" edge ID in the mutation.
+func (m *UserMutation) CreatorID() (id int64, exists bool) {
+	if m.creator != nil {
+		return *m.creator, true
+	}
+	return
+}
+
+// CreatorIDs returns the "creator" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CreatorID instead. It exists only for internal usage by the builders.
+func (m *UserMutation) CreatorIDs() (ids []int64) {
+	if id := m.creator; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCreator resets all changes to the "creator" edge.
+func (m *UserMutation) ResetCreator() {
+	m.creator = nil
+	m.clearedcreator = false
+}
+
+// AddCreateIDs adds the "create" edge to the User entity by ids.
+func (m *UserMutation) AddCreateIDs(ids ...int64) {
+	if m.create == nil {
+		m.create = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.create[ids[i]] = struct{}{}
+	}
+}
+
+// ClearCreate clears the "create" edge to the User entity.
+func (m *UserMutation) ClearCreate() {
+	m.clearedcreate = true
+}
+
+// CreateCleared reports if the "create" edge to the User entity was cleared.
+func (m *UserMutation) CreateCleared() bool {
+	return m.clearedcreate
+}
+
+// RemoveCreateIDs removes the "create" edge to the User entity by IDs.
+func (m *UserMutation) RemoveCreateIDs(ids ...int64) {
+	if m.removedcreate == nil {
+		m.removedcreate = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.create, ids[i])
+		m.removedcreate[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedCreate returns the removed IDs of the "create" edge to the User entity.
+func (m *UserMutation) RemovedCreateIDs() (ids []int64) {
+	for id := range m.removedcreate {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// CreateIDs returns the "create" edge IDs in the mutation.
+func (m *UserMutation) CreateIDs() (ids []int64) {
+	for id := range m.create {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetCreate resets all changes to the "create" edge.
+func (m *UserMutation) ResetCreate() {
+	m.create = nil
+	m.clearedcreate = false
+	m.removedcreate = nil
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -6271,10 +6485,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.internal_id != nil {
-		fields = append(fields, user.FieldInternalID)
-	}
+	fields := make([]string, 0, 6)
 	if m.username != nil {
 		fields = append(fields, user.FieldUsername)
 	}
@@ -6301,8 +6512,6 @@ func (m *UserMutation) Fields() []string {
 // schema.
 func (m *UserMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case user.FieldInternalID:
-		return m.InternalID()
 	case user.FieldUsername:
 		return m.Username()
 	case user.FieldPassword:
@@ -6324,8 +6533,6 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case user.FieldInternalID:
-		return m.OldInternalID(ctx)
 	case user.FieldUsername:
 		return m.OldUsername(ctx)
 	case user.FieldPassword:
@@ -6347,13 +6554,6 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 // type.
 func (m *UserMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternalID(v)
-		return nil
 	case user.FieldUsername:
 		v, ok := value.(string)
 		if !ok {
@@ -6403,21 +6603,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *UserMutation) AddedFields() []string {
-	var fields []string
-	if m.addinternal_id != nil {
-		fields = append(fields, user.FieldInternalID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case user.FieldInternalID:
-		return m.AddedInternalID()
-	}
 	return nil, false
 }
 
@@ -6426,13 +6618,6 @@ func (m *UserMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *UserMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case user.FieldInternalID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddInternalID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown User numeric field %s", name)
 }
@@ -6460,9 +6645,6 @@ func (m *UserMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *UserMutation) ResetField(name string) error {
 	switch name {
-	case user.FieldInternalID:
-		m.ResetInternalID()
-		return nil
 	case user.FieldUsername:
 		m.ResetUsername()
 		return nil
@@ -6487,48 +6669,180 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.account != nil {
+		edges = append(edges, user.EdgeAccount)
+	}
+	if m.app != nil {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.feed_config != nil {
+		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.creator != nil {
+		edges = append(edges, user.EdgeCreator)
+	}
+	if m.create != nil {
+		edges = append(edges, user.EdgeCreate)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *UserMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case user.EdgeAccount:
+		ids := make([]ent.Value, 0, len(m.account))
+		for id := range m.account {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.app))
+		for id := range m.app {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.feed_config))
+		for id := range m.feed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeCreator:
+		if id := m.creator; id != nil {
+			return []ent.Value{*id}
+		}
+	case user.EdgeCreate:
+		ids := make([]ent.Value, 0, len(m.create))
+		for id := range m.create {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.removedaccount != nil {
+		edges = append(edges, user.EdgeAccount)
+	}
+	if m.removedapp != nil {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.removedfeed_config != nil {
+		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.removedcreate != nil {
+		edges = append(edges, user.EdgeCreate)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *UserMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case user.EdgeAccount:
+		ids := make([]ent.Value, 0, len(m.removedaccount))
+		for id := range m.removedaccount {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.removedapp))
+		for id := range m.removedapp {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.removedfeed_config))
+		for id := range m.removedfeed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeCreate:
+		ids := make([]ent.Value, 0, len(m.removedcreate))
+		for id := range m.removedcreate {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.clearedaccount {
+		edges = append(edges, user.EdgeAccount)
+	}
+	if m.clearedapp {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.clearedfeed_config {
+		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.clearedcreator {
+		edges = append(edges, user.EdgeCreator)
+	}
+	if m.clearedcreate {
+		edges = append(edges, user.EdgeCreate)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *UserMutation) EdgeCleared(name string) bool {
+	switch name {
+	case user.EdgeAccount:
+		return m.clearedaccount
+	case user.EdgeApp:
+		return m.clearedapp
+	case user.EdgeFeedConfig:
+		return m.clearedfeed_config
+	case user.EdgeCreator:
+		return m.clearedcreator
+	case user.EdgeCreate:
+		return m.clearedcreate
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *UserMutation) ClearEdge(name string) error {
+	switch name {
+	case user.EdgeCreator:
+		m.ClearCreator()
+		return nil
+	}
 	return fmt.Errorf("unknown User unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *UserMutation) ResetEdge(name string) error {
+	switch name {
+	case user.EdgeAccount:
+		m.ResetAccount()
+		return nil
+	case user.EdgeApp:
+		m.ResetApp()
+		return nil
+	case user.EdgeFeedConfig:
+		m.ResetFeedConfig()
+		return nil
+	case user.EdgeCreator:
+		m.ResetCreator()
+		return nil
+	case user.EdgeCreate:
+		m.ResetCreate()
+		return nil
+	}
 	return fmt.Errorf("unknown User edge %s", name)
 }

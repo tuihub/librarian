@@ -22,7 +22,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
-	a *bizangela.Angela,
+	_ *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,

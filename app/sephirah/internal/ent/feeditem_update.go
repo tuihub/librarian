@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -27,19 +28,6 @@ type FeedItemUpdate struct {
 // Where appends a list predicates to the FeedItemUpdate builder.
 func (fiu *FeedItemUpdate) Where(ps ...predicate.FeedItem) *FeedItemUpdate {
 	fiu.mutation.Where(ps...)
-	return fiu
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fiu *FeedItemUpdate) SetInternalID(i int64) *FeedItemUpdate {
-	fiu.mutation.ResetInternalID()
-	fiu.mutation.SetInternalID(i)
-	return fiu
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (fiu *FeedItemUpdate) AddInternalID(i int64) *FeedItemUpdate {
-	fiu.mutation.AddInternalID(i)
 	return fiu
 }
 
@@ -147,9 +135,26 @@ func (fiu *FeedItemUpdate) SetNillableCreatedAt(t *time.Time) *FeedItemUpdate {
 	return fiu
 }
 
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fiu *FeedItemUpdate) SetFeedID(id int64) *FeedItemUpdate {
+	fiu.mutation.SetFeedID(id)
+	return fiu
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fiu *FeedItemUpdate) SetFeed(f *Feed) *FeedItemUpdate {
+	return fiu.SetFeedID(f.ID)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiu *FeedItemUpdate) Mutation() *FeedItemMutation {
 	return fiu.mutation
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
+func (fiu *FeedItemUpdate) ClearFeed() *FeedItemUpdate {
+	fiu.mutation.ClearFeed()
+	return fiu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -188,20 +193,25 @@ func (fiu *FeedItemUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (fiu *FeedItemUpdate) check() error {
+	if _, ok := fiu.mutation.FeedID(); fiu.mutation.FeedCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedItem.feed"`)
+	}
+	return nil
+}
+
 func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt))
+	if err := fiu.check(); err != nil {
+		return n, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
 	if ps := fiu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := fiu.mutation.InternalID(); ok {
-		_spec.SetField(feeditem.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := fiu.mutation.AddedInternalID(); ok {
-		_spec.AddField(feeditem.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := fiu.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
@@ -255,6 +265,41 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fiu.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
 	}
+	if fiu.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feeditem.FeedTable,
+			Columns: []string{feeditem.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiu.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feeditem.FeedTable,
+			Columns: []string{feeditem.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{feeditem.Label}
@@ -273,19 +318,6 @@ type FeedItemUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *FeedItemMutation
-}
-
-// SetInternalID sets the "internal_id" field.
-func (fiuo *FeedItemUpdateOne) SetInternalID(i int64) *FeedItemUpdateOne {
-	fiuo.mutation.ResetInternalID()
-	fiuo.mutation.SetInternalID(i)
-	return fiuo
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (fiuo *FeedItemUpdateOne) AddInternalID(i int64) *FeedItemUpdateOne {
-	fiuo.mutation.AddInternalID(i)
-	return fiuo
 }
 
 // SetTitle sets the "title" field.
@@ -392,9 +424,26 @@ func (fiuo *FeedItemUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedItemUpdat
 	return fiuo
 }
 
+// SetFeedID sets the "feed" edge to the Feed entity by ID.
+func (fiuo *FeedItemUpdateOne) SetFeedID(id int64) *FeedItemUpdateOne {
+	fiuo.mutation.SetFeedID(id)
+	return fiuo
+}
+
+// SetFeed sets the "feed" edge to the Feed entity.
+func (fiuo *FeedItemUpdateOne) SetFeed(f *Feed) *FeedItemUpdateOne {
+	return fiuo.SetFeedID(f.ID)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiuo *FeedItemUpdateOne) Mutation() *FeedItemMutation {
 	return fiuo.mutation
+}
+
+// ClearFeed clears the "feed" edge to the Feed entity.
+func (fiuo *FeedItemUpdateOne) ClearFeed() *FeedItemUpdateOne {
+	fiuo.mutation.ClearFeed()
+	return fiuo
 }
 
 // Where appends a list predicates to the FeedItemUpdate builder.
@@ -446,8 +495,19 @@ func (fiuo *FeedItemUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (fiuo *FeedItemUpdateOne) check() error {
+	if _, ok := fiuo.mutation.FeedID(); fiuo.mutation.FeedCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedItem.feed"`)
+	}
+	return nil
+}
+
 func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, err error) {
-	_spec := sqlgraph.NewUpdateSpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt))
+	if err := fiuo.check(); err != nil {
+		return _node, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(feeditem.Table, feeditem.Columns, sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64))
 	id, ok := fiuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "FeedItem.id" for update`)}
@@ -471,12 +531,6 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := fiuo.mutation.InternalID(); ok {
-		_spec.SetField(feeditem.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := fiuo.mutation.AddedInternalID(); ok {
-		_spec.AddField(feeditem.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := fiuo.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
@@ -529,6 +583,41 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	}
 	if value, ok := fiuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fiuo.mutation.FeedCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feeditem.FeedTable,
+			Columns: []string{feeditem.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiuo.mutation.FeedIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   feeditem.FeedTable,
+			Columns: []string{feeditem.FeedColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: feed.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &FeedItem{config: fiuo.config}
 	_spec.Assign = _node.assignValues

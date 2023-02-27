@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
@@ -25,19 +26,6 @@ type AppPackageUpdate struct {
 // Where appends a list predicates to the AppPackageUpdate builder.
 func (apu *AppPackageUpdate) Where(ps ...predicate.AppPackage) *AppPackageUpdate {
 	apu.mutation.Where(ps...)
-	return apu
-}
-
-// SetInternalID sets the "internal_id" field.
-func (apu *AppPackageUpdate) SetInternalID(i int64) *AppPackageUpdate {
-	apu.mutation.ResetInternalID()
-	apu.mutation.SetInternalID(i)
-	return apu
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (apu *AppPackageUpdate) AddInternalID(i int64) *AppPackageUpdate {
-	apu.mutation.AddInternalID(i)
 	return apu
 }
 
@@ -123,9 +111,34 @@ func (apu *AppPackageUpdate) SetNillableCreatedAt(t *time.Time) *AppPackageUpdat
 	return apu
 }
 
+// SetAppID sets the "app" edge to the App entity by ID.
+func (apu *AppPackageUpdate) SetAppID(id int64) *AppPackageUpdate {
+	apu.mutation.SetAppID(id)
+	return apu
+}
+
+// SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableAppID(id *int64) *AppPackageUpdate {
+	if id != nil {
+		apu = apu.SetAppID(*id)
+	}
+	return apu
+}
+
+// SetApp sets the "app" edge to the App entity.
+func (apu *AppPackageUpdate) SetApp(a *App) *AppPackageUpdate {
+	return apu.SetAppID(a.ID)
+}
+
 // Mutation returns the AppPackageMutation object of the builder.
 func (apu *AppPackageUpdate) Mutation() *AppPackageMutation {
 	return apu.mutation
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (apu *AppPackageUpdate) ClearApp() *AppPackageUpdate {
+	apu.mutation.ClearApp()
+	return apu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -178,19 +191,13 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := apu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64))
 	if ps := apu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := apu.mutation.InternalID(); ok {
-		_spec.SetField(apppackage.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := apu.mutation.AddedInternalID(); ok {
-		_spec.AddField(apppackage.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := apu.mutation.Source(); ok {
 		_spec.SetField(apppackage.FieldSource, field.TypeEnum, value)
@@ -228,6 +235,41 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.CreatedAt(); ok {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
 	}
+	if apu.mutation.AppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.AppTable,
+			Columns: []string{apppackage.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.AppTable,
+			Columns: []string{apppackage.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, apu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{apppackage.Label}
@@ -246,19 +288,6 @@ type AppPackageUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AppPackageMutation
-}
-
-// SetInternalID sets the "internal_id" field.
-func (apuo *AppPackageUpdateOne) SetInternalID(i int64) *AppPackageUpdateOne {
-	apuo.mutation.ResetInternalID()
-	apuo.mutation.SetInternalID(i)
-	return apuo
-}
-
-// AddInternalID adds i to the "internal_id" field.
-func (apuo *AppPackageUpdateOne) AddInternalID(i int64) *AppPackageUpdateOne {
-	apuo.mutation.AddInternalID(i)
-	return apuo
 }
 
 // SetSource sets the "source" field.
@@ -343,9 +372,34 @@ func (apuo *AppPackageUpdateOne) SetNillableCreatedAt(t *time.Time) *AppPackageU
 	return apuo
 }
 
+// SetAppID sets the "app" edge to the App entity by ID.
+func (apuo *AppPackageUpdateOne) SetAppID(id int64) *AppPackageUpdateOne {
+	apuo.mutation.SetAppID(id)
+	return apuo
+}
+
+// SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableAppID(id *int64) *AppPackageUpdateOne {
+	if id != nil {
+		apuo = apuo.SetAppID(*id)
+	}
+	return apuo
+}
+
+// SetApp sets the "app" edge to the App entity.
+func (apuo *AppPackageUpdateOne) SetApp(a *App) *AppPackageUpdateOne {
+	return apuo.SetAppID(a.ID)
+}
+
 // Mutation returns the AppPackageMutation object of the builder.
 func (apuo *AppPackageUpdateOne) Mutation() *AppPackageMutation {
 	return apuo.mutation
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (apuo *AppPackageUpdateOne) ClearApp() *AppPackageUpdateOne {
+	apuo.mutation.ClearApp()
+	return apuo
 }
 
 // Where appends a list predicates to the AppPackageUpdate builder.
@@ -411,7 +465,7 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	if err := apuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64))
 	id, ok := apuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppPackage.id" for update`)}
@@ -435,12 +489,6 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := apuo.mutation.InternalID(); ok {
-		_spec.SetField(apppackage.FieldInternalID, field.TypeInt64, value)
-	}
-	if value, ok := apuo.mutation.AddedInternalID(); ok {
-		_spec.AddField(apppackage.FieldInternalID, field.TypeInt64, value)
 	}
 	if value, ok := apuo.mutation.Source(); ok {
 		_spec.SetField(apppackage.FieldSource, field.TypeEnum, value)
@@ -477,6 +525,41 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	}
 	if value, ok := apuo.mutation.CreatedAt(); ok {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
+	}
+	if apuo.mutation.AppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.AppTable,
+			Columns: []string{apppackage.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.AppTable,
+			Columns: []string{apppackage.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &AppPackage{config: apuo.config}
 	_spec.Assign = _node.assignValues

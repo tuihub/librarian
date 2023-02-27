@@ -6,57 +6,53 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.Account {
+func ID(id int64) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.Account {
+func IDEQ(id int64) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.Account {
+func IDNEQ(id int64) predicate.Account {
 	return predicate.Account(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.Account {
+func IDIn(ids ...int64) predicate.Account {
 	return predicate.Account(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.Account {
+func IDNotIn(ids ...int64) predicate.Account {
 	return predicate.Account(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.Account {
+func IDGT(id int64) predicate.Account {
 	return predicate.Account(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.Account {
+func IDGTE(id int64) predicate.Account {
 	return predicate.Account(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.Account {
+func IDLT(id int64) predicate.Account {
 	return predicate.Account(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.Account {
+func IDLTE(id int64) predicate.Account {
 	return predicate.Account(sql.FieldLTE(FieldID, id))
-}
-
-// InternalID applies equality check predicate on the "internal_id" field. It's identical to InternalIDEQ.
-func InternalID(v int64) predicate.Account {
-	return predicate.Account(sql.FieldEQ(FieldInternalID, v))
 }
 
 // PlatformAccountID applies equality check predicate on the "platform_account_id" field. It's identical to PlatformAccountIDEQ.
@@ -87,46 +83,6 @@ func UpdatedAt(v time.Time) predicate.Account {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// InternalIDEQ applies the EQ predicate on the "internal_id" field.
-func InternalIDEQ(v int64) predicate.Account {
-	return predicate.Account(sql.FieldEQ(FieldInternalID, v))
-}
-
-// InternalIDNEQ applies the NEQ predicate on the "internal_id" field.
-func InternalIDNEQ(v int64) predicate.Account {
-	return predicate.Account(sql.FieldNEQ(FieldInternalID, v))
-}
-
-// InternalIDIn applies the In predicate on the "internal_id" field.
-func InternalIDIn(vs ...int64) predicate.Account {
-	return predicate.Account(sql.FieldIn(FieldInternalID, vs...))
-}
-
-// InternalIDNotIn applies the NotIn predicate on the "internal_id" field.
-func InternalIDNotIn(vs ...int64) predicate.Account {
-	return predicate.Account(sql.FieldNotIn(FieldInternalID, vs...))
-}
-
-// InternalIDGT applies the GT predicate on the "internal_id" field.
-func InternalIDGT(v int64) predicate.Account {
-	return predicate.Account(sql.FieldGT(FieldInternalID, v))
-}
-
-// InternalIDGTE applies the GTE predicate on the "internal_id" field.
-func InternalIDGTE(v int64) predicate.Account {
-	return predicate.Account(sql.FieldGTE(FieldInternalID, v))
-}
-
-// InternalIDLT applies the LT predicate on the "internal_id" field.
-func InternalIDLT(v int64) predicate.Account {
-	return predicate.Account(sql.FieldLT(FieldInternalID, v))
-}
-
-// InternalIDLTE applies the LTE predicate on the "internal_id" field.
-func InternalIDLTE(v int64) predicate.Account {
-	return predicate.Account(sql.FieldLTE(FieldInternalID, v))
 }
 
 // PlatformEQ applies the EQ predicate on the "platform" field.
@@ -487,6 +443,33 @@ func CreatedAtLT(v time.Time) predicate.Account {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.Account {
 	return predicate.Account(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(UserInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

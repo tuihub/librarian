@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -17,9 +18,7 @@ import (
 type FeedItem struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Authors holds the value of the "authors" field.
@@ -48,6 +47,32 @@ type FeedItem struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the FeedItemQuery when eager-loading is set.
+	Edges     FeedItemEdges `json:"edges"`
+	feed_item *int64
+}
+
+// FeedItemEdges holds the relations/edges for other nodes in the graph.
+type FeedItemEdges struct {
+	// Feed holds the value of the feed edge.
+	Feed *Feed `json:"feed,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// FeedOrErr returns the Feed value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e FeedItemEdges) FeedOrErr() (*Feed, error) {
+	if e.loadedTypes[0] {
+		if e.Feed == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: feed.Label}
+		}
+		return e.Feed, nil
+	}
+	return nil, &NotLoadedError{edge: "feed"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -57,12 +82,14 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosure:
 			values[i] = new([]byte)
-		case feeditem.FieldID, feeditem.FieldInternalID:
+		case feeditem.FieldID:
 			values[i] = new(sql.NullInt64)
 		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated:
 			values[i] = new(sql.NullString)
 		case feeditem.FieldPublishedParsed, feeditem.FieldUpdatedParsed, feeditem.FieldUpdatedAt, feeditem.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case feeditem.ForeignKeys[0]: // feed_item
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FeedItem", columns[i])
 		}
@@ -83,13 +110,7 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			fi.ID = int(value.Int64)
-		case feeditem.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				fi.InternalID = value.Int64
-			}
+			fi.ID = int64(value.Int64)
 		case feeditem.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -180,9 +201,21 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fi.CreatedAt = value.Time
 			}
+		case feeditem.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field feed_item", value)
+			} else if value.Valid {
+				fi.feed_item = new(int64)
+				*fi.feed_item = int64(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryFeed queries the "feed" edge of the FeedItem entity.
+func (fi *FeedItem) QueryFeed() *FeedQuery {
+	return NewFeedItemClient(fi.config).QueryFeed(fi)
 }
 
 // Update returns a builder for updating this FeedItem.
@@ -208,9 +241,6 @@ func (fi *FeedItem) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedItem(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fi.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", fi.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(fi.Title)
 	builder.WriteString(", ")

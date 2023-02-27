@@ -28,7 +28,7 @@ func NewYesodRepo(data *Data) bizyesod.YesodRepo {
 
 func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig) error {
 	q := y.data.db.FeedConfig.Create().
-		SetInternalID(c.InternalID).
+		SetID(c.InternalID).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
 		SetSource(converter.ToEntFeedConfigSource(c.Source)).
@@ -39,7 +39,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig
 
 func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig) error {
 	q := y.data.db.FeedConfig.Update().
-		Where(feedconfig.InternalIDEQ(c.InternalID))
+		Where(feedconfig.IDEQ(c.InternalID))
 	if len(c.FeedURL) > 0 {
 		q.SetFeedURL(c.FeedURL)
 	}
@@ -93,14 +93,14 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []bizyes
 func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
 		conf, err := tx.FeedConfig.Query().
-			Where(feedconfig.InternalIDEQ(f.InternalID)).
+			Where(feedconfig.IDEQ(f.InternalID)).
 			Only(ctx)
 		if err != nil {
 			return err
 		}
 		err = tx.Feed.Create().
 			SetConfig(conf).
-			SetInternalID(f.InternalID).
+			SetID(f.InternalID).
 			SetTitle(f.Title).
 			SetDescription(f.Description).
 			SetLink(f.Link).
@@ -108,10 +108,10 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 			SetLanguage(f.Language).
 			SetImage(f.Image).
 			OnConflict(
-				sql.ConflictColumns(feed.FieldInternalID),
+				sql.ConflictColumns(feed.FieldID),
 				sql.ResolveWith(func(u *sql.UpdateSet) {
 					ignores := []string{
-						feed.FieldInternalID,
+						feed.FieldID,
 					}
 					for _, c := range u.Columns() {
 						if slices.Contains(ignores, c) {
@@ -126,7 +126,7 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 			return err
 		}
 		err = tx.FeedConfig.Update().
-			Where(feedconfig.InternalIDEQ(f.InternalID)).
+			Where(feedconfig.IDEQ(f.InternalID)).
 			SetNextPullBeginAt(time.Now().Add(conf.PullInterval)).
 			Exec(ctx)
 		return err

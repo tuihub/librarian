@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 )
@@ -21,6 +22,8 @@ type AppPackageQuery struct {
 	order      []OrderFunc
 	inters     []Interceptor
 	predicates []predicate.AppPackage
+	withApp    *AppQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +60,28 @@ func (apq *AppPackageQuery) Order(o ...OrderFunc) *AppPackageQuery {
 	return apq
 }
 
+// QueryApp chains the current query on the "app" edge.
+func (apq *AppPackageQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: apq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppackage.Table, apppackage.FieldID, selector),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppackage.AppTable, apppackage.AppColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first AppPackage entity from the query.
 // Returns a *NotFoundError when no AppPackage was found.
 func (apq *AppPackageQuery) First(ctx context.Context) (*AppPackage, error) {
@@ -81,8 +106,8 @@ func (apq *AppPackageQuery) FirstX(ctx context.Context) *AppPackage {
 
 // FirstID returns the first AppPackage ID from the query.
 // Returns a *NotFoundError when no AppPackage ID was found.
-func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = apq.Limit(1).IDs(setContextOp(ctx, apq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -94,7 +119,7 @@ func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (apq *AppPackageQuery) FirstIDX(ctx context.Context) int {
+func (apq *AppPackageQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := apq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -132,8 +157,8 @@ func (apq *AppPackageQuery) OnlyX(ctx context.Context) *AppPackage {
 // OnlyID is like Only, but returns the only AppPackage ID in the query.
 // Returns a *NotSingularError when more than one AppPackage ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = apq.Limit(2).IDs(setContextOp(ctx, apq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -149,7 +174,7 @@ func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (apq *AppPackageQuery) OnlyIDX(ctx context.Context) int {
+func (apq *AppPackageQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := apq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -177,7 +202,7 @@ func (apq *AppPackageQuery) AllX(ctx context.Context) []*AppPackage {
 }
 
 // IDs executes the query and returns a list of AppPackage IDs.
-func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if apq.ctx.Unique == nil && apq.path != nil {
 		apq.Unique(true)
 	}
@@ -189,7 +214,7 @@ func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (apq *AppPackageQuery) IDsX(ctx context.Context) []int {
+func (apq *AppPackageQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := apq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -249,10 +274,22 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 		order:      append([]OrderFunc{}, apq.order...),
 		inters:     append([]Interceptor{}, apq.inters...),
 		predicates: append([]predicate.AppPackage{}, apq.predicates...),
+		withApp:    apq.withApp.Clone(),
 		// clone intermediate query.
 		sql:  apq.sql.Clone(),
 		path: apq.path,
 	}
+}
+
+// WithApp tells the query-builder to eager-load the nodes that are connected to
+// the "app" edge. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPackageQuery) WithApp(opts ...func(*AppQuery)) *AppPackageQuery {
+	query := (&AppClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apq.withApp = query
+	return apq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -261,12 +298,12 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 // Example:
 //
 //	var v []struct {
-//		InternalID int64 `json:"internal_id,omitempty"`
+//		Source apppackage.Source `json:"source,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AppPackage.Query().
-//		GroupBy(apppackage.FieldInternalID).
+//		GroupBy(apppackage.FieldSource).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageGroupBy {
@@ -284,11 +321,11 @@ func (apq *AppPackageQuery) GroupBy(field string, fields ...string) *AppPackageG
 // Example:
 //
 //	var v []struct {
-//		InternalID int64 `json:"internal_id,omitempty"`
+//		Source apppackage.Source `json:"source,omitempty"`
 //	}
 //
 //	client.AppPackage.Query().
-//		Select(apppackage.FieldInternalID).
+//		Select(apppackage.FieldSource).
 //		Scan(ctx, &v)
 func (apq *AppPackageQuery) Select(fields ...string) *AppPackageSelect {
 	apq.ctx.Fields = append(apq.ctx.Fields, fields...)
@@ -331,15 +368,26 @@ func (apq *AppPackageQuery) prepareQuery(ctx context.Context) error {
 
 func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppPackage, error) {
 	var (
-		nodes = []*AppPackage{}
-		_spec = apq.querySpec()
+		nodes       = []*AppPackage{}
+		withFKs     = apq.withFKs
+		_spec       = apq.querySpec()
+		loadedTypes = [1]bool{
+			apq.withApp != nil,
+		}
 	)
+	if apq.withApp != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, apppackage.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppPackage).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &AppPackage{config: apq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +399,46 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := apq.withApp; query != nil {
+		if err := apq.loadApp(ctx, query, nodes, nil,
+			func(n *AppPackage, e *App) { n.Edges.App = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (apq *AppPackageQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppPackage, init func(*AppPackage), assign func(*AppPackage, *App)) error {
+	ids := make([]int64, 0, len(nodes))
+	nodeids := make(map[int64][]*AppPackage)
+	for i := range nodes {
+		if nodes[i].app_app_package == nil {
+			continue
+		}
+		fk := *nodes[i].app_app_package
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(app.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "app_app_package" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (apq *AppPackageQuery) sqlCount(ctx context.Context) (int, error) {
@@ -364,7 +451,7 @@ func (apq *AppPackageQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (apq *AppPackageQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(apppackage.Table, apppackage.Columns, sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64))
 	_spec.From = apq.sql
 	if unique := apq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -15,9 +15,7 @@ import (
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// InternalID holds the value of the "internal_id" field.
-	InternalID int64 `json:"internal_id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -30,6 +28,76 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the UserQuery when eager-loading is set.
+	Edges       UserEdges `json:"edges"`
+	user_create *int64
+}
+
+// UserEdges holds the relations/edges for other nodes in the graph.
+type UserEdges struct {
+	// Account holds the value of the account edge.
+	Account []*Account `json:"account,omitempty"`
+	// App holds the value of the app edge.
+	App []*App `json:"app,omitempty"`
+	// FeedConfig holds the value of the feed_config edge.
+	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
+	// Creator holds the value of the creator edge.
+	Creator *User `json:"creator,omitempty"`
+	// Create holds the value of the create edge.
+	Create []*User `json:"create,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [5]bool
+}
+
+// AccountOrErr returns the Account value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) AccountOrErr() ([]*Account, error) {
+	if e.loadedTypes[0] {
+		return e.Account, nil
+	}
+	return nil, &NotLoadedError{edge: "account"}
+}
+
+// AppOrErr returns the App value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) AppOrErr() ([]*App, error) {
+	if e.loadedTypes[1] {
+		return e.App, nil
+	}
+	return nil, &NotLoadedError{edge: "app"}
+}
+
+// FeedConfigOrErr returns the FeedConfig value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
+	if e.loadedTypes[2] {
+		return e.FeedConfig, nil
+	}
+	return nil, &NotLoadedError{edge: "feed_config"}
+}
+
+// CreatorOrErr returns the Creator value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e UserEdges) CreatorOrErr() (*User, error) {
+	if e.loadedTypes[3] {
+		if e.Creator == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Creator, nil
+	}
+	return nil, &NotLoadedError{edge: "creator"}
+}
+
+// CreateOrErr returns the Create value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) CreateOrErr() ([]*User, error) {
+	if e.loadedTypes[4] {
+		return e.Create, nil
+	}
+	return nil, &NotLoadedError{edge: "create"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -37,12 +105,14 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID, user.FieldInternalID:
+		case user.FieldID:
 			values[i] = new(sql.NullInt64)
 		case user.FieldUsername, user.FieldPassword, user.FieldStatus, user.FieldType:
 			values[i] = new(sql.NullString)
 		case user.FieldUpdatedAt, user.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case user.ForeignKeys[0]: // user_create
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
 		}
@@ -63,13 +133,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			u.ID = int(value.Int64)
-		case user.FieldInternalID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field internal_id", values[i])
-			} else if value.Valid {
-				u.InternalID = value.Int64
-			}
+			u.ID = int64(value.Int64)
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -106,9 +170,41 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.CreatedAt = value.Time
 			}
+		case user.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field user_create", value)
+			} else if value.Valid {
+				u.user_create = new(int64)
+				*u.user_create = int64(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryAccount queries the "account" edge of the User entity.
+func (u *User) QueryAccount() *AccountQuery {
+	return NewUserClient(u.config).QueryAccount(u)
+}
+
+// QueryApp queries the "app" edge of the User entity.
+func (u *User) QueryApp() *AppQuery {
+	return NewUserClient(u.config).QueryApp(u)
+}
+
+// QueryFeedConfig queries the "feed_config" edge of the User entity.
+func (u *User) QueryFeedConfig() *FeedConfigQuery {
+	return NewUserClient(u.config).QueryFeedConfig(u)
+}
+
+// QueryCreator queries the "creator" edge of the User entity.
+func (u *User) QueryCreator() *UserQuery {
+	return NewUserClient(u.config).QueryCreator(u)
+}
+
+// QueryCreate queries the "create" edge of the User entity.
+func (u *User) QueryCreate() *UserQuery {
+	return NewUserClient(u.config).QueryCreate(u)
 }
 
 // Update returns a builder for updating this User.
@@ -134,9 +230,6 @@ func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
-	builder.WriteString("internal_id=")
-	builder.WriteString(fmt.Sprintf("%v", u.InternalID))
-	builder.WriteString(", ")
 	builder.WriteString("username=")
 	builder.WriteString(u.Username)
 	builder.WriteString(", ")
