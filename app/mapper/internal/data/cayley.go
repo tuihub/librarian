@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path"
 	"strconv"
 
 	"github.com/tuihub/librarian/app/mapper/internal/biz"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 
 	"github.com/cayleygraph/cayley"
 	"github.com/cayleygraph/cayley/graph"
@@ -49,7 +51,7 @@ func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func(), error) {
 			return nil, func() {}, err
 		}
 	case "sqlite":
-		dbpath := "cayley.db"
+		dbpath := path.Join(libapp.GetDataPath(), "cayley.db")
 		_, err = os.Stat(dbpath)
 		if err != nil {
 			err = graph.InitQuadStore("sqlite", dbpath, nil)

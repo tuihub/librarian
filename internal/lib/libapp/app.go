@@ -2,6 +2,7 @@ package libapp
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/tuihub/librarian/internal/lib/libzap"
@@ -13,8 +14,23 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 )
 
+var dataPath = "" //nolint:gochecknoglobals // Only used on start up
+
+func SetDataPath(path string) error {
+	if s, err := os.Stat(path); err != nil {
+		return err
+	} else if !s.IsDir() {
+		return fmt.Errorf("%s: Is not a directory", path)
+	}
+	dataPath = path
+	return nil
+}
+func GetDataPath() string {
+	return dataPath
+}
+
 func InitLogger(id, name, version string) {
-	logger := log.With(zap.NewLogger(libzap.NewDefaultLogger()),
+	logger := log.With(zap.NewLogger(libzap.NewDefaultLogger(GetDataPath())),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,

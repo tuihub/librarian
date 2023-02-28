@@ -1,4 +1,4 @@
-FROM scratch
+FROM debian:stable-slim
 
 COPY server /app/server
 
@@ -6,6 +6,6 @@ WORKDIR /app
 
 EXPOSE 10000
 EXPOSE 10001
-VOLUME /data/conf
+VOLUME /data
 
-CMD ["./server", "-conf", "/data/conf"]
+CMD ["./server", "-conf", "/data/conf", "-data", "/data"]

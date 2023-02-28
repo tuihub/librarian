@@ -37,8 +37,14 @@ func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) 
 func main() {
 	// flagconf is the config flag.
 	var flagconf string
+	var flagdata string
 	flag.StringVar(&flagconf, "conf", "../../configs/config.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagdata, "data", ".", "data path, eg: -data /opt/librarian/data")
 	flag.Parse()
+	err := libapp.SetDataPath(flagdata)
+	if err != nil {
+		panic(err)
+	}
 	libapp.InitLogger(id, name, version)
 
 	var bc conf.Librarian

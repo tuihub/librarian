@@ -2,6 +2,7 @@ package libzap
 
 import (
 	"io"
+	"path"
 	"time"
 
 	"go.uber.org/zap"
@@ -90,10 +91,10 @@ func New(writer io.Writer, level Level, opts ...zap.Option) *zap.Logger {
 	return zap.New(core, opts...)
 }
 
-func NewDefaultLogger() *zap.Logger {
+func NewDefaultLogger(basePath string) *zap.Logger {
 	var tops = []TeeOption{
 		{
-			Filename: "access.log",
+			Filename: path.Join(basePath, "log", "access.log"),
 			Rotate: RotateOptions{
 				MaxSize:    1,
 				MaxAge:     1,
@@ -105,7 +106,7 @@ func NewDefaultLogger() *zap.Logger {
 			},
 		},
 		{
-			Filename: "error.log",
+			Filename: path.Join(basePath, "log", "error.log"),
 			Rotate: RotateOptions{
 				MaxSize:    1,
 				MaxAge:     1,
