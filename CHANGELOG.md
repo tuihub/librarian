@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.0.6](https://github.com/TuiHub/Librarian/compare/v0.0.5...v0.0.6) (2023-02-28)
+
+
+### Features
+
+* tiphereth is ready for fully test ([ca0697e](https://github.com/TuiHub/Librarian/commit/ca0697eda765e21421ecbf3f0f02f57e85ed7c5c))
+* tiphereth is ready for fully test ([6020c18](https://github.com/TuiHub/Librarian/commit/6020c182b376d0f086a026859cae7e0d39763634))
+* update sql structure & review tiphereth ([ea069e5](https://github.com/TuiHub/Librarian/commit/ea069e53edc8aacdd974c81b5885bc7bd06a2751))
+
+
+### Bug Fixes
+
+* add logger filter ([1be064a](https://github.com/TuiHub/Librarian/commit/1be064a9ebf283802b84831524c401b8e22f2d6f))
+* tested Token and User interfaces ([cd5f646](https://github.com/TuiHub/Librarian/commit/cd5f646ad00893f38e378c79629f5d39377543af))
+
 ## [0.0.5](https://github.com/TuiHub/Librarian/compare/v0.0.4-4...v0.0.5) (2023-02-25)
 
 
