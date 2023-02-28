@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6-1](https://github.com/TuiHub/Librarian/compare/v0.0.6...v0.0.6-1) (2023-02-28)
+
+
+### Continuous Integration
+
+* add login step ([0e2f3d8](https://github.com/TuiHub/Librarian/commit/0e2f3d8ed212c6b4198012124645f88a25e955e7))
+
 ## [0.0.6](https://github.com/TuiHub/Librarian/compare/v0.0.5...v0.0.6) (2023-02-28)
 
 
