@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -12,12 +11,6 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"google.golang.org/grpc/metadata"
-)
-
-const (
-	username = "admin"
-	password = "admin"
 )
 
 type Client struct {
@@ -33,10 +26,20 @@ func main() {
 		userID: nil,
 	}
 	c.WaitServerOnline(ctx)
+	log.Info("[Client] Server online, login in via default admin")
 	ctx = c.LoginViaDefaultAdmin(ctx)
-	c.TestUser(ctx)
+	log.Info("[Client] Login successful")
+	log.Info("[Client] Test tiphereth begin")
+	c.TestTiphereth(ctx)
+	log.Info("[Client] Test tiphereth finish")
+	log.Info("[Client] Test gebura begin")
 	c.TestGebura(ctx)
+	log.Info("[Client] Test gebura finish")
+	log.Info("[Client] Test yesod begin")
 	c.TestYesod(ctx)
+	log.Info("[Client] Test yesod finish")
+
+	log.Info("[Client] All test finished")
 }
 
 func NewSephirahClient() pb.LibrarianSephirahServiceClient {
@@ -60,45 +63,10 @@ func (c *Client) WaitServerOnline(ctx context.Context) {
 	for errors.IsServiceUnavailable(err) && i < 30 {
 		time.Sleep(time.Second)
 		i += 1
-		log.Infof("Waiting server online %s", err.Error())
+		log.Infof("[Client] Waiting server online %s", err.Error())
 		_, err = c.cli.GetToken(ctx, new(pb.GetTokenRequest))
 	}
-}
-
-func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
-	var accessToken, refreshToken string
-	if resp, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{
-		Username: username,
-		Password: password,
-	}); err != nil {
-		panic(err)
-	} else {
-		refreshToken = resp.RefreshToken
-	}
-	ctxForRefresh := metadata.NewOutgoingContext(
-		ctx,
-		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", refreshToken)),
-	)
-	if resp, err := c.cli.RefreshToken(ctxForRefresh, &pb.RefreshTokenRequest{}); err != nil {
-		panic(err)
-	} else {
-		accessToken = resp.AccessToken
-	}
-	return metadata.NewOutgoingContext(
-		ctx,
-		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", accessToken)),
-	)
-}
-
-func (c *Client) TestUser(ctx context.Context) {
-	if _, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
-		Paging: &librarian.PagingRequest{
-			PageNum:  1,
-			PageSize: 1,
-		},
-		TypeFilter:   nil,
-		StatusFilter: nil,
-	}); err != nil {
-		panic(err)
+	if i == 30 {
+		panic("Server unavailable")
 	}
 }

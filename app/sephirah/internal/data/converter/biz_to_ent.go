@@ -33,9 +33,15 @@ func ToEntInternalID(id model.InternalID) int64 {
 }
 
 func ToEntUserType(t libauth.UserType) user.Type {
-	switch t { //nolint:exhaustive // TODO
+	switch t {
+	case libauth.UserTypeUnspecified:
+		return ""
 	case libauth.UserTypeAdmin:
 		return user.TypeAdmin
+	case libauth.UserTypeNormal:
+		return user.TypeNormal
+	case libauth.UserTypeSentinel:
+		return user.TypeSentinel
 	default:
 		return ""
 	}

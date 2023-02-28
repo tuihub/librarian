@@ -201,7 +201,7 @@ var (
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin", "normal", "sentinel"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "user_create", Type: field.TypeInt64, Nullable: true},

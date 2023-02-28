@@ -12,6 +12,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.5.4
 	github.com/gocolly/colly/v2 v2.1.1-0.20230116162851-487ef118797d
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/google/go-cmp v0.5.9
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
 	github.com/improbable-eng/grpc-web v0.15.0
@@ -55,7 +56,6 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.1 // indirect

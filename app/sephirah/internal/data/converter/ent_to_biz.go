@@ -60,6 +60,10 @@ func ToLibAuthUserType(t user.Type) libauth.UserType {
 	switch t {
 	case user.TypeAdmin:
 		return libauth.UserTypeAdmin
+	case user.TypeNormal:
+		return libauth.UserTypeNormal
+	case user.TypeSentinel:
+		return libauth.UserTypeSentinel
 	default:
 		return libauth.UserTypeUnspecified
 	}

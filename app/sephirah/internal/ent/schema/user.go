@@ -30,7 +30,7 @@ func (User) Fields() []ent.Field {
 		field.Enum("status").
 			Values("active", "blocked"),
 		field.Enum("type").
-			Values("admin"),
+			Values("admin", "normal", "sentinel"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
