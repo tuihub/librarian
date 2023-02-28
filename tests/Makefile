@@ -14,6 +14,6 @@ test:
 	cd bin && goc server &
 	cd bin && ./fakes3 &
 	sleep 1s
-	cd bin && UNLOCK_CREATE=true ./librarian -conf ../../configs/example-for-testing.yaml &
+	cd bin && CREATE_ADMIN=true ./librarian -conf ../../configs/example-for-testing.yaml &
 	cd bin && ./client
 	goc profile -o ../coverage-goc.out
