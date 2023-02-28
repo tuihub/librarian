@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.6-3](https://github.com/TuiHub/Librarian/compare/v0.0.6-2...v0.0.6-3) (2023-02-28)
+
+
+### Continuous Integration
+
+* fix config ([e32ce6a](https://github.com/TuiHub/Librarian/commit/e32ce6a18fdf092d7213d58315f49161103cf6f6))
+
 ## [0.0.6-2](https://github.com/TuiHub/Librarian/compare/v0.0.6-1...v0.0.6-2) (2023-02-28)
 
 
