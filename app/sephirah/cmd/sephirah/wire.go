@@ -25,6 +25,7 @@ func wireApp(
 	*conf.Sephirah_Server,
 	*conf.Sephirah_Data,
 	*conf.Auth,
+	*conf.MQ,
 ) (*kratos.App, func(), error) {
 	panic(wire.Build(
 		server.ProviderSet,

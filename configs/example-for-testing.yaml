@@ -13,6 +13,8 @@ sephirah:
     salt: test
     issuer: test
     jwt_secret: test
+  mq:
+    driver: memory
 mapper:
   data:
     cayley:

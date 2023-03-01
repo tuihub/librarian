@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/message/router/middleware"
-	"github.com/ThreeDotsLabs/watermill/pubsub/gochannel"
 	"github.com/google/wire"
 )
 
@@ -19,22 +19,30 @@ var ProviderSet = wire.NewSet(NewMQ)
 
 type MQ struct {
 	router    *message.Router
-	pubSub    *gochannel.GoChannel // TODO https://github.com/ThreeDotsLabs/watermill/issues/296
+	pubSub    *pubSub
 	topicList map[string]bool
 }
 
-func NewMQ() (*MQ, func(), error) {
-	loggerAdapter := new(MQLogger)
+type pubSub struct {
+	publisher  message.Publisher
+	subscriber message.Subscriber
+}
+
+func NewMQ(c *conf.MQ) (*MQ, func(), error) {
+	loggerAdapter := newMQLogger()
+	var ps *pubSub
+	switch c.Driver {
+	case "memory":
+		ps = newGoChannelAdapter(loggerAdapter)
+	case "sql":
+		var err error
+		ps, err = newSQLAdapter(c.Database, loggerAdapter)
+		if err != nil {
+			return nil, func() {}, err
+		}
+	}
 	router, err := message.NewRouter(
 		message.RouterConfig{CloseTimeout: 0},
-		loggerAdapter,
-	)
-	pubSub := gochannel.NewGoChannel(
-		gochannel.Config{
-			OutputChannelBuffer:            0,
-			Persistent:                     false,
-			BlockPublishUntilSubscriberAck: false,
-		},
 		loggerAdapter,
 	)
 	router.AddMiddleware(
@@ -52,12 +60,11 @@ func NewMQ() (*MQ, func(), error) {
 		// middleware.Recoverer,
 	)
 	cleanup := func() {
-		_ = pubSub.Close()
 		_ = router.Close()
 	}
 	return &MQ{
 		router:    router,
-		pubSub:    pubSub,
+		pubSub:    ps,
 		topicList: make(map[string]bool),
 	}, cleanup, err
 }
@@ -77,7 +84,7 @@ func (a *MQ) RegisterTopic(topic Topic) error {
 	a.router.AddNoPublisherHandler(
 		topic.Name(),
 		topic.Name(),
-		a.pubSub,
+		a.pubSub.subscriber,
 		func(msg *message.Message) error {
 			err := topic.Consume(msg.Context(), msg.Payload)
 			if err != nil {
@@ -98,5 +105,9 @@ func (a *MQ) Publish(ctx context.Context, topic string, payload []byte) error {
 	}
 	msg := message.NewMessage(watermill.NewUUID(), payload)
 	msg.SetContext(ctx)
-	return a.pubSub.Publish(topic, msg)
+	err := a.pubSub.publisher.Publish(topic, msg)
+	for i := 0; err != nil && i < 16; i += 1 {
+		err = a.pubSub.publisher.Publish(topic, msg)
+	}
+	return err
 }

@@ -19,6 +19,16 @@ sephirah:
     salt: test
     issuer: test
     jwt_secret: test
+  mq:
+    driver: sql
+    database:
+      driver: postgres
+      host: localhost
+      port: 5432
+      dbname: librarian
+      user: librarian
+      password: librarian
+      no_ssl: true
 mapper:
   data:
     cayley:

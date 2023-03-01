@@ -26,12 +26,12 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, mq *conf.MQ) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
-	mq, cleanup, err := libmq.NewMQ()
+	libmqMQ, cleanup, err := libmq.NewMQ(mq)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -72,7 +72,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
 	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
 	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
-	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl, topicImpl3)
+	angela, err := bizangela.NewAngela(libmqMQ, topicImpl2, libmqTopicImpl, topicImpl, topicImpl3)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -97,7 +97,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod)
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
-	app := newApp(grpcServer, httpServer, mq, cron)
+	app := newApp(grpcServer, httpServer, libmqMQ, cron)
 	return app, func() {
 		cleanup2()
 		cleanup()

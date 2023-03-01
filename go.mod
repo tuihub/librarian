@@ -5,6 +5,7 @@ go 1.19
 require (
 	entgo.io/ent v0.11.8
 	github.com/ThreeDotsLabs/watermill v1.2.0
+	github.com/ThreeDotsLabs/watermill-sql v1.3.8
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/fullstorydev/grpchan v1.1.1

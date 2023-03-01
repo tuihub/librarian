@@ -44,7 +44,7 @@ func main() {
 	var bc conf.Sephirah
 	libapp.LoadConfig(flagconf, &bc)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Auth)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Auth, bc.Mq)
 	if err != nil {
 		panic(err)
 	}

@@ -3,34 +3,20 @@ package kratos.api;
 
 option go_package = "Librarian/internal/conf;conf";
 
-import "google/protobuf/duration.proto";
-import "conf/auth.proto";
+import "conf/base.proto";
 
 message Sephirah {
   message Server {
-    message GRPC {
-      string network = 1;
-      string addr = 2;
-      google.protobuf.Duration timeout = 3;
-    }
     GRPC grpc = 1;
     GRPC grpc_web = 2;
   }
 
   message Data {
-    message Database {
-      string driver = 1;
-      string host = 2;
-      int32 port = 3;
-      string dbname = 4;
-      string user = 5;
-      string password = 6;
-      bool no_ssl = 7;
-    }
     Database database = 1;
   }
 
   Server server = 1;
   Data data = 2;
   Auth auth = 3;
+  MQ mq = 4;
 }

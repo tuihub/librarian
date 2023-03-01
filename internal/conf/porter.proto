@@ -3,15 +3,10 @@ package kratos.api;
 
 option go_package = "Librarian/internal/conf;conf";
 
-import "google/protobuf/duration.proto";
+import "conf/base.proto";
 
 message Porter {
   message Server {
-    message GRPC {
-      string network = 1;
-      string addr = 2;
-      google.protobuf.Duration timeout = 3;
-    }
     GRPC grpc = 1;
   }
 

@@ -57,6 +57,7 @@ func main() {
 		bc.Searcher.Data,
 		bc.Porter.Data,
 		bc.Sephirah.Auth,
+		bc.Sephirah.Mq,
 	)
 	if err != nil {
 		panic(err)
