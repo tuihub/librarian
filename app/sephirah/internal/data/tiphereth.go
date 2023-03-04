@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -25,8 +26,8 @@ func NewTipherethRepo(data *Data) biztiphereth.TipherethRepo {
 
 func (t tipherethRepo) FetchUserByPassword(
 	ctx context.Context,
-	userData *biztiphereth.User,
-) (*biztiphereth.User, error) {
+	userData *modeltiphereth.User,
+) (*modeltiphereth.User, error) {
 	u, err := t.data.db.User.Query().Where(
 		user.UsernameEQ(userData.UserName),
 		user.PasswordEQ(userData.PassWord),
@@ -37,7 +38,7 @@ func (t tipherethRepo) FetchUserByPassword(
 	return t.data.converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) CreateUser(ctx context.Context, u *biztiphereth.User, c model.InternalID) error {
+func (t tipherethRepo) CreateUser(ctx context.Context, u *modeltiphereth.User, c model.InternalID) error {
 	q := t.data.db.User.Create().
 		SetID(u.ID).
 		SetUsername(u.UserName).
@@ -48,7 +49,7 @@ func (t tipherethRepo) CreateUser(ctx context.Context, u *biztiphereth.User, c m
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User, password string) error {
+func (t tipherethRepo) UpdateUser(ctx context.Context, u *modeltiphereth.User, password string) error {
 	q := t.data.db.User.Update().
 		Where(user.IDEQ(u.ID))
 	if u.UserName != "" {
@@ -60,7 +61,7 @@ func (t tipherethRepo) UpdateUser(ctx context.Context, u *biztiphereth.User, pas
 	if u.Type != libauth.UserTypeUnspecified {
 		q.SetType(converter.ToEntUserType(u.Type))
 	}
-	if u.Status != biztiphereth.UserStatusUnspecified {
+	if u.Status != modeltiphereth.UserStatusUnspecified {
 		q.SetStatus(converter.ToEntUserStatus(u.Status))
 	}
 	return q.Exec(ctx)
@@ -71,10 +72,10 @@ func (t tipherethRepo) ListUser(
 	paging model.Paging,
 	ids []model.InternalID,
 	types []libauth.UserType,
-	statuses []biztiphereth.UserStatus,
+	statuses []modeltiphereth.UserStatus,
 	exclude []model.InternalID,
 	creator *model.InternalID,
-) ([]*biztiphereth.User, int64, error) {
+) ([]*modeltiphereth.User, int64, error) {
 	q := t.data.db.User.Query()
 	if creator != nil {
 		q = t.data.db.User.Query().Where(user.IDEQ(*creator)).QueryCreate()
@@ -105,7 +106,15 @@ func (t tipherethRepo) ListUser(
 	return t.data.converter.ToBizUserList(u), int64(count), nil
 }
 
-func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account, u model.InternalID) error {
+func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*modeltiphereth.User, error) {
+	u, err := t.data.db.User.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return t.data.converter.ToBizUser(u), nil
+}
+
+func (t tipherethRepo) CreateAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Create().
 		SetUserID(u).
 		SetID(a.ID).
@@ -117,7 +126,7 @@ func (t tipherethRepo) CreateAccount(ctx context.Context, a biztiphereth.Account
 		Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateAccount(ctx context.Context, a biztiphereth.Account) error {
+func (t tipherethRepo) UpdateAccount(ctx context.Context, a modeltiphereth.Account) error {
 	return t.data.db.Account.Update().Where(
 		account.IDEQ(a.ID),
 		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
@@ -129,7 +138,7 @@ func (t tipherethRepo) UpdateAccount(ctx context.Context, a biztiphereth.Account
 		Exec(ctx)
 }
 
-func (t tipherethRepo) UnLinkAccount(ctx context.Context, a biztiphereth.Account, u model.InternalID) error {
+func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
@@ -143,7 +152,7 @@ func (t tipherethRepo) ListLinkAccount(
 	ctx context.Context,
 	paging model.Paging,
 	userID model.InternalID,
-) ([]*biztiphereth.Account, int64, error) {
+) ([]*modeltiphereth.Account, int64, error) {
 	q := t.data.db.Account.Query().Where(
 		account.HasUserWith(user.IDEQ(userID)),
 	)

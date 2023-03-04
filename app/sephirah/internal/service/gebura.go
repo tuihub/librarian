@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -66,7 +66,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 	*pb.BindAppResponse, error,
 ) {
 	a, err := s.g.BindApp(ctx, // TODO
-		bizgebura.App{
+		modelgebura.App{
 			ID:               converter.ToBizInternalID(req.GetInternalAppId()),
 			Source:           0,
 			SourceAppID:      "",
@@ -77,7 +77,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 			ImageURL:         "",
 			Details:          nil,
 		},
-		bizgebura.App{
+		modelgebura.App{
 			ID:               0,
 			Source:           converter.ToBizAppSource(req.GetBindAppId().GetSource()),
 			SourceAppID:      req.GetBindAppId().GetSourceAppId(),
@@ -157,7 +157,7 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 	ctx context.Context,
 	req *pb.AssignAppPackageRequest,
 ) (*pb.AssignAppPackageResponse, error) {
-	err := s.g.AssignAppPackage(ctx, bizgebura.App{ // TODO
+	err := s.g.AssignAppPackage(ctx, modelgebura.App{ // TODO
 		ID:               converter.ToBizInternalID(req.GetAppId()),
 		Source:           0,
 		SourceAppID:      "",
@@ -167,14 +167,14 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 		ShortDescription: "",
 		ImageURL:         "",
 		Details:          nil,
-	}, bizgebura.AppPackage{
+	}, modelgebura.AppPackage{
 		ID:              converter.ToBizInternalID(req.GetAppPackageId()),
 		Source:          0,
 		SourceID:        0,
 		SourcePackageID: "",
 		Name:            "",
 		Description:     "",
-		Binary: &bizgebura.AppPackageBinary{
+		Binary: &modelgebura.AppPackageBinary{
 			Name:      "",
 			Size:      0,
 			PublicURL: "",
@@ -199,7 +199,7 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 		return err0
 	}
 	for {
-		var apl []*bizgebura.AppPackage
+		var apl []*modelgebura.AppPackage
 		if req, err := conn.Recv(); err != nil {
 			if errors.Is(err, io.EOF) {
 				return nil
@@ -207,14 +207,14 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 			return err
 		} else {
 			for id, a := range req.GetAppPackageList() {
-				apl = append(apl, &bizgebura.AppPackage{ // TODO
+				apl = append(apl, &modelgebura.AppPackage{ // TODO
 					ID:              0,
 					Source:          0,
 					SourceID:        0,
 					SourcePackageID: id,
 					Name:            "",
 					Description:     "",
-					Binary: &bizgebura.AppPackageBinary{
+					Binary: &modelgebura.AppPackageBinary{
 						Name:      a.GetName(),
 						Size:      a.GetSize(),
 						PublicURL: a.GetPublicUrl(),

@@ -787,14 +787,14 @@ func UpdatedParsedNotNil() predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldNotNull(FieldUpdatedParsed))
 }
 
-// EnclosureIsNil applies the IsNil predicate on the "enclosure" field.
-func EnclosureIsNil() predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldIsNull(FieldEnclosure))
+// EnclosuresIsNil applies the IsNil predicate on the "enclosures" field.
+func EnclosuresIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldEnclosures))
 }
 
-// EnclosureNotNil applies the NotNil predicate on the "enclosure" field.
-func EnclosureNotNil() predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldNotNull(FieldEnclosure))
+// EnclosuresNotNil applies the NotNil predicate on the "enclosures" field.
+func EnclosuresNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldEnclosures))
 }
 
 // PublishPlatformEQ applies the EQ predicate on the "publish_platform" field.

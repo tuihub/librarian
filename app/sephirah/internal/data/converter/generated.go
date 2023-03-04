@@ -3,159 +3,260 @@
 package converter
 
 import (
-	bizgebura "github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	biztiphereth "github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	bizyesod "github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	ent "github.com/tuihub/librarian/app/sephirah/internal/ent"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	user "github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
 	model "github.com/tuihub/librarian/internal/model"
+	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
 	"time"
 )
 
 type toBizConverterImpl struct{}
 
-func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *biztiphereth.Account {
-	var pBiztipherethAccount *biztiphereth.Account
+func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *modeltiphereth.Account {
+	var pModeltipherethAccount *modeltiphereth.Account
 	if source != nil {
-		var biztipherethAccount biztiphereth.Account
-		biztipherethAccount.ID = model.InternalID((*source).ID)
-		biztipherethAccount.Platform = ToBizAccountPlatform((*source).Platform)
-		biztipherethAccount.PlatformAccountID = (*source).PlatformAccountID
-		biztipherethAccount.Name = (*source).Name
-		biztipherethAccount.ProfileURL = (*source).ProfileURL
-		biztipherethAccount.AvatarURL = (*source).AvatarURL
-		pBiztipherethAccount = &biztipherethAccount
+		var modeltipherethAccount modeltiphereth.Account
+		modeltipherethAccount.ID = model.InternalID((*source).ID)
+		modeltipherethAccount.Platform = ToBizAccountPlatform((*source).Platform)
+		modeltipherethAccount.PlatformAccountID = (*source).PlatformAccountID
+		modeltipherethAccount.Name = (*source).Name
+		modeltipherethAccount.ProfileURL = (*source).ProfileURL
+		modeltipherethAccount.AvatarURL = (*source).AvatarURL
+		pModeltipherethAccount = &modeltipherethAccount
 	}
-	return pBiztipherethAccount
+	return pModeltipherethAccount
 }
-func (c *toBizConverterImpl) ToBizAccountList(source []*ent.Account) []*biztiphereth.Account {
-	var pBiztipherethAccountList []*biztiphereth.Account
+func (c *toBizConverterImpl) ToBizAccountList(source []*ent.Account) []*modeltiphereth.Account {
+	var pModeltipherethAccountList []*modeltiphereth.Account
 	if source != nil {
-		pBiztipherethAccountList = make([]*biztiphereth.Account, len(source))
+		pModeltipherethAccountList = make([]*modeltiphereth.Account, len(source))
 		for i := 0; i < len(source); i++ {
-			pBiztipherethAccountList[i] = c.ToBizAccount(source[i])
+			pModeltipherethAccountList[i] = c.ToBizAccount(source[i])
 		}
 	}
-	return pBiztipherethAccountList
+	return pModeltipherethAccountList
 }
-func (c *toBizConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
-	var pBizgeburaApp *bizgebura.App
+func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
+	var pModelgeburaApp *modelgebura.App
 	if source != nil {
-		var bizgeburaApp bizgebura.App
-		bizgeburaApp.ID = model.InternalID((*source).ID)
-		bizgeburaApp.Source = ToBizAppSource((*source).Source)
-		bizgeburaApp.SourceAppID = (*source).SourceAppID
-		bizgeburaApp.SourceURL = (*source).SourceURL
-		bizgeburaApp.Name = (*source).Name
-		bizgeburaApp.Type = ToBizAppType((*source).Type)
-		bizgeburaApp.ShortDescription = (*source).ShortDescription
-		bizgeburaApp.ImageURL = (*source).ImageURL
-		bizgeburaApp.Details = c.entAppToPBizgeburaAppDetails((*source))
-		pBizgeburaApp = &bizgeburaApp
+		var modelgeburaApp modelgebura.App
+		modelgeburaApp.ID = model.InternalID((*source).ID)
+		modelgeburaApp.Source = ToBizAppSource((*source).Source)
+		modelgeburaApp.SourceAppID = (*source).SourceAppID
+		modelgeburaApp.SourceURL = (*source).SourceURL
+		modelgeburaApp.Name = (*source).Name
+		modelgeburaApp.Type = ToBizAppType((*source).Type)
+		modelgeburaApp.ShortDescription = (*source).ShortDescription
+		modelgeburaApp.ImageURL = (*source).ImageURL
+		modelgeburaApp.Details = c.entAppToPModelgeburaAppDetails((*source))
+		pModelgeburaApp = &modelgeburaApp
 	}
-	return pBizgeburaApp
+	return pModelgeburaApp
 }
-func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) bizgebura.AppPackageBinary {
-	var bizgeburaAppPackageBinary bizgebura.AppPackageBinary
-	bizgeburaAppPackageBinary.Name = source.BinaryName
-	bizgeburaAppPackageBinary.Size = source.BinarySize
-	bizgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
-	return bizgeburaAppPackageBinary
+func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
+	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
+	modelgeburaAppPackageBinary.Name = source.BinaryName
+	modelgeburaAppPackageBinary.Size = source.BinarySize
+	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
+	return modelgeburaAppPackageBinary
 }
-func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.AppPackage {
-	var pBizgeburaAppPackage *bizgebura.AppPackage
+func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebura.AppPackage {
+	var pModelgeburaAppPackage *modelgebura.AppPackage
 	if source != nil {
-		var bizgeburaAppPackage bizgebura.AppPackage
-		bizgeburaAppPackage.ID = model.InternalID((*source).ID)
-		bizgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
-		bizgeburaAppPackage.SourceID = model.InternalID((*source).SourceID)
-		bizgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
-		bizgeburaAppPackage.Name = (*source).Name
-		bizgeburaAppPackage.Description = (*source).Description
-		bizgeburaAppPackage.Binary = c.entAppPackageToPBizgeburaAppPackageBinary((*source))
-		pBizgeburaAppPackage = &bizgeburaAppPackage
+		var modelgeburaAppPackage modelgebura.AppPackage
+		modelgeburaAppPackage.ID = model.InternalID((*source).ID)
+		modelgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
+		modelgeburaAppPackage.SourceID = model.InternalID((*source).SourceID)
+		modelgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
+		modelgeburaAppPackage.Name = (*source).Name
+		modelgeburaAppPackage.Description = (*source).Description
+		modelgeburaAppPackage.Binary = c.entAppPackageToPModelgeburaAppPackageBinary((*source))
+		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
-	return pBizgeburaAppPackage
+	return pModelgeburaAppPackage
 }
-func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*bizgebura.AppPackage {
-	var pBizgeburaAppPackageList []*bizgebura.AppPackage
+func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*modelgebura.AppPackage {
+	var pModelgeburaAppPackageList []*modelgebura.AppPackage
 	if source != nil {
-		pBizgeburaAppPackageList = make([]*bizgebura.AppPackage, len(source))
+		pModelgeburaAppPackageList = make([]*modelgebura.AppPackage, len(source))
 		for i := 0; i < len(source); i++ {
-			pBizgeburaAppPackageList[i] = c.ToBizAppPackage(source[i])
+			pModelgeburaAppPackageList[i] = c.ToBizAppPackage(source[i])
 		}
 	}
-	return pBizgeburaAppPackageList
+	return pModelgeburaAppPackageList
 }
-func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *bizyesod.FeedConfig {
-	var pBizyesodFeedConfig *bizyesod.FeedConfig
+func (c *toBizConverterImpl) ToBizFeed(source *ent.Feed) *modelfeed.Feed {
+	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {
-		var bizyesodFeedConfig bizyesod.FeedConfig
-		bizyesodFeedConfig.ID = model.InternalID((*source).ID)
-		bizyesodFeedConfig.FeedURL = (*source).FeedURL
-		bizyesodFeedConfig.AuthorAccount = model.InternalID((*source).AuthorAccount)
-		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
-		bizyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
-		bizyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
-		pBizyesodFeedConfig = &bizyesodFeedConfig
+		var modelfeedFeed modelfeed.Feed
+		modelfeedFeed.ID = model.InternalID((*source).ID)
+		modelfeedFeed.Title = (*source).Title
+		modelfeedFeed.Description = (*source).Description
+		modelfeedFeed.Link = (*source).Link
+		var pModelfeedPersonList []*modelfeed.Person
+		if (*source).Authors != nil {
+			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
+			for i := 0; i < len((*source).Authors); i++ {
+				pModelfeedPersonList[i] = c.pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
+			}
+		}
+		modelfeedFeed.Authors = pModelfeedPersonList
+		modelfeedFeed.Language = (*source).Language
+		modelfeedFeed.Image = c.pModelfeedImageToPModelfeedImage((*source).Image)
+		pModelfeedFeed = &modelfeedFeed
 	}
-	return pBizyesodFeedConfig
+	return pModelfeedFeed
 }
-func (c *toBizConverterImpl) ToBizFeedConfigList(source []*ent.FeedConfig) []*bizyesod.FeedConfig {
-	var pBizyesodFeedConfigList []*bizyesod.FeedConfig
+func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
+	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
-		pBizyesodFeedConfigList = make([]*bizyesod.FeedConfig, len(source))
+		var modelyesodFeedConfig modelyesod.FeedConfig
+		modelyesodFeedConfig.ID = model.InternalID((*source).ID)
+		modelyesodFeedConfig.FeedURL = (*source).FeedURL
+		modelyesodFeedConfig.AuthorAccount = model.InternalID((*source).AuthorAccount)
+		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
+		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
+		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
+		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
+		pModelyesodFeedConfig = &modelyesodFeedConfig
+	}
+	return pModelyesodFeedConfig
+}
+func (c *toBizConverterImpl) ToBizFeedConfigList(source []*ent.FeedConfig) []*modelyesod.FeedConfig {
+	var pModelyesodFeedConfigList []*modelyesod.FeedConfig
+	if source != nil {
+		pModelyesodFeedConfigList = make([]*modelyesod.FeedConfig, len(source))
 		for i := 0; i < len(source); i++ {
-			pBizyesodFeedConfigList[i] = c.ToBizFeedConfig(source[i])
+			pModelyesodFeedConfigList[i] = c.ToBizFeedConfig(source[i])
 		}
 	}
-	return pBizyesodFeedConfigList
+	return pModelyesodFeedConfigList
 }
-func (c *toBizConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
-	var pBiztipherethUser *biztiphereth.User
+func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
+	var pModelfeedItem *modelfeed.Item
 	if source != nil {
-		var biztipherethUser biztiphereth.User
-		biztipherethUser.ID = model.InternalID((*source).ID)
-		biztipherethUser.UserName = (*source).Username
-		biztipherethUser.Type = ToLibAuthUserType((*source).Type)
-		biztipherethUser.Status = ToBizUserStatus((*source).Status)
-		pBiztipherethUser = &biztipherethUser
+		var modelfeedItem modelfeed.Item
+		modelfeedItem.ID = model.InternalID((*source).ID)
+		modelfeedItem.Title = (*source).Title
+		modelfeedItem.Description = (*source).Description
+		modelfeedItem.Content = (*source).Content
+		modelfeedItem.Link = (*source).Link
+		modelfeedItem.Updated = (*source).Updated
+		modelfeedItem.UpdatedParsed = TimeToTimePtr((*source).UpdatedParsed)
+		modelfeedItem.Published = (*source).Published
+		modelfeedItem.PublishedParsed = TimeToTimePtr((*source).PublishedParsed)
+		var pModelfeedPersonList []*modelfeed.Person
+		if (*source).Authors != nil {
+			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
+			for i := 0; i < len((*source).Authors); i++ {
+				pModelfeedPersonList[i] = c.pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
+			}
+		}
+		modelfeedItem.Authors = pModelfeedPersonList
+		modelfeedItem.GUID = (*source).GUID
+		modelfeedItem.Image = c.pModelfeedImageToPModelfeedImage((*source).Image)
+		var pModelfeedEnclosureList []*modelfeed.Enclosure
+		if (*source).Enclosures != nil {
+			pModelfeedEnclosureList = make([]*modelfeed.Enclosure, len((*source).Enclosures))
+			for j := 0; j < len((*source).Enclosures); j++ {
+				pModelfeedEnclosureList[j] = c.pModelfeedEnclosureToPModelfeedEnclosure((*source).Enclosures[j])
+			}
+		}
+		modelfeedItem.Enclosures = pModelfeedEnclosureList
+		modelfeedItem.PublishPlatform = (*source).PublishPlatform
+		pModelfeedItem = &modelfeedItem
 	}
-	return pBiztipherethUser
+	return pModelfeedItem
 }
-func (c *toBizConverterImpl) ToBizUserList(source []*ent.User) []*biztiphereth.User {
-	var pBiztipherethUserList []*biztiphereth.User
+func (c *toBizConverterImpl) ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
+	var pModelfeedItemList []*modelfeed.Item
 	if source != nil {
-		pBiztipherethUserList = make([]*biztiphereth.User, len(source))
+		pModelfeedItemList = make([]*modelfeed.Item, len(source))
 		for i := 0; i < len(source); i++ {
-			pBiztipherethUserList[i] = c.ToBizUser(source[i])
+			pModelfeedItemList[i] = c.ToBizFeedItem(source[i])
 		}
 	}
-	return pBiztipherethUserList
+	return pModelfeedItemList
 }
-func (c *toBizConverterImpl) entAppPackageToPBizgeburaAppPackageBinary(source ent.AppPackage) *bizgebura.AppPackageBinary {
-	bizgeburaAppPackageBinary := c.ToBizAppPacakgeBinary(source)
-	return &bizgeburaAppPackageBinary
+func (c *toBizConverterImpl) ToBizUser(source *ent.User) *modeltiphereth.User {
+	var pModeltipherethUser *modeltiphereth.User
+	if source != nil {
+		var modeltipherethUser modeltiphereth.User
+		modeltipherethUser.ID = model.InternalID((*source).ID)
+		modeltipherethUser.UserName = (*source).Username
+		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
+		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
+		pModeltipherethUser = &modeltipherethUser
+	}
+	return pModeltipherethUser
 }
-func (c *toBizConverterImpl) entAppToBizgeburaAppDetails(source ent.App) bizgebura.AppDetails {
-	var bizgeburaAppDetails bizgebura.AppDetails
-	bizgeburaAppDetails.Description = source.Description
-	bizgeburaAppDetails.ReleaseDate = source.ReleaseDate
-	bizgeburaAppDetails.Developer = source.Developer
-	bizgeburaAppDetails.Publisher = source.Publisher
-	bizgeburaAppDetails.Version = source.Version
-	return bizgeburaAppDetails
+func (c *toBizConverterImpl) ToBizUserList(source []*ent.User) []*modeltiphereth.User {
+	var pModeltipherethUserList []*modeltiphereth.User
+	if source != nil {
+		pModeltipherethUserList = make([]*modeltiphereth.User, len(source))
+		for i := 0; i < len(source); i++ {
+			pModeltipherethUserList[i] = c.ToBizUser(source[i])
+		}
+	}
+	return pModeltipherethUserList
 }
-func (c *toBizConverterImpl) entAppToPBizgeburaAppDetails(source ent.App) *bizgebura.AppDetails {
-	bizgeburaAppDetails := c.entAppToBizgeburaAppDetails(source)
-	return &bizgeburaAppDetails
+func (c *toBizConverterImpl) entAppPackageToPModelgeburaAppPackageBinary(source ent.AppPackage) *modelgebura.AppPackageBinary {
+	modelgeburaAppPackageBinary := c.ToBizAppPacakgeBinary(source)
+	return &modelgeburaAppPackageBinary
+}
+func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) modelgebura.AppDetails {
+	var modelgeburaAppDetails modelgebura.AppDetails
+	modelgeburaAppDetails.Description = source.Description
+	modelgeburaAppDetails.ReleaseDate = source.ReleaseDate
+	modelgeburaAppDetails.Developer = source.Developer
+	modelgeburaAppDetails.Publisher = source.Publisher
+	modelgeburaAppDetails.Version = source.Version
+	return modelgeburaAppDetails
+}
+func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
+	modelgeburaAppDetails := c.entAppToModelgeburaAppDetails(source)
+	return &modelgeburaAppDetails
+}
+func (c *toBizConverterImpl) pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
+	var pModelfeedEnclosure *modelfeed.Enclosure
+	if source != nil {
+		var modelfeedEnclosure modelfeed.Enclosure
+		modelfeedEnclosure.URL = (*source).URL
+		modelfeedEnclosure.Length = (*source).Length
+		modelfeedEnclosure.Type = (*source).Type
+		pModelfeedEnclosure = &modelfeedEnclosure
+	}
+	return pModelfeedEnclosure
+}
+func (c *toBizConverterImpl) pModelfeedImageToPModelfeedImage(source *modelfeed.Image) *modelfeed.Image {
+	var pModelfeedImage *modelfeed.Image
+	if source != nil {
+		var modelfeedImage modelfeed.Image
+		modelfeedImage.URL = (*source).URL
+		modelfeedImage.Title = (*source).Title
+		pModelfeedImage = &modelfeedImage
+	}
+	return pModelfeedImage
+}
+func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfeed.Person) *modelfeed.Person {
+	var pModelfeedPerson *modelfeed.Person
+	if source != nil {
+		var modelfeedPerson modelfeed.Person
+		modelfeedPerson.Name = (*source).Name
+		modelfeedPerson.Email = (*source).Email
+		pModelfeedPerson = &modelfeedPerson
+	}
+	return pModelfeedPerson
 }
 
 type toEntConverterImpl struct{}
 
-func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []bizyesod.FeedConfigSource) []feedconfig.Source {
+func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []modelyesod.FeedConfigSource) []feedconfig.Source {
 	var feedconfigSourceList []feedconfig.Source
 	if source != nil {
 		feedconfigSourceList = make([]feedconfig.Source, len(source))
@@ -165,7 +266,7 @@ func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []bizyesod.FeedCon
 	}
 	return feedconfigSourceList
 }
-func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []bizyesod.FeedConfigStatus) []feedconfig.Status {
+func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	var feedconfigStatusList []feedconfig.Status
 	if source != nil {
 		feedconfigStatusList = make([]feedconfig.Status, len(source))
@@ -175,17 +276,7 @@ func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []bizyesod.FeedCon
 	}
 	return feedconfigStatusList
 }
-func (c *toEntConverterImpl) ToEntInternalIDList(source []model.InternalID) []int64 {
-	var int64List []int64
-	if source != nil {
-		int64List = make([]int64, len(source))
-		for i := 0; i < len(source); i++ {
-			int64List[i] = ToEntInternalID(source[i])
-		}
-	}
-	return int64List
-}
-func (c *toEntConverterImpl) ToEntUserStatusList(source []biztiphereth.UserStatus) []user.Status {
+func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
 	var userStatusList []user.Status
 	if source != nil {
 		userStatusList = make([]user.Status, len(source))

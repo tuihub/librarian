@@ -161,9 +161,9 @@ func (fic *FeedItemCreate) SetNillableUpdatedParsed(t *time.Time) *FeedItemCreat
 	return fic
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (fic *FeedItemCreate) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemCreate {
-	fic.mutation.SetEnclosure(m)
+// SetEnclosures sets the "enclosures" field.
+func (fic *FeedItemCreate) SetEnclosures(m []*modelfeed.Enclosure) *FeedItemCreate {
+	fic.mutation.SetEnclosures(m)
 	return fic
 }
 
@@ -359,9 +359,9 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 		_spec.SetField(feeditem.FieldUpdatedParsed, field.TypeTime, value)
 		_node.UpdatedParsed = &value
 	}
-	if value, ok := fic.mutation.Enclosure(); ok {
-		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
-		_node.Enclosure = value
+	if value, ok := fic.mutation.Enclosures(); ok {
+		_spec.SetField(feeditem.FieldEnclosures, field.TypeJSON, value)
+		_node.Enclosures = value
 	}
 	if value, ok := fic.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
@@ -627,21 +627,21 @@ func (u *FeedItemUpsert) ClearUpdatedParsed() *FeedItemUpsert {
 	return u
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsert) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsert {
-	u.Set(feeditem.FieldEnclosure, v)
+// SetEnclosures sets the "enclosures" field.
+func (u *FeedItemUpsert) SetEnclosures(v []*modelfeed.Enclosure) *FeedItemUpsert {
+	u.Set(feeditem.FieldEnclosures, v)
 	return u
 }
 
-// UpdateEnclosure sets the "enclosure" field to the value that was provided on create.
-func (u *FeedItemUpsert) UpdateEnclosure() *FeedItemUpsert {
-	u.SetExcluded(feeditem.FieldEnclosure)
+// UpdateEnclosures sets the "enclosures" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdateEnclosures() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldEnclosures)
 	return u
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (u *FeedItemUpsert) ClearEnclosure() *FeedItemUpsert {
-	u.SetNull(feeditem.FieldEnclosure)
+// ClearEnclosures clears the value of the "enclosures" field.
+func (u *FeedItemUpsert) ClearEnclosures() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldEnclosures)
 	return u
 }
 
@@ -951,24 +951,24 @@ func (u *FeedItemUpsertOne) ClearUpdatedParsed() *FeedItemUpsertOne {
 	})
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertOne) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsertOne {
+// SetEnclosures sets the "enclosures" field.
+func (u *FeedItemUpsertOne) SetEnclosures(v []*modelfeed.Enclosure) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetEnclosure(v)
+		s.SetEnclosures(v)
 	})
 }
 
-// UpdateEnclosure sets the "enclosure" field to the value that was provided on create.
-func (u *FeedItemUpsertOne) UpdateEnclosure() *FeedItemUpsertOne {
+// UpdateEnclosures sets the "enclosures" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdateEnclosures() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateEnclosure()
+		s.UpdateEnclosures()
 	})
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (u *FeedItemUpsertOne) ClearEnclosure() *FeedItemUpsertOne {
+// ClearEnclosures clears the value of the "enclosures" field.
+func (u *FeedItemUpsertOne) ClearEnclosures() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.ClearEnclosure()
+		s.ClearEnclosures()
 	})
 }
 
@@ -1447,24 +1447,24 @@ func (u *FeedItemUpsertBulk) ClearUpdatedParsed() *FeedItemUpsertBulk {
 	})
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertBulk) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsertBulk {
+// SetEnclosures sets the "enclosures" field.
+func (u *FeedItemUpsertBulk) SetEnclosures(v []*modelfeed.Enclosure) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetEnclosure(v)
+		s.SetEnclosures(v)
 	})
 }
 
-// UpdateEnclosure sets the "enclosure" field to the value that was provided on create.
-func (u *FeedItemUpsertBulk) UpdateEnclosure() *FeedItemUpsertBulk {
+// UpdateEnclosures sets the "enclosures" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdateEnclosures() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateEnclosure()
+		s.UpdateEnclosures()
 	})
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (u *FeedItemUpsertBulk) ClearEnclosure() *FeedItemUpsertBulk {
+// ClearEnclosures clears the value of the "enclosures" field.
+func (u *FeedItemUpsertBulk) ClearEnclosures() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.ClearEnclosure()
+		s.ClearEnclosures()
 	})
 }
 

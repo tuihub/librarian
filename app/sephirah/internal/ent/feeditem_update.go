@@ -220,21 +220,21 @@ func (fiu *FeedItemUpdate) ClearUpdatedParsed() *FeedItemUpdate {
 	return fiu
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (fiu *FeedItemUpdate) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdate {
-	fiu.mutation.SetEnclosure(m)
+// SetEnclosures sets the "enclosures" field.
+func (fiu *FeedItemUpdate) SetEnclosures(m []*modelfeed.Enclosure) *FeedItemUpdate {
+	fiu.mutation.SetEnclosures(m)
 	return fiu
 }
 
-// AppendEnclosure appends m to the "enclosure" field.
-func (fiu *FeedItemUpdate) AppendEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdate {
-	fiu.mutation.AppendEnclosure(m)
+// AppendEnclosures appends m to the "enclosures" field.
+func (fiu *FeedItemUpdate) AppendEnclosures(m []*modelfeed.Enclosure) *FeedItemUpdate {
+	fiu.mutation.AppendEnclosures(m)
 	return fiu
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (fiu *FeedItemUpdate) ClearEnclosure() *FeedItemUpdate {
-	fiu.mutation.ClearEnclosure()
+// ClearEnclosures clears the value of the "enclosures" field.
+func (fiu *FeedItemUpdate) ClearEnclosures() *FeedItemUpdate {
+	fiu.mutation.ClearEnclosures()
 	return fiu
 }
 
@@ -404,16 +404,16 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if fiu.mutation.UpdatedParsedCleared() {
 		_spec.ClearField(feeditem.FieldUpdatedParsed, field.TypeTime)
 	}
-	if value, ok := fiu.mutation.Enclosure(); ok {
-		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
+	if value, ok := fiu.mutation.Enclosures(); ok {
+		_spec.SetField(feeditem.FieldEnclosures, field.TypeJSON, value)
 	}
-	if value, ok := fiu.mutation.AppendedEnclosure(); ok {
+	if value, ok := fiu.mutation.AppendedEnclosures(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feeditem.FieldEnclosure, value)
+			sqljson.Append(u, feeditem.FieldEnclosures, value)
 		})
 	}
-	if fiu.mutation.EnclosureCleared() {
-		_spec.ClearField(feeditem.FieldEnclosure, field.TypeJSON)
+	if fiu.mutation.EnclosuresCleared() {
+		_spec.ClearField(feeditem.FieldEnclosures, field.TypeJSON)
 	}
 	if value, ok := fiu.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
@@ -637,21 +637,21 @@ func (fiuo *FeedItemUpdateOne) ClearUpdatedParsed() *FeedItemUpdateOne {
 	return fiuo
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
-	fiuo.mutation.SetEnclosure(m)
+// SetEnclosures sets the "enclosures" field.
+func (fiuo *FeedItemUpdateOne) SetEnclosures(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
+	fiuo.mutation.SetEnclosures(m)
 	return fiuo
 }
 
-// AppendEnclosure appends m to the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) AppendEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
-	fiuo.mutation.AppendEnclosure(m)
+// AppendEnclosures appends m to the "enclosures" field.
+func (fiuo *FeedItemUpdateOne) AppendEnclosures(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
+	fiuo.mutation.AppendEnclosures(m)
 	return fiuo
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) ClearEnclosure() *FeedItemUpdateOne {
-	fiuo.mutation.ClearEnclosure()
+// ClearEnclosures clears the value of the "enclosures" field.
+func (fiuo *FeedItemUpdateOne) ClearEnclosures() *FeedItemUpdateOne {
+	fiuo.mutation.ClearEnclosures()
 	return fiuo
 }
 
@@ -851,16 +851,16 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	if fiuo.mutation.UpdatedParsedCleared() {
 		_spec.ClearField(feeditem.FieldUpdatedParsed, field.TypeTime)
 	}
-	if value, ok := fiuo.mutation.Enclosure(); ok {
-		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
+	if value, ok := fiuo.mutation.Enclosures(); ok {
+		_spec.SetField(feeditem.FieldEnclosures, field.TypeJSON, value)
 	}
-	if value, ok := fiuo.mutation.AppendedEnclosure(); ok {
+	if value, ok := fiuo.mutation.AppendedEnclosures(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
-			sqljson.Append(u, feeditem.FieldEnclosure, value)
+			sqljson.Append(u, feeditem.FieldEnclosures, value)
 		})
 	}
-	if fiuo.mutation.EnclosureCleared() {
-		_spec.ClearField(feeditem.FieldEnclosure, field.TypeJSON)
+	if fiuo.mutation.EnclosuresCleared() {
+		_spec.ClearField(feeditem.FieldEnclosures, field.TypeJSON)
 	}
 	if value, ok := fiuo.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)

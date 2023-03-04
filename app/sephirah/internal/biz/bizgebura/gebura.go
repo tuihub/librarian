@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -13,81 +14,25 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-type App struct {
-	ID               model.InternalID
-	Source           AppSource
-	SourceAppID      string
-	SourceURL        string
-	Name             string
-	Type             AppType
-	ShortDescription string
-	ImageURL         string
-	Details          *AppDetails
-}
-
-type AppDetails struct {
-	Description string
-	ReleaseDate string
-	Developer   string
-	Publisher   string
-	Version     string
-}
-
-type AppSource int
-
-const (
-	AppSourceUnspecified AppSource = iota
-	AppSourceInternal
-	AppSourceSteam
-)
-
-type AppType int
-
-const (
-	AppTypeUnspecified AppType = iota
-	AppTypeGame
-)
-
-type AppPackage struct {
-	ID              model.InternalID
-	Source          AppPackageSource
-	SourceID        model.InternalID
-	SourcePackageID string
-	Name            string
-	Description     string
-	Binary          *AppPackageBinary
-}
-
-type AppPackageBinary struct {
-	Name      string
-	Size      int64
-	PublicURL string
-}
-
-type AppPackageSource int
-
-const (
-	AppPackageSourceUnspecified AppPackageSource = iota
-	AppPackageSourceManual
-	AppPackageSourceSentinel
-)
-
 type ReportAppPackageHandler interface {
-	Handle(context.Context, []*AppPackage) *errors.Error
+	Handle(context.Context, []*modelgebura.AppPackage) *errors.Error
 }
 
 type GeburaRepo interface {
 	IsApp(context.Context, model.InternalID) error
-	CreateApp(context.Context, *App) error
-	UpdateApp(context.Context, *App) error
-	UpsertApp(context.Context, []*App) error
-	ListApp(context.Context, model.Paging, []AppSource, []AppType, []model.InternalID, bool) ([]*App, error)
+	CreateApp(context.Context, *modelgebura.App) error
+	UpdateApp(context.Context, *modelgebura.App) error
+	UpsertApp(context.Context, []*modelgebura.App) error
+	ListApp(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
+		[]model.InternalID, bool) ([]*modelgebura.App, error)
 	IsAppPackage(context.Context, model.InternalID) error
-	CreateAppPackage(context.Context, *AppPackage) error
-	UpdateAppPackage(context.Context, *AppPackage) error
-	UpsertAppPackage(context.Context, []*AppPackage) error
-	ListAppPackage(context.Context, model.Paging, []AppPackageSource, []model.InternalID) ([]*AppPackage, error)
-	ListAllAppPackageIDOfOneSource(context.Context, AppPackageSource, model.InternalID) ([]string, error)
+	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
+	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
+	UpsertAppPackage(context.Context, []*modelgebura.AppPackage) error
+	ListAppPackage(context.Context, model.Paging, []modelgebura.AppPackageSource,
+		[]model.InternalID) ([]*modelgebura.AppPackage, error)
+	ListAllAppPackageIDOfOneSource(context.Context, modelgebura.AppPackageSource,
+		model.InternalID) ([]string, error)
 }
 
 type Gebura struct {

@@ -143,6 +143,7 @@ var (
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "pull_interval", Type: field.TypeInt64},
+		{Name: "latest_pull_at", Type: field.TypeTime},
 		{Name: "next_pull_begin_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
@@ -156,7 +157,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[9]},
+				Columns:    []*schema.Column{FeedConfigsColumns[10]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -176,7 +177,7 @@ var (
 		{Name: "published_parsed", Type: field.TypeTime, Nullable: true},
 		{Name: "updated", Type: field.TypeString, Nullable: true},
 		{Name: "updated_parsed", Type: field.TypeTime, Nullable: true},
-		{Name: "enclosure", Type: field.TypeJSON, Nullable: true},
+		{Name: "enclosures", Type: field.TypeJSON, Nullable: true},
 		{Name: "publish_platform", Type: field.TypeString, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},

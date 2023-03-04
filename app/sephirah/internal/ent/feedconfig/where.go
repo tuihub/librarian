@@ -73,6 +73,11 @@ func PullInterval(v time.Duration) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, vc))
 }
 
+// LatestPullAt applies equality check predicate on the "latest_pull_at" field. It's identical to LatestPullAtEQ.
+func LatestPullAt(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullAt, v))
+}
+
 // NextPullBeginAt applies equality check predicate on the "next_pull_begin_at" field. It's identical to NextPullBeginAtEQ.
 func NextPullBeginAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldNextPullBeginAt, v))
@@ -299,6 +304,46 @@ func PullIntervalLT(v time.Duration) predicate.FeedConfig {
 func PullIntervalLTE(v time.Duration) predicate.FeedConfig {
 	vc := int64(v)
 	return predicate.FeedConfig(sql.FieldLTE(FieldPullInterval, vc))
+}
+
+// LatestPullAtEQ applies the EQ predicate on the "latest_pull_at" field.
+func LatestPullAtEQ(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullAt, v))
+}
+
+// LatestPullAtNEQ applies the NEQ predicate on the "latest_pull_at" field.
+func LatestPullAtNEQ(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldLatestPullAt, v))
+}
+
+// LatestPullAtIn applies the In predicate on the "latest_pull_at" field.
+func LatestPullAtIn(vs ...time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldLatestPullAt, vs...))
+}
+
+// LatestPullAtNotIn applies the NotIn predicate on the "latest_pull_at" field.
+func LatestPullAtNotIn(vs ...time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldLatestPullAt, vs...))
+}
+
+// LatestPullAtGT applies the GT predicate on the "latest_pull_at" field.
+func LatestPullAtGT(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldLatestPullAt, v))
+}
+
+// LatestPullAtGTE applies the GTE predicate on the "latest_pull_at" field.
+func LatestPullAtGTE(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldLatestPullAt, v))
+}
+
+// LatestPullAtLT applies the LT predicate on the "latest_pull_at" field.
+func LatestPullAtLT(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldLatestPullAt, v))
+}
+
+// LatestPullAtLTE applies the LTE predicate on the "latest_pull_at" field.
+func LatestPullAtLTE(v time.Time) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldLatestPullAt, v))
 }
 
 // NextPullBeginAtEQ applies the EQ predicate on the "next_pull_begin_at" field.

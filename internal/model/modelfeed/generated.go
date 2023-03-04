@@ -10,7 +10,7 @@ func (c *ConverterImpl) FromPBFeed(source *v1.Feed) *Feed {
 	var pModelfeedFeed *Feed
 	if source != nil {
 		var modelfeedFeed Feed
-		modelfeedFeed.InternalID = FromPBInternalID((*source).Id)
+		modelfeedFeed.ID = FromPBInternalID((*source).Id)
 		modelfeedFeed.Title = (*source).Title
 		modelfeedFeed.Description = (*source).Description
 		modelfeedFeed.Link = (*source).Link
@@ -61,7 +61,7 @@ func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
 	var pModelfeedItem *Item
 	if source != nil {
 		var modelfeedItem Item
-		modelfeedItem.InternalID = FromPBInternalID((*source).Id)
+		modelfeedItem.ID = FromPBInternalID((*source).Id)
 		modelfeedItem.Title = (*source).Title
 		modelfeedItem.Description = (*source).Description
 		modelfeedItem.Content = (*source).Content
@@ -146,7 +146,7 @@ func (c *ConverterImpl) ToPBFeedImage(source *Image) *v1.FeedImage {
 }
 func (c *ConverterImpl) ToPBFeedInternalID(source Feed) v1.InternalID {
 	var v1InternalID v1.InternalID
-	v1InternalID.Id = int64(source.InternalID)
+	v1InternalID.Id = int64(source.ID)
 	return v1InternalID
 }
 func (c *ConverterImpl) ToPBFeedItem(source *Item) *v1.FeedItem {

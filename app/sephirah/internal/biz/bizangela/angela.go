@@ -8,9 +8,12 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -63,10 +66,10 @@ func NewAngelaBase(
 
 func NewAngela(
 	mq *libmq.MQ,
-	pullAccount *libmq.TopicImpl[biztiphereth.PullAccountInfo],
-	pullSteamAccountAppRelation *libmq.TopicImpl[PullSteamAccountAppRelation],
-	pullSteamApp *libmq.TopicImpl[PullSteamApp],
-	pullFeed *libmq.TopicImpl[bizyesod.PullFeed],
+	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo],
+	pullSteamAccountAppRelation *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation],
+	pullSteamApp *libmq.TopicImpl[modelangela.PullSteamApp],
+	pullFeed *libmq.TopicImpl[modelyesod.PullFeed],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -87,18 +90,18 @@ func NewAngela(
 
 func NewPullAccountTopic(
 	a *AngelaBase,
-	sr *libmq.TopicImpl[PullSteamAccountAppRelation],
-) *libmq.TopicImpl[biztiphereth.PullAccountInfo] {
-	return libmq.NewTopic[biztiphereth.PullAccountInfo](
+	sr *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation],
+) *libmq.TopicImpl[modeltiphereth.PullAccountInfo] {
+	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
-		func() biztiphereth.PullAccountInfo {
-			return biztiphereth.PullAccountInfo{
+		func() modeltiphereth.PullAccountInfo {
+			return modeltiphereth.PullAccountInfo{
 				ID:                0,
 				Platform:          0,
 				PlatformAccountID: "",
 			}
 		},
-		func(ctx context.Context, info biztiphereth.PullAccountInfo) error {
+		func(ctx context.Context, info modeltiphereth.PullAccountInfo) error {
 			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
 				Platform:          converter.ToPBAccountPlatform(info.Platform),
 				PlatformAccountId: info.PlatformAccountID,
@@ -107,10 +110,10 @@ func NewPullAccountTopic(
 				return err
 			}
 			switch info.Platform {
-			case biztiphereth.AccountPlatformUnspecified:
+			case modeltiphereth.AccountPlatformUnspecified:
 				return nil
-			case biztiphereth.AccountPlatformSteam:
-				err = a.t.UpdateAccount(ctx, biztiphereth.Account{
+			case modeltiphereth.AccountPlatformSteam:
+				err = a.t.UpdateAccount(ctx, modeltiphereth.Account{
 					ID:                info.ID,
 					Platform:          info.Platform,
 					PlatformAccountID: info.PlatformAccountID,
@@ -122,7 +125,7 @@ func NewPullAccountTopic(
 					return err
 				}
 				return sr.
-					Publish(ctx, PullSteamAccountAppRelation{
+					Publish(ctx, modelangela.PullSteamAccountAppRelation{
 						ID:      info.ID,
 						SteamID: info.PlatformAccountID,
 					})
@@ -135,17 +138,17 @@ func NewPullAccountTopic(
 
 func NewPullSteamAccountAppRelationTopic(
 	a *AngelaBase,
-	sa *libmq.TopicImpl[PullSteamApp],
-) *libmq.TopicImpl[PullSteamAccountAppRelation] {
-	return libmq.NewTopic[PullSteamAccountAppRelation](
+	sa *libmq.TopicImpl[modelangela.PullSteamApp],
+) *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation] {
+	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
-		func() PullSteamAccountAppRelation {
-			return PullSteamAccountAppRelation{
+		func() modelangela.PullSteamAccountAppRelation {
+			return modelangela.PullSteamAccountAppRelation{
 				ID:      0,
 				SteamID: "",
 			}
 		},
-		func(ctx context.Context, r PullSteamAccountAppRelation) error {
+		func(ctx context.Context, r modelangela.PullSteamAccountAppRelation) error {
 			resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
 				RelationType: porter.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
 				AccountId: &librarian.AccountID{
@@ -156,20 +159,20 @@ func NewPullSteamAccountAppRelationTopic(
 			if err != nil {
 				return err
 			}
-			steamApps := make([]*bizgebura.App, 0, len(resp.GetAppList()))
-			internalApps := make([]*bizgebura.App, 0, len(resp.GetAppList()))
+			steamApps := make([]*modelgebura.App, 0, len(resp.GetAppList()))
+			internalApps := make([]*modelgebura.App, 0, len(resp.GetAppList()))
 			for _, app := range resp.GetAppList() {
 				resp2, err2 := a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
-				internalApps = append(internalApps, &bizgebura.App{ // TODO
-					ID:               model.InternalID(resp2.Id),
-					Source:           bizgebura.AppSourceInternal,
-					SourceAppID:      strconv.FormatInt(resp2.Id, 10),
+				internalApps = append(internalApps, &modelgebura.App{ // TODO
+					ID:               converter.ToBizInternalID(resp2.Id),
+					Source:           modelgebura.AppSourceInternal,
+					SourceAppID:      strconv.FormatInt(int64(converter.ToBizInternalID(resp2.Id)), 10),
 					SourceURL:        "",
 					Name:             app.GetName(),
-					Type:             bizgebura.AppTypeGame,
+					Type:             modelgebura.AppTypeGame,
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
@@ -178,13 +181,13 @@ func NewPullSteamAccountAppRelationTopic(
 				if err2 != nil {
 					return err2
 				}
-				steamApps = append(steamApps, &bizgebura.App{ // TODO
-					ID:               model.InternalID(resp2.Id),
-					Source:           bizgebura.AppSourceSteam,
+				steamApps = append(steamApps, &modelgebura.App{ // TODO
+					ID:               converter.ToBizInternalID(resp2.Id),
+					Source:           modelgebura.AppSourceSteam,
 					SourceAppID:      app.GetSourceAppId(),
 					SourceURL:        "",
 					Name:             app.GetName(),
-					Type:             bizgebura.AppTypeGame,
+					Type:             modelgebura.AppTypeGame,
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
@@ -226,7 +229,7 @@ func NewPullSteamAccountAppRelationTopic(
 				return err
 			}
 			for _, app := range steamApps {
-				_ = sa.Publish(ctx, PullSteamApp{
+				_ = sa.Publish(ctx, modelangela.PullSteamApp{
 					ID:    app.ID,
 					AppID: app.SourceAppID,
 				})
@@ -238,16 +241,16 @@ func NewPullSteamAccountAppRelationTopic(
 
 func NewPullSteamAppTopic(
 	a *AngelaBase,
-) *libmq.TopicImpl[PullSteamApp] {
-	return libmq.NewTopic[PullSteamApp](
+) *libmq.TopicImpl[modelangela.PullSteamApp] {
+	return libmq.NewTopic[modelangela.PullSteamApp](
 		"PullSteamApp",
-		func() PullSteamApp {
-			return PullSteamApp{
+		func() modelangela.PullSteamApp {
+			return modelangela.PullSteamApp{
 				ID:    0,
 				AppID: "",
 			}
 		},
-		func(ctx context.Context, r PullSteamApp) error {
+		func(ctx context.Context, r modelangela.PullSteamApp) error {
 			resp, err := a.porter.PullApp(ctx, &porter.PullAppRequest{AppId: &librarian.AppID{
 				Source:      librarian.AppSource_APP_SOURCE_STEAM,
 				SourceAppId: r.AppID,
@@ -257,8 +260,8 @@ func NewPullSteamAppTopic(
 			}
 			app := a.converter.ToBizApp(resp.GetApp())
 			app.ID = r.ID
-			app.Source = bizgebura.AppSourceSteam
-			app.Type = bizgebura.AppTypeGame
+			app.Source = modelgebura.AppSourceSteam
+			app.Type = modelgebura.AppTypeGame
 			err = a.g.UpdateApp(ctx, app)
 			if err != nil {
 				return err
@@ -270,13 +273,13 @@ func NewPullSteamAppTopic(
 
 func NewPullFeedTopic(
 	a *AngelaBase,
-) *libmq.TopicImpl[bizyesod.PullFeed] {
-	return libmq.NewTopic[bizyesod.PullFeed](
+) *libmq.TopicImpl[modelyesod.PullFeed] {
+	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
-		func() bizyesod.PullFeed {
-			return bizyesod.PullFeed{InternalID: 0, URL: "", Source: 0}
+		func() modelyesod.PullFeed {
+			return modelyesod.PullFeed{InternalID: 0, URL: "", Source: 0}
 		},
-		func(ctx context.Context, p bizyesod.PullFeed) error {
+		func(ctx context.Context, p modelyesod.PullFeed) error {
 			resp, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
 				Source:    porter.FeedSource_FEED_SOURCE_COMMON,
 				ContentId: p.URL,
@@ -285,7 +288,7 @@ func NewPullFeedTopic(
 				return err
 			}
 			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
-			feed.InternalID = p.InternalID
+			feed.ID = p.InternalID
 			err = a.y.UpsertFeed(ctx, feed)
 			if err != nil {
 				return err
@@ -296,7 +299,7 @@ func NewPullFeedTopic(
 				if err != nil {
 					return err
 				}
-				item.InternalID = model.InternalID(res.GetId())
+				item.ID = converter.ToBizInternalID(res.GetId())
 				if len(item.Link) > 0 {
 					var linkParsed *url.URL
 					linkParsed, err = url.Parse(item.Link)
@@ -306,7 +309,7 @@ func NewPullFeedTopic(
 					item.PublishPlatform = linkParsed.Host
 				}
 			}
-			return a.y.UpsertFeedItems(ctx, feed.Items, feed.InternalID)
+			return a.y.UpsertFeedItems(ctx, feed.Items, feed.ID)
 		},
 	)
 }

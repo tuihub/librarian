@@ -22,6 +22,8 @@ const (
 	FieldStatus = "status"
 	// FieldPullInterval holds the string denoting the pull_interval field in the database.
 	FieldPullInterval = "pull_interval"
+	// FieldLatestPullAt holds the string denoting the latest_pull_at field in the database.
+	FieldLatestPullAt = "latest_pull_at"
 	// FieldNextPullBeginAt holds the string denoting the next_pull_begin_at field in the database.
 	FieldNextPullBeginAt = "next_pull_begin_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldSource,
 	FieldStatus,
 	FieldPullInterval,
+	FieldLatestPullAt,
 	FieldNextPullBeginAt,
 	FieldUpdatedAt,
 	FieldCreatedAt,
@@ -85,6 +88,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultLatestPullAt holds the default value on creation for the "latest_pull_at" field.
+	DefaultLatestPullAt time.Time
 	// DefaultNextPullBeginAt holds the default value on creation for the "next_pull_begin_at" field.
 	DefaultNextPullBeginAt time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.

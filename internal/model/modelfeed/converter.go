@@ -17,7 +17,7 @@ type Converter interface {
 	// goverter:matchIgnoreCase
 	// goverter:mapIdentity Id
 	ToPBFeed(*Feed) *librarian.Feed
-	// goverter:map InternalID Id
+	// goverter:map ID Id
 	ToPBFeedInternalID(Feed) librarian.InternalID
 	// goverter:matchIgnoreCase
 	// goverter:ignore Id
@@ -30,12 +30,12 @@ type Converter interface {
 	ToPBFeedEnclosure(*Enclosure) *librarian.FeedEnclosure
 
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
+	// goverter:map Id ID
 	// goverter:ignore FeedType
 	// goverter:ignore FeedVersion
 	FromPBFeed(*librarian.Feed) *Feed
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
+	// goverter:map Id ID
 	// goverter:map UpdatedParsed | FromPBTime
 	// goverter:map PublishedParsed | FromPBTime
 	FromPBFeedItem(*librarian.FeedItem) *Item

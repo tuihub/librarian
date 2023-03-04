@@ -35,8 +35,8 @@ const (
 	FieldUpdated = "updated"
 	// FieldUpdatedParsed holds the string denoting the updated_parsed field in the database.
 	FieldUpdatedParsed = "updated_parsed"
-	// FieldEnclosure holds the string denoting the enclosure field in the database.
-	FieldEnclosure = "enclosure"
+	// FieldEnclosures holds the string denoting the enclosures field in the database.
+	FieldEnclosures = "enclosures"
 	// FieldPublishPlatform holds the string denoting the publish_platform field in the database.
 	FieldPublishPlatform = "publish_platform"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -71,7 +71,7 @@ var Columns = []string{
 	FieldPublishedParsed,
 	FieldUpdated,
 	FieldUpdatedParsed,
-	FieldEnclosure,
+	FieldEnclosures,
 	FieldPublishPlatform,
 	FieldUpdatedAt,
 	FieldCreatedAt,

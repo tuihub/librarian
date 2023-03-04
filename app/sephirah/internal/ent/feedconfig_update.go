@@ -75,6 +75,20 @@ func (fcu *FeedConfigUpdate) AddPullInterval(t time.Duration) *FeedConfigUpdate 
 	return fcu
 }
 
+// SetLatestPullAt sets the "latest_pull_at" field.
+func (fcu *FeedConfigUpdate) SetLatestPullAt(t time.Time) *FeedConfigUpdate {
+	fcu.mutation.SetLatestPullAt(t)
+	return fcu
+}
+
+// SetNillableLatestPullAt sets the "latest_pull_at" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableLatestPullAt(t *time.Time) *FeedConfigUpdate {
+	if t != nil {
+		fcu.SetLatestPullAt(*t)
+	}
+	return fcu
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (fcu *FeedConfigUpdate) SetNextPullBeginAt(t time.Time) *FeedConfigUpdate {
 	fcu.mutation.SetNextPullBeginAt(t)
@@ -243,6 +257,9 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
+	if value, ok := fcu.mutation.LatestPullAt(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
+	}
 	if value, ok := fcu.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
 	}
@@ -383,6 +400,20 @@ func (fcuo *FeedConfigUpdateOne) SetPullInterval(t time.Duration) *FeedConfigUpd
 // AddPullInterval adds t to the "pull_interval" field.
 func (fcuo *FeedConfigUpdateOne) AddPullInterval(t time.Duration) *FeedConfigUpdateOne {
 	fcuo.mutation.AddPullInterval(t)
+	return fcuo
+}
+
+// SetLatestPullAt sets the "latest_pull_at" field.
+func (fcuo *FeedConfigUpdateOne) SetLatestPullAt(t time.Time) *FeedConfigUpdateOne {
+	fcuo.mutation.SetLatestPullAt(t)
+	return fcuo
+}
+
+// SetNillableLatestPullAt sets the "latest_pull_at" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullAt(t *time.Time) *FeedConfigUpdateOne {
+	if t != nil {
+		fcuo.SetLatestPullAt(*t)
+	}
 	return fcuo
 }
 
@@ -583,6 +614,9 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
+	}
+	if value, ok := fcuo.mutation.LatestPullAt(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 	}
 	if value, ok := fcuo.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)

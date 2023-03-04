@@ -9,7 +9,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
@@ -32,7 +33,7 @@ func NewLibrarianSephirahServiceService(
 	y *bizyesod.Yesod,
 ) pb.LibrarianSephirahServiceServer {
 	if _, exist := os.LookupEnv("CREATE_ADMIN"); exist {
-		t.CreateDefaultAdmin(context.Background(), &biztiphereth.User{
+		t.CreateDefaultAdmin(context.Background(), &modeltiphereth.User{
 			ID:       0,
 			UserName: "admin",
 			PassWord: "admin",

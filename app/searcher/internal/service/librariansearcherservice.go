@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	pb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 type LibrarianSearcherServiceService struct {
@@ -27,6 +28,6 @@ func (s *LibrarianSearcherServiceService) NewID(ctx context.Context, req *pb.New
 		return nil, err
 	}
 	return &pb.NewIDResponse{
-		Id: id,
+		Id: &librarian.InternalID{Id: id},
 	}, nil
 }

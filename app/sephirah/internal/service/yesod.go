@@ -3,12 +3,10 @@ package service
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *LibrarianSephirahServiceService) CreateFeedConfig(
@@ -20,7 +18,7 @@ func (s *LibrarianSephirahServiceService) CreateFeedConfig(
 		return nil, err
 	}
 	return &pb.CreateFeedConfigResponse{
-		Id: &librarian.InternalID{Id: id},
+		Id: converter.ToPBInternalID(id),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateFeedConfig(
@@ -37,7 +35,7 @@ func (s *LibrarianSephirahServiceService) ListFeeds(
 	ctx context.Context,
 	req *pb.ListFeedsRequest,
 ) (*pb.ListFeedsResponse, error) {
-	_, err := s.y.ListFeeds(ctx, model.Paging{
+	feeds, total, err := s.y.ListFeeds(ctx, model.Paging{
 		PageSize: int(req.GetPaging().GetPageSize()),
 		PageNum:  int(req.GetPaging().GetPageSize()),
 	}, s.converter.ToBizInternalIDList(
@@ -50,19 +48,53 @@ func (s *LibrarianSephirahServiceService) ListFeeds(
 		return nil, err
 	}
 	return &pb.ListFeedsResponse{
-		Paging:          nil,
-		FeedsWithConfig: nil,
+		Paging:          &librarian.PagingResponse{TotalSize: int64(total)},
+		FeedsWithConfig: s.converter.ToPBFeedWithConfigList(feeds),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,
 	req *pb.ListFeedItemsRequest,
 ) (*pb.ListFeedItemsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListFeedItem not implemented")
+	items, total, err := s.y.ListFeedItems(ctx,
+		model.Paging{
+			PageSize: int(req.GetPaging().GetPageSize()),
+			PageNum:  int(req.GetPaging().GetPageNum()),
+		},
+		s.converter.ToBizInternalIDList(req.GetFeedIdFilter()),
+		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		req.GetPublishPlatformFilter(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedItemsResponse{
+		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
+		Items:  s.converter.ToPBItemIDWithFeedIDList(items),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetFeedItem(
 	ctx context.Context,
 	req *pb.GetFeedItemRequest,
 ) (*pb.GetFeedItemResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFeedItem not implemented")
+	item, err := s.y.GetFeedItem(ctx, converter.ToBizInternalID(req.GetId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetFeedItemResponse{
+		Item: s.converter.ToPBFeedItem(item),
+	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) GetBatchFeedItems(
+	ctx context.Context,
+	req *pb.GetBatchFeedItemsRequest,
+) (*pb.GetBatchFeedItemsResponse, error) {
+	items, err := s.y.GetFeedItems(ctx, s.converter.ToBizInternalIDList(req.GetIds()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetBatchFeedItemsResponse{
+		Items: s.converter.ToPBFeedItemList(items),
+	}, nil
 }

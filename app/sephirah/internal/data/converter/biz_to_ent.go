@@ -1,35 +1,28 @@
 package converter
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // goverter:converter
-// goverter:extend ToEntInternalID
 // goverter:extend ToEntUserType
 // goverter:extend ToEntUserStatus
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
 type toEntConverter interface {
-	ToEntInternalIDList([]model.InternalID) []int64
 	ToEntUserTypeList([]libauth.UserType) []user.Type
-	ToEntUserStatusList([]biztiphereth.UserStatus) []user.Status
+	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
 
-	ToEntFeedConfigSourceList([]bizyesod.FeedConfigSource) []feedconfig.Source
-	ToEntFeedConfigStatusList([]bizyesod.FeedConfigStatus) []feedconfig.Status
-}
-
-func ToEntInternalID(id model.InternalID) int64 {
-	return int64(id)
+	ToEntFeedConfigSourceList([]modelyesod.FeedConfigSource) []feedconfig.Source
+	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
 }
 
 func ToEntUserType(t libauth.UserType) user.Type {
@@ -47,85 +40,85 @@ func ToEntUserType(t libauth.UserType) user.Type {
 	}
 }
 
-func ToEntUserStatus(s biztiphereth.UserStatus) user.Status {
+func ToEntUserStatus(s modeltiphereth.UserStatus) user.Status {
 	switch s {
-	case biztiphereth.UserStatusUnspecified:
+	case modeltiphereth.UserStatusUnspecified:
 		return ""
-	case biztiphereth.UserStatusActive:
+	case modeltiphereth.UserStatusActive:
 		return user.StatusActive
-	case biztiphereth.UserStatusBlocked:
+	case modeltiphereth.UserStatusBlocked:
 		return user.StatusBlocked
 	default:
 		return ""
 	}
 }
 
-func ToEntAppType(t bizgebura.AppType) app.Type {
+func ToEntAppType(t modelgebura.AppType) app.Type {
 	switch t {
-	case bizgebura.AppTypeUnspecified:
+	case modelgebura.AppTypeUnspecified:
 		return ""
-	case bizgebura.AppTypeGame:
+	case modelgebura.AppTypeGame:
 		return app.TypeGame
 	default:
 		return ""
 	}
 }
 
-func ToEntAppSource(s bizgebura.AppSource) app.Source {
+func ToEntAppSource(s modelgebura.AppSource) app.Source {
 	switch s {
-	case bizgebura.AppSourceUnspecified:
+	case modelgebura.AppSourceUnspecified:
 		return ""
-	case bizgebura.AppSourceInternal:
+	case modelgebura.AppSourceInternal:
 		return app.SourceInternal
-	case bizgebura.AppSourceSteam:
+	case modelgebura.AppSourceSteam:
 		return app.SourceSteam
 	default:
 		return ""
 	}
 }
 
-func ToEntAccountPlatform(t biztiphereth.AccountPlatform) account.Platform {
+func ToEntAccountPlatform(t modeltiphereth.AccountPlatform) account.Platform {
 	switch t {
-	case biztiphereth.AccountPlatformUnspecified:
+	case modeltiphereth.AccountPlatformUnspecified:
 		return ""
-	case biztiphereth.AccountPlatformSteam:
+	case modeltiphereth.AccountPlatformSteam:
 		return account.PlatformSteam
 	default:
 		return ""
 	}
 }
 
-func ToEntAppPackageSource(a bizgebura.AppPackageSource) apppackage.Source {
+func ToEntAppPackageSource(a modelgebura.AppPackageSource) apppackage.Source {
 	switch a {
-	case bizgebura.AppPackageSourceUnspecified:
+	case modelgebura.AppPackageSourceUnspecified:
 		return ""
-	case bizgebura.AppPackageSourceManual:
+	case modelgebura.AppPackageSourceManual:
 		return apppackage.SourceManual
-	case bizgebura.AppPackageSourceSentinel:
+	case modelgebura.AppPackageSourceSentinel:
 		return apppackage.SourceSentinel
 	default:
 		return ""
 	}
 }
 
-func ToEntFeedConfigStatus(s bizyesod.FeedConfigStatus) feedconfig.Status {
+func ToEntFeedConfigStatus(s modelyesod.FeedConfigStatus) feedconfig.Status {
 	switch s {
-	case bizyesod.FeedConfigStatusUnspecified:
+	case modelyesod.FeedConfigStatusUnspecified:
 		return ""
-	case bizyesod.FeedConfigStatusActive:
+	case modelyesod.FeedConfigStatusActive:
 		return feedconfig.StatusActive
-	case bizyesod.FeedConfigStatusSuspend:
+	case modelyesod.FeedConfigStatusSuspend:
 		return feedconfig.StatusSuspend
 	default:
 		return ""
 	}
 }
 
-func ToEntFeedConfigSource(s bizyesod.FeedConfigSource) feedconfig.Source {
+func ToEntFeedConfigSource(s modelyesod.FeedConfigSource) feedconfig.Source {
 	switch s {
-	case bizyesod.FeedConfigSourceUnspecified:
+	case modelyesod.FeedConfigSourceUnspecified:
 		return ""
-	case bizyesod.FeedConfigSourceCommon:
+	case modelyesod.FeedConfigSourceCommon:
 		return feedconfig.SourceCommon
 	default:
 		return ""

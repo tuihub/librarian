@@ -44,8 +44,8 @@ type FeedItem struct {
 	Updated string `json:"updated,omitempty"`
 	// UpdatedParsed holds the value of the "updated_parsed" field.
 	UpdatedParsed *time.Time `json:"updated_parsed,omitempty"`
-	// Enclosure holds the value of the "enclosure" field.
-	Enclosure []*modelfeed.Enclosure `json:"enclosure,omitempty"`
+	// Enclosures holds the value of the "enclosures" field.
+	Enclosures []*modelfeed.Enclosure `json:"enclosures,omitempty"`
 	// PublishPlatform holds the value of the "publish_platform" field.
 	PublishPlatform string `json:"publish_platform,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -84,7 +84,7 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosure:
+		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosures:
 			values[i] = new([]byte)
 		case feeditem.FieldID, feeditem.FieldFeedID:
 			values[i] = new(sql.NullInt64)
@@ -191,12 +191,12 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 				fi.UpdatedParsed = new(time.Time)
 				*fi.UpdatedParsed = value.Time
 			}
-		case feeditem.FieldEnclosure:
+		case feeditem.FieldEnclosures:
 			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field enclosure", values[i])
+				return fmt.Errorf("unexpected type %T for field enclosures", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &fi.Enclosure); err != nil {
-					return fmt.Errorf("unmarshal field enclosure: %w", err)
+				if err := json.Unmarshal(*value, &fi.Enclosures); err != nil {
+					return fmt.Errorf("unmarshal field enclosures: %w", err)
 				}
 			}
 		case feeditem.FieldPublishPlatform:
@@ -290,8 +290,8 @@ func (fi *FeedItem) String() string {
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
-	builder.WriteString("enclosure=")
-	builder.WriteString(fmt.Sprintf("%v", fi.Enclosure))
+	builder.WriteString("enclosures=")
+	builder.WriteString(fmt.Sprintf("%v", fi.Enclosures))
 	builder.WriteString(", ")
 	builder.WriteString("publish_platform=")
 	builder.WriteString(fi.PublishPlatform)

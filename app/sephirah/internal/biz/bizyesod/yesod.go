@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
@@ -15,14 +16,17 @@ import (
 )
 
 type YesodRepo interface {
-	CreateFeedConfig(context.Context, *FeedConfig, model.InternalID) error
-	UpdateFeedConfig(context.Context, *FeedConfig) error
-	ListFeedConfigNeedPull(context.Context, []FeedConfigSource, []FeedConfigStatus,
-		ListFeedOrder, time.Time, int) ([]*FeedConfig, error)
+	CreateFeedConfig(context.Context, *modelyesod.FeedConfig, model.InternalID) error
+	UpdateFeedConfig(context.Context, *modelyesod.FeedConfig) error
+	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
+		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) error
 	ListFeeds(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
-		[]FeedConfigSource, []FeedConfigStatus) ([]*FeedWithConfig, error)
+		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus) ([]*modelyesod.FeedWithConfig, int, error)
+	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,
+		[]model.InternalID, []string) ([]*modelyesod.FeedItemIDWithFeedID, int, error)
+	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
 }
 
 type Yesod struct {
@@ -30,7 +34,7 @@ type Yesod struct {
 	mapper   mapper.LibrarianMapperServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
 	porter   porter.LibrarianPorterServiceClient
-	pullFeed *libmq.TopicImpl[PullFeed]
+	pullFeed *libmq.TopicImpl[modelyesod.PullFeed]
 }
 
 func NewYesod(
@@ -39,7 +43,7 @@ func NewYesod(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-	pullFeed *libmq.TopicImpl[PullFeed],
+	pullFeed *libmq.TopicImpl[modelyesod.PullFeed],
 ) (*Yesod, error) {
 	y := &Yesod{
 		repo:     repo,
@@ -55,57 +59,16 @@ func NewYesod(
 	return y, nil
 }
 
-type FeedWithConfig struct {
-	FeedConfig
-	modelfeed.Feed
-}
-
-type FeedConfig struct {
-	ID            model.InternalID
-	FeedURL       string
-	AuthorAccount model.InternalID
-	Source        FeedConfigSource
-	Status        FeedConfigStatus
-	PullInterval  time.Duration
-}
-
-type FeedConfigSource int
-
-const (
-	FeedConfigSourceUnspecified FeedConfigSource = iota
-	FeedConfigSourceCommon
-)
-
-type FeedConfigStatus int
-
-const (
-	FeedConfigStatusUnspecified FeedConfigStatus = iota
-	FeedConfigStatusActive
-	FeedConfigStatusSuspend
-)
-
-type ListFeedOrder int
-
-const (
-	ListFeedOrderUnspecified ListFeedOrder = iota
-	ListFeedOrderNextPull
-)
-
-type PullFeed struct {
-	InternalID model.InternalID
-	URL        string
-	Source     FeedConfigSource
-}
-
 func (y *Yesod) PullFeeds(ctx context.Context) {
 	configs, err := y.repo.ListFeedConfigNeedPull(ctx, nil,
-		[]FeedConfigStatus{FeedConfigStatusActive}, ListFeedOrderNextPull, time.Now(), 32) //nolint:gomnd // TODO
+		[]modelyesod.FeedConfigStatus{modelyesod.FeedConfigStatusActive},
+		modelyesod.ListFeedOrderNextPull, time.Now(), 32) //nolint:gomnd // TODO
 	if err != nil {
 		logger.Errorf("%s", err.Error())
 		return
 	}
 	for _, c := range configs {
-		err = y.pullFeed.Publish(ctx, PullFeed{
+		err = y.pullFeed.Publish(ctx, modelyesod.PullFeed{
 			InternalID: c.ID,
 			URL:        c.FeedURL,
 			Source:     c.Source,

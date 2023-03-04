@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -14,7 +14,7 @@ import (
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error,
 ) {
-	accessToken, refreshToken, err := s.t.GetToken(ctx, &biztiphereth.User{
+	accessToken, refreshToken, err := s.t.GetToken(ctx, &modeltiphereth.User{
 		ID:       0,
 		UserName: req.GetUsername(),
 		PassWord: req.GetPassword(),
@@ -59,7 +59,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: &librarian.InternalID{Id: int64(*id)},
+		Id: converter.ToPBInternalID(*id),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
@@ -96,13 +96,22 @@ func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb
 		Users:  s.converter.ToPBUserList(u),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) GetUser(ctx context.Context, req *pb.GetUserRequest) (
+	*pb.GetUserResponse, error,
+) {
+	u, err := s.t.GetUser(ctx, converter.ToBizInternalIDPtr(req.GetId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetUserResponse{User: s.converter.ToPBUser(u)}, nil
+}
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
 ) {
 	if req.GetAccountId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
+	a, err := s.t.LinkAccount(ctx, modeltiphereth.Account{
 		ID:                0,
 		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
@@ -121,7 +130,7 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 	if req.GetAccountId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	if err := s.t.UnLinkAccount(ctx, biztiphereth.Account{
+	if err := s.t.UnLinkAccount(ctx, modeltiphereth.Account{
 		ID:                0,
 		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),

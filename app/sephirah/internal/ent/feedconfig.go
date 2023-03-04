@@ -29,6 +29,8 @@ type FeedConfig struct {
 	Status feedconfig.Status `json:"status,omitempty"`
 	// PullInterval holds the value of the "pull_interval" field.
 	PullInterval time.Duration `json:"pull_interval,omitempty"`
+	// LatestPullAt holds the value of the "latest_pull_at" field.
+	LatestPullAt time.Time `json:"latest_pull_at,omitempty"`
 	// NextPullBeginAt holds the value of the "next_pull_begin_at" field.
 	NextPullBeginAt time.Time `json:"next_pull_begin_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -87,7 +89,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
-		case feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
+		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		case feedconfig.ForeignKeys[0]: // user_feed_config
 			values[i] = new(sql.NullInt64)
@@ -141,6 +143,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pull_interval", values[i])
 			} else if value.Valid {
 				fc.PullInterval = time.Duration(value.Int64)
+			}
+		case feedconfig.FieldLatestPullAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field latest_pull_at", values[i])
+			} else if value.Valid {
+				fc.LatestPullAt = value.Time
 			}
 		case feedconfig.FieldNextPullBeginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -219,6 +227,9 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pull_interval=")
 	builder.WriteString(fmt.Sprintf("%v", fc.PullInterval))
+	builder.WriteString(", ")
+	builder.WriteString("latest_pull_at=")
+	builder.WriteString(fc.LatestPullAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("next_pull_begin_at=")
 	builder.WriteString(fc.NextPullBeginAt.Format(time.ANSIC))

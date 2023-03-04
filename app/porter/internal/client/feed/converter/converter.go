@@ -13,10 +13,10 @@ import (
 // goverter:converter
 type Converter interface {
 	// goverter:matchIgnoreCase
-	// goverter:ignore InternalID
+	// goverter:ignore ID
 	ToPBFeed(t *gofeed.Feed) *modelfeed.Feed
 	// goverter:matchIgnoreCase
-	// goverter:ignore InternalID
+	// goverter:ignore ID
 	// goverter:map UpdatedParsed | TimeToTime
 	// goverter:map PublishedParsed | TimeToTime
 	// goverter:ignore PublishPlatform

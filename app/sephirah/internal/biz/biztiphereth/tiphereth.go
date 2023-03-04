@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
@@ -17,15 +19,17 @@ import (
 )
 
 type TipherethRepo interface {
-	FetchUserByPassword(context.Context, *User) (*User, error)
-	CreateUser(context.Context, *User, model.InternalID) error
-	UpdateUser(context.Context, *User, string) error
+	FetchUserByPassword(context.Context, *modeltiphereth.User) (*modeltiphereth.User, error)
+	CreateUser(context.Context, *modeltiphereth.User, model.InternalID) error
+	UpdateUser(context.Context, *modeltiphereth.User, string) error
 	ListUser(context.Context, model.Paging, []model.InternalID,
-		[]libauth.UserType, []UserStatus, []model.InternalID, *model.InternalID) ([]*User, int64, error)
-	CreateAccount(context.Context, Account, model.InternalID) error
-	UpdateAccount(context.Context, Account) error
-	UnLinkAccount(context.Context, Account, model.InternalID) error
-	ListLinkAccount(context.Context, model.Paging, model.InternalID) ([]*Account, int64, error)
+		[]libauth.UserType, []modeltiphereth.UserStatus, []model.InternalID,
+		*model.InternalID) ([]*modeltiphereth.User, int64, error)
+	CreateAccount(context.Context, modeltiphereth.Account, model.InternalID) error
+	UpdateAccount(context.Context, modeltiphereth.Account) error
+	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
+	ListLinkAccount(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
+	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
 }
 
 type Tiphereth struct {
@@ -34,7 +38,7 @@ type Tiphereth struct {
 	mapper      mapper.LibrarianMapperServiceClient
 	searcher    searcher.LibrarianSearcherServiceClient
 	porter      porter.LibrarianPorterServiceClient
-	pullAccount *libmq.TopicImpl[PullAccountInfo]
+	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo]
 }
 
 func NewTiphereth(
@@ -43,7 +47,7 @@ func NewTiphereth(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-	pullAccount *libmq.TopicImpl[PullAccountInfo],
+	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo],
 ) (*Tiphereth, error) {
 	return &Tiphereth{
 		auth:        auth,
@@ -55,7 +59,10 @@ func NewTiphereth(
 	}, nil
 }
 
-func (t *Tiphereth) GetToken(ctx context.Context, user *User) (AccessToken, RefreshToken, *errors.Error) {
+func (t *Tiphereth) GetToken(
+	ctx context.Context,
+	user *modeltiphereth.User,
+) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -68,7 +75,7 @@ func (t *Tiphereth) GetToken(ctx context.Context, user *User) (AccessToken, Refr
 		logger.Infof("FetchUserByPassword failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonBadRequest("invalid password")
 	}
-	if user.Status != UserStatusActive {
+	if user.Status != modeltiphereth.UserStatusActive {
 		return "", "", pb.ErrorErrorReasonBadRequest("user not active")
 	}
 
@@ -86,10 +93,12 @@ func (t *Tiphereth) GetToken(ctx context.Context, user *User) (AccessToken, Refr
 		return "", "", pb.ErrorErrorReasonUnspecified("generate access token failed: %s", err.Error())
 	}
 	// TODO save refreshToken to sql
-	return AccessToken(accessToken), RefreshToken(refreshToken), nil
+	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) RefreshToken(ctx context.Context) (AccessToken, RefreshToken, *errors.Error) {
+func (t *Tiphereth) RefreshToken(
+	ctx context.Context,
+) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal, libauth.UserTypeSentinel) {
 		return "", "", pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -110,10 +119,10 @@ func (t *Tiphereth) RefreshToken(ctx context.Context) (AccessToken, RefreshToken
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return AccessToken(accessToken), RefreshToken(refreshToken), nil
+	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *User) {
+func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *modeltiphereth.User) {
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -125,8 +134,8 @@ func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *User) {
 		logger.Infof("NewID failed: %s", err.Error())
 		return
 	}
-	user.ID = model.InternalID(resp.Id)
-	user.Status = UserStatusActive
+	user.ID = converter.ToBizInternalID(resp.Id)
+	user.Status = modeltiphereth.UserStatusActive
 	user.Type = libauth.UserTypeAdmin
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
@@ -143,7 +152,7 @@ func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *User) {
 	}
 }
 
-func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.InternalID, *errors.Error) {
+func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (*model.InternalID, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -167,8 +176,8 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.Internal
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	user.ID = model.InternalID(resp.Id)
-	user.Status = UserStatusActive
+	user.ID = converter.ToBizInternalID(resp.Id)
+	user.Status = modeltiphereth.UserStatusActive
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
 			Vid:  int64(user.ID),
@@ -187,7 +196,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.Internal
 }
 
 func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
-	ctx context.Context, user *User, originPassword string,
+	ctx context.Context, user *modeltiphereth.User, originPassword string,
 ) *errors.Error {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return pb.ErrorErrorReasonForbidden("no permission")
@@ -240,8 +249,8 @@ func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
 }
 
 func (t *Tiphereth) ListUser(
-	ctx context.Context, paging model.Paging, types []libauth.UserType, statuses []UserStatus,
-) ([]*User, int64, *errors.Error) {
+	ctx context.Context, paging model.Paging, types []libauth.UserType, statuses []modeltiphereth.UserStatus,
+) ([]*modeltiphereth.User, int64, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -262,7 +271,31 @@ func (t *Tiphereth) ListUser(
 	return users, total, nil
 }
 
-func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *errors.Error) {
+func (t *Tiphereth) GetUser(ctx context.Context, id *model.InternalID) (*modeltiphereth.User, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	}
+	var userID model.InternalID
+	if id != nil {
+		userID = *id
+	} else {
+		if c, ok := libauth.FromContext(ctx); !ok {
+			return nil, pb.ErrorErrorReasonBadRequest("token required")
+		} else {
+			userID = c.InternalID
+		}
+	}
+	user, err := t.repo.GetUser(ctx, userID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return user, nil
+}
+
+func (t *Tiphereth) LinkAccount(
+	ctx context.Context,
+	a modeltiphereth.Account,
+) (*modeltiphereth.Account, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -274,7 +307,7 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	} else {
-		a.ID = model.InternalID(resp.Id)
+		a.ID = converter.ToBizInternalID(resp.Id)
 	}
 	if _, err := t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
@@ -298,7 +331,7 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 	if err := t.repo.CreateAccount(ctx, a, claims.InternalID); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.pullAccount.Publish(ctx, PullAccountInfo{
+	if err := t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{
 		ID:                a.ID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
@@ -308,7 +341,7 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 	return &a, nil
 }
 
-func (t *Tiphereth) UnLinkAccount(ctx context.Context, a Account) *errors.Error {
+func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account) *errors.Error {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -324,7 +357,7 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a Account) *errors.Error 
 
 func (t *Tiphereth) ListLinkAccount(
 	ctx context.Context, paging model.Paging, id model.InternalID,
-) ([]*Account, int64, *errors.Error) {
+) ([]*modeltiphereth.Account, int64, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}

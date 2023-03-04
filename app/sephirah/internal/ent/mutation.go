@@ -3938,6 +3938,7 @@ type FeedConfigMutation struct {
 	status             *feedconfig.Status
 	pull_interval      *time.Duration
 	addpull_interval   *time.Duration
+	latest_pull_at     *time.Time
 	next_pull_begin_at *time.Time
 	updated_at         *time.Time
 	created_at         *time.Time
@@ -4275,6 +4276,42 @@ func (m *FeedConfigMutation) ResetPullInterval() {
 	m.addpull_interval = nil
 }
 
+// SetLatestPullAt sets the "latest_pull_at" field.
+func (m *FeedConfigMutation) SetLatestPullAt(t time.Time) {
+	m.latest_pull_at = &t
+}
+
+// LatestPullAt returns the value of the "latest_pull_at" field in the mutation.
+func (m *FeedConfigMutation) LatestPullAt() (r time.Time, exists bool) {
+	v := m.latest_pull_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLatestPullAt returns the old "latest_pull_at" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldLatestPullAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLatestPullAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLatestPullAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLatestPullAt: %w", err)
+	}
+	return oldValue.LatestPullAt, nil
+}
+
+// ResetLatestPullAt resets all changes to the "latest_pull_at" field.
+func (m *FeedConfigMutation) ResetLatestPullAt() {
+	m.latest_pull_at = nil
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (m *FeedConfigMutation) SetNextPullBeginAt(t time.Time) {
 	m.next_pull_begin_at = &t
@@ -4495,7 +4532,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.feed_url != nil {
 		fields = append(fields, feedconfig.FieldFeedURL)
 	}
@@ -4510,6 +4547,9 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.pull_interval != nil {
 		fields = append(fields, feedconfig.FieldPullInterval)
+	}
+	if m.latest_pull_at != nil {
+		fields = append(fields, feedconfig.FieldLatestPullAt)
 	}
 	if m.next_pull_begin_at != nil {
 		fields = append(fields, feedconfig.FieldNextPullBeginAt)
@@ -4538,6 +4578,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.Status()
 	case feedconfig.FieldPullInterval:
 		return m.PullInterval()
+	case feedconfig.FieldLatestPullAt:
+		return m.LatestPullAt()
 	case feedconfig.FieldNextPullBeginAt:
 		return m.NextPullBeginAt()
 	case feedconfig.FieldUpdatedAt:
@@ -4563,6 +4605,8 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldStatus(ctx)
 	case feedconfig.FieldPullInterval:
 		return m.OldPullInterval(ctx)
+	case feedconfig.FieldLatestPullAt:
+		return m.OldLatestPullAt(ctx)
 	case feedconfig.FieldNextPullBeginAt:
 		return m.OldNextPullBeginAt(ctx)
 	case feedconfig.FieldUpdatedAt:
@@ -4612,6 +4656,13 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPullInterval(v)
+		return nil
+	case feedconfig.FieldLatestPullAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLatestPullAt(v)
 		return nil
 	case feedconfig.FieldNextPullBeginAt:
 		v, ok := value.(time.Time)
@@ -4724,6 +4775,9 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldPullInterval:
 		m.ResetPullInterval()
+		return nil
+	case feedconfig.FieldLatestPullAt:
+		m.ResetLatestPullAt()
 		return nil
 	case feedconfig.FieldNextPullBeginAt:
 		m.ResetNextPullBeginAt()
@@ -4848,8 +4902,8 @@ type FeedItemMutation struct {
 	published_parsed *time.Time
 	updated          *string
 	updated_parsed   *time.Time
-	enclosure        *[]*modelfeed.Enclosure
-	appendenclosure  []*modelfeed.Enclosure
+	enclosures       *[]*modelfeed.Enclosure
+	appendenclosures []*modelfeed.Enclosure
 	publish_platform *string
 	updated_at       *time.Time
 	created_at       *time.Time
@@ -5543,69 +5597,69 @@ func (m *FeedItemMutation) ResetUpdatedParsed() {
 	delete(m.clearedFields, feeditem.FieldUpdatedParsed)
 }
 
-// SetEnclosure sets the "enclosure" field.
-func (m *FeedItemMutation) SetEnclosure(value []*modelfeed.Enclosure) {
-	m.enclosure = &value
-	m.appendenclosure = nil
+// SetEnclosures sets the "enclosures" field.
+func (m *FeedItemMutation) SetEnclosures(value []*modelfeed.Enclosure) {
+	m.enclosures = &value
+	m.appendenclosures = nil
 }
 
-// Enclosure returns the value of the "enclosure" field in the mutation.
-func (m *FeedItemMutation) Enclosure() (r []*modelfeed.Enclosure, exists bool) {
-	v := m.enclosure
+// Enclosures returns the value of the "enclosures" field in the mutation.
+func (m *FeedItemMutation) Enclosures() (r []*modelfeed.Enclosure, exists bool) {
+	v := m.enclosures
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldEnclosure returns the old "enclosure" field's value of the FeedItem entity.
+// OldEnclosures returns the old "enclosures" field's value of the FeedItem entity.
 // If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldEnclosure(ctx context.Context) (v []*modelfeed.Enclosure, err error) {
+func (m *FeedItemMutation) OldEnclosures(ctx context.Context) (v []*modelfeed.Enclosure, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldEnclosure is only allowed on UpdateOne operations")
+		return v, errors.New("OldEnclosures is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldEnclosure requires an ID field in the mutation")
+		return v, errors.New("OldEnclosures requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldEnclosure: %w", err)
+		return v, fmt.Errorf("querying old value for OldEnclosures: %w", err)
 	}
-	return oldValue.Enclosure, nil
+	return oldValue.Enclosures, nil
 }
 
-// AppendEnclosure adds value to the "enclosure" field.
-func (m *FeedItemMutation) AppendEnclosure(value []*modelfeed.Enclosure) {
-	m.appendenclosure = append(m.appendenclosure, value...)
+// AppendEnclosures adds value to the "enclosures" field.
+func (m *FeedItemMutation) AppendEnclosures(value []*modelfeed.Enclosure) {
+	m.appendenclosures = append(m.appendenclosures, value...)
 }
 
-// AppendedEnclosure returns the list of values that were appended to the "enclosure" field in this mutation.
-func (m *FeedItemMutation) AppendedEnclosure() ([]*modelfeed.Enclosure, bool) {
-	if len(m.appendenclosure) == 0 {
+// AppendedEnclosures returns the list of values that were appended to the "enclosures" field in this mutation.
+func (m *FeedItemMutation) AppendedEnclosures() ([]*modelfeed.Enclosure, bool) {
+	if len(m.appendenclosures) == 0 {
 		return nil, false
 	}
-	return m.appendenclosure, true
+	return m.appendenclosures, true
 }
 
-// ClearEnclosure clears the value of the "enclosure" field.
-func (m *FeedItemMutation) ClearEnclosure() {
-	m.enclosure = nil
-	m.appendenclosure = nil
-	m.clearedFields[feeditem.FieldEnclosure] = struct{}{}
+// ClearEnclosures clears the value of the "enclosures" field.
+func (m *FeedItemMutation) ClearEnclosures() {
+	m.enclosures = nil
+	m.appendenclosures = nil
+	m.clearedFields[feeditem.FieldEnclosures] = struct{}{}
 }
 
-// EnclosureCleared returns if the "enclosure" field was cleared in this mutation.
-func (m *FeedItemMutation) EnclosureCleared() bool {
-	_, ok := m.clearedFields[feeditem.FieldEnclosure]
+// EnclosuresCleared returns if the "enclosures" field was cleared in this mutation.
+func (m *FeedItemMutation) EnclosuresCleared() bool {
+	_, ok := m.clearedFields[feeditem.FieldEnclosures]
 	return ok
 }
 
-// ResetEnclosure resets all changes to the "enclosure" field.
-func (m *FeedItemMutation) ResetEnclosure() {
-	m.enclosure = nil
-	m.appendenclosure = nil
-	delete(m.clearedFields, feeditem.FieldEnclosure)
+// ResetEnclosures resets all changes to the "enclosures" field.
+func (m *FeedItemMutation) ResetEnclosures() {
+	m.enclosures = nil
+	m.appendenclosures = nil
+	delete(m.clearedFields, feeditem.FieldEnclosures)
 }
 
 // SetPublishPlatform sets the "publish_platform" field.
@@ -5826,8 +5880,8 @@ func (m *FeedItemMutation) Fields() []string {
 	if m.updated_parsed != nil {
 		fields = append(fields, feeditem.FieldUpdatedParsed)
 	}
-	if m.enclosure != nil {
-		fields = append(fields, feeditem.FieldEnclosure)
+	if m.enclosures != nil {
+		fields = append(fields, feeditem.FieldEnclosures)
 	}
 	if m.publish_platform != nil {
 		fields = append(fields, feeditem.FieldPublishPlatform)
@@ -5870,8 +5924,8 @@ func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Updated()
 	case feeditem.FieldUpdatedParsed:
 		return m.UpdatedParsed()
-	case feeditem.FieldEnclosure:
-		return m.Enclosure()
+	case feeditem.FieldEnclosures:
+		return m.Enclosures()
 	case feeditem.FieldPublishPlatform:
 		return m.PublishPlatform()
 	case feeditem.FieldUpdatedAt:
@@ -5911,8 +5965,8 @@ func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldUpdated(ctx)
 	case feeditem.FieldUpdatedParsed:
 		return m.OldUpdatedParsed(ctx)
-	case feeditem.FieldEnclosure:
-		return m.OldEnclosure(ctx)
+	case feeditem.FieldEnclosures:
+		return m.OldEnclosures(ctx)
 	case feeditem.FieldPublishPlatform:
 		return m.OldPublishPlatform(ctx)
 	case feeditem.FieldUpdatedAt:
@@ -6012,12 +6066,12 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedParsed(v)
 		return nil
-	case feeditem.FieldEnclosure:
+	case feeditem.FieldEnclosures:
 		v, ok := value.([]*modelfeed.Enclosure)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetEnclosure(v)
+		m.SetEnclosures(v)
 		return nil
 	case feeditem.FieldPublishPlatform:
 		v, ok := value.(string)
@@ -6103,8 +6157,8 @@ func (m *FeedItemMutation) ClearedFields() []string {
 	if m.FieldCleared(feeditem.FieldUpdatedParsed) {
 		fields = append(fields, feeditem.FieldUpdatedParsed)
 	}
-	if m.FieldCleared(feeditem.FieldEnclosure) {
-		fields = append(fields, feeditem.FieldEnclosure)
+	if m.FieldCleared(feeditem.FieldEnclosures) {
+		fields = append(fields, feeditem.FieldEnclosures)
 	}
 	if m.FieldCleared(feeditem.FieldPublishPlatform) {
 		fields = append(fields, feeditem.FieldPublishPlatform)
@@ -6153,8 +6207,8 @@ func (m *FeedItemMutation) ClearField(name string) error {
 	case feeditem.FieldUpdatedParsed:
 		m.ClearUpdatedParsed()
 		return nil
-	case feeditem.FieldEnclosure:
-		m.ClearEnclosure()
+	case feeditem.FieldEnclosures:
+		m.ClearEnclosures()
 		return nil
 	case feeditem.FieldPublishPlatform:
 		m.ClearPublishPlatform()
@@ -6203,8 +6257,8 @@ func (m *FeedItemMutation) ResetField(name string) error {
 	case feeditem.FieldUpdatedParsed:
 		m.ResetUpdatedParsed()
 		return nil
-	case feeditem.FieldEnclosure:
-		m.ResetEnclosure()
+	case feeditem.FieldEnclosures:
+		m.ResetEnclosures()
 		return nil
 	case feeditem.FieldPublishPlatform:
 		m.ResetPublishPlatform()

@@ -1,4 +1,4 @@
-package bizangela
+package modelangela
 
 import "github.com/tuihub/librarian/internal/model"
 

@@ -1,59 +1,76 @@
 package converter
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"time"
+
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // goverter:converter
+// goverter:extend TimeToTime
+// goverter:extend TimeToTimePtr
 type toBizConverter interface {
 	// goverter:matchIgnoreCase
-	// goverter:map ID ID
 	// goverter:map Type | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
 	// goverter:ignore PassWord
-	ToBizUser(*ent.User) *biztiphereth.User
-	ToBizUserList([]*ent.User) []*biztiphereth.User
+	ToBizUser(*ent.User) *modeltiphereth.User
+	ToBizUserList([]*ent.User) []*modeltiphereth.User
 
 	// goverter:matchIgnoreCase
-	// goverter:map ID ID
 	// goverter:map Platform | ToBizAccountPlatform
-	ToBizAccount(*ent.Account) *biztiphereth.Account
-	ToBizAccountList([]*ent.Account) []*biztiphereth.Account
+	ToBizAccount(*ent.Account) *modeltiphereth.Account
+	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:map ID ID
 	// goverter:map Type | ToBizAppType
 	// goverter:map Source | ToBizAppSource
 	// goverter:map . Details
-	ToBizApp(*ent.App) *bizgebura.App
+	ToBizApp(*ent.App) *modelgebura.App
 
 	// goverter:matchIgnoreCase
-	// goverter:map ID ID
 	// goverter:map Source | ToBizAppPackageSource
 	// goverter:mapIdentity Binary
-	ToBizAppPackage(*ent.AppPackage) *bizgebura.AppPackage
-	// goverter:map ID ID
+	ToBizAppPackage(*ent.AppPackage) *modelgebura.AppPackage
 	// goverter:map BinaryName Name
 	// goverter:map BinarySize Size
 	// goverter:map BinaryPublicURL PublicURL
-	ToBizAppPacakgeBinary(ent.AppPackage) bizgebura.AppPackageBinary
-	ToBizAppPackageList([]*ent.AppPackage) []*bizgebura.AppPackage
+	ToBizAppPacakgeBinary(ent.AppPackage) modelgebura.AppPackageBinary
+	ToBizAppPackageList([]*ent.AppPackage) []*modelgebura.AppPackage
 
 	// goverter:matchIgnoreCase
-	// goverter:map ID ID
 	// goverter:map Source | ToBizFeedConfigSource
 	// goverter:map Status | ToBizFeedConfigStatus
-	ToBizFeedConfig(*ent.FeedConfig) *bizyesod.FeedConfig
-	ToBizFeedConfigList([]*ent.FeedConfig) []*bizyesod.FeedConfig
+	// goverter:map LatestPullAt LatestPullTime
+	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
+	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
+
+	// goverter:matchIgnoreCase
+	// goverter:ignore Items
+	// goverter:ignore FeedType
+	// goverter:ignore FeedVersion
+	ToBizFeed(*ent.Feed) *modelfeed.Feed
+	// goverter:matchIgnoreCase
+	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
+	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
+}
+
+func TimeToTime(t time.Time) time.Time {
+	return t
+}
+
+func TimeToTimePtr(t *time.Time) *time.Time {
+	return t
 }
 
 func ToLibAuthUserType(t user.Type) libauth.UserType {
@@ -69,73 +86,73 @@ func ToLibAuthUserType(t user.Type) libauth.UserType {
 	}
 }
 
-func ToBizUserStatus(s user.Status) biztiphereth.UserStatus {
+func ToBizUserStatus(s user.Status) modeltiphereth.UserStatus {
 	switch s {
 	case user.StatusActive:
-		return biztiphereth.UserStatusActive
+		return modeltiphereth.UserStatusActive
 	case user.StatusBlocked:
-		return biztiphereth.UserStatusBlocked
+		return modeltiphereth.UserStatusBlocked
 	default:
-		return biztiphereth.UserStatusUnspecified
+		return modeltiphereth.UserStatusUnspecified
 	}
 }
 
-func ToBizAppType(t app.Type) bizgebura.AppType {
+func ToBizAppType(t app.Type) modelgebura.AppType {
 	switch t {
 	case app.TypeGame:
-		return bizgebura.AppTypeGame
+		return modelgebura.AppTypeGame
 	default:
-		return bizgebura.AppTypeUnspecified
+		return modelgebura.AppTypeUnspecified
 	}
 }
 
-func ToBizAppSource(s app.Source) bizgebura.AppSource {
+func ToBizAppSource(s app.Source) modelgebura.AppSource {
 	switch s {
 	case app.SourceInternal:
-		return bizgebura.AppSourceInternal
+		return modelgebura.AppSourceInternal
 	case app.SourceSteam:
-		return bizgebura.AppSourceSteam
+		return modelgebura.AppSourceSteam
 	default:
-		return bizgebura.AppSourceUnspecified
+		return modelgebura.AppSourceUnspecified
 	}
 }
 
-func ToBizAppPackageSource(a apppackage.Source) bizgebura.AppPackageSource {
+func ToBizAppPackageSource(a apppackage.Source) modelgebura.AppPackageSource {
 	switch a {
 	case apppackage.SourceManual:
-		return bizgebura.AppPackageSourceManual
+		return modelgebura.AppPackageSourceManual
 	case apppackage.SourceSentinel:
-		return bizgebura.AppPackageSourceSentinel
+		return modelgebura.AppPackageSourceSentinel
 	default:
-		return bizgebura.AppPackageSourceUnspecified
+		return modelgebura.AppPackageSourceUnspecified
 	}
 }
 
-func ToBizFeedConfigSource(s feedconfig.Source) bizyesod.FeedConfigSource {
+func ToBizFeedConfigSource(s feedconfig.Source) modelyesod.FeedConfigSource {
 	switch s {
 	case feedconfig.SourceCommon:
-		return bizyesod.FeedConfigSourceCommon
+		return modelyesod.FeedConfigSourceCommon
 	default:
-		return bizyesod.FeedConfigSourceUnspecified
+		return modelyesod.FeedConfigSourceUnspecified
 	}
 }
 
-func ToBizFeedConfigStatus(s feedconfig.Status) bizyesod.FeedConfigStatus {
+func ToBizFeedConfigStatus(s feedconfig.Status) modelyesod.FeedConfigStatus {
 	switch s {
 	case feedconfig.StatusActive:
-		return bizyesod.FeedConfigStatusActive
+		return modelyesod.FeedConfigStatusActive
 	case feedconfig.StatusSuspend:
-		return bizyesod.FeedConfigStatusSuspend
+		return modelyesod.FeedConfigStatusSuspend
 	default:
-		return bizyesod.FeedConfigStatusUnspecified
+		return modelyesod.FeedConfigStatusUnspecified
 	}
 }
 
-func ToBizAccountPlatform(p account.Platform) biztiphereth.AccountPlatform {
+func ToBizAccountPlatform(p account.Platform) modeltiphereth.AccountPlatform {
 	switch p {
 	case account.PlatformSteam:
-		return biztiphereth.AccountPlatformSteam
+		return modeltiphereth.AccountPlatformSteam
 	default:
-		return biztiphereth.AccountPlatformUnspecified
+		return modeltiphereth.AccountPlatformUnspecified
 	}
 }

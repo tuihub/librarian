@@ -43,7 +43,7 @@ func (FeedItem) Fields() []ent.Field {
 		field.Time("published_parsed").Optional().Nillable(),
 		field.String("updated").Optional(),
 		field.Time("updated_parsed").Optional().Nillable(),
-		field.JSON("enclosure", []*modelfeed.Enclosure{}).Optional(),
+		field.JSON("enclosures", []*modelfeed.Enclosure{}).Optional(),
 		field.String("publish_platform").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),

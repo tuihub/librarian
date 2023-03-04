@@ -35,6 +35,8 @@ func (FeedConfig) Fields() []ent.Field {
 			Values("active", "suspend"),
 		field.Int64("pull_interval").
 			GoType(time.Duration(0)),
+		field.Time("latest_pull_at").
+			Default(time.UnixMicro(0)),
 		field.Time("next_pull_begin_at").
 			Default(time.UnixMicro(0)),
 		field.Time("updated_at").

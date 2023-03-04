@@ -1,4 +1,4 @@
-package biztiphereth
+package modeltiphereth
 
 import (
 	"github.com/tuihub/librarian/internal/lib/libauth"

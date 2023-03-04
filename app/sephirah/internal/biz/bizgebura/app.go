@@ -3,6 +3,8 @@ package bizgebura
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -12,14 +14,14 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (g *Gebura) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) {
+func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgebura.App, *errors.Error) {
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	app.ID = model.InternalID(resp.Id)
-	app.Source = AppSourceInternal
+	app.ID = converter.ToBizInternalID(resp.Id)
+	app.Source = modelgebura.AppSourceInternal
 	app.SourceAppID = ""
 	app.SourceURL = ""
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
@@ -36,8 +38,8 @@ func (g *Gebura) CreateApp(ctx context.Context, app *App) (*App, *errors.Error) 
 	return app, nil
 }
 
-func (g *Gebura) UpdateApp(ctx context.Context, app *App) *errors.Error {
-	app.Source = AppSourceInternal
+func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Error {
+	app.Source = modelgebura.AppSourceInternal
 	err := g.repo.UpdateApp(ctx, app)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -45,14 +47,14 @@ func (g *Gebura) UpdateApp(ctx context.Context, app *App) *errors.Error {
 	return nil
 }
 
-func (g *Gebura) UpsertApp(ctx context.Context, app []*App) ([]*App, *errors.Error) {
+func (g *Gebura) UpsertApp(ctx context.Context, app []*modelgebura.App) ([]*modelgebura.App, *errors.Error) {
 	for _, a := range app {
 		resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 		if err != nil {
 			logger.Infof("NewID failed: %s", err.Error())
 			return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		a.ID = model.InternalID(resp.Id)
+		a.ID = converter.ToBizInternalID(resp.Id)
 	}
 	err := g.repo.UpsertApp(ctx, app)
 	if err != nil {
@@ -64,11 +66,11 @@ func (g *Gebura) UpsertApp(ctx context.Context, app []*App) ([]*App, *errors.Err
 func (g *Gebura) ListApp(
 	ctx context.Context,
 	paging model.Paging,
-	sources []AppSource,
-	types []AppType,
+	sources []modelgebura.AppSource,
+	types []modelgebura.AppType,
 	ids []model.InternalID,
 	containDetails bool,
-) ([]*App, *errors.Error) {
+) ([]*modelgebura.App, *errors.Error) {
 	apps, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -76,20 +78,24 @@ func (g *Gebura) ListApp(
 	return apps, nil
 }
 
-func (g *Gebura) BindApp(ctx context.Context, internal App, bind App) (*App, *errors.Error) {
+func (g *Gebura) BindApp(
+	ctx context.Context,
+	internal modelgebura.App,
+	bind modelgebura.App,
+) (*modelgebura.App, *errors.Error) {
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	bind.ID = model.InternalID(resp.Id)
-	if err = g.repo.UpsertApp(ctx, []*App{&bind}); err != nil {
+	bind.ID = converter.ToBizInternalID(resp.Id)
+	if err = g.repo.UpsertApp(ctx, []*modelgebura.App{&bind}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &bind, nil
 }
 
-func (g *Gebura) ListBindApp(ctx context.Context, id model.InternalID) ([]*App, *errors.Error) {
+func (g *Gebura) ListBindApp(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
 	app, err := g.repo.ListApp(ctx, model.Paging{
 		PageSize: 1,
 		PageNum:  1,
