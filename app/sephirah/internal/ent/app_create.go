@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppCreate is the builder for creating a App entity.
@@ -125,20 +126,20 @@ func (ac *AppCreate) SetNillableCreatedAt(t *time.Time) *AppCreate {
 }
 
 // SetID sets the "id" field.
-func (ac *AppCreate) SetID(i int64) *AppCreate {
-	ac.mutation.SetID(i)
+func (ac *AppCreate) SetID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetID(mi)
 	return ac
 }
 
 // AddUserIDs adds the "user" edge to the User entity by IDs.
-func (ac *AppCreate) AddUserIDs(ids ...int64) *AppCreate {
+func (ac *AppCreate) AddUserIDs(ids ...model.InternalID) *AppCreate {
 	ac.mutation.AddUserIDs(ids...)
 	return ac
 }
 
 // AddUser adds the "user" edges to the User entity.
 func (ac *AppCreate) AddUser(u ...*User) *AppCreate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -146,14 +147,14 @@ func (ac *AppCreate) AddUser(u ...*User) *AppCreate {
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
-func (ac *AppCreate) AddAppPackageIDs(ids ...int64) *AppCreate {
+func (ac *AppCreate) AddAppPackageIDs(ids ...model.InternalID) *AppCreate {
 	ac.mutation.AddAppPackageIDs(ids...)
 	return ac
 }
 
 // AddAppPackage adds the "app_package" edges to the AppPackage entity.
 func (ac *AppCreate) AddAppPackage(a ...*AppPackage) *AppCreate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -275,7 +276,7 @@ func (ac *AppCreate) sqlSave(ctx context.Context) (*App, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
@@ -866,7 +867,7 @@ func (u *AppUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *AppUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -875,7 +876,7 @@ func (u *AppUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppUpsertOne) IDX(ctx context.Context) int64 {
+func (u *AppUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -928,7 +929,7 @@ func (acb *AppCreateBulk) Save(ctx context.Context) ([]*App, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

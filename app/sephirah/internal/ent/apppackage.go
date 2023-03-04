@@ -10,17 +10,18 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackage is the model entity for the AppPackage schema.
 type AppPackage struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// Source holds the value of the "source" field.
 	Source apppackage.Source `json:"source,omitempty"`
 	// SourceID holds the value of the "source_id" field.
-	SourceID int64 `json:"source_id,omitempty"`
+	SourceID model.InternalID `json:"source_id,omitempty"`
 	// SourcePackageID holds the value of the "source_package_id" field.
 	SourcePackageID string `json:"source_package_id,omitempty"`
 	// Name holds the value of the "name" field.
@@ -40,7 +41,7 @@ type AppPackage struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppPackageQuery when eager-loading is set.
 	Edges           AppPackageEdges `json:"edges"`
-	app_app_package *int64
+	app_app_package *model.InternalID
 }
 
 // AppPackageEdges holds the relations/edges for other nodes in the graph.
@@ -94,11 +95,11 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case apppackage.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ap.ID = model.InternalID(value.Int64)
 			}
-			ap.ID = int64(value.Int64)
 		case apppackage.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
@@ -109,7 +110,7 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field source_id", values[i])
 			} else if value.Valid {
-				ap.SourceID = value.Int64
+				ap.SourceID = model.InternalID(value.Int64)
 			}
 		case apppackage.FieldSourcePackageID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -161,10 +162,10 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			}
 		case apppackage.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field app_app_package", value)
+				return fmt.Errorf("unexpected type %T for field app_app_package", values[i])
 			} else if value.Valid {
-				ap.app_app_package = new(int64)
-				*ap.app_app_package = int64(value.Int64)
+				ap.app_app_package = new(model.InternalID)
+				*ap.app_app_package = model.InternalID(value.Int64)
 			}
 		}
 	}

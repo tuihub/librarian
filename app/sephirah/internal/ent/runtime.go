@@ -86,13 +86,13 @@ func init() {
 	feeditemFields := schema.FeedItem{}.Fields()
 	_ = feeditemFields
 	// feeditemDescUpdatedAt is the schema descriptor for updated_at field.
-	feeditemDescUpdatedAt := feeditemFields[13].Descriptor()
+	feeditemDescUpdatedAt := feeditemFields[15].Descriptor()
 	// feeditem.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	feeditem.DefaultUpdatedAt = feeditemDescUpdatedAt.Default.(func() time.Time)
 	// feeditem.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feeditem.UpdateDefaultUpdatedAt = feeditemDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// feeditemDescCreatedAt is the schema descriptor for created_at field.
-	feeditemDescCreatedAt := feeditemFields[14].Descriptor()
+	feeditemDescCreatedAt := feeditemFields[16].Descriptor()
 	// feeditem.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feeditem.DefaultCreatedAt = feeditemDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()

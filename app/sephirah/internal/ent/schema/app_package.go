@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
@@ -22,12 +24,14 @@ func (AppPackage) Fields() []ent.Field {
 		field.Int64("id").
 			Unique().
 			Immutable().
+			GoType(model.InternalID(0)).
 			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
 				Incremental: &incrementalEnabled,
 			}),
 		field.Enum("source").
 			Values("manual", "sentinel"),
-		field.Int64("source_id"),
+		field.Int64("source_id").
+			GoType(model.InternalID(0)),
 		field.String("source_package_id"),
 		field.String("name"),
 		field.Text("description"),

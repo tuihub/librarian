@@ -3,6 +3,7 @@ package modelfeed
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -63,9 +64,9 @@ func FromPBTime(t *timestamppb.Timestamp) *time.Time {
 	return &res
 }
 
-func FromPBInternalID(id *librarian.InternalID) int64 {
+func FromPBInternalID(id *librarian.InternalID) model.InternalID {
 	if id == nil {
 		return 0
 	}
-	return id.Id
+	return model.InternalID(id.Id)
 }

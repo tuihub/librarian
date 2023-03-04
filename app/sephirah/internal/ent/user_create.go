@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -78,20 +79,20 @@ func (uc *UserCreate) SetNillableCreatedAt(t *time.Time) *UserCreate {
 }
 
 // SetID sets the "id" field.
-func (uc *UserCreate) SetID(i int64) *UserCreate {
-	uc.mutation.SetID(i)
+func (uc *UserCreate) SetID(mi model.InternalID) *UserCreate {
+	uc.mutation.SetID(mi)
 	return uc
 }
 
 // AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uc *UserCreate) AddAccountIDs(ids ...int64) *UserCreate {
+func (uc *UserCreate) AddAccountIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddAccountIDs(ids...)
 	return uc
 }
 
 // AddAccount adds the "account" edges to the Account entity.
 func (uc *UserCreate) AddAccount(a ...*Account) *UserCreate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -99,14 +100,14 @@ func (uc *UserCreate) AddAccount(a ...*Account) *UserCreate {
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uc *UserCreate) AddAppIDs(ids ...int64) *UserCreate {
+func (uc *UserCreate) AddAppIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddAppIDs(ids...)
 	return uc
 }
 
 // AddApp adds the "app" edges to the App entity.
 func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -114,14 +115,14 @@ func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (uc *UserCreate) AddFeedConfigIDs(ids ...int64) *UserCreate {
+func (uc *UserCreate) AddFeedConfigIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddFeedConfigIDs(ids...)
 	return uc
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
 func (uc *UserCreate) AddFeedConfig(f ...*FeedConfig) *UserCreate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -129,7 +130,7 @@ func (uc *UserCreate) AddFeedConfig(f ...*FeedConfig) *UserCreate {
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uc *UserCreate) SetCreatorID(id int64) *UserCreate {
+func (uc *UserCreate) SetCreatorID(id model.InternalID) *UserCreate {
 	uc.mutation.SetCreatorID(id)
 	return uc
 }
@@ -140,14 +141,14 @@ func (uc *UserCreate) SetCreator(u *User) *UserCreate {
 }
 
 // AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uc *UserCreate) AddCreateIDs(ids ...int64) *UserCreate {
+func (uc *UserCreate) AddCreateIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddCreateIDs(ids...)
 	return uc
 }
 
 // AddCreate adds the "create" edges to the User entity.
 func (uc *UserCreate) AddCreate(u ...*User) *UserCreate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -248,7 +249,7 @@ func (uc *UserCreate) sqlSave(ctx context.Context) (*User, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	uc.mutation.id = &_node.ID
 	uc.mutation.done = true
@@ -657,7 +658,7 @@ func (u *UserUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *UserUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *UserUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -666,7 +667,7 @@ func (u *UserUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *UserUpsertOne) IDX(ctx context.Context) int64 {
+func (u *UserUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -719,7 +720,7 @@ func (ucb *UserCreateBulk) Save(ctx context.Context) ([]*User, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

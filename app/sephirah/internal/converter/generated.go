@@ -7,6 +7,7 @@ import (
 	biztiphereth "github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	bizyesod "github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
+	model "github.com/tuihub/librarian/internal/model"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -17,7 +18,7 @@ func (c *toBizConverterImpl) ToBizApp(source *v1.App) *bizgebura.App {
 	var pBizgeburaApp *bizgebura.App
 	if source != nil {
 		var bizgeburaApp bizgebura.App
-		bizgeburaApp.InternalID = ToBizInternalID((*source).Id)
+		bizgeburaApp.ID = ToBizInternalID((*source).Id)
 		bizgeburaApp.Source = ToBizAppSource((*source).Source)
 		bizgeburaApp.SourceAppID = (*source).SourceAppId
 		bizgeburaApp.SourceURL = PtrToString((*source).SourceUrl)
@@ -34,7 +35,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *bizgebura.A
 	var pBizgeburaAppPackage *bizgebura.AppPackage
 	if source != nil {
 		var bizgeburaAppPackage bizgebura.AppPackage
-		bizgeburaAppPackage.InternalID = ToBizInternalID((*source).Id)
+		bizgeburaAppPackage.ID = ToBizInternalID((*source).Id)
 		bizgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
 		bizgeburaAppPackage.SourceID = ToBizInternalID((*source).SourceId)
 		bizgeburaAppPackage.SourcePackageID = (*source).SourcePackageId
@@ -90,7 +91,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *bizyesod.F
 	var pBizyesodFeedConfig *bizyesod.FeedConfig
 	if source != nil {
 		var bizyesodFeedConfig bizyesod.FeedConfig
-		bizyesodFeedConfig.InternalID = ToBizInternalID((*source).Id)
+		bizyesodFeedConfig.ID = ToBizInternalID((*source).Id)
 		bizyesodFeedConfig.FeedURL = (*source).FeedUrl
 		bizyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
 		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
@@ -100,21 +101,41 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *bizyesod.F
 	}
 	return pBizyesodFeedConfig
 }
-func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []int64 {
-	var int64List []int64
+func (c *toBizConverterImpl) ToBizFeedConfigSourceList(source []v11.FeedConfigSource) []bizyesod.FeedConfigSource {
+	var bizyesodFeedConfigSourceList []bizyesod.FeedConfigSource
 	if source != nil {
-		int64List = make([]int64, len(source))
+		bizyesodFeedConfigSourceList = make([]bizyesod.FeedConfigSource, len(source))
 		for i := 0; i < len(source); i++ {
-			int64List[i] = ToBizInternalID(source[i])
+			bizyesodFeedConfigSourceList[i] = ToBizFeedConfigSource(source[i])
 		}
 	}
-	return int64List
+	return bizyesodFeedConfigSourceList
+}
+func (c *toBizConverterImpl) ToBizFeedConfigStatusList(source []v11.FeedConfigStatus) []bizyesod.FeedConfigStatus {
+	var bizyesodFeedConfigStatusList []bizyesod.FeedConfigStatus
+	if source != nil {
+		bizyesodFeedConfigStatusList = make([]bizyesod.FeedConfigStatus, len(source))
+		for i := 0; i < len(source); i++ {
+			bizyesodFeedConfigStatusList[i] = ToBizFeedConfigStatus(source[i])
+		}
+	}
+	return bizyesodFeedConfigStatusList
+}
+func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []model.InternalID {
+	var modelInternalIDList []model.InternalID
+	if source != nil {
+		modelInternalIDList = make([]model.InternalID, len(source))
+		for i := 0; i < len(source); i++ {
+			modelInternalIDList[i] = ToBizInternalID(source[i])
+		}
+	}
+	return modelInternalIDList
 }
 func (c *toBizConverterImpl) ToBizUser(source *v11.User) *biztiphereth.User {
 	var pBiztipherethUser *biztiphereth.User
 	if source != nil {
 		var biztipherethUser biztiphereth.User
-		biztipherethUser.InternalID = ToBizInternalID((*source).Id)
+		biztipherethUser.ID = ToBizInternalID((*source).Id)
 		biztipherethUser.UserName = (*source).Username
 		biztipherethUser.PassWord = (*source).Password
 		biztipherethUser.Type = ToLibAuthUserType((*source).Type)
@@ -161,18 +182,13 @@ type toPBConverterImpl struct{}
 
 func (c *toPBConverterImpl) ToPBAccount(source biztiphereth.Account) v1.Account {
 	var v1Account v1.Account
-	v1Account.Id = c.biztipherethAccountToPV1InternalID(source)
+	v1Account.Id = ToPBInternalID(source.ID)
 	v1Account.Platform = ToPBAccountPlatform(source.Platform)
 	v1Account.PlatformAccountId = source.PlatformAccountID
 	v1Account.Name = source.Name
 	v1Account.ProfileUrl = source.ProfileURL
 	v1Account.AvatarUrl = source.AvatarURL
 	return v1Account
-}
-func (c *toPBConverterImpl) ToPBAccountInternalID(source biztiphereth.Account) v1.InternalID {
-	var v1InternalID v1.InternalID
-	v1InternalID.Id = source.InternalID
-	return v1InternalID
 }
 func (c *toPBConverterImpl) ToPBAccountList(source []*biztiphereth.Account) []*v1.Account {
 	var pV1AccountList []*v1.Account
@@ -186,7 +202,7 @@ func (c *toPBConverterImpl) ToPBAccountList(source []*biztiphereth.Account) []*v
 }
 func (c *toPBConverterImpl) ToPBApp(source bizgebura.App) v1.App {
 	var v1App v1.App
-	v1App.Id = c.bizgeburaAppToPV1InternalID(source)
+	v1App.Id = ToPBInternalID(source.ID)
 	v1App.Source = ToPBAppSource(source.Source)
 	v1App.SourceAppId = source.SourceAppID
 	pString := source.SourceURL
@@ -197,11 +213,6 @@ func (c *toPBConverterImpl) ToPBApp(source bizgebura.App) v1.App {
 	v1App.ImageUrl = source.ImageURL
 	v1App.Details = c.pBizgeburaAppDetailsToPV1AppDetails(source.Details)
 	return v1App
-}
-func (c *toPBConverterImpl) ToPBAppInternalID(source bizgebura.App) v1.InternalID {
-	var v1InternalID v1.InternalID
-	v1InternalID.Id = source.InternalID
-	return v1InternalID
 }
 func (c *toPBConverterImpl) ToPBAppList(source []*bizgebura.App) []*v1.App {
 	var pV1AppList []*v1.App
@@ -217,9 +228,9 @@ func (c *toPBConverterImpl) ToPBAppPackage(source *bizgebura.AppPackage) *v1.App
 	var pV1AppPackage *v1.AppPackage
 	if source != nil {
 		var v1AppPackage v1.AppPackage
-		v1AppPackage.Id = c.bizgeburaAppPackageToPV1InternalID((*source))
+		v1AppPackage.Id = ToPBInternalID((*source).ID)
 		v1AppPackage.Source = ToPBAppPackageSource((*source).Source)
-		v1AppPackage.SourceId = c.bizgeburaAppPackageToPV1InternalID((*source))
+		v1AppPackage.SourceId = ToPBInternalID((*source).SourceID)
 		v1AppPackage.SourcePackageId = (*source).SourcePackageID
 		v1AppPackage.Name = (*source).Name
 		v1AppPackage.Description = (*source).Description
@@ -239,11 +250,6 @@ func (c *toPBConverterImpl) ToPBAppPackageBinary(source *bizgebura.AppPackageBin
 	}
 	return pV1AppPackageBinary
 }
-func (c *toPBConverterImpl) ToPBAppPackageInternalID(source bizgebura.AppPackage) v1.InternalID {
-	var v1InternalID v1.InternalID
-	v1InternalID.Id = source.InternalID
-	return v1InternalID
-}
 func (c *toPBConverterImpl) ToPBAppPackageList(source []*bizgebura.AppPackage) []*v1.AppPackage {
 	var pV1AppPackageList []*v1.AppPackage
 	if source != nil {
@@ -256,16 +262,11 @@ func (c *toPBConverterImpl) ToPBAppPackageList(source []*bizgebura.AppPackage) [
 }
 func (c *toPBConverterImpl) ToPBUser(source biztiphereth.User) v11.User {
 	var v1User v11.User
-	v1User.Id = c.biztipherethUserToPV1InternalID(source)
+	v1User.Id = ToPBInternalID(source.ID)
 	v1User.Username = source.UserName
 	v1User.Type = ToPBUserType(source.Type)
 	v1User.Status = ToPBUserStatus(source.Status)
 	return v1User
-}
-func (c *toPBConverterImpl) ToPBUserInternalID(source biztiphereth.User) v1.InternalID {
-	var v1InternalID v1.InternalID
-	v1InternalID.Id = source.InternalID
-	return v1InternalID
 }
 func (c *toPBConverterImpl) ToPBUserList(source []*biztiphereth.User) []*v11.User {
 	var pV1UserList []*v11.User
@@ -276,22 +277,6 @@ func (c *toPBConverterImpl) ToPBUserList(source []*biztiphereth.User) []*v11.Use
 		}
 	}
 	return pV1UserList
-}
-func (c *toPBConverterImpl) bizgeburaAppPackageToPV1InternalID(source bizgebura.AppPackage) *v1.InternalID {
-	v1InternalID := c.ToPBAppPackageInternalID(source)
-	return &v1InternalID
-}
-func (c *toPBConverterImpl) bizgeburaAppToPV1InternalID(source bizgebura.App) *v1.InternalID {
-	v1InternalID := c.ToPBAppInternalID(source)
-	return &v1InternalID
-}
-func (c *toPBConverterImpl) biztipherethAccountToPV1InternalID(source biztiphereth.Account) *v1.InternalID {
-	v1InternalID := c.ToPBAccountInternalID(source)
-	return &v1InternalID
-}
-func (c *toPBConverterImpl) biztipherethUserToPV1InternalID(source biztiphereth.User) *v1.InternalID {
-	v1InternalID := c.ToPBUserInternalID(source)
-	return &v1InternalID
 }
 func (c *toPBConverterImpl) pBizgeburaAppDetailsToPV1AppDetails(source *bizgebura.AppDetails) *v1.AppDetails {
 	var pV1AppDetails *v1.AppDetails

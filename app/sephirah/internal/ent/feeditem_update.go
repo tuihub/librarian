@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -37,15 +36,35 @@ func (fiu *FeedItemUpdate) SetTitle(s string) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableTitle(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetTitle(*s)
+	}
+	return fiu
+}
+
+// ClearTitle clears the value of the "title" field.
+func (fiu *FeedItemUpdate) ClearTitle() *FeedItemUpdate {
+	fiu.mutation.ClearTitle()
+	return fiu
+}
+
 // SetAuthors sets the "authors" field.
-func (fiu *FeedItemUpdate) SetAuthors(m []modelfeed.Person) *FeedItemUpdate {
+func (fiu *FeedItemUpdate) SetAuthors(m []*modelfeed.Person) *FeedItemUpdate {
 	fiu.mutation.SetAuthors(m)
 	return fiu
 }
 
 // AppendAuthors appends m to the "authors" field.
-func (fiu *FeedItemUpdate) AppendAuthors(m []modelfeed.Person) *FeedItemUpdate {
+func (fiu *FeedItemUpdate) AppendAuthors(m []*modelfeed.Person) *FeedItemUpdate {
 	fiu.mutation.AppendAuthors(m)
+	return fiu
+}
+
+// ClearAuthors clears the value of the "authors" field.
+func (fiu *FeedItemUpdate) ClearAuthors() *FeedItemUpdate {
+	fiu.mutation.ClearAuthors()
 	return fiu
 }
 
@@ -55,15 +74,37 @@ func (fiu *FeedItemUpdate) SetDescription(s string) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableDescription(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetDescription(*s)
+	}
+	return fiu
+}
+
+// ClearDescription clears the value of the "description" field.
+func (fiu *FeedItemUpdate) ClearDescription() *FeedItemUpdate {
+	fiu.mutation.ClearDescription()
+	return fiu
+}
+
 // SetContent sets the "content" field.
 func (fiu *FeedItemUpdate) SetContent(s string) *FeedItemUpdate {
 	fiu.mutation.SetContent(s)
 	return fiu
 }
 
-// SetGUID sets the "guid" field.
-func (fiu *FeedItemUpdate) SetGUID(s string) *FeedItemUpdate {
-	fiu.mutation.SetGUID(s)
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableContent(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetContent(*s)
+	}
+	return fiu
+}
+
+// ClearContent clears the value of the "content" field.
+func (fiu *FeedItemUpdate) ClearContent() *FeedItemUpdate {
+	fiu.mutation.ClearContent()
 	return fiu
 }
 
@@ -73,9 +114,29 @@ func (fiu *FeedItemUpdate) SetLink(s string) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableLink(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetLink(*s)
+	}
+	return fiu
+}
+
+// ClearLink clears the value of the "link" field.
+func (fiu *FeedItemUpdate) ClearLink() *FeedItemUpdate {
+	fiu.mutation.ClearLink()
+	return fiu
+}
+
 // SetImage sets the "image" field.
 func (fiu *FeedItemUpdate) SetImage(m *modelfeed.Image) *FeedItemUpdate {
 	fiu.mutation.SetImage(m)
+	return fiu
+}
+
+// ClearImage clears the value of the "image" field.
+func (fiu *FeedItemUpdate) ClearImage() *FeedItemUpdate {
+	fiu.mutation.ClearImage()
 	return fiu
 }
 
@@ -85,9 +146,37 @@ func (fiu *FeedItemUpdate) SetPublished(s string) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillablePublished(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetPublished(*s)
+	}
+	return fiu
+}
+
+// ClearPublished clears the value of the "published" field.
+func (fiu *FeedItemUpdate) ClearPublished() *FeedItemUpdate {
+	fiu.mutation.ClearPublished()
+	return fiu
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (fiu *FeedItemUpdate) SetPublishedParsed(t time.Time) *FeedItemUpdate {
 	fiu.mutation.SetPublishedParsed(t)
+	return fiu
+}
+
+// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdate {
+	if t != nil {
+		fiu.SetPublishedParsed(*t)
+	}
+	return fiu
+}
+
+// ClearPublishedParsed clears the value of the "published_parsed" field.
+func (fiu *FeedItemUpdate) ClearPublishedParsed() *FeedItemUpdate {
+	fiu.mutation.ClearPublishedParsed()
 	return fiu
 }
 
@@ -97,21 +186,75 @@ func (fiu *FeedItemUpdate) SetUpdated(s string) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillableUpdated sets the "updated" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableUpdated(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetUpdated(*s)
+	}
+	return fiu
+}
+
+// ClearUpdated clears the value of the "updated" field.
+func (fiu *FeedItemUpdate) ClearUpdated() *FeedItemUpdate {
+	fiu.mutation.ClearUpdated()
+	return fiu
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (fiu *FeedItemUpdate) SetUpdatedParsed(t time.Time) *FeedItemUpdate {
 	fiu.mutation.SetUpdatedParsed(t)
 	return fiu
 }
 
+// SetNillableUpdatedParsed sets the "updated_parsed" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableUpdatedParsed(t *time.Time) *FeedItemUpdate {
+	if t != nil {
+		fiu.SetUpdatedParsed(*t)
+	}
+	return fiu
+}
+
+// ClearUpdatedParsed clears the value of the "updated_parsed" field.
+func (fiu *FeedItemUpdate) ClearUpdatedParsed() *FeedItemUpdate {
+	fiu.mutation.ClearUpdatedParsed()
+	return fiu
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (fiu *FeedItemUpdate) SetEnclosure(m []modelfeed.Enclosure) *FeedItemUpdate {
+func (fiu *FeedItemUpdate) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdate {
 	fiu.mutation.SetEnclosure(m)
 	return fiu
 }
 
 // AppendEnclosure appends m to the "enclosure" field.
-func (fiu *FeedItemUpdate) AppendEnclosure(m []modelfeed.Enclosure) *FeedItemUpdate {
+func (fiu *FeedItemUpdate) AppendEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdate {
 	fiu.mutation.AppendEnclosure(m)
+	return fiu
+}
+
+// ClearEnclosure clears the value of the "enclosure" field.
+func (fiu *FeedItemUpdate) ClearEnclosure() *FeedItemUpdate {
+	fiu.mutation.ClearEnclosure()
+	return fiu
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (fiu *FeedItemUpdate) SetPublishPlatform(s string) *FeedItemUpdate {
+	fiu.mutation.SetPublishPlatform(s)
+	return fiu
+}
+
+// SetNillablePublishPlatform sets the "publish_platform" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillablePublishPlatform(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetPublishPlatform(*s)
+	}
+	return fiu
+}
+
+// ClearPublishPlatform clears the value of the "publish_platform" field.
+func (fiu *FeedItemUpdate) ClearPublishPlatform() *FeedItemUpdate {
+	fiu.mutation.ClearPublishPlatform()
 	return fiu
 }
 
@@ -135,26 +278,9 @@ func (fiu *FeedItemUpdate) SetNillableCreatedAt(t *time.Time) *FeedItemUpdate {
 	return fiu
 }
 
-// SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fiu *FeedItemUpdate) SetFeedID(id int64) *FeedItemUpdate {
-	fiu.mutation.SetFeedID(id)
-	return fiu
-}
-
-// SetFeed sets the "feed" edge to the Feed entity.
-func (fiu *FeedItemUpdate) SetFeed(f *Feed) *FeedItemUpdate {
-	return fiu.SetFeedID(f.ID)
-}
-
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiu *FeedItemUpdate) Mutation() *FeedItemMutation {
 	return fiu.mutation
-}
-
-// ClearFeed clears the "feed" edge to the Feed entity.
-func (fiu *FeedItemUpdate) ClearFeed() *FeedItemUpdate {
-	fiu.mutation.ClearFeed()
-	return fiu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -216,6 +342,9 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fiu.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
 	}
+	if fiu.mutation.TitleCleared() {
+		_spec.ClearField(feeditem.FieldTitle, field.TypeString)
+	}
 	if value, ok := fiu.mutation.Authors(); ok {
 		_spec.SetField(feeditem.FieldAuthors, field.TypeJSON, value)
 	}
@@ -224,32 +353,56 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, feeditem.FieldAuthors, value)
 		})
 	}
+	if fiu.mutation.AuthorsCleared() {
+		_spec.ClearField(feeditem.FieldAuthors, field.TypeJSON)
+	}
 	if value, ok := fiu.mutation.Description(); ok {
 		_spec.SetField(feeditem.FieldDescription, field.TypeString, value)
+	}
+	if fiu.mutation.DescriptionCleared() {
+		_spec.ClearField(feeditem.FieldDescription, field.TypeString)
 	}
 	if value, ok := fiu.mutation.Content(); ok {
 		_spec.SetField(feeditem.FieldContent, field.TypeString, value)
 	}
-	if value, ok := fiu.mutation.GUID(); ok {
-		_spec.SetField(feeditem.FieldGUID, field.TypeString, value)
+	if fiu.mutation.ContentCleared() {
+		_spec.ClearField(feeditem.FieldContent, field.TypeString)
 	}
 	if value, ok := fiu.mutation.Link(); ok {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 	}
+	if fiu.mutation.LinkCleared() {
+		_spec.ClearField(feeditem.FieldLink, field.TypeString)
+	}
 	if value, ok := fiu.mutation.Image(); ok {
 		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
+	}
+	if fiu.mutation.ImageCleared() {
+		_spec.ClearField(feeditem.FieldImage, field.TypeJSON)
 	}
 	if value, ok := fiu.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)
 	}
+	if fiu.mutation.PublishedCleared() {
+		_spec.ClearField(feeditem.FieldPublished, field.TypeString)
+	}
 	if value, ok := fiu.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
+	}
+	if fiu.mutation.PublishedParsedCleared() {
+		_spec.ClearField(feeditem.FieldPublishedParsed, field.TypeTime)
 	}
 	if value, ok := fiu.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
 	}
+	if fiu.mutation.UpdatedCleared() {
+		_spec.ClearField(feeditem.FieldUpdated, field.TypeString)
+	}
 	if value, ok := fiu.mutation.UpdatedParsed(); ok {
 		_spec.SetField(feeditem.FieldUpdatedParsed, field.TypeTime, value)
+	}
+	if fiu.mutation.UpdatedParsedCleared() {
+		_spec.ClearField(feeditem.FieldUpdatedParsed, field.TypeTime)
 	}
 	if value, ok := fiu.mutation.Enclosure(); ok {
 		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
@@ -259,46 +412,20 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, feeditem.FieldEnclosure, value)
 		})
 	}
+	if fiu.mutation.EnclosureCleared() {
+		_spec.ClearField(feeditem.FieldEnclosure, field.TypeJSON)
+	}
+	if value, ok := fiu.mutation.PublishPlatform(); ok {
+		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
+	}
+	if fiu.mutation.PublishPlatformCleared() {
+		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
+	}
 	if value, ok := fiu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fiu.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
-	}
-	if fiu.mutation.FeedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   feeditem.FeedTable,
-			Columns: []string{feeditem.FeedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feed.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fiu.mutation.FeedIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   feeditem.FeedTable,
-			Columns: []string{feeditem.FeedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feed.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -326,15 +453,35 @@ func (fiuo *FeedItemUpdateOne) SetTitle(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableTitle(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetTitle(*s)
+	}
+	return fiuo
+}
+
+// ClearTitle clears the value of the "title" field.
+func (fiuo *FeedItemUpdateOne) ClearTitle() *FeedItemUpdateOne {
+	fiuo.mutation.ClearTitle()
+	return fiuo
+}
+
 // SetAuthors sets the "authors" field.
-func (fiuo *FeedItemUpdateOne) SetAuthors(m []modelfeed.Person) *FeedItemUpdateOne {
+func (fiuo *FeedItemUpdateOne) SetAuthors(m []*modelfeed.Person) *FeedItemUpdateOne {
 	fiuo.mutation.SetAuthors(m)
 	return fiuo
 }
 
 // AppendAuthors appends m to the "authors" field.
-func (fiuo *FeedItemUpdateOne) AppendAuthors(m []modelfeed.Person) *FeedItemUpdateOne {
+func (fiuo *FeedItemUpdateOne) AppendAuthors(m []*modelfeed.Person) *FeedItemUpdateOne {
 	fiuo.mutation.AppendAuthors(m)
+	return fiuo
+}
+
+// ClearAuthors clears the value of the "authors" field.
+func (fiuo *FeedItemUpdateOne) ClearAuthors() *FeedItemUpdateOne {
+	fiuo.mutation.ClearAuthors()
 	return fiuo
 }
 
@@ -344,15 +491,37 @@ func (fiuo *FeedItemUpdateOne) SetDescription(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableDescription(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetDescription(*s)
+	}
+	return fiuo
+}
+
+// ClearDescription clears the value of the "description" field.
+func (fiuo *FeedItemUpdateOne) ClearDescription() *FeedItemUpdateOne {
+	fiuo.mutation.ClearDescription()
+	return fiuo
+}
+
 // SetContent sets the "content" field.
 func (fiuo *FeedItemUpdateOne) SetContent(s string) *FeedItemUpdateOne {
 	fiuo.mutation.SetContent(s)
 	return fiuo
 }
 
-// SetGUID sets the "guid" field.
-func (fiuo *FeedItemUpdateOne) SetGUID(s string) *FeedItemUpdateOne {
-	fiuo.mutation.SetGUID(s)
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableContent(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetContent(*s)
+	}
+	return fiuo
+}
+
+// ClearContent clears the value of the "content" field.
+func (fiuo *FeedItemUpdateOne) ClearContent() *FeedItemUpdateOne {
+	fiuo.mutation.ClearContent()
 	return fiuo
 }
 
@@ -362,9 +531,29 @@ func (fiuo *FeedItemUpdateOne) SetLink(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableLink(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetLink(*s)
+	}
+	return fiuo
+}
+
+// ClearLink clears the value of the "link" field.
+func (fiuo *FeedItemUpdateOne) ClearLink() *FeedItemUpdateOne {
+	fiuo.mutation.ClearLink()
+	return fiuo
+}
+
 // SetImage sets the "image" field.
 func (fiuo *FeedItemUpdateOne) SetImage(m *modelfeed.Image) *FeedItemUpdateOne {
 	fiuo.mutation.SetImage(m)
+	return fiuo
+}
+
+// ClearImage clears the value of the "image" field.
+func (fiuo *FeedItemUpdateOne) ClearImage() *FeedItemUpdateOne {
+	fiuo.mutation.ClearImage()
 	return fiuo
 }
 
@@ -374,9 +563,37 @@ func (fiuo *FeedItemUpdateOne) SetPublished(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillablePublished(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetPublished(*s)
+	}
+	return fiuo
+}
+
+// ClearPublished clears the value of the "published" field.
+func (fiuo *FeedItemUpdateOne) ClearPublished() *FeedItemUpdateOne {
+	fiuo.mutation.ClearPublished()
+	return fiuo
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (fiuo *FeedItemUpdateOne) SetPublishedParsed(t time.Time) *FeedItemUpdateOne {
 	fiuo.mutation.SetPublishedParsed(t)
+	return fiuo
+}
+
+// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdateOne {
+	if t != nil {
+		fiuo.SetPublishedParsed(*t)
+	}
+	return fiuo
+}
+
+// ClearPublishedParsed clears the value of the "published_parsed" field.
+func (fiuo *FeedItemUpdateOne) ClearPublishedParsed() *FeedItemUpdateOne {
+	fiuo.mutation.ClearPublishedParsed()
 	return fiuo
 }
 
@@ -386,21 +603,75 @@ func (fiuo *FeedItemUpdateOne) SetUpdated(s string) *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetNillableUpdated sets the "updated" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableUpdated(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetUpdated(*s)
+	}
+	return fiuo
+}
+
+// ClearUpdated clears the value of the "updated" field.
+func (fiuo *FeedItemUpdateOne) ClearUpdated() *FeedItemUpdateOne {
+	fiuo.mutation.ClearUpdated()
+	return fiuo
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (fiuo *FeedItemUpdateOne) SetUpdatedParsed(t time.Time) *FeedItemUpdateOne {
 	fiuo.mutation.SetUpdatedParsed(t)
 	return fiuo
 }
 
+// SetNillableUpdatedParsed sets the "updated_parsed" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableUpdatedParsed(t *time.Time) *FeedItemUpdateOne {
+	if t != nil {
+		fiuo.SetUpdatedParsed(*t)
+	}
+	return fiuo
+}
+
+// ClearUpdatedParsed clears the value of the "updated_parsed" field.
+func (fiuo *FeedItemUpdateOne) ClearUpdatedParsed() *FeedItemUpdateOne {
+	fiuo.mutation.ClearUpdatedParsed()
+	return fiuo
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) SetEnclosure(m []modelfeed.Enclosure) *FeedItemUpdateOne {
+func (fiuo *FeedItemUpdateOne) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
 	fiuo.mutation.SetEnclosure(m)
 	return fiuo
 }
 
 // AppendEnclosure appends m to the "enclosure" field.
-func (fiuo *FeedItemUpdateOne) AppendEnclosure(m []modelfeed.Enclosure) *FeedItemUpdateOne {
+func (fiuo *FeedItemUpdateOne) AppendEnclosure(m []*modelfeed.Enclosure) *FeedItemUpdateOne {
 	fiuo.mutation.AppendEnclosure(m)
+	return fiuo
+}
+
+// ClearEnclosure clears the value of the "enclosure" field.
+func (fiuo *FeedItemUpdateOne) ClearEnclosure() *FeedItemUpdateOne {
+	fiuo.mutation.ClearEnclosure()
+	return fiuo
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (fiuo *FeedItemUpdateOne) SetPublishPlatform(s string) *FeedItemUpdateOne {
+	fiuo.mutation.SetPublishPlatform(s)
+	return fiuo
+}
+
+// SetNillablePublishPlatform sets the "publish_platform" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillablePublishPlatform(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetPublishPlatform(*s)
+	}
+	return fiuo
+}
+
+// ClearPublishPlatform clears the value of the "publish_platform" field.
+func (fiuo *FeedItemUpdateOne) ClearPublishPlatform() *FeedItemUpdateOne {
+	fiuo.mutation.ClearPublishPlatform()
 	return fiuo
 }
 
@@ -424,26 +695,9 @@ func (fiuo *FeedItemUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedItemUpdat
 	return fiuo
 }
 
-// SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fiuo *FeedItemUpdateOne) SetFeedID(id int64) *FeedItemUpdateOne {
-	fiuo.mutation.SetFeedID(id)
-	return fiuo
-}
-
-// SetFeed sets the "feed" edge to the Feed entity.
-func (fiuo *FeedItemUpdateOne) SetFeed(f *Feed) *FeedItemUpdateOne {
-	return fiuo.SetFeedID(f.ID)
-}
-
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiuo *FeedItemUpdateOne) Mutation() *FeedItemMutation {
 	return fiuo.mutation
-}
-
-// ClearFeed clears the "feed" edge to the Feed entity.
-func (fiuo *FeedItemUpdateOne) ClearFeed() *FeedItemUpdateOne {
-	fiuo.mutation.ClearFeed()
-	return fiuo
 }
 
 // Where appends a list predicates to the FeedItemUpdate builder.
@@ -535,6 +789,9 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	if value, ok := fiuo.mutation.Title(); ok {
 		_spec.SetField(feeditem.FieldTitle, field.TypeString, value)
 	}
+	if fiuo.mutation.TitleCleared() {
+		_spec.ClearField(feeditem.FieldTitle, field.TypeString)
+	}
 	if value, ok := fiuo.mutation.Authors(); ok {
 		_spec.SetField(feeditem.FieldAuthors, field.TypeJSON, value)
 	}
@@ -543,32 +800,56 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 			sqljson.Append(u, feeditem.FieldAuthors, value)
 		})
 	}
+	if fiuo.mutation.AuthorsCleared() {
+		_spec.ClearField(feeditem.FieldAuthors, field.TypeJSON)
+	}
 	if value, ok := fiuo.mutation.Description(); ok {
 		_spec.SetField(feeditem.FieldDescription, field.TypeString, value)
+	}
+	if fiuo.mutation.DescriptionCleared() {
+		_spec.ClearField(feeditem.FieldDescription, field.TypeString)
 	}
 	if value, ok := fiuo.mutation.Content(); ok {
 		_spec.SetField(feeditem.FieldContent, field.TypeString, value)
 	}
-	if value, ok := fiuo.mutation.GUID(); ok {
-		_spec.SetField(feeditem.FieldGUID, field.TypeString, value)
+	if fiuo.mutation.ContentCleared() {
+		_spec.ClearField(feeditem.FieldContent, field.TypeString)
 	}
 	if value, ok := fiuo.mutation.Link(); ok {
 		_spec.SetField(feeditem.FieldLink, field.TypeString, value)
 	}
+	if fiuo.mutation.LinkCleared() {
+		_spec.ClearField(feeditem.FieldLink, field.TypeString)
+	}
 	if value, ok := fiuo.mutation.Image(); ok {
 		_spec.SetField(feeditem.FieldImage, field.TypeJSON, value)
+	}
+	if fiuo.mutation.ImageCleared() {
+		_spec.ClearField(feeditem.FieldImage, field.TypeJSON)
 	}
 	if value, ok := fiuo.mutation.Published(); ok {
 		_spec.SetField(feeditem.FieldPublished, field.TypeString, value)
 	}
+	if fiuo.mutation.PublishedCleared() {
+		_spec.ClearField(feeditem.FieldPublished, field.TypeString)
+	}
 	if value, ok := fiuo.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
+	}
+	if fiuo.mutation.PublishedParsedCleared() {
+		_spec.ClearField(feeditem.FieldPublishedParsed, field.TypeTime)
 	}
 	if value, ok := fiuo.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
 	}
+	if fiuo.mutation.UpdatedCleared() {
+		_spec.ClearField(feeditem.FieldUpdated, field.TypeString)
+	}
 	if value, ok := fiuo.mutation.UpdatedParsed(); ok {
 		_spec.SetField(feeditem.FieldUpdatedParsed, field.TypeTime, value)
+	}
+	if fiuo.mutation.UpdatedParsedCleared() {
+		_spec.ClearField(feeditem.FieldUpdatedParsed, field.TypeTime)
 	}
 	if value, ok := fiuo.mutation.Enclosure(); ok {
 		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
@@ -578,46 +859,20 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 			sqljson.Append(u, feeditem.FieldEnclosure, value)
 		})
 	}
+	if fiuo.mutation.EnclosureCleared() {
+		_spec.ClearField(feeditem.FieldEnclosure, field.TypeJSON)
+	}
+	if value, ok := fiuo.mutation.PublishPlatform(); ok {
+		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
+	}
+	if fiuo.mutation.PublishPlatformCleared() {
+		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
+	}
 	if value, ok := fiuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := fiuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
-	}
-	if fiuo.mutation.FeedCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   feeditem.FeedTable,
-			Columns: []string{feeditem.FeedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feed.FieldID,
-				},
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fiuo.mutation.FeedIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   feeditem.FeedTable,
-			Columns: []string{feeditem.FeedColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feed.FieldID,
-				},
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &FeedItem{config: fiuo.config}
 	_spec.Assign = _node.assignValues

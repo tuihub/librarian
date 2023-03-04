@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -38,9 +39,37 @@ func (fu *FeedUpdate) SetTitle(s string) *FeedUpdate {
 	return fu
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fu *FeedUpdate) SetNillableTitle(s *string) *FeedUpdate {
+	if s != nil {
+		fu.SetTitle(*s)
+	}
+	return fu
+}
+
+// ClearTitle clears the value of the "title" field.
+func (fu *FeedUpdate) ClearTitle() *FeedUpdate {
+	fu.mutation.ClearTitle()
+	return fu
+}
+
 // SetLink sets the "link" field.
 func (fu *FeedUpdate) SetLink(s string) *FeedUpdate {
 	fu.mutation.SetLink(s)
+	return fu
+}
+
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fu *FeedUpdate) SetNillableLink(s *string) *FeedUpdate {
+	if s != nil {
+		fu.SetLink(*s)
+	}
+	return fu
+}
+
+// ClearLink clears the value of the "link" field.
+func (fu *FeedUpdate) ClearLink() *FeedUpdate {
+	fu.mutation.ClearLink()
 	return fu
 }
 
@@ -50,9 +79,37 @@ func (fu *FeedUpdate) SetDescription(s string) *FeedUpdate {
 	return fu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fu *FeedUpdate) SetNillableDescription(s *string) *FeedUpdate {
+	if s != nil {
+		fu.SetDescription(*s)
+	}
+	return fu
+}
+
+// ClearDescription clears the value of the "description" field.
+func (fu *FeedUpdate) ClearDescription() *FeedUpdate {
+	fu.mutation.ClearDescription()
+	return fu
+}
+
 // SetLanguage sets the "language" field.
 func (fu *FeedUpdate) SetLanguage(s string) *FeedUpdate {
 	fu.mutation.SetLanguage(s)
+	return fu
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (fu *FeedUpdate) SetNillableLanguage(s *string) *FeedUpdate {
+	if s != nil {
+		fu.SetLanguage(*s)
+	}
+	return fu
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (fu *FeedUpdate) ClearLanguage() *FeedUpdate {
+	fu.mutation.ClearLanguage()
 	return fu
 }
 
@@ -68,9 +125,21 @@ func (fu *FeedUpdate) AppendAuthors(m []*modelfeed.Person) *FeedUpdate {
 	return fu
 }
 
+// ClearAuthors clears the value of the "authors" field.
+func (fu *FeedUpdate) ClearAuthors() *FeedUpdate {
+	fu.mutation.ClearAuthors()
+	return fu
+}
+
 // SetImage sets the "image" field.
 func (fu *FeedUpdate) SetImage(m *modelfeed.Image) *FeedUpdate {
 	fu.mutation.SetImage(m)
+	return fu
+}
+
+// ClearImage clears the value of the "image" field.
+func (fu *FeedUpdate) ClearImage() *FeedUpdate {
+	fu.mutation.ClearImage()
 	return fu
 }
 
@@ -95,14 +164,14 @@ func (fu *FeedUpdate) SetNillableCreatedAt(t *time.Time) *FeedUpdate {
 }
 
 // AddItemIDs adds the "item" edge to the FeedItem entity by IDs.
-func (fu *FeedUpdate) AddItemIDs(ids ...int64) *FeedUpdate {
+func (fu *FeedUpdate) AddItemIDs(ids ...model.InternalID) *FeedUpdate {
 	fu.mutation.AddItemIDs(ids...)
 	return fu
 }
 
 // AddItem adds the "item" edges to the FeedItem entity.
 func (fu *FeedUpdate) AddItem(f ...*FeedItem) *FeedUpdate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -110,7 +179,7 @@ func (fu *FeedUpdate) AddItem(f ...*FeedItem) *FeedUpdate {
 }
 
 // SetConfigID sets the "config" edge to the FeedConfig entity by ID.
-func (fu *FeedUpdate) SetConfigID(id int64) *FeedUpdate {
+func (fu *FeedUpdate) SetConfigID(id model.InternalID) *FeedUpdate {
 	fu.mutation.SetConfigID(id)
 	return fu
 }
@@ -132,14 +201,14 @@ func (fu *FeedUpdate) ClearItem() *FeedUpdate {
 }
 
 // RemoveItemIDs removes the "item" edge to FeedItem entities by IDs.
-func (fu *FeedUpdate) RemoveItemIDs(ids ...int64) *FeedUpdate {
+func (fu *FeedUpdate) RemoveItemIDs(ids ...model.InternalID) *FeedUpdate {
 	fu.mutation.RemoveItemIDs(ids...)
 	return fu
 }
 
 // RemoveItem removes "item" edges to FeedItem entities.
 func (fu *FeedUpdate) RemoveItem(f ...*FeedItem) *FeedUpdate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -211,14 +280,26 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fu.mutation.Title(); ok {
 		_spec.SetField(feed.FieldTitle, field.TypeString, value)
 	}
+	if fu.mutation.TitleCleared() {
+		_spec.ClearField(feed.FieldTitle, field.TypeString)
+	}
 	if value, ok := fu.mutation.Link(); ok {
 		_spec.SetField(feed.FieldLink, field.TypeString, value)
+	}
+	if fu.mutation.LinkCleared() {
+		_spec.ClearField(feed.FieldLink, field.TypeString)
 	}
 	if value, ok := fu.mutation.Description(); ok {
 		_spec.SetField(feed.FieldDescription, field.TypeString, value)
 	}
+	if fu.mutation.DescriptionCleared() {
+		_spec.ClearField(feed.FieldDescription, field.TypeString)
+	}
 	if value, ok := fu.mutation.Language(); ok {
 		_spec.SetField(feed.FieldLanguage, field.TypeString, value)
+	}
+	if fu.mutation.LanguageCleared() {
+		_spec.ClearField(feed.FieldLanguage, field.TypeString)
 	}
 	if value, ok := fu.mutation.Authors(); ok {
 		_spec.SetField(feed.FieldAuthors, field.TypeJSON, value)
@@ -228,8 +309,14 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			sqljson.Append(u, feed.FieldAuthors, value)
 		})
 	}
+	if fu.mutation.AuthorsCleared() {
+		_spec.ClearField(feed.FieldAuthors, field.TypeJSON)
+	}
 	if value, ok := fu.mutation.Image(); ok {
 		_spec.SetField(feed.FieldImage, field.TypeJSON, value)
+	}
+	if fu.mutation.ImageCleared() {
+		_spec.ClearField(feed.FieldImage, field.TypeJSON)
 	}
 	if value, ok := fu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feed.FieldUpdatedAt, field.TypeTime, value)
@@ -352,9 +439,37 @@ func (fuo *FeedUpdateOne) SetTitle(s string) *FeedUpdateOne {
 	return fuo
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fuo *FeedUpdateOne) SetNillableTitle(s *string) *FeedUpdateOne {
+	if s != nil {
+		fuo.SetTitle(*s)
+	}
+	return fuo
+}
+
+// ClearTitle clears the value of the "title" field.
+func (fuo *FeedUpdateOne) ClearTitle() *FeedUpdateOne {
+	fuo.mutation.ClearTitle()
+	return fuo
+}
+
 // SetLink sets the "link" field.
 func (fuo *FeedUpdateOne) SetLink(s string) *FeedUpdateOne {
 	fuo.mutation.SetLink(s)
+	return fuo
+}
+
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fuo *FeedUpdateOne) SetNillableLink(s *string) *FeedUpdateOne {
+	if s != nil {
+		fuo.SetLink(*s)
+	}
+	return fuo
+}
+
+// ClearLink clears the value of the "link" field.
+func (fuo *FeedUpdateOne) ClearLink() *FeedUpdateOne {
+	fuo.mutation.ClearLink()
 	return fuo
 }
 
@@ -364,9 +479,37 @@ func (fuo *FeedUpdateOne) SetDescription(s string) *FeedUpdateOne {
 	return fuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fuo *FeedUpdateOne) SetNillableDescription(s *string) *FeedUpdateOne {
+	if s != nil {
+		fuo.SetDescription(*s)
+	}
+	return fuo
+}
+
+// ClearDescription clears the value of the "description" field.
+func (fuo *FeedUpdateOne) ClearDescription() *FeedUpdateOne {
+	fuo.mutation.ClearDescription()
+	return fuo
+}
+
 // SetLanguage sets the "language" field.
 func (fuo *FeedUpdateOne) SetLanguage(s string) *FeedUpdateOne {
 	fuo.mutation.SetLanguage(s)
+	return fuo
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (fuo *FeedUpdateOne) SetNillableLanguage(s *string) *FeedUpdateOne {
+	if s != nil {
+		fuo.SetLanguage(*s)
+	}
+	return fuo
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (fuo *FeedUpdateOne) ClearLanguage() *FeedUpdateOne {
+	fuo.mutation.ClearLanguage()
 	return fuo
 }
 
@@ -382,9 +525,21 @@ func (fuo *FeedUpdateOne) AppendAuthors(m []*modelfeed.Person) *FeedUpdateOne {
 	return fuo
 }
 
+// ClearAuthors clears the value of the "authors" field.
+func (fuo *FeedUpdateOne) ClearAuthors() *FeedUpdateOne {
+	fuo.mutation.ClearAuthors()
+	return fuo
+}
+
 // SetImage sets the "image" field.
 func (fuo *FeedUpdateOne) SetImage(m *modelfeed.Image) *FeedUpdateOne {
 	fuo.mutation.SetImage(m)
+	return fuo
+}
+
+// ClearImage clears the value of the "image" field.
+func (fuo *FeedUpdateOne) ClearImage() *FeedUpdateOne {
+	fuo.mutation.ClearImage()
 	return fuo
 }
 
@@ -409,14 +564,14 @@ func (fuo *FeedUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedUpdateOne {
 }
 
 // AddItemIDs adds the "item" edge to the FeedItem entity by IDs.
-func (fuo *FeedUpdateOne) AddItemIDs(ids ...int64) *FeedUpdateOne {
+func (fuo *FeedUpdateOne) AddItemIDs(ids ...model.InternalID) *FeedUpdateOne {
 	fuo.mutation.AddItemIDs(ids...)
 	return fuo
 }
 
 // AddItem adds the "item" edges to the FeedItem entity.
 func (fuo *FeedUpdateOne) AddItem(f ...*FeedItem) *FeedUpdateOne {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -424,7 +579,7 @@ func (fuo *FeedUpdateOne) AddItem(f ...*FeedItem) *FeedUpdateOne {
 }
 
 // SetConfigID sets the "config" edge to the FeedConfig entity by ID.
-func (fuo *FeedUpdateOne) SetConfigID(id int64) *FeedUpdateOne {
+func (fuo *FeedUpdateOne) SetConfigID(id model.InternalID) *FeedUpdateOne {
 	fuo.mutation.SetConfigID(id)
 	return fuo
 }
@@ -446,14 +601,14 @@ func (fuo *FeedUpdateOne) ClearItem() *FeedUpdateOne {
 }
 
 // RemoveItemIDs removes the "item" edge to FeedItem entities by IDs.
-func (fuo *FeedUpdateOne) RemoveItemIDs(ids ...int64) *FeedUpdateOne {
+func (fuo *FeedUpdateOne) RemoveItemIDs(ids ...model.InternalID) *FeedUpdateOne {
 	fuo.mutation.RemoveItemIDs(ids...)
 	return fuo
 }
 
 // RemoveItem removes "item" edges to FeedItem entities.
 func (fuo *FeedUpdateOne) RemoveItem(f ...*FeedItem) *FeedUpdateOne {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -555,14 +710,26 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 	if value, ok := fuo.mutation.Title(); ok {
 		_spec.SetField(feed.FieldTitle, field.TypeString, value)
 	}
+	if fuo.mutation.TitleCleared() {
+		_spec.ClearField(feed.FieldTitle, field.TypeString)
+	}
 	if value, ok := fuo.mutation.Link(); ok {
 		_spec.SetField(feed.FieldLink, field.TypeString, value)
+	}
+	if fuo.mutation.LinkCleared() {
+		_spec.ClearField(feed.FieldLink, field.TypeString)
 	}
 	if value, ok := fuo.mutation.Description(); ok {
 		_spec.SetField(feed.FieldDescription, field.TypeString, value)
 	}
+	if fuo.mutation.DescriptionCleared() {
+		_spec.ClearField(feed.FieldDescription, field.TypeString)
+	}
 	if value, ok := fuo.mutation.Language(); ok {
 		_spec.SetField(feed.FieldLanguage, field.TypeString, value)
+	}
+	if fuo.mutation.LanguageCleared() {
+		_spec.ClearField(feed.FieldLanguage, field.TypeString)
 	}
 	if value, ok := fuo.mutation.Authors(); ok {
 		_spec.SetField(feed.FieldAuthors, field.TypeJSON, value)
@@ -572,8 +739,14 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			sqljson.Append(u, feed.FieldAuthors, value)
 		})
 	}
+	if fuo.mutation.AuthorsCleared() {
+		_spec.ClearField(feed.FieldAuthors, field.TypeJSON)
+	}
 	if value, ok := fuo.mutation.Image(); ok {
 		_spec.SetField(feed.FieldImage, field.TypeJSON, value)
+	}
+	if fuo.mutation.ImageCleared() {
+		_spec.ClearField(feed.FieldImage, field.TypeJSON)
 	}
 	if value, ok := fuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feed.FieldUpdatedAt, field.TypeTime, value)

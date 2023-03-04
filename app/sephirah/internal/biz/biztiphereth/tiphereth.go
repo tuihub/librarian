@@ -73,13 +73,13 @@ func (t *Tiphereth) GetToken(ctx context.Context, user *User) (AccessToken, Refr
 	}
 
 	var accessToken, refreshToken string
-	accessToken, err = t.auth.GenerateToken(user.InternalID,
+	accessToken, err = t.auth.GenerateToken(user.ID,
 		libauth.ClaimsTypeAccessToken, user.Type, nil, time.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("generate access token failed: %s", err.Error())
 	}
-	refreshToken, err = t.auth.GenerateToken(user.InternalID,
+	refreshToken, err = t.auth.GenerateToken(user.ID,
 		libauth.ClaimsTypeRefreshToken, user.Type, nil, time.Hour*24*7) //nolint:gomnd //TODO
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
@@ -125,10 +125,19 @@ func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *User) {
 		logger.Infof("NewID failed: %s", err.Error())
 		return
 	}
-	user.InternalID = resp.Id
+	user.ID = model.InternalID(resp.Id)
 	user.Status = UserStatusActive
 	user.Type = libauth.UserTypeAdmin
-	if err = t.repo.CreateUser(ctx, user, model.InternalID(user.InternalID)); err != nil {
+	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+		{
+			Vid:  int64(user.ID),
+			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+			Prop: nil,
+		},
+	}}); err != nil {
+		return
+	}
+	if err = t.repo.CreateUser(ctx, user, user.ID); err != nil {
 		logger.Infof("repo CreateUser failed: %s", err.Error())
 		return
 	}
@@ -145,7 +154,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.Internal
 	}
 	var creator model.InternalID
 	if c, ok := libauth.FromContext(ctx); ok {
-		creator = model.InternalID(c.InternalID)
+		creator = c.InternalID
 	}
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
@@ -158,11 +167,11 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.Internal
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	user.InternalID = resp.Id
+	user.ID = model.InternalID(resp.Id)
 	user.Status = UserStatusActive
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
-			Vid:  user.InternalID,
+			Vid:  int64(user.ID),
 			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
 			Prop: nil,
 		},
@@ -173,7 +182,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *User) (*model.Internal
 		logger.Infof("repo CreateUser failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res := model.InternalID(user.InternalID)
+	res := user.ID
 	return &res, nil
 }
 
@@ -187,26 +196,26 @@ func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
 	if !ok {
 		return pb.ErrorErrorReasonForbidden("no permission")
 	}
-	if user.InternalID == 0 {
+	if user.ID == 0 {
 		return pb.ErrorErrorReasonBadRequest("internal id required")
 	}
 	if user.PassWord != "" && originPassword == "" {
 		return pb.ErrorErrorReasonBadRequest("password required")
 	}
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) &&
-		claims.InternalID != user.InternalID {
+		claims.InternalID != user.ID {
 		res, _, err := t.repo.ListUser(ctx,
 			model.Paging{
 				PageSize: 1,
 				PageNum:  1,
 			},
-			[]model.InternalID{model.InternalID(user.InternalID)},
+			[]model.InternalID{user.ID},
 			[]libauth.UserType{libauth.UserTypeSentinel},
 			nil,
 			nil,
-			(*model.InternalID)(&claims.InternalID),
+			&claims.InternalID,
 		)
-		if err != nil || len(res) != 1 || res[0].InternalID != user.InternalID {
+		if err != nil || len(res) != 1 || res[0].ID != user.ID {
 			return pb.ErrorErrorReasonForbidden("no permission")
 		}
 	}
@@ -242,9 +251,9 @@ func (t *Tiphereth) ListUser(
 		return nil, 0, pb.ErrorErrorReasonBadRequest("token required")
 	} else {
 		if c.UserType != libauth.UserTypeAdmin {
-			creator = (*model.InternalID)(&c.InternalID)
+			creator = &c.InternalID
 		}
-		exclude = append(exclude, model.InternalID(c.InternalID))
+		exclude = append(exclude, c.InternalID)
 	}
 	users, total, err := t.repo.ListUser(ctx, paging, nil, types, statuses, exclude, creator)
 	if err != nil {
@@ -265,11 +274,11 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	} else {
-		a.InternalID = resp.Id
+		a.ID = model.InternalID(resp.Id)
 	}
 	if _, err := t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
-			Vid:  a.InternalID,
+			Vid:  int64(a.ID),
 			Type: mapper.VertexType_VERTEX_TYPE_ENTITY,
 			Prop: nil,
 		},
@@ -278,19 +287,19 @@ func (t *Tiphereth) LinkAccount(ctx context.Context, a Account) (*Account, *erro
 	}
 	if _, err := t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
 		{
-			SrcVid: claims.InternalID,
-			DstVid: a.InternalID,
+			SrcVid: int64(claims.InternalID),
+			DstVid: int64(a.ID),
 			Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
 			Prop:   nil,
 		},
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.repo.CreateAccount(ctx, a, model.InternalID(claims.InternalID)); err != nil {
+	if err := t.repo.CreateAccount(ctx, a, claims.InternalID); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if err := t.pullAccount.Publish(ctx, PullAccountInfo{
-		InternalID:        a.InternalID,
+		ID:                a.ID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
 	}); err != nil {
@@ -307,7 +316,7 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a Account) *errors.Error 
 	if !exist {
 		return pb.ErrorErrorReasonUnauthorized("invalid token")
 	}
-	if err := t.repo.UnLinkAccount(ctx, a, model.InternalID(claims.InternalID)); err != nil {
+	if err := t.repo.UnLinkAccount(ctx, a, claims.InternalID); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
@@ -324,7 +333,7 @@ func (t *Tiphereth) ListLinkAccount(
 		return nil, 0, pb.ErrorErrorReasonUnauthorized("invalid token")
 	}
 	if id == 0 {
-		id = model.InternalID(claims.InternalID)
+		id = claims.InternalID
 	}
 	a, total, err := t.repo.ListLinkAccount(ctx, paging, id)
 	if err != nil {

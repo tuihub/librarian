@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
@@ -21,6 +23,7 @@ func (User) Fields() []ent.Field {
 		field.Int64("id").
 			Unique().
 			Immutable().
+			GoType(model.InternalID(0)).
 			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
 				Incremental: &incrementalEnabled,
 			}),

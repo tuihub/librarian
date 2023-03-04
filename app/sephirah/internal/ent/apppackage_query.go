@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackageQuery is the builder for querying AppPackage entities.
@@ -106,8 +107,8 @@ func (apq *AppPackageQuery) FirstX(ctx context.Context) *AppPackage {
 
 // FirstID returns the first AppPackage ID from the query.
 // Returns a *NotFoundError when no AppPackage ID was found.
-func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (apq *AppPackageQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = apq.Limit(1).IDs(setContextOp(ctx, apq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -119,7 +120,7 @@ func (apq *AppPackageQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (apq *AppPackageQuery) FirstIDX(ctx context.Context) int64 {
+func (apq *AppPackageQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := apq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -157,8 +158,8 @@ func (apq *AppPackageQuery) OnlyX(ctx context.Context) *AppPackage {
 // OnlyID is like Only, but returns the only AppPackage ID in the query.
 // Returns a *NotSingularError when more than one AppPackage ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = apq.Limit(2).IDs(setContextOp(ctx, apq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -174,7 +175,7 @@ func (apq *AppPackageQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (apq *AppPackageQuery) OnlyIDX(ctx context.Context) int64 {
+func (apq *AppPackageQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := apq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,7 +203,7 @@ func (apq *AppPackageQuery) AllX(ctx context.Context) []*AppPackage {
 }
 
 // IDs executes the query and returns a list of AppPackage IDs.
-func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if apq.ctx.Unique == nil && apq.path != nil {
 		apq.Unique(true)
 	}
@@ -214,7 +215,7 @@ func (apq *AppPackageQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (apq *AppPackageQuery) IDsX(ctx context.Context) []int64 {
+func (apq *AppPackageQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := apq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -409,8 +410,8 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (apq *AppPackageQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppPackage, init func(*AppPackage), assign func(*AppPackage, *App)) error {
-	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*AppPackage)
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*AppPackage)
 	for i := range nodes {
 		if nodes[i].app_app_package == nil {
 			continue

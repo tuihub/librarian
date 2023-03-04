@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -20,13 +21,13 @@ func (g *Gebura) CreateAppPackage(ctx context.Context, a *AppPackage) (*AppPacka
 		logger.Infof("NewID failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	a.InternalID = resp.Id
+	a.ID = model.InternalID(resp.Id)
 	a.Source = AppPackageSourceManual
 	a.SourceID = 0
 	a.SourcePackageID = strconv.FormatInt(resp.Id, 10)
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
-			Vid:  a.InternalID,
+			Vid:  int64(a.ID),
 			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
 		}},
 	}); err != nil {
@@ -49,9 +50,9 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *AppPackage) *errors.Er
 
 func (g *Gebura) ListAppPackage(
 	ctx context.Context,
-	paging Paging,
+	paging model.Paging,
 	sources []AppPackageSource,
-	ids []int64,
+	ids []model.InternalID,
 ) ([]*AppPackage, *errors.Error) {
 	res, err := g.repo.ListAppPackage(ctx, paging, sources, ids)
 	if err != nil {
@@ -61,15 +62,15 @@ func (g *Gebura) ListAppPackage(
 }
 
 func (g *Gebura) AssignAppPackage(ctx context.Context, app App, appPackage AppPackage) *errors.Error {
-	if err := g.repo.IsApp(ctx, app.InternalID); err != nil {
+	if err := g.repo.IsApp(ctx, app.ID); err != nil {
 		return pb.ErrorErrorReasonBadRequest("%s", err.Error())
 	}
-	if err := g.repo.IsAppPackage(ctx, appPackage.InternalID); err != nil {
+	if err := g.repo.IsAppPackage(ctx, appPackage.ID); err != nil {
 		return pb.ErrorErrorReasonBadRequest("%s", err.Error())
 	}
 	if _, err := g.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{{
-		SrcVid: app.InternalID,
-		DstVid: appPackage.InternalID,
+		SrcVid: int64(app.ID),
+		DstVid: int64(appPackage.ID),
 		Type:   mapper.EdgeType_EDGE_TYPE_DESCRIBE,
 	}}}); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -88,7 +89,7 @@ func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPacka
 	}
 	return &reportAppPackageHandler{
 		g:          g,
-		sourceID:   claims.InternalID,
+		sourceID:   int64(claims.InternalID),
 		packageIDs: ids,
 	}, nil
 }
@@ -108,7 +109,7 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, apl []*AppPackage)
 				logger.Infof("NewID failed: %s", err.Error())
 				return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 			}
-			apl[i].InternalID = resp.Id
+			apl[i].ID = model.InternalID(resp.Id)
 			vl = append(vl, &mapper.Vertex{
 				Vid:  resp.Id,
 				Type: mapper.VertexType_VERTEX_TYPE_OBJECT,
@@ -116,7 +117,7 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, apl []*AppPackage)
 			})
 		}
 		apl[i].Source = AppPackageSourceSentinel
-		apl[i].SourceID = r.sourceID
+		apl[i].SourceID = model.InternalID(r.sourceID)
 	}
 	if len(vl) > 0 {
 		if _, err := r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {

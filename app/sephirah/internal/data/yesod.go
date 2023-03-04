@@ -9,11 +9,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent/dialect/sql"
-	"golang.org/x/exp/slices"
 )
 
 type yesodRepo struct {
@@ -29,8 +29,8 @@ func NewYesodRepo(data *Data) bizyesod.YesodRepo {
 
 func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig, owner model.InternalID) error {
 	q := y.data.db.FeedConfig.Create().
-		SetUserID(int64(owner)).
-		SetID(c.InternalID).
+		SetUserID(owner).
+		SetID(c.ID).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
 		SetSource(converter.ToEntFeedConfigSource(c.Source)).
@@ -41,7 +41,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig
 
 func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig) error {
 	q := y.data.db.FeedConfig.Update().
-		Where(feedconfig.IDEQ(c.InternalID))
+		Where(feedconfig.IDEQ(c.ID))
 	if len(c.FeedURL) > 0 {
 		q.SetFeedURL(c.FeedURL)
 	}
@@ -58,13 +58,6 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *bizyesod.FeedConfig
 		q.SetPullInterval(c.PullInterval)
 	}
 	return q.Exec(ctx)
-}
-
-func (y *yesodRepo) ListFeedConfig(ctx context.Context, int64s []int64, int64s2 []int64,
-	sources []bizyesod.FeedConfigSource, statuses []bizyesod.FeedConfigStatus,
-	order bizyesod.ListFeedOrder, paging bizyesod.Paging) ([]*bizyesod.FeedConfig, error) {
-	// TODO implement me
-	panic("implement me")
 }
 
 func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []bizyesod.FeedConfigSource,
@@ -111,17 +104,7 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 			SetImage(f.Image).
 			OnConflict(
 				sql.ConflictColumns(feed.FieldID),
-				sql.ResolveWith(func(u *sql.UpdateSet) {
-					ignores := []string{
-						feed.FieldID,
-					}
-					for _, c := range u.Columns() {
-						if slices.Contains(ignores, c) {
-							u.SetIgnore(c)
-						}
-						u.SetExcluded(c)
-					}
-				}),
+				sql.ResolveWithNewValues(),
 			).
 			Exec(ctx)
 		if err != nil {
@@ -133,4 +116,39 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 			Exec(ctx)
 		return err
 	})
+}
+
+func (y *yesodRepo) UpsertFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) error {
+	il := make([]*ent.FeedItemCreate, len(items))
+	for i, item := range items {
+		il[i] = y.data.db.FeedItem.Create().
+			SetFeedID(feedID).
+			SetID(item.InternalID).
+			SetTitle(item.Title).
+			SetDescription(item.Description).
+			SetContent(item.Content).
+			SetLink(item.Link).
+			SetUpdated(item.Updated).
+			SetNillableUpdatedParsed(item.UpdatedParsed).
+			SetPublished(item.Published).
+			SetNillablePublishedParsed(item.PublishedParsed).
+			SetAuthors(item.Authors).
+			SetGUID(item.GUID).
+			SetImage(item.Image).
+			SetEnclosure(item.Enclosures).
+			SetPublishPlatform(item.PublishPlatform)
+	}
+	return y.data.db.FeedItem.CreateBulk(il...).
+		OnConflict(
+			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
+			sql.ResolveWithNewValues(),
+		).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) ListFeeds(ctx context.Context, id model.InternalID, paging model.Paging,
+	ids []model.InternalID, ids2 []model.InternalID, sources []bizyesod.FeedConfigSource,
+	statuses []bizyesod.FeedConfigStatus) ([]*bizyesod.FeedWithConfig, error) {
+	// TODO implement me
+	panic("implement me")
 }

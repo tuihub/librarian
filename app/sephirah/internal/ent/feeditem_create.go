@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -24,14 +25,28 @@ type FeedItemCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetFeedID sets the "feed_id" field.
+func (fic *FeedItemCreate) SetFeedID(mi model.InternalID) *FeedItemCreate {
+	fic.mutation.SetFeedID(mi)
+	return fic
+}
+
 // SetTitle sets the "title" field.
 func (fic *FeedItemCreate) SetTitle(s string) *FeedItemCreate {
 	fic.mutation.SetTitle(s)
 	return fic
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableTitle(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetTitle(*s)
+	}
+	return fic
+}
+
 // SetAuthors sets the "authors" field.
-func (fic *FeedItemCreate) SetAuthors(m []modelfeed.Person) *FeedItemCreate {
+func (fic *FeedItemCreate) SetAuthors(m []*modelfeed.Person) *FeedItemCreate {
 	fic.mutation.SetAuthors(m)
 	return fic
 }
@@ -42,9 +57,25 @@ func (fic *FeedItemCreate) SetDescription(s string) *FeedItemCreate {
 	return fic
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableDescription(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetDescription(*s)
+	}
+	return fic
+}
+
 // SetContent sets the "content" field.
 func (fic *FeedItemCreate) SetContent(s string) *FeedItemCreate {
 	fic.mutation.SetContent(s)
+	return fic
+}
+
+// SetNillableContent sets the "content" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableContent(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetContent(*s)
+	}
 	return fic
 }
 
@@ -60,6 +91,14 @@ func (fic *FeedItemCreate) SetLink(s string) *FeedItemCreate {
 	return fic
 }
 
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableLink(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetLink(*s)
+	}
+	return fic
+}
+
 // SetImage sets the "image" field.
 func (fic *FeedItemCreate) SetImage(m *modelfeed.Image) *FeedItemCreate {
 	fic.mutation.SetImage(m)
@@ -72,9 +111,25 @@ func (fic *FeedItemCreate) SetPublished(s string) *FeedItemCreate {
 	return fic
 }
 
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillablePublished(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetPublished(*s)
+	}
+	return fic
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (fic *FeedItemCreate) SetPublishedParsed(t time.Time) *FeedItemCreate {
 	fic.mutation.SetPublishedParsed(t)
+	return fic
+}
+
+// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillablePublishedParsed(t *time.Time) *FeedItemCreate {
+	if t != nil {
+		fic.SetPublishedParsed(*t)
+	}
 	return fic
 }
 
@@ -84,15 +139,45 @@ func (fic *FeedItemCreate) SetUpdated(s string) *FeedItemCreate {
 	return fic
 }
 
+// SetNillableUpdated sets the "updated" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableUpdated(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetUpdated(*s)
+	}
+	return fic
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (fic *FeedItemCreate) SetUpdatedParsed(t time.Time) *FeedItemCreate {
 	fic.mutation.SetUpdatedParsed(t)
 	return fic
 }
 
+// SetNillableUpdatedParsed sets the "updated_parsed" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableUpdatedParsed(t *time.Time) *FeedItemCreate {
+	if t != nil {
+		fic.SetUpdatedParsed(*t)
+	}
+	return fic
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (fic *FeedItemCreate) SetEnclosure(m []modelfeed.Enclosure) *FeedItemCreate {
+func (fic *FeedItemCreate) SetEnclosure(m []*modelfeed.Enclosure) *FeedItemCreate {
 	fic.mutation.SetEnclosure(m)
+	return fic
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (fic *FeedItemCreate) SetPublishPlatform(s string) *FeedItemCreate {
+	fic.mutation.SetPublishPlatform(s)
+	return fic
+}
+
+// SetNillablePublishPlatform sets the "publish_platform" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillablePublishPlatform(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetPublishPlatform(*s)
+	}
 	return fic
 }
 
@@ -125,14 +210,8 @@ func (fic *FeedItemCreate) SetNillableCreatedAt(t *time.Time) *FeedItemCreate {
 }
 
 // SetID sets the "id" field.
-func (fic *FeedItemCreate) SetID(i int64) *FeedItemCreate {
-	fic.mutation.SetID(i)
-	return fic
-}
-
-// SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fic *FeedItemCreate) SetFeedID(id int64) *FeedItemCreate {
-	fic.mutation.SetFeedID(id)
+func (fic *FeedItemCreate) SetID(mi model.InternalID) *FeedItemCreate {
+	fic.mutation.SetID(mi)
 	return fic
 }
 
@@ -188,41 +267,11 @@ func (fic *FeedItemCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fic *FeedItemCreate) check() error {
-	if _, ok := fic.mutation.Title(); !ok {
-		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "FeedItem.title"`)}
-	}
-	if _, ok := fic.mutation.Authors(); !ok {
-		return &ValidationError{Name: "authors", err: errors.New(`ent: missing required field "FeedItem.authors"`)}
-	}
-	if _, ok := fic.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FeedItem.description"`)}
-	}
-	if _, ok := fic.mutation.Content(); !ok {
-		return &ValidationError{Name: "content", err: errors.New(`ent: missing required field "FeedItem.content"`)}
+	if _, ok := fic.mutation.FeedID(); !ok {
+		return &ValidationError{Name: "feed_id", err: errors.New(`ent: missing required field "FeedItem.feed_id"`)}
 	}
 	if _, ok := fic.mutation.GUID(); !ok {
 		return &ValidationError{Name: "guid", err: errors.New(`ent: missing required field "FeedItem.guid"`)}
-	}
-	if _, ok := fic.mutation.Link(); !ok {
-		return &ValidationError{Name: "link", err: errors.New(`ent: missing required field "FeedItem.link"`)}
-	}
-	if _, ok := fic.mutation.Image(); !ok {
-		return &ValidationError{Name: "image", err: errors.New(`ent: missing required field "FeedItem.image"`)}
-	}
-	if _, ok := fic.mutation.Published(); !ok {
-		return &ValidationError{Name: "published", err: errors.New(`ent: missing required field "FeedItem.published"`)}
-	}
-	if _, ok := fic.mutation.PublishedParsed(); !ok {
-		return &ValidationError{Name: "published_parsed", err: errors.New(`ent: missing required field "FeedItem.published_parsed"`)}
-	}
-	if _, ok := fic.mutation.Updated(); !ok {
-		return &ValidationError{Name: "updated", err: errors.New(`ent: missing required field "FeedItem.updated"`)}
-	}
-	if _, ok := fic.mutation.UpdatedParsed(); !ok {
-		return &ValidationError{Name: "updated_parsed", err: errors.New(`ent: missing required field "FeedItem.updated_parsed"`)}
-	}
-	if _, ok := fic.mutation.Enclosure(); !ok {
-		return &ValidationError{Name: "enclosure", err: errors.New(`ent: missing required field "FeedItem.enclosure"`)}
 	}
 	if _, ok := fic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedItem.updated_at"`)}
@@ -249,7 +298,7 @@ func (fic *FeedItemCreate) sqlSave(ctx context.Context) (*FeedItem, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	fic.mutation.id = &_node.ID
 	fic.mutation.done = true
@@ -300,7 +349,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := fic.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
-		_node.PublishedParsed = value
+		_node.PublishedParsed = &value
 	}
 	if value, ok := fic.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
@@ -308,11 +357,15 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := fic.mutation.UpdatedParsed(); ok {
 		_spec.SetField(feeditem.FieldUpdatedParsed, field.TypeTime, value)
-		_node.UpdatedParsed = value
+		_node.UpdatedParsed = &value
 	}
 	if value, ok := fic.mutation.Enclosure(); ok {
 		_spec.SetField(feeditem.FieldEnclosure, field.TypeJSON, value)
 		_node.Enclosure = value
+	}
+	if value, ok := fic.mutation.PublishPlatform(); ok {
+		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
+		_node.PublishPlatform = value
 	}
 	if value, ok := fic.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
@@ -339,7 +392,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.feed_item = &nodes[0]
+		_node.FeedID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -349,7 +402,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.FeedItem.Create().
-//		SetTitle(v).
+//		SetFeedID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -358,7 +411,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedItemUpsert) {
-//			SetTitle(v+v).
+//			SetFeedID(v+v).
 //		}).
 //		Exec(ctx)
 func (fic *FeedItemCreate) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertOne {
@@ -406,8 +459,14 @@ func (u *FeedItemUpsert) UpdateTitle() *FeedItemUpsert {
 	return u
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedItemUpsert) ClearTitle() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldTitle)
+	return u
+}
+
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsert) SetAuthors(v []modelfeed.Person) *FeedItemUpsert {
+func (u *FeedItemUpsert) SetAuthors(v []*modelfeed.Person) *FeedItemUpsert {
 	u.Set(feeditem.FieldAuthors, v)
 	return u
 }
@@ -415,6 +474,12 @@ func (u *FeedItemUpsert) SetAuthors(v []modelfeed.Person) *FeedItemUpsert {
 // UpdateAuthors sets the "authors" field to the value that was provided on create.
 func (u *FeedItemUpsert) UpdateAuthors() *FeedItemUpsert {
 	u.SetExcluded(feeditem.FieldAuthors)
+	return u
+}
+
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedItemUpsert) ClearAuthors() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldAuthors)
 	return u
 }
 
@@ -430,6 +495,12 @@ func (u *FeedItemUpsert) UpdateDescription() *FeedItemUpsert {
 	return u
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedItemUpsert) ClearDescription() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldDescription)
+	return u
+}
+
 // SetContent sets the "content" field.
 func (u *FeedItemUpsert) SetContent(v string) *FeedItemUpsert {
 	u.Set(feeditem.FieldContent, v)
@@ -442,15 +513,9 @@ func (u *FeedItemUpsert) UpdateContent() *FeedItemUpsert {
 	return u
 }
 
-// SetGUID sets the "guid" field.
-func (u *FeedItemUpsert) SetGUID(v string) *FeedItemUpsert {
-	u.Set(feeditem.FieldGUID, v)
-	return u
-}
-
-// UpdateGUID sets the "guid" field to the value that was provided on create.
-func (u *FeedItemUpsert) UpdateGUID() *FeedItemUpsert {
-	u.SetExcluded(feeditem.FieldGUID)
+// ClearContent clears the value of the "content" field.
+func (u *FeedItemUpsert) ClearContent() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldContent)
 	return u
 }
 
@@ -466,6 +531,12 @@ func (u *FeedItemUpsert) UpdateLink() *FeedItemUpsert {
 	return u
 }
 
+// ClearLink clears the value of the "link" field.
+func (u *FeedItemUpsert) ClearLink() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldLink)
+	return u
+}
+
 // SetImage sets the "image" field.
 func (u *FeedItemUpsert) SetImage(v *modelfeed.Image) *FeedItemUpsert {
 	u.Set(feeditem.FieldImage, v)
@@ -475,6 +546,12 @@ func (u *FeedItemUpsert) SetImage(v *modelfeed.Image) *FeedItemUpsert {
 // UpdateImage sets the "image" field to the value that was provided on create.
 func (u *FeedItemUpsert) UpdateImage() *FeedItemUpsert {
 	u.SetExcluded(feeditem.FieldImage)
+	return u
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedItemUpsert) ClearImage() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldImage)
 	return u
 }
 
@@ -490,6 +567,12 @@ func (u *FeedItemUpsert) UpdatePublished() *FeedItemUpsert {
 	return u
 }
 
+// ClearPublished clears the value of the "published" field.
+func (u *FeedItemUpsert) ClearPublished() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldPublished)
+	return u
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (u *FeedItemUpsert) SetPublishedParsed(v time.Time) *FeedItemUpsert {
 	u.Set(feeditem.FieldPublishedParsed, v)
@@ -499,6 +582,12 @@ func (u *FeedItemUpsert) SetPublishedParsed(v time.Time) *FeedItemUpsert {
 // UpdatePublishedParsed sets the "published_parsed" field to the value that was provided on create.
 func (u *FeedItemUpsert) UpdatePublishedParsed() *FeedItemUpsert {
 	u.SetExcluded(feeditem.FieldPublishedParsed)
+	return u
+}
+
+// ClearPublishedParsed clears the value of the "published_parsed" field.
+func (u *FeedItemUpsert) ClearPublishedParsed() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldPublishedParsed)
 	return u
 }
 
@@ -514,6 +603,12 @@ func (u *FeedItemUpsert) UpdateUpdated() *FeedItemUpsert {
 	return u
 }
 
+// ClearUpdated clears the value of the "updated" field.
+func (u *FeedItemUpsert) ClearUpdated() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldUpdated)
+	return u
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (u *FeedItemUpsert) SetUpdatedParsed(v time.Time) *FeedItemUpsert {
 	u.Set(feeditem.FieldUpdatedParsed, v)
@@ -526,8 +621,14 @@ func (u *FeedItemUpsert) UpdateUpdatedParsed() *FeedItemUpsert {
 	return u
 }
 
+// ClearUpdatedParsed clears the value of the "updated_parsed" field.
+func (u *FeedItemUpsert) ClearUpdatedParsed() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldUpdatedParsed)
+	return u
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsert) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsert {
+func (u *FeedItemUpsert) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsert {
 	u.Set(feeditem.FieldEnclosure, v)
 	return u
 }
@@ -535,6 +636,30 @@ func (u *FeedItemUpsert) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsert {
 // UpdateEnclosure sets the "enclosure" field to the value that was provided on create.
 func (u *FeedItemUpsert) UpdateEnclosure() *FeedItemUpsert {
 	u.SetExcluded(feeditem.FieldEnclosure)
+	return u
+}
+
+// ClearEnclosure clears the value of the "enclosure" field.
+func (u *FeedItemUpsert) ClearEnclosure() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldEnclosure)
+	return u
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (u *FeedItemUpsert) SetPublishPlatform(v string) *FeedItemUpsert {
+	u.Set(feeditem.FieldPublishPlatform, v)
+	return u
+}
+
+// UpdatePublishPlatform sets the "publish_platform" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdatePublishPlatform() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldPublishPlatform)
+	return u
+}
+
+// ClearPublishPlatform clears the value of the "publish_platform" field.
+func (u *FeedItemUpsert) ClearPublishPlatform() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldPublishPlatform)
 	return u
 }
 
@@ -578,6 +703,12 @@ func (u *FeedItemUpsertOne) UpdateNewValues() *FeedItemUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(feeditem.FieldID)
+		}
+		if _, exists := u.create.mutation.FeedID(); exists {
+			s.SetIgnore(feeditem.FieldFeedID)
+		}
+		if _, exists := u.create.mutation.GUID(); exists {
+			s.SetIgnore(feeditem.FieldGUID)
 		}
 	}))
 	return u
@@ -624,8 +755,15 @@ func (u *FeedItemUpsertOne) UpdateTitle() *FeedItemUpsertOne {
 	})
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedItemUpsertOne) ClearTitle() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearTitle()
+	})
+}
+
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsertOne) SetAuthors(v []modelfeed.Person) *FeedItemUpsertOne {
+func (u *FeedItemUpsertOne) SetAuthors(v []*modelfeed.Person) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetAuthors(v)
 	})
@@ -635,6 +773,13 @@ func (u *FeedItemUpsertOne) SetAuthors(v []modelfeed.Person) *FeedItemUpsertOne 
 func (u *FeedItemUpsertOne) UpdateAuthors() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateAuthors()
+	})
+}
+
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedItemUpsertOne) ClearAuthors() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearAuthors()
 	})
 }
 
@@ -652,6 +797,13 @@ func (u *FeedItemUpsertOne) UpdateDescription() *FeedItemUpsertOne {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedItemUpsertOne) ClearDescription() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetContent sets the "content" field.
 func (u *FeedItemUpsertOne) SetContent(v string) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -666,17 +818,10 @@ func (u *FeedItemUpsertOne) UpdateContent() *FeedItemUpsertOne {
 	})
 }
 
-// SetGUID sets the "guid" field.
-func (u *FeedItemUpsertOne) SetGUID(v string) *FeedItemUpsertOne {
+// ClearContent clears the value of the "content" field.
+func (u *FeedItemUpsertOne) ClearContent() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetGUID(v)
-	})
-}
-
-// UpdateGUID sets the "guid" field to the value that was provided on create.
-func (u *FeedItemUpsertOne) UpdateGUID() *FeedItemUpsertOne {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateGUID()
+		s.ClearContent()
 	})
 }
 
@@ -694,6 +839,13 @@ func (u *FeedItemUpsertOne) UpdateLink() *FeedItemUpsertOne {
 	})
 }
 
+// ClearLink clears the value of the "link" field.
+func (u *FeedItemUpsertOne) ClearLink() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearLink()
+	})
+}
+
 // SetImage sets the "image" field.
 func (u *FeedItemUpsertOne) SetImage(v *modelfeed.Image) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -705,6 +857,13 @@ func (u *FeedItemUpsertOne) SetImage(v *modelfeed.Image) *FeedItemUpsertOne {
 func (u *FeedItemUpsertOne) UpdateImage() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateImage()
+	})
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedItemUpsertOne) ClearImage() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearImage()
 	})
 }
 
@@ -722,6 +881,13 @@ func (u *FeedItemUpsertOne) UpdatePublished() *FeedItemUpsertOne {
 	})
 }
 
+// ClearPublished clears the value of the "published" field.
+func (u *FeedItemUpsertOne) ClearPublished() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublished()
+	})
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (u *FeedItemUpsertOne) SetPublishedParsed(v time.Time) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -733,6 +899,13 @@ func (u *FeedItemUpsertOne) SetPublishedParsed(v time.Time) *FeedItemUpsertOne {
 func (u *FeedItemUpsertOne) UpdatePublishedParsed() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdatePublishedParsed()
+	})
+}
+
+// ClearPublishedParsed clears the value of the "published_parsed" field.
+func (u *FeedItemUpsertOne) ClearPublishedParsed() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublishedParsed()
 	})
 }
 
@@ -750,6 +923,13 @@ func (u *FeedItemUpsertOne) UpdateUpdated() *FeedItemUpsertOne {
 	})
 }
 
+// ClearUpdated clears the value of the "updated" field.
+func (u *FeedItemUpsertOne) ClearUpdated() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearUpdated()
+	})
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (u *FeedItemUpsertOne) SetUpdatedParsed(v time.Time) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -764,8 +944,15 @@ func (u *FeedItemUpsertOne) UpdateUpdatedParsed() *FeedItemUpsertOne {
 	})
 }
 
+// ClearUpdatedParsed clears the value of the "updated_parsed" field.
+func (u *FeedItemUpsertOne) ClearUpdatedParsed() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearUpdatedParsed()
+	})
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertOne) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsertOne {
+func (u *FeedItemUpsertOne) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetEnclosure(v)
 	})
@@ -775,6 +962,34 @@ func (u *FeedItemUpsertOne) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpser
 func (u *FeedItemUpsertOne) UpdateEnclosure() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateEnclosure()
+	})
+}
+
+// ClearEnclosure clears the value of the "enclosure" field.
+func (u *FeedItemUpsertOne) ClearEnclosure() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearEnclosure()
+	})
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (u *FeedItemUpsertOne) SetPublishPlatform(v string) *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetPublishPlatform(v)
+	})
+}
+
+// UpdatePublishPlatform sets the "publish_platform" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdatePublishPlatform() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdatePublishPlatform()
+	})
+}
+
+// ClearPublishPlatform clears the value of the "publish_platform" field.
+func (u *FeedItemUpsertOne) ClearPublishPlatform() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublishPlatform()
 	})
 }
 
@@ -822,7 +1037,7 @@ func (u *FeedItemUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeedItemUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *FeedItemUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -831,7 +1046,7 @@ func (u *FeedItemUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeedItemUpsertOne) IDX(ctx context.Context) int64 {
+func (u *FeedItemUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -884,7 +1099,7 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -937,7 +1152,7 @@ func (ficb *FeedItemCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedItemUpsert) {
-//			SetTitle(v+v).
+//			SetFeedID(v+v).
 //		}).
 //		Exec(ctx)
 func (ficb *FeedItemCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedItemUpsertBulk {
@@ -983,6 +1198,12 @@ func (u *FeedItemUpsertBulk) UpdateNewValues() *FeedItemUpsertBulk {
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(feeditem.FieldID)
+			}
+			if _, exists := b.mutation.FeedID(); exists {
+				s.SetIgnore(feeditem.FieldFeedID)
+			}
+			if _, exists := b.mutation.GUID(); exists {
+				s.SetIgnore(feeditem.FieldGUID)
 			}
 		}
 	}))
@@ -1030,8 +1251,15 @@ func (u *FeedItemUpsertBulk) UpdateTitle() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedItemUpsertBulk) ClearTitle() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearTitle()
+	})
+}
+
 // SetAuthors sets the "authors" field.
-func (u *FeedItemUpsertBulk) SetAuthors(v []modelfeed.Person) *FeedItemUpsertBulk {
+func (u *FeedItemUpsertBulk) SetAuthors(v []*modelfeed.Person) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetAuthors(v)
 	})
@@ -1041,6 +1269,13 @@ func (u *FeedItemUpsertBulk) SetAuthors(v []modelfeed.Person) *FeedItemUpsertBul
 func (u *FeedItemUpsertBulk) UpdateAuthors() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateAuthors()
+	})
+}
+
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedItemUpsertBulk) ClearAuthors() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearAuthors()
 	})
 }
 
@@ -1058,6 +1293,13 @@ func (u *FeedItemUpsertBulk) UpdateDescription() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedItemUpsertBulk) ClearDescription() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetContent sets the "content" field.
 func (u *FeedItemUpsertBulk) SetContent(v string) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -1072,17 +1314,10 @@ func (u *FeedItemUpsertBulk) UpdateContent() *FeedItemUpsertBulk {
 	})
 }
 
-// SetGUID sets the "guid" field.
-func (u *FeedItemUpsertBulk) SetGUID(v string) *FeedItemUpsertBulk {
+// ClearContent clears the value of the "content" field.
+func (u *FeedItemUpsertBulk) ClearContent() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
-		s.SetGUID(v)
-	})
-}
-
-// UpdateGUID sets the "guid" field to the value that was provided on create.
-func (u *FeedItemUpsertBulk) UpdateGUID() *FeedItemUpsertBulk {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.UpdateGUID()
+		s.ClearContent()
 	})
 }
 
@@ -1100,6 +1335,13 @@ func (u *FeedItemUpsertBulk) UpdateLink() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearLink clears the value of the "link" field.
+func (u *FeedItemUpsertBulk) ClearLink() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearLink()
+	})
+}
+
 // SetImage sets the "image" field.
 func (u *FeedItemUpsertBulk) SetImage(v *modelfeed.Image) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -1111,6 +1353,13 @@ func (u *FeedItemUpsertBulk) SetImage(v *modelfeed.Image) *FeedItemUpsertBulk {
 func (u *FeedItemUpsertBulk) UpdateImage() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateImage()
+	})
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedItemUpsertBulk) ClearImage() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearImage()
 	})
 }
 
@@ -1128,6 +1377,13 @@ func (u *FeedItemUpsertBulk) UpdatePublished() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearPublished clears the value of the "published" field.
+func (u *FeedItemUpsertBulk) ClearPublished() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublished()
+	})
+}
+
 // SetPublishedParsed sets the "published_parsed" field.
 func (u *FeedItemUpsertBulk) SetPublishedParsed(v time.Time) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -1139,6 +1395,13 @@ func (u *FeedItemUpsertBulk) SetPublishedParsed(v time.Time) *FeedItemUpsertBulk
 func (u *FeedItemUpsertBulk) UpdatePublishedParsed() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdatePublishedParsed()
+	})
+}
+
+// ClearPublishedParsed clears the value of the "published_parsed" field.
+func (u *FeedItemUpsertBulk) ClearPublishedParsed() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublishedParsed()
 	})
 }
 
@@ -1156,6 +1419,13 @@ func (u *FeedItemUpsertBulk) UpdateUpdated() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearUpdated clears the value of the "updated" field.
+func (u *FeedItemUpsertBulk) ClearUpdated() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearUpdated()
+	})
+}
+
 // SetUpdatedParsed sets the "updated_parsed" field.
 func (u *FeedItemUpsertBulk) SetUpdatedParsed(v time.Time) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
@@ -1170,8 +1440,15 @@ func (u *FeedItemUpsertBulk) UpdateUpdatedParsed() *FeedItemUpsertBulk {
 	})
 }
 
+// ClearUpdatedParsed clears the value of the "updated_parsed" field.
+func (u *FeedItemUpsertBulk) ClearUpdatedParsed() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearUpdatedParsed()
+	})
+}
+
 // SetEnclosure sets the "enclosure" field.
-func (u *FeedItemUpsertBulk) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpsertBulk {
+func (u *FeedItemUpsertBulk) SetEnclosure(v []*modelfeed.Enclosure) *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.SetEnclosure(v)
 	})
@@ -1181,6 +1458,34 @@ func (u *FeedItemUpsertBulk) SetEnclosure(v []modelfeed.Enclosure) *FeedItemUpse
 func (u *FeedItemUpsertBulk) UpdateEnclosure() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdateEnclosure()
+	})
+}
+
+// ClearEnclosure clears the value of the "enclosure" field.
+func (u *FeedItemUpsertBulk) ClearEnclosure() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearEnclosure()
+	})
+}
+
+// SetPublishPlatform sets the "publish_platform" field.
+func (u *FeedItemUpsertBulk) SetPublishPlatform(v string) *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetPublishPlatform(v)
+	})
+}
+
+// UpdatePublishPlatform sets the "publish_platform" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdatePublishPlatform() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdatePublishPlatform()
+	})
+}
+
+// ClearPublishPlatform clears the value of the "publish_platform" field.
+func (u *FeedItemUpsertBulk) ClearPublishPlatform() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearPublishPlatform()
 	})
 }
 

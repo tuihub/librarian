@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
@@ -21,11 +23,13 @@ func (FeedConfig) Fields() []ent.Field {
 		field.Int64("id").
 			Unique().
 			Immutable().
+			GoType(model.InternalID(0)).
 			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
 				Incremental: &incrementalEnabled,
 			}),
 		field.String("feed_url"),
-		field.Int64("author_account"),
+		field.Int64("author_account").
+			GoType(model.InternalID(0)),
 		field.Enum("source").Values("common"),
 		field.Enum("status").
 			Values("active", "suspend"),

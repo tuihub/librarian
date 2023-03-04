@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AccountUpdate is the builder for updating Account entities.
@@ -80,13 +81,13 @@ func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (au *AccountUpdate) SetUserID(id int64) *AccountUpdate {
+func (au *AccountUpdate) SetUserID(id model.InternalID) *AccountUpdate {
 	au.mutation.SetUserID(id)
 	return au
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (au *AccountUpdate) SetNillableUserID(id *int64) *AccountUpdate {
+func (au *AccountUpdate) SetNillableUserID(id *model.InternalID) *AccountUpdate {
 	if id != nil {
 		au = au.SetUserID(*id)
 	}
@@ -294,13 +295,13 @@ func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOn
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (auo *AccountUpdateOne) SetUserID(id int64) *AccountUpdateOne {
+func (auo *AccountUpdateOne) SetUserID(id model.InternalID) *AccountUpdateOne {
 	auo.mutation.SetUserID(id)
 	return auo
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableUserID(id *int64) *AccountUpdateOne {
+func (auo *AccountUpdateOne) SetNillableUserID(id *model.InternalID) *AccountUpdateOne {
 	if id != nil {
 		auo = auo.SetUserID(*id)
 	}

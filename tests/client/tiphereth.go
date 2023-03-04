@@ -73,20 +73,20 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 
 	c.AssertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, nil,
-		func(resp *pb.ListUserResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotal(), 1) ||
-				!cmp.Equal(resp.GetUserList()[0], user2)
+		func(resp *pb.ListUsersResponse) bool {
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
+				!cmp.Equal(resp.GetUsers()[0], user2)
 		})
 	c.AssertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
-		func(resp *pb.ListUserResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotal(), 1) ||
-				!cmp.Equal(resp.GetUserList()[0], user2)
+		func(resp *pb.ListUsersResponse) bool {
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
+				!cmp.Equal(resp.GetUsers()[0], user2)
 		})
 	c.AssertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
-		func(resp *pb.ListUserResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotal(), 2) //nolint:gomnd // definite
+		func(resp *pb.ListUsersResponse) bool {
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
 		})
 
 	user1.Password = "user1newPass"
@@ -104,14 +104,14 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 
 	c.AssertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, nil,
-		func(resp *pb.ListUserResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotal(), 2) //nolint:gomnd // definite
+		func(resp *pb.ListUsersResponse) bool {
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
 		})
 	c.AssertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
-		func(resp *pb.ListUserResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotal(), 1) ||
-				!cmp.Equal(resp.GetUserList()[0], user2)
+		func(resp *pb.ListUsersResponse) bool {
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
+				!cmp.Equal(resp.GetUsers()[0], user2)
 		})
 
 	user2.Password = user2Password
@@ -137,9 +137,9 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 }
 
 func (c *Client) AssertListUser(
-	ctx context.Context, types []pb.UserType, statuses []pb.UserStatus, assertFunc func(*pb.ListUserResponse) bool,
+	ctx context.Context, types []pb.UserType, statuses []pb.UserStatus, assertFunc func(*pb.ListUsersResponse) bool,
 ) {
-	resp, err := c.cli.ListUser(ctx, &pb.ListUserRequest{
+	resp, err := c.cli.ListUsers(ctx, &pb.ListUsersRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 10, //nolint:gomnd // definite

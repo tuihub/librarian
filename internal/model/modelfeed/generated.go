@@ -88,6 +88,7 @@ func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
 			}
 		}
 		modelfeedItem.Enclosures = pModelfeedEnclosureList
+		modelfeedItem.PublishPlatform = (*source).PublishPlatform
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem
@@ -145,7 +146,7 @@ func (c *ConverterImpl) ToPBFeedImage(source *Image) *v1.FeedImage {
 }
 func (c *ConverterImpl) ToPBFeedInternalID(source Feed) v1.InternalID {
 	var v1InternalID v1.InternalID
-	v1InternalID.Id = source.InternalID
+	v1InternalID.Id = int64(source.InternalID)
 	return v1InternalID
 }
 func (c *ConverterImpl) ToPBFeedItem(source *Item) *v1.FeedItem {
@@ -178,6 +179,7 @@ func (c *ConverterImpl) ToPBFeedItem(source *Item) *v1.FeedItem {
 			}
 		}
 		v1FeedItem.Enclosures = pV1FeedEnclosureList
+		v1FeedItem.PublishPlatform = (*source).PublishPlatform
 		pV1FeedItem = &v1FeedItem
 	}
 	return pV1FeedItem

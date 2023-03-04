@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -31,9 +32,25 @@ func (fc *FeedCreate) SetTitle(s string) *FeedCreate {
 	return fc
 }
 
+// SetNillableTitle sets the "title" field if the given value is not nil.
+func (fc *FeedCreate) SetNillableTitle(s *string) *FeedCreate {
+	if s != nil {
+		fc.SetTitle(*s)
+	}
+	return fc
+}
+
 // SetLink sets the "link" field.
 func (fc *FeedCreate) SetLink(s string) *FeedCreate {
 	fc.mutation.SetLink(s)
+	return fc
+}
+
+// SetNillableLink sets the "link" field if the given value is not nil.
+func (fc *FeedCreate) SetNillableLink(s *string) *FeedCreate {
+	if s != nil {
+		fc.SetLink(*s)
+	}
 	return fc
 }
 
@@ -43,9 +60,25 @@ func (fc *FeedCreate) SetDescription(s string) *FeedCreate {
 	return fc
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fc *FeedCreate) SetNillableDescription(s *string) *FeedCreate {
+	if s != nil {
+		fc.SetDescription(*s)
+	}
+	return fc
+}
+
 // SetLanguage sets the "language" field.
 func (fc *FeedCreate) SetLanguage(s string) *FeedCreate {
 	fc.mutation.SetLanguage(s)
+	return fc
+}
+
+// SetNillableLanguage sets the "language" field if the given value is not nil.
+func (fc *FeedCreate) SetNillableLanguage(s *string) *FeedCreate {
+	if s != nil {
+		fc.SetLanguage(*s)
+	}
 	return fc
 }
 
@@ -90,20 +123,20 @@ func (fc *FeedCreate) SetNillableCreatedAt(t *time.Time) *FeedCreate {
 }
 
 // SetID sets the "id" field.
-func (fc *FeedCreate) SetID(i int64) *FeedCreate {
-	fc.mutation.SetID(i)
+func (fc *FeedCreate) SetID(mi model.InternalID) *FeedCreate {
+	fc.mutation.SetID(mi)
 	return fc
 }
 
 // AddItemIDs adds the "item" edge to the FeedItem entity by IDs.
-func (fc *FeedCreate) AddItemIDs(ids ...int64) *FeedCreate {
+func (fc *FeedCreate) AddItemIDs(ids ...model.InternalID) *FeedCreate {
 	fc.mutation.AddItemIDs(ids...)
 	return fc
 }
 
 // AddItem adds the "item" edges to the FeedItem entity.
 func (fc *FeedCreate) AddItem(f ...*FeedItem) *FeedCreate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -111,7 +144,7 @@ func (fc *FeedCreate) AddItem(f ...*FeedItem) *FeedCreate {
 }
 
 // SetConfigID sets the "config" edge to the FeedConfig entity by ID.
-func (fc *FeedCreate) SetConfigID(id int64) *FeedCreate {
+func (fc *FeedCreate) SetConfigID(id model.InternalID) *FeedCreate {
 	fc.mutation.SetConfigID(id)
 	return fc
 }
@@ -168,24 +201,6 @@ func (fc *FeedCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fc *FeedCreate) check() error {
-	if _, ok := fc.mutation.Title(); !ok {
-		return &ValidationError{Name: "title", err: errors.New(`ent: missing required field "Feed.title"`)}
-	}
-	if _, ok := fc.mutation.Link(); !ok {
-		return &ValidationError{Name: "link", err: errors.New(`ent: missing required field "Feed.link"`)}
-	}
-	if _, ok := fc.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Feed.description"`)}
-	}
-	if _, ok := fc.mutation.Language(); !ok {
-		return &ValidationError{Name: "language", err: errors.New(`ent: missing required field "Feed.language"`)}
-	}
-	if _, ok := fc.mutation.Authors(); !ok {
-		return &ValidationError{Name: "authors", err: errors.New(`ent: missing required field "Feed.authors"`)}
-	}
-	if _, ok := fc.mutation.Image(); !ok {
-		return &ValidationError{Name: "image", err: errors.New(`ent: missing required field "Feed.image"`)}
-	}
 	if _, ok := fc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Feed.updated_at"`)}
 	}
@@ -211,7 +226,7 @@ func (fc *FeedCreate) sqlSave(ctx context.Context) (*Feed, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	fc.mutation.id = &_node.ID
 	fc.mutation.done = true
@@ -363,6 +378,12 @@ func (u *FeedUpsert) UpdateTitle() *FeedUpsert {
 	return u
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedUpsert) ClearTitle() *FeedUpsert {
+	u.SetNull(feed.FieldTitle)
+	return u
+}
+
 // SetLink sets the "link" field.
 func (u *FeedUpsert) SetLink(v string) *FeedUpsert {
 	u.Set(feed.FieldLink, v)
@@ -372,6 +393,12 @@ func (u *FeedUpsert) SetLink(v string) *FeedUpsert {
 // UpdateLink sets the "link" field to the value that was provided on create.
 func (u *FeedUpsert) UpdateLink() *FeedUpsert {
 	u.SetExcluded(feed.FieldLink)
+	return u
+}
+
+// ClearLink clears the value of the "link" field.
+func (u *FeedUpsert) ClearLink() *FeedUpsert {
+	u.SetNull(feed.FieldLink)
 	return u
 }
 
@@ -387,6 +414,12 @@ func (u *FeedUpsert) UpdateDescription() *FeedUpsert {
 	return u
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedUpsert) ClearDescription() *FeedUpsert {
+	u.SetNull(feed.FieldDescription)
+	return u
+}
+
 // SetLanguage sets the "language" field.
 func (u *FeedUpsert) SetLanguage(v string) *FeedUpsert {
 	u.Set(feed.FieldLanguage, v)
@@ -396,6 +429,12 @@ func (u *FeedUpsert) SetLanguage(v string) *FeedUpsert {
 // UpdateLanguage sets the "language" field to the value that was provided on create.
 func (u *FeedUpsert) UpdateLanguage() *FeedUpsert {
 	u.SetExcluded(feed.FieldLanguage)
+	return u
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *FeedUpsert) ClearLanguage() *FeedUpsert {
+	u.SetNull(feed.FieldLanguage)
 	return u
 }
 
@@ -411,6 +450,12 @@ func (u *FeedUpsert) UpdateAuthors() *FeedUpsert {
 	return u
 }
 
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedUpsert) ClearAuthors() *FeedUpsert {
+	u.SetNull(feed.FieldAuthors)
+	return u
+}
+
 // SetImage sets the "image" field.
 func (u *FeedUpsert) SetImage(v *modelfeed.Image) *FeedUpsert {
 	u.Set(feed.FieldImage, v)
@@ -420,6 +465,12 @@ func (u *FeedUpsert) SetImage(v *modelfeed.Image) *FeedUpsert {
 // UpdateImage sets the "image" field to the value that was provided on create.
 func (u *FeedUpsert) UpdateImage() *FeedUpsert {
 	u.SetExcluded(feed.FieldImage)
+	return u
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedUpsert) ClearImage() *FeedUpsert {
+	u.SetNull(feed.FieldImage)
 	return u
 }
 
@@ -509,6 +560,13 @@ func (u *FeedUpsertOne) UpdateTitle() *FeedUpsertOne {
 	})
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedUpsertOne) ClearTitle() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearTitle()
+	})
+}
+
 // SetLink sets the "link" field.
 func (u *FeedUpsertOne) SetLink(v string) *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
@@ -520,6 +578,13 @@ func (u *FeedUpsertOne) SetLink(v string) *FeedUpsertOne {
 func (u *FeedUpsertOne) UpdateLink() *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateLink()
+	})
+}
+
+// ClearLink clears the value of the "link" field.
+func (u *FeedUpsertOne) ClearLink() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearLink()
 	})
 }
 
@@ -537,6 +602,13 @@ func (u *FeedUpsertOne) UpdateDescription() *FeedUpsertOne {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedUpsertOne) ClearDescription() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetLanguage sets the "language" field.
 func (u *FeedUpsertOne) SetLanguage(v string) *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
@@ -548,6 +620,13 @@ func (u *FeedUpsertOne) SetLanguage(v string) *FeedUpsertOne {
 func (u *FeedUpsertOne) UpdateLanguage() *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateLanguage()
+	})
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *FeedUpsertOne) ClearLanguage() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearLanguage()
 	})
 }
 
@@ -565,6 +644,13 @@ func (u *FeedUpsertOne) UpdateAuthors() *FeedUpsertOne {
 	})
 }
 
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedUpsertOne) ClearAuthors() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearAuthors()
+	})
+}
+
 // SetImage sets the "image" field.
 func (u *FeedUpsertOne) SetImage(v *modelfeed.Image) *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
@@ -576,6 +662,13 @@ func (u *FeedUpsertOne) SetImage(v *modelfeed.Image) *FeedUpsertOne {
 func (u *FeedUpsertOne) UpdateImage() *FeedUpsertOne {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateImage()
+	})
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedUpsertOne) ClearImage() *FeedUpsertOne {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearImage()
 	})
 }
 
@@ -623,7 +716,7 @@ func (u *FeedUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeedUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *FeedUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -632,7 +725,7 @@ func (u *FeedUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeedUpsertOne) IDX(ctx context.Context) int64 {
+func (u *FeedUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -685,7 +778,7 @@ func (fcb *FeedCreateBulk) Save(ctx context.Context) ([]*Feed, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -831,6 +924,13 @@ func (u *FeedUpsertBulk) UpdateTitle() *FeedUpsertBulk {
 	})
 }
 
+// ClearTitle clears the value of the "title" field.
+func (u *FeedUpsertBulk) ClearTitle() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearTitle()
+	})
+}
+
 // SetLink sets the "link" field.
 func (u *FeedUpsertBulk) SetLink(v string) *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
@@ -842,6 +942,13 @@ func (u *FeedUpsertBulk) SetLink(v string) *FeedUpsertBulk {
 func (u *FeedUpsertBulk) UpdateLink() *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateLink()
+	})
+}
+
+// ClearLink clears the value of the "link" field.
+func (u *FeedUpsertBulk) ClearLink() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearLink()
 	})
 }
 
@@ -859,6 +966,13 @@ func (u *FeedUpsertBulk) UpdateDescription() *FeedUpsertBulk {
 	})
 }
 
+// ClearDescription clears the value of the "description" field.
+func (u *FeedUpsertBulk) ClearDescription() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearDescription()
+	})
+}
+
 // SetLanguage sets the "language" field.
 func (u *FeedUpsertBulk) SetLanguage(v string) *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
@@ -870,6 +984,13 @@ func (u *FeedUpsertBulk) SetLanguage(v string) *FeedUpsertBulk {
 func (u *FeedUpsertBulk) UpdateLanguage() *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateLanguage()
+	})
+}
+
+// ClearLanguage clears the value of the "language" field.
+func (u *FeedUpsertBulk) ClearLanguage() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearLanguage()
 	})
 }
 
@@ -887,6 +1008,13 @@ func (u *FeedUpsertBulk) UpdateAuthors() *FeedUpsertBulk {
 	})
 }
 
+// ClearAuthors clears the value of the "authors" field.
+func (u *FeedUpsertBulk) ClearAuthors() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearAuthors()
+	})
+}
+
 // SetImage sets the "image" field.
 func (u *FeedUpsertBulk) SetImage(v *modelfeed.Image) *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
@@ -898,6 +1026,13 @@ func (u *FeedUpsertBulk) SetImage(v *modelfeed.Image) *FeedUpsertBulk {
 func (u *FeedUpsertBulk) UpdateImage() *FeedUpsertBulk {
 	return u.Update(func(s *FeedUpsert) {
 		s.UpdateImage()
+	})
+}
+
+// ClearImage clears the value of the "image" field.
+func (u *FeedUpsertBulk) ClearImage() *FeedUpsertBulk {
+	return u.Update(func(s *FeedUpsert) {
+		s.ClearImage()
 	})
 }
 

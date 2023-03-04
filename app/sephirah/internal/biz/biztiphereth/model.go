@@ -2,14 +2,15 @@ package biztiphereth
 
 import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 type User struct {
-	InternalID int64
-	UserName   string
-	PassWord   string
-	Type       libauth.UserType
-	Status     UserStatus
+	ID       model.InternalID
+	UserName string
+	PassWord string
+	Type     libauth.UserType
+	Status   UserStatus
 }
 
 type UserStatus int
@@ -24,7 +25,7 @@ type AccessToken string
 type RefreshToken string
 
 type Account struct {
-	InternalID        int64
+	ID                model.InternalID
 	Platform          AccountPlatform
 	PlatformAccountID string
 	Name              string
@@ -40,7 +41,7 @@ const (
 )
 
 type PullAccountInfo struct {
-	InternalID        int64
+	ID                model.InternalID
 	Platform          AccountPlatform
 	PlatformAccountID string
 }

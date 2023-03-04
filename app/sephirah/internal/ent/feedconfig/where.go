@@ -8,50 +8,51 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.FeedConfig {
+func ID(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.FeedConfig {
+func IDEQ(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.FeedConfig {
+func IDNEQ(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.FeedConfig {
+func IDIn(ids ...model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.FeedConfig {
+func IDNotIn(ids ...model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.FeedConfig {
+func IDGT(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.FeedConfig {
+func IDGTE(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.FeedConfig {
+func IDLT(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.FeedConfig {
+func IDLTE(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldID, id))
 }
 
@@ -61,8 +62,9 @@ func FeedURL(v string) predicate.FeedConfig {
 }
 
 // AuthorAccount applies equality check predicate on the "author_account" field. It's identical to AuthorAccountEQ.
-func AuthorAccount(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, v))
+func AuthorAccount(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, vc))
 }
 
 // PullInterval applies equality check predicate on the "pull_interval" field. It's identical to PullIntervalEQ.
@@ -152,43 +154,57 @@ func FeedURLContainsFold(v string) predicate.FeedConfig {
 }
 
 // AuthorAccountEQ applies the EQ predicate on the "author_account" field.
-func AuthorAccountEQ(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, v))
+func AuthorAccountEQ(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, vc))
 }
 
 // AuthorAccountNEQ applies the NEQ predicate on the "author_account" field.
-func AuthorAccountNEQ(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNEQ(FieldAuthorAccount, v))
+func AuthorAccountNEQ(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldNEQ(FieldAuthorAccount, vc))
 }
 
 // AuthorAccountIn applies the In predicate on the "author_account" field.
-func AuthorAccountIn(vs ...int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldIn(FieldAuthorAccount, vs...))
+func AuthorAccountIn(vs ...model.InternalID) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldIn(FieldAuthorAccount, v...))
 }
 
 // AuthorAccountNotIn applies the NotIn predicate on the "author_account" field.
-func AuthorAccountNotIn(vs ...int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNotIn(FieldAuthorAccount, vs...))
+func AuthorAccountNotIn(vs ...model.InternalID) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldNotIn(FieldAuthorAccount, v...))
 }
 
 // AuthorAccountGT applies the GT predicate on the "author_account" field.
-func AuthorAccountGT(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGT(FieldAuthorAccount, v))
+func AuthorAccountGT(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldGT(FieldAuthorAccount, vc))
 }
 
 // AuthorAccountGTE applies the GTE predicate on the "author_account" field.
-func AuthorAccountGTE(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGTE(FieldAuthorAccount, v))
+func AuthorAccountGTE(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldGTE(FieldAuthorAccount, vc))
 }
 
 // AuthorAccountLT applies the LT predicate on the "author_account" field.
-func AuthorAccountLT(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLT(FieldAuthorAccount, v))
+func AuthorAccountLT(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldLT(FieldAuthorAccount, vc))
 }
 
 // AuthorAccountLTE applies the LTE predicate on the "author_account" field.
-func AuthorAccountLTE(v int64) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLTE(FieldAuthorAccount, v))
+func AuthorAccountLTE(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldLTE(FieldAuthorAccount, vc))
 }
 
 // SourceEQ applies the EQ predicate on the "source" field.

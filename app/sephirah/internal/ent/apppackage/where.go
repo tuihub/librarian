@@ -8,56 +8,58 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.AppPackage {
+func ID(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.AppPackage {
+func IDEQ(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.AppPackage {
+func IDNEQ(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.AppPackage {
+func IDIn(ids ...model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.AppPackage {
+func IDNotIn(ids ...model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.AppPackage {
+func IDGT(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.AppPackage {
+func IDGTE(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.AppPackage {
+func IDLT(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.AppPackage {
+func IDLTE(id model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldID, id))
 }
 
 // SourceID applies equality check predicate on the "source_id" field. It's identical to SourceIDEQ.
-func SourceID(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldSourceID, v))
+func SourceID(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldEQ(FieldSourceID, vc))
 }
 
 // SourcePackageID applies equality check predicate on the "source_package_id" field. It's identical to SourcePackageIDEQ.
@@ -121,43 +123,57 @@ func SourceNotIn(vs ...Source) predicate.AppPackage {
 }
 
 // SourceIDEQ applies the EQ predicate on the "source_id" field.
-func SourceIDEQ(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldSourceID, v))
+func SourceIDEQ(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldEQ(FieldSourceID, vc))
 }
 
 // SourceIDNEQ applies the NEQ predicate on the "source_id" field.
-func SourceIDNEQ(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNEQ(FieldSourceID, v))
+func SourceIDNEQ(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldNEQ(FieldSourceID, vc))
 }
 
 // SourceIDIn applies the In predicate on the "source_id" field.
-func SourceIDIn(vs ...int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldIn(FieldSourceID, vs...))
+func SourceIDIn(vs ...model.InternalID) predicate.AppPackage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppPackage(sql.FieldIn(FieldSourceID, v...))
 }
 
 // SourceIDNotIn applies the NotIn predicate on the "source_id" field.
-func SourceIDNotIn(vs ...int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNotIn(FieldSourceID, vs...))
+func SourceIDNotIn(vs ...model.InternalID) predicate.AppPackage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppPackage(sql.FieldNotIn(FieldSourceID, v...))
 }
 
 // SourceIDGT applies the GT predicate on the "source_id" field.
-func SourceIDGT(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGT(FieldSourceID, v))
+func SourceIDGT(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldGT(FieldSourceID, vc))
 }
 
 // SourceIDGTE applies the GTE predicate on the "source_id" field.
-func SourceIDGTE(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGTE(FieldSourceID, v))
+func SourceIDGTE(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldGTE(FieldSourceID, vc))
 }
 
 // SourceIDLT applies the LT predicate on the "source_id" field.
-func SourceIDLT(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLT(FieldSourceID, v))
+func SourceIDLT(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldLT(FieldSourceID, vc))
 }
 
 // SourceIDLTE applies the LTE predicate on the "source_id" field.
-func SourceIDLTE(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLTE(FieldSourceID, v))
+func SourceIDLTE(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldLTE(FieldSourceID, vc))
 }
 
 // SourcePackageIDEQ applies the EQ predicate on the "source_package_id" field.

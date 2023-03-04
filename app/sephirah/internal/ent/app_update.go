@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppUpdate is the builder for updating App entities.
@@ -123,14 +124,14 @@ func (au *AppUpdate) SetNillableCreatedAt(t *time.Time) *AppUpdate {
 }
 
 // AddUserIDs adds the "user" edge to the User entity by IDs.
-func (au *AppUpdate) AddUserIDs(ids ...int64) *AppUpdate {
+func (au *AppUpdate) AddUserIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.AddUserIDs(ids...)
 	return au
 }
 
 // AddUser adds the "user" edges to the User entity.
 func (au *AppUpdate) AddUser(u ...*User) *AppUpdate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -138,14 +139,14 @@ func (au *AppUpdate) AddUser(u ...*User) *AppUpdate {
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
-func (au *AppUpdate) AddAppPackageIDs(ids ...int64) *AppUpdate {
+func (au *AppUpdate) AddAppPackageIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.AddAppPackageIDs(ids...)
 	return au
 }
 
 // AddAppPackage adds the "app_package" edges to the AppPackage entity.
 func (au *AppUpdate) AddAppPackage(a ...*AppPackage) *AppUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -164,14 +165,14 @@ func (au *AppUpdate) ClearUser() *AppUpdate {
 }
 
 // RemoveUserIDs removes the "user" edge to User entities by IDs.
-func (au *AppUpdate) RemoveUserIDs(ids ...int64) *AppUpdate {
+func (au *AppUpdate) RemoveUserIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.RemoveUserIDs(ids...)
 	return au
 }
 
 // RemoveUser removes "user" edges to User entities.
 func (au *AppUpdate) RemoveUser(u ...*User) *AppUpdate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -185,14 +186,14 @@ func (au *AppUpdate) ClearAppPackage() *AppUpdate {
 }
 
 // RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
-func (au *AppUpdate) RemoveAppPackageIDs(ids ...int64) *AppUpdate {
+func (au *AppUpdate) RemoveAppPackageIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.RemoveAppPackageIDs(ids...)
 	return au
 }
 
 // RemoveAppPackage removes "app_package" edges to AppPackage entities.
 func (au *AppUpdate) RemoveAppPackage(a ...*AppPackage) *AppUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -525,14 +526,14 @@ func (auo *AppUpdateOne) SetNillableCreatedAt(t *time.Time) *AppUpdateOne {
 }
 
 // AddUserIDs adds the "user" edge to the User entity by IDs.
-func (auo *AppUpdateOne) AddUserIDs(ids ...int64) *AppUpdateOne {
+func (auo *AppUpdateOne) AddUserIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.AddUserIDs(ids...)
 	return auo
 }
 
 // AddUser adds the "user" edges to the User entity.
 func (auo *AppUpdateOne) AddUser(u ...*User) *AppUpdateOne {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -540,14 +541,14 @@ func (auo *AppUpdateOne) AddUser(u ...*User) *AppUpdateOne {
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
-func (auo *AppUpdateOne) AddAppPackageIDs(ids ...int64) *AppUpdateOne {
+func (auo *AppUpdateOne) AddAppPackageIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.AddAppPackageIDs(ids...)
 	return auo
 }
 
 // AddAppPackage adds the "app_package" edges to the AppPackage entity.
 func (auo *AppUpdateOne) AddAppPackage(a ...*AppPackage) *AppUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -566,14 +567,14 @@ func (auo *AppUpdateOne) ClearUser() *AppUpdateOne {
 }
 
 // RemoveUserIDs removes the "user" edge to User entities by IDs.
-func (auo *AppUpdateOne) RemoveUserIDs(ids ...int64) *AppUpdateOne {
+func (auo *AppUpdateOne) RemoveUserIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.RemoveUserIDs(ids...)
 	return auo
 }
 
 // RemoveUser removes "user" edges to User entities.
 func (auo *AppUpdateOne) RemoveUser(u ...*User) *AppUpdateOne {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -587,14 +588,14 @@ func (auo *AppUpdateOne) ClearAppPackage() *AppUpdateOne {
 }
 
 // RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
-func (auo *AppUpdateOne) RemoveAppPackageIDs(ids ...int64) *AppUpdateOne {
+func (auo *AppUpdateOne) RemoveAppPackageIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.RemoveAppPackageIDs(ids...)
 	return auo
 }
 
 // RemoveAppPackage removes "app_package" edges to AppPackage entities.
 func (auo *AppUpdateOne) RemoveAppPackage(a ...*AppPackage) *AppUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}

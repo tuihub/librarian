@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackageUpdate is the builder for updating AppPackage entities.
@@ -36,15 +37,15 @@ func (apu *AppPackageUpdate) SetSource(a apppackage.Source) *AppPackageUpdate {
 }
 
 // SetSourceID sets the "source_id" field.
-func (apu *AppPackageUpdate) SetSourceID(i int64) *AppPackageUpdate {
+func (apu *AppPackageUpdate) SetSourceID(mi model.InternalID) *AppPackageUpdate {
 	apu.mutation.ResetSourceID()
-	apu.mutation.SetSourceID(i)
+	apu.mutation.SetSourceID(mi)
 	return apu
 }
 
-// AddSourceID adds i to the "source_id" field.
-func (apu *AppPackageUpdate) AddSourceID(i int64) *AppPackageUpdate {
-	apu.mutation.AddSourceID(i)
+// AddSourceID adds mi to the "source_id" field.
+func (apu *AppPackageUpdate) AddSourceID(mi model.InternalID) *AppPackageUpdate {
+	apu.mutation.AddSourceID(mi)
 	return apu
 }
 
@@ -112,13 +113,13 @@ func (apu *AppPackageUpdate) SetNillableCreatedAt(t *time.Time) *AppPackageUpdat
 }
 
 // SetAppID sets the "app" edge to the App entity by ID.
-func (apu *AppPackageUpdate) SetAppID(id int64) *AppPackageUpdate {
+func (apu *AppPackageUpdate) SetAppID(id model.InternalID) *AppPackageUpdate {
 	apu.mutation.SetAppID(id)
 	return apu
 }
 
 // SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
-func (apu *AppPackageUpdate) SetNillableAppID(id *int64) *AppPackageUpdate {
+func (apu *AppPackageUpdate) SetNillableAppID(id *model.InternalID) *AppPackageUpdate {
 	if id != nil {
 		apu = apu.SetAppID(*id)
 	}
@@ -297,15 +298,15 @@ func (apuo *AppPackageUpdateOne) SetSource(a apppackage.Source) *AppPackageUpdat
 }
 
 // SetSourceID sets the "source_id" field.
-func (apuo *AppPackageUpdateOne) SetSourceID(i int64) *AppPackageUpdateOne {
+func (apuo *AppPackageUpdateOne) SetSourceID(mi model.InternalID) *AppPackageUpdateOne {
 	apuo.mutation.ResetSourceID()
-	apuo.mutation.SetSourceID(i)
+	apuo.mutation.SetSourceID(mi)
 	return apuo
 }
 
-// AddSourceID adds i to the "source_id" field.
-func (apuo *AppPackageUpdateOne) AddSourceID(i int64) *AppPackageUpdateOne {
-	apuo.mutation.AddSourceID(i)
+// AddSourceID adds mi to the "source_id" field.
+func (apuo *AppPackageUpdateOne) AddSourceID(mi model.InternalID) *AppPackageUpdateOne {
+	apuo.mutation.AddSourceID(mi)
 	return apuo
 }
 
@@ -373,13 +374,13 @@ func (apuo *AppPackageUpdateOne) SetNillableCreatedAt(t *time.Time) *AppPackageU
 }
 
 // SetAppID sets the "app" edge to the App entity by ID.
-func (apuo *AppPackageUpdateOne) SetAppID(id int64) *AppPackageUpdateOne {
+func (apuo *AppPackageUpdateOne) SetAppID(id model.InternalID) *AppPackageUpdateOne {
 	apuo.mutation.SetAppID(id)
 	return apuo
 }
 
 // SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
-func (apuo *AppPackageUpdateOne) SetNillableAppID(id *int64) *AppPackageUpdateOne {
+func (apuo *AppPackageUpdateOne) SetNillableAppID(id *model.InternalID) *AppPackageUpdateOne {
 	if id != nil {
 		apuo = apuo.SetAppID(*id)
 	}

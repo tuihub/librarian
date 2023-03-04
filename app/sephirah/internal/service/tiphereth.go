@@ -15,11 +15,11 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 	*pb.GetTokenResponse, error,
 ) {
 	accessToken, refreshToken, err := s.t.GetToken(ctx, &biztiphereth.User{
-		InternalID: 0,
-		UserName:   req.GetUsername(),
-		PassWord:   req.GetPassword(),
-		Type:       0,
-		Status:     0,
+		ID:       0,
+		UserName: req.GetUsername(),
+		PassWord: req.GetPassword(),
+		Type:     0,
+		Status:   0,
 	})
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
@@ -74,8 +74,8 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	}
 	return &pb.UpdateUserResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.ListUserRequest) (
-	*pb.ListUserResponse, error,
+func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (
+	*pb.ListUsersResponse, error,
 ) {
 	if req.GetPaging() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
@@ -91,9 +91,9 @@ func (s *LibrarianSephirahServiceService) ListUser(ctx context.Context, req *pb.
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListUserResponse{
-		Paging:   &librarian.PagingResponse{Total: total},
-		UserList: s.converter.ToPBUserList(u),
+	return &pb.ListUsersResponse{
+		Paging: &librarian.PagingResponse{TotalSize: total},
+		Users:  s.converter.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
@@ -103,7 +103,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	a, err := s.t.LinkAccount(ctx, biztiphereth.Account{
-		InternalID:        0,
+		ID:                0,
 		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 		Name:              "",
@@ -113,7 +113,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	return &pb.LinkAccountResponse{AccountId: &librarian.InternalID{Id: a.InternalID}}, nil
+	return &pb.LinkAccountResponse{AccountId: converter.ToPBInternalID(a.ID)}, nil
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error,
@@ -122,7 +122,7 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	if err := s.t.UnLinkAccount(ctx, biztiphereth.Account{
-		InternalID:        0,
+		ID:                0,
 		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 		Name:              "",
@@ -133,18 +133,18 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 	}
 	return &pb.UnLinkAccountResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountRequest) (
-	*pb.ListLinkAccountResponse, error,
+func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountsRequest) (
+	*pb.ListLinkAccountsResponse, error,
 ) {
 	res, total, err := s.t.ListLinkAccount(ctx, model.Paging{
 		PageSize: int(req.GetPaging().GetPageSize()),
 		PageNum:  int(req.GetPaging().GetPageNum()),
-	}, model.InternalID(converter.ToBizInternalID(req.GetUserId())))
+	}, converter.ToBizInternalID(req.GetUserId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListLinkAccountResponse{
-		Paging:      &librarian.PagingResponse{Total: total},
-		AccountList: s.converter.ToPBAccountList(res),
+	return &pb.ListLinkAccountsResponse{
+		Paging:   &librarian.PagingResponse{TotalSize: total},
+		Accounts: s.converter.ToPBAccountList(res),
 	}, nil
 }

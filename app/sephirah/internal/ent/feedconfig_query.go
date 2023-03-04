@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedConfigQuery is the builder for querying FeedConfig entities.
@@ -131,8 +132,8 @@ func (fcq *FeedConfigQuery) FirstX(ctx context.Context) *FeedConfig {
 
 // FirstID returns the first FeedConfig ID from the query.
 // Returns a *NotFoundError when no FeedConfig ID was found.
-func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = fcq.Limit(1).IDs(setContextOp(ctx, fcq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -144,7 +145,7 @@ func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fcq *FeedConfigQuery) FirstIDX(ctx context.Context) int64 {
+func (fcq *FeedConfigQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := fcq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -182,8 +183,8 @@ func (fcq *FeedConfigQuery) OnlyX(ctx context.Context) *FeedConfig {
 // OnlyID is like Only, but returns the only FeedConfig ID in the query.
 // Returns a *NotSingularError when more than one FeedConfig ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = fcq.Limit(2).IDs(setContextOp(ctx, fcq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -199,7 +200,7 @@ func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fcq *FeedConfigQuery) OnlyIDX(ctx context.Context) int64 {
+func (fcq *FeedConfigQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := fcq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -227,7 +228,7 @@ func (fcq *FeedConfigQuery) AllX(ctx context.Context) []*FeedConfig {
 }
 
 // IDs executes the query and returns a list of FeedConfig IDs.
-func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if fcq.ctx.Unique == nil && fcq.path != nil {
 		fcq.Unique(true)
 	}
@@ -239,7 +240,7 @@ func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fcq *FeedConfigQuery) IDsX(ctx context.Context) []int64 {
+func (fcq *FeedConfigQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := fcq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -453,8 +454,8 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 }
 
 func (fcq *FeedConfigQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *User)) error {
-	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*FeedConfig)
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*FeedConfig)
 	for i := range nodes {
 		if nodes[i].user_feed_config == nil {
 			continue
@@ -486,7 +487,7 @@ func (fcq *FeedConfigQuery) loadUser(ctx context.Context, query *UserQuery, node
 }
 func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *Feed)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*FeedConfig)
+	nodeids := make(map[model.InternalID]*FeedConfig)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]

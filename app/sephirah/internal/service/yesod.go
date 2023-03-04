@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -32,16 +33,31 @@ func (s *LibrarianSephirahServiceService) UpdateFeedConfig(
 	}
 	return &pb.UpdateFeedConfigResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListFeed(
+func (s *LibrarianSephirahServiceService) ListFeeds(
 	ctx context.Context,
-	req *pb.ListFeedRequest,
-) (*pb.ListFeedResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListFeed not implemented")
+	req *pb.ListFeedsRequest,
+) (*pb.ListFeedsResponse, error) {
+	_, err := s.y.ListFeeds(ctx, model.Paging{
+		PageSize: int(req.GetPaging().GetPageSize()),
+		PageNum:  int(req.GetPaging().GetPageSize()),
+	}, s.converter.ToBizInternalIDList(
+		req.GetIdFilter()),
+		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		s.converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
+		s.converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedsResponse{
+		Paging:          nil,
+		FeedsWithConfig: nil,
+	}, nil
 }
-func (s *LibrarianSephirahServiceService) ListFeedItem(
+func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,
-	req *pb.ListFeedItemRequest,
-) (*pb.ListFeedItemResponse, error) {
+	req *pb.ListFeedItemsRequest,
+) (*pb.ListFeedItemsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListFeedItem not implemented")
 }
 func (s *LibrarianSephirahServiceService) GetFeedItem(

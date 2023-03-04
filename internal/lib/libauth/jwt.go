@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
 )
 
 type Claims struct {
-	InternalID       int64             `json:"iid"`
+	InternalID       model.InternalID  `json:"iid"`
 	Type             ClaimsType        `json:"ct"`
 	UserType         UserType          `json:"ut"`
 	TransferMetadata *TransferMetadata `json:"tm,omitempty"`
@@ -77,7 +79,7 @@ func (a *Auth) generateSecret(t ClaimsType) interface{} {
 	return []byte(fmt.Sprintf("%s%d", a.config.JwtSecret, t))
 }
 
-func (a *Auth) GenerateToken(id int64, claimsType ClaimsType, userType UserType,
+func (a *Auth) GenerateToken(id model.InternalID, claimsType ClaimsType, userType UserType,
 	transferMetadata *TransferMetadata, expire time.Duration) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)

@@ -33,11 +33,11 @@ func NewLibrarianSephirahServiceService(
 ) pb.LibrarianSephirahServiceServer {
 	if _, exist := os.LookupEnv("CREATE_ADMIN"); exist {
 		t.CreateDefaultAdmin(context.Background(), &biztiphereth.User{
-			InternalID: 0,
-			UserName:   "admin",
-			PassWord:   "admin",
-			Type:       0,
-			Status:     0,
+			ID:       0,
+			UserName: "admin",
+			PassWord: "admin",
+			Type:     0,
+			Status:   0,
 		})
 	}
 	return &LibrarianSephirahServiceService{

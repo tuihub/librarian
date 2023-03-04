@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AccountQuery is the builder for querying Account entities.
@@ -106,8 +107,8 @@ func (aq *AccountQuery) FirstX(ctx context.Context) *Account {
 
 // FirstID returns the first Account ID from the query.
 // Returns a *NotFoundError when no Account ID was found.
-func (aq *AccountQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (aq *AccountQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -119,7 +120,7 @@ func (aq *AccountQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AccountQuery) FirstIDX(ctx context.Context) int64 {
+func (aq *AccountQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -157,8 +158,8 @@ func (aq *AccountQuery) OnlyX(ctx context.Context) *Account {
 // OnlyID is like Only, but returns the only Account ID in the query.
 // Returns a *NotSingularError when more than one Account ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AccountQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (aq *AccountQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -174,7 +175,7 @@ func (aq *AccountQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AccountQuery) OnlyIDX(ctx context.Context) int64 {
+func (aq *AccountQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,7 +203,7 @@ func (aq *AccountQuery) AllX(ctx context.Context) []*Account {
 }
 
 // IDs executes the query and returns a list of Account IDs.
-func (aq *AccountQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (aq *AccountQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
@@ -214,7 +215,7 @@ func (aq *AccountQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AccountQuery) IDsX(ctx context.Context) []int64 {
+func (aq *AccountQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -409,8 +410,8 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 }
 
 func (aq *AccountQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Account, init func(*Account), assign func(*Account, *User)) error {
-	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*Account)
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*Account)
 	for i := range nodes {
 		if nodes[i].user_account == nil {
 			continue

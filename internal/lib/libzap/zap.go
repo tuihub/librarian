@@ -101,8 +101,8 @@ func NewDefaultLogger(basePath string) *zap.Logger {
 				MaxBackups: 3, //nolint:gomnd // default settings
 				Compress:   true,
 			},
-			LevelEnablerFunc: func(_ Level) bool {
-				return true
+			LevelEnablerFunc: func(lvl Level) bool {
+				return lvl > DebugLevel
 			},
 		},
 		{

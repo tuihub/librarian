@@ -11,17 +11,18 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedConfig is the model entity for the FeedConfig schema.
 type FeedConfig struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// FeedURL holds the value of the "feed_url" field.
 	FeedURL string `json:"feed_url,omitempty"`
 	// AuthorAccount holds the value of the "author_account" field.
-	AuthorAccount int64 `json:"author_account,omitempty"`
+	AuthorAccount model.InternalID `json:"author_account,omitempty"`
 	// Source holds the value of the "source" field.
 	Source feedconfig.Source `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
@@ -37,7 +38,7 @@ type FeedConfig struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedConfigQuery when eager-loading is set.
 	Edges            FeedConfigEdges `json:"edges"`
-	user_feed_config *int64
+	user_feed_config *model.InternalID
 }
 
 // FeedConfigEdges holds the relations/edges for other nodes in the graph.
@@ -106,11 +107,11 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case feedconfig.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				fc.ID = model.InternalID(value.Int64)
 			}
-			fc.ID = int64(value.Int64)
 		case feedconfig.FieldFeedURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_url", values[i])
@@ -121,7 +122,7 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field author_account", values[i])
 			} else if value.Valid {
-				fc.AuthorAccount = value.Int64
+				fc.AuthorAccount = model.InternalID(value.Int64)
 			}
 		case feedconfig.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -161,10 +162,10 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			}
 		case feedconfig.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_feed_config", value)
+				return fmt.Errorf("unexpected type %T for field user_feed_config", values[i])
 			} else if value.Valid {
-				fc.user_feed_config = new(int64)
-				*fc.user_feed_config = int64(value.Int64)
+				fc.user_feed_config = new(model.InternalID)
+				*fc.user_feed_config = model.InternalID(value.Int64)
 			}
 		}
 	}

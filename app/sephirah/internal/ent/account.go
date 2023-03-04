@@ -10,13 +10,14 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // Account is the model entity for the Account schema.
 type Account struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// Platform holds the value of the "platform" field.
 	Platform account.Platform `json:"platform,omitempty"`
 	// PlatformAccountID holds the value of the "platform_account_id" field.
@@ -34,7 +35,7 @@ type Account struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.
 	Edges        AccountEdges `json:"edges"`
-	user_account *int64
+	user_account *model.InternalID
 }
 
 // AccountEdges holds the relations/edges for other nodes in the graph.
@@ -88,11 +89,11 @@ func (a *Account) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case account.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				a.ID = model.InternalID(value.Int64)
 			}
-			a.ID = int64(value.Int64)
 		case account.FieldPlatform:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
@@ -137,10 +138,10 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			}
 		case account.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_account", value)
+				return fmt.Errorf("unexpected type %T for field user_account", values[i])
 			} else if value.Valid {
-				a.user_account = new(int64)
-				*a.user_account = int64(value.Int64)
+				a.user_account = new(model.InternalID)
+				*a.user_account = model.InternalID(value.Int64)
 			}
 		}
 	}

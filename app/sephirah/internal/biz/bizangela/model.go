@@ -1,11 +1,13 @@
 package bizangela
 
+import "github.com/tuihub/librarian/internal/model"
+
 type PullSteamAccountAppRelation struct {
-	InternalID int64
-	SteamID    string
+	ID      model.InternalID
+	SteamID string
 }
 
 type PullSteamApp struct {
-	InternalID int64
-	AppID      string
+	ID    model.InternalID
+	AppID string
 }

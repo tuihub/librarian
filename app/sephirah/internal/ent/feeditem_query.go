@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedItemQuery is the builder for querying FeedItem entities.
@@ -23,7 +24,6 @@ type FeedItemQuery struct {
 	inters     []Interceptor
 	predicates []predicate.FeedItem
 	withFeed   *FeedQuery
-	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -106,8 +106,8 @@ func (fiq *FeedItemQuery) FirstX(ctx context.Context) *FeedItem {
 
 // FirstID returns the first FeedItem ID from the query.
 // Returns a *NotFoundError when no FeedItem ID was found.
-func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -119,7 +119,7 @@ func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (fiq *FeedItemQuery) FirstIDX(ctx context.Context) int64 {
+func (fiq *FeedItemQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := fiq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -157,8 +157,8 @@ func (fiq *FeedItemQuery) OnlyX(ctx context.Context) *FeedItem {
 // OnlyID is like Only, but returns the only FeedItem ID in the query.
 // Returns a *NotSingularError when more than one FeedItem ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -174,7 +174,7 @@ func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (fiq *FeedItemQuery) OnlyIDX(ctx context.Context) int64 {
+func (fiq *FeedItemQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := fiq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -202,7 +202,7 @@ func (fiq *FeedItemQuery) AllX(ctx context.Context) []*FeedItem {
 }
 
 // IDs executes the query and returns a list of FeedItem IDs.
-func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if fiq.ctx.Unique == nil && fiq.path != nil {
 		fiq.Unique(true)
 	}
@@ -214,7 +214,7 @@ func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (fiq *FeedItemQuery) IDsX(ctx context.Context) []int64 {
+func (fiq *FeedItemQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := fiq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -298,12 +298,12 @@ func (fiq *FeedItemQuery) WithFeed(opts ...func(*FeedQuery)) *FeedItemQuery {
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		FeedID model.InternalID `json:"feed_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.FeedItem.Query().
-//		GroupBy(feeditem.FieldTitle).
+//		GroupBy(feeditem.FieldFeedID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fiq *FeedItemQuery) GroupBy(field string, fields ...string) *FeedItemGroupBy {
@@ -321,11 +321,11 @@ func (fiq *FeedItemQuery) GroupBy(field string, fields ...string) *FeedItemGroup
 // Example:
 //
 //	var v []struct {
-//		Title string `json:"title,omitempty"`
+//		FeedID model.InternalID `json:"feed_id,omitempty"`
 //	}
 //
 //	client.FeedItem.Query().
-//		Select(feeditem.FieldTitle).
+//		Select(feeditem.FieldFeedID).
 //		Scan(ctx, &v)
 func (fiq *FeedItemQuery) Select(fields ...string) *FeedItemSelect {
 	fiq.ctx.Fields = append(fiq.ctx.Fields, fields...)
@@ -369,18 +369,11 @@ func (fiq *FeedItemQuery) prepareQuery(ctx context.Context) error {
 func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedItem, error) {
 	var (
 		nodes       = []*FeedItem{}
-		withFKs     = fiq.withFKs
 		_spec       = fiq.querySpec()
 		loadedTypes = [1]bool{
 			fiq.withFeed != nil,
 		}
 	)
-	if fiq.withFeed != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, feeditem.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FeedItem).scanValues(nil, columns)
 	}
@@ -409,13 +402,10 @@ func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fe
 }
 
 func (fiq *FeedItemQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes []*FeedItem, init func(*FeedItem), assign func(*FeedItem, *Feed)) error {
-	ids := make([]int64, 0, len(nodes))
-	nodeids := make(map[int64][]*FeedItem)
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*FeedItem)
 	for i := range nodes {
-		if nodes[i].feed_item == nil {
-			continue
-		}
-		fk := *nodes[i].feed_item
+		fk := nodes[i].FeedID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -432,7 +422,7 @@ func (fiq *FeedItemQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "feed_item" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "feed_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

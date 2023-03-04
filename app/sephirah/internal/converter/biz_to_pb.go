@@ -4,50 +4,43 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 // goverter:converter
+// goverter:extend ToPBInternalID
 type toPBConverter interface {
 	// goverter:matchIgnoreCase
-	// goverter:mapIdentity Id
 	// goverter:map Type | ToPBUserType
 	// goverter:map Status | ToPBUserStatus
 	// goverter:ignore Password
 	ToPBUser(biztiphereth.User) pb.User
-	// goverter:map InternalID Id
-	ToPBUserInternalID(biztiphereth.User) librarian.InternalID
 	ToPBUserList([]*biztiphereth.User) []*pb.User
 
 	// goverter:matchIgnoreCase
-	// goverter:mapIdentity Id
 	// goverter:map Platform | ToPBAccountPlatform
 	ToPBAccount(biztiphereth.Account) librarian.Account
-	// goverter:map InternalID Id
-	ToPBAccountInternalID(biztiphereth.Account) librarian.InternalID
 	ToPBAccountList([]*biztiphereth.Account) []*librarian.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:mapIdentity Id
 	// goverter:map Source | ToPBAppSource
 	// goverter:map Type | ToPBAppType
 	ToPBApp(bizgebura.App) librarian.App
-	// goverter:map InternalID Id
-	ToPBAppInternalID(bizgebura.App) librarian.InternalID
 	ToPBAppList([]*bizgebura.App) []*librarian.App
 
 	// goverter:matchIgnoreCase
-	// goverter:mapIdentity Id
-	// goverter:mapIdentity SourceId
 	// goverter:map Source | ToPBAppPackageSource
 	// goverter:ignore SourceBindApp
 	ToPBAppPackage(*bizgebura.AppPackage) *librarian.AppPackage
 	// goverter:matchIgnoreCase
 	ToPBAppPackageBinary(*bizgebura.AppPackageBinary) *librarian.AppPackageBinary
-	// goverter:map InternalID Id
-	ToPBAppPackageInternalID(bizgebura.AppPackage) librarian.InternalID
 	ToPBAppPackageList([]*bizgebura.AppPackage) []*librarian.AppPackage
+}
+
+func ToPBInternalID(id model.InternalID) *librarian.InternalID {
+	return &librarian.InternalID{Id: int64(id)}
 }
 
 func ToPBUserType(u libauth.UserType) pb.UserType {

@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AccountCreate is the builder for creating a Account entity.
@@ -82,19 +83,19 @@ func (ac *AccountCreate) SetNillableCreatedAt(t *time.Time) *AccountCreate {
 }
 
 // SetID sets the "id" field.
-func (ac *AccountCreate) SetID(i int64) *AccountCreate {
-	ac.mutation.SetID(i)
+func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
+	ac.mutation.SetID(mi)
 	return ac
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (ac *AccountCreate) SetUserID(id int64) *AccountCreate {
+func (ac *AccountCreate) SetUserID(id model.InternalID) *AccountCreate {
 	ac.mutation.SetUserID(id)
 	return ac
 }
 
 // SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (ac *AccountCreate) SetNillableUserID(id *int64) *AccountCreate {
+func (ac *AccountCreate) SetNillableUserID(id *model.InternalID) *AccountCreate {
 	if id != nil {
 		ac = ac.SetUserID(*id)
 	}
@@ -195,7 +196,7 @@ func (ac *AccountCreate) sqlSave(ctx context.Context) (*Account, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	ac.mutation.id = &_node.ID
 	ac.mutation.done = true
@@ -558,7 +559,7 @@ func (u *AccountUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AccountUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *AccountUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -567,7 +568,7 @@ func (u *AccountUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AccountUpsertOne) IDX(ctx context.Context) int64 {
+func (u *AccountUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -620,7 +621,7 @@ func (acb *AccountCreateBulk) Save(ctx context.Context) ([]*Account, error) {
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil

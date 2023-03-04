@@ -8,50 +8,51 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.Feed {
+func ID(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.Feed {
+func IDEQ(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.Feed {
+func IDNEQ(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.Feed {
+func IDIn(ids ...model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.Feed {
+func IDNotIn(ids ...model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.Feed {
+func IDGT(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.Feed {
+func IDGTE(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.Feed {
+func IDLT(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.Feed {
+func IDLTE(id model.InternalID) predicate.Feed {
 	return predicate.Feed(sql.FieldLTE(FieldID, id))
 }
 
@@ -140,6 +141,16 @@ func TitleHasSuffix(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldHasSuffix(FieldTitle, v))
 }
 
+// TitleIsNil applies the IsNil predicate on the "title" field.
+func TitleIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldTitle))
+}
+
+// TitleNotNil applies the NotNil predicate on the "title" field.
+func TitleNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldTitle))
+}
+
 // TitleEqualFold applies the EqualFold predicate on the "title" field.
 func TitleEqualFold(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldEqualFold(FieldTitle, v))
@@ -203,6 +214,16 @@ func LinkHasPrefix(v string) predicate.Feed {
 // LinkHasSuffix applies the HasSuffix predicate on the "link" field.
 func LinkHasSuffix(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldHasSuffix(FieldLink, v))
+}
+
+// LinkIsNil applies the IsNil predicate on the "link" field.
+func LinkIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldLink))
+}
+
+// LinkNotNil applies the NotNil predicate on the "link" field.
+func LinkNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldLink))
 }
 
 // LinkEqualFold applies the EqualFold predicate on the "link" field.
@@ -270,6 +291,16 @@ func DescriptionHasSuffix(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldHasSuffix(FieldDescription, v))
 }
 
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldDescription))
+}
+
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
 func DescriptionEqualFold(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldEqualFold(FieldDescription, v))
@@ -335,6 +366,16 @@ func LanguageHasSuffix(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldHasSuffix(FieldLanguage, v))
 }
 
+// LanguageIsNil applies the IsNil predicate on the "language" field.
+func LanguageIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldLanguage))
+}
+
+// LanguageNotNil applies the NotNil predicate on the "language" field.
+func LanguageNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldLanguage))
+}
+
 // LanguageEqualFold applies the EqualFold predicate on the "language" field.
 func LanguageEqualFold(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldEqualFold(FieldLanguage, v))
@@ -343,6 +384,26 @@ func LanguageEqualFold(v string) predicate.Feed {
 // LanguageContainsFold applies the ContainsFold predicate on the "language" field.
 func LanguageContainsFold(v string) predicate.Feed {
 	return predicate.Feed(sql.FieldContainsFold(FieldLanguage, v))
+}
+
+// AuthorsIsNil applies the IsNil predicate on the "authors" field.
+func AuthorsIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldAuthors))
+}
+
+// AuthorsNotNil applies the NotNil predicate on the "authors" field.
+func AuthorsNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldAuthors))
+}
+
+// ImageIsNil applies the IsNil predicate on the "image" field.
+func ImageIsNil() predicate.Feed {
+	return predicate.Feed(sql.FieldIsNull(FieldImage))
+}
+
+// ImageNotNil applies the NotNil predicate on the "image" field.
+func ImageNotNil() predicate.Feed {
+	return predicate.Feed(sql.FieldNotNull(FieldImage))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

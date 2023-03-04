@@ -19,6 +19,7 @@ type Converter interface {
 	// goverter:ignore InternalID
 	// goverter:map UpdatedParsed | TimeToTime
 	// goverter:map PublishedParsed | TimeToTime
+	// goverter:ignore PublishPlatform
 	ToPBFeedItem(t *gofeed.Item) *modelfeed.Item
 }
 

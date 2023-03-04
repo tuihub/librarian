@@ -2,6 +2,7 @@ package bizangela
 
 import (
 	"context"
+	"net/url"
 	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
@@ -9,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/converter"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -91,7 +93,7 @@ func NewPullAccountTopic(
 		"PullAccountInfo",
 		func() biztiphereth.PullAccountInfo {
 			return biztiphereth.PullAccountInfo{
-				InternalID:        0,
+				ID:                0,
 				Platform:          0,
 				PlatformAccountID: "",
 			}
@@ -109,7 +111,7 @@ func NewPullAccountTopic(
 				return nil
 			case biztiphereth.AccountPlatformSteam:
 				err = a.t.UpdateAccount(ctx, biztiphereth.Account{
-					InternalID:        info.InternalID,
+					ID:                info.ID,
 					Platform:          info.Platform,
 					PlatformAccountID: info.PlatformAccountID,
 					Name:              resp.GetAccount().GetName(),
@@ -121,8 +123,8 @@ func NewPullAccountTopic(
 				}
 				return sr.
 					Publish(ctx, PullSteamAccountAppRelation{
-						InternalID: info.InternalID,
-						SteamID:    info.PlatformAccountID,
+						ID:      info.ID,
+						SteamID: info.PlatformAccountID,
 					})
 			default:
 				return nil
@@ -139,8 +141,8 @@ func NewPullSteamAccountAppRelationTopic(
 		"PullSteamAccountAppRelation",
 		func() PullSteamAccountAppRelation {
 			return PullSteamAccountAppRelation{
-				InternalID: 0,
-				SteamID:    "",
+				ID:      0,
+				SteamID: "",
 			}
 		},
 		func(ctx context.Context, r PullSteamAccountAppRelation) error {
@@ -155,61 +157,61 @@ func NewPullSteamAccountAppRelationTopic(
 				return err
 			}
 			steamApps := make([]*bizgebura.App, 0, len(resp.GetAppList()))
-			internalApps := make([]*bizgebura.App, len(resp.GetAppList()))
-			for i, app := range resp.GetAppList() {
+			internalApps := make([]*bizgebura.App, 0, len(resp.GetAppList()))
+			for _, app := range resp.GetAppList() {
 				resp2, err2 := a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
-				internalApps[i] = &bizgebura.App{ // TODO
-					InternalID:       resp2.Id,
+				internalApps = append(internalApps, &bizgebura.App{ // TODO
+					ID:               model.InternalID(resp2.Id),
 					Source:           bizgebura.AppSourceInternal,
 					SourceAppID:      strconv.FormatInt(resp2.Id, 10),
 					SourceURL:        "",
 					Name:             app.GetName(),
-					Type:             0,
+					Type:             bizgebura.AppTypeGame,
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
-				}
+				})
 				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err2 != nil {
 					return err2
 				}
-				steamApps[i] = &bizgebura.App{ // TODO
-					InternalID:       resp2.Id,
+				steamApps = append(steamApps, &bizgebura.App{ // TODO
+					ID:               model.InternalID(resp2.Id),
 					Source:           bizgebura.AppSourceSteam,
 					SourceAppID:      app.GetSourceAppId(),
 					SourceURL:        "",
 					Name:             app.GetName(),
-					Type:             0,
+					Type:             bizgebura.AppTypeGame,
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
-				}
+				})
 			}
 			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
 			el := make([]*mapper.Edge, len(steamApps)*2)   //nolint:gomnd // double
 			for i := range steamApps {
 				vl[i*2] = &mapper.Vertex{
-					Vid:  internalApps[i].InternalID,
+					Vid:  int64(internalApps[i].ID),
 					Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
 					Prop: nil,
 				}
 				vl[i*2+1] = &mapper.Vertex{
-					Vid:  steamApps[i].InternalID,
+					Vid:  int64(steamApps[i].ID),
 					Type: mapper.VertexType_VERTEX_TYPE_METADATA,
 					Prop: nil,
 				}
 				el[i*2] = &mapper.Edge{
-					SrcVid: internalApps[i].InternalID,
-					DstVid: steamApps[i].InternalID,
+					SrcVid: int64(internalApps[i].ID),
+					DstVid: int64(steamApps[i].ID),
 					Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
 					Prop:   nil,
 				}
 				el[i*2+1] = &mapper.Edge{
-					SrcVid: r.InternalID,
-					DstVid: steamApps[i].InternalID,
+					SrcVid: int64(r.ID),
+					DstVid: int64(steamApps[i].ID),
 					Type:   mapper.EdgeType_EDGE_TYPE_ENJOY,
 					Prop:   nil,
 				}
@@ -225,8 +227,8 @@ func NewPullSteamAccountAppRelationTopic(
 			}
 			for _, app := range steamApps {
 				_ = sa.Publish(ctx, PullSteamApp{
-					InternalID: app.InternalID,
-					AppID:      app.SourceAppID,
+					ID:    app.ID,
+					AppID: app.SourceAppID,
 				})
 			}
 			return nil
@@ -241,8 +243,8 @@ func NewPullSteamAppTopic(
 		"PullSteamApp",
 		func() PullSteamApp {
 			return PullSteamApp{
-				InternalID: 0,
-				AppID:      "",
+				ID:    0,
+				AppID: "",
 			}
 		},
 		func(ctx context.Context, r PullSteamApp) error {
@@ -254,8 +256,9 @@ func NewPullSteamAppTopic(
 				return err
 			}
 			app := a.converter.ToBizApp(resp.GetApp())
-			app.InternalID = r.InternalID
+			app.ID = r.ID
 			app.Source = bizgebura.AppSourceSteam
+			app.Type = bizgebura.AppTypeGame
 			err = a.g.UpdateApp(ctx, app)
 			if err != nil {
 				return err
@@ -283,8 +286,27 @@ func NewPullFeedTopic(
 			}
 			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
 			feed.InternalID = p.InternalID
-			// TODO add InternalID to feed item
-			return a.y.UpsertFeed(ctx, feed)
+			err = a.y.UpsertFeed(ctx, feed)
+			if err != nil {
+				return err
+			}
+			for _, item := range feed.Items {
+				var res *searcher.NewIDResponse
+				res, err = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
+				if err != nil {
+					return err
+				}
+				item.InternalID = model.InternalID(res.GetId())
+				if len(item.Link) > 0 {
+					var linkParsed *url.URL
+					linkParsed, err = url.Parse(item.Link)
+					if err != nil {
+						continue
+					}
+					item.PublishPlatform = linkParsed.Host
+				}
+			}
+			return a.y.UpsertFeedItems(ctx, feed.Items, feed.InternalID)
 		},
 	)
 }

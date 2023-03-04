@@ -17,11 +17,12 @@ import (
 type YesodRepo interface {
 	CreateFeedConfig(context.Context, *FeedConfig, model.InternalID) error
 	UpdateFeedConfig(context.Context, *FeedConfig) error
-	ListFeedConfig(context.Context, []int64, []int64, []FeedConfigSource,
-		[]FeedConfigStatus, ListFeedOrder, Paging) ([]*FeedConfig, error)
 	ListFeedConfigNeedPull(context.Context, []FeedConfigSource, []FeedConfigStatus,
 		ListFeedOrder, time.Time, int) ([]*FeedConfig, error)
 	UpsertFeed(context.Context, *modelfeed.Feed) error
+	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) error
+	ListFeeds(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
+		[]FeedConfigSource, []FeedConfigStatus) ([]*FeedWithConfig, error)
 }
 
 type Yesod struct {
@@ -54,10 +55,15 @@ func NewYesod(
 	return y, nil
 }
 
+type FeedWithConfig struct {
+	FeedConfig
+	modelfeed.Feed
+}
+
 type FeedConfig struct {
-	InternalID    int64
+	ID            model.InternalID
 	FeedURL       string
-	AuthorAccount int64
+	AuthorAccount model.InternalID
 	Source        FeedConfigSource
 	Status        FeedConfigStatus
 	PullInterval  time.Duration
@@ -85,13 +91,8 @@ const (
 	ListFeedOrderNextPull
 )
 
-type Paging struct {
-	PageSize int
-	PageNum  int
-}
-
 type PullFeed struct {
-	InternalID int64
+	InternalID model.InternalID
 	URL        string
 	Source     FeedConfigSource
 }
@@ -105,7 +106,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) {
 	}
 	for _, c := range configs {
 		err = y.pullFeed.Publish(ctx, PullFeed{
-			InternalID: c.InternalID,
+			InternalID: c.ID,
 			URL:        c.FeedURL,
 			Source:     c.Source,
 		})

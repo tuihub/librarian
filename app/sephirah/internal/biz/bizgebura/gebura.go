@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -13,7 +14,7 @@ import (
 )
 
 type App struct {
-	InternalID       int64
+	ID               model.InternalID
 	Source           AppSource
 	SourceAppID      string
 	SourceURL        string
@@ -48,9 +49,9 @@ const (
 )
 
 type AppPackage struct {
-	InternalID      int64
+	ID              model.InternalID
 	Source          AppPackageSource
-	SourceID        int64
+	SourceID        model.InternalID
 	SourcePackageID string
 	Name            string
 	Description     string
@@ -75,23 +76,18 @@ type ReportAppPackageHandler interface {
 	Handle(context.Context, []*AppPackage) *errors.Error
 }
 
-type Paging struct {
-	PageSize int
-	PageNum  int
-}
-
 type GeburaRepo interface {
-	IsApp(context.Context, int64) error
+	IsApp(context.Context, model.InternalID) error
 	CreateApp(context.Context, *App) error
 	UpdateApp(context.Context, *App) error
 	UpsertApp(context.Context, []*App) error
-	ListApp(context.Context, Paging, []AppSource, []AppType, []int64, bool) ([]*App, error)
-	IsAppPackage(context.Context, int64) error
+	ListApp(context.Context, model.Paging, []AppSource, []AppType, []model.InternalID, bool) ([]*App, error)
+	IsAppPackage(context.Context, model.InternalID) error
 	CreateAppPackage(context.Context, *AppPackage) error
 	UpdateAppPackage(context.Context, *AppPackage) error
 	UpsertAppPackage(context.Context, []*AppPackage) error
-	ListAppPackage(context.Context, Paging, []AppPackageSource, []int64) ([]*AppPackage, error)
-	ListAllAppPackageIDOfOneSource(context.Context, AppPackageSource, int64) ([]string, error)
+	ListAppPackage(context.Context, model.Paging, []AppPackageSource, []model.InternalID) ([]*AppPackage, error)
+	ListAllAppPackageIDOfOneSource(context.Context, AppPackageSource, model.InternalID) ([]string, error)
 }
 
 type Gebura struct {

@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -76,14 +77,14 @@ func (uu *UserUpdate) SetNillableCreatedAt(t *time.Time) *UserUpdate {
 }
 
 // AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uu *UserUpdate) AddAccountIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) AddAccountIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddAccountIDs(ids...)
 	return uu
 }
 
 // AddAccount adds the "account" edges to the Account entity.
 func (uu *UserUpdate) AddAccount(a ...*Account) *UserUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -91,14 +92,14 @@ func (uu *UserUpdate) AddAccount(a ...*Account) *UserUpdate {
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uu *UserUpdate) AddAppIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) AddAppIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddAppIDs(ids...)
 	return uu
 }
 
 // AddApp adds the "app" edges to the App entity.
 func (uu *UserUpdate) AddApp(a ...*App) *UserUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -106,14 +107,14 @@ func (uu *UserUpdate) AddApp(a ...*App) *UserUpdate {
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (uu *UserUpdate) AddFeedConfigIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) AddFeedConfigIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddFeedConfigIDs(ids...)
 	return uu
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
 func (uu *UserUpdate) AddFeedConfig(f ...*FeedConfig) *UserUpdate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -121,7 +122,7 @@ func (uu *UserUpdate) AddFeedConfig(f ...*FeedConfig) *UserUpdate {
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uu *UserUpdate) SetCreatorID(id int64) *UserUpdate {
+func (uu *UserUpdate) SetCreatorID(id model.InternalID) *UserUpdate {
 	uu.mutation.SetCreatorID(id)
 	return uu
 }
@@ -132,14 +133,14 @@ func (uu *UserUpdate) SetCreator(u *User) *UserUpdate {
 }
 
 // AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uu *UserUpdate) AddCreateIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) AddCreateIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddCreateIDs(ids...)
 	return uu
 }
 
 // AddCreate adds the "create" edges to the User entity.
 func (uu *UserUpdate) AddCreate(u ...*User) *UserUpdate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -158,14 +159,14 @@ func (uu *UserUpdate) ClearAccount() *UserUpdate {
 }
 
 // RemoveAccountIDs removes the "account" edge to Account entities by IDs.
-func (uu *UserUpdate) RemoveAccountIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) RemoveAccountIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.RemoveAccountIDs(ids...)
 	return uu
 }
 
 // RemoveAccount removes "account" edges to Account entities.
 func (uu *UserUpdate) RemoveAccount(a ...*Account) *UserUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -179,14 +180,14 @@ func (uu *UserUpdate) ClearApp() *UserUpdate {
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (uu *UserUpdate) RemoveAppIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) RemoveAppIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.RemoveAppIDs(ids...)
 	return uu
 }
 
 // RemoveApp removes "app" edges to App entities.
 func (uu *UserUpdate) RemoveApp(a ...*App) *UserUpdate {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -200,14 +201,14 @@ func (uu *UserUpdate) ClearFeedConfig() *UserUpdate {
 }
 
 // RemoveFeedConfigIDs removes the "feed_config" edge to FeedConfig entities by IDs.
-func (uu *UserUpdate) RemoveFeedConfigIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) RemoveFeedConfigIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.RemoveFeedConfigIDs(ids...)
 	return uu
 }
 
 // RemoveFeedConfig removes "feed_config" edges to FeedConfig entities.
 func (uu *UserUpdate) RemoveFeedConfig(f ...*FeedConfig) *UserUpdate {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -227,14 +228,14 @@ func (uu *UserUpdate) ClearCreate() *UserUpdate {
 }
 
 // RemoveCreateIDs removes the "create" edge to User entities by IDs.
-func (uu *UserUpdate) RemoveCreateIDs(ids ...int64) *UserUpdate {
+func (uu *UserUpdate) RemoveCreateIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.RemoveCreateIDs(ids...)
 	return uu
 }
 
 // RemoveCreate removes "create" edges to User entities.
 func (uu *UserUpdate) RemoveCreate(u ...*User) *UserUpdate {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -641,14 +642,14 @@ func (uuo *UserUpdateOne) SetNillableCreatedAt(t *time.Time) *UserUpdateOne {
 }
 
 // AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uuo *UserUpdateOne) AddAccountIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddAccountIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddAccountIDs(ids...)
 	return uuo
 }
 
 // AddAccount adds the "account" edges to the Account entity.
 func (uuo *UserUpdateOne) AddAccount(a ...*Account) *UserUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -656,14 +657,14 @@ func (uuo *UserUpdateOne) AddAccount(a ...*Account) *UserUpdateOne {
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uuo *UserUpdateOne) AddAppIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddAppIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddAppIDs(ids...)
 	return uuo
 }
 
 // AddApp adds the "app" edges to the App entity.
 func (uuo *UserUpdateOne) AddApp(a ...*App) *UserUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -671,14 +672,14 @@ func (uuo *UserUpdateOne) AddApp(a ...*App) *UserUpdateOne {
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (uuo *UserUpdateOne) AddFeedConfigIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddFeedConfigIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddFeedConfigIDs(ids...)
 	return uuo
 }
 
 // AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
 func (uuo *UserUpdateOne) AddFeedConfig(f ...*FeedConfig) *UserUpdateOne {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -686,7 +687,7 @@ func (uuo *UserUpdateOne) AddFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uuo *UserUpdateOne) SetCreatorID(id int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
 	uuo.mutation.SetCreatorID(id)
 	return uuo
 }
@@ -697,14 +698,14 @@ func (uuo *UserUpdateOne) SetCreator(u *User) *UserUpdateOne {
 }
 
 // AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uuo *UserUpdateOne) AddCreateIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) AddCreateIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddCreateIDs(ids...)
 	return uuo
 }
 
 // AddCreate adds the "create" edges to the User entity.
 func (uuo *UserUpdateOne) AddCreate(u ...*User) *UserUpdateOne {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -723,14 +724,14 @@ func (uuo *UserUpdateOne) ClearAccount() *UserUpdateOne {
 }
 
 // RemoveAccountIDs removes the "account" edge to Account entities by IDs.
-func (uuo *UserUpdateOne) RemoveAccountIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveAccountIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.RemoveAccountIDs(ids...)
 	return uuo
 }
 
 // RemoveAccount removes "account" edges to Account entities.
 func (uuo *UserUpdateOne) RemoveAccount(a ...*Account) *UserUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -744,14 +745,14 @@ func (uuo *UserUpdateOne) ClearApp() *UserUpdateOne {
 }
 
 // RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (uuo *UserUpdateOne) RemoveAppIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveAppIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.RemoveAppIDs(ids...)
 	return uuo
 }
 
 // RemoveApp removes "app" edges to App entities.
 func (uuo *UserUpdateOne) RemoveApp(a ...*App) *UserUpdateOne {
-	ids := make([]int64, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -765,14 +766,14 @@ func (uuo *UserUpdateOne) ClearFeedConfig() *UserUpdateOne {
 }
 
 // RemoveFeedConfigIDs removes the "feed_config" edge to FeedConfig entities by IDs.
-func (uuo *UserUpdateOne) RemoveFeedConfigIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveFeedConfigIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.RemoveFeedConfigIDs(ids...)
 	return uuo
 }
 
 // RemoveFeedConfig removes "feed_config" edges to FeedConfig entities.
 func (uuo *UserUpdateOne) RemoveFeedConfig(f ...*FeedConfig) *UserUpdateOne {
-	ids := make([]int64, len(f))
+	ids := make([]model.InternalID, len(f))
 	for i := range f {
 		ids[i] = f[i].ID
 	}
@@ -792,14 +793,14 @@ func (uuo *UserUpdateOne) ClearCreate() *UserUpdateOne {
 }
 
 // RemoveCreateIDs removes the "create" edge to User entities by IDs.
-func (uuo *UserUpdateOne) RemoveCreateIDs(ids ...int64) *UserUpdateOne {
+func (uuo *UserUpdateOne) RemoveCreateIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.RemoveCreateIDs(ids...)
 	return uuo
 }
 
 // RemoveCreate removes "create" edges to User entities.
 func (uuo *UserUpdateOne) RemoveCreate(u ...*User) *UserUpdateOne {
-	ids := make([]int64, len(u))
+	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}

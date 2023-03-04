@@ -21,16 +21,16 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *FeedConfig) (int64
 		logger.Infof("NewID failed: %s", err.Error())
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	config.InternalID = resp.Id
+	config.ID = model.InternalID(resp.Id)
 	if _, err = y.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
-			Vid:  config.InternalID,
+			Vid:  int64(config.ID),
 			Type: mapper.VertexType_VERTEX_TYPE_METADATA,
 		}},
 	}); err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	err = y.repo.CreateFeedConfig(ctx, config, model.InternalID(claims.InternalID))
+	err = y.repo.CreateFeedConfig(ctx, config, claims.InternalID)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

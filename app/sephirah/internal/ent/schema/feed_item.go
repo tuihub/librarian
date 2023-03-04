@@ -3,12 +3,14 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // FeedItem holds the schema definition for the FeedItem entity.
@@ -23,25 +25,37 @@ func (FeedItem) Fields() []ent.Field {
 		field.Int64("id").
 			Unique().
 			Immutable().
+			GoType(model.InternalID(0)).
 			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
 				Incremental: &incrementalEnabled,
 			}),
-		field.String("title"),
-		field.JSON("authors", []modelfeed.Person{}),
-		field.String("description"),
-		field.String("content"),
-		field.String("guid"),
-		field.String("link"),
-		field.JSON("image", new(modelfeed.Image)),
-		field.String("published"),
-		field.Time("published_parsed"),
-		field.String("updated"),
-		field.Time("updated_parsed"),
-		field.JSON("enclosure", []modelfeed.Enclosure{}),
+		field.Int64("feed_id").
+			Immutable().
+			GoType(model.InternalID(0)),
+		field.String("title").Optional(),
+		field.JSON("authors", []*modelfeed.Person{}).Optional(),
+		field.String("description").Optional(),
+		field.String("content").Optional(),
+		field.String("guid").Immutable(),
+		field.String("link").Optional(),
+		field.JSON("image", new(modelfeed.Image)).Optional(),
+		field.String("published").Optional(),
+		field.Time("published_parsed").Optional().Nillable(),
+		field.String("updated").Optional(),
+		field.Time("updated_parsed").Optional().Nillable(),
+		field.JSON("enclosure", []*modelfeed.Enclosure{}).Optional(),
+		field.String("publish_platform").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
+	}
+}
+
+func (FeedItem) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("feed_id", "guid").
+			Unique(),
 	}
 }
 
@@ -50,7 +64,9 @@ func (FeedItem) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("feed", Feed.Type).
 			Ref("item").
+			Field("feed_id").
 			Unique().
+			Immutable().
 			Required(),
 	}
 }

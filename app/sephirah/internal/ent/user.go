@@ -9,13 +9,14 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // User is the model entity for the User schema.
 type User struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// Username holds the value of the "username" field.
 	Username string `json:"username,omitempty"`
 	// Password holds the value of the "password" field.
@@ -31,7 +32,7 @@ type User struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges       UserEdges `json:"edges"`
-	user_create *int64
+	user_create *model.InternalID
 }
 
 // UserEdges holds the relations/edges for other nodes in the graph.
@@ -129,11 +130,11 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				u.ID = model.InternalID(value.Int64)
 			}
-			u.ID = int64(value.Int64)
 		case user.FieldUsername:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field username", values[i])
@@ -172,10 +173,10 @@ func (u *User) assignValues(columns []string, values []any) error {
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_create", value)
+				return fmt.Errorf("unexpected type %T for field user_create", values[i])
 			} else if value.Valid {
-				u.user_create = new(int64)
-				*u.user_create = int64(value.Int64)
+				u.user_create = new(model.InternalID)
+				*u.user_create = model.InternalID(value.Int64)
 			}
 		}
 	}

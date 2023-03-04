@@ -16,12 +16,13 @@ func (c *Client) TestYesod(ctx context.Context) {
 	var feedConfigID int64
 	if resp, err := c.cli.CreateFeedConfig(ctx, &pb.CreateFeedConfigRequest{
 		Config: &pb.FeedConfig{
-			Id:            nil,
-			FeedUrl:       feedURL,
-			AuthorAccount: nil,
-			Source:        pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
-			Status:        pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
-			PullInterval:  durationpb.New(time.Hour),
+			Id:              nil,
+			FeedUrl:         feedURL,
+			AuthorAccount:   nil,
+			Source:          pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
+			Status:          pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
+			PullInterval:    durationpb.New(time.Hour),
+			LastestPullTime: nil,
 		},
 	}); err != nil {
 		panic(err)
@@ -34,11 +35,12 @@ func (c *Client) TestYesod(ctx context.Context) {
 			Id: &librarian.InternalID{
 				Id: feedConfigID,
 			},
-			FeedUrl:       feedURL,
-			AuthorAccount: nil,
-			Source:        pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
-			Status:        pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
-			PullInterval:  durationpb.New(time.Hour),
+			FeedUrl:         feedURL,
+			AuthorAccount:   nil,
+			Source:          pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
+			Status:          pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
+			PullInterval:    durationpb.New(time.Hour),
+			LastestPullTime: nil,
 		},
 	}); err != nil {
 		panic(err)

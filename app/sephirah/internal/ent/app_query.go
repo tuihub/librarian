@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppQuery is the builder for querying App entities.
@@ -130,8 +131,8 @@ func (aq *AppQuery) FirstX(ctx context.Context) *App {
 
 // FirstID returns the first App ID from the query.
 // Returns a *NotFoundError when no App ID was found.
-func (aq *AppQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (aq *AppQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = aq.Limit(1).IDs(setContextOp(ctx, aq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -143,7 +144,7 @@ func (aq *AppQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (aq *AppQuery) FirstIDX(ctx context.Context) int64 {
+func (aq *AppQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := aq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -181,8 +182,8 @@ func (aq *AppQuery) OnlyX(ctx context.Context) *App {
 // OnlyID is like Only, but returns the only App ID in the query.
 // Returns a *NotSingularError when more than one App ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (aq *AppQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (aq *AppQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = aq.Limit(2).IDs(setContextOp(ctx, aq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -198,7 +199,7 @@ func (aq *AppQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (aq *AppQuery) OnlyIDX(ctx context.Context) int64 {
+func (aq *AppQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := aq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,7 +227,7 @@ func (aq *AppQuery) AllX(ctx context.Context) []*App {
 }
 
 // IDs executes the query and returns a list of App IDs.
-func (aq *AppQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (aq *AppQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if aq.ctx.Unique == nil && aq.path != nil {
 		aq.Unique(true)
 	}
@@ -238,7 +239,7 @@ func (aq *AppQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (aq *AppQuery) IDsX(ctx context.Context) []int64 {
+func (aq *AppQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := aq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -448,8 +449,8 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 
 func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App, init func(*App), assign func(*App, *User)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int64]*App)
-	nids := make(map[int64]map[*App]struct{})
+	byID := make(map[model.InternalID]*App)
+	nids := make(map[model.InternalID]map[*App]struct{})
 	for i, node := range nodes {
 		edgeIDs[i] = node.ID
 		byID[node.ID] = node
@@ -481,8 +482,8 @@ func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App
 				return append([]any{new(sql.NullInt64)}, values...), nil
 			}
 			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullInt64).Int64
-				inValue := values[1].(*sql.NullInt64).Int64
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
 				if nids[inValue] == nil {
 					nids[inValue] = map[*App]struct{}{byID[outValue]: {}}
 					return assign(columns[1:], values[1:])
@@ -509,7 +510,7 @@ func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App
 }
 func (aq *AppQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery, nodes []*App, init func(*App), assign func(*App, *AppPackage)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*App)
+	nodeids := make(map[model.InternalID]*App)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]

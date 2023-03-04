@@ -8,51 +8,58 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.FeedItem {
+func ID(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.FeedItem {
+func IDEQ(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.FeedItem {
+func IDNEQ(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.FeedItem {
+func IDIn(ids ...model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.FeedItem {
+func IDNotIn(ids ...model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.FeedItem {
+func IDGT(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.FeedItem {
+func IDGTE(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.FeedItem {
+func IDLT(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.FeedItem {
+func IDLTE(id model.InternalID) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldID, id))
+}
+
+// FeedID applies equality check predicate on the "feed_id" field. It's identical to FeedIDEQ.
+func FeedID(v model.InternalID) predicate.FeedItem {
+	vc := int64(v)
+	return predicate.FeedItem(sql.FieldEQ(FieldFeedID, vc))
 }
 
 // Title applies equality check predicate on the "title" field. It's identical to TitleEQ.
@@ -100,6 +107,11 @@ func UpdatedParsed(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldUpdatedParsed, v))
 }
 
+// PublishPlatform applies equality check predicate on the "publish_platform" field. It's identical to PublishPlatformEQ.
+func PublishPlatform(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldPublishPlatform, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldUpdatedAt, v))
@@ -108,6 +120,36 @@ func UpdatedAt(v time.Time) predicate.FeedItem {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// FeedIDEQ applies the EQ predicate on the "feed_id" field.
+func FeedIDEQ(v model.InternalID) predicate.FeedItem {
+	vc := int64(v)
+	return predicate.FeedItem(sql.FieldEQ(FieldFeedID, vc))
+}
+
+// FeedIDNEQ applies the NEQ predicate on the "feed_id" field.
+func FeedIDNEQ(v model.InternalID) predicate.FeedItem {
+	vc := int64(v)
+	return predicate.FeedItem(sql.FieldNEQ(FieldFeedID, vc))
+}
+
+// FeedIDIn applies the In predicate on the "feed_id" field.
+func FeedIDIn(vs ...model.InternalID) predicate.FeedItem {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedItem(sql.FieldIn(FieldFeedID, v...))
+}
+
+// FeedIDNotIn applies the NotIn predicate on the "feed_id" field.
+func FeedIDNotIn(vs ...model.InternalID) predicate.FeedItem {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedItem(sql.FieldNotIn(FieldFeedID, v...))
 }
 
 // TitleEQ applies the EQ predicate on the "title" field.
@@ -165,6 +207,16 @@ func TitleHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldTitle, v))
 }
 
+// TitleIsNil applies the IsNil predicate on the "title" field.
+func TitleIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldTitle))
+}
+
+// TitleNotNil applies the NotNil predicate on the "title" field.
+func TitleNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldTitle))
+}
+
 // TitleEqualFold applies the EqualFold predicate on the "title" field.
 func TitleEqualFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEqualFold(FieldTitle, v))
@@ -173,6 +225,16 @@ func TitleEqualFold(v string) predicate.FeedItem {
 // TitleContainsFold applies the ContainsFold predicate on the "title" field.
 func TitleContainsFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldContainsFold(FieldTitle, v))
+}
+
+// AuthorsIsNil applies the IsNil predicate on the "authors" field.
+func AuthorsIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldAuthors))
+}
+
+// AuthorsNotNil applies the NotNil predicate on the "authors" field.
+func AuthorsNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldAuthors))
 }
 
 // DescriptionEQ applies the EQ predicate on the "description" field.
@@ -228,6 +290,16 @@ func DescriptionHasPrefix(v string) predicate.FeedItem {
 // DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
 func DescriptionHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldDescription))
 }
 
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
@@ -293,6 +365,16 @@ func ContentHasPrefix(v string) predicate.FeedItem {
 // ContentHasSuffix applies the HasSuffix predicate on the "content" field.
 func ContentHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldContent, v))
+}
+
+// ContentIsNil applies the IsNil predicate on the "content" field.
+func ContentIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldContent))
+}
+
+// ContentNotNil applies the NotNil predicate on the "content" field.
+func ContentNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldContent))
 }
 
 // ContentEqualFold applies the EqualFold predicate on the "content" field.
@@ -425,6 +507,16 @@ func LinkHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldLink, v))
 }
 
+// LinkIsNil applies the IsNil predicate on the "link" field.
+func LinkIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldLink))
+}
+
+// LinkNotNil applies the NotNil predicate on the "link" field.
+func LinkNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldLink))
+}
+
 // LinkEqualFold applies the EqualFold predicate on the "link" field.
 func LinkEqualFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEqualFold(FieldLink, v))
@@ -433,6 +525,16 @@ func LinkEqualFold(v string) predicate.FeedItem {
 // LinkContainsFold applies the ContainsFold predicate on the "link" field.
 func LinkContainsFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldContainsFold(FieldLink, v))
+}
+
+// ImageIsNil applies the IsNil predicate on the "image" field.
+func ImageIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldImage))
+}
+
+// ImageNotNil applies the NotNil predicate on the "image" field.
+func ImageNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldImage))
 }
 
 // PublishedEQ applies the EQ predicate on the "published" field.
@@ -490,6 +592,16 @@ func PublishedHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldPublished, v))
 }
 
+// PublishedIsNil applies the IsNil predicate on the "published" field.
+func PublishedIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldPublished))
+}
+
+// PublishedNotNil applies the NotNil predicate on the "published" field.
+func PublishedNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldPublished))
+}
+
 // PublishedEqualFold applies the EqualFold predicate on the "published" field.
 func PublishedEqualFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEqualFold(FieldPublished, v))
@@ -538,6 +650,16 @@ func PublishedParsedLT(v time.Time) predicate.FeedItem {
 // PublishedParsedLTE applies the LTE predicate on the "published_parsed" field.
 func PublishedParsedLTE(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldPublishedParsed, v))
+}
+
+// PublishedParsedIsNil applies the IsNil predicate on the "published_parsed" field.
+func PublishedParsedIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldPublishedParsed))
+}
+
+// PublishedParsedNotNil applies the NotNil predicate on the "published_parsed" field.
+func PublishedParsedNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldPublishedParsed))
 }
 
 // UpdatedEQ applies the EQ predicate on the "updated" field.
@@ -595,6 +717,16 @@ func UpdatedHasSuffix(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldHasSuffix(FieldUpdated, v))
 }
 
+// UpdatedIsNil applies the IsNil predicate on the "updated" field.
+func UpdatedIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldUpdated))
+}
+
+// UpdatedNotNil applies the NotNil predicate on the "updated" field.
+func UpdatedNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldUpdated))
+}
+
 // UpdatedEqualFold applies the EqualFold predicate on the "updated" field.
 func UpdatedEqualFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEqualFold(FieldUpdated, v))
@@ -643,6 +775,101 @@ func UpdatedParsedLT(v time.Time) predicate.FeedItem {
 // UpdatedParsedLTE applies the LTE predicate on the "updated_parsed" field.
 func UpdatedParsedLTE(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldUpdatedParsed, v))
+}
+
+// UpdatedParsedIsNil applies the IsNil predicate on the "updated_parsed" field.
+func UpdatedParsedIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldUpdatedParsed))
+}
+
+// UpdatedParsedNotNil applies the NotNil predicate on the "updated_parsed" field.
+func UpdatedParsedNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldUpdatedParsed))
+}
+
+// EnclosureIsNil applies the IsNil predicate on the "enclosure" field.
+func EnclosureIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldEnclosure))
+}
+
+// EnclosureNotNil applies the NotNil predicate on the "enclosure" field.
+func EnclosureNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldEnclosure))
+}
+
+// PublishPlatformEQ applies the EQ predicate on the "publish_platform" field.
+func PublishPlatformEQ(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldPublishPlatform, v))
+}
+
+// PublishPlatformNEQ applies the NEQ predicate on the "publish_platform" field.
+func PublishPlatformNEQ(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNEQ(FieldPublishPlatform, v))
+}
+
+// PublishPlatformIn applies the In predicate on the "publish_platform" field.
+func PublishPlatformIn(vs ...string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIn(FieldPublishPlatform, vs...))
+}
+
+// PublishPlatformNotIn applies the NotIn predicate on the "publish_platform" field.
+func PublishPlatformNotIn(vs ...string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotIn(FieldPublishPlatform, vs...))
+}
+
+// PublishPlatformGT applies the GT predicate on the "publish_platform" field.
+func PublishPlatformGT(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGT(FieldPublishPlatform, v))
+}
+
+// PublishPlatformGTE applies the GTE predicate on the "publish_platform" field.
+func PublishPlatformGTE(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGTE(FieldPublishPlatform, v))
+}
+
+// PublishPlatformLT applies the LT predicate on the "publish_platform" field.
+func PublishPlatformLT(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLT(FieldPublishPlatform, v))
+}
+
+// PublishPlatformLTE applies the LTE predicate on the "publish_platform" field.
+func PublishPlatformLTE(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLTE(FieldPublishPlatform, v))
+}
+
+// PublishPlatformContains applies the Contains predicate on the "publish_platform" field.
+func PublishPlatformContains(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldContains(FieldPublishPlatform, v))
+}
+
+// PublishPlatformHasPrefix applies the HasPrefix predicate on the "publish_platform" field.
+func PublishPlatformHasPrefix(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldHasPrefix(FieldPublishPlatform, v))
+}
+
+// PublishPlatformHasSuffix applies the HasSuffix predicate on the "publish_platform" field.
+func PublishPlatformHasSuffix(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldHasSuffix(FieldPublishPlatform, v))
+}
+
+// PublishPlatformIsNil applies the IsNil predicate on the "publish_platform" field.
+func PublishPlatformIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldPublishPlatform))
+}
+
+// PublishPlatformNotNil applies the NotNil predicate on the "publish_platform" field.
+func PublishPlatformNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldPublishPlatform))
+}
+
+// PublishPlatformEqualFold applies the EqualFold predicate on the "publish_platform" field.
+func PublishPlatformEqualFold(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEqualFold(FieldPublishPlatform, v))
+}
+
+// PublishPlatformContainsFold applies the ContainsFold predicate on the "publish_platform" field.
+func PublishPlatformContainsFold(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldContainsFold(FieldPublishPlatform, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

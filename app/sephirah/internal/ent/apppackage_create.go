@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackageCreate is the builder for creating a AppPackage entity.
@@ -30,8 +31,8 @@ func (apc *AppPackageCreate) SetSource(a apppackage.Source) *AppPackageCreate {
 }
 
 // SetSourceID sets the "source_id" field.
-func (apc *AppPackageCreate) SetSourceID(i int64) *AppPackageCreate {
-	apc.mutation.SetSourceID(i)
+func (apc *AppPackageCreate) SetSourceID(mi model.InternalID) *AppPackageCreate {
+	apc.mutation.SetSourceID(mi)
 	return apc
 }
 
@@ -100,19 +101,19 @@ func (apc *AppPackageCreate) SetNillableCreatedAt(t *time.Time) *AppPackageCreat
 }
 
 // SetID sets the "id" field.
-func (apc *AppPackageCreate) SetID(i int64) *AppPackageCreate {
-	apc.mutation.SetID(i)
+func (apc *AppPackageCreate) SetID(mi model.InternalID) *AppPackageCreate {
+	apc.mutation.SetID(mi)
 	return apc
 }
 
 // SetAppID sets the "app" edge to the App entity by ID.
-func (apc *AppPackageCreate) SetAppID(id int64) *AppPackageCreate {
+func (apc *AppPackageCreate) SetAppID(id model.InternalID) *AppPackageCreate {
 	apc.mutation.SetAppID(id)
 	return apc
 }
 
 // SetNillableAppID sets the "app" edge to the App entity by ID if the given value is not nil.
-func (apc *AppPackageCreate) SetNillableAppID(id *int64) *AppPackageCreate {
+func (apc *AppPackageCreate) SetNillableAppID(id *model.InternalID) *AppPackageCreate {
 	if id != nil {
 		apc = apc.SetAppID(*id)
 	}
@@ -222,7 +223,7 @@ func (apc *AppPackageCreate) sqlSave(ctx context.Context) (*AppPackage, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	apc.mutation.id = &_node.ID
 	apc.mutation.done = true
@@ -364,7 +365,7 @@ func (u *AppPackageUpsert) UpdateSource() *AppPackageUpsert {
 }
 
 // SetSourceID sets the "source_id" field.
-func (u *AppPackageUpsert) SetSourceID(v int64) *AppPackageUpsert {
+func (u *AppPackageUpsert) SetSourceID(v model.InternalID) *AppPackageUpsert {
 	u.Set(apppackage.FieldSourceID, v)
 	return u
 }
@@ -376,7 +377,7 @@ func (u *AppPackageUpsert) UpdateSourceID() *AppPackageUpsert {
 }
 
 // AddSourceID adds v to the "source_id" field.
-func (u *AppPackageUpsert) AddSourceID(v int64) *AppPackageUpsert {
+func (u *AppPackageUpsert) AddSourceID(v model.InternalID) *AppPackageUpsert {
 	u.Add(apppackage.FieldSourceID, v)
 	return u
 }
@@ -546,14 +547,14 @@ func (u *AppPackageUpsertOne) UpdateSource() *AppPackageUpsertOne {
 }
 
 // SetSourceID sets the "source_id" field.
-func (u *AppPackageUpsertOne) SetSourceID(v int64) *AppPackageUpsertOne {
+func (u *AppPackageUpsertOne) SetSourceID(v model.InternalID) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.SetSourceID(v)
 	})
 }
 
 // AddSourceID adds v to the "source_id" field.
-func (u *AppPackageUpsertOne) AddSourceID(v int64) *AppPackageUpsertOne {
+func (u *AppPackageUpsertOne) AddSourceID(v model.InternalID) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.AddSourceID(v)
 	})
@@ -701,7 +702,7 @@ func (u *AppPackageUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppPackageUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *AppPackageUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -710,7 +711,7 @@ func (u *AppPackageUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppPackageUpsertOne) IDX(ctx context.Context) int64 {
+func (u *AppPackageUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -763,7 +764,7 @@ func (apcb *AppPackageCreateBulk) Save(ctx context.Context) ([]*AppPackage, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -910,14 +911,14 @@ func (u *AppPackageUpsertBulk) UpdateSource() *AppPackageUpsertBulk {
 }
 
 // SetSourceID sets the "source_id" field.
-func (u *AppPackageUpsertBulk) SetSourceID(v int64) *AppPackageUpsertBulk {
+func (u *AppPackageUpsertBulk) SetSourceID(v model.InternalID) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.SetSourceID(v)
 	})
 }
 
 // AddSourceID adds v to the "source_id" field.
-func (u *AppPackageUpsertBulk) AddSourceID(v int64) *AppPackageUpsertBulk {
+func (u *AppPackageUpsertBulk) AddSourceID(v model.InternalID) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.AddSourceID(v)
 	})

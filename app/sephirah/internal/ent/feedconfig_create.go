@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedConfigCreate is the builder for creating a FeedConfig entity.
@@ -31,8 +32,8 @@ func (fcc *FeedConfigCreate) SetFeedURL(s string) *FeedConfigCreate {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (fcc *FeedConfigCreate) SetAuthorAccount(i int64) *FeedConfigCreate {
-	fcc.mutation.SetAuthorAccount(i)
+func (fcc *FeedConfigCreate) SetAuthorAccount(mi model.InternalID) *FeedConfigCreate {
+	fcc.mutation.SetAuthorAccount(mi)
 	return fcc
 }
 
@@ -97,13 +98,13 @@ func (fcc *FeedConfigCreate) SetNillableCreatedAt(t *time.Time) *FeedConfigCreat
 }
 
 // SetID sets the "id" field.
-func (fcc *FeedConfigCreate) SetID(i int64) *FeedConfigCreate {
-	fcc.mutation.SetID(i)
+func (fcc *FeedConfigCreate) SetID(mi model.InternalID) *FeedConfigCreate {
+	fcc.mutation.SetID(mi)
 	return fcc
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (fcc *FeedConfigCreate) SetUserID(id int64) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetUserID(id model.InternalID) *FeedConfigCreate {
 	fcc.mutation.SetUserID(id)
 	return fcc
 }
@@ -114,13 +115,13 @@ func (fcc *FeedConfigCreate) SetUser(u *User) *FeedConfigCreate {
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcc *FeedConfigCreate) SetFeedID(id int64) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetFeedID(id model.InternalID) *FeedConfigCreate {
 	fcc.mutation.SetFeedID(id)
 	return fcc
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcc *FeedConfigCreate) SetNillableFeedID(id *int64) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetNillableFeedID(id *model.InternalID) *FeedConfigCreate {
 	if id != nil {
 		fcc = fcc.SetFeedID(*id)
 	}
@@ -236,7 +237,7 @@ func (fcc *FeedConfigCreate) sqlSave(ctx context.Context) (*FeedConfig, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+		_node.ID = model.InternalID(id)
 	}
 	fcc.mutation.id = &_node.ID
 	fcc.mutation.done = true
@@ -389,7 +390,7 @@ func (u *FeedConfigUpsert) UpdateFeedURL() *FeedConfigUpsert {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsert) SetAuthorAccount(v int64) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetAuthorAccount(v model.InternalID) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldAuthorAccount, v)
 	return u
 }
@@ -401,7 +402,7 @@ func (u *FeedConfigUpsert) UpdateAuthorAccount() *FeedConfigUpsert {
 }
 
 // AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsert) AddAuthorAccount(v int64) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) AddAuthorAccount(v model.InternalID) *FeedConfigUpsert {
 	u.Add(feedconfig.FieldAuthorAccount, v)
 	return u
 }
@@ -547,14 +548,14 @@ func (u *FeedConfigUpsertOne) UpdateFeedURL() *FeedConfigUpsertOne {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsertOne) SetAuthorAccount(v int64) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetAuthorAccount(v model.InternalID) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetAuthorAccount(v)
 	})
 }
 
 // AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsertOne) AddAuthorAccount(v int64) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) AddAuthorAccount(v model.InternalID) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.AddAuthorAccount(v)
 	})
@@ -674,7 +675,7 @@ func (u *FeedConfigUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -683,7 +684,7 @@ func (u *FeedConfigUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *FeedConfigUpsertOne) IDX(ctx context.Context) int64 {
+func (u *FeedConfigUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -736,7 +737,7 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 				mutation.id = &nodes[i].ID
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -883,14 +884,14 @@ func (u *FeedConfigUpsertBulk) UpdateFeedURL() *FeedConfigUpsertBulk {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsertBulk) SetAuthorAccount(v int64) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetAuthorAccount(v model.InternalID) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetAuthorAccount(v)
 	})
 }
 
 // AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsertBulk) AddAuthorAccount(v int64) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) AddAuthorAccount(v model.InternalID) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.AddAuthorAccount(v)
 	})

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -18,7 +19,7 @@ import (
 type Feed struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Link holds the value of the "link" field.
@@ -38,7 +39,7 @@ type Feed struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedQuery when eager-loading is set.
 	Edges            FeedEdges `json:"edges"`
-	feed_config_feed *int64
+	feed_config_feed *model.InternalID
 }
 
 // FeedEdges holds the relations/edges for other nodes in the graph.
@@ -105,11 +106,11 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case feed.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				f.ID = model.InternalID(value.Int64)
 			}
-			f.ID = int64(value.Int64)
 		case feed.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -164,10 +165,10 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 			}
 		case feed.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field feed_config_feed", value)
+				return fmt.Errorf("unexpected type %T for field feed_config_feed", values[i])
 			} else if value.Valid {
-				f.feed_config_feed = new(int64)
-				*f.feed_config_feed = int64(value.Int64)
+				f.feed_config_feed = new(model.InternalID)
+				*f.feed_config_feed = model.InternalID(value.Int64)
 			}
 		}
 	}

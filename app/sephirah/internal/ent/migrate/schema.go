@@ -111,12 +111,12 @@ var (
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "title", Type: field.TypeString},
-		{Name: "link", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString},
-		{Name: "language", Type: field.TypeString},
-		{Name: "authors", Type: field.TypeJSON},
-		{Name: "image", Type: field.TypeJSON},
+		{Name: "title", Type: field.TypeString, Nullable: true},
+		{Name: "link", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "language", Type: field.TypeString, Nullable: true},
+		{Name: "authors", Type: field.TypeJSON, Nullable: true},
+		{Name: "image", Type: field.TypeJSON, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "feed_config_feed", Type: field.TypeInt64, Unique: true},
@@ -165,21 +165,22 @@ var (
 	// FeedItemsColumns holds the columns for the "feed_items" table.
 	FeedItemsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "title", Type: field.TypeString},
-		{Name: "authors", Type: field.TypeJSON},
-		{Name: "description", Type: field.TypeString},
-		{Name: "content", Type: field.TypeString},
+		{Name: "title", Type: field.TypeString, Nullable: true},
+		{Name: "authors", Type: field.TypeJSON, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true},
+		{Name: "content", Type: field.TypeString, Nullable: true},
 		{Name: "guid", Type: field.TypeString},
-		{Name: "link", Type: field.TypeString},
-		{Name: "image", Type: field.TypeJSON},
-		{Name: "published", Type: field.TypeString},
-		{Name: "published_parsed", Type: field.TypeTime},
-		{Name: "updated", Type: field.TypeString},
-		{Name: "updated_parsed", Type: field.TypeTime},
-		{Name: "enclosure", Type: field.TypeJSON},
+		{Name: "link", Type: field.TypeString, Nullable: true},
+		{Name: "image", Type: field.TypeJSON, Nullable: true},
+		{Name: "published", Type: field.TypeString, Nullable: true},
+		{Name: "published_parsed", Type: field.TypeTime, Nullable: true},
+		{Name: "updated", Type: field.TypeString, Nullable: true},
+		{Name: "updated_parsed", Type: field.TypeTime, Nullable: true},
+		{Name: "enclosure", Type: field.TypeJSON, Nullable: true},
+		{Name: "publish_platform", Type: field.TypeString, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "feed_item", Type: field.TypeInt64},
+		{Name: "feed_id", Type: field.TypeInt64},
 	}
 	// FeedItemsTable holds the schema information for the "feed_items" table.
 	FeedItemsTable = &schema.Table{
@@ -189,9 +190,16 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_items_feeds_item",
-				Columns:    []*schema.Column{FeedItemsColumns[15]},
+				Columns:    []*schema.Column{FeedItemsColumns[16]},
 				RefColumns: []*schema.Column{FeedsColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feeditem_feed_id_guid",
+				Unique:  true,
+				Columns: []*schema.Column{FeedItemsColumns[16], FeedItemsColumns[5]},
 			},
 		},
 	}

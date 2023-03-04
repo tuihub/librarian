@@ -6,8 +6,8 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/converter"
+	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
@@ -26,7 +26,7 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 		return nil, err
 	}
 	return &pb.CreateAppResponse{
-		Id: &librarian.InternalID{Id: a.InternalID},
+		Id: converter.ToPBInternalID(a.ID),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb.UpdateAppRequest) (
@@ -46,7 +46,7 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 	*pb.ListAppResponse, error,
 ) {
 	a, err := s.g.ListApp(ctx,
-		bizgebura.Paging{
+		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
@@ -67,7 +67,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 ) {
 	a, err := s.g.BindApp(ctx, // TODO
 		bizgebura.App{
-			InternalID:       req.GetInternalAppId().GetId(),
+			ID:               converter.ToBizInternalID(req.GetInternalAppId()),
 			Source:           0,
 			SourceAppID:      "",
 			SourceURL:        "",
@@ -78,7 +78,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 			Details:          nil,
 		},
 		bizgebura.App{
-			InternalID:       0,
+			ID:               0,
 			Source:           converter.ToBizAppSource(req.GetBindAppId().GetSource()),
 			SourceAppID:      req.GetBindAppId().GetSourceAppId(),
 			SourceURL:        "",
@@ -91,9 +91,7 @@ func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.B
 	if err != nil {
 		return nil, err
 	}
-	return &pb.BindAppResponse{BindAppId: &librarian.InternalID{
-		Id: a.InternalID,
-	}}, nil
+	return &pb.BindAppResponse{BindAppId: converter.ToPBInternalID(a.ID)}, nil
 }
 func (s *LibrarianSephirahServiceService) UnBindApp(ctx context.Context, req *pb.UnBindAppRequest) (
 	*pb.UnBindAppResponse, error,
@@ -108,7 +106,7 @@ func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) ListBindApp(ctx context.Context, req *pb.ListBindAppRequest) (
 	*pb.ListBindAppResponse, error,
 ) {
-	al, err := s.g.ListBindApp(ctx, req.GetAppId().GetId())
+	al, err := s.g.ListBindApp(ctx, converter.ToBizInternalID(req.GetAppId()))
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +121,7 @@ func (s *LibrarianSephirahServiceService) CreateAppPackage(
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateAppPackageResponse{Id: &librarian.InternalID{Id: ap.InternalID}}, nil
+	return &pb.CreateAppPackageResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	ctx context.Context,
@@ -140,7 +138,7 @@ func (s *LibrarianSephirahServiceService) ListAppPackage(
 	req *pb.ListAppPackageRequest,
 ) (*pb.ListAppPackageResponse, error) {
 	ap, err := s.g.ListAppPackage(ctx,
-		bizgebura.Paging{
+		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
@@ -160,7 +158,7 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 	req *pb.AssignAppPackageRequest,
 ) (*pb.AssignAppPackageResponse, error) {
 	err := s.g.AssignAppPackage(ctx, bizgebura.App{ // TODO
-		InternalID:       req.GetAppId().GetId(),
+		ID:               converter.ToBizInternalID(req.GetAppId()),
 		Source:           0,
 		SourceAppID:      "",
 		SourceURL:        "",
@@ -170,7 +168,7 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 		ImageURL:         "",
 		Details:          nil,
 	}, bizgebura.AppPackage{
-		InternalID:      req.GetAppPackageId().GetId(),
+		ID:              converter.ToBizInternalID(req.GetAppPackageId()),
 		Source:          0,
 		SourceID:        0,
 		SourcePackageID: "",
@@ -210,7 +208,7 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 		} else {
 			for id, a := range req.GetAppPackageList() {
 				apl = append(apl, &bizgebura.AppPackage{ // TODO
-					InternalID:      0,
+					ID:              0,
 					Source:          0,
 					SourceID:        0,
 					SourcePackageID: id,

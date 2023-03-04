@@ -1,34 +1,39 @@
 package modelfeed
 
-import "time"
+import (
+	"time"
+
+	"github.com/tuihub/librarian/internal/model"
+)
 
 type Feed struct {
-	InternalID  int64     `json:"internal_id,omitempty"`
-	Title       string    `json:"title,omitempty"`
-	Description string    `json:"description,omitempty"`
-	Link        string    `json:"link,omitempty"`
-	Authors     []*Person `json:"authors,omitempty"`
-	Language    string    `json:"language,omitempty"`
-	Image       *Image    `json:"image,omitempty"`
-	Items       []*Item   `json:"items"`
-	FeedType    string    `json:"feedType"`
-	FeedVersion string    `json:"feedVersion"`
+	InternalID  model.InternalID `json:"internal_id,omitempty"`
+	Title       string           `json:"title,omitempty"`
+	Description string           `json:"description,omitempty"`
+	Link        string           `json:"link,omitempty"`
+	Authors     []*Person        `json:"authors,omitempty"`
+	Language    string           `json:"language,omitempty"`
+	Image       *Image           `json:"image,omitempty"`
+	Items       []*Item          `json:"items"`
+	FeedType    string           `json:"feedType"`
+	FeedVersion string           `json:"feedVersion"`
 }
 
 type Item struct {
-	InternalID      int64        `json:"internal_id,omitempty"`
-	Title           string       `json:"title,omitempty"`
-	Description     string       `json:"description,omitempty"`
-	Content         string       `json:"content,omitempty"`
-	Link            string       `json:"link,omitempty"`
-	Updated         string       `json:"updated,omitempty"`
-	UpdatedParsed   *time.Time   `json:"updatedParsed,omitempty"`
-	Published       string       `json:"published,omitempty"`
-	PublishedParsed *time.Time   `json:"publishedParsed,omitempty"`
-	Authors         []*Person    `json:"authors,omitempty"`
-	GUID            string       `json:"guid,omitempty"`
-	Image           *Image       `json:"image,omitempty"`
-	Enclosures      []*Enclosure `json:"enclosures,omitempty"`
+	InternalID      model.InternalID `json:"internal_id,omitempty"`
+	Title           string           `json:"title,omitempty"`
+	Description     string           `json:"description,omitempty"`
+	Content         string           `json:"content,omitempty"`
+	Link            string           `json:"link,omitempty"`
+	Updated         string           `json:"updated,omitempty"`
+	UpdatedParsed   *time.Time       `json:"updatedParsed,omitempty"`
+	Published       string           `json:"published,omitempty"`
+	PublishedParsed *time.Time       `json:"publishedParsed,omitempty"`
+	Authors         []*Person        `json:"authors,omitempty"`
+	GUID            string           `json:"guid,omitempty"`
+	Image           *Image           `json:"image,omitempty"`
+	Enclosures      []*Enclosure     `json:"enclosures,omitempty"`
+	PublishPlatform string           `json:"publish_platform,omitempty"`
 }
 
 // Person is an individual specified in a feed

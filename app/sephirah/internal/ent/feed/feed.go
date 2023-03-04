@@ -39,7 +39,7 @@ const (
 	// It exists in this package in order to avoid circular dependency with the "feeditem" package.
 	ItemInverseTable = "feed_items"
 	// ItemColumn is the table column denoting the item relation/edge.
-	ItemColumn = "feed_item"
+	ItemColumn = "feed_id"
 	// ConfigTable is the table that holds the config relation/edge.
 	ConfigTable = "feeds"
 	// ConfigInverseTable is the table name for the FeedConfig entity.

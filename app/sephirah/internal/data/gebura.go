@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent/dialect/sql"
 	"golang.org/x/exp/slices"
@@ -25,11 +26,11 @@ func NewGeburaRepo(data *Data) bizgebura.GeburaRepo {
 	}
 }
 
-func (g geburaRepo) IsApp(ctx context.Context, id int64) error {
-	a, err := g.ListApp(ctx, bizgebura.Paging{
+func (g geburaRepo) IsApp(ctx context.Context, id model.InternalID) error {
+	a, err := g.ListApp(ctx, model.Paging{
 		PageSize: 1,
 		PageNum:  0,
-	}, nil, nil, []int64{id}, false)
+	}, nil, nil, []model.InternalID{id}, false)
 	if err != nil {
 		return err
 	}
@@ -44,7 +45,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 		a.Details = new(bizgebura.AppDetails)
 	}
 	q := g.data.db.App.Create().
-		SetID(a.InternalID).
+		SetID(a.ID).
 		SetSource(converter.ToEntAppSource(a.Source)).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
@@ -63,7 +64,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *bizgebura.App) error {
 func (g geburaRepo) UpdateApp(ctx context.Context, a *bizgebura.App) error {
 	q := g.data.db.App.Update().
 		Where(
-			app.IDEQ(a.InternalID),
+			app.IDEQ(a.ID),
 			app.SourceEQ(converter.ToEntAppSource(a.Source)),
 		).
 		SetSourceAppID(a.SourceAppID).
@@ -90,7 +91,7 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 			a.Details = new(bizgebura.AppDetails)
 		}
 		apps[i] = g.data.db.App.Create().
-			SetID(a.InternalID).
+			SetID(a.ID).
 			SetSource(converter.ToEntAppSource(a.Source)).
 			SetSourceAppID(a.SourceAppID).
 			SetSourceURL(a.SourceURL).
@@ -131,10 +132,10 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*bizgebura.App) error {
 
 func (g geburaRepo) ListApp(
 	ctx context.Context,
-	paging bizgebura.Paging,
+	paging model.Paging,
 	sources []bizgebura.AppSource,
 	types []bizgebura.AppType,
-	ids []int64,
+	ids []model.InternalID,
 	containDetails bool) ([]*bizgebura.App, error) {
 	q := g.data.db.App.Query()
 	if len(sources) > 0 {
@@ -171,11 +172,11 @@ func (g geburaRepo) ListApp(
 	return apps, nil
 }
 
-func (g geburaRepo) IsAppPackage(ctx context.Context, id int64) error {
-	a, err := g.ListAppPackage(ctx, bizgebura.Paging{
+func (g geburaRepo) IsAppPackage(ctx context.Context, id model.InternalID) error {
+	a, err := g.ListAppPackage(ctx, model.Paging{
 		PageSize: 1,
 		PageNum:  0,
-	}, nil, []int64{id})
+	}, nil, []model.InternalID{id})
 	if err != nil {
 		return err
 	}
@@ -187,7 +188,7 @@ func (g geburaRepo) IsAppPackage(ctx context.Context, id int64) error {
 
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Create().
-		SetID(ap.InternalID).
+		SetID(ap.ID).
 		SetSource(converter.ToEntAppPackageSource(ap.Source)).
 		SetSourceID(ap.SourceID).
 		SetSourcePackageID(ap.SourcePackageID).
@@ -201,7 +202,7 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *bizgebura.AppPacka
 func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *bizgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Update().
 		Where(
-			apppackage.IDEQ(ap.InternalID),
+			apppackage.IDEQ(ap.ID),
 			apppackage.SourceEQ(converter.ToEntAppPackageSource(ap.Source)),
 		).
 		SetName(ap.Name).
@@ -215,7 +216,7 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 	appPackages := make([]*ent.AppPackageCreate, len(apl))
 	for i, ap := range apl {
 		appPackages[i] = g.data.db.AppPackage.Create().
-			SetID(ap.InternalID).
+			SetID(ap.ID).
 			SetSource(converter.ToEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
 			SetSourcePackageID(ap.SourcePackageID)
@@ -256,9 +257,9 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*bizgebura.AppPa
 
 func (g geburaRepo) ListAppPackage(
 	ctx context.Context,
-	paging bizgebura.Paging,
+	paging model.Paging,
 	sources []bizgebura.AppPackageSource,
-	ids []int64,
+	ids []model.InternalID,
 ) ([]*bizgebura.AppPackage, error) {
 	q := g.data.db.AppPackage.Query()
 	if len(sources) > 0 {
@@ -284,7 +285,7 @@ func (g geburaRepo) ListAppPackage(
 func (g geburaRepo) ListAllAppPackageIDOfOneSource(
 	ctx context.Context,
 	source bizgebura.AppPackageSource,
-	sourceID int64,
+	sourceID model.InternalID,
 ) ([]string, error) {
 	return g.data.db.AppPackage.Query().
 		Where(

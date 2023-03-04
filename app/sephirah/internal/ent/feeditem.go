@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -18,11 +19,13 @@ import (
 type FeedItem struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
+	// FeedID holds the value of the "feed_id" field.
+	FeedID model.InternalID `json:"feed_id,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
 	// Authors holds the value of the "authors" field.
-	Authors []modelfeed.Person `json:"authors,omitempty"`
+	Authors []*modelfeed.Person `json:"authors,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Content holds the value of the "content" field.
@@ -36,21 +39,22 @@ type FeedItem struct {
 	// Published holds the value of the "published" field.
 	Published string `json:"published,omitempty"`
 	// PublishedParsed holds the value of the "published_parsed" field.
-	PublishedParsed time.Time `json:"published_parsed,omitempty"`
+	PublishedParsed *time.Time `json:"published_parsed,omitempty"`
 	// Updated holds the value of the "updated" field.
 	Updated string `json:"updated,omitempty"`
 	// UpdatedParsed holds the value of the "updated_parsed" field.
-	UpdatedParsed time.Time `json:"updated_parsed,omitempty"`
+	UpdatedParsed *time.Time `json:"updated_parsed,omitempty"`
 	// Enclosure holds the value of the "enclosure" field.
-	Enclosure []modelfeed.Enclosure `json:"enclosure,omitempty"`
+	Enclosure []*modelfeed.Enclosure `json:"enclosure,omitempty"`
+	// PublishPlatform holds the value of the "publish_platform" field.
+	PublishPlatform string `json:"publish_platform,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedItemQuery when eager-loading is set.
-	Edges     FeedItemEdges `json:"edges"`
-	feed_item *int64
+	Edges FeedItemEdges `json:"edges"`
 }
 
 // FeedItemEdges holds the relations/edges for other nodes in the graph.
@@ -82,14 +86,12 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosure:
 			values[i] = new([]byte)
-		case feeditem.FieldID:
+		case feeditem.FieldID, feeditem.FieldFeedID:
 			values[i] = new(sql.NullInt64)
-		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated:
+		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated, feeditem.FieldPublishPlatform:
 			values[i] = new(sql.NullString)
 		case feeditem.FieldPublishedParsed, feeditem.FieldUpdatedParsed, feeditem.FieldUpdatedAt, feeditem.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case feeditem.ForeignKeys[0]: // feed_item
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FeedItem", columns[i])
 		}
@@ -106,11 +108,17 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case feeditem.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				fi.ID = model.InternalID(value.Int64)
 			}
-			fi.ID = int64(value.Int64)
+		case feeditem.FieldFeedID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field feed_id", values[i])
+			} else if value.Valid {
+				fi.FeedID = model.InternalID(value.Int64)
+			}
 		case feeditem.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
@@ -167,7 +175,8 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field published_parsed", values[i])
 			} else if value.Valid {
-				fi.PublishedParsed = value.Time
+				fi.PublishedParsed = new(time.Time)
+				*fi.PublishedParsed = value.Time
 			}
 		case feeditem.FieldUpdated:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -179,7 +188,8 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_parsed", values[i])
 			} else if value.Valid {
-				fi.UpdatedParsed = value.Time
+				fi.UpdatedParsed = new(time.Time)
+				*fi.UpdatedParsed = value.Time
 			}
 		case feeditem.FieldEnclosure:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -188,6 +198,12 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &fi.Enclosure); err != nil {
 					return fmt.Errorf("unmarshal field enclosure: %w", err)
 				}
+			}
+		case feeditem.FieldPublishPlatform:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field publish_platform", values[i])
+			} else if value.Valid {
+				fi.PublishPlatform = value.String
 			}
 		case feeditem.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -200,13 +216,6 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				fi.CreatedAt = value.Time
-			}
-		case feeditem.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field feed_item", value)
-			} else if value.Valid {
-				fi.feed_item = new(int64)
-				*fi.feed_item = int64(value.Int64)
 			}
 		}
 	}
@@ -241,6 +250,9 @@ func (fi *FeedItem) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedItem(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fi.ID))
+	builder.WriteString("feed_id=")
+	builder.WriteString(fmt.Sprintf("%v", fi.FeedID))
+	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(fi.Title)
 	builder.WriteString(", ")
@@ -265,17 +277,24 @@ func (fi *FeedItem) String() string {
 	builder.WriteString("published=")
 	builder.WriteString(fi.Published)
 	builder.WriteString(", ")
-	builder.WriteString("published_parsed=")
-	builder.WriteString(fi.PublishedParsed.Format(time.ANSIC))
+	if v := fi.PublishedParsed; v != nil {
+		builder.WriteString("published_parsed=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("updated=")
 	builder.WriteString(fi.Updated)
 	builder.WriteString(", ")
-	builder.WriteString("updated_parsed=")
-	builder.WriteString(fi.UpdatedParsed.Format(time.ANSIC))
+	if v := fi.UpdatedParsed; v != nil {
+		builder.WriteString("updated_parsed=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("enclosure=")
 	builder.WriteString(fmt.Sprintf("%v", fi.Enclosure))
+	builder.WriteString(", ")
+	builder.WriteString("publish_platform=")
+	builder.WriteString(fi.PublishPlatform)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fi.UpdatedAt.Format(time.ANSIC))

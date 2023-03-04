@@ -8,50 +8,51 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.Account {
+func ID(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.Account {
+func IDEQ(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.Account {
+func IDNEQ(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.Account {
+func IDIn(ids ...model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.Account {
+func IDNotIn(ids ...model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.Account {
+func IDGT(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.Account {
+func IDGTE(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.Account {
+func IDLT(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.Account {
+func IDLTE(id model.InternalID) predicate.Account {
 	return predicate.Account(sql.FieldLTE(FieldID, id))
 }
 

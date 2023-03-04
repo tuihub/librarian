@@ -5,6 +5,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -18,44 +19,37 @@ import (
 // goverter:extend PtrToString
 // goverter:extend ToBizAppPackageSource
 // goverter:extend DurationPBToDuration
+// goverter:extend ToBizFeedConfigSource
+// goverter:extend ToBizFeedConfigStatus
 type toBizConverter interface {
-	ToBizInternalIDList(idl []*librarian.InternalID) []int64
+	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
-	// goverter:map Type | ToLibAuthUserType
-	// goverter:map Status | ToBizUserStatus
 	ToBizUser(*pb.User) *biztiphereth.User
-	ToLibAuthUserTypeList(tl []pb.UserType) []libauth.UserType
-	ToBizUserStatusList(sl []pb.UserStatus) []biztiphereth.UserStatus
+	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
+	ToBizUserStatusList([]pb.UserStatus) []biztiphereth.UserStatus
 
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
-	// goverter:map Source | ToBizAppSource
-	// goverter:map Type | ToBizAppType
 	ToBizApp(*librarian.App) *bizgebura.App
 	ToBizAppTypeList([]librarian.AppType) []bizgebura.AppType
 	ToBizAppSourceList([]librarian.AppSource) []bizgebura.AppSource
 
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
-	// goverter:map Source | ToBizAppPackageSource
 	ToBizAppPackage(*librarian.AppPackage) *bizgebura.AppPackage
 	// goverter:matchIgnoreCase
 	ToBizAppPackageBinary(*librarian.AppPackageBinary) *bizgebura.AppPackageBinary
 	ToBizAppPackageSourceList([]librarian.AppPackageSource) []bizgebura.AppPackageSource
 
 	// goverter:matchIgnoreCase
-	// goverter:map Id InternalID
-	// goverter:map Source | ToBizFeedConfigSource
-	// goverter:map Status | ToBizFeedConfigStatus
 	ToBizFeedConfig(*pb.FeedConfig) *bizyesod.FeedConfig
+	ToBizFeedConfigSourceList([]pb.FeedConfigSource) []bizyesod.FeedConfigSource
+	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []bizyesod.FeedConfigStatus
 }
 
-func ToBizInternalID(id *librarian.InternalID) int64 {
+func ToBizInternalID(id *librarian.InternalID) model.InternalID {
 	if id == nil {
 		return 0
 	}
-	return id.Id
+	return model.InternalID(id.Id)
 }
 
 func ToLibAuthUserType(u pb.UserType) libauth.UserType {

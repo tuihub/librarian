@@ -20,7 +20,7 @@ func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *biztiphereth.Acc
 	var pBiztipherethAccount *biztiphereth.Account
 	if source != nil {
 		var biztipherethAccount biztiphereth.Account
-		biztipherethAccount.InternalID = (*source).ID
+		biztipherethAccount.ID = model.InternalID((*source).ID)
 		biztipherethAccount.Platform = ToBizAccountPlatform((*source).Platform)
 		biztipherethAccount.PlatformAccountID = (*source).PlatformAccountID
 		biztipherethAccount.Name = (*source).Name
@@ -44,7 +44,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *bizgebura.App {
 	var pBizgeburaApp *bizgebura.App
 	if source != nil {
 		var bizgeburaApp bizgebura.App
-		bizgeburaApp.InternalID = (*source).ID
+		bizgeburaApp.ID = model.InternalID((*source).ID)
 		bizgeburaApp.Source = ToBizAppSource((*source).Source)
 		bizgeburaApp.SourceAppID = (*source).SourceAppID
 		bizgeburaApp.SourceURL = (*source).SourceURL
@@ -68,9 +68,9 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *bizgebura.
 	var pBizgeburaAppPackage *bizgebura.AppPackage
 	if source != nil {
 		var bizgeburaAppPackage bizgebura.AppPackage
-		bizgeburaAppPackage.InternalID = (*source).ID
+		bizgeburaAppPackage.ID = model.InternalID((*source).ID)
 		bizgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
-		bizgeburaAppPackage.SourceID = (*source).SourceID
+		bizgeburaAppPackage.SourceID = model.InternalID((*source).SourceID)
 		bizgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
 		bizgeburaAppPackage.Name = (*source).Name
 		bizgeburaAppPackage.Description = (*source).Description
@@ -93,9 +93,9 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *bizyesod.F
 	var pBizyesodFeedConfig *bizyesod.FeedConfig
 	if source != nil {
 		var bizyesodFeedConfig bizyesod.FeedConfig
-		bizyesodFeedConfig.InternalID = (*source).ID
+		bizyesodFeedConfig.ID = model.InternalID((*source).ID)
 		bizyesodFeedConfig.FeedURL = (*source).FeedURL
-		bizyesodFeedConfig.AuthorAccount = (*source).AuthorAccount
+		bizyesodFeedConfig.AuthorAccount = model.InternalID((*source).AuthorAccount)
 		bizyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		bizyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		bizyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
@@ -117,7 +117,7 @@ func (c *toBizConverterImpl) ToBizUser(source *ent.User) *biztiphereth.User {
 	var pBiztipherethUser *biztiphereth.User
 	if source != nil {
 		var biztipherethUser biztiphereth.User
-		biztipherethUser.InternalID = (*source).ID
+		biztipherethUser.ID = model.InternalID((*source).ID)
 		biztipherethUser.UserName = (*source).Username
 		biztipherethUser.Type = ToLibAuthUserType((*source).Type)
 		biztipherethUser.Status = ToBizUserStatus((*source).Status)

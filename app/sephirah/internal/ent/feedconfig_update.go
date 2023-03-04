@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedConfigUpdate is the builder for updating FeedConfig entities.
@@ -37,15 +38,15 @@ func (fcu *FeedConfigUpdate) SetFeedURL(s string) *FeedConfigUpdate {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (fcu *FeedConfigUpdate) SetAuthorAccount(i int64) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdate {
 	fcu.mutation.ResetAuthorAccount()
-	fcu.mutation.SetAuthorAccount(i)
+	fcu.mutation.SetAuthorAccount(mi)
 	return fcu
 }
 
-// AddAuthorAccount adds i to the "author_account" field.
-func (fcu *FeedConfigUpdate) AddAuthorAccount(i int64) *FeedConfigUpdate {
-	fcu.mutation.AddAuthorAccount(i)
+// AddAuthorAccount adds mi to the "author_account" field.
+func (fcu *FeedConfigUpdate) AddAuthorAccount(mi model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.AddAuthorAccount(mi)
 	return fcu
 }
 
@@ -109,7 +110,7 @@ func (fcu *FeedConfigUpdate) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdat
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (fcu *FeedConfigUpdate) SetUserID(id int64) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetUserID(id model.InternalID) *FeedConfigUpdate {
 	fcu.mutation.SetUserID(id)
 	return fcu
 }
@@ -120,13 +121,13 @@ func (fcu *FeedConfigUpdate) SetUser(u *User) *FeedConfigUpdate {
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcu *FeedConfigUpdate) SetFeedID(id int64) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetFeedID(id model.InternalID) *FeedConfigUpdate {
 	fcu.mutation.SetFeedID(id)
 	return fcu
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableFeedID(id *int64) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdate {
 	if id != nil {
 		fcu = fcu.SetFeedID(*id)
 	}
@@ -348,15 +349,15 @@ func (fcuo *FeedConfigUpdateOne) SetFeedURL(s string) *FeedConfigUpdateOne {
 }
 
 // SetAuthorAccount sets the "author_account" field.
-func (fcuo *FeedConfigUpdateOne) SetAuthorAccount(i int64) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdateOne {
 	fcuo.mutation.ResetAuthorAccount()
-	fcuo.mutation.SetAuthorAccount(i)
+	fcuo.mutation.SetAuthorAccount(mi)
 	return fcuo
 }
 
-// AddAuthorAccount adds i to the "author_account" field.
-func (fcuo *FeedConfigUpdateOne) AddAuthorAccount(i int64) *FeedConfigUpdateOne {
-	fcuo.mutation.AddAuthorAccount(i)
+// AddAuthorAccount adds mi to the "author_account" field.
+func (fcuo *FeedConfigUpdateOne) AddAuthorAccount(mi model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.AddAuthorAccount(mi)
 	return fcuo
 }
 
@@ -420,7 +421,7 @@ func (fcuo *FeedConfigUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedConfigU
 }
 
 // SetUserID sets the "user" edge to the User entity by ID.
-func (fcuo *FeedConfigUpdateOne) SetUserID(id int64) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetUserID(id model.InternalID) *FeedConfigUpdateOne {
 	fcuo.mutation.SetUserID(id)
 	return fcuo
 }
@@ -431,13 +432,13 @@ func (fcuo *FeedConfigUpdateOne) SetUser(u *User) *FeedConfigUpdateOne {
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
-func (fcuo *FeedConfigUpdateOne) SetFeedID(id int64) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetFeedID(id model.InternalID) *FeedConfigUpdateOne {
 	fcuo.mutation.SetFeedID(id)
 	return fcuo
 }
 
 // SetNillableFeedID sets the "feed" edge to the Feed entity by ID if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableFeedID(id *int64) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetNillableFeedID(id *model.InternalID) *FeedConfigUpdateOne {
 	if id != nil {
 		fcuo = fcuo.SetFeedID(*id)
 	}
