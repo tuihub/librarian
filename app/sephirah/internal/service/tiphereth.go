@@ -145,10 +145,16 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountsRequest) (
 	*pb.ListLinkAccountsResponse, error,
 ) {
-	res, total, err := s.t.ListLinkAccount(ctx, model.Paging{
-		PageSize: int(req.GetPaging().GetPageSize()),
-		PageNum:  int(req.GetPaging().GetPageNum()),
-	}, converter.ToBizInternalID(req.GetUserId()))
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	res, total, err := s.t.ListLinkAccount(ctx,
+		model.Paging{
+			PageSize: int(req.GetPaging().GetPageSize()),
+			PageNum:  int(req.GetPaging().GetPageNum()),
+		},
+		converter.ToBizInternalID(req.GetUserId()),
+	)
 	if err != nil {
 		return nil, err
 	}

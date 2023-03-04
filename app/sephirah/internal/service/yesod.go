@@ -35,11 +35,15 @@ func (s *LibrarianSephirahServiceService) ListFeeds(
 	ctx context.Context,
 	req *pb.ListFeedsRequest,
 ) (*pb.ListFeedsResponse, error) {
-	feeds, total, err := s.y.ListFeeds(ctx, model.Paging{
-		PageSize: int(req.GetPaging().GetPageSize()),
-		PageNum:  int(req.GetPaging().GetPageSize()),
-	}, s.converter.ToBizInternalIDList(
-		req.GetIdFilter()),
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	feeds, total, err := s.y.ListFeeds(ctx,
+		model.Paging{
+			PageSize: int(req.GetPaging().GetPageSize()),
+			PageNum:  int(req.GetPaging().GetPageNum()),
+		},
+		s.converter.ToBizInternalIDList(req.GetIdFilter()),
 		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		s.converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
 		s.converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
@@ -56,6 +60,9 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,
 	req *pb.ListFeedItemsRequest,
 ) (*pb.ListFeedItemsResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
 	items, total, err := s.y.ListFeedItems(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),

@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 	"strconv"
+	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
@@ -294,12 +295,14 @@ func NewPullFeedTopic(
 				return err
 			}
 			for _, item := range feed.Items {
+				// generate internal_id
 				var res *searcher.NewIDResponse
 				res, err = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
 				if err != nil {
 					return err
 				}
 				item.ID = converter.ToBizInternalID(res.GetId())
+				// generate publish_platform
 				if len(item.Link) > 0 {
 					var linkParsed *url.URL
 					linkParsed, err = url.Parse(item.Link)
@@ -307,6 +310,11 @@ func NewPullFeedTopic(
 						continue
 					}
 					item.PublishPlatform = linkParsed.Host
+				}
+				// generate published_parsed
+				if item.PublishedParsed == nil {
+					t := time.Now()
+					item.PublishedParsed = &t
 				}
 			}
 			return a.y.UpsertFeedItems(ctx, feed.Items, feed.ID)

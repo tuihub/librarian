@@ -11,9 +11,14 @@ import (
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) (model.InternalID, error) {
+func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) (model.InternalID, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return 0, pb.ErrorErrorReasonForbidden("no permission")
+	}
 	claims, exist := libauth.FromContext(ctx)
 	if !exist {
 		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
@@ -39,7 +44,10 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	return config.ID, nil
 }
 
-func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) error {
+func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) *errors.Error {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	}
 	err := y.repo.UpdateFeedConfig(ctx, config)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())

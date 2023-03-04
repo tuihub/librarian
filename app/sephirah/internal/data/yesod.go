@@ -231,7 +231,8 @@ func (y *yesodRepo) ListFeedItems(
 			return err
 		}
 		items, err := iq.
-			Select(feeditem.FieldID, feeditem.FieldFeedID).
+			Order(ent.Desc(feeditem.FieldPublishedParsed)).
+			Select(feeditem.FieldID, feeditem.FieldFeedID, feeditem.FieldPublishedParsed).
 			Limit(paging.PageSize).
 			Offset((paging.PageNum - 1) * paging.PageSize).
 			All(ctx)
@@ -241,8 +242,8 @@ func (y *yesodRepo) ListFeedItems(
 		res = make([]*modelyesod.FeedItemIDWithFeedID, 0, len(items))
 		for _, item := range items {
 			res = append(res, &modelyesod.FeedItemIDWithFeedID{
-				FeedID: item.ID,
-				ItemID: item.FeedID,
+				FeedID: item.FeedID,
+				ItemID: item.ID,
 			})
 		}
 		return nil

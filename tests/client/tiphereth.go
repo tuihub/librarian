@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc/metadata"
@@ -140,10 +139,7 @@ func (c *Client) AssertListUser(
 	ctx context.Context, types []pb.UserType, statuses []pb.UserStatus, assertFunc func(*pb.ListUsersResponse) bool,
 ) {
 	resp, err := c.cli.ListUsers(ctx, &pb.ListUsersRequest{
-		Paging: &librarian.PagingRequest{
-			PageNum:  1,
-			PageSize: 10, //nolint:gomnd // definite
-		},
+		Paging:       defaultPaging,
 		TypeFilter:   types,
 		StatusFilter: statuses,
 	})
@@ -151,6 +147,6 @@ func (c *Client) AssertListUser(
 		panic(err)
 	}
 	if !assertFunc(resp) {
-		panic("unexpected ListUser response")
+		panic(fmt.Sprintf("unexpected ListUser response, %+v", resp))
 	}
 }
