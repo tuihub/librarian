@@ -36,7 +36,7 @@ func TestLibrarianSearcherServiceService_NewID(t *testing.T) {
 	m.AssertExpectations(t)
 	assert.Nil(t, err)
 	if assert.NotNil(t, id) {
-		assert.Equal(t, (int64)(123), id.Id)
+		assert.Equal(t, (int64)(123), id.Id.Id)
 	}
 	mc.Unset()
 
