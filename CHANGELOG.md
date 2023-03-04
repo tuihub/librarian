@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.8](https://github.com/TuiHub/Librarian/compare/v0.0.7...v0.0.8) (2023-03-04)
+
+
+### Features
+
+* impl GetUser ListFeeds ListFeedItems GetFeedItem GetBatchFeedItems ([d5cbb6c](https://github.com/TuiHub/Librarian/commit/d5cbb6c1a4311460a267581b5879d4d32f73f027))
+* **mq:** add postgres driver ([88966e8](https://github.com/TuiHub/Librarian/commit/88966e8a8600cc221b0a164a47bd0fcfeace2620))
+* tested Yesod interfaces ([f5b6e51](https://github.com/TuiHub/Librarian/commit/f5b6e515bd4681c4349a7c439029c12b470da224))
+
+
+### Bug Fixes
+
+* update protos to 0.2.9 & fix angela logic ([73cbc06](https://github.com/TuiHub/Librarian/commit/73cbc06e85cc2787da51ec70ef3f806a0386fc29))
+
 ## [0.0.7](https://github.com/TuiHub/Librarian/compare/v0.0.6-4...v0.0.7) (2023-02-28)
 
 
