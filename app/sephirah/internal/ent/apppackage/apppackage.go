@@ -22,10 +22,12 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldPublic holds the string denoting the public field in the database.
+	FieldPublic = "public"
 	// FieldBinaryName holds the string denoting the binary_name field in the database.
 	FieldBinaryName = "binary_name"
-	// FieldBinarySize holds the string denoting the binary_size field in the database.
-	FieldBinarySize = "binary_size"
+	// FieldBinarySizeByte holds the string denoting the binary_size_byte field in the database.
+	FieldBinarySizeByte = "binary_size_byte"
 	// FieldBinaryPublicURL holds the string denoting the binary_public_url field in the database.
 	FieldBinaryPublicURL = "binary_public_url"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -53,8 +55,9 @@ var Columns = []string{
 	FieldSourcePackageID,
 	FieldName,
 	FieldDescription,
+	FieldPublic,
 	FieldBinaryName,
-	FieldBinarySize,
+	FieldBinarySizeByte,
 	FieldBinaryPublicURL,
 	FieldUpdatedAt,
 	FieldCreatedAt,

@@ -43,6 +43,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura
 		modelgeburaAppPackage.Name = (*source).Name
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.ToBizAppPackageBinary((*source).Binary)
+		modelgeburaAppPackage.Public = (*source).Public
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage
@@ -52,7 +53,7 @@ func (c *toBizConverterImpl) ToBizAppPackageBinary(source *v1.AppPackageBinary) 
 	if source != nil {
 		var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
 		modelgeburaAppPackageBinary.Name = (*source).Name
-		modelgeburaAppPackageBinary.Size = (*source).Size
+		modelgeburaAppPackageBinary.SizeByte = (*source).SizeByte
 		modelgeburaAppPackageBinary.PublicURL = (*source).PublicUrl
 		pModelgeburaAppPackageBinary = &modelgeburaAppPackageBinary
 	}
@@ -244,6 +245,7 @@ func (c *toPBConverterImpl) ToPBAppPackage(source *modelgebura.AppPackage) *v1.A
 		v1AppPackage.Name = (*source).Name
 		v1AppPackage.Description = (*source).Description
 		v1AppPackage.Binary = c.ToPBAppPackageBinary((*source).Binary)
+		v1AppPackage.Public = (*source).Public
 		pV1AppPackage = &v1AppPackage
 	}
 	return pV1AppPackage
@@ -253,7 +255,7 @@ func (c *toPBConverterImpl) ToPBAppPackageBinary(source *modelgebura.AppPackageB
 	if source != nil {
 		var v1AppPackageBinary v1.AppPackageBinary
 		v1AppPackageBinary.Name = (*source).Name
-		v1AppPackageBinary.Size = (*source).Size
+		v1AppPackageBinary.SizeByte = (*source).SizeByte
 		v1AppPackageBinary.PublicUrl = (*source).PublicURL
 		pV1AppPackageBinary = &v1AppPackageBinary
 	}

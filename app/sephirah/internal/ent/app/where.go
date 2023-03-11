@@ -940,6 +940,60 @@ func HasAppPackageWith(preds ...predicate.AppPackage) predicate.App {
 	})
 }
 
+// HasBindInternal applies the HasEdge predicate on the "bind_internal" edge.
+func HasBindInternal() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, BindInternalTable, BindInternalColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasBindInternalWith applies the HasEdge predicate on the "bind_internal" edge with a given conditions (other predicates).
+func HasBindInternalWith(preds ...predicate.App) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, BindInternalTable, BindInternalColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasBindExternal applies the HasEdge predicate on the "bind_external" edge.
+func HasBindExternal() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, BindExternalTable, BindExternalColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasBindExternalWith applies the HasEdge predicate on the "bind_external" edge with a given conditions (other predicates).
+func HasBindExternalWith(preds ...predicate.App) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, BindExternalTable, BindExternalColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.App) predicate.App {
 	return predicate.App(func(s *sql.Selector) {

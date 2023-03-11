@@ -28,10 +28,12 @@ type AppPackage struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
+	// Public holds the value of the "public" field.
+	Public bool `json:"public,omitempty"`
 	// BinaryName holds the value of the "binary_name" field.
 	BinaryName string `json:"binary_name,omitempty"`
-	// BinarySize holds the value of the "binary_size" field.
-	BinarySize int64 `json:"binary_size,omitempty"`
+	// BinarySizeByte holds the value of the "binary_size_byte" field.
+	BinarySizeByte int64 `json:"binary_size_byte,omitempty"`
 	// BinaryPublicURL holds the value of the "binary_public_url" field.
 	BinaryPublicURL string `json:"binary_public_url,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -71,7 +73,9 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySize:
+		case apppackage.FieldPublic:
+			values[i] = new(sql.NullBool)
+		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeByte:
 			values[i] = new(sql.NullInt64)
 		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
@@ -130,17 +134,23 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.Description = value.String
 			}
+		case apppackage.FieldPublic:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field public", values[i])
+			} else if value.Valid {
+				ap.Public = value.Bool
+			}
 		case apppackage.FieldBinaryName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field binary_name", values[i])
 			} else if value.Valid {
 				ap.BinaryName = value.String
 			}
-		case apppackage.FieldBinarySize:
+		case apppackage.FieldBinarySizeByte:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field binary_size", values[i])
+				return fmt.Errorf("unexpected type %T for field binary_size_byte", values[i])
 			} else if value.Valid {
-				ap.BinarySize = value.Int64
+				ap.BinarySizeByte = value.Int64
 			}
 		case apppackage.FieldBinaryPublicURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -215,11 +225,14 @@ func (ap *AppPackage) String() string {
 	builder.WriteString("description=")
 	builder.WriteString(ap.Description)
 	builder.WriteString(", ")
+	builder.WriteString("public=")
+	builder.WriteString(fmt.Sprintf("%v", ap.Public))
+	builder.WriteString(", ")
 	builder.WriteString("binary_name=")
 	builder.WriteString(ap.BinaryName)
 	builder.WriteString(", ")
-	builder.WriteString("binary_size=")
-	builder.WriteString(fmt.Sprintf("%v", ap.BinarySize))
+	builder.WriteString("binary_size_byte=")
+	builder.WriteString(fmt.Sprintf("%v", ap.BinarySizeByte))
 	builder.WriteString(", ")
 	builder.WriteString("binary_public_url=")
 	builder.WriteString(ap.BinaryPublicURL)

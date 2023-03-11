@@ -77,14 +77,19 @@ func Description(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldDescription, v))
 }
 
+// Public applies equality check predicate on the "public" field. It's identical to PublicEQ.
+func Public(v bool) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldPublic, v))
+}
+
 // BinaryName applies equality check predicate on the "binary_name" field. It's identical to BinaryNameEQ.
 func BinaryName(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinaryName, v))
 }
 
-// BinarySize applies equality check predicate on the "binary_size" field. It's identical to BinarySizeEQ.
-func BinarySize(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldBinarySize, v))
+// BinarySizeByte applies equality check predicate on the "binary_size_byte" field. It's identical to BinarySizeByteEQ.
+func BinarySizeByte(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinarySizeByte, v))
 }
 
 // BinaryPublicURL applies equality check predicate on the "binary_public_url" field. It's identical to BinaryPublicURLEQ.
@@ -371,6 +376,16 @@ func DescriptionContainsFold(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldContainsFold(FieldDescription, v))
 }
 
+// PublicEQ applies the EQ predicate on the "public" field.
+func PublicEQ(v bool) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldPublic, v))
+}
+
+// PublicNEQ applies the NEQ predicate on the "public" field.
+func PublicNEQ(v bool) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNEQ(FieldPublic, v))
+}
+
 // BinaryNameEQ applies the EQ predicate on the "binary_name" field.
 func BinaryNameEQ(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinaryName, v))
@@ -436,44 +451,44 @@ func BinaryNameContainsFold(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldContainsFold(FieldBinaryName, v))
 }
 
-// BinarySizeEQ applies the EQ predicate on the "binary_size" field.
-func BinarySizeEQ(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldBinarySize, v))
+// BinarySizeByteEQ applies the EQ predicate on the "binary_size_byte" field.
+func BinarySizeByteEQ(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinarySizeByte, v))
 }
 
-// BinarySizeNEQ applies the NEQ predicate on the "binary_size" field.
-func BinarySizeNEQ(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNEQ(FieldBinarySize, v))
+// BinarySizeByteNEQ applies the NEQ predicate on the "binary_size_byte" field.
+func BinarySizeByteNEQ(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNEQ(FieldBinarySizeByte, v))
 }
 
-// BinarySizeIn applies the In predicate on the "binary_size" field.
-func BinarySizeIn(vs ...int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldIn(FieldBinarySize, vs...))
+// BinarySizeByteIn applies the In predicate on the "binary_size_byte" field.
+func BinarySizeByteIn(vs ...int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIn(FieldBinarySizeByte, vs...))
 }
 
-// BinarySizeNotIn applies the NotIn predicate on the "binary_size" field.
-func BinarySizeNotIn(vs ...int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNotIn(FieldBinarySize, vs...))
+// BinarySizeByteNotIn applies the NotIn predicate on the "binary_size_byte" field.
+func BinarySizeByteNotIn(vs ...int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotIn(FieldBinarySizeByte, vs...))
 }
 
-// BinarySizeGT applies the GT predicate on the "binary_size" field.
-func BinarySizeGT(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGT(FieldBinarySize, v))
+// BinarySizeByteGT applies the GT predicate on the "binary_size_byte" field.
+func BinarySizeByteGT(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGT(FieldBinarySizeByte, v))
 }
 
-// BinarySizeGTE applies the GTE predicate on the "binary_size" field.
-func BinarySizeGTE(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGTE(FieldBinarySize, v))
+// BinarySizeByteGTE applies the GTE predicate on the "binary_size_byte" field.
+func BinarySizeByteGTE(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGTE(FieldBinarySizeByte, v))
 }
 
-// BinarySizeLT applies the LT predicate on the "binary_size" field.
-func BinarySizeLT(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLT(FieldBinarySize, v))
+// BinarySizeByteLT applies the LT predicate on the "binary_size_byte" field.
+func BinarySizeByteLT(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLT(FieldBinarySizeByte, v))
 }
 
-// BinarySizeLTE applies the LTE predicate on the "binary_size" field.
-func BinarySizeLTE(v int64) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLTE(FieldBinarySize, v))
+// BinarySizeByteLTE applies the LTE predicate on the "binary_size_byte" field.
+func BinarySizeByteLTE(v int64) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLTE(FieldBinarySizeByte, v))
 }
 
 // BinaryPublicURLEQ applies the EQ predicate on the "binary_public_url" field.

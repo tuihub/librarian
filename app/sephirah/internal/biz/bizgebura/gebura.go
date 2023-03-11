@@ -24,7 +24,7 @@ type GeburaRepo interface {
 	UpdateApp(context.Context, *modelgebura.App) error
 	UpsertApp(context.Context, []*modelgebura.App) error
 	ListApp(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
-		[]model.InternalID, bool) ([]*modelgebura.App, error)
+		[]model.InternalID, bool) ([]*modelgebura.App, int64, error)
 	IsAppPackage(context.Context, model.InternalID) error
 	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
 	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error

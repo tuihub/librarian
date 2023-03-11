@@ -24,7 +24,7 @@ require (
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.10
+	github.com/tuihub/protos v0.2.11
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.6.0
 	golang.org/x/exp v0.0.0-20230304125523-9ff063c70017

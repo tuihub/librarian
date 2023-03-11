@@ -58,12 +58,21 @@ var (
 		{Name: "version", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "app_bind_external", Type: field.TypeInt64, Nullable: true},
 	}
 	// AppsTable holds the schema information for the "apps" table.
 	AppsTable = &schema.Table{
 		Name:       "apps",
 		Columns:    AppsColumns,
 		PrimaryKey: []*schema.Column{AppsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "apps_apps_bind_external",
+				Columns:    []*schema.Column{AppsColumns[15]},
+				RefColumns: []*schema.Column{AppsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "app_source_source_app_id",
@@ -80,8 +89,9 @@ var (
 		{Name: "source_package_id", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
+		{Name: "public", Type: field.TypeBool},
 		{Name: "binary_name", Type: field.TypeString},
-		{Name: "binary_size", Type: field.TypeInt64},
+		{Name: "binary_size_byte", Type: field.TypeInt64},
 		{Name: "binary_public_url", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
@@ -95,7 +105,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_packages_apps_app_package",
-				Columns:    []*schema.Column{AppPackagesColumns[11]},
+				Columns:    []*schema.Column{AppPackagesColumns[12]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -269,6 +279,7 @@ var (
 
 func init() {
 	AccountsTable.ForeignKeys[0].RefTable = UsersTable
+	AppsTable.ForeignKeys[0].RefTable = AppsTable
 	AppPackagesTable.ForeignKeys[0].RefTable = AppsTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable

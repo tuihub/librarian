@@ -45,11 +45,12 @@ type AppPackage struct {
 	Name            string
 	Description     string
 	Binary          *AppPackageBinary
+	Public          bool
 }
 
 type AppPackageBinary struct {
 	Name      string
-	Size      int64
+	SizeByte  int64
 	PublicURL string
 }
 

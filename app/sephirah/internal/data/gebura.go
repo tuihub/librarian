@@ -28,7 +28,7 @@ func NewGeburaRepo(data *Data) bizgebura.GeburaRepo {
 }
 
 func (g geburaRepo) IsApp(ctx context.Context, id model.InternalID) error {
-	a, err := g.ListApp(ctx, model.Paging{
+	a, _, err := g.ListApp(ctx, model.Paging{
 		PageSize: 1,
 		PageNum:  0,
 	}, nil, nil, []model.InternalID{id}, false)
@@ -137,40 +137,53 @@ func (g geburaRepo) ListApp(
 	sources []modelgebura.AppSource,
 	types []modelgebura.AppType,
 	ids []model.InternalID,
-	containDetails bool) ([]*modelgebura.App, error) {
-	q := g.data.db.App.Query()
-	if len(sources) > 0 {
-		sourceFilter := make([]app.Source, len(sources))
-		for i, appSource := range sources {
-			sourceFilter[i] = converter.ToEntAppSource(appSource)
+	containDetails bool) ([]*modelgebura.App, int64, error) {
+	var al []*ent.App
+	var total int
+	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.App.Query()
+		if len(sources) > 0 {
+			sourceFilter := make([]app.Source, len(sources))
+			for i, appSource := range sources {
+				sourceFilter[i] = converter.ToEntAppSource(appSource)
+			}
+			q.Where(app.SourceIn(sourceFilter...))
 		}
-		q.Where(app.SourceIn(sourceFilter...))
-	}
-	if len(types) > 0 {
-		typeFilter := make([]app.Type, len(types))
-		for i, appType := range types {
-			typeFilter[i] = converter.ToEntAppType(appType)
+		if len(types) > 0 {
+			typeFilter := make([]app.Type, len(types))
+			for i, appType := range types {
+				typeFilter[i] = converter.ToEntAppType(appType)
+			}
+			q.Where(app.TypeIn(typeFilter...))
 		}
-		q.Where(app.TypeIn(typeFilter...))
-	}
-	if len(ids) > 0 {
-		q.Where(app.IDIn(ids...))
-	}
-	a, err := q.
-		Limit(paging.PageSize).
-		Offset((paging.PageNum - 1) * paging.PageSize).
-		All(ctx)
+		if len(ids) > 0 {
+			q.Where(app.IDIn(ids...))
+		}
+		var err error
+		total, err = q.Count(ctx)
+		if err != nil {
+			return err
+		}
+		al, err = q.
+			Limit(paging.PageSize).
+			Offset((paging.PageNum - 1) * paging.PageSize).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	apps := make([]*modelgebura.App, len(a))
-	for i, sa := range a {
+	apps := make([]*modelgebura.App, len(al))
+	for i, sa := range al {
 		apps[i] = g.data.converter.ToBizApp(sa)
 		if !containDetails {
 			apps[i].Details = nil
 		}
 	}
-	return apps, nil
+	return apps, int64(total), nil
 }
 
 func (g geburaRepo) IsAppPackage(ctx context.Context, id model.InternalID) error {
@@ -196,7 +209,7 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySize(ap.Binary.Size)
+		SetBinarySizeByte(ap.Binary.SizeByte)
 	return q.Exec(ctx)
 }
 
@@ -209,7 +222,7 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySize(ap.Binary.Size)
+		SetBinarySizeByte(ap.Binary.SizeByte)
 	return q.Exec(ctx)
 }
 
@@ -230,8 +243,8 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*modelgebura.App
 		if len(ap.Binary.Name) > 0 {
 			appPackages[i].SetBinaryName(ap.Binary.Name)
 		}
-		if ap.Binary.Size > 0 {
-			appPackages[i].SetBinarySize(ap.Binary.Size)
+		if ap.Binary.SizeByte > 0 {
+			appPackages[i].SetBinarySizeByte(ap.Binary.SizeByte)
 		}
 	}
 	return g.data.db.AppPackage.

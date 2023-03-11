@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
@@ -42,10 +43,10 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	}
 	return &pb.UpdateAppResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.ListAppRequest) (
-	*pb.ListAppResponse, error,
+func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.ListAppsRequest) (
+	*pb.ListAppsResponse, error,
 ) {
-	a, err := s.g.ListApp(ctx,
+	a, total, err := s.g.ListApp(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
@@ -57,60 +58,44 @@ func (s *LibrarianSephirahServiceService) ListApp(ctx context.Context, req *pb.L
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListAppResponse{ // TODO
-		Paging:  nil,
-		AppList: s.converter.ToPBAppList(a),
+	return &pb.ListAppsResponse{
+		Paging: &librarian.PagingResponse{TotalSize: total},
+		Apps:   s.converter.ToPBAppList(a),
 	}, nil
-}
-func (s *LibrarianSephirahServiceService) BindApp(ctx context.Context, req *pb.BindAppRequest) (
-	*pb.BindAppResponse, error,
-) {
-	a, err := s.g.BindApp(ctx, // TODO
-		modelgebura.App{
-			ID:               converter.ToBizInternalID(req.GetInternalAppId()),
-			Source:           0,
-			SourceAppID:      "",
-			SourceURL:        "",
-			Name:             "",
-			Type:             0,
-			ShortDescription: "",
-			ImageURL:         "",
-			Details:          nil,
-		},
-		modelgebura.App{
-			ID:               0,
-			Source:           converter.ToBizAppSource(req.GetBindAppId().GetSource()),
-			SourceAppID:      req.GetBindAppId().GetSourceAppId(),
-			SourceURL:        "",
-			Name:             "",
-			Type:             0,
-			ShortDescription: "",
-			ImageURL:         "",
-			Details:          nil,
-		})
-	if err != nil {
-		return nil, err
-	}
-	return &pb.BindAppResponse{BindAppId: converter.ToPBInternalID(a.ID)}, nil
-}
-func (s *LibrarianSephirahServiceService) UnBindApp(ctx context.Context, req *pb.UnBindAppRequest) (
-	*pb.UnBindAppResponse, error,
-) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
 	*pb.RefreshAppResponse, error,
 ) {
 	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
-func (s *LibrarianSephirahServiceService) ListBindApp(ctx context.Context, req *pb.ListBindAppRequest) (
-	*pb.ListBindAppResponse, error,
+func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
+	*pb.MergeAppsResponse, error,
 ) {
-	al, err := s.g.ListBindApp(ctx, converter.ToBizInternalID(req.GetAppId()))
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+}
+func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *pb.SearchAppsRequest) (
+	*pb.SearchAppsResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+}
+func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *pb.GetBindAppsRequest) (
+	*pb.GetBindAppsResponse, error,
+) {
+	al, err := s.g.GetBindApps(ctx, converter.ToBizInternalID(req.GetAppId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListBindAppResponse{AppList: s.converter.ToPBAppList(al)}, nil
+	return &pb.GetBindAppsResponse{Apps: s.converter.ToPBAppList(al)}, nil
+}
+func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *pb.PurchaseAppRequest) (
+	*pb.PurchaseAppResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+}
+func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req *pb.GetAppLibraryRequest) (
+	*pb.GetAppLibraryResponse, error,
+) {
+	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 
 func (s *LibrarianSephirahServiceService) CreateAppPackage(
@@ -133,10 +118,10 @@ func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	}
 	return &pb.UpdateAppPackageResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListAppPackage(
+func (s *LibrarianSephirahServiceService) ListAppPackages(
 	ctx context.Context,
-	req *pb.ListAppPackageRequest,
-) (*pb.ListAppPackageResponse, error) {
+	req *pb.ListAppPackagesRequest,
+) (*pb.ListAppPackagesResponse, error) {
 	ap, err := s.g.ListAppPackage(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
@@ -148,12 +133,12 @@ func (s *LibrarianSephirahServiceService) ListAppPackage(
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListAppPackageResponse{
-		Paging:         nil,
-		AppPackageList: s.converter.ToPBAppPackageList(ap),
+	return &pb.ListAppPackagesResponse{
+		Paging:      nil,
+		AppPackages: s.converter.ToPBAppPackageList(ap),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) BindAppPackage(
+func (s *LibrarianSephirahServiceService) AssignAppPackage(
 	ctx context.Context,
 	req *pb.AssignAppPackageRequest,
 ) (*pb.AssignAppPackageResponse, error) {
@@ -176,23 +161,24 @@ func (s *LibrarianSephirahServiceService) BindAppPackage(
 		Description:     "",
 		Binary: &modelgebura.AppPackageBinary{
 			Name:      "",
-			Size:      0,
+			SizeByte:  0,
 			PublicURL: "",
 		},
+		Public: false,
 	})
 	if err != nil {
 		return nil, err
 	}
 	return &pb.AssignAppPackageResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) UnBindAppPackage(
+func (s *LibrarianSephirahServiceService) UnAssignAppPackage(
 	ctx context.Context,
 	req *pb.UnAssignAppPackageRequest,
 ) (*pb.UnAssignAppPackageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnBindAppPackage not implemented")
 }
-func (s *LibrarianSephirahServiceService) ReportAppPackage(
-	conn pb.LibrarianSephirahService_ReportAppPackageServer,
+func (s *LibrarianSephirahServiceService) ReportAppPackages(
+	conn pb.LibrarianSephirahService_ReportAppPackagesServer,
 ) error {
 	handler, err0 := s.g.NewReportAppPackageHandler(conn.Context())
 	if err0 != nil {
@@ -206,7 +192,7 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 			}
 			return err
 		} else {
-			for id, a := range req.GetAppPackageList() {
+			for id, a := range req.GetAppPackages() {
 				apl = append(apl, &modelgebura.AppPackage{ // TODO
 					ID:              0,
 					Source:          0,
@@ -216,16 +202,17 @@ func (s *LibrarianSephirahServiceService) ReportAppPackage(
 					Description:     "",
 					Binary: &modelgebura.AppPackageBinary{
 						Name:      a.GetName(),
-						Size:      a.GetSize(),
+						SizeByte:  a.GetSizeByte(),
 						PublicURL: a.GetPublicUrl(),
 					},
+					Public: false,
 				})
 			}
 		}
 		if err := handler.Handle(conn.Context(), apl); err != nil {
 			return err
 		}
-		if err := conn.Send(&pb.ReportAppPackageResponse{}); err != nil {
+		if err := conn.Send(&pb.ReportAppPackagesResponse{}); err != nil {
 			return err
 		}
 	}

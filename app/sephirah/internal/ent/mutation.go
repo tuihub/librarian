@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	"entgo.io/ent"
+	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
@@ -19,9 +21,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-
-	"entgo.io/ent"
-	"entgo.io/ent/dialect/sql"
 )
 
 const (
@@ -768,33 +767,38 @@ func (m *AccountMutation) ResetEdge(name string) error {
 // AppMutation represents an operation that mutates the App nodes in the graph.
 type AppMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *model.InternalID
-	source             *app.Source
-	source_app_id      *string
-	source_url         *string
-	name               *string
-	_type              *app.Type
-	short_description  *string
-	description        *string
-	image_url          *string
-	release_date       *string
-	developer          *string
-	publisher          *string
-	version            *string
-	updated_at         *time.Time
-	created_at         *time.Time
-	clearedFields      map[string]struct{}
-	user               map[model.InternalID]struct{}
-	removeduser        map[model.InternalID]struct{}
-	cleareduser        bool
-	app_package        map[model.InternalID]struct{}
-	removedapp_package map[model.InternalID]struct{}
-	clearedapp_package bool
-	done               bool
-	oldValue           func(context.Context) (*App, error)
-	predicates         []predicate.App
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	source               *app.Source
+	source_app_id        *string
+	source_url           *string
+	name                 *string
+	_type                *app.Type
+	short_description    *string
+	description          *string
+	image_url            *string
+	release_date         *string
+	developer            *string
+	publisher            *string
+	version              *string
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	user                 map[model.InternalID]struct{}
+	removeduser          map[model.InternalID]struct{}
+	cleareduser          bool
+	app_package          map[model.InternalID]struct{}
+	removedapp_package   map[model.InternalID]struct{}
+	clearedapp_package   bool
+	bind_internal        *model.InternalID
+	clearedbind_internal bool
+	bind_external        map[model.InternalID]struct{}
+	removedbind_external map[model.InternalID]struct{}
+	clearedbind_external bool
+	done                 bool
+	oldValue             func(context.Context) (*App, error)
+	predicates           []predicate.App
 }
 
 var _ ent.Mutation = (*AppMutation)(nil)
@@ -1513,6 +1517,99 @@ func (m *AppMutation) ResetAppPackage() {
 	m.removedapp_package = nil
 }
 
+// SetBindInternalID sets the "bind_internal" edge to the App entity by id.
+func (m *AppMutation) SetBindInternalID(id model.InternalID) {
+	m.bind_internal = &id
+}
+
+// ClearBindInternal clears the "bind_internal" edge to the App entity.
+func (m *AppMutation) ClearBindInternal() {
+	m.clearedbind_internal = true
+}
+
+// BindInternalCleared reports if the "bind_internal" edge to the App entity was cleared.
+func (m *AppMutation) BindInternalCleared() bool {
+	return m.clearedbind_internal
+}
+
+// BindInternalID returns the "bind_internal" edge ID in the mutation.
+func (m *AppMutation) BindInternalID() (id model.InternalID, exists bool) {
+	if m.bind_internal != nil {
+		return *m.bind_internal, true
+	}
+	return
+}
+
+// BindInternalIDs returns the "bind_internal" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BindInternalID instead. It exists only for internal usage by the builders.
+func (m *AppMutation) BindInternalIDs() (ids []model.InternalID) {
+	if id := m.bind_internal; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBindInternal resets all changes to the "bind_internal" edge.
+func (m *AppMutation) ResetBindInternal() {
+	m.bind_internal = nil
+	m.clearedbind_internal = false
+}
+
+// AddBindExternalIDs adds the "bind_external" edge to the App entity by ids.
+func (m *AppMutation) AddBindExternalIDs(ids ...model.InternalID) {
+	if m.bind_external == nil {
+		m.bind_external = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.bind_external[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBindExternal clears the "bind_external" edge to the App entity.
+func (m *AppMutation) ClearBindExternal() {
+	m.clearedbind_external = true
+}
+
+// BindExternalCleared reports if the "bind_external" edge to the App entity was cleared.
+func (m *AppMutation) BindExternalCleared() bool {
+	return m.clearedbind_external
+}
+
+// RemoveBindExternalIDs removes the "bind_external" edge to the App entity by IDs.
+func (m *AppMutation) RemoveBindExternalIDs(ids ...model.InternalID) {
+	if m.removedbind_external == nil {
+		m.removedbind_external = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.bind_external, ids[i])
+		m.removedbind_external[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBindExternal returns the removed IDs of the "bind_external" edge to the App entity.
+func (m *AppMutation) RemovedBindExternalIDs() (ids []model.InternalID) {
+	for id := range m.removedbind_external {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BindExternalIDs returns the "bind_external" edge IDs in the mutation.
+func (m *AppMutation) BindExternalIDs() (ids []model.InternalID) {
+	for id := range m.bind_external {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBindExternal resets all changes to the "bind_external" edge.
+func (m *AppMutation) ResetBindExternal() {
+	m.bind_external = nil
+	m.clearedbind_external = false
+	m.removedbind_external = nil
+}
+
 // Where appends a list predicates to the AppMutation builder.
 func (m *AppMutation) Where(ps ...predicate.App) {
 	m.predicates = append(m.predicates, ps...)
@@ -1867,12 +1964,18 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.user != nil {
 		edges = append(edges, app.EdgeUser)
 	}
 	if m.app_package != nil {
 		edges = append(edges, app.EdgeAppPackage)
+	}
+	if m.bind_internal != nil {
+		edges = append(edges, app.EdgeBindInternal)
+	}
+	if m.bind_external != nil {
+		edges = append(edges, app.EdgeBindExternal)
 	}
 	return edges
 }
@@ -1893,18 +1996,31 @@ func (m *AppMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeBindInternal:
+		if id := m.bind_internal; id != nil {
+			return []ent.Value{*id}
+		}
+	case app.EdgeBindExternal:
+		ids := make([]ent.Value, 0, len(m.bind_external))
+		for id := range m.bind_external {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.removeduser != nil {
 		edges = append(edges, app.EdgeUser)
 	}
 	if m.removedapp_package != nil {
 		edges = append(edges, app.EdgeAppPackage)
+	}
+	if m.removedbind_external != nil {
+		edges = append(edges, app.EdgeBindExternal)
 	}
 	return edges
 }
@@ -1925,18 +2041,30 @@ func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeBindExternal:
+		ids := make([]ent.Value, 0, len(m.removedbind_external))
+		for id := range m.removedbind_external {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 4)
 	if m.cleareduser {
 		edges = append(edges, app.EdgeUser)
 	}
 	if m.clearedapp_package {
 		edges = append(edges, app.EdgeAppPackage)
+	}
+	if m.clearedbind_internal {
+		edges = append(edges, app.EdgeBindInternal)
+	}
+	if m.clearedbind_external {
+		edges = append(edges, app.EdgeBindExternal)
 	}
 	return edges
 }
@@ -1949,6 +2077,10 @@ func (m *AppMutation) EdgeCleared(name string) bool {
 		return m.cleareduser
 	case app.EdgeAppPackage:
 		return m.clearedapp_package
+	case app.EdgeBindInternal:
+		return m.clearedbind_internal
+	case app.EdgeBindExternal:
+		return m.clearedbind_external
 	}
 	return false
 }
@@ -1957,6 +2089,9 @@ func (m *AppMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *AppMutation) ClearEdge(name string) error {
 	switch name {
+	case app.EdgeBindInternal:
+		m.ClearBindInternal()
+		return nil
 	}
 	return fmt.Errorf("unknown App unique edge %s", name)
 }
@@ -1971,6 +2106,12 @@ func (m *AppMutation) ResetEdge(name string) error {
 	case app.EdgeAppPackage:
 		m.ResetAppPackage()
 		return nil
+	case app.EdgeBindInternal:
+		m.ResetBindInternal()
+		return nil
+	case app.EdgeBindExternal:
+		m.ResetBindExternal()
+		return nil
 	}
 	return fmt.Errorf("unknown App edge %s", name)
 }
@@ -1978,27 +2119,28 @@ func (m *AppMutation) ResetEdge(name string) error {
 // AppPackageMutation represents an operation that mutates the AppPackage nodes in the graph.
 type AppPackageMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *model.InternalID
-	source            *apppackage.Source
-	source_id         *model.InternalID
-	addsource_id      *model.InternalID
-	source_package_id *string
-	name              *string
-	description       *string
-	binary_name       *string
-	binary_size       *int64
-	addbinary_size    *int64
-	binary_public_url *string
-	updated_at        *time.Time
-	created_at        *time.Time
-	clearedFields     map[string]struct{}
-	app               *model.InternalID
-	clearedapp        bool
-	done              bool
-	oldValue          func(context.Context) (*AppPackage, error)
-	predicates        []predicate.AppPackage
+	op                  Op
+	typ                 string
+	id                  *model.InternalID
+	source              *apppackage.Source
+	source_id           *model.InternalID
+	addsource_id        *model.InternalID
+	source_package_id   *string
+	name                *string
+	description         *string
+	public              *bool
+	binary_name         *string
+	binary_size_byte    *int64
+	addbinary_size_byte *int64
+	binary_public_url   *string
+	updated_at          *time.Time
+	created_at          *time.Time
+	clearedFields       map[string]struct{}
+	app                 *model.InternalID
+	clearedapp          bool
+	done                bool
+	oldValue            func(context.Context) (*AppPackage, error)
+	predicates          []predicate.AppPackage
 }
 
 var _ ent.Mutation = (*AppPackageMutation)(nil)
@@ -2305,6 +2447,42 @@ func (m *AppPackageMutation) ResetDescription() {
 	m.description = nil
 }
 
+// SetPublic sets the "public" field.
+func (m *AppPackageMutation) SetPublic(b bool) {
+	m.public = &b
+}
+
+// Public returns the value of the "public" field in the mutation.
+func (m *AppPackageMutation) Public() (r bool, exists bool) {
+	v := m.public
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublic returns the old "public" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldPublic(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublic: %w", err)
+	}
+	return oldValue.Public, nil
+}
+
+// ResetPublic resets all changes to the "public" field.
+func (m *AppPackageMutation) ResetPublic() {
+	m.public = nil
+}
+
 // SetBinaryName sets the "binary_name" field.
 func (m *AppPackageMutation) SetBinaryName(s string) {
 	m.binary_name = &s
@@ -2341,60 +2519,60 @@ func (m *AppPackageMutation) ResetBinaryName() {
 	m.binary_name = nil
 }
 
-// SetBinarySize sets the "binary_size" field.
-func (m *AppPackageMutation) SetBinarySize(i int64) {
-	m.binary_size = &i
-	m.addbinary_size = nil
+// SetBinarySizeByte sets the "binary_size_byte" field.
+func (m *AppPackageMutation) SetBinarySizeByte(i int64) {
+	m.binary_size_byte = &i
+	m.addbinary_size_byte = nil
 }
 
-// BinarySize returns the value of the "binary_size" field in the mutation.
-func (m *AppPackageMutation) BinarySize() (r int64, exists bool) {
-	v := m.binary_size
+// BinarySizeByte returns the value of the "binary_size_byte" field in the mutation.
+func (m *AppPackageMutation) BinarySizeByte() (r int64, exists bool) {
+	v := m.binary_size_byte
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBinarySize returns the old "binary_size" field's value of the AppPackage entity.
+// OldBinarySizeByte returns the old "binary_size_byte" field's value of the AppPackage entity.
 // If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinarySize(ctx context.Context) (v int64, err error) {
+func (m *AppPackageMutation) OldBinarySizeByte(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinarySize is only allowed on UpdateOne operations")
+		return v, errors.New("OldBinarySizeByte is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinarySize requires an ID field in the mutation")
+		return v, errors.New("OldBinarySizeByte requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinarySize: %w", err)
+		return v, fmt.Errorf("querying old value for OldBinarySizeByte: %w", err)
 	}
-	return oldValue.BinarySize, nil
+	return oldValue.BinarySizeByte, nil
 }
 
-// AddBinarySize adds i to the "binary_size" field.
-func (m *AppPackageMutation) AddBinarySize(i int64) {
-	if m.addbinary_size != nil {
-		*m.addbinary_size += i
+// AddBinarySizeByte adds i to the "binary_size_byte" field.
+func (m *AppPackageMutation) AddBinarySizeByte(i int64) {
+	if m.addbinary_size_byte != nil {
+		*m.addbinary_size_byte += i
 	} else {
-		m.addbinary_size = &i
+		m.addbinary_size_byte = &i
 	}
 }
 
-// AddedBinarySize returns the value that was added to the "binary_size" field in this mutation.
-func (m *AppPackageMutation) AddedBinarySize() (r int64, exists bool) {
-	v := m.addbinary_size
+// AddedBinarySizeByte returns the value that was added to the "binary_size_byte" field in this mutation.
+func (m *AppPackageMutation) AddedBinarySizeByte() (r int64, exists bool) {
+	v := m.addbinary_size_byte
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetBinarySize resets all changes to the "binary_size" field.
-func (m *AppPackageMutation) ResetBinarySize() {
-	m.binary_size = nil
-	m.addbinary_size = nil
+// ResetBinarySizeByte resets all changes to the "binary_size_byte" field.
+func (m *AppPackageMutation) ResetBinarySizeByte() {
+	m.binary_size_byte = nil
+	m.addbinary_size_byte = nil
 }
 
 // SetBinaryPublicURL sets the "binary_public_url" field.
@@ -2578,7 +2756,7 @@ func (m *AppPackageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppPackageMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.source != nil {
 		fields = append(fields, apppackage.FieldSource)
 	}
@@ -2594,11 +2772,14 @@ func (m *AppPackageMutation) Fields() []string {
 	if m.description != nil {
 		fields = append(fields, apppackage.FieldDescription)
 	}
+	if m.public != nil {
+		fields = append(fields, apppackage.FieldPublic)
+	}
 	if m.binary_name != nil {
 		fields = append(fields, apppackage.FieldBinaryName)
 	}
-	if m.binary_size != nil {
-		fields = append(fields, apppackage.FieldBinarySize)
+	if m.binary_size_byte != nil {
+		fields = append(fields, apppackage.FieldBinarySizeByte)
 	}
 	if m.binary_public_url != nil {
 		fields = append(fields, apppackage.FieldBinaryPublicURL)
@@ -2627,10 +2808,12 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case apppackage.FieldDescription:
 		return m.Description()
+	case apppackage.FieldPublic:
+		return m.Public()
 	case apppackage.FieldBinaryName:
 		return m.BinaryName()
-	case apppackage.FieldBinarySize:
-		return m.BinarySize()
+	case apppackage.FieldBinarySizeByte:
+		return m.BinarySizeByte()
 	case apppackage.FieldBinaryPublicURL:
 		return m.BinaryPublicURL()
 	case apppackage.FieldUpdatedAt:
@@ -2656,10 +2839,12 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldName(ctx)
 	case apppackage.FieldDescription:
 		return m.OldDescription(ctx)
+	case apppackage.FieldPublic:
+		return m.OldPublic(ctx)
 	case apppackage.FieldBinaryName:
 		return m.OldBinaryName(ctx)
-	case apppackage.FieldBinarySize:
-		return m.OldBinarySize(ctx)
+	case apppackage.FieldBinarySizeByte:
+		return m.OldBinarySizeByte(ctx)
 	case apppackage.FieldBinaryPublicURL:
 		return m.OldBinaryPublicURL(ctx)
 	case apppackage.FieldUpdatedAt:
@@ -2710,6 +2895,13 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
+	case apppackage.FieldPublic:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublic(v)
+		return nil
 	case apppackage.FieldBinaryName:
 		v, ok := value.(string)
 		if !ok {
@@ -2717,12 +2909,12 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBinaryName(v)
 		return nil
-	case apppackage.FieldBinarySize:
+	case apppackage.FieldBinarySizeByte:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBinarySize(v)
+		m.SetBinarySizeByte(v)
 		return nil
 	case apppackage.FieldBinaryPublicURL:
 		v, ok := value.(string)
@@ -2756,8 +2948,8 @@ func (m *AppPackageMutation) AddedFields() []string {
 	if m.addsource_id != nil {
 		fields = append(fields, apppackage.FieldSourceID)
 	}
-	if m.addbinary_size != nil {
-		fields = append(fields, apppackage.FieldBinarySize)
+	if m.addbinary_size_byte != nil {
+		fields = append(fields, apppackage.FieldBinarySizeByte)
 	}
 	return fields
 }
@@ -2769,8 +2961,8 @@ func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case apppackage.FieldSourceID:
 		return m.AddedSourceID()
-	case apppackage.FieldBinarySize:
-		return m.AddedBinarySize()
+	case apppackage.FieldBinarySizeByte:
+		return m.AddedBinarySizeByte()
 	}
 	return nil, false
 }
@@ -2787,12 +2979,12 @@ func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddSourceID(v)
 		return nil
-	case apppackage.FieldBinarySize:
+	case apppackage.FieldBinarySizeByte:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddBinarySize(v)
+		m.AddBinarySizeByte(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppPackage numeric field %s", name)
@@ -2836,11 +3028,14 @@ func (m *AppPackageMutation) ResetField(name string) error {
 	case apppackage.FieldDescription:
 		m.ResetDescription()
 		return nil
+	case apppackage.FieldPublic:
+		m.ResetPublic()
+		return nil
 	case apppackage.FieldBinaryName:
 		m.ResetBinaryName()
 		return nil
-	case apppackage.FieldBinarySize:
-		m.ResetBinarySize()
+	case apppackage.FieldBinarySizeByte:
+		m.ResetBinarySizeByte()
 		return nil
 	case apppackage.FieldBinaryPublicURL:
 		m.ResetBinaryPublicURL()

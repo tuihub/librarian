@@ -153,6 +153,40 @@ func (au *AppUpdate) AddAppPackage(a ...*AppPackage) *AppUpdate {
 	return au.AddAppPackageIDs(ids...)
 }
 
+// SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
+func (au *AppUpdate) SetBindInternalID(id model.InternalID) *AppUpdate {
+	au.mutation.SetBindInternalID(id)
+	return au
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (au *AppUpdate) SetNillableBindInternalID(id *model.InternalID) *AppUpdate {
+	if id != nil {
+		au = au.SetBindInternalID(*id)
+	}
+	return au
+}
+
+// SetBindInternal sets the "bind_internal" edge to the App entity.
+func (au *AppUpdate) SetBindInternal(a *App) *AppUpdate {
+	return au.SetBindInternalID(a.ID)
+}
+
+// AddBindExternalIDs adds the "bind_external" edge to the App entity by IDs.
+func (au *AppUpdate) AddBindExternalIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.AddBindExternalIDs(ids...)
+	return au
+}
+
+// AddBindExternal adds the "bind_external" edges to the App entity.
+func (au *AppUpdate) AddBindExternal(a ...*App) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddBindExternalIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (au *AppUpdate) Mutation() *AppMutation {
 	return au.mutation
@@ -198,6 +232,33 @@ func (au *AppUpdate) RemoveAppPackage(a ...*AppPackage) *AppUpdate {
 		ids[i] = a[i].ID
 	}
 	return au.RemoveAppPackageIDs(ids...)
+}
+
+// ClearBindInternal clears the "bind_internal" edge to the App entity.
+func (au *AppUpdate) ClearBindInternal() *AppUpdate {
+	au.mutation.ClearBindInternal()
+	return au
+}
+
+// ClearBindExternal clears all "bind_external" edges to the App entity.
+func (au *AppUpdate) ClearBindExternal() *AppUpdate {
+	au.mutation.ClearBindExternal()
+	return au
+}
+
+// RemoveBindExternalIDs removes the "bind_external" edge to App entities by IDs.
+func (au *AppUpdate) RemoveBindExternalIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.RemoveBindExternalIDs(ids...)
+	return au
+}
+
+// RemoveBindExternal removes "bind_external" edges to App entities.
+func (au *AppUpdate) RemoveBindExternal(a ...*App) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveBindExternalIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -413,6 +474,95 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if au.mutation.BindInternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   app.BindInternalTable,
+			Columns: []string{app.BindInternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.BindInternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   app.BindInternalTable,
+			Columns: []string{app.BindInternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.BindExternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedBindExternalIDs(); len(nodes) > 0 && !au.mutation.BindExternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.BindExternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{app.Label}
@@ -555,6 +705,40 @@ func (auo *AppUpdateOne) AddAppPackage(a ...*AppPackage) *AppUpdateOne {
 	return auo.AddAppPackageIDs(ids...)
 }
 
+// SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
+func (auo *AppUpdateOne) SetBindInternalID(id model.InternalID) *AppUpdateOne {
+	auo.mutation.SetBindInternalID(id)
+	return auo
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableBindInternalID(id *model.InternalID) *AppUpdateOne {
+	if id != nil {
+		auo = auo.SetBindInternalID(*id)
+	}
+	return auo
+}
+
+// SetBindInternal sets the "bind_internal" edge to the App entity.
+func (auo *AppUpdateOne) SetBindInternal(a *App) *AppUpdateOne {
+	return auo.SetBindInternalID(a.ID)
+}
+
+// AddBindExternalIDs adds the "bind_external" edge to the App entity by IDs.
+func (auo *AppUpdateOne) AddBindExternalIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.AddBindExternalIDs(ids...)
+	return auo
+}
+
+// AddBindExternal adds the "bind_external" edges to the App entity.
+func (auo *AppUpdateOne) AddBindExternal(a ...*App) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddBindExternalIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (auo *AppUpdateOne) Mutation() *AppMutation {
 	return auo.mutation
@@ -600,6 +784,33 @@ func (auo *AppUpdateOne) RemoveAppPackage(a ...*AppPackage) *AppUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return auo.RemoveAppPackageIDs(ids...)
+}
+
+// ClearBindInternal clears the "bind_internal" edge to the App entity.
+func (auo *AppUpdateOne) ClearBindInternal() *AppUpdateOne {
+	auo.mutation.ClearBindInternal()
+	return auo
+}
+
+// ClearBindExternal clears all "bind_external" edges to the App entity.
+func (auo *AppUpdateOne) ClearBindExternal() *AppUpdateOne {
+	auo.mutation.ClearBindExternal()
+	return auo
+}
+
+// RemoveBindExternalIDs removes the "bind_external" edge to App entities by IDs.
+func (auo *AppUpdateOne) RemoveBindExternalIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.RemoveBindExternalIDs(ids...)
+	return auo
+}
+
+// RemoveBindExternal removes "bind_external" edges to App entities.
+func (auo *AppUpdateOne) RemoveBindExternal(a ...*App) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveBindExternalIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
@@ -837,6 +1048,95 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt64,
 					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.BindInternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   app.BindInternalTable,
+			Columns: []string{app.BindInternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.BindInternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   app.BindInternalTable,
+			Columns: []string{app.BindInternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.BindExternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedBindExternalIDs(); len(nodes) > 0 && !auo.mutation.BindExternalCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.BindExternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
 				},
 			},
 		}

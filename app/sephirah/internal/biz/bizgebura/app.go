@@ -2,9 +2,11 @@ package bizgebura
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -15,6 +17,9 @@ import (
 )
 
 func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgebura.App, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	}
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
@@ -22,7 +27,7 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 	}
 	app.ID = converter.ToBizInternalID(resp.Id)
 	app.Source = modelgebura.AppSourceInternal
-	app.SourceAppID = ""
+	app.SourceAppID = strconv.FormatInt(int64(app.ID), 10)
 	app.SourceURL = ""
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
@@ -39,28 +44,15 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 }
 
 func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Error {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	}
 	app.Source = modelgebura.AppSourceInternal
 	err := g.repo.UpdateApp(ctx, app)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
-}
-
-func (g *Gebura) UpsertApp(ctx context.Context, app []*modelgebura.App) ([]*modelgebura.App, *errors.Error) {
-	for _, a := range app {
-		resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
-		if err != nil {
-			logger.Infof("NewID failed: %s", err.Error())
-			return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
-		a.ID = converter.ToBizInternalID(resp.Id)
-	}
-	err := g.repo.UpsertApp(ctx, app)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	return app, nil
 }
 
 func (g *Gebura) ListApp(
@@ -70,33 +62,19 @@ func (g *Gebura) ListApp(
 	types []modelgebura.AppType,
 	ids []model.InternalID,
 	containDetails bool,
-) ([]*modelgebura.App, *errors.Error) {
-	apps, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+) ([]*modelgebura.App, int64, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
+		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	return apps, nil
+	apps, total, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return apps, total, nil
 }
 
-func (g *Gebura) BindApp(
-	ctx context.Context,
-	internal modelgebura.App,
-	bind modelgebura.App,
-) (*modelgebura.App, *errors.Error) {
-	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
-	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	bind.ID = converter.ToBizInternalID(resp.Id)
-	if err = g.repo.UpsertApp(ctx, []*modelgebura.App{&bind}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	return &bind, nil
-}
-
-func (g *Gebura) ListBindApp(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
-	app, err := g.repo.ListApp(ctx, model.Paging{
+func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
+	app, _, err := g.repo.ListApp(ctx, model.Paging{
 		PageSize: 1,
 		PageNum:  1,
 	}, nil, nil, []model.InternalID{id}, false)
@@ -115,7 +93,7 @@ func (g *Gebura) ListBindApp(ctx context.Context, id model.InternalID) ([]*model
 	for i, v := range resp.GetVertexList() {
 		appids[i] = model.InternalID(v.GetVid())
 	}
-	apps, err := g.repo.ListApp(ctx, model.Paging{
+	apps, _, err := g.repo.ListApp(ctx, model.Paging{
 		PageSize: 99, //nolint:gomnd //TODO
 		PageNum:  1,
 	}, nil, nil, appids, true)

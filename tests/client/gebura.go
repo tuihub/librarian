@@ -24,7 +24,7 @@ func (c *Client) TestGebura(ctx context.Context) {
 	} else {
 		appID = resp.Id
 	}
-	if resp, err := c.cli.ListApp(ctx, &pb.ListAppRequest{
+	if resp, err := c.cli.ListApps(ctx, &pb.ListAppsRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
@@ -35,8 +35,8 @@ func (c *Client) TestGebura(ctx context.Context) {
 		ContainDetails: false,
 	}); err != nil {
 		panic(err)
-	} else if len(resp.GetAppList()) != 1 ||
-		resp.GetAppList()[0].GetId().GetId() != appID.GetId() {
+	} else if len(resp.GetApps()) != 1 ||
+		resp.GetApps()[0].GetId().GetId() != appID.GetId() {
 		panic("inconsistent app id")
 	}
 	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &librarian.App{

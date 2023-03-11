@@ -11,6 +11,10 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/model"
 
+	"entgo.io/ent"
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
@@ -18,10 +22,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
-
-	"entgo.io/ent/dialect"
-	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -63,6 +63,55 @@ func (c *Client) init() {
 	c.FeedConfig = NewFeedConfigClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
 	c.User = NewUserClient(c.config)
+}
+
+type (
+	// config is the configuration for the client and its builder.
+	config struct {
+		// driver used for executing database requests.
+		driver dialect.Driver
+		// debug enable a debug logging.
+		debug bool
+		// log used for logging on debug mode.
+		log func(...any)
+		// hooks to execute on mutations.
+		hooks *hooks
+		// interceptors to execute on queries.
+		inters *inters
+	}
+	// Option function to configure the client.
+	Option func(*config)
+)
+
+// options applies the options on the config object.
+func (c *config) options(opts ...Option) {
+	for _, opt := range opts {
+		opt(c)
+	}
+	if c.debug {
+		c.driver = dialect.Debug(c.driver, c.log)
+	}
+}
+
+// Debug enables debug logging on the ent.Driver.
+func Debug() Option {
+	return func(c *config) {
+		c.debug = true
+	}
+}
+
+// Log sets the logging function for debug mode.
+func Log(fn func(...any)) Option {
+	return func(c *config) {
+		c.log = fn
+	}
+}
+
+// Driver configures the client driver.
+func Driver(driver dialect.Driver) Option {
+	return func(c *config) {
+		c.driver = driver
+	}
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -157,25 +206,21 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Account.Use(hooks...)
-	c.App.Use(hooks...)
-	c.AppPackage.Use(hooks...)
-	c.Feed.Use(hooks...)
-	c.FeedConfig.Use(hooks...)
-	c.FeedItem.Use(hooks...)
-	c.User.Use(hooks...)
+	for _, n := range []interface{ Use(...Hook) }{
+		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.User,
+	} {
+		n.Use(hooks...)
+	}
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Account.Intercept(interceptors...)
-	c.App.Intercept(interceptors...)
-	c.AppPackage.Intercept(interceptors...)
-	c.Feed.Intercept(interceptors...)
-	c.FeedConfig.Intercept(interceptors...)
-	c.FeedItem.Intercept(interceptors...)
-	c.User.Intercept(interceptors...)
+	for _, n := range []interface{ Intercept(...Interceptor) }{
+		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.User,
+	} {
+		n.Intercept(interceptors...)
+	}
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -452,6 +497,38 @@ func (c *AppClient) QueryAppPackage(a *App) *AppPackageQuery {
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(apppackage.Table, apppackage.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.AppPackageTable, app.AppPackageColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryBindInternal queries the bind_internal edge of a App.
+func (c *AppClient) QueryBindInternal(a *App) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, app.BindInternalTable, app.BindInternalColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryBindExternal queries the bind_external edge of a App.
+func (c *AppClient) QueryBindExternal(a *App) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.BindExternalTable, app.BindExternalColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -1249,3 +1326,13 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 		return nil, fmt.Errorf("ent: unknown User mutation op: %q", m.Op())
 	}
 }
+
+// hooks and interceptors per client, for fast access.
+type (
+	hooks struct {
+		Account, App, AppPackage, Feed, FeedConfig, FeedItem, User []ent.Hook
+	}
+	inters struct {
+		Account, App, AppPackage, Feed, FeedConfig, FeedItem, User []ent.Interceptor
+	}
+)

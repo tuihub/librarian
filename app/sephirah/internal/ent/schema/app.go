@@ -62,5 +62,8 @@ func (App) Edges() []ent.Edge {
 		edge.From("user", User.Type).
 			Ref("app"),
 		edge.To("app_package", AppPackage.Type),
+		edge.To("bind_external", App.Type).
+			From("bind_internal").
+			Unique(),
 	}
 }

@@ -35,8 +35,9 @@ func (AppPackage) Fields() []ent.Field {
 		field.String("source_package_id"),
 		field.String("name"),
 		field.Text("description"),
+		field.Bool("public"),
 		field.String("binary_name"),
-		field.Int64("binary_size"),
+		field.Int64("binary_size_byte"),
 		field.String("binary_public_url"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),

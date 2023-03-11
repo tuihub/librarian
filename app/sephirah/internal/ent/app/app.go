@@ -44,6 +44,10 @@ const (
 	EdgeUser = "user"
 	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
 	EdgeAppPackage = "app_package"
+	// EdgeBindInternal holds the string denoting the bind_internal edge name in mutations.
+	EdgeBindInternal = "bind_internal"
+	// EdgeBindExternal holds the string denoting the bind_external edge name in mutations.
+	EdgeBindExternal = "bind_external"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
 	// UserTable is the table that holds the user relation/edge. The primary key declared below.
@@ -58,6 +62,14 @@ const (
 	AppPackageInverseTable = "app_packages"
 	// AppPackageColumn is the table column denoting the app_package relation/edge.
 	AppPackageColumn = "app_app_package"
+	// BindInternalTable is the table that holds the bind_internal relation/edge.
+	BindInternalTable = "apps"
+	// BindInternalColumn is the table column denoting the bind_internal relation/edge.
+	BindInternalColumn = "app_bind_external"
+	// BindExternalTable is the table that holds the bind_external relation/edge.
+	BindExternalTable = "apps"
+	// BindExternalColumn is the table column denoting the bind_external relation/edge.
+	BindExternalColumn = "app_bind_external"
 )
 
 // Columns holds all SQL columns for app fields.
@@ -79,6 +91,12 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
+// ForeignKeys holds the SQL foreign-keys that are owned by the "apps"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"app_bind_external",
+}
+
 var (
 	// UserPrimaryKey and UserColumn2 are the table columns denoting the
 	// primary key for the user relation (M2M).
@@ -89,6 +107,11 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}

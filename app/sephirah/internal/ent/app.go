@@ -47,7 +47,8 @@ type App struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.
-	Edges AppEdges `json:"edges"`
+	Edges             AppEdges `json:"edges"`
+	app_bind_external *model.InternalID
 }
 
 // AppEdges holds the relations/edges for other nodes in the graph.
@@ -56,9 +57,13 @@ type AppEdges struct {
 	User []*User `json:"user,omitempty"`
 	// AppPackage holds the value of the app_package edge.
 	AppPackage []*AppPackage `json:"app_package,omitempty"`
+	// BindInternal holds the value of the bind_internal edge.
+	BindInternal *App `json:"bind_internal,omitempty"`
+	// BindExternal holds the value of the bind_external edge.
+	BindExternal []*App `json:"bind_external,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [4]bool
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -79,6 +84,28 @@ func (e AppEdges) AppPackageOrErr() ([]*AppPackage, error) {
 	return nil, &NotLoadedError{edge: "app_package"}
 }
 
+// BindInternalOrErr returns the BindInternal value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppEdges) BindInternalOrErr() (*App, error) {
+	if e.loadedTypes[2] {
+		if e.BindInternal == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: app.Label}
+		}
+		return e.BindInternal, nil
+	}
+	return nil, &NotLoadedError{edge: "bind_internal"}
+}
+
+// BindExternalOrErr returns the BindExternal value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) BindExternalOrErr() ([]*App, error) {
+	if e.loadedTypes[3] {
+		return e.BindExternal, nil
+	}
+	return nil, &NotLoadedError{edge: "bind_external"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
@@ -90,6 +117,8 @@ func (*App) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case app.ForeignKeys[0]: // app_bind_external
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type App", columns[i])
 		}
@@ -195,6 +224,13 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.CreatedAt = value.Time
 			}
+		case app.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field app_bind_external", values[i])
+			} else if value.Valid {
+				a.app_bind_external = new(model.InternalID)
+				*a.app_bind_external = model.InternalID(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -208,6 +244,16 @@ func (a *App) QueryUser() *UserQuery {
 // QueryAppPackage queries the "app_package" edge of the App entity.
 func (a *App) QueryAppPackage() *AppPackageQuery {
 	return NewAppClient(a.config).QueryAppPackage(a)
+}
+
+// QueryBindInternal queries the "bind_internal" edge of the App entity.
+func (a *App) QueryBindInternal() *AppQuery {
+	return NewAppClient(a.config).QueryBindInternal(a)
+}
+
+// QueryBindExternal queries the "bind_external" edge of the App entity.
+func (a *App) QueryBindExternal() *AppQuery {
+	return NewAppClient(a.config).QueryBindExternal(a)
 }
 
 // Update returns a builder for updating this App.

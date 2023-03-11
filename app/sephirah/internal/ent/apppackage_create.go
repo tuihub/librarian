@@ -54,15 +54,21 @@ func (apc *AppPackageCreate) SetDescription(s string) *AppPackageCreate {
 	return apc
 }
 
+// SetPublic sets the "public" field.
+func (apc *AppPackageCreate) SetPublic(b bool) *AppPackageCreate {
+	apc.mutation.SetPublic(b)
+	return apc
+}
+
 // SetBinaryName sets the "binary_name" field.
 func (apc *AppPackageCreate) SetBinaryName(s string) *AppPackageCreate {
 	apc.mutation.SetBinaryName(s)
 	return apc
 }
 
-// SetBinarySize sets the "binary_size" field.
-func (apc *AppPackageCreate) SetBinarySize(i int64) *AppPackageCreate {
-	apc.mutation.SetBinarySize(i)
+// SetBinarySizeByte sets the "binary_size_byte" field.
+func (apc *AppPackageCreate) SetBinarySizeByte(i int64) *AppPackageCreate {
+	apc.mutation.SetBinarySizeByte(i)
 	return apc
 }
 
@@ -192,11 +198,14 @@ func (apc *AppPackageCreate) check() error {
 	if _, ok := apc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "AppPackage.description"`)}
 	}
+	if _, ok := apc.mutation.Public(); !ok {
+		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "AppPackage.public"`)}
+	}
 	if _, ok := apc.mutation.BinaryName(); !ok {
 		return &ValidationError{Name: "binary_name", err: errors.New(`ent: missing required field "AppPackage.binary_name"`)}
 	}
-	if _, ok := apc.mutation.BinarySize(); !ok {
-		return &ValidationError{Name: "binary_size", err: errors.New(`ent: missing required field "AppPackage.binary_size"`)}
+	if _, ok := apc.mutation.BinarySizeByte(); !ok {
+		return &ValidationError{Name: "binary_size_byte", err: errors.New(`ent: missing required field "AppPackage.binary_size_byte"`)}
 	}
 	if _, ok := apc.mutation.BinaryPublicURL(); !ok {
 		return &ValidationError{Name: "binary_public_url", err: errors.New(`ent: missing required field "AppPackage.binary_public_url"`)}
@@ -260,13 +269,17 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 		_spec.SetField(apppackage.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
+	if value, ok := apc.mutation.Public(); ok {
+		_spec.SetField(apppackage.FieldPublic, field.TypeBool, value)
+		_node.Public = value
+	}
 	if value, ok := apc.mutation.BinaryName(); ok {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 		_node.BinaryName = value
 	}
-	if value, ok := apc.mutation.BinarySize(); ok {
-		_spec.SetField(apppackage.FieldBinarySize, field.TypeInt64, value)
-		_node.BinarySize = value
+	if value, ok := apc.mutation.BinarySizeByte(); ok {
+		_spec.SetField(apppackage.FieldBinarySizeByte, field.TypeInt64, value)
+		_node.BinarySizeByte = value
 	}
 	if value, ok := apc.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
@@ -418,6 +431,18 @@ func (u *AppPackageUpsert) UpdateDescription() *AppPackageUpsert {
 	return u
 }
 
+// SetPublic sets the "public" field.
+func (u *AppPackageUpsert) SetPublic(v bool) *AppPackageUpsert {
+	u.Set(apppackage.FieldPublic, v)
+	return u
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppPackageUpsert) UpdatePublic() *AppPackageUpsert {
+	u.SetExcluded(apppackage.FieldPublic)
+	return u
+}
+
 // SetBinaryName sets the "binary_name" field.
 func (u *AppPackageUpsert) SetBinaryName(v string) *AppPackageUpsert {
 	u.Set(apppackage.FieldBinaryName, v)
@@ -430,21 +455,21 @@ func (u *AppPackageUpsert) UpdateBinaryName() *AppPackageUpsert {
 	return u
 }
 
-// SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsert) SetBinarySize(v int64) *AppPackageUpsert {
-	u.Set(apppackage.FieldBinarySize, v)
+// SetBinarySizeByte sets the "binary_size_byte" field.
+func (u *AppPackageUpsert) SetBinarySizeByte(v int64) *AppPackageUpsert {
+	u.Set(apppackage.FieldBinarySizeByte, v)
 	return u
 }
 
-// UpdateBinarySize sets the "binary_size" field to the value that was provided on create.
-func (u *AppPackageUpsert) UpdateBinarySize() *AppPackageUpsert {
-	u.SetExcluded(apppackage.FieldBinarySize)
+// UpdateBinarySizeByte sets the "binary_size_byte" field to the value that was provided on create.
+func (u *AppPackageUpsert) UpdateBinarySizeByte() *AppPackageUpsert {
+	u.SetExcluded(apppackage.FieldBinarySizeByte)
 	return u
 }
 
-// AddBinarySize adds v to the "binary_size" field.
-func (u *AppPackageUpsert) AddBinarySize(v int64) *AppPackageUpsert {
-	u.Add(apppackage.FieldBinarySize, v)
+// AddBinarySizeByte adds v to the "binary_size_byte" field.
+func (u *AppPackageUpsert) AddBinarySizeByte(v int64) *AppPackageUpsert {
+	u.Add(apppackage.FieldBinarySizeByte, v)
 	return u
 }
 
@@ -609,6 +634,20 @@ func (u *AppPackageUpsertOne) UpdateDescription() *AppPackageUpsertOne {
 	})
 }
 
+// SetPublic sets the "public" field.
+func (u *AppPackageUpsertOne) SetPublic(v bool) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetPublic(v)
+	})
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppPackageUpsertOne) UpdatePublic() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdatePublic()
+	})
+}
+
 // SetBinaryName sets the "binary_name" field.
 func (u *AppPackageUpsertOne) SetBinaryName(v string) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -623,24 +662,24 @@ func (u *AppPackageUpsertOne) UpdateBinaryName() *AppPackageUpsertOne {
 	})
 }
 
-// SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsertOne) SetBinarySize(v int64) *AppPackageUpsertOne {
+// SetBinarySizeByte sets the "binary_size_byte" field.
+func (u *AppPackageUpsertOne) SetBinarySizeByte(v int64) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.SetBinarySize(v)
+		s.SetBinarySizeByte(v)
 	})
 }
 
-// AddBinarySize adds v to the "binary_size" field.
-func (u *AppPackageUpsertOne) AddBinarySize(v int64) *AppPackageUpsertOne {
+// AddBinarySizeByte adds v to the "binary_size_byte" field.
+func (u *AppPackageUpsertOne) AddBinarySizeByte(v int64) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.AddBinarySize(v)
+		s.AddBinarySizeByte(v)
 	})
 }
 
-// UpdateBinarySize sets the "binary_size" field to the value that was provided on create.
-func (u *AppPackageUpsertOne) UpdateBinarySize() *AppPackageUpsertOne {
+// UpdateBinarySizeByte sets the "binary_size_byte" field to the value that was provided on create.
+func (u *AppPackageUpsertOne) UpdateBinarySizeByte() *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateBinarySize()
+		s.UpdateBinarySizeByte()
 	})
 }
 
@@ -973,6 +1012,20 @@ func (u *AppPackageUpsertBulk) UpdateDescription() *AppPackageUpsertBulk {
 	})
 }
 
+// SetPublic sets the "public" field.
+func (u *AppPackageUpsertBulk) SetPublic(v bool) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetPublic(v)
+	})
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppPackageUpsertBulk) UpdatePublic() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdatePublic()
+	})
+}
+
 // SetBinaryName sets the "binary_name" field.
 func (u *AppPackageUpsertBulk) SetBinaryName(v string) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -987,24 +1040,24 @@ func (u *AppPackageUpsertBulk) UpdateBinaryName() *AppPackageUpsertBulk {
 	})
 }
 
-// SetBinarySize sets the "binary_size" field.
-func (u *AppPackageUpsertBulk) SetBinarySize(v int64) *AppPackageUpsertBulk {
+// SetBinarySizeByte sets the "binary_size_byte" field.
+func (u *AppPackageUpsertBulk) SetBinarySizeByte(v int64) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.SetBinarySize(v)
+		s.SetBinarySizeByte(v)
 	})
 }
 
-// AddBinarySize adds v to the "binary_size" field.
-func (u *AppPackageUpsertBulk) AddBinarySize(v int64) *AppPackageUpsertBulk {
+// AddBinarySizeByte adds v to the "binary_size_byte" field.
+func (u *AppPackageUpsertBulk) AddBinarySizeByte(v int64) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.AddBinarySize(v)
+		s.AddBinarySizeByte(v)
 	})
 }
 
-// UpdateBinarySize sets the "binary_size" field to the value that was provided on create.
-func (u *AppPackageUpsertBulk) UpdateBinarySize() *AppPackageUpsertBulk {
+// UpdateBinarySizeByte sets the "binary_size_byte" field to the value that was provided on create.
+func (u *AppPackageUpsertBulk) UpdateBinarySizeByte() *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateBinarySize()
+		s.UpdateBinarySizeByte()
 	})
 }
 

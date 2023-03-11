@@ -161,6 +161,40 @@ func (ac *AppCreate) AddAppPackage(a ...*AppPackage) *AppCreate {
 	return ac.AddAppPackageIDs(ids...)
 }
 
+// SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
+func (ac *AppCreate) SetBindInternalID(id model.InternalID) *AppCreate {
+	ac.mutation.SetBindInternalID(id)
+	return ac
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (ac *AppCreate) SetNillableBindInternalID(id *model.InternalID) *AppCreate {
+	if id != nil {
+		ac = ac.SetBindInternalID(*id)
+	}
+	return ac
+}
+
+// SetBindInternal sets the "bind_internal" edge to the App entity.
+func (ac *AppCreate) SetBindInternal(a *App) *AppCreate {
+	return ac.SetBindInternalID(a.ID)
+}
+
+// AddBindExternalIDs adds the "bind_external" edge to the App entity by IDs.
+func (ac *AppCreate) AddBindExternalIDs(ids ...model.InternalID) *AppCreate {
+	ac.mutation.AddBindExternalIDs(ids...)
+	return ac
+}
+
+// AddBindExternal adds the "bind_external" edges to the App entity.
+func (ac *AppCreate) AddBindExternal(a ...*App) *AppCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddBindExternalIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (ac *AppCreate) Mutation() *AppMutation {
 	return ac.mutation
@@ -379,6 +413,45 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt64,
 					Column: apppackage.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.BindInternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   app.BindInternalTable,
+			Columns: []string{app.BindInternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.app_bind_external = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.BindExternalIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.BindExternalTable,
+			Columns: []string{app.BindExternalColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt64,
+					Column: app.FieldID,
 				},
 			},
 		}

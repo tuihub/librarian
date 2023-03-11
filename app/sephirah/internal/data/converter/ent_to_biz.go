@@ -43,7 +43,7 @@ type toBizConverter interface {
 	// goverter:mapIdentity Binary
 	ToBizAppPackage(*ent.AppPackage) *modelgebura.AppPackage
 	// goverter:map BinaryName Name
-	// goverter:map BinarySize Size
+	// goverter:map BinarySizeByte SizeByte
 	// goverter:map BinaryPublicURL PublicURL
 	ToBizAppPacakgeBinary(ent.AppPackage) modelgebura.AppPackageBinary
 	ToBizAppPackageList([]*ent.AppPackage) []*modelgebura.AppPackage

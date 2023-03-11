@@ -61,7 +61,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
 	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
 	modelgeburaAppPackageBinary.Name = source.BinaryName
-	modelgeburaAppPackageBinary.Size = source.BinarySize
+	modelgeburaAppPackageBinary.SizeByte = source.BinarySizeByte
 	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
 	return modelgeburaAppPackageBinary
 }
@@ -76,6 +76,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 		modelgeburaAppPackage.Name = (*source).Name
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.entAppPackageToPModelgeburaAppPackageBinary((*source))
+		modelgeburaAppPackage.Public = (*source).Public
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage
