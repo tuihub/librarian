@@ -95,14 +95,7 @@ func NewPullAccountTopic(
 ) *libmq.TopicImpl[modeltiphereth.PullAccountInfo] {
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
-		func() modeltiphereth.PullAccountInfo {
-			return modeltiphereth.PullAccountInfo{
-				ID:                0,
-				Platform:          0,
-				PlatformAccountID: "",
-			}
-		},
-		func(ctx context.Context, info modeltiphereth.PullAccountInfo) error {
+		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
 			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
 				Platform:          converter.ToPBAccountPlatform(info.Platform),
 				PlatformAccountId: info.PlatformAccountID,
@@ -143,13 +136,7 @@ func NewPullSteamAccountAppRelationTopic(
 ) *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation] {
 	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
-		func() modelangela.PullSteamAccountAppRelation {
-			return modelangela.PullSteamAccountAppRelation{
-				ID:      0,
-				SteamID: "",
-			}
-		},
-		func(ctx context.Context, r modelangela.PullSteamAccountAppRelation) error {
+		func(ctx context.Context, r *modelangela.PullSteamAccountAppRelation) error {
 			resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
 				RelationType: porter.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
 				AccountId: &librarian.AccountID{
@@ -245,13 +232,7 @@ func NewPullSteamAppTopic(
 ) *libmq.TopicImpl[modelangela.PullSteamApp] {
 	return libmq.NewTopic[modelangela.PullSteamApp](
 		"PullSteamApp",
-		func() modelangela.PullSteamApp {
-			return modelangela.PullSteamApp{
-				ID:    0,
-				AppID: "",
-			}
-		},
-		func(ctx context.Context, r modelangela.PullSteamApp) error {
+		func(ctx context.Context, r *modelangela.PullSteamApp) error {
 			resp, err := a.porter.PullApp(ctx, &porter.PullAppRequest{AppId: &librarian.AppID{
 				Source:      librarian.AppSource_APP_SOURCE_STEAM,
 				SourceAppId: r.AppID,
@@ -277,10 +258,7 @@ func NewPullFeedTopic(
 ) *libmq.TopicImpl[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
-		func() modelyesod.PullFeed {
-			return modelyesod.PullFeed{InternalID: 0, URL: "", Source: 0}
-		},
-		func(ctx context.Context, p modelyesod.PullFeed) error {
+		func(ctx context.Context, p *modelyesod.PullFeed) error {
 			resp, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
 				Source:    porter.FeedSource_FEED_SOURCE_COMMON,
 				ContentId: p.URL,

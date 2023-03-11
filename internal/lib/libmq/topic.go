@@ -2,8 +2,9 @@ package libmq
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+
+	"github.com/tuihub/librarian/internal/lib/libcodec"
 )
 
 type Topic interface {
@@ -12,11 +13,10 @@ type Topic interface {
 	SetMQ(*MQ)
 }
 
-func NewTopic[T any](topic string, payloadFunc func() T, consumerFunc func(context.Context, T) error) *TopicImpl[T] {
+func NewTopic[T any](topic string, consumerFunc func(context.Context, *T) error) *TopicImpl[T] {
 	return &TopicImpl[T]{
 		mq:           nil,
 		topicName:    topic,
-		payloadFunc:  payloadFunc,
 		consumerFunc: consumerFunc,
 	}
 }
@@ -24,8 +24,7 @@ func NewTopic[T any](topic string, payloadFunc func() T, consumerFunc func(conte
 type TopicImpl[T any] struct {
 	mq           *MQ
 	topicName    string
-	payloadFunc  func() T
-	consumerFunc func(context.Context, T) error
+	consumerFunc func(context.Context, *T) error
 }
 
 func (t *TopicImpl[T]) SetMQ(mq *MQ) {
@@ -36,15 +35,11 @@ func (t *TopicImpl[T]) Name() string {
 	return t.topicName
 }
 
-func (t *TopicImpl[T]) Payload() T {
-	return t.payloadFunc()
-}
-
 func (t *TopicImpl[T]) Publish(ctx context.Context, i T) error {
 	if t.mq == nil {
 		return errors.New("topic not registered")
 	}
-	p, err := json.Marshal(i)
+	p, err := libcodec.Marshal(libcodec.JSON, i)
 	if err != nil {
 		return err
 	}
@@ -52,8 +47,8 @@ func (t *TopicImpl[T]) Publish(ctx context.Context, i T) error {
 }
 
 func (t *TopicImpl[T]) Consume(ctx context.Context, i []byte) error {
-	p := t.Payload()
-	err := json.Unmarshal(i, &p)
+	p := new(T)
+	err := libcodec.Unmarshal(libcodec.JSON, i, p)
 	if err != nil {
 		return err
 	}
