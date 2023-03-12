@@ -19,16 +19,16 @@ import (
 
 // wireApp init kratos application.
 func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(searcher_Data)
+	index, err := data.NewBleve()
 	if err != nil {
 		return nil, nil, err
 	}
-	searcherRepo := data.NewSearcherRepo(dataData)
+	sonyflake := data.NewSnowFlake()
+	searcherRepo := data.NewSearcherRepo(index, sonyflake)
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer)
 	app := newApp(grpcServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }

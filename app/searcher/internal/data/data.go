@@ -1,24 +1,37 @@
 package data
 
 import (
-	"github.com/tuihub/librarian/internal/conf"
+	"context"
+	"time"
 
-	"github.com/go-kratos/kratos/v2/log"
+	"github.com/tuihub/librarian/app/searcher/internal/biz"
+
+	"github.com/blevesearch/bleve/v2"
 	"github.com/google/wire"
+	"github.com/sony/sonyflake"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewSearcherRepo)
+var ProviderSet = wire.NewSet(NewSearcherRepo, NewSnowFlake, NewBleve)
 
-// Data .
-type Data struct {
-	// TODO wrapped database client
+func NewSearcherRepo(b bleve.Index, sf *sonyflake.Sonyflake) biz.SearcherRepo {
+	return &bleveSearcherRepo{
+		sf:     sf,
+		search: b,
+	}
 }
 
-// NewData .
-func NewData(c *conf.Searcher_Data) (*Data, func(), error) {
-	cleanup := func() {
-		log.Info("closing the data resources")
-	}
-	return &Data{}, cleanup, nil
+func NewSnowFlake() *sonyflake.Sonyflake {
+	return sonyflake.NewSonyflake(sonyflake.Settings{
+		StartTime: time.Time{},
+		MachineID: func() (uint16, error) { // TODO
+			return 0, nil
+		},
+		CheckMachineID: nil,
+	})
+}
+
+func (r *bleveSearcherRepo) NewID(ctx context.Context) (int64, error) {
+	id, err := r.sf.NextID()
+	return int64(id), err
 }

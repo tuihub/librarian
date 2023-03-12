@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	"github.com/tuihub/librarian/app/searcher/internal/service"
+	"github.com/tuihub/librarian/internal/model"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/stretchr/testify/assert"
@@ -20,6 +21,16 @@ type mockedSearcherRepo struct {
 func (m *mockedSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	args := m.Called(ctx)
 	return args.Get(0).(int64), args.Error(1)
+}
+
+func (m *mockedSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, s string) error {
+	// TODO implement me
+	panic("implement me")
+}
+
+func (m *mockedSearcherRepo) SearchID(ctx context.Context, s string) ([]*biz.SearchResult, error) {
+	// TODO implement me
+	panic("implement me")
 }
 
 func TestLibrarianSearcherServiceService_NewID(t *testing.T) {

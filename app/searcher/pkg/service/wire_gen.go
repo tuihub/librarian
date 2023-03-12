@@ -17,14 +17,14 @@ import (
 // Injectors from wire.go:
 
 func NewSearcherService(searcher_Data *conf.Searcher_Data) (v1.LibrarianSearcherServiceServer, func(), error) {
-	dataData, cleanup, err := data.NewData(searcher_Data)
+	index, err := data.NewBleve()
 	if err != nil {
 		return nil, nil, err
 	}
-	searcherRepo := data.NewSearcherRepo(dataData)
+	sonyflake := data.NewSnowFlake()
+	searcherRepo := data.NewSearcherRepo(index, sonyflake)
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	return librarianSearcherServiceServer, func() {
-		cleanup()
 	}, nil
 }
