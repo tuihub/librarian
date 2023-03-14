@@ -2,6 +2,10 @@ package service
 
 import (
 	"context"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
+	"github.com/tuihub/librarian/internal/lib/libmq"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	"io"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
@@ -66,7 +70,32 @@ func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.
 func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
 	*pb.RefreshAppResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	porterClient, err := client.NewPorterClient()
+	if err != nil {
+		return nil, err
+	}
+	libmq.NewTopic[modelangela.PullSteamApp](
+		"RefreshSteamApp",
+		func(ctx context.Context, r *modelangela.PullSteamApp) error {
+			resp, err := porterClient.PullApp(ctx, &porter.PullAppRequest{AppId: &librarian.AppID{
+				Source:      librarian.AppSource_APP_SOURCE_STEAM,
+				SourceAppId: r.AppID,
+			}})
+			if err != nil {
+				return err
+			}
+			app := s.converter.ToBizApp(resp.GetApp())
+			app.ID = r.ID
+			app.Source = modelgebura.AppSourceSteam
+			app.Type = modelgebura.AppTypeGame
+			err = s.g.UpdateApp(ctx, app)
+			if err != nil {
+				return err
+			}
+			return nil
+		},
+	)
+	return &pb.RefreshAppResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
 	*pb.MergeAppsResponse, error,
