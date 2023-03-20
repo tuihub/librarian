@@ -12,6 +12,8 @@ const (
 	Label = "feed_config"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
 	// FieldFeedURL holds the string denoting the feed_url field in the database.
 	FieldFeedURL = "feed_url"
 	// FieldAuthorAccount holds the string denoting the author_account field in the database.
@@ -55,6 +57,7 @@ const (
 // Columns holds all SQL columns for feedconfig fields.
 var Columns = []string{
 	FieldID,
+	FieldName,
 	FieldFeedURL,
 	FieldAuthorAccount,
 	FieldSource,

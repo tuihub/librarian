@@ -19,7 +19,9 @@ type FeedWithConfig struct {
 
 type FeedConfig struct {
 	ID             model.InternalID
+	Name           string
 	FeedURL        string
+	Tags           []string
 	AuthorAccount  model.InternalID
 	Source         FeedConfigSource
 	Status         FeedConfigStatus
@@ -54,3 +56,12 @@ type PullFeed struct {
 	URL        string
 	Source     FeedConfigSource
 }
+
+type GroupFeedItemsBy int
+
+const (
+	GroupFeedItemsByUnspecified GroupFeedItemsBy = iota
+	GroupFeedItemsByYear
+	GroupFeedItemsByMonth
+	GroupFeedItemsByDay
+)

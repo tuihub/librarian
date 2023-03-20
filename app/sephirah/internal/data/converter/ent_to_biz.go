@@ -52,6 +52,7 @@ type toBizConverter interface {
 	// goverter:map Source | ToBizFeedConfigSource
 	// goverter:map Status | ToBizFeedConfigStatus
 	// goverter:map LatestPullAt LatestPullTime
+	// goverter:ignore Tags
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
 

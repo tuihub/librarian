@@ -336,12 +336,12 @@ func (fcq *FeedConfigQuery) WithFeed(opts ...func(*FeedQuery)) *FeedConfigQuery 
 // Example:
 //
 //	var v []struct {
-//		FeedURL string `json:"feed_url,omitempty"`
+//		Name string `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.FeedConfig.Query().
-//		GroupBy(feedconfig.FieldFeedURL).
+//		GroupBy(feedconfig.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigGroupBy {
@@ -359,11 +359,11 @@ func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigG
 // Example:
 //
 //	var v []struct {
-//		FeedURL string `json:"feed_url,omitempty"`
+//		Name string `json:"name,omitempty"`
 //	}
 //
 //	client.FeedConfig.Query().
-//		Select(feedconfig.FieldFeedURL).
+//		Select(feedconfig.FieldName).
 //		Scan(ctx, &v)
 func (fcq *FeedConfigQuery) Select(fields ...string) *FeedConfigSelect {
 	fcq.ctx.Fields = append(fcq.ctx.Fields, fields...)

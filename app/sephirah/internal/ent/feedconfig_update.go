@@ -31,6 +31,12 @@ func (fcu *FeedConfigUpdate) Where(ps ...predicate.FeedConfig) *FeedConfigUpdate
 	return fcu
 }
 
+// SetName sets the "name" field.
+func (fcu *FeedConfigUpdate) SetName(s string) *FeedConfigUpdate {
+	fcu.mutation.SetName(s)
+	return fcu
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (fcu *FeedConfigUpdate) SetFeedURL(s string) *FeedConfigUpdate {
 	fcu.mutation.SetFeedURL(s)
@@ -236,6 +242,9 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := fcu.mutation.Name(); ok {
+		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
+	}
 	if value, ok := fcu.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
 	}
@@ -357,6 +366,12 @@ type FeedConfigUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *FeedConfigMutation
+}
+
+// SetName sets the "name" field.
+func (fcuo *FeedConfigUpdateOne) SetName(s string) *FeedConfigUpdateOne {
+	fcuo.mutation.SetName(s)
+	return fcuo
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -593,6 +608,9 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := fcuo.mutation.Name(); ok {
+		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 	}
 	if value, ok := fcuo.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)

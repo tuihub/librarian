@@ -94,7 +94,16 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
 		modelyesodFeedConfig.ID = ToBizInternalID((*source).Id)
+		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.FeedURL = (*source).FeedUrl
+		var stringList []string
+		if (*source).Tags != nil {
+			stringList = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				stringList[i] = (*source).Tags[i]
+			}
+		}
+		modelyesodFeedConfig.Tags = stringList
 		modelyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
@@ -132,6 +141,16 @@ func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []mode
 		}
 	}
 	return modelInternalIDList
+}
+func (c *toBizConverterImpl) ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
+	var pModelTimeRange *model.TimeRange
+	if source != nil {
+		var modelTimeRange model.TimeRange
+		modelTimeRange.StartTime = ToBizTime((*source).StartTime)
+		modelTimeRange.Duration = DurationPBToDuration((*source).Duration)
+		pModelTimeRange = &modelTimeRange
+	}
+	return pModelTimeRange
 }
 func (c *toBizConverterImpl) ToBizUser(source *v11.User) *modeltiphereth.User {
 	var pModeltipherethUser *modeltiphereth.User
@@ -310,11 +329,20 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 	if source != nil {
 		var v1FeedConfig v11.FeedConfig
 		v1FeedConfig.Id = ToPBInternalID((*source).ID)
+		v1FeedConfig.Name = (*source).Name
 		v1FeedConfig.FeedUrl = (*source).FeedURL
 		v1FeedConfig.AuthorAccount = ToPBInternalID((*source).AuthorAccount)
 		v1FeedConfig.Source = ToPBFeedConfigSource((*source).Source)
 		v1FeedConfig.Status = ToPBFeedConfigStatus((*source).Status)
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
+		var stringList []string
+		if (*source).Tags != nil {
+			stringList = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				stringList[i] = (*source).Tags[i]
+			}
+		}
+		v1FeedConfig.Tags = stringList
 		v1FeedConfig.LatestPullTime = ToPBTime((*source).LatestPullTime)
 		pV1FeedConfig = &v1FeedConfig
 	}
@@ -376,45 +404,55 @@ func (c *toPBConverterImpl) ToPBFeedItemList(source []*modelfeed.Item) []*v1.Fee
 	}
 	return pV1FeedItemList
 }
-func (c *toPBConverterImpl) ToPBFeedWithConfig(source *modelyesod.FeedWithConfig) *v11.ListFeedsResponse_FeedWithConfig {
-	var pV1ListFeedsResponse_FeedWithConfig *v11.ListFeedsResponse_FeedWithConfig
+func (c *toPBConverterImpl) ToPBFeedWithConfig(source *modelyesod.FeedWithConfig) *v11.ListFeedConfigsResponse_FeedWithConfig {
+	var pV1ListFeedConfigsResponse_FeedWithConfig *v11.ListFeedConfigsResponse_FeedWithConfig
 	if source != nil {
-		var v1ListFeedsResponse_FeedWithConfig v11.ListFeedsResponse_FeedWithConfig
-		v1ListFeedsResponse_FeedWithConfig.Feed = c.ToPBFeed((*source).Feed)
-		v1ListFeedsResponse_FeedWithConfig.Config = c.ToPBFeedConfig((*source).FeedConfig)
-		pV1ListFeedsResponse_FeedWithConfig = &v1ListFeedsResponse_FeedWithConfig
+		var v1ListFeedConfigsResponse_FeedWithConfig v11.ListFeedConfigsResponse_FeedWithConfig
+		v1ListFeedConfigsResponse_FeedWithConfig.Feed = c.ToPBFeed((*source).Feed)
+		v1ListFeedConfigsResponse_FeedWithConfig.Config = c.ToPBFeedConfig((*source).FeedConfig)
+		pV1ListFeedConfigsResponse_FeedWithConfig = &v1ListFeedConfigsResponse_FeedWithConfig
 	}
-	return pV1ListFeedsResponse_FeedWithConfig
+	return pV1ListFeedConfigsResponse_FeedWithConfig
 }
-func (c *toPBConverterImpl) ToPBFeedWithConfigList(source []*modelyesod.FeedWithConfig) []*v11.ListFeedsResponse_FeedWithConfig {
-	var pV1ListFeedsResponse_FeedWithConfigList []*v11.ListFeedsResponse_FeedWithConfig
+func (c *toPBConverterImpl) ToPBFeedWithConfigList(source []*modelyesod.FeedWithConfig) []*v11.ListFeedConfigsResponse_FeedWithConfig {
+	var pV1ListFeedConfigsResponse_FeedWithConfigList []*v11.ListFeedConfigsResponse_FeedWithConfig
 	if source != nil {
-		pV1ListFeedsResponse_FeedWithConfigList = make([]*v11.ListFeedsResponse_FeedWithConfig, len(source))
+		pV1ListFeedConfigsResponse_FeedWithConfigList = make([]*v11.ListFeedConfigsResponse_FeedWithConfig, len(source))
 		for i := 0; i < len(source); i++ {
-			pV1ListFeedsResponse_FeedWithConfigList[i] = c.ToPBFeedWithConfig(source[i])
+			pV1ListFeedConfigsResponse_FeedWithConfigList[i] = c.ToPBFeedWithConfig(source[i])
 		}
 	}
-	return pV1ListFeedsResponse_FeedWithConfigList
+	return pV1ListFeedConfigsResponse_FeedWithConfigList
 }
-func (c *toPBConverterImpl) ToPBItemIDWithFeedID(source *modelyesod.FeedItemIDWithFeedID) *v11.ListFeedItemsResponse_FeedItemIDWithFeedID {
-	var pV1ListFeedItemsResponse_FeedItemIDWithFeedID *v11.ListFeedItemsResponse_FeedItemIDWithFeedID
+func (c *toPBConverterImpl) ToPBItemIDWithFeedID(source *modelyesod.FeedItemIDWithFeedID) *v11.FeedItemIDWithFeedID {
+	var pV1FeedItemIDWithFeedID *v11.FeedItemIDWithFeedID
 	if source != nil {
-		var v1ListFeedItemsResponse_FeedItemIDWithFeedID v11.ListFeedItemsResponse_FeedItemIDWithFeedID
-		v1ListFeedItemsResponse_FeedItemIDWithFeedID.FeedId = ToPBInternalID((*source).FeedID)
-		v1ListFeedItemsResponse_FeedItemIDWithFeedID.ItemId = ToPBInternalID((*source).ItemID)
-		pV1ListFeedItemsResponse_FeedItemIDWithFeedID = &v1ListFeedItemsResponse_FeedItemIDWithFeedID
+		var v1FeedItemIDWithFeedID v11.FeedItemIDWithFeedID
+		v1FeedItemIDWithFeedID.FeedId = ToPBInternalID((*source).FeedID)
+		v1FeedItemIDWithFeedID.ItemId = ToPBInternalID((*source).ItemID)
+		pV1FeedItemIDWithFeedID = &v1FeedItemIDWithFeedID
 	}
-	return pV1ListFeedItemsResponse_FeedItemIDWithFeedID
+	return pV1FeedItemIDWithFeedID
 }
-func (c *toPBConverterImpl) ToPBItemIDWithFeedIDList(source []*modelyesod.FeedItemIDWithFeedID) []*v11.ListFeedItemsResponse_FeedItemIDWithFeedID {
-	var pV1ListFeedItemsResponse_FeedItemIDWithFeedIDList []*v11.ListFeedItemsResponse_FeedItemIDWithFeedID
+func (c *toPBConverterImpl) ToPBItemIDWithFeedIDList(source []*modelyesod.FeedItemIDWithFeedID) []*v11.FeedItemIDWithFeedID {
+	var pV1FeedItemIDWithFeedIDList []*v11.FeedItemIDWithFeedID
 	if source != nil {
-		pV1ListFeedItemsResponse_FeedItemIDWithFeedIDList = make([]*v11.ListFeedItemsResponse_FeedItemIDWithFeedID, len(source))
+		pV1FeedItemIDWithFeedIDList = make([]*v11.FeedItemIDWithFeedID, len(source))
 		for i := 0; i < len(source); i++ {
-			pV1ListFeedItemsResponse_FeedItemIDWithFeedIDList[i] = c.ToPBItemIDWithFeedID(source[i])
+			pV1FeedItemIDWithFeedIDList[i] = c.ToPBItemIDWithFeedID(source[i])
 		}
 	}
-	return pV1ListFeedItemsResponse_FeedItemIDWithFeedIDList
+	return pV1FeedItemIDWithFeedIDList
+}
+func (c *toPBConverterImpl) ToPBTimeRange(source *model.TimeRange) *v1.TimeRange {
+	var pV1TimeRange *v1.TimeRange
+	if source != nil {
+		var v1TimeRange v1.TimeRange
+		v1TimeRange.StartTime = ToPBTime((*source).StartTime)
+		v1TimeRange.Duration = ToPBDuration((*source).Duration)
+		pV1TimeRange = &v1TimeRange
+	}
+	return pV1TimeRange
 }
 func (c *toPBConverterImpl) ToPBUser(source *modeltiphereth.User) *v11.User {
 	var pV1User *v11.User

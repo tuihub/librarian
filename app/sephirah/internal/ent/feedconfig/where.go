@@ -56,6 +56,11 @@ func IDLTE(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldID, id))
 }
 
+// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
+func Name(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldName, v))
+}
+
 // FeedURL applies equality check predicate on the "feed_url" field. It's identical to FeedURLEQ.
 func FeedURL(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldFeedURL, v))
@@ -91,6 +96,71 @@ func UpdatedAt(v time.Time) predicate.FeedConfig {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// NameEQ applies the EQ predicate on the "name" field.
+func NameEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldName, v))
+}
+
+// NameNEQ applies the NEQ predicate on the "name" field.
+func NameNEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldName, v))
+}
+
+// NameIn applies the In predicate on the "name" field.
+func NameIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldName, vs...))
+}
+
+// NameNotIn applies the NotIn predicate on the "name" field.
+func NameNotIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldName, vs...))
+}
+
+// NameGT applies the GT predicate on the "name" field.
+func NameGT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldName, v))
+}
+
+// NameGTE applies the GTE predicate on the "name" field.
+func NameGTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldName, v))
+}
+
+// NameLT applies the LT predicate on the "name" field.
+func NameLT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldName, v))
+}
+
+// NameLTE applies the LTE predicate on the "name" field.
+func NameLTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldName, v))
+}
+
+// NameContains applies the Contains predicate on the "name" field.
+func NameContains(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContains(FieldName, v))
+}
+
+// NameHasPrefix applies the HasPrefix predicate on the "name" field.
+func NameHasPrefix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasPrefix(FieldName, v))
+}
+
+// NameHasSuffix applies the HasSuffix predicate on the "name" field.
+func NameHasSuffix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameEqualFold applies the EqualFold predicate on the "name" field.
+func NameEqualFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEqualFold(FieldName, v))
+}
+
+// NameContainsFold applies the ContainsFold predicate on the "name" field.
+func NameContainsFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContainsFold(FieldName, v))
 }
 
 // FeedURLEQ applies the EQ predicate on the "feed_url" field.

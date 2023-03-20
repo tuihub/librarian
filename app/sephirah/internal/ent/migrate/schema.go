@@ -148,6 +148,7 @@ var (
 	// FeedConfigsColumns holds the columns for the "feed_configs" table.
 	FeedConfigsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
 		{Name: "feed_url", Type: field.TypeString},
 		{Name: "author_account", Type: field.TypeInt64},
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
@@ -167,7 +168,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[10]},
+				Columns:    []*schema.Column{FeedConfigsColumns[11]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

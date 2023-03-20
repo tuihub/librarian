@@ -19,6 +19,8 @@ type FeedConfig struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
 	// FeedURL holds the value of the "feed_url" field.
 	FeedURL string `json:"feed_url,omitempty"`
 	// AuthorAccount holds the value of the "author_account" field.
@@ -87,7 +89,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feedconfig.FieldID, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
+		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -113,6 +115,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				fc.ID = model.InternalID(value.Int64)
+			}
+		case feedconfig.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				fc.Name = value.String
 			}
 		case feedconfig.FieldFeedURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -213,6 +221,9 @@ func (fc *FeedConfig) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedConfig(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fc.ID))
+	builder.WriteString("name=")
+	builder.WriteString(fc.Name)
+	builder.WriteString(", ")
 	builder.WriteString("feed_url=")
 	builder.WriteString(fc.FeedURL)
 	builder.WriteString(", ")

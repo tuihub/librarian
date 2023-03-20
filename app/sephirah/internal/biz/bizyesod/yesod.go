@@ -22,10 +22,13 @@ type YesodRepo interface {
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) error
-	ListFeeds(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
+	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
 		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus) ([]*modelyesod.FeedWithConfig, int, error)
 	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,
-		[]model.InternalID, []string) ([]*modelyesod.FeedItemIDWithFeedID, int, error)
+		[]model.InternalID, []string, *model.TimeRange) ([]*modelyesod.FeedItemIDWithFeedID, int, error)
+	GroupFeedItems(context.Context, model.InternalID, []model.TimeRange, []model.InternalID,
+		[]model.InternalID, []string, int) (
+		map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID, error)
 	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
 }
 

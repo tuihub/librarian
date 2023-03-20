@@ -18,11 +18,13 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 	if resp, err := c.cli.CreateFeedConfig(ctx, &pb.CreateFeedConfigRequest{
 		Config: &pb.FeedConfig{
 			Id:             nil,
+			Name:           "",
 			FeedUrl:        feedURL,
 			AuthorAccount:  nil,
 			Source:         pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
 			Status:         pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND,
 			PullInterval:   durationpb.New(time.Hour),
+			Tags:           nil,
 			LatestPullTime: nil,
 		},
 	}); err != nil {
@@ -35,18 +37,20 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 			Id: &librarian.InternalID{
 				Id: feedConfigID,
 			},
+			Name:           "",
 			FeedUrl:        feedURL,
 			AuthorAccount:  nil,
 			Source:         pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
 			Status:         pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
 			PullInterval:   durationpb.New(time.Hour),
+			Tags:           nil,
 			LatestPullTime: nil,
 		},
 	}); err != nil {
 		panic(err)
 	}
 	time.Sleep(time.Minute * 2) //nolint:gomnd // waiting
-	if resp, err := c.cli.ListFeeds(ctx, &pb.ListFeedsRequest{
+	if resp, err := c.cli.ListFeedConfigs(ctx, &pb.ListFeedConfigsRequest{
 		Paging:         defaultPaging,
 		IdFilter:       nil,
 		AuthorIdFilter: nil,
@@ -65,6 +69,8 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 		FeedIdFilter:          nil,
 		AuthorIdFilter:        nil,
 		PublishPlatformFilter: nil,
+		PublishTimeRange:      nil,
+		TagFilter:             nil,
 	}); err != nil {
 		panic(err)
 	} else if resp.GetPaging().GetTotalSize() < 1 ||

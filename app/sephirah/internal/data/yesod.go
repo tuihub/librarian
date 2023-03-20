@@ -32,6 +32,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *modelyesod.FeedConf
 	q := y.data.db.FeedConfig.Create().
 		SetUserID(owner).
 		SetID(c.ID).
+		SetName(c.Name).
 		SetFeedURL(c.FeedURL).
 		SetAuthorAccount(c.AuthorAccount).
 		SetSource(converter.ToEntFeedConfigSource(c.Source)).
@@ -43,6 +44,9 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *modelyesod.FeedConf
 func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *modelyesod.FeedConfig) error {
 	q := y.data.db.FeedConfig.Update().
 		Where(feedconfig.IDEQ(c.ID))
+	if len(c.Name) > 0 {
+		q.SetName(c.Name)
+	}
 	if len(c.FeedURL) > 0 {
 		q.SetFeedURL(c.FeedURL)
 	}
@@ -142,12 +146,14 @@ func (y *yesodRepo) UpsertFeedItems(ctx context.Context, items []*modelfeed.Item
 	return y.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
 			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
-			sql.ResolveWithNewValues(),
+			resolveWithIgnores([]string{
+				feeditem.FieldID,
+			}),
 		).
 		Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeeds(
+func (y *yesodRepo) ListFeedConfigs(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -210,6 +216,7 @@ func (y *yesodRepo) ListFeedItems(
 	feedIDs []model.InternalID,
 	authorIDs []model.InternalID,
 	platforms []string,
+	timeRange *model.TimeRange,
 ) ([]*modelyesod.FeedItemIDWithFeedID, int, error) {
 	var res []*modelyesod.FeedItemIDWithFeedID
 	var total int
@@ -225,6 +232,11 @@ func (y *yesodRepo) ListFeedItems(
 		iq := fq.QueryItem()
 		if len(platforms) > 0 {
 			iq.Where(feeditem.PublishPlatformIn(platforms...))
+		}
+		if timeRange != nil {
+			iq.
+				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
+				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration)))
 		}
 		total, err = iq.Count(ctx)
 		if err != nil {
@@ -252,6 +264,61 @@ func (y *yesodRepo) ListFeedItems(
 		return nil, 0, err
 	}
 	return res, total, nil
+}
+
+func (y *yesodRepo) GroupFeedItems(
+	ctx context.Context,
+	userID model.InternalID,
+	groups []model.TimeRange,
+	feedIDs []model.InternalID,
+	authorIDs []model.InternalID,
+	platforms []string,
+	groupSize int,
+) (map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID, error) {
+	res := make(map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID)
+	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		user, err := tx.User.Get(ctx, userID)
+		if err != nil {
+			return err
+		}
+		for _, timeRange := range groups {
+			fq := tx.User.QueryFeedConfig(user).QueryFeed()
+			if len(feedIDs) > 0 {
+				fq.Where(feed.IDIn(feedIDs...))
+			}
+			iq := fq.QueryItem()
+			if len(platforms) > 0 {
+				iq.Where(feeditem.PublishPlatformIn(platforms...))
+			}
+			var items []*ent.FeedItem
+			items, err = iq.
+				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
+				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration))).
+				Order(ent.Desc(feeditem.FieldPublishedParsed)).
+				Select(feeditem.FieldID, feeditem.FieldFeedID, feeditem.FieldPublishedParsed).
+				Limit(groupSize).
+				All(ctx)
+			if err != nil {
+				return err
+			}
+			if len(items) == 0 {
+				continue
+			}
+			il := make([]*modelyesod.FeedItemIDWithFeedID, len(items))
+			for i, item := range items {
+				il[i] = &modelyesod.FeedItemIDWithFeedID{
+					FeedID: item.FeedID,
+					ItemID: item.ID,
+				}
+			}
+			res[timeRange] = il
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (y *yesodRepo) GetFeedItems(

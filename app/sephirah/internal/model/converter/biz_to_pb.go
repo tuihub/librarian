@@ -63,11 +63,13 @@ type toPBConverter interface {
 	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
 	// goverter:matchIgnoreCase
 	// goverter:map FeedConfig Config
-	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedsResponse_FeedWithConfig
-	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*pb.ListFeedsResponse_FeedWithConfig
+	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig
+	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*pb.ListFeedConfigsResponse_FeedWithConfig
 	// goverter:matchIgnoreCase
-	ToPBItemIDWithFeedID(*modelyesod.FeedItemIDWithFeedID) *pb.ListFeedItemsResponse_FeedItemIDWithFeedID
-	ToPBItemIDWithFeedIDList([]*modelyesod.FeedItemIDWithFeedID) []*pb.ListFeedItemsResponse_FeedItemIDWithFeedID
+	ToPBItemIDWithFeedID(*modelyesod.FeedItemIDWithFeedID) *pb.FeedItemIDWithFeedID
+	ToPBItemIDWithFeedIDList([]*modelyesod.FeedItemIDWithFeedID) []*pb.FeedItemIDWithFeedID
+
+	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 }
 
 func ToPBInternalID(id model.InternalID) *librarian.InternalID {

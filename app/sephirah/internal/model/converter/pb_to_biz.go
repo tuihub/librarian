@@ -1,6 +1,8 @@
 package converter
 
 import (
+	"time"
+
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
@@ -8,10 +10,15 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
+
+	"google.golang.org/protobuf/types/known/durationpb"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // goverter:converter
 // goverter:extend ToBizInternalID
+// goverter:extend ToBizTime
+// goverter:extend ToBizDuration
 // goverter:extend ToLibAuthUserType
 // goverter:extend ToBizUserStatus
 // goverter:extend ToBizAppType
@@ -44,6 +51,8 @@ type toBizConverter interface {
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigSourceList([]pb.FeedConfigSource) []modelyesod.FeedConfigSource
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
+
+	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 }
 
 func ToBizInternalID(id *librarian.InternalID) model.InternalID {
@@ -61,6 +70,14 @@ func ToBizInternalIDPtr(id *librarian.InternalID) *model.InternalID {
 	return &i
 }
 
+func ToBizTime(t *timestamppb.Timestamp) time.Time {
+	return t.AsTime()
+}
+
+func ToBizDuration(d *durationpb.Duration) time.Duration {
+	return d.AsDuration()
+}
+
 func ToLibAuthUserType(u pb.UserType) libauth.UserType {
 	switch u {
 	case pb.UserType_USER_TYPE_UNSPECIFIED:
@@ -72,7 +89,6 @@ func ToLibAuthUserType(u pb.UserType) libauth.UserType {
 	case pb.UserType_USER_TYPE_SENTINEL:
 		return libauth.UserTypeSentinel
 	default:
-
 		return libauth.UserTypeUnspecified
 	}
 }
@@ -86,7 +102,6 @@ func ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus {
 	case pb.UserStatus_USER_STATUS_BLOCKED:
 		return modeltiphereth.UserStatusBlocked
 	default:
-
 		return modeltiphereth.UserStatusUnspecified
 	}
 }
@@ -98,7 +113,6 @@ func ToBizAppType(t librarian.AppType) modelgebura.AppType {
 	case librarian.AppType_APP_TYPE_GAME:
 		return modelgebura.AppTypeGame
 	default:
-
 		return modelgebura.AppTypeUnspecified
 	}
 }
@@ -112,7 +126,6 @@ func ToBizAppSource(s librarian.AppSource) modelgebura.AppSource {
 	case librarian.AppSource_APP_SOURCE_STEAM:
 		return modelgebura.AppSourceSteam
 	default:
-
 		return modelgebura.AppSourceUnspecified
 	}
 }
@@ -126,7 +139,6 @@ func ToBizAppPackageSource(a librarian.AppPackageSource) modelgebura.AppPackageS
 	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL:
 		return modelgebura.AppPackageSourceSentinel
 	default:
-
 		return modelgebura.AppPackageSourceUnspecified
 	}
 }
@@ -138,7 +150,6 @@ func ToBizAccountPlatform(p librarian.AccountPlatform) modeltiphereth.AccountPla
 	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
 		return modeltiphereth.AccountPlatformSteam
 	default:
-
 		return modeltiphereth.AccountPlatformUnspecified
 	}
 }
@@ -150,7 +161,6 @@ func ToBizFeedConfigSource(s pb.FeedConfigSource) modelyesod.FeedConfigSource {
 	case pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON:
 		return modelyesod.FeedConfigSourceCommon
 	default:
-
 		return modelyesod.FeedConfigSourceUnspecified
 	}
 }
@@ -164,7 +174,21 @@ func ToBizFeedConfigStatus(s pb.FeedConfigStatus) modelyesod.FeedConfigStatus {
 	case pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND:
 		return modelyesod.FeedConfigStatusSuspend
 	default:
-
 		return modelyesod.FeedConfigStatusUnspecified
+	}
+}
+
+func ToBizGroupFeedItemsBy(by pb.GroupFeedItemsRequest_GroupBy) modelyesod.GroupFeedItemsBy {
+	switch by {
+	case pb.GroupFeedItemsRequest_GROUP_BY_UNSPECIFIED:
+		return modelyesod.GroupFeedItemsByUnspecified
+	case pb.GroupFeedItemsRequest_GROUP_BY_YEAR:
+		return modelyesod.GroupFeedItemsByYear
+	case pb.GroupFeedItemsRequest_GROUP_BY_MONTH:
+		return modelyesod.GroupFeedItemsByMonth
+	case pb.GroupFeedItemsRequest_GROUP_BY_DAY:
+		return modelyesod.GroupFeedItemsByDay
+	default:
+		return modelyesod.GroupFeedItemsByUnspecified
 	}
 }

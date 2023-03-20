@@ -25,12 +25,12 @@ require (
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.11
+	github.com/tuihub/protos v0.2.14
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.7.0
 	golang.org/x/exp v0.0.0-20230310171629-522b1b587ee0
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.29.1
+	google.golang.org/protobuf v1.30.0
 )
 
 require (

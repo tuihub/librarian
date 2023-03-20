@@ -11,7 +11,9 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/wire"
+	"golang.org/x/exp/slices"
 
 	_ "github.com/lib/pq"           // required by ent
 	_ "github.com/mattn/go-sqlite3" // required by ent
@@ -90,4 +92,15 @@ func (data *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {
 		return fmt.Errorf("committing transaction: %w", err)
 	}
 	return nil
+}
+
+func resolveWithIgnores(ignores []string) sql.ConflictOption {
+	return sql.ResolveWith(func(u *sql.UpdateSet) {
+		for _, c := range u.Columns() {
+			if slices.Contains(ignores, c) {
+				continue
+			}
+			u.SetExcluded(c)
+		}
+	})
 }

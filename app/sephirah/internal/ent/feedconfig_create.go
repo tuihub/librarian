@@ -25,6 +25,12 @@ type FeedConfigCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetName sets the "name" field.
+func (fcc *FeedConfigCreate) SetName(s string) *FeedConfigCreate {
+	fcc.mutation.SetName(s)
+	return fcc
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (fcc *FeedConfigCreate) SetFeedURL(s string) *FeedConfigCreate {
 	fcc.mutation.SetFeedURL(s)
@@ -202,6 +208,9 @@ func (fcc *FeedConfigCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcc *FeedConfigCreate) check() error {
+	if _, ok := fcc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "FeedConfig.name"`)}
+	}
 	if _, ok := fcc.mutation.FeedURL(); !ok {
 		return &ValidationError{Name: "feed_url", err: errors.New(`ent: missing required field "FeedConfig.feed_url"`)}
 	}
@@ -274,6 +283,10 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if id, ok := fcc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := fcc.mutation.Name(); ok {
+		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
+		_node.Name = value
 	}
 	if value, ok := fcc.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
@@ -357,7 +370,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.FeedConfig.Create().
-//		SetFeedURL(v).
+//		SetName(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -366,7 +379,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetFeedURL(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (fcc *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertOne {
@@ -401,6 +414,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetName sets the "name" field.
+func (u *FeedConfigUpsert) SetName(v string) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldName, v)
+	return u
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateName() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldName)
+	return u
+}
 
 // SetFeedURL sets the "feed_url" field.
 func (u *FeedConfigUpsert) SetFeedURL(v string) *FeedConfigUpsert {
@@ -568,6 +593,20 @@ func (u *FeedConfigUpsertOne) Update(set func(*FeedConfigUpsert)) *FeedConfigUps
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetName sets the "name" field.
+func (u *FeedConfigUpsertOne) SetName(v string) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateName() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateName()
+	})
 }
 
 // SetFeedURL sets the "feed_url" field.
@@ -841,7 +880,7 @@ func (fccb *FeedConfigCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetFeedURL(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (fccb *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertBulk {
@@ -918,6 +957,20 @@ func (u *FeedConfigUpsertBulk) Update(set func(*FeedConfigUpsert)) *FeedConfigUp
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetName sets the "name" field.
+func (u *FeedConfigUpsertBulk) SetName(v string) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetName(v)
+	})
+}
+
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateName() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateName()
+	})
 }
 
 // SetFeedURL sets the "feed_url" field.

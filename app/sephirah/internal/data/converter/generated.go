@@ -118,6 +118,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
 		modelyesodFeedConfig.ID = model.InternalID((*source).ID)
+		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.FeedURL = (*source).FeedURL
 		modelyesodFeedConfig.AuthorAccount = model.InternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)

@@ -27,6 +27,7 @@ func (FeedConfig) Fields() []ent.Field {
 			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
 				Incremental: &incrementalEnabled,
 			}),
+		field.String("name"),
 		field.String("feed_url"),
 		field.Int64("author_account").
 			GoType(model.InternalID(0)),

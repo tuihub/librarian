@@ -31,10 +31,10 @@ func (s *LibrarianSephirahServiceService) UpdateFeedConfig(
 	}
 	return &pb.UpdateFeedConfigResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListFeeds(
+func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 	ctx context.Context,
-	req *pb.ListFeedsRequest,
-) (*pb.ListFeedsResponse, error) {
+	req *pb.ListFeedConfigsRequest,
+) (*pb.ListFeedConfigsResponse, error) {
 	if req.GetPaging() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
@@ -51,7 +51,7 @@ func (s *LibrarianSephirahServiceService) ListFeeds(
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListFeedsResponse{
+	return &pb.ListFeedConfigsResponse{
 		Paging:          &librarian.PagingResponse{TotalSize: int64(total)},
 		FeedsWithConfig: s.converter.ToPBFeedWithConfigList(feeds),
 	}, nil
@@ -71,6 +71,7 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 		s.converter.ToBizInternalIDList(req.GetFeedIdFilter()),
 		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),
+		s.converter.ToBizTimeRange(req.GetPublishTimeRange()),
 	)
 	if err != nil {
 		return nil, err
@@ -79,6 +80,30 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
 		Items:  s.converter.ToPBItemIDWithFeedIDList(items),
 	}, nil
+}
+func (s *LibrarianSephirahServiceService) GroupFeedItems(
+	ctx context.Context,
+	req *pb.GroupFeedItemsRequest,
+) (*pb.GroupFeedItemsResponse, error) {
+	itemMap, err := s.y.GroupFeedItems(ctx,
+		converter.ToBizGroupFeedItemsBy(req.GetGroupBy()),
+		s.converter.ToBizInternalIDList(req.GetFeedIdFilter()),
+		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		req.GetPublishPlatformFilter(),
+		s.converter.ToBizTimeRange(req.GetPublishTimeRange()),
+		int(req.GetGroupSize()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*pb.GroupFeedItemsResponse_FeedItemsGroup, 0, len(itemMap))
+	for timeRange, items := range itemMap {
+		res = append(res, &pb.GroupFeedItemsResponse_FeedItemsGroup{
+			TimeRange: s.converter.ToPBTimeRange(&timeRange),
+			Items:     s.converter.ToPBItemIDWithFeedIDList(items),
+		})
+	}
+	return &pb.GroupFeedItemsResponse{Groups: res}, nil
 }
 func (s *LibrarianSephirahServiceService) GetFeedItem(
 	ctx context.Context,
