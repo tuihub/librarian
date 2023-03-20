@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.9](https://github.com/TuiHub/Librarian/compare/v0.0.8...v0.0.9) (2023-03-20)
+
+
+### Features
+
+* **searcher:** add bleve support & impl NewBatchIDs DescribeID SearchID ([9b0eb88](https://github.com/TuiHub/Librarian/commit/9b0eb8824cd1b8d42c760da1c0a862ede161c887))
+
+
+### Bug Fixes
+
+* NewTopic easier to use ([dcff5f4](https://github.com/TuiHub/Librarian/commit/dcff5f4476ce2592554c6d20568b9d68ca307bd0))
+* update proto to 0.2.14 & impl GroupFeedItems ([af25691](https://github.com/TuiHub/Librarian/commit/af25691ae502f404a0029cb1889e0db7fe723506))
+* upgrade protos ([01a8731](https://github.com/TuiHub/Librarian/commit/01a87311320f873b5168a1f5a7cb36f00e638a59))
+
 ## [0.0.8](https://github.com/TuiHub/Librarian/compare/v0.0.7...v0.0.8) (2023-03-04)
 
 
