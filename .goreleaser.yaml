@@ -20,7 +20,6 @@ builds:
       - arm
     goamd64:
       - v1
-      - v3
     goarm:
       - 6
     ignore:
