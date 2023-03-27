@@ -12,6 +12,8 @@ type App struct {
 	ShortDescription string
 	ImageURL         string
 	Details          *AppDetails
+	// the bound internal app id if self is external
+	BoundInternal model.InternalID
 }
 
 type AppDetails struct {

@@ -167,14 +167,6 @@ func (ac *AppCreate) SetBindInternalID(id model.InternalID) *AppCreate {
 	return ac
 }
 
-// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
-func (ac *AppCreate) SetNillableBindInternalID(id *model.InternalID) *AppCreate {
-	if id != nil {
-		ac = ac.SetBindInternalID(*id)
-	}
-	return ac
-}
-
 // SetBindInternal sets the "bind_internal" edge to the App entity.
 func (ac *AppCreate) SetBindInternal(a *App) *AppCreate {
 	return ac.SetBindInternalID(a.ID)
@@ -294,6 +286,9 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
 	}
+	if _, ok := ac.mutation.BindInternalID(); !ok {
+		return &ValidationError{Name: "bind_internal", err: errors.New(`ent: missing required edge "App.bind_internal"`)}
+	}
 	return nil
 }
 
@@ -391,10 +386,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -410,10 +402,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -429,10 +418,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.BindInternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -449,10 +435,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

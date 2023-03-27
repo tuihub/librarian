@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -130,47 +131,61 @@ func NewPullAccountTopic(
 	)
 }
 
-func NewPullSteamAccountAppRelationTopic(
+func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 	a *AngelaBase,
 	sa *libmq.TopicImpl[modelangela.PullSteamApp],
 ) *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation] {
 	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
 		func(ctx context.Context, r *modelangela.PullSteamAccountAppRelation) error {
-			resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
+			var appList []*librarian.App
+			if resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
 				RelationType: porter.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
 				AccountId: &librarian.AccountID{
 					Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
 					PlatformAccountId: r.SteamID,
 				},
-			})
-			if err != nil {
+			}); err != nil {
 				return err
+			} else {
+				appList = resp.GetAppList()
 			}
-			steamApps := make([]*modelgebura.App, 0, len(resp.GetAppList()))
-			internalApps := make([]*modelgebura.App, 0, len(resp.GetAppList()))
-			for _, app := range resp.GetAppList() {
-				resp2, err2 := a.searcher.NewID(ctx, &searcher.NewIDRequest{})
-				if err2 != nil {
-					return err2
-				}
-				internalApps = append(internalApps, &modelgebura.App{ // TODO
-					ID:               converter.ToBizInternalID(resp2.Id),
+			appNum := len(appList)
+			if appNum <= 0 {
+				return nil
+			}
+			steamApps := make([]*modelgebura.App, 0, appNum)
+			internalApps := make([]*modelgebura.App, 0, appNum)
+			var steamAppIDs, internalAppIDs []model.InternalID
+			if resp, err := a.searcher.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{
+				Num: int32(appNum),
+			}); err != nil {
+				return err
+			} else {
+				steamAppIDs = a.converter.ToBizInternalIDList(resp.GetIds())
+			}
+			if resp, err := a.searcher.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{
+				Num: int32(appNum),
+			}); err != nil {
+				return err
+			} else {
+				internalAppIDs = a.converter.ToBizInternalIDList(resp.GetIds())
+			}
+			for i, app := range appList {
+				internalApps = append(internalApps, &modelgebura.App{
+					ID:               internalAppIDs[i],
 					Source:           modelgebura.AppSourceInternal,
-					SourceAppID:      strconv.FormatInt(int64(converter.ToBizInternalID(resp2.Id)), 10),
+					SourceAppID:      strconv.FormatInt(int64(internalAppIDs[i]), 10),
 					SourceURL:        "",
 					Name:             app.GetName(),
 					Type:             modelgebura.AppTypeGame,
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
+					BoundInternal:    internalAppIDs[i],
 				})
-				resp2, err2 = a.searcher.NewID(ctx, &searcher.NewIDRequest{})
-				if err2 != nil {
-					return err2
-				}
-				steamApps = append(steamApps, &modelgebura.App{ // TODO
-					ID:               converter.ToBizInternalID(resp2.Id),
+				steamApps = append(steamApps, &modelgebura.App{
+					ID:               steamAppIDs[i],
 					Source:           modelgebura.AppSourceSteam,
 					SourceAppID:      app.GetSourceAppId(),
 					SourceURL:        "",
@@ -179,6 +194,7 @@ func NewPullSteamAccountAppRelationTopic(
 					ShortDescription: "",
 					ImageURL:         "",
 					Details:          nil,
+					BoundInternal:    internalAppIDs[i],
 				})
 			}
 			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
@@ -207,13 +223,16 @@ func NewPullSteamAccountAppRelationTopic(
 					Prop:   nil,
 				}
 			}
-			if _, err = a.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
+			if _, err := a.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 				return err
 			}
-			if _, err = a.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: el}); err != nil {
+			if _, err := a.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: el}); err != nil {
 				return err
 			}
-			if err = a.g.UpsertApp(ctx, append(steamApps, internalApps...)); err != nil {
+			if err := a.g.UpsertApp(ctx, internalApps); err != nil {
+				return err
+			}
+			if err := a.g.UpsertApp(ctx, steamApps); err != nil {
 				return err
 			}
 			for _, app := range steamApps {

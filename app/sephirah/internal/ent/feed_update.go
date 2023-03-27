@@ -332,10 +332,7 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -348,10 +345,7 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -367,10 +361,7 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -386,10 +377,7 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{feed.ConfigColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feedconfig.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -402,10 +390,7 @@ func (fu *FeedUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{feed.ConfigColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feedconfig.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -762,10 +747,7 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -778,10 +760,7 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -797,10 +776,7 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -816,10 +792,7 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			Columns: []string{feed.ConfigColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feedconfig.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -832,10 +805,7 @@ func (fuo *FeedUpdateOne) sqlSave(ctx context.Context) (_node *Feed, err error) 
 			Columns: []string{feed.ConfigColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feedconfig.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

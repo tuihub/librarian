@@ -283,10 +283,7 @@ func (fc *FeedCreate) createSpec() (*Feed, *sqlgraph.CreateSpec) {
 			Columns: []string{feed.ItemColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feeditem.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feeditem.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -302,10 +299,7 @@ func (fc *FeedCreate) createSpec() (*Feed, *sqlgraph.CreateSpec) {
 			Columns: []string{feed.ConfigColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: feedconfig.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -159,14 +159,6 @@ func (au *AppUpdate) SetBindInternalID(id model.InternalID) *AppUpdate {
 	return au
 }
 
-// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
-func (au *AppUpdate) SetNillableBindInternalID(id *model.InternalID) *AppUpdate {
-	if id != nil {
-		au = au.SetBindInternalID(*id)
-	}
-	return au
-}
-
 // SetBindInternal sets the "bind_internal" edge to the App entity.
 func (au *AppUpdate) SetBindInternal(a *App) *AppUpdate {
 	return au.SetBindInternalID(a.ID)
@@ -309,6 +301,9 @@ func (au *AppUpdate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
+	if _, ok := au.mutation.BindInternalID(); au.mutation.BindInternalCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "App.bind_internal"`)
+	}
 	return nil
 }
 
@@ -374,10 +369,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -390,10 +382,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -409,10 +398,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -428,10 +414,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -444,10 +427,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -463,10 +443,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -482,10 +459,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.BindInternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -498,10 +472,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.BindInternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -517,10 +488,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -533,10 +501,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -552,10 +517,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -708,14 +670,6 @@ func (auo *AppUpdateOne) AddAppPackage(a ...*AppPackage) *AppUpdateOne {
 // SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
 func (auo *AppUpdateOne) SetBindInternalID(id model.InternalID) *AppUpdateOne {
 	auo.mutation.SetBindInternalID(id)
-	return auo
-}
-
-// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableBindInternalID(id *model.InternalID) *AppUpdateOne {
-	if id != nil {
-		auo = auo.SetBindInternalID(*id)
-	}
 	return auo
 }
 
@@ -874,6 +828,9 @@ func (auo *AppUpdateOne) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
+	if _, ok := auo.mutation.BindInternalID(); auo.mutation.BindInternalCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "App.bind_internal"`)
+	}
 	return nil
 }
 
@@ -956,10 +913,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -972,10 +926,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -991,10 +942,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: app.UserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: user.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1010,10 +958,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1026,10 +971,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1045,10 +987,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppPackageColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: apppackage.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1064,10 +1003,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.BindInternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1080,10 +1016,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.BindInternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1099,10 +1032,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1115,10 +1045,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1134,10 +1061,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.BindExternalColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: &sqlgraph.FieldSpec{
-					Type:   field.TypeInt64,
-					Column: app.FieldID,
-				},
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

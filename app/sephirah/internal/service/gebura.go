@@ -152,6 +152,7 @@ func (s *LibrarianSephirahServiceService) AssignAppPackage(
 		ShortDescription: "",
 		ImageURL:         "",
 		Details:          nil,
+		BoundInternal:    0,
 	}, modelgebura.AppPackage{
 		ID:              converter.ToBizInternalID(req.GetAppPackageId()),
 		Source:          0,

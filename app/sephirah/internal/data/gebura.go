@@ -99,7 +99,8 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*modelgebura.App) error 
 			SetName(a.Name).
 			SetType(converter.ToEntAppType(a.Type)).
 			SetShortDescription(a.ShortDescription).
-			SetImageURL(a.ImageURL)
+			SetImageURL(a.ImageURL).
+			SetBindInternalID(a.BoundInternal)
 		if a.Details != nil {
 			apps[i].
 				SetDescription(a.Details.Description).
@@ -113,19 +114,8 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*modelgebura.App) error 
 		CreateBulk(apps...).
 		OnConflict(
 			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
-			sql.ResolveWithIgnore(),
-			sql.ResolveWith(func(u *sql.UpdateSet) {
-				ignores := []string{
-					app.FieldID,
-					app.FieldSource,
-					app.FieldSourceAppID,
-				}
-				for _, c := range u.Columns() {
-					if slices.Contains(ignores, c) {
-						u.SetIgnore(c)
-					}
-					u.SetExcluded(c)
-				}
+			resolveWithIgnores([]string{
+				app.FieldID,
 			}),
 		).
 		Exec(ctx)

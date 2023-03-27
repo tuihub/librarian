@@ -36,6 +36,7 @@ type toBizConverter interface {
 	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
 
 	// goverter:matchIgnoreCase
+	// goverter:ignore BoundInternal
 	ToBizApp(*librarian.App) *modelgebura.App
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
 	ToBizAppSourceList([]librarian.AppSource) []modelgebura.AppSource
