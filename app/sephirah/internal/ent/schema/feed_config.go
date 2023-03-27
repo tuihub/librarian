@@ -50,7 +50,7 @@ func (FeedConfig) Fields() []ent.Field {
 // Edges of the FeedConfig.
 func (FeedConfig) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("user", User.Type).
+		edge.From("owner", User.Type).
 			Ref("feed_config").
 			Required().
 			Unique(),

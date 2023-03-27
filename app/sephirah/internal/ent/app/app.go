@@ -40,8 +40,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeUser holds the string denoting the user edge name in mutations.
-	EdgeUser = "user"
+	// EdgePurchasedBy holds the string denoting the purchased_by edge name in mutations.
+	EdgePurchasedBy = "purchased_by"
 	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
 	EdgeAppPackage = "app_package"
 	// EdgeBindInternal holds the string denoting the bind_internal edge name in mutations.
@@ -50,11 +50,11 @@ const (
 	EdgeBindExternal = "bind_external"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
-	// UserTable is the table that holds the user relation/edge. The primary key declared below.
-	UserTable = "user_app"
-	// UserInverseTable is the table name for the User entity.
+	// PurchasedByTable is the table that holds the purchased_by relation/edge. The primary key declared below.
+	PurchasedByTable = "user_purchased_app"
+	// PurchasedByInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	UserInverseTable = "users"
+	PurchasedByInverseTable = "users"
 	// AppPackageTable is the table that holds the app_package relation/edge.
 	AppPackageTable = "app_packages"
 	// AppPackageInverseTable is the table name for the AppPackage entity.
@@ -98,9 +98,9 @@ var ForeignKeys = []string{
 }
 
 var (
-	// UserPrimaryKey and UserColumn2 are the table columns denoting the
-	// primary key for the user relation (M2M).
-	UserPrimaryKey = []string{"user_id", "app_id"}
+	// PurchasedByPrimaryKey and PurchasedByColumn2 are the table columns denoting the
+	// primary key for the purchased_by relation (M2M).
+	PurchasedByPrimaryKey = []string{"user_id", "app_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

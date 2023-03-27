@@ -123,15 +123,15 @@ func (fcc *FeedConfigCreate) SetID(mi model.InternalID) *FeedConfigCreate {
 	return fcc
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (fcc *FeedConfigCreate) SetUserID(id model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetUserID(id)
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (fcc *FeedConfigCreate) SetOwnerID(id model.InternalID) *FeedConfigCreate {
+	fcc.mutation.SetOwnerID(id)
 	return fcc
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (fcc *FeedConfigCreate) SetUser(u *User) *FeedConfigCreate {
-	return fcc.SetUserID(u.ID)
+// SetOwner sets the "owner" edge to the User entity.
+func (fcc *FeedConfigCreate) SetOwner(u *User) *FeedConfigCreate {
+	return fcc.SetOwnerID(u.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
@@ -248,8 +248,8 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedConfig.created_at"`)}
 	}
-	if _, ok := fcc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "FeedConfig.user"`)}
+	if _, ok := fcc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedConfig.owner"`)}
 	}
 	return nil
 }
@@ -324,12 +324,12 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := fcc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := fcc.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   feedconfig.UserTable,
-			Columns: []string{feedconfig.UserColumn},
+			Table:   feedconfig.OwnerTable,
+			Columns: []string{feedconfig.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

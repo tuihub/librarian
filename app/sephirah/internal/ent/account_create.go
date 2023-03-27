@@ -88,23 +88,23 @@ func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
 	return ac
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (ac *AccountCreate) SetUserID(id model.InternalID) *AccountCreate {
-	ac.mutation.SetUserID(id)
+// SetBindUserID sets the "bind_user" edge to the User entity by ID.
+func (ac *AccountCreate) SetBindUserID(id model.InternalID) *AccountCreate {
+	ac.mutation.SetBindUserID(id)
 	return ac
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (ac *AccountCreate) SetNillableUserID(id *model.InternalID) *AccountCreate {
+// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
+func (ac *AccountCreate) SetNillableBindUserID(id *model.InternalID) *AccountCreate {
 	if id != nil {
-		ac = ac.SetUserID(*id)
+		ac = ac.SetBindUserID(*id)
 	}
 	return ac
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (ac *AccountCreate) SetUser(u *User) *AccountCreate {
-	return ac.SetUserID(u.ID)
+// SetBindUser sets the "bind_user" edge to the User entity.
+func (ac *AccountCreate) SetBindUser(u *User) *AccountCreate {
+	return ac.SetBindUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -241,12 +241,12 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.BindUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.UserTable,
-			Columns: []string{account.UserColumn},
+			Table:   account.BindUserTable,
+			Columns: []string{account.BindUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -255,7 +255,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_account = &nodes[0]
+		_node.user_bind_account = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

@@ -25,7 +25,7 @@ type FeedConfigQuery struct {
 	order      []OrderFunc
 	inters     []Interceptor
 	predicates []predicate.FeedConfig
-	withUser   *UserQuery
+	withOwner  *UserQuery
 	withFeed   *FeedQuery
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
@@ -64,8 +64,8 @@ func (fcq *FeedConfigQuery) Order(o ...OrderFunc) *FeedConfigQuery {
 	return fcq
 }
 
-// QueryUser chains the current query on the "user" edge.
-func (fcq *FeedConfigQuery) QueryUser() *UserQuery {
+// QueryOwner chains the current query on the "owner" edge.
+func (fcq *FeedConfigQuery) QueryOwner() *UserQuery {
 	query := (&UserClient{config: fcq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := fcq.prepareQuery(ctx); err != nil {
@@ -78,7 +78,7 @@ func (fcq *FeedConfigQuery) QueryUser() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.UserTable, feedconfig.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.OwnerTable, feedconfig.OwnerColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
 		return fromU, nil
@@ -300,7 +300,7 @@ func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
 		order:      append([]OrderFunc{}, fcq.order...),
 		inters:     append([]Interceptor{}, fcq.inters...),
 		predicates: append([]predicate.FeedConfig{}, fcq.predicates...),
-		withUser:   fcq.withUser.Clone(),
+		withOwner:  fcq.withOwner.Clone(),
 		withFeed:   fcq.withFeed.Clone(),
 		// clone intermediate query.
 		sql:  fcq.sql.Clone(),
@@ -308,14 +308,14 @@ func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
 	}
 }
 
-// WithUser tells the query-builder to eager-load the nodes that are connected to
-// the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (fcq *FeedConfigQuery) WithUser(opts ...func(*UserQuery)) *FeedConfigQuery {
+// WithOwner tells the query-builder to eager-load the nodes that are connected to
+// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
+func (fcq *FeedConfigQuery) WithOwner(opts ...func(*UserQuery)) *FeedConfigQuery {
 	query := (&UserClient{config: fcq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	fcq.withUser = query
+	fcq.withOwner = query
 	return fcq
 }
 
@@ -410,11 +410,11 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		withFKs     = fcq.withFKs
 		_spec       = fcq.querySpec()
 		loadedTypes = [2]bool{
-			fcq.withUser != nil,
+			fcq.withOwner != nil,
 			fcq.withFeed != nil,
 		}
 	)
-	if fcq.withUser != nil {
+	if fcq.withOwner != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -438,9 +438,9 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := fcq.withUser; query != nil {
-		if err := fcq.loadUser(ctx, query, nodes, nil,
-			func(n *FeedConfig, e *User) { n.Edges.User = e }); err != nil {
+	if query := fcq.withOwner; query != nil {
+		if err := fcq.loadOwner(ctx, query, nodes, nil,
+			func(n *FeedConfig, e *User) { n.Edges.Owner = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -453,7 +453,7 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (fcq *FeedConfigQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *User)) error {
+func (fcq *FeedConfigQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*FeedConfig)
 	for i := range nodes {

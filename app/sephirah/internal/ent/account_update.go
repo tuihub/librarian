@@ -80,23 +80,23 @@ func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
 	return au
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (au *AccountUpdate) SetUserID(id model.InternalID) *AccountUpdate {
-	au.mutation.SetUserID(id)
+// SetBindUserID sets the "bind_user" edge to the User entity by ID.
+func (au *AccountUpdate) SetBindUserID(id model.InternalID) *AccountUpdate {
+	au.mutation.SetBindUserID(id)
 	return au
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (au *AccountUpdate) SetNillableUserID(id *model.InternalID) *AccountUpdate {
+// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
+func (au *AccountUpdate) SetNillableBindUserID(id *model.InternalID) *AccountUpdate {
 	if id != nil {
-		au = au.SetUserID(*id)
+		au = au.SetBindUserID(*id)
 	}
 	return au
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (au *AccountUpdate) SetUser(u *User) *AccountUpdate {
-	return au.SetUserID(u.ID)
+// SetBindUser sets the "bind_user" edge to the User entity.
+func (au *AccountUpdate) SetBindUser(u *User) *AccountUpdate {
+	return au.SetBindUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -104,9 +104,9 @@ func (au *AccountUpdate) Mutation() *AccountMutation {
 	return au.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (au *AccountUpdate) ClearUser() *AccountUpdate {
-	au.mutation.ClearUser()
+// ClearBindUser clears the "bind_user" edge to the User entity.
+func (au *AccountUpdate) ClearBindUser() *AccountUpdate {
+	au.mutation.ClearBindUser()
 	return au
 }
 
@@ -189,12 +189,12 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if au.mutation.UserCleared() {
+	if au.mutation.BindUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.UserTable,
-			Columns: []string{account.UserColumn},
+			Table:   account.BindUserTable,
+			Columns: []string{account.BindUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -202,12 +202,12 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := au.mutation.BindUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.UserTable,
-			Columns: []string{account.UserColumn},
+			Table:   account.BindUserTable,
+			Columns: []string{account.BindUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -288,23 +288,23 @@ func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOn
 	return auo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (auo *AccountUpdateOne) SetUserID(id model.InternalID) *AccountUpdateOne {
-	auo.mutation.SetUserID(id)
+// SetBindUserID sets the "bind_user" edge to the User entity by ID.
+func (auo *AccountUpdateOne) SetBindUserID(id model.InternalID) *AccountUpdateOne {
+	auo.mutation.SetBindUserID(id)
 	return auo
 }
 
-// SetNillableUserID sets the "user" edge to the User entity by ID if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableUserID(id *model.InternalID) *AccountUpdateOne {
+// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableBindUserID(id *model.InternalID) *AccountUpdateOne {
 	if id != nil {
-		auo = auo.SetUserID(*id)
+		auo = auo.SetBindUserID(*id)
 	}
 	return auo
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (auo *AccountUpdateOne) SetUser(u *User) *AccountUpdateOne {
-	return auo.SetUserID(u.ID)
+// SetBindUser sets the "bind_user" edge to the User entity.
+func (auo *AccountUpdateOne) SetBindUser(u *User) *AccountUpdateOne {
+	return auo.SetBindUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -312,9 +312,9 @@ func (auo *AccountUpdateOne) Mutation() *AccountMutation {
 	return auo.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (auo *AccountUpdateOne) ClearUser() *AccountUpdateOne {
-	auo.mutation.ClearUser()
+// ClearBindUser clears the "bind_user" edge to the User entity.
+func (auo *AccountUpdateOne) ClearBindUser() *AccountUpdateOne {
+	auo.mutation.ClearBindUser()
 	return auo
 }
 
@@ -427,12 +427,12 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.UserCleared() {
+	if auo.mutation.BindUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.UserTable,
-			Columns: []string{account.UserColumn},
+			Table:   account.BindUserTable,
+			Columns: []string{account.BindUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -440,12 +440,12 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := auo.mutation.BindUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.UserTable,
-			Columns: []string{account.UserColumn},
+			Table:   account.BindUserTable,
+			Columns: []string{account.BindUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

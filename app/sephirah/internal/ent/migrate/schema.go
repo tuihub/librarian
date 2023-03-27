@@ -18,7 +18,7 @@ var (
 		{Name: "avatar_url", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_account", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_bind_account", Type: field.TypeInt64, Nullable: true},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
 	AccountsTable = &schema.Table{
@@ -27,7 +27,7 @@ var (
 		PrimaryKey: []*schema.Column{AccountsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "accounts_users_account",
+				Symbol:     "accounts_users_bind_account",
 				Columns:    []*schema.Column{AccountsColumns[8]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -224,7 +224,7 @@ var (
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin", "normal", "sentinel"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_create", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_created_user", Type: field.TypeInt64, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -233,33 +233,33 @@ var (
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "users_users_create",
+				Symbol:     "users_users_created_user",
 				Columns:    []*schema.Column{UsersColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
 	}
-	// UserAppColumns holds the columns for the "user_app" table.
-	UserAppColumns = []*schema.Column{
+	// UserPurchasedAppColumns holds the columns for the "user_purchased_app" table.
+	UserPurchasedAppColumns = []*schema.Column{
 		{Name: "user_id", Type: field.TypeInt64},
 		{Name: "app_id", Type: field.TypeInt64},
 	}
-	// UserAppTable holds the schema information for the "user_app" table.
-	UserAppTable = &schema.Table{
-		Name:       "user_app",
-		Columns:    UserAppColumns,
-		PrimaryKey: []*schema.Column{UserAppColumns[0], UserAppColumns[1]},
+	// UserPurchasedAppTable holds the schema information for the "user_purchased_app" table.
+	UserPurchasedAppTable = &schema.Table{
+		Name:       "user_purchased_app",
+		Columns:    UserPurchasedAppColumns,
+		PrimaryKey: []*schema.Column{UserPurchasedAppColumns[0], UserPurchasedAppColumns[1]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "user_app_user_id",
-				Columns:    []*schema.Column{UserAppColumns[0]},
+				Symbol:     "user_purchased_app_user_id",
+				Columns:    []*schema.Column{UserPurchasedAppColumns[0]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 			{
-				Symbol:     "user_app_app_id",
-				Columns:    []*schema.Column{UserAppColumns[1]},
+				Symbol:     "user_purchased_app_app_id",
+				Columns:    []*schema.Column{UserPurchasedAppColumns[1]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
@@ -274,7 +274,7 @@ var (
 		FeedConfigsTable,
 		FeedItemsTable,
 		UsersTable,
-		UserAppTable,
+		UserPurchasedAppTable,
 	}
 )
 
@@ -286,6 +286,6 @@ func init() {
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
-	UserAppTable.ForeignKeys[0].RefTable = UsersTable
-	UserAppTable.ForeignKeys[1].RefTable = AppsTable
+	UserPurchasedAppTable.ForeignKeys[0].RefTable = UsersTable
+	UserPurchasedAppTable.ForeignKeys[1].RefTable = AppsTable
 }

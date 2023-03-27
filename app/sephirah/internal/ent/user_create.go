@@ -84,34 +84,34 @@ func (uc *UserCreate) SetID(mi model.InternalID) *UserCreate {
 	return uc
 }
 
-// AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uc *UserCreate) AddAccountIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddAccountIDs(ids...)
+// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
+func (uc *UserCreate) AddBindAccountIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddBindAccountIDs(ids...)
 	return uc
 }
 
-// AddAccount adds the "account" edges to the Account entity.
-func (uc *UserCreate) AddAccount(a ...*Account) *UserCreate {
+// AddBindAccount adds the "bind_account" edges to the Account entity.
+func (uc *UserCreate) AddBindAccount(a ...*Account) *UserCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uc.AddAccountIDs(ids...)
+	return uc.AddBindAccountIDs(ids...)
 }
 
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uc *UserCreate) AddAppIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddAppIDs(ids...)
+// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+func (uc *UserCreate) AddPurchasedAppIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddPurchasedAppIDs(ids...)
 	return uc
 }
 
-// AddApp adds the "app" edges to the App entity.
-func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
+// AddPurchasedApp adds the "purchased_app" edges to the App entity.
+func (uc *UserCreate) AddPurchasedApp(a ...*App) *UserCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uc.AddAppIDs(ids...)
+	return uc.AddPurchasedAppIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -140,19 +140,19 @@ func (uc *UserCreate) SetCreator(u *User) *UserCreate {
 	return uc.SetCreatorID(u.ID)
 }
 
-// AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uc *UserCreate) AddCreateIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddCreateIDs(ids...)
+// AddCreatedUserIDs adds the "created_user" edge to the User entity by IDs.
+func (uc *UserCreate) AddCreatedUserIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddCreatedUserIDs(ids...)
 	return uc
 }
 
-// AddCreate adds the "create" edges to the User entity.
-func (uc *UserCreate) AddCreate(u ...*User) *UserCreate {
+// AddCreatedUser adds the "created_user" edges to the User entity.
+func (uc *UserCreate) AddCreatedUser(u ...*User) *UserCreate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uc.AddCreateIDs(ids...)
+	return uc.AddCreatedUserIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -290,12 +290,12 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := uc.mutation.AccountIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.BindAccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -306,12 +306,12 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.PurchasedAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -352,15 +352,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_create = &nodes[0]
+		_node.user_created_user = &nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.CreateIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.CreatedUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

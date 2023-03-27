@@ -51,8 +51,8 @@ func (Account) Indexes() []ent.Index {
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("user", User.Type).
-			Ref("account").
+		edge.From("bind_user", User.Type).
+			Ref("bind_account").
 			Unique(),
 	}
 }

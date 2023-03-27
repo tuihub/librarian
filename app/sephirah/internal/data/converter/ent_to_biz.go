@@ -38,6 +38,7 @@ type toBizConverter interface {
 	// goverter:map . Details
 	// goverter:ignore BoundInternal
 	ToBizApp(*ent.App) *modelgebura.App
+	ToBizAppList([]*ent.App) []*modelgebura.App
 
 	// goverter:matchIgnoreCase
 	// goverter:map Source | ToBizAppPackageSource

@@ -32,19 +32,19 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeUser holds the string denoting the user edge name in mutations.
-	EdgeUser = "user"
+	// EdgeOwner holds the string denoting the owner edge name in mutations.
+	EdgeOwner = "owner"
 	// EdgeFeed holds the string denoting the feed edge name in mutations.
 	EdgeFeed = "feed"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
-	// UserTable is the table that holds the user relation/edge.
-	UserTable = "feed_configs"
-	// UserInverseTable is the table name for the User entity.
+	// OwnerTable is the table that holds the owner relation/edge.
+	OwnerTable = "feed_configs"
+	// OwnerInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	UserInverseTable = "users"
-	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_feed_config"
+	OwnerInverseTable = "users"
+	// OwnerColumn is the table column denoting the owner relation/edge.
+	OwnerColumn = "user_feed_config"
 	// FeedTable is the table that holds the feed relation/edge.
 	FeedTable = "feeds"
 	// FeedInverseTable is the table name for the Feed entity.

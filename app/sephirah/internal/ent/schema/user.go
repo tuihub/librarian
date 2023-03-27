@@ -44,10 +44,10 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("account", Account.Type),
-		edge.To("app", App.Type),
+		edge.To("bind_account", Account.Type),
+		edge.To("purchased_app", App.Type),
 		edge.To("feed_config", FeedConfig.Type),
-		edge.To("create", User.Type).
+		edge.To("created_user", User.Type).
 			From("creator").
 			Unique().
 			Required(),

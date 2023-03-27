@@ -424,6 +424,16 @@ func (c *toPBConverterImpl) ToPBFeedWithConfigList(source []*modelyesod.FeedWith
 	}
 	return pV1ListFeedConfigsResponse_FeedWithConfigList
 }
+func (c *toPBConverterImpl) ToPBInternalIDList(source []model.InternalID) []*v1.InternalID {
+	var pV1InternalIDList []*v1.InternalID
+	if source != nil {
+		pV1InternalIDList = make([]*v1.InternalID, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1InternalIDList[i] = ToPBInternalID(source[i])
+		}
+	}
+	return pV1InternalIDList
+}
 func (c *toPBConverterImpl) ToPBItemIDWithFeedID(source *modelyesod.FeedItemIDWithFeedID) *v11.FeedItemIDWithFeedID {
 	var pV1FeedItemIDWithFeedID *v11.FeedItemIDWithFeedID
 	if source != nil {

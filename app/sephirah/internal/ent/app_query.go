@@ -25,7 +25,7 @@ type AppQuery struct {
 	order            []OrderFunc
 	inters           []Interceptor
 	predicates       []predicate.App
-	withUser         *UserQuery
+	withPurchasedBy  *UserQuery
 	withAppPackage   *AppPackageQuery
 	withBindInternal *AppQuery
 	withBindExternal *AppQuery
@@ -66,8 +66,8 @@ func (aq *AppQuery) Order(o ...OrderFunc) *AppQuery {
 	return aq
 }
 
-// QueryUser chains the current query on the "user" edge.
-func (aq *AppQuery) QueryUser() *UserQuery {
+// QueryPurchasedBy chains the current query on the "purchased_by" edge.
+func (aq *AppQuery) QueryPurchasedBy() *UserQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -80,7 +80,7 @@ func (aq *AppQuery) QueryUser() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, app.UserTable, app.UserPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.PurchasedByTable, app.PurchasedByPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -346,7 +346,7 @@ func (aq *AppQuery) Clone() *AppQuery {
 		order:            append([]OrderFunc{}, aq.order...),
 		inters:           append([]Interceptor{}, aq.inters...),
 		predicates:       append([]predicate.App{}, aq.predicates...),
-		withUser:         aq.withUser.Clone(),
+		withPurchasedBy:  aq.withPurchasedBy.Clone(),
 		withAppPackage:   aq.withAppPackage.Clone(),
 		withBindInternal: aq.withBindInternal.Clone(),
 		withBindExternal: aq.withBindExternal.Clone(),
@@ -356,14 +356,14 @@ func (aq *AppQuery) Clone() *AppQuery {
 	}
 }
 
-// WithUser tells the query-builder to eager-load the nodes that are connected to
-// the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithUser(opts ...func(*UserQuery)) *AppQuery {
+// WithPurchasedBy tells the query-builder to eager-load the nodes that are connected to
+// the "purchased_by" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithPurchasedBy(opts ...func(*UserQuery)) *AppQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withUser = query
+	aq.withPurchasedBy = query
 	return aq
 }
 
@@ -480,7 +480,7 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
 		loadedTypes = [4]bool{
-			aq.withUser != nil,
+			aq.withPurchasedBy != nil,
 			aq.withAppPackage != nil,
 			aq.withBindInternal != nil,
 			aq.withBindExternal != nil,
@@ -510,10 +510,10 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aq.withUser; query != nil {
-		if err := aq.loadUser(ctx, query, nodes,
-			func(n *App) { n.Edges.User = []*User{} },
-			func(n *App, e *User) { n.Edges.User = append(n.Edges.User, e) }); err != nil {
+	if query := aq.withPurchasedBy; query != nil {
+		if err := aq.loadPurchasedBy(ctx, query, nodes,
+			func(n *App) { n.Edges.PurchasedBy = []*User{} },
+			func(n *App, e *User) { n.Edges.PurchasedBy = append(n.Edges.PurchasedBy, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -540,7 +540,7 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	return nodes, nil
 }
 
-func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App, init func(*App), assign func(*App, *User)) error {
+func (aq *AppQuery) loadPurchasedBy(ctx context.Context, query *UserQuery, nodes []*App, init func(*App), assign func(*App, *User)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*App)
 	nids := make(map[model.InternalID]map[*App]struct{})
@@ -552,11 +552,11 @@ func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App
 		}
 	}
 	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(app.UserTable)
-		s.Join(joinT).On(s.C(user.FieldID), joinT.C(app.UserPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(app.UserPrimaryKey[1]), edgeIDs...))
+		joinT := sql.Table(app.PurchasedByTable)
+		s.Join(joinT).On(s.C(user.FieldID), joinT.C(app.PurchasedByPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(app.PurchasedByPrimaryKey[1]), edgeIDs...))
 		columns := s.SelectedColumns()
-		s.Select(joinT.C(app.UserPrimaryKey[1]))
+		s.Select(joinT.C(app.PurchasedByPrimaryKey[1]))
 		s.AppendSelect(columns...)
 		s.SetDistinct(false)
 	})
@@ -593,7 +593,7 @@ func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App
 	for _, n := range neighbors {
 		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "user" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected "purchased_by" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)

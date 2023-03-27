@@ -34,30 +34,30 @@ type Account struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.
-	Edges        AccountEdges `json:"edges"`
-	user_account *model.InternalID
+	Edges             AccountEdges `json:"edges"`
+	user_bind_account *model.InternalID
 }
 
 // AccountEdges holds the relations/edges for other nodes in the graph.
 type AccountEdges struct {
-	// User holds the value of the user edge.
-	User *User `json:"user,omitempty"`
+	// BindUser holds the value of the bind_user edge.
+	BindUser *User `json:"bind_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// UserOrErr returns the User value or an error if the edge
+// BindUserOrErr returns the BindUser value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AccountEdges) UserOrErr() (*User, error) {
+func (e AccountEdges) BindUserOrErr() (*User, error) {
 	if e.loadedTypes[0] {
-		if e.User == nil {
+		if e.BindUser == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
 		}
-		return e.User, nil
+		return e.BindUser, nil
 	}
-	return nil, &NotLoadedError{edge: "user"}
+	return nil, &NotLoadedError{edge: "bind_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -71,7 +71,7 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case account.FieldUpdatedAt, account.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case account.ForeignKeys[0]: // user_account
+		case account.ForeignKeys[0]: // user_bind_account
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Account", columns[i])
@@ -138,19 +138,19 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			}
 		case account.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_account", values[i])
+				return fmt.Errorf("unexpected type %T for field user_bind_account", values[i])
 			} else if value.Valid {
-				a.user_account = new(model.InternalID)
-				*a.user_account = model.InternalID(value.Int64)
+				a.user_bind_account = new(model.InternalID)
+				*a.user_bind_account = model.InternalID(value.Int64)
 			}
 		}
 	}
 	return nil
 }
 
-// QueryUser queries the "user" edge of the Account entity.
-func (a *Account) QueryUser() *UserQuery {
-	return NewAccountClient(a.config).QueryUser(a)
+// QueryBindUser queries the "bind_user" edge of the Account entity.
+func (a *Account) QueryBindUser() *UserQuery {
+	return NewAccountClient(a.config).QueryBindUser(a)
 }
 
 // Update returns a builder for updating this Account.

@@ -76,34 +76,34 @@ func (uu *UserUpdate) SetNillableCreatedAt(t *time.Time) *UserUpdate {
 	return uu
 }
 
-// AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uu *UserUpdate) AddAccountIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddAccountIDs(ids...)
+// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
+func (uu *UserUpdate) AddBindAccountIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddBindAccountIDs(ids...)
 	return uu
 }
 
-// AddAccount adds the "account" edges to the Account entity.
-func (uu *UserUpdate) AddAccount(a ...*Account) *UserUpdate {
+// AddBindAccount adds the "bind_account" edges to the Account entity.
+func (uu *UserUpdate) AddBindAccount(a ...*Account) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.AddAccountIDs(ids...)
+	return uu.AddBindAccountIDs(ids...)
 }
 
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uu *UserUpdate) AddAppIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddAppIDs(ids...)
+// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+func (uu *UserUpdate) AddPurchasedAppIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddPurchasedAppIDs(ids...)
 	return uu
 }
 
-// AddApp adds the "app" edges to the App entity.
-func (uu *UserUpdate) AddApp(a ...*App) *UserUpdate {
+// AddPurchasedApp adds the "purchased_app" edges to the App entity.
+func (uu *UserUpdate) AddPurchasedApp(a ...*App) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.AddAppIDs(ids...)
+	return uu.AddPurchasedAppIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -132,19 +132,19 @@ func (uu *UserUpdate) SetCreator(u *User) *UserUpdate {
 	return uu.SetCreatorID(u.ID)
 }
 
-// AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uu *UserUpdate) AddCreateIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddCreateIDs(ids...)
+// AddCreatedUserIDs adds the "created_user" edge to the User entity by IDs.
+func (uu *UserUpdate) AddCreatedUserIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddCreatedUserIDs(ids...)
 	return uu
 }
 
-// AddCreate adds the "create" edges to the User entity.
-func (uu *UserUpdate) AddCreate(u ...*User) *UserUpdate {
+// AddCreatedUser adds the "created_user" edges to the User entity.
+func (uu *UserUpdate) AddCreatedUser(u ...*User) *UserUpdate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uu.AddCreateIDs(ids...)
+	return uu.AddCreatedUserIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -152,46 +152,46 @@ func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearAccount clears all "account" edges to the Account entity.
-func (uu *UserUpdate) ClearAccount() *UserUpdate {
-	uu.mutation.ClearAccount()
+// ClearBindAccount clears all "bind_account" edges to the Account entity.
+func (uu *UserUpdate) ClearBindAccount() *UserUpdate {
+	uu.mutation.ClearBindAccount()
 	return uu
 }
 
-// RemoveAccountIDs removes the "account" edge to Account entities by IDs.
-func (uu *UserUpdate) RemoveAccountIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveAccountIDs(ids...)
+// RemoveBindAccountIDs removes the "bind_account" edge to Account entities by IDs.
+func (uu *UserUpdate) RemoveBindAccountIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveBindAccountIDs(ids...)
 	return uu
 }
 
-// RemoveAccount removes "account" edges to Account entities.
-func (uu *UserUpdate) RemoveAccount(a ...*Account) *UserUpdate {
+// RemoveBindAccount removes "bind_account" edges to Account entities.
+func (uu *UserUpdate) RemoveBindAccount(a ...*Account) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.RemoveAccountIDs(ids...)
+	return uu.RemoveBindAccountIDs(ids...)
 }
 
-// ClearApp clears all "app" edges to the App entity.
-func (uu *UserUpdate) ClearApp() *UserUpdate {
-	uu.mutation.ClearApp()
+// ClearPurchasedApp clears all "purchased_app" edges to the App entity.
+func (uu *UserUpdate) ClearPurchasedApp() *UserUpdate {
+	uu.mutation.ClearPurchasedApp()
 	return uu
 }
 
-// RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (uu *UserUpdate) RemoveAppIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveAppIDs(ids...)
+// RemovePurchasedAppIDs removes the "purchased_app" edge to App entities by IDs.
+func (uu *UserUpdate) RemovePurchasedAppIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemovePurchasedAppIDs(ids...)
 	return uu
 }
 
-// RemoveApp removes "app" edges to App entities.
-func (uu *UserUpdate) RemoveApp(a ...*App) *UserUpdate {
+// RemovePurchasedApp removes "purchased_app" edges to App entities.
+func (uu *UserUpdate) RemovePurchasedApp(a ...*App) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.RemoveAppIDs(ids...)
+	return uu.RemovePurchasedAppIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -221,25 +221,25 @@ func (uu *UserUpdate) ClearCreator() *UserUpdate {
 	return uu
 }
 
-// ClearCreate clears all "create" edges to the User entity.
-func (uu *UserUpdate) ClearCreate() *UserUpdate {
-	uu.mutation.ClearCreate()
+// ClearCreatedUser clears all "created_user" edges to the User entity.
+func (uu *UserUpdate) ClearCreatedUser() *UserUpdate {
+	uu.mutation.ClearCreatedUser()
 	return uu
 }
 
-// RemoveCreateIDs removes the "create" edge to User entities by IDs.
-func (uu *UserUpdate) RemoveCreateIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveCreateIDs(ids...)
+// RemoveCreatedUserIDs removes the "created_user" edge to User entities by IDs.
+func (uu *UserUpdate) RemoveCreatedUserIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveCreatedUserIDs(ids...)
 	return uu
 }
 
-// RemoveCreate removes "create" edges to User entities.
-func (uu *UserUpdate) RemoveCreate(u ...*User) *UserUpdate {
+// RemoveCreatedUser removes "created_user" edges to User entities.
+func (uu *UserUpdate) RemoveCreatedUser(u ...*User) *UserUpdate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uu.RemoveCreateIDs(ids...)
+	return uu.RemoveCreatedUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -326,12 +326,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 	}
-	if uu.mutation.AccountCleared() {
+	if uu.mutation.BindAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -339,12 +339,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedAccountIDs(); len(nodes) > 0 && !uu.mutation.AccountCleared() {
+	if nodes := uu.mutation.RemovedBindAccountIDs(); len(nodes) > 0 && !uu.mutation.BindAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -355,12 +355,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.AccountIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.BindAccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -371,12 +371,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.AppCleared() {
+	if uu.mutation.PurchasedAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -384,12 +384,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedAppIDs(); len(nodes) > 0 && !uu.mutation.AppCleared() {
+	if nodes := uu.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !uu.mutation.PurchasedAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -400,12 +400,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.PurchasedAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -490,12 +490,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.CreateCleared() {
+	if uu.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -503,12 +503,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedCreateIDs(); len(nodes) > 0 && !uu.mutation.CreateCleared() {
+	if nodes := uu.mutation.RemovedCreatedUserIDs(); len(nodes) > 0 && !uu.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -519,12 +519,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.CreateIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.CreatedUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -599,34 +599,34 @@ func (uuo *UserUpdateOne) SetNillableCreatedAt(t *time.Time) *UserUpdateOne {
 	return uuo
 }
 
-// AddAccountIDs adds the "account" edge to the Account entity by IDs.
-func (uuo *UserUpdateOne) AddAccountIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddAccountIDs(ids...)
+// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
+func (uuo *UserUpdateOne) AddBindAccountIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddBindAccountIDs(ids...)
 	return uuo
 }
 
-// AddAccount adds the "account" edges to the Account entity.
-func (uuo *UserUpdateOne) AddAccount(a ...*Account) *UserUpdateOne {
+// AddBindAccount adds the "bind_account" edges to the Account entity.
+func (uuo *UserUpdateOne) AddBindAccount(a ...*Account) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.AddAccountIDs(ids...)
+	return uuo.AddBindAccountIDs(ids...)
 }
 
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (uuo *UserUpdateOne) AddAppIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddAppIDs(ids...)
+// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+func (uuo *UserUpdateOne) AddPurchasedAppIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddPurchasedAppIDs(ids...)
 	return uuo
 }
 
-// AddApp adds the "app" edges to the App entity.
-func (uuo *UserUpdateOne) AddApp(a ...*App) *UserUpdateOne {
+// AddPurchasedApp adds the "purchased_app" edges to the App entity.
+func (uuo *UserUpdateOne) AddPurchasedApp(a ...*App) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.AddAppIDs(ids...)
+	return uuo.AddPurchasedAppIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -655,19 +655,19 @@ func (uuo *UserUpdateOne) SetCreator(u *User) *UserUpdateOne {
 	return uuo.SetCreatorID(u.ID)
 }
 
-// AddCreateIDs adds the "create" edge to the User entity by IDs.
-func (uuo *UserUpdateOne) AddCreateIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddCreateIDs(ids...)
+// AddCreatedUserIDs adds the "created_user" edge to the User entity by IDs.
+func (uuo *UserUpdateOne) AddCreatedUserIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddCreatedUserIDs(ids...)
 	return uuo
 }
 
-// AddCreate adds the "create" edges to the User entity.
-func (uuo *UserUpdateOne) AddCreate(u ...*User) *UserUpdateOne {
+// AddCreatedUser adds the "created_user" edges to the User entity.
+func (uuo *UserUpdateOne) AddCreatedUser(u ...*User) *UserUpdateOne {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uuo.AddCreateIDs(ids...)
+	return uuo.AddCreatedUserIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -675,46 +675,46 @@ func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearAccount clears all "account" edges to the Account entity.
-func (uuo *UserUpdateOne) ClearAccount() *UserUpdateOne {
-	uuo.mutation.ClearAccount()
+// ClearBindAccount clears all "bind_account" edges to the Account entity.
+func (uuo *UserUpdateOne) ClearBindAccount() *UserUpdateOne {
+	uuo.mutation.ClearBindAccount()
 	return uuo
 }
 
-// RemoveAccountIDs removes the "account" edge to Account entities by IDs.
-func (uuo *UserUpdateOne) RemoveAccountIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveAccountIDs(ids...)
+// RemoveBindAccountIDs removes the "bind_account" edge to Account entities by IDs.
+func (uuo *UserUpdateOne) RemoveBindAccountIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveBindAccountIDs(ids...)
 	return uuo
 }
 
-// RemoveAccount removes "account" edges to Account entities.
-func (uuo *UserUpdateOne) RemoveAccount(a ...*Account) *UserUpdateOne {
+// RemoveBindAccount removes "bind_account" edges to Account entities.
+func (uuo *UserUpdateOne) RemoveBindAccount(a ...*Account) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.RemoveAccountIDs(ids...)
+	return uuo.RemoveBindAccountIDs(ids...)
 }
 
-// ClearApp clears all "app" edges to the App entity.
-func (uuo *UserUpdateOne) ClearApp() *UserUpdateOne {
-	uuo.mutation.ClearApp()
+// ClearPurchasedApp clears all "purchased_app" edges to the App entity.
+func (uuo *UserUpdateOne) ClearPurchasedApp() *UserUpdateOne {
+	uuo.mutation.ClearPurchasedApp()
 	return uuo
 }
 
-// RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (uuo *UserUpdateOne) RemoveAppIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveAppIDs(ids...)
+// RemovePurchasedAppIDs removes the "purchased_app" edge to App entities by IDs.
+func (uuo *UserUpdateOne) RemovePurchasedAppIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemovePurchasedAppIDs(ids...)
 	return uuo
 }
 
-// RemoveApp removes "app" edges to App entities.
-func (uuo *UserUpdateOne) RemoveApp(a ...*App) *UserUpdateOne {
+// RemovePurchasedApp removes "purchased_app" edges to App entities.
+func (uuo *UserUpdateOne) RemovePurchasedApp(a ...*App) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.RemoveAppIDs(ids...)
+	return uuo.RemovePurchasedAppIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -744,25 +744,25 @@ func (uuo *UserUpdateOne) ClearCreator() *UserUpdateOne {
 	return uuo
 }
 
-// ClearCreate clears all "create" edges to the User entity.
-func (uuo *UserUpdateOne) ClearCreate() *UserUpdateOne {
-	uuo.mutation.ClearCreate()
+// ClearCreatedUser clears all "created_user" edges to the User entity.
+func (uuo *UserUpdateOne) ClearCreatedUser() *UserUpdateOne {
+	uuo.mutation.ClearCreatedUser()
 	return uuo
 }
 
-// RemoveCreateIDs removes the "create" edge to User entities by IDs.
-func (uuo *UserUpdateOne) RemoveCreateIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveCreateIDs(ids...)
+// RemoveCreatedUserIDs removes the "created_user" edge to User entities by IDs.
+func (uuo *UserUpdateOne) RemoveCreatedUserIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveCreatedUserIDs(ids...)
 	return uuo
 }
 
-// RemoveCreate removes "create" edges to User entities.
-func (uuo *UserUpdateOne) RemoveCreate(u ...*User) *UserUpdateOne {
+// RemoveCreatedUser removes "created_user" edges to User entities.
+func (uuo *UserUpdateOne) RemoveCreatedUser(u ...*User) *UserUpdateOne {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return uuo.RemoveCreateIDs(ids...)
+	return uuo.RemoveCreatedUserIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -879,12 +879,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 	}
-	if uuo.mutation.AccountCleared() {
+	if uuo.mutation.BindAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -892,12 +892,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedAccountIDs(); len(nodes) > 0 && !uuo.mutation.AccountCleared() {
+	if nodes := uuo.mutation.RemovedBindAccountIDs(); len(nodes) > 0 && !uuo.mutation.BindAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -908,12 +908,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.AccountIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.BindAccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AccountTable,
-			Columns: []string{user.AccountColumn},
+			Table:   user.BindAccountTable,
+			Columns: []string{user.BindAccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
@@ -924,12 +924,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.AppCleared() {
+	if uuo.mutation.PurchasedAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -937,12 +937,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedAppIDs(); len(nodes) > 0 && !uuo.mutation.AppCleared() {
+	if nodes := uuo.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !uuo.mutation.PurchasedAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -953,12 +953,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.AppIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.PurchasedAppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
-			Table:   user.AppTable,
-			Columns: user.AppPrimaryKey,
+			Table:   user.PurchasedAppTable,
+			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
@@ -1043,12 +1043,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.CreateCleared() {
+	if uuo.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -1056,12 +1056,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedCreateIDs(); len(nodes) > 0 && !uuo.mutation.CreateCleared() {
+	if nodes := uuo.mutation.RemovedCreatedUserIDs(); len(nodes) > 0 && !uuo.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -1072,12 +1072,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.CreateIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.CreatedUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.CreateTable,
-			Columns: []string{user.CreateColumn},
+			Table:   user.CreatedUserTable,
+			Columns: []string{user.CreatedUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

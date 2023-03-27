@@ -31,43 +31,43 @@ type User struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges       UserEdges `json:"edges"`
-	user_create *model.InternalID
+	Edges             UserEdges `json:"edges"`
+	user_created_user *model.InternalID
 }
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// Account holds the value of the account edge.
-	Account []*Account `json:"account,omitempty"`
-	// App holds the value of the app edge.
-	App []*App `json:"app,omitempty"`
+	// BindAccount holds the value of the bind_account edge.
+	BindAccount []*Account `json:"bind_account,omitempty"`
+	// PurchasedApp holds the value of the purchased_app edge.
+	PurchasedApp []*App `json:"purchased_app,omitempty"`
 	// FeedConfig holds the value of the feed_config edge.
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
-	// Create holds the value of the create edge.
-	Create []*User `json:"create,omitempty"`
+	// CreatedUser holds the value of the created_user edge.
+	CreatedUser []*User `json:"created_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [5]bool
 }
 
-// AccountOrErr returns the Account value or an error if the edge
+// BindAccountOrErr returns the BindAccount value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) AccountOrErr() ([]*Account, error) {
+func (e UserEdges) BindAccountOrErr() ([]*Account, error) {
 	if e.loadedTypes[0] {
-		return e.Account, nil
+		return e.BindAccount, nil
 	}
-	return nil, &NotLoadedError{edge: "account"}
+	return nil, &NotLoadedError{edge: "bind_account"}
 }
 
-// AppOrErr returns the App value or an error if the edge
+// PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) AppOrErr() ([]*App, error) {
+func (e UserEdges) PurchasedAppOrErr() ([]*App, error) {
 	if e.loadedTypes[1] {
-		return e.App, nil
+		return e.PurchasedApp, nil
 	}
-	return nil, &NotLoadedError{edge: "app"}
+	return nil, &NotLoadedError{edge: "purchased_app"}
 }
 
 // FeedConfigOrErr returns the FeedConfig value or an error if the edge
@@ -92,13 +92,13 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 	return nil, &NotLoadedError{edge: "creator"}
 }
 
-// CreateOrErr returns the Create value or an error if the edge
+// CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) CreateOrErr() ([]*User, error) {
+func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
 	if e.loadedTypes[4] {
-		return e.Create, nil
+		return e.CreatedUser, nil
 	}
-	return nil, &NotLoadedError{edge: "create"}
+	return nil, &NotLoadedError{edge: "created_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -112,7 +112,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case user.FieldUpdatedAt, user.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case user.ForeignKeys[0]: // user_create
+		case user.ForeignKeys[0]: // user_created_user
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
@@ -173,24 +173,24 @@ func (u *User) assignValues(columns []string, values []any) error {
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_create", values[i])
+				return fmt.Errorf("unexpected type %T for field user_created_user", values[i])
 			} else if value.Valid {
-				u.user_create = new(model.InternalID)
-				*u.user_create = model.InternalID(value.Int64)
+				u.user_created_user = new(model.InternalID)
+				*u.user_created_user = model.InternalID(value.Int64)
 			}
 		}
 	}
 	return nil
 }
 
-// QueryAccount queries the "account" edge of the User entity.
-func (u *User) QueryAccount() *AccountQuery {
-	return NewUserClient(u.config).QueryAccount(u)
+// QueryBindAccount queries the "bind_account" edge of the User entity.
+func (u *User) QueryBindAccount() *AccountQuery {
+	return NewUserClient(u.config).QueryBindAccount(u)
 }
 
-// QueryApp queries the "app" edge of the User entity.
-func (u *User) QueryApp() *AppQuery {
-	return NewUserClient(u.config).QueryApp(u)
+// QueryPurchasedApp queries the "purchased_app" edge of the User entity.
+func (u *User) QueryPurchasedApp() *AppQuery {
+	return NewUserClient(u.config).QueryPurchasedApp(u)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the User entity.
@@ -203,9 +203,9 @@ func (u *User) QueryCreator() *UserQuery {
 	return NewUserClient(u.config).QueryCreator(u)
 }
 
-// QueryCreate queries the "create" edge of the User entity.
-func (u *User) QueryCreate() *UserQuery {
-	return NewUserClient(u.config).QueryCreate(u)
+// QueryCreatedUser queries the "created_user" edge of the User entity.
+func (u *User) QueryCreatedUser() *UserQuery {
+	return NewUserClient(u.config).QueryCreatedUser(u)
 }
 
 // Update returns a builder for updating this User.

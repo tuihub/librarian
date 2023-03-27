@@ -71,12 +71,36 @@ func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
 	*pb.MergeAppsResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	app := s.converter.ToBizApp(req.Base)
+	if app == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("base required")
+	}
+	err := s.g.MergeApps(ctx,
+		*app,
+		converter.ToBizInternalID(req.GetMerged()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.MergeAppsResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *pb.SearchAppsRequest) (
 	*pb.SearchAppsResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	apps, total, err := s.g.SearchApps(ctx,
+		model.Paging{
+			PageSize: int(req.GetPaging().GetPageSize()),
+			PageNum:  int(req.GetPaging().GetPageNum()),
+		},
+		req.GetKeywords(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SearchAppsResponse{
+		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
+		Apps:   s.converter.ToPBAppList(apps),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *pb.GetBindAppsRequest) (
 	*pb.GetBindAppsResponse, error,
@@ -90,12 +114,22 @@ func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *
 func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *pb.PurchaseAppRequest) (
 	*pb.PurchaseAppResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	err := s.g.PurchaseApp(ctx, converter.ToBizInternalID(req.GetAppId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.PurchaseAppResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req *pb.GetAppLibraryRequest) (
 	*pb.GetAppLibraryResponse, error,
 ) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
+	appIDs, err := s.g.GetPurchasedApps(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetAppLibraryResponse{
+		AppIds: s.converter.ToPBInternalIDList(appIDs),
+	}, nil
 }
 
 func (s *LibrarianSephirahServiceService) CreateAppPackage(

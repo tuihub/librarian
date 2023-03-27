@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model"
 
@@ -58,7 +59,8 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 		SetReleaseDate(a.Details.ReleaseDate).
 		SetDeveloper(a.Details.Developer).
 		SetPublisher(a.Details.Publisher).
-		SetVersion(a.Details.Version)
+		SetVersion(a.Details.Version).
+		SetBindInternalID(a.BoundInternal)
 	return q.Exec(ctx)
 }
 
@@ -174,6 +176,106 @@ func (g geburaRepo) ListApp(
 		}
 	}
 	return apps, int64(total), nil
+}
+
+func (g geburaRepo) MergeApps(ctx context.Context, base modelgebura.App, merged model.InternalID) error {
+	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		baseApp := g.data.converter.ToEntApp(base)
+		err := tx.App.UpdateOne(&baseApp).Exec(ctx)
+		if err != nil {
+			return err
+		}
+		mergedApp, err := tx.App.Get(ctx, merged)
+		if err != nil {
+			return err
+		}
+		if baseApp.Source != app.SourceInternal || mergedApp.Source != app.SourceInternal {
+			return errors.New("source must be internal")
+		}
+		err = tx.User.Update().
+			Where(user.HasPurchasedAppWith(app.IDEQ(mergedApp.ID))).
+			RemovePurchasedAppIDs(mergedApp.ID).
+			AddPurchasedAppIDs(baseApp.ID).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		err = tx.App.Update().
+			Where(app.HasBindInternalWith(app.IDEQ(mergedApp.ID))).
+			SetBindInternalID(baseApp.ID).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		err = tx.AppPackage.Update().
+			Where(apppackage.HasAppWith(app.IDEQ(mergedApp.ID))).
+			SetAppID(baseApp.ID).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		err = tx.App.DeleteOne(mergedApp).Exec(ctx)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
+}
+
+func (g geburaRepo) SearchApps(ctx context.Context, paging model.Paging, keyword string) (
+	[]*modelgebura.App, int, error) {
+	q := g.data.db.App.Query().
+		Where(
+			app.NameContains(keyword),
+			app.ShortDescriptionContains(keyword),
+			app.DescriptionContains(keyword),
+		)
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	apps, err := q.
+		Limit(paging.PageSize).
+		Offset((paging.PageNum - 1) * paging.PageSize).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return g.data.converter.ToBizAppList(apps), total, nil
+}
+
+func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
+	a, err := g.data.db.App.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	internalApp, err := a.QueryBindInternal().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	externalApps, err := internalApp.QueryBindExternal().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return g.data.converter.ToBizAppList(append(externalApps, internalApp)), nil
+}
+
+func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, appID model.InternalID) error {
+	err := g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(appID).Exec(ctx)
+	return err
+}
+
+func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
+	appIDs, err := g.data.db.App.Query().
+		Where(
+			app.HasPurchasedByWith(user.IDEQ(id)),
+		).
+		IDs(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return appIDs, nil
 }
 
 func (g geburaRepo) IsAppPackage(ctx context.Context, id model.InternalID) error {

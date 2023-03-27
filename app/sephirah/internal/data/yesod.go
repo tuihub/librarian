@@ -30,7 +30,7 @@ func NewYesodRepo(data *Data) bizyesod.YesodRepo {
 
 func (y *yesodRepo) CreateFeedConfig(ctx context.Context, c *modelyesod.FeedConfig, owner model.InternalID) error {
 	q := y.data.db.FeedConfig.Create().
-		SetUserID(owner).
+		SetOwnerID(owner).
 		SetID(c.ID).
 		SetName(c.Name).
 		SetFeedURL(c.FeedURL).

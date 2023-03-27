@@ -59,8 +59,8 @@ func (App) Indexes() []ent.Index {
 // Edges of the App.
 func (App) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("user", User.Type).
-			Ref("app"),
+		edge.From("purchased_by", User.Type).
+			Ref("purchased_app"),
 		edge.To("app_package", AppPackage.Type),
 		edge.To("bind_external", App.Type).
 			From("bind_internal").

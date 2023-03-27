@@ -26,17 +26,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeUser holds the string denoting the user edge name in mutations.
-	EdgeUser = "user"
+	// EdgeBindUser holds the string denoting the bind_user edge name in mutations.
+	EdgeBindUser = "bind_user"
 	// Table holds the table name of the account in the database.
 	Table = "accounts"
-	// UserTable is the table that holds the user relation/edge.
-	UserTable = "accounts"
-	// UserInverseTable is the table name for the User entity.
+	// BindUserTable is the table that holds the bind_user relation/edge.
+	BindUserTable = "accounts"
+	// BindUserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	UserInverseTable = "users"
-	// UserColumn is the table column denoting the user relation/edge.
-	UserColumn = "user_account"
+	BindUserInverseTable = "users"
+	// BindUserColumn is the table column denoting the bind_user relation/edge.
+	BindUserColumn = "user_bind_account"
 )
 
 // Columns holds all SQL columns for account fields.
@@ -54,7 +54,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "accounts"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
-	"user_account",
+	"user_bind_account",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

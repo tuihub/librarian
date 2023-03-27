@@ -70,6 +70,7 @@ type toPBConverter interface {
 	ToPBItemIDWithFeedIDList([]*modelyesod.FeedItemIDWithFeedID) []*pb.FeedItemIDWithFeedID
 
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
+	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 }
 
 func ToPBInternalID(id model.InternalID) *librarian.InternalID {

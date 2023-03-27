@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
@@ -15,11 +16,20 @@ import (
 // goverter:converter
 // goverter:extend ToEntUserType
 // goverter:extend ToEntUserStatus
+// goverter:extend ToEntAppType
+// goverter:extend ToEntAppSource
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
 type toEntConverter interface {
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
+
+	// goverter:autoMap Details
+	// goverter:useZeroValueOnPointerInconsistency
+	// goverter:ignore Edges
+	// goverter:ignore CreatedAt
+	// goverter:ignore UpdatedAt
+	ToEntApp(modelgebura.App) ent.App
 
 	ToEntFeedConfigSourceList([]modelyesod.FeedConfigSource) []feedconfig.Source
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status

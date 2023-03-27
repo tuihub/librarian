@@ -53,8 +53,8 @@ type App struct {
 
 // AppEdges holds the relations/edges for other nodes in the graph.
 type AppEdges struct {
-	// User holds the value of the user edge.
-	User []*User `json:"user,omitempty"`
+	// PurchasedBy holds the value of the purchased_by edge.
+	PurchasedBy []*User `json:"purchased_by,omitempty"`
 	// AppPackage holds the value of the app_package edge.
 	AppPackage []*AppPackage `json:"app_package,omitempty"`
 	// BindInternal holds the value of the bind_internal edge.
@@ -66,13 +66,13 @@ type AppEdges struct {
 	loadedTypes [4]bool
 }
 
-// UserOrErr returns the User value or an error if the edge
+// PurchasedByOrErr returns the PurchasedBy value or an error if the edge
 // was not loaded in eager-loading.
-func (e AppEdges) UserOrErr() ([]*User, error) {
+func (e AppEdges) PurchasedByOrErr() ([]*User, error) {
 	if e.loadedTypes[0] {
-		return e.User, nil
+		return e.PurchasedBy, nil
 	}
-	return nil, &NotLoadedError{edge: "user"}
+	return nil, &NotLoadedError{edge: "purchased_by"}
 }
 
 // AppPackageOrErr returns the AppPackage value or an error if the edge
@@ -236,9 +236,9 @@ func (a *App) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// QueryUser queries the "user" edge of the App entity.
-func (a *App) QueryUser() *UserQuery {
-	return NewAppClient(a.config).QueryUser(a)
+// QueryPurchasedBy queries the "purchased_by" edge of the App entity.
+func (a *App) QueryPurchasedBy() *UserQuery {
+	return NewAppClient(a.config).QueryPurchasedBy(a)
 }
 
 // QueryAppPackage queries the "app_package" edge of the App entity.

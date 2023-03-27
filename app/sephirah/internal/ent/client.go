@@ -338,15 +338,15 @@ func (c *AccountClient) GetX(ctx context.Context, id model.InternalID) *Account 
 	return obj
 }
 
-// QueryUser queries the user edge of a Account.
-func (c *AccountClient) QueryUser(a *Account) *UserQuery {
+// QueryBindUser queries the bind_user edge of a Account.
+func (c *AccountClient) QueryBindUser(a *Account) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, account.UserTable, account.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, account.BindUserTable, account.BindUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -472,15 +472,15 @@ func (c *AppClient) GetX(ctx context.Context, id model.InternalID) *App {
 	return obj
 }
 
-// QueryUser queries the user edge of a App.
-func (c *AppClient) QueryUser(a *App) *UserQuery {
+// QueryPurchasedBy queries the purchased_by edge of a App.
+func (c *AppClient) QueryPurchasedBy(a *App) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, app.UserTable, app.UserPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.PurchasedByTable, app.PurchasedByPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -938,15 +938,15 @@ func (c *FeedConfigClient) GetX(ctx context.Context, id model.InternalID) *FeedC
 	return obj
 }
 
-// QueryUser queries the user edge of a FeedConfig.
-func (c *FeedConfigClient) QueryUser(fc *FeedConfig) *UserQuery {
+// QueryOwner queries the owner edge of a FeedConfig.
+func (c *FeedConfigClient) QueryOwner(fc *FeedConfig) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := fc.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.UserTable, feedconfig.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, feedconfig.OwnerTable, feedconfig.OwnerColumn),
 		)
 		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
 		return fromV, nil
@@ -1222,15 +1222,15 @@ func (c *UserClient) GetX(ctx context.Context, id model.InternalID) *User {
 	return obj
 }
 
-// QueryAccount queries the account edge of a User.
-func (c *UserClient) QueryAccount(u *User) *AccountQuery {
+// QueryBindAccount queries the bind_account edge of a User.
+func (c *UserClient) QueryBindAccount(u *User) *AccountQuery {
 	query := (&AccountClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AccountTable, user.AccountColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.BindAccountTable, user.BindAccountColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -1238,15 +1238,15 @@ func (c *UserClient) QueryAccount(u *User) *AccountQuery {
 	return query
 }
 
-// QueryApp queries the app edge of a User.
-func (c *UserClient) QueryApp(u *User) *AppQuery {
+// QueryPurchasedApp queries the purchased_app edge of a User.
+func (c *UserClient) QueryPurchasedApp(u *User) *AppQuery {
 	query := (&AppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(app.Table, app.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.AppTable, user.AppPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -1286,15 +1286,15 @@ func (c *UserClient) QueryCreator(u *User) *UserQuery {
 	return query
 }
 
-// QueryCreate queries the create edge of a User.
-func (c *UserClient) QueryCreate(u *User) *UserQuery {
+// QueryCreatedUser queries the created_user edge of a User.
+func (c *UserClient) QueryCreatedUser(u *User) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.CreateTable, user.CreateColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CreatedUserTable, user.CreatedUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

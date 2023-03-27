@@ -131,19 +131,19 @@ func (ac *AppCreate) SetID(mi model.InternalID) *AppCreate {
 	return ac
 }
 
-// AddUserIDs adds the "user" edge to the User entity by IDs.
-func (ac *AppCreate) AddUserIDs(ids ...model.InternalID) *AppCreate {
-	ac.mutation.AddUserIDs(ids...)
+// AddPurchasedByIDs adds the "purchased_by" edge to the User entity by IDs.
+func (ac *AppCreate) AddPurchasedByIDs(ids ...model.InternalID) *AppCreate {
+	ac.mutation.AddPurchasedByIDs(ids...)
 	return ac
 }
 
-// AddUser adds the "user" edges to the User entity.
-func (ac *AppCreate) AddUser(u ...*User) *AppCreate {
+// AddPurchasedBy adds the "purchased_by" edges to the User entity.
+func (ac *AppCreate) AddPurchasedBy(u ...*User) *AppCreate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return ac.AddUserIDs(ids...)
+	return ac.AddPurchasedByIDs(ids...)
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
@@ -378,12 +378,12 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.PurchasedByIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.UserTable,
-			Columns: app.UserPrimaryKey,
+			Table:   app.PurchasedByTable,
+			Columns: app.PurchasedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

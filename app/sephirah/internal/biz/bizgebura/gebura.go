@@ -33,6 +33,11 @@ type GeburaRepo interface {
 		[]model.InternalID) ([]*modelgebura.AppPackage, error)
 	ListAllAppPackageIDOfOneSource(context.Context, modelgebura.AppPackageSource,
 		model.InternalID) ([]string, error)
+	MergeApps(context.Context, modelgebura.App, model.InternalID) error
+	SearchApps(context.Context, model.Paging, string) ([]*modelgebura.App, int, error)
+	GetBindApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
+	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
+	GetPurchasedApps(context.Context, model.InternalID) ([]model.InternalID, error)
 }
 
 type Gebura struct {

@@ -886,24 +886,24 @@ func CreatedAtLTE(v time.Time) predicate.App {
 	return predicate.App(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasUser applies the HasEdge predicate on the "user" edge.
-func HasUser() predicate.App {
+// HasPurchasedBy applies the HasEdge predicate on the "purchased_by" edge.
+func HasPurchasedBy() predicate.App {
 	return predicate.App(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, UserTable, UserPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByTable, PurchasedByPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
-func HasUserWith(preds ...predicate.User) predicate.App {
+// HasPurchasedByWith applies the HasEdge predicate on the "purchased_by" edge with a given conditions (other predicates).
+func HasPurchasedByWith(preds ...predicate.User) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(UserInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, UserTable, UserPrimaryKey...),
+			sqlgraph.To(PurchasedByInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByTable, PurchasedByPrimaryKey...),
 		)
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {

@@ -78,7 +78,7 @@ func (t tipherethRepo) ListUser(
 ) ([]*modeltiphereth.User, int64, error) {
 	q := t.data.db.User.Query()
 	if creator != nil {
-		q = t.data.db.User.Query().Where(user.IDEQ(*creator)).QueryCreate()
+		q = t.data.db.User.Query().Where(user.IDEQ(*creator)).QueryCreatedUser()
 	}
 	if len(ids) > 0 {
 		q.Where(user.IDIn(ids...))
@@ -116,7 +116,7 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 
 func (t tipherethRepo) CreateAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Create().
-		SetUserID(u).
+		SetBindUserID(u).
 		SetID(a.ID).
 		SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
 		SetPlatformAccountID(a.PlatformAccountID).
@@ -142,9 +142,9 @@ func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Accou
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
-		account.HasUserWith(user.IDEQ(u)),
+		account.HasBindUserWith(user.IDEQ(u)),
 	).
-		ClearUser().
+		ClearBindUser().
 		Exec(ctx)
 }
 
@@ -154,7 +154,7 @@ func (t tipherethRepo) ListLinkAccount(
 	userID model.InternalID,
 ) ([]*modeltiphereth.Account, int64, error) {
 	q := t.data.db.Account.Query().Where(
-		account.HasUserWith(user.IDEQ(userID)),
+		account.HasBindUserWith(user.IDEQ(userID)),
 	)
 	a, err := q.
 		Limit(paging.PageSize).

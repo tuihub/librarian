@@ -22,16 +22,16 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx            *QueryContext
-	order          []OrderFunc
-	inters         []Interceptor
-	predicates     []predicate.User
-	withAccount    *AccountQuery
-	withApp        *AppQuery
-	withFeedConfig *FeedConfigQuery
-	withCreator    *UserQuery
-	withCreate     *UserQuery
-	withFKs        bool
+	ctx              *QueryContext
+	order            []OrderFunc
+	inters           []Interceptor
+	predicates       []predicate.User
+	withBindAccount  *AccountQuery
+	withPurchasedApp *AppQuery
+	withFeedConfig   *FeedConfigQuery
+	withCreator      *UserQuery
+	withCreatedUser  *UserQuery
+	withFKs          bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -68,8 +68,8 @@ func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
 	return uq
 }
 
-// QueryAccount chains the current query on the "account" edge.
-func (uq *UserQuery) QueryAccount() *AccountQuery {
+// QueryBindAccount chains the current query on the "bind_account" edge.
+func (uq *UserQuery) QueryBindAccount() *AccountQuery {
 	query := (&AccountClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -82,7 +82,7 @@ func (uq *UserQuery) QueryAccount() *AccountQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AccountTable, user.AccountColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.BindAccountTable, user.BindAccountColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -90,8 +90,8 @@ func (uq *UserQuery) QueryAccount() *AccountQuery {
 	return query
 }
 
-// QueryApp chains the current query on the "app" edge.
-func (uq *UserQuery) QueryApp() *AppQuery {
+// QueryPurchasedApp chains the current query on the "purchased_app" edge.
+func (uq *UserQuery) QueryPurchasedApp() *AppQuery {
 	query := (&AppClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -104,7 +104,7 @@ func (uq *UserQuery) QueryApp() *AppQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(app.Table, app.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.AppTable, user.AppPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -156,8 +156,8 @@ func (uq *UserQuery) QueryCreator() *UserQuery {
 	return query
 }
 
-// QueryCreate chains the current query on the "create" edge.
-func (uq *UserQuery) QueryCreate() *UserQuery {
+// QueryCreatedUser chains the current query on the "created_user" edge.
+func (uq *UserQuery) QueryCreatedUser() *UserQuery {
 	query := (&UserClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -170,7 +170,7 @@ func (uq *UserQuery) QueryCreate() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.CreateTable, user.CreateColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.CreatedUserTable, user.CreatedUserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -365,41 +365,41 @@ func (uq *UserQuery) Clone() *UserQuery {
 		return nil
 	}
 	return &UserQuery{
-		config:         uq.config,
-		ctx:            uq.ctx.Clone(),
-		order:          append([]OrderFunc{}, uq.order...),
-		inters:         append([]Interceptor{}, uq.inters...),
-		predicates:     append([]predicate.User{}, uq.predicates...),
-		withAccount:    uq.withAccount.Clone(),
-		withApp:        uq.withApp.Clone(),
-		withFeedConfig: uq.withFeedConfig.Clone(),
-		withCreator:    uq.withCreator.Clone(),
-		withCreate:     uq.withCreate.Clone(),
+		config:           uq.config,
+		ctx:              uq.ctx.Clone(),
+		order:            append([]OrderFunc{}, uq.order...),
+		inters:           append([]Interceptor{}, uq.inters...),
+		predicates:       append([]predicate.User{}, uq.predicates...),
+		withBindAccount:  uq.withBindAccount.Clone(),
+		withPurchasedApp: uq.withPurchasedApp.Clone(),
+		withFeedConfig:   uq.withFeedConfig.Clone(),
+		withCreator:      uq.withCreator.Clone(),
+		withCreatedUser:  uq.withCreatedUser.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
 	}
 }
 
-// WithAccount tells the query-builder to eager-load the nodes that are connected to
-// the "account" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithAccount(opts ...func(*AccountQuery)) *UserQuery {
+// WithBindAccount tells the query-builder to eager-load the nodes that are connected to
+// the "bind_account" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithBindAccount(opts ...func(*AccountQuery)) *UserQuery {
 	query := (&AccountClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withAccount = query
+	uq.withBindAccount = query
 	return uq
 }
 
-// WithApp tells the query-builder to eager-load the nodes that are connected to
-// the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithApp(opts ...func(*AppQuery)) *UserQuery {
+// WithPurchasedApp tells the query-builder to eager-load the nodes that are connected to
+// the "purchased_app" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithPurchasedApp(opts ...func(*AppQuery)) *UserQuery {
 	query := (&AppClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withApp = query
+	uq.withPurchasedApp = query
 	return uq
 }
 
@@ -425,14 +425,14 @@ func (uq *UserQuery) WithCreator(opts ...func(*UserQuery)) *UserQuery {
 	return uq
 }
 
-// WithCreate tells the query-builder to eager-load the nodes that are connected to
-// the "create" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithCreate(opts ...func(*UserQuery)) *UserQuery {
+// WithCreatedUser tells the query-builder to eager-load the nodes that are connected to
+// the "created_user" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithCreatedUser(opts ...func(*UserQuery)) *UserQuery {
 	query := (&UserClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withCreate = query
+	uq.withCreatedUser = query
 	return uq
 }
 
@@ -516,11 +516,11 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
 		loadedTypes = [5]bool{
-			uq.withAccount != nil,
-			uq.withApp != nil,
+			uq.withBindAccount != nil,
+			uq.withPurchasedApp != nil,
 			uq.withFeedConfig != nil,
 			uq.withCreator != nil,
-			uq.withCreate != nil,
+			uq.withCreatedUser != nil,
 		}
 	)
 	if uq.withCreator != nil {
@@ -547,17 +547,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := uq.withAccount; query != nil {
-		if err := uq.loadAccount(ctx, query, nodes,
-			func(n *User) { n.Edges.Account = []*Account{} },
-			func(n *User, e *Account) { n.Edges.Account = append(n.Edges.Account, e) }); err != nil {
+	if query := uq.withBindAccount; query != nil {
+		if err := uq.loadBindAccount(ctx, query, nodes,
+			func(n *User) { n.Edges.BindAccount = []*Account{} },
+			func(n *User, e *Account) { n.Edges.BindAccount = append(n.Edges.BindAccount, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := uq.withApp; query != nil {
-		if err := uq.loadApp(ctx, query, nodes,
-			func(n *User) { n.Edges.App = []*App{} },
-			func(n *User, e *App) { n.Edges.App = append(n.Edges.App, e) }); err != nil {
+	if query := uq.withPurchasedApp; query != nil {
+		if err := uq.loadPurchasedApp(ctx, query, nodes,
+			func(n *User) { n.Edges.PurchasedApp = []*App{} },
+			func(n *User, e *App) { n.Edges.PurchasedApp = append(n.Edges.PurchasedApp, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -574,17 +574,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withCreate; query != nil {
-		if err := uq.loadCreate(ctx, query, nodes,
-			func(n *User) { n.Edges.Create = []*User{} },
-			func(n *User, e *User) { n.Edges.Create = append(n.Edges.Create, e) }); err != nil {
+	if query := uq.withCreatedUser; query != nil {
+		if err := uq.loadCreatedUser(ctx, query, nodes,
+			func(n *User) { n.Edges.CreatedUser = []*User{} },
+			func(n *User, e *User) { n.Edges.CreatedUser = append(n.Edges.CreatedUser, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (uq *UserQuery) loadAccount(ctx context.Context, query *AccountQuery, nodes []*User, init func(*User), assign func(*User, *Account)) error {
+func (uq *UserQuery) loadBindAccount(ctx context.Context, query *AccountQuery, nodes []*User, init func(*User), assign func(*User, *Account)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*User)
 	for i := range nodes {
@@ -596,26 +596,26 @@ func (uq *UserQuery) loadAccount(ctx context.Context, query *AccountQuery, nodes
 	}
 	query.withFKs = true
 	query.Where(predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.AccountColumn, fks...))
+		s.Where(sql.InValues(user.BindAccountColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_account
+		fk := n.user_bind_account
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_account" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_bind_account" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_account" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_bind_account" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (uq *UserQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*User, init func(*User), assign func(*User, *App)) error {
+func (uq *UserQuery) loadPurchasedApp(ctx context.Context, query *AppQuery, nodes []*User, init func(*User), assign func(*User, *App)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*User)
 	nids := make(map[model.InternalID]map[*User]struct{})
@@ -627,11 +627,11 @@ func (uq *UserQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*User
 		}
 	}
 	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(user.AppTable)
-		s.Join(joinT).On(s.C(app.FieldID), joinT.C(user.AppPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(user.AppPrimaryKey[0]), edgeIDs...))
+		joinT := sql.Table(user.PurchasedAppTable)
+		s.Join(joinT).On(s.C(app.FieldID), joinT.C(user.PurchasedAppPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(user.PurchasedAppPrimaryKey[0]), edgeIDs...))
 		columns := s.SelectedColumns()
-		s.Select(joinT.C(user.AppPrimaryKey[0]))
+		s.Select(joinT.C(user.PurchasedAppPrimaryKey[0]))
 		s.AppendSelect(columns...)
 		s.SetDistinct(false)
 	})
@@ -668,7 +668,7 @@ func (uq *UserQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*User
 	for _, n := range neighbors {
 		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "app" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected "purchased_app" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)
@@ -711,10 +711,10 @@ func (uq *UserQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*User)
 	for i := range nodes {
-		if nodes[i].user_create == nil {
+		if nodes[i].user_created_user == nil {
 			continue
 		}
-		fk := *nodes[i].user_create
+		fk := *nodes[i].user_created_user
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -731,7 +731,7 @@ func (uq *UserQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_create" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_created_user" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -739,7 +739,7 @@ func (uq *UserQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []
 	}
 	return nil
 }
-func (uq *UserQuery) loadCreate(ctx context.Context, query *UserQuery, nodes []*User, init func(*User), assign func(*User, *User)) error {
+func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, nodes []*User, init func(*User), assign func(*User, *User)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*User)
 	for i := range nodes {
@@ -751,20 +751,20 @@ func (uq *UserQuery) loadCreate(ctx context.Context, query *UserQuery, nodes []*
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.CreateColumn, fks...))
+		s.Where(sql.InValues(user.CreatedUserColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_create
+		fk := n.user_created_user
 		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_create" is nil for node %v`, n.ID)
+			return fmt.Errorf(`foreign-key "user_created_user" is nil for node %v`, n.ID)
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_create" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_created_user" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

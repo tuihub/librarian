@@ -129,15 +129,15 @@ func (fcu *FeedConfigUpdate) SetNillableCreatedAt(t *time.Time) *FeedConfigUpdat
 	return fcu
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (fcu *FeedConfigUpdate) SetUserID(id model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.SetUserID(id)
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (fcu *FeedConfigUpdate) SetOwnerID(id model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.SetOwnerID(id)
 	return fcu
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (fcu *FeedConfigUpdate) SetUser(u *User) *FeedConfigUpdate {
-	return fcu.SetUserID(u.ID)
+// SetOwner sets the "owner" edge to the User entity.
+func (fcu *FeedConfigUpdate) SetOwner(u *User) *FeedConfigUpdate {
+	return fcu.SetOwnerID(u.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
@@ -164,9 +164,9 @@ func (fcu *FeedConfigUpdate) Mutation() *FeedConfigMutation {
 	return fcu.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (fcu *FeedConfigUpdate) ClearUser() *FeedConfigUpdate {
-	fcu.mutation.ClearUser()
+// ClearOwner clears the "owner" edge to the User entity.
+func (fcu *FeedConfigUpdate) ClearOwner() *FeedConfigUpdate {
+	fcu.mutation.ClearOwner()
 	return fcu
 }
 
@@ -224,8 +224,8 @@ func (fcu *FeedConfigUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
-	if _, ok := fcu.mutation.UserID(); fcu.mutation.UserCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "FeedConfig.user"`)
+	if _, ok := fcu.mutation.OwnerID(); fcu.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil
 }
@@ -278,12 +278,12 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcu.mutation.UserCleared() {
+	if fcu.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   feedconfig.UserTable,
-			Columns: []string{feedconfig.UserColumn},
+			Table:   feedconfig.OwnerTable,
+			Columns: []string{feedconfig.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -291,12 +291,12 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := fcu.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   feedconfig.UserTable,
-			Columns: []string{feedconfig.UserColumn},
+			Table:   feedconfig.OwnerTable,
+			Columns: []string{feedconfig.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -454,15 +454,15 @@ func (fcuo *FeedConfigUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedConfigU
 	return fcuo
 }
 
-// SetUserID sets the "user" edge to the User entity by ID.
-func (fcuo *FeedConfigUpdateOne) SetUserID(id model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.SetUserID(id)
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (fcuo *FeedConfigUpdateOne) SetOwnerID(id model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.SetOwnerID(id)
 	return fcuo
 }
 
-// SetUser sets the "user" edge to the User entity.
-func (fcuo *FeedConfigUpdateOne) SetUser(u *User) *FeedConfigUpdateOne {
-	return fcuo.SetUserID(u.ID)
+// SetOwner sets the "owner" edge to the User entity.
+func (fcuo *FeedConfigUpdateOne) SetOwner(u *User) *FeedConfigUpdateOne {
+	return fcuo.SetOwnerID(u.ID)
 }
 
 // SetFeedID sets the "feed" edge to the Feed entity by ID.
@@ -489,9 +489,9 @@ func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
 	return fcuo.mutation
 }
 
-// ClearUser clears the "user" edge to the User entity.
-func (fcuo *FeedConfigUpdateOne) ClearUser() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearUser()
+// ClearOwner clears the "owner" edge to the User entity.
+func (fcuo *FeedConfigUpdateOne) ClearOwner() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearOwner()
 	return fcuo
 }
 
@@ -562,8 +562,8 @@ func (fcuo *FeedConfigUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
-	if _, ok := fcuo.mutation.UserID(); fcuo.mutation.UserCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "FeedConfig.user"`)
+	if _, ok := fcuo.mutation.OwnerID(); fcuo.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil
 }
@@ -633,12 +633,12 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	if value, ok := fcuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feedconfig.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fcuo.mutation.UserCleared() {
+	if fcuo.mutation.OwnerCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   feedconfig.UserTable,
-			Columns: []string{feedconfig.UserColumn},
+			Table:   feedconfig.OwnerTable,
+			Columns: []string{feedconfig.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -646,12 +646,12 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := fcuo.mutation.OwnerIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   feedconfig.UserTable,
-			Columns: []string{feedconfig.UserColumn},
+			Table:   feedconfig.OwnerTable,
+			Columns: []string{feedconfig.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

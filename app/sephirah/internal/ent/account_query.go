@@ -19,12 +19,12 @@ import (
 // AccountQuery is the builder for querying Account entities.
 type AccountQuery struct {
 	config
-	ctx        *QueryContext
-	order      []OrderFunc
-	inters     []Interceptor
-	predicates []predicate.Account
-	withUser   *UserQuery
-	withFKs    bool
+	ctx          *QueryContext
+	order        []OrderFunc
+	inters       []Interceptor
+	predicates   []predicate.Account
+	withBindUser *UserQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,8 +61,8 @@ func (aq *AccountQuery) Order(o ...OrderFunc) *AccountQuery {
 	return aq
 }
 
-// QueryUser chains the current query on the "user" edge.
-func (aq *AccountQuery) QueryUser() *UserQuery {
+// QueryBindUser chains the current query on the "bind_user" edge.
+func (aq *AccountQuery) QueryBindUser() *UserQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -75,7 +75,7 @@ func (aq *AccountQuery) QueryUser() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, account.UserTable, account.UserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, account.BindUserTable, account.BindUserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -270,26 +270,26 @@ func (aq *AccountQuery) Clone() *AccountQuery {
 		return nil
 	}
 	return &AccountQuery{
-		config:     aq.config,
-		ctx:        aq.ctx.Clone(),
-		order:      append([]OrderFunc{}, aq.order...),
-		inters:     append([]Interceptor{}, aq.inters...),
-		predicates: append([]predicate.Account{}, aq.predicates...),
-		withUser:   aq.withUser.Clone(),
+		config:       aq.config,
+		ctx:          aq.ctx.Clone(),
+		order:        append([]OrderFunc{}, aq.order...),
+		inters:       append([]Interceptor{}, aq.inters...),
+		predicates:   append([]predicate.Account{}, aq.predicates...),
+		withBindUser: aq.withBindUser.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
 	}
 }
 
-// WithUser tells the query-builder to eager-load the nodes that are connected to
-// the "user" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithUser(opts ...func(*UserQuery)) *AccountQuery {
+// WithBindUser tells the query-builder to eager-load the nodes that are connected to
+// the "bind_user" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AccountQuery) WithBindUser(opts ...func(*UserQuery)) *AccountQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withUser = query
+	aq.withBindUser = query
 	return aq
 }
 
@@ -373,10 +373,10 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
 		loadedTypes = [1]bool{
-			aq.withUser != nil,
+			aq.withBindUser != nil,
 		}
 	)
-	if aq.withUser != nil {
+	if aq.withBindUser != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -400,23 +400,23 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aq.withUser; query != nil {
-		if err := aq.loadUser(ctx, query, nodes, nil,
-			func(n *Account, e *User) { n.Edges.User = e }); err != nil {
+	if query := aq.withBindUser; query != nil {
+		if err := aq.loadBindUser(ctx, query, nodes, nil,
+			func(n *Account, e *User) { n.Edges.BindUser = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (aq *AccountQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Account, init func(*Account), assign func(*Account, *User)) error {
+func (aq *AccountQuery) loadBindUser(ctx context.Context, query *UserQuery, nodes []*Account, init func(*Account), assign func(*Account, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*Account)
 	for i := range nodes {
-		if nodes[i].user_account == nil {
+		if nodes[i].user_bind_account == nil {
 			continue
 		}
-		fk := *nodes[i].user_account
+		fk := *nodes[i].user_bind_account
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -433,7 +433,7 @@ func (aq *AccountQuery) loadUser(ctx context.Context, query *UserQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_account" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_bind_account" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)

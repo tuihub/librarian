@@ -58,6 +58,16 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 	}
 	return pModelgeburaApp
 }
+func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App {
+	var pModelgeburaAppList []*modelgebura.App
+	if source != nil {
+		pModelgeburaAppList = make([]*modelgebura.App, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppList[i] = c.ToBizApp(source[i])
+		}
+	}
+	return pModelgeburaAppList
+}
 func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
 	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
 	modelgeburaAppPackageBinary.Name = source.BinaryName
@@ -258,6 +268,63 @@ func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfee
 
 type toEntConverterImpl struct{}
 
+func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
+	var entApp ent.App
+	entApp.ID = model.InternalID(source.ID)
+	entApp.Source = ToEntAppSource(source.Source)
+	entApp.SourceAppID = source.SourceAppID
+	entApp.SourceURL = source.SourceURL
+	entApp.Name = source.Name
+	entApp.Type = ToEntAppType(source.Type)
+	entApp.ShortDescription = source.ShortDescription
+	var pString *string
+	if source.Details != nil {
+		pString = &source.Details.Description
+	}
+	var xstring string
+	if pString != nil {
+		xstring = *pString
+	}
+	entApp.Description = xstring
+	entApp.ImageURL = source.ImageURL
+	var pString2 *string
+	if source.Details != nil {
+		pString2 = &source.Details.ReleaseDate
+	}
+	var xstring2 string
+	if pString2 != nil {
+		xstring2 = *pString2
+	}
+	entApp.ReleaseDate = xstring2
+	var pString3 *string
+	if source.Details != nil {
+		pString3 = &source.Details.Developer
+	}
+	var xstring3 string
+	if pString3 != nil {
+		xstring3 = *pString3
+	}
+	entApp.Developer = xstring3
+	var pString4 *string
+	if source.Details != nil {
+		pString4 = &source.Details.Publisher
+	}
+	var xstring4 string
+	if pString4 != nil {
+		xstring4 = *pString4
+	}
+	entApp.Publisher = xstring4
+	var pString5 *string
+	if source.Details != nil {
+		pString5 = &source.Details.Version
+	}
+	var xstring5 string
+	if pString5 != nil {
+		xstring5 = *pString5
+	}
+	entApp.Version = xstring5
+	return entApp
+}
 func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []modelyesod.FeedConfigSource) []feedconfig.Source {
 	var feedconfigSourceList []feedconfig.Source
 	if source != nil {
