@@ -17,16 +17,8 @@ builds:
     goarch:
       - amd64
       - arm64
-      - arm
     goamd64:
       - v1
-    goarm:
-      - 6
-    ignore:
-      - goos: darwin
-        goarch: arm
-      - goos: windows
-        goarch: arm
     env:
       - CGO_ENABLED=1
       - CC_darwin_amd64=o64-clang
