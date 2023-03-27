@@ -13,7 +13,7 @@ func (s *LibrarianSephirahServiceService) CreateFeedConfig(
 	ctx context.Context,
 	req *pb.CreateFeedConfigRequest,
 ) (*pb.CreateFeedConfigResponse, error) {
-	id, err := s.y.CreateFeedConfig(ctx, s.converter.ToBizFeedConfig(req.GetConfig()))
+	id, err := s.y.CreateFeedConfig(ctx, converter.ToBizFeedConfig(req.GetConfig()))
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (s *LibrarianSephirahServiceService) UpdateFeedConfig(
 	ctx context.Context,
 	req *pb.UpdateFeedConfigRequest,
 ) (*pb.UpdateFeedConfigResponse, error) {
-	err := s.y.UpdateFeedConfig(ctx, s.converter.ToBizFeedConfig(req.GetConfig()))
+	err := s.y.UpdateFeedConfig(ctx, converter.ToBizFeedConfig(req.GetConfig()))
 	if err != nil {
 		return nil, err
 	}
@@ -43,17 +43,17 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		s.converter.ToBizInternalIDList(req.GetIdFilter()),
-		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
-		s.converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
-		s.converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
+		converter.ToBizInternalIDList(req.GetIdFilter()),
+		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
+		converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListFeedConfigsResponse{
 		Paging:          &librarian.PagingResponse{TotalSize: int64(total)},
-		FeedsWithConfig: s.converter.ToPBFeedWithConfigList(feeds),
+		FeedsWithConfig: converter.ToPBFeedWithConfigList(feeds),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) ListFeedItems(
@@ -68,17 +68,17 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		s.converter.ToBizInternalIDList(req.GetFeedIdFilter()),
-		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		converter.ToBizInternalIDList(req.GetFeedIdFilter()),
+		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),
-		s.converter.ToBizTimeRange(req.GetPublishTimeRange()),
+		converter.ToBizTimeRange(req.GetPublishTimeRange()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListFeedItemsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
-		Items:  s.converter.ToPBItemIDWithFeedIDList(items),
+		Items:  converter.ToPBItemIDWithFeedIDList(items),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GroupFeedItems(
@@ -87,10 +87,10 @@ func (s *LibrarianSephirahServiceService) GroupFeedItems(
 ) (*pb.GroupFeedItemsResponse, error) {
 	itemMap, err := s.y.GroupFeedItems(ctx,
 		converter.ToBizGroupFeedItemsBy(req.GetGroupBy()),
-		s.converter.ToBizInternalIDList(req.GetFeedIdFilter()),
-		s.converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
+		converter.ToBizInternalIDList(req.GetFeedIdFilter()),
+		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),
-		s.converter.ToBizTimeRange(req.GetPublishTimeRange()),
+		converter.ToBizTimeRange(req.GetPublishTimeRange()),
 		int(req.GetGroupSize()),
 	)
 	if err != nil {
@@ -99,8 +99,8 @@ func (s *LibrarianSephirahServiceService) GroupFeedItems(
 	res := make([]*pb.GroupFeedItemsResponse_FeedItemsGroup, 0, len(itemMap))
 	for timeRange, items := range itemMap {
 		res = append(res, &pb.GroupFeedItemsResponse_FeedItemsGroup{
-			TimeRange: s.converter.ToPBTimeRange(&timeRange),
-			Items:     s.converter.ToPBItemIDWithFeedIDList(items),
+			TimeRange: converter.ToPBTimeRange(&timeRange),
+			Items:     converter.ToPBItemIDWithFeedIDList(items),
 		})
 	}
 	return &pb.GroupFeedItemsResponse{Groups: res}, nil
@@ -114,7 +114,7 @@ func (s *LibrarianSephirahServiceService) GetFeedItem(
 		return nil, err
 	}
 	return &pb.GetFeedItemResponse{
-		Item: s.converter.ToPBFeedItem(item),
+		Item: converter.ToPBFeedItem(item),
 	}, nil
 }
 
@@ -122,11 +122,11 @@ func (s *LibrarianSephirahServiceService) GetBatchFeedItems(
 	ctx context.Context,
 	req *pb.GetBatchFeedItemsRequest,
 ) (*pb.GetBatchFeedItemsResponse, error) {
-	items, err := s.y.GetFeedItems(ctx, s.converter.ToBizInternalIDList(req.GetIds()))
+	items, err := s.y.GetFeedItems(ctx, converter.ToBizInternalIDList(req.GetIds()))
 	if err != nil {
 		return nil, err
 	}
 	return &pb.GetBatchFeedItemsResponse{
-		Items: s.converter.ToPBFeedItemList(items),
+		Items: converter.ToPBFeedItemList(items),
 	}, nil
 }

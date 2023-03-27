@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/conf"
@@ -24,15 +23,13 @@ var ProviderSet = wire.NewSet(NewData, NewSQLClient, NewTipherethRepo, NewGebura
 
 // Data .
 type Data struct {
-	converter converter.Converter
-	db        *ent.Client
+	db *ent.Client
 }
 
 // NewData .
 func NewData(db *ent.Client) *Data {
 	return &Data{
-		converter: converter.NewConverter(),
-		db:        db,
+		db: db,
 	}
 }
 

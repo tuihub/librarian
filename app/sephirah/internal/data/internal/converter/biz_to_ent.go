@@ -20,7 +20,7 @@ import (
 // goverter:extend ToEntAppSource
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
-type toEntConverter interface {
+type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
 

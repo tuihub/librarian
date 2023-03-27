@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -35,7 +35,7 @@ func (t tipherethRepo) FetchUserByPassword(
 	if u == nil || err != nil {
 		return nil, errors.New("invalid user")
 	}
-	return t.data.converter.ToBizUser(u), nil
+	return converter.ToBizUser(u), nil
 }
 
 func (t tipherethRepo) CreateUser(ctx context.Context, u *modeltiphereth.User, c model.InternalID) error {
@@ -84,10 +84,10 @@ func (t tipherethRepo) ListUser(
 		q.Where(user.IDIn(ids...))
 	}
 	if len(types) > 0 {
-		q.Where(user.TypeIn(t.data.converter.ToEntUserTypeList(types)...))
+		q.Where(user.TypeIn(converter.ToEntUserTypeList(types)...))
 	}
 	if len(statuses) > 0 {
-		q.Where(user.StatusIn(t.data.converter.ToEntUserStatusList(statuses)...))
+		q.Where(user.StatusIn(converter.ToEntUserStatusList(statuses)...))
 	}
 	if len(exclude) > 0 {
 		q.Where(user.IDNotIn(exclude...))
@@ -103,7 +103,7 @@ func (t tipherethRepo) ListUser(
 	if err != nil {
 		return nil, 0, err
 	}
-	return t.data.converter.ToBizUserList(u), int64(count), nil
+	return converter.ToBizUserList(u), int64(count), nil
 }
 
 func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*modeltiphereth.User, error) {
@@ -111,7 +111,7 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 	if err != nil {
 		return nil, err
 	}
-	return t.data.converter.ToBizUser(u), nil
+	return converter.ToBizUser(u), nil
 }
 
 func (t tipherethRepo) CreateAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
@@ -167,5 +167,5 @@ func (t tipherethRepo) ListLinkAccount(
 	if err != nil {
 		return nil, 0, err
 	}
-	return t.data.converter.ToBizAccountList(a), int64(total), nil
+	return converter.ToBizAccountList(a), int64(total), nil
 }

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
@@ -70,10 +70,10 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []modely
 	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
 	q := y.data.db.FeedConfig.Query()
 	if len(sources) > 0 {
-		q.Where(feedconfig.SourceIn(y.data.converter.ToEntFeedConfigSourceList(sources)...))
+		q.Where(feedconfig.SourceIn(converter.ToEntFeedConfigSourceList(sources)...))
 	}
 	if len(statuses) > 0 {
-		q.Where(feedconfig.StatusIn(y.data.converter.ToEntFeedConfigStatusList(statuses)...))
+		q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))
 	}
 	switch order {
 	case modelyesod.ListFeedOrderUnspecified:
@@ -87,7 +87,7 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []modely
 	if err != nil {
 		return nil, err
 	}
-	return y.data.converter.ToBizFeedConfigList(feedConfigs), nil
+	return converter.ToBizFeedConfigList(feedConfigs), nil
 }
 
 func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
@@ -177,10 +177,10 @@ func (y *yesodRepo) ListFeedConfigs(
 			q.Where(feedconfig.AuthorAccountIn(authorIDs...))
 		}
 		if len(sources) > 0 {
-			q.Where(feedconfig.SourceIn(y.data.converter.ToEntFeedConfigSourceList(sources)...))
+			q.Where(feedconfig.SourceIn(converter.ToEntFeedConfigSourceList(sources)...))
 		}
 		if len(statuses) > 0 {
-			q.Where(feedconfig.StatusIn(y.data.converter.ToEntFeedConfigStatusList(statuses)...))
+			q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))
 		}
 		total, err = q.Count(ctx)
 		if err != nil {
@@ -197,8 +197,8 @@ func (y *yesodRepo) ListFeedConfigs(
 		res = make([]*modelyesod.FeedWithConfig, 0, len(configs))
 		for _, config := range configs {
 			res = append(res, &modelyesod.FeedWithConfig{
-				FeedConfig: y.data.converter.ToBizFeedConfig(config),
-				Feed:       y.data.converter.ToBizFeed(config.Edges.Feed),
+				FeedConfig: converter.ToBizFeedConfig(config),
+				Feed:       converter.ToBizFeed(config.Edges.Feed),
 			})
 		}
 		return nil
@@ -341,7 +341,7 @@ func (y *yesodRepo) GetFeedItems(
 		if err != nil {
 			return err
 		}
-		res = y.data.converter.ToBizFeedItemList(items)
+		res = converter.ToBizFeedItemList(items)
 		return nil
 	})
 	if err != nil {

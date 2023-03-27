@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
@@ -170,7 +170,7 @@ func (g geburaRepo) ListApp(
 	}
 	apps := make([]*modelgebura.App, len(al))
 	for i, sa := range al {
-		apps[i] = g.data.converter.ToBizApp(sa)
+		apps[i] = converter.ToBizApp(sa)
 		if !containDetails {
 			apps[i].Details = nil
 		}
@@ -180,7 +180,7 @@ func (g geburaRepo) ListApp(
 
 func (g geburaRepo) MergeApps(ctx context.Context, base modelgebura.App, merged model.InternalID) error {
 	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		baseApp := g.data.converter.ToEntApp(base)
+		baseApp := converter.ToEntApp(base)
 		err := tx.App.UpdateOne(&baseApp).Exec(ctx)
 		if err != nil {
 			return err
@@ -242,7 +242,7 @@ func (g geburaRepo) SearchApps(ctx context.Context, paging model.Paging, keyword
 	if err != nil {
 		return nil, 0, err
 	}
-	return g.data.converter.ToBizAppList(apps), total, nil
+	return converter.ToBizAppList(apps), total, nil
 }
 
 func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
@@ -258,7 +258,7 @@ func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*mo
 	if err != nil {
 		return nil, err
 	}
-	return g.data.converter.ToBizAppList(append(externalApps, internalApp)), nil
+	return converter.ToBizAppList(append(externalApps, internalApp)), nil
 }
 
 func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, appID model.InternalID) error {
@@ -385,7 +385,7 @@ func (g geburaRepo) ListAppPackage(
 	if err != nil {
 		return nil, err
 	}
-	return g.data.converter.ToBizAppPackageList(ap), nil
+	return converter.ToBizAppPackageList(ap), nil
 }
 
 func (g geburaRepo) ListAllAppPackageIDOfOneSource(

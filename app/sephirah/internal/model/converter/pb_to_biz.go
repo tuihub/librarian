@@ -28,7 +28,7 @@ import (
 // goverter:extend DurationPBToDuration
 // goverter:extend ToBizFeedConfigSource
 // goverter:extend ToBizFeedConfigStatus
-type toBizConverter interface {
+type toBizConverter interface { //nolint:unused // used by generator
 	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User

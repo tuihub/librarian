@@ -38,13 +38,12 @@ type Angela struct {
 	mq *libmq.MQ
 }
 type AngelaBase struct {
-	converter converter.Converter
-	t         biztiphereth.TipherethRepo
-	g         bizgebura.GeburaRepo
-	y         bizyesod.YesodRepo
-	mapper    mapper.LibrarianMapperServiceClient
-	searcher  searcher.LibrarianSearcherServiceClient
-	porter    porter.LibrarianPorterServiceClient
+	t        biztiphereth.TipherethRepo
+	g        bizgebura.GeburaRepo
+	y        bizyesod.YesodRepo
+	mapper   mapper.LibrarianMapperServiceClient
+	searcher searcher.LibrarianSearcherServiceClient
+	porter   porter.LibrarianPorterServiceClient
 }
 
 func NewAngelaBase(
@@ -56,13 +55,12 @@ func NewAngelaBase(
 	sClient searcher.LibrarianSearcherServiceClient,
 ) (*AngelaBase, error) {
 	return &AngelaBase{
-		converter: converter.NewConverter(),
-		t:         t,
-		g:         g,
-		y:         y,
-		mapper:    mClient,
-		porter:    pClient,
-		searcher:  sClient,
+		t:        t,
+		g:        g,
+		y:        y,
+		mapper:   mClient,
+		porter:   pClient,
+		searcher: sClient,
 	}, nil
 }
 
@@ -162,14 +160,14 @@ func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 			}); err != nil {
 				return err
 			} else {
-				steamAppIDs = a.converter.ToBizInternalIDList(resp.GetIds())
+				steamAppIDs = converter.ToBizInternalIDList(resp.GetIds())
 			}
 			if resp, err := a.searcher.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{
 				Num: int32(appNum),
 			}); err != nil {
 				return err
 			} else {
-				internalAppIDs = a.converter.ToBizInternalIDList(resp.GetIds())
+				internalAppIDs = converter.ToBizInternalIDList(resp.GetIds())
 			}
 			for i, app := range appList {
 				internalApps = append(internalApps, &modelgebura.App{
@@ -259,7 +257,7 @@ func NewPullSteamAppTopic(
 			if err != nil {
 				return err
 			}
-			app := a.converter.ToBizApp(resp.GetApp())
+			app := converter.ToBizApp(resp.GetApp())
 			app.ID = r.ID
 			app.Source = modelgebura.AppSourceSteam
 			app.Type = modelgebura.AppTypeGame

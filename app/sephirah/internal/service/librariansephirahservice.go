@@ -9,15 +9,12 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
-
-	converter converter.Converter
 
 	t *biztiphereth.Tiphereth
 	g *bizgebura.Gebura
@@ -43,10 +40,9 @@ func NewLibrarianSephirahServiceService(
 	}
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
-		converter: converter.NewConverter(),
-		t:         t,
-		g:         g,
-		b:         b,
-		y:         y,
+		t: t,
+		g: g,
+		b: b,
+		y: y,
 	}
 }

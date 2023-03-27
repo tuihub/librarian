@@ -19,7 +19,7 @@ import (
 // goverter:converter
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr
-type toBizConverter interface {
+type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
@@ -47,7 +47,7 @@ type toBizConverter interface {
 	// goverter:map BinaryName Name
 	// goverter:map BinarySizeByte SizeByte
 	// goverter:map BinaryPublicURL PublicURL
-	ToBizAppPacakgeBinary(ent.AppPackage) modelgebura.AppPackageBinary
+	ToBizAppPackageBinary(ent.AppPackage) modelgebura.AppPackageBinary
 	ToBizAppPackageList([]*ent.AppPackage) []*modelgebura.AppPackage
 
 	// goverter:matchIgnoreCase

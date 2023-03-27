@@ -68,13 +68,6 @@ func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App 
 	}
 	return pModelgeburaAppList
 }
-func (c *toBizConverterImpl) ToBizAppPacakgeBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
-	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
-	modelgeburaAppPackageBinary.Name = source.BinaryName
-	modelgeburaAppPackageBinary.SizeByte = source.BinarySizeByte
-	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
-	return modelgeburaAppPackageBinary
-}
 func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebura.AppPackage {
 	var pModelgeburaAppPackage *modelgebura.AppPackage
 	if source != nil {
@@ -90,6 +83,13 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage
+}
+func (c *toBizConverterImpl) ToBizAppPackageBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
+	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
+	modelgeburaAppPackageBinary.Name = source.BinaryName
+	modelgeburaAppPackageBinary.SizeByte = source.BinarySizeByte
+	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
+	return modelgeburaAppPackageBinary
 }
 func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*modelgebura.AppPackage {
 	var pModelgeburaAppPackageList []*modelgebura.AppPackage
@@ -218,7 +218,7 @@ func (c *toBizConverterImpl) ToBizUserList(source []*ent.User) []*modeltiphereth
 	return pModeltipherethUserList
 }
 func (c *toBizConverterImpl) entAppPackageToPModelgeburaAppPackageBinary(source ent.AppPackage) *modelgebura.AppPackageBinary {
-	modelgeburaAppPackageBinary := c.ToBizAppPacakgeBinary(source)
+	modelgeburaAppPackageBinary := c.ToBizAppPackageBinary(source)
 	return &modelgeburaAppPackageBinary
 }
 func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) modelgebura.AppDetails {

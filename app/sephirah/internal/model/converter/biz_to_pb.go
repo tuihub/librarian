@@ -21,7 +21,7 @@ import (
 // goverter:extend ToPBTime
 // goverter:extend ToPBTimePtr
 // goverter:extend ToPBDuration
-type toPBConverter interface {
+type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBUserType
 	// goverter:map Status | ToPBUserStatus

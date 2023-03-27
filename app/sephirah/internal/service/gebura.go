@@ -22,7 +22,7 @@ func (s *LibrarianSephirahServiceService) CreateApp(ctx context.Context, req *pb
 	if app == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
-	a, err := s.g.CreateApp(ctx, s.converter.ToBizApp(req.GetApp()))
+	a, err := s.g.CreateApp(ctx, converter.ToBizApp(req.GetApp()))
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 	if app == nil || app.GetId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app and internal_id required")
 	}
-	err := s.g.UpdateApp(ctx, s.converter.ToBizApp(req.GetApp()))
+	err := s.g.UpdateApp(ctx, converter.ToBizApp(req.GetApp()))
 	if err != nil {
 		return nil, err
 	}
@@ -51,16 +51,16 @@ func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		s.converter.ToBizAppSourceList(req.GetSourceFilter()),
-		s.converter.ToBizAppTypeList(req.GetTypeFilter()),
-		s.converter.ToBizInternalIDList(req.GetIdFilter()),
+		converter.ToBizAppSourceList(req.GetSourceFilter()),
+		converter.ToBizAppTypeList(req.GetTypeFilter()),
+		converter.ToBizInternalIDList(req.GetIdFilter()),
 		req.GetContainDetails())
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListAppsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
-		Apps:   s.converter.ToPBAppList(a),
+		Apps:   converter.ToPBAppList(a),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
@@ -71,7 +71,7 @@ func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
 	*pb.MergeAppsResponse, error,
 ) {
-	app := s.converter.ToBizApp(req.Base)
+	app := converter.ToBizApp(req.Base)
 	if app == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("base required")
 	}
@@ -99,7 +99,7 @@ func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *p
 	}
 	return &pb.SearchAppsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
-		Apps:   s.converter.ToPBAppList(apps),
+		Apps:   converter.ToPBAppList(apps),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *pb.GetBindAppsRequest) (
@@ -109,7 +109,7 @@ func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetBindAppsResponse{Apps: s.converter.ToPBAppList(al)}, nil
+	return &pb.GetBindAppsResponse{Apps: converter.ToPBAppList(al)}, nil
 }
 func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *pb.PurchaseAppRequest) (
 	*pb.PurchaseAppResponse, error,
@@ -128,7 +128,7 @@ func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req
 		return nil, err
 	}
 	return &pb.GetAppLibraryResponse{
-		AppIds: s.converter.ToPBInternalIDList(appIDs),
+		AppIds: converter.ToPBInternalIDList(appIDs),
 	}, nil
 }
 
@@ -136,7 +136,7 @@ func (s *LibrarianSephirahServiceService) CreateAppPackage(
 	ctx context.Context,
 	req *pb.CreateAppPackageRequest,
 ) (*pb.CreateAppPackageResponse, error) {
-	ap, err := s.g.CreateAppPackage(ctx, s.converter.ToBizAppPackage(req.GetAppPackage()))
+	ap, err := s.g.CreateAppPackage(ctx, converter.ToBizAppPackage(req.GetAppPackage()))
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +146,7 @@ func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	ctx context.Context,
 	req *pb.UpdateAppPackageRequest,
 ) (*pb.UpdateAppPackageResponse, error) {
-	err := s.g.UpdateAppPackage(ctx, s.converter.ToBizAppPackage(req.GetAppPackage()))
+	err := s.g.UpdateAppPackage(ctx, converter.ToBizAppPackage(req.GetAppPackage()))
 	if err == nil {
 		return nil, err
 	}
@@ -161,15 +161,15 @@ func (s *LibrarianSephirahServiceService) ListAppPackages(
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		s.converter.ToBizAppPackageSourceList(req.GetSourceFilter()),
-		s.converter.ToBizInternalIDList(req.GetIdFilter()),
+		converter.ToBizAppPackageSourceList(req.GetSourceFilter()),
+		converter.ToBizInternalIDList(req.GetIdFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListAppPackagesResponse{
 		Paging:      nil,
-		AppPackages: s.converter.ToPBAppPackageList(ap),
+		AppPackages: converter.ToPBAppPackageList(ap),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) AssignAppPackage(

@@ -54,7 +54,7 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	if req.GetUser() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	id, err := s.t.CreateUser(ctx, s.converter.ToBizUser(req.GetUser()))
+	id, err := s.t.CreateUser(ctx, converter.ToBizUser(req.GetUser()))
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	if req.GetUser() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	err := s.t.UpdateUser(ctx, s.converter.ToBizUser(req.GetUser()), req.GetPassword())
+	err := s.t.UpdateUser(ctx, converter.ToBizUser(req.GetUser()), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -85,15 +85,15 @@ func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
 		},
-		s.converter.ToLibAuthUserTypeList(req.GetTypeFilter()),
-		s.converter.ToBizUserStatusList(req.GetStatusFilter()),
+		converter.ToLibAuthUserTypeList(req.GetTypeFilter()),
+		converter.ToBizUserStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListUsersResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
-		Users:  s.converter.ToPBUserList(u),
+		Users:  converter.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetUser(ctx context.Context, req *pb.GetUserRequest) (
@@ -103,7 +103,7 @@ func (s *LibrarianSephirahServiceService) GetUser(ctx context.Context, req *pb.G
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetUserResponse{User: s.converter.ToPBUser(u)}, nil
+	return &pb.GetUserResponse{User: converter.ToPBUser(u)}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
@@ -160,6 +160,6 @@ func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, r
 	}
 	return &pb.ListLinkAccountsResponse{
 		Paging:   &librarian.PagingResponse{TotalSize: total},
-		Accounts: s.converter.ToPBAccountList(res),
+		Accounts: converter.ToPBAccountList(res),
 	}, nil
 }
