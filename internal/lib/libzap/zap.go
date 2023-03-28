@@ -1,9 +1,7 @@
 package libzap
 
 import (
-	"io"
 	"path"
-	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -13,6 +11,7 @@ import (
 type Level = zapcore.Level
 
 const (
+	DebugLevel  Level = zap.DebugLevel  // -1
 	InfoLevel   Level = zap.InfoLevel   // 0, default level
 	WarnLevel   Level = zap.WarnLevel   // 1
 	ErrorLevel  Level = zap.ErrorLevel  // 2
@@ -21,7 +20,6 @@ const (
 	PanicLevel Level = zap.PanicLevel // 4
 	// FatalLevel logs a message, then calls os.Exit(1).
 	FatalLevel Level = zap.FatalLevel // 5
-	DebugLevel Level = zap.DebugLevel // -1
 )
 
 type RotateOptions struct {
@@ -46,8 +44,6 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 	cfg.EncoderConfig.TimeKey = ""
 
 	for _, opt := range teeOptions {
-		opt := opt
-
 		lv := zap.LevelEnablerFunc(func(level Level) bool {
 			return opt.LevelEnablerFunc(level)
 		})
@@ -72,26 +68,7 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 	return zap.New(zapcore.NewTee(cores...), zapOptions...)
 }
 
-// New create a new logs (not support log rotating).
-func New(writer io.Writer, level Level, opts ...zap.Option) *zap.Logger {
-	if writer == nil {
-		panic("the writer is nil")
-	}
-	cfg := zap.NewProductionConfig()
-	cfg.EncoderConfig.EncodeTime = func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
-		enc.AppendString(t.Format("2006-01-02T15:04:05.000Z0700"))
-	}
-
-	core := zapcore.NewCore(
-		zapcore.NewJSONEncoder(cfg.EncoderConfig),
-		zapcore.AddSync(writer),
-		level,
-	)
-
-	return zap.New(core, opts...)
-}
-
-func NewDefaultLogger(basePath string) *zap.Logger {
+func New(basePath string, accessLogLevel Level) *zap.Logger {
 	var tops = []TeeOption{
 		{
 			Filename: path.Join(basePath, "log", "access.log"),
@@ -102,7 +79,7 @@ func NewDefaultLogger(basePath string) *zap.Logger {
 				Compress:   true,
 			},
 			LevelEnablerFunc: func(lvl Level) bool {
-				return lvl > DebugLevel
+				return lvl >= accessLogLevel
 			},
 		},
 		{
@@ -114,7 +91,7 @@ func NewDefaultLogger(basePath string) *zap.Logger {
 				Compress:   true,
 			},
 			LevelEnablerFunc: func(lvl Level) bool {
-				return lvl > InfoLevel
+				return lvl >= ErrorLevel
 			},
 		},
 	}

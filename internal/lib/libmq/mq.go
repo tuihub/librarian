@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/tuihub/librarian/internal/lib/libapp"
+
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
@@ -57,8 +59,10 @@ func NewMQ(c *conf.MQ) (*MQ, func(), error) {
 			OnRetryHook:         nil,
 			Logger:              loggerAdapter,
 		}.Middleware,
-		// middleware.Recoverer,
 	)
+	if libapp.GetInherentSettings().EnablePanicRecovery {
+		router.AddMiddleware(middleware.Recoverer)
+	}
 	cleanup := func() {
 		_ = router.Close()
 	}

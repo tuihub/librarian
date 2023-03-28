@@ -227,9 +227,11 @@ func (g geburaRepo) SearchApps(ctx context.Context, paging model.Paging, keyword
 	[]*modelgebura.App, int, error) {
 	q := g.data.db.App.Query().
 		Where(
-			app.NameContains(keyword),
-			app.ShortDescriptionContains(keyword),
-			app.DescriptionContains(keyword),
+			app.Or(
+				app.NameContains(keyword),
+				app.ShortDescriptionContains(keyword),
+				app.DescriptionContains(keyword),
+			),
 		)
 	total, err := q.Count(ctx)
 	if err != nil {

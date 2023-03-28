@@ -25,31 +25,20 @@ init:
 init-test:
 	cd tests && make init
 
-.PHONY: config
-# generate internal proto
-config:
+.PHONY: generate
+# generate code
+generate: generate-config generate-code
+
+generate-config:
 	protoc --proto_path=./internal \
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
-.PHONY: build
-# build
-build:
-	mkdir -p bin/ && go build -ldflags "-X main.version=$(VERSION)" -o ./bin/ ./...
-
-.PHONY: generate
-# generate
-generate:
+generate-code:
 	go get github.com/google/wire/cmd/wire@latest
 	go get github.com/jmattheis/goverter/cmd/goverter@latest
 	go generate ./...
 	go mod tidy
-
-.PHONY: all
-# generate all
-all:
-	make config;
-	make generate;
 
 .PHONY: lint
 # lint files
@@ -66,8 +55,6 @@ test-unit:
 test-goc:
 	cd tests && make all
 
-.PHONY: test-all
-# run all test
 test-all: test-unit test-goc
 
 .PHONY: run
@@ -75,7 +62,13 @@ test-all: test-unit test-goc
 run:
 	kratos run
 
+.PHONY: build
+# build server in debug mode
+build:
+	mkdir -p bin/ && go build -tags debug -ldflags "-X main.version=$(VERSION)" -o ./bin/ ./...
+
 .PHONY: release-dry-run
+# build server in release mode, for manual test
 release-dry-run:
 	@docker run \
 		--rm \
@@ -87,6 +80,7 @@ release-dry-run:
 		release --clean --skip-validate --skip-publish
 
 .PHONY: release
+# build server in release mode, for CI, do not run manually
 release:
 	@if [ ! -f ".release-env" ]; then \
 		echo "\033[91m.release-env is required for release\033[0m";\

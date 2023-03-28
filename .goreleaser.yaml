@@ -38,7 +38,7 @@ builds:
       - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
       - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
     ldflags:
-      - -s -w -X main.name={{.ProjectName}} -X main.version={{.Summary}}
+      - -s -w -tags release -X main.name={{.ProjectName}} -X main.version={{.Summary}}
     #buildmode: c-archive
 
 archives:

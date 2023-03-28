@@ -30,7 +30,7 @@ func GetDataPath() string {
 }
 
 func InitLogger(id, name, version string) {
-	logger := log.With(zap.NewLogger(libzap.NewDefaultLogger(GetDataPath())),
+	logger := log.With(zap.NewLogger(libzap.New(GetDataPath(), GetInherentSettings().LogLevel)),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,

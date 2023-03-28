@@ -8,9 +8,11 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
+	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
+	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
@@ -22,26 +24,29 @@ func NewGRPCServer(
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
 ) *grpc.Server {
+	var middlewares = []middleware.Middleware{
+		logging.Server(libapp.GetLogger()),
+		ratelimit.Server(),
+		selector.Server(
+			jwt.Server(
+				auth.KeyFunc(libauth.ClaimsTypeAccessToken),
+				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithClaims(libauth.NewClaims),
+			),
+		).Match(NewWhiteListMatcher()).Build(),
+		selector.Server(
+			jwt.Server(
+				auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
+				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithClaims(libauth.NewClaims),
+			),
+		).Match(NewRefreshTokenMatcher()).Build(),
+	}
+	if libapp.GetInherentSettings().EnablePanicRecovery {
+		middlewares = append(middlewares, recovery.Recovery())
+	}
 	var opts = []grpc.ServerOption{
-		grpc.Middleware(
-			// recovery.Recovery(),
-			logging.Server(libapp.GetLogger()),
-			ratelimit.Server(),
-			selector.Server(
-				jwt.Server(
-					auth.KeyFunc(libauth.ClaimsTypeAccessToken),
-					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-					jwt.WithClaims(libauth.NewClaims),
-				),
-			).Match(NewWhiteListMatcher()).Build(),
-			selector.Server(
-				jwt.Server(
-					auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
-					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-					jwt.WithClaims(libauth.NewClaims),
-				),
-			).Match(NewRefreshTokenMatcher()).Build(),
-		),
+		grpc.Middleware(middlewares...),
 	}
 	if c.Grpc.Network != "" {
 		opts = append(opts, grpc.Network(c.Grpc.Network))

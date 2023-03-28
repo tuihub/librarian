@@ -7,9 +7,11 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 
+	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
+	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
@@ -22,26 +24,29 @@ func NewGrpcWebServer(
 	c *conf.Sephirah_Server,
 	auth *libauth.Auth,
 ) *http.Server {
+	var middlewares = []middleware.Middleware{
+		logging.Server(libapp.GetLogger()),
+		ratelimit.Server(),
+		selector.Server(
+			jwt.Server(
+				auth.KeyFunc(libauth.ClaimsTypeAccessToken),
+				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithClaims(libauth.NewClaims),
+			),
+		).Match(NewWhiteListMatcher()).Build(),
+		selector.Server(
+			jwt.Server(
+				auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
+				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithClaims(libauth.NewClaims),
+			),
+		).Match(NewRefreshTokenMatcher()).Build(),
+	}
+	if libapp.GetInherentSettings().EnablePanicRecovery {
+		middlewares = append(middlewares, recovery.Recovery())
+	}
 	var opts = []http.ServerOption{
-		http.Middleware(
-			// recovery.Recovery(),
-			logging.Server(libapp.GetLogger()),
-			ratelimit.Server(),
-			selector.Server(
-				jwt.Server(
-					auth.KeyFunc(libauth.ClaimsTypeAccessToken),
-					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-					jwt.WithClaims(libauth.NewClaims),
-				),
-			).Match(NewWhiteListMatcher()).Build(),
-			selector.Server(
-				jwt.Server(
-					auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
-					jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-					jwt.WithClaims(libauth.NewClaims),
-				),
-			).Match(NewRefreshTokenMatcher()).Build(),
-		),
+		http.Middleware(middlewares...),
 	}
 	if c.GrpcWeb.Network != "" {
 		opts = append(opts, http.Network(c.GrpcWeb.Network))
