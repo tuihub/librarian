@@ -3,9 +3,9 @@
 package converter
 
 import (
-	ent "github.com/tuihub/librarian/app/sephirah/internal/ent"
-	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
-	user "github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	ent "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"

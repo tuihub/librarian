@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/migrate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 

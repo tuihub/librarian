@@ -3,12 +3,12 @@ package converter
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/account"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/apppackage"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/feedconfig"
-	"github.com/tuihub/librarian/app/sephirah/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
