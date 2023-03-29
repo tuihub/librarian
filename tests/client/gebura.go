@@ -7,8 +7,8 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-func (c *Client) TestGebura(ctx context.Context) {
-	var appID *librarian.InternalID
+func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
+	var appID, appID2 *librarian.InternalID
 	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,
 		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
@@ -51,5 +51,60 @@ func (c *Client) TestGebura(ctx context.Context) {
 		Details:          nil,
 	}}); err != nil {
 		panic(err)
+	}
+	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
+		Id:               nil,
+		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+		SourceAppId:      "",
+		SourceUrl:        nil,
+		Name:             "test app 2",
+		Type:             librarian.AppType_APP_TYPE_GAME,
+		ShortDescription: "test app description",
+		ImageUrl:         "",
+		Details:          nil,
+	}}); err != nil {
+		panic(err)
+	} else {
+		appID2 = resp.Id
+	}
+	if resp, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
+		Paging:   defaultPaging,
+		Keywords: "2",
+	}); err != nil {
+		panic(err)
+	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID2.GetId() {
+		panic("unexpected search result")
+	}
+	if _, err := c.cli.GetBindApps(ctx, &pb.GetBindAppsRequest{AppId: appID2}); err != nil {
+		panic(err)
+	}
+	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{AppId: appID2}); err != nil {
+		panic(err)
+	}
+	if resp, err := c.cli.GetAppLibrary(ctx, &pb.GetAppLibraryRequest{}); err != nil {
+		panic(err)
+	} else if len(resp.GetAppIds()) != 1 || resp.GetAppIds()[0].GetId() != appID2.GetId() {
+		panic("unexpected search result")
+	}
+	if _, err := c.cli.MergeApps(ctx, &pb.MergeAppsRequest{
+		Base: &librarian.App{
+			Id:               appID,
+			Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+			SourceAppId:      "",
+			SourceUrl:        nil,
+			Name:             "test app 1",
+			Type:             librarian.AppType_APP_TYPE_GAME,
+			ShortDescription: "test app description update",
+			ImageUrl:         "",
+			Details:          nil,
+		},
+		Merged: appID2,
+	}); err != nil {
+		panic(err)
+	}
+	if resp, err := c.cli.GetAppLibrary(ctx, &pb.GetAppLibraryRequest{}); err != nil {
+		panic(err)
+	} else if len(resp.GetAppIds()) != 1 || resp.GetAppIds()[0].GetId() != appID.GetId() {
+		panic("unexpected search result")
 	}
 }
