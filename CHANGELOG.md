@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.11](https://github.com/TuiHub/Librarian/compare/v0.0.10...v0.0.11) (2023-03-29)
+
+
+### Bug Fixes
+
+* ci config ([71131ff](https://github.com/TuiHub/Librarian/commit/71131fffb8db838aae195ae4ef49f23c7e3fd5be))
+
 ## [0.0.10](https://github.com/TuiHub/Librarian/compare/v0.0.9...v0.0.10) (2023-03-29)
 
 
