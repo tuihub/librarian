@@ -18,6 +18,7 @@ import (
 // goverter:extend ToEntUserStatus
 // goverter:extend ToEntAppType
 // goverter:extend ToEntAppSource
+// goverter:extend ToEntAppPackageSource
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
 type toEntConverter interface { //nolint:unused // used by generator
@@ -30,6 +31,7 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:ignore CreatedAt
 	// goverter:ignore UpdatedAt
 	ToEntApp(modelgebura.App) ent.App
+	ToEntAppPackageSourceList([]modelgebura.AppPackageSource) []apppackage.Source
 
 	ToEntFeedConfigSourceList([]modelyesod.FeedConfigSource) []feedconfig.Source
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status

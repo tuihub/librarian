@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -110,6 +111,17 @@ func (apc *AppPackageCreate) SetNillableCreatedAt(t *time.Time) *AppPackageCreat
 func (apc *AppPackageCreate) SetID(mi model.InternalID) *AppPackageCreate {
 	apc.mutation.SetID(mi)
 	return apc
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (apc *AppPackageCreate) SetOwnerID(id model.InternalID) *AppPackageCreate {
+	apc.mutation.SetOwnerID(id)
+	return apc
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (apc *AppPackageCreate) SetOwner(u *User) *AppPackageCreate {
+	return apc.SetOwnerID(u.ID)
 }
 
 // SetAppID sets the "app" edge to the App entity by ID.
@@ -216,6 +228,9 @@ func (apc *AppPackageCreate) check() error {
 	if _, ok := apc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppPackage.created_at"`)}
 	}
+	if _, ok := apc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "AppPackage.owner"`)}
+	}
 	return nil
 }
 
@@ -292,6 +307,23 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 	if value, ok := apc.mutation.CreatedAt(); ok {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := apc.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.OwnerTable,
+			Columns: []string{apppackage.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_app_package = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := apc.mutation.AppIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

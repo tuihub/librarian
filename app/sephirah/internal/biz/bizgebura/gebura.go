@@ -19,25 +19,26 @@ type ReportAppPackageHandler interface {
 }
 
 type GeburaRepo interface {
-	IsApp(context.Context, model.InternalID) error
 	CreateApp(context.Context, *modelgebura.App) error
 	UpdateApp(context.Context, *modelgebura.App) error
-	UpsertApp(context.Context, []*modelgebura.App) error
-	ListApp(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
+	UpsertApps(context.Context, []*modelgebura.App) error
+	ListApps(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
 		[]model.InternalID, bool) ([]*modelgebura.App, int64, error)
-	IsAppPackage(context.Context, model.InternalID) error
-	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
-	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
-	UpsertAppPackage(context.Context, []*modelgebura.AppPackage) error
-	ListAppPackage(context.Context, model.Paging, []modelgebura.AppPackageSource,
-		[]model.InternalID) ([]*modelgebura.AppPackage, error)
-	ListAllAppPackageIDOfOneSource(context.Context, modelgebura.AppPackageSource,
-		model.InternalID) ([]string, error)
 	MergeApps(context.Context, modelgebura.App, model.InternalID) error
 	SearchApps(context.Context, model.Paging, string) ([]*modelgebura.App, int, error)
 	GetBindApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
 	GetPurchasedApps(context.Context, model.InternalID) ([]model.InternalID, error)
+
+	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
+	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
+	UpsertAppPackages(context.Context, []*modelgebura.AppPackage) error
+	ListAppPackages(context.Context, model.Paging, []modelgebura.AppPackageSource,
+		[]model.InternalID) ([]*modelgebura.AppPackage, int, error)
+	AssignAppPackage(context.Context, model.InternalID, model.InternalID, model.InternalID) error
+	ListAllAppPackageIDOfOneSource(context.Context, modelgebura.AppPackageSource,
+		model.InternalID) ([]string, error)
+	UnAssignAppPackage(context.Context, model.InternalID, model.InternalID) error
 }
 
 type Gebura struct {

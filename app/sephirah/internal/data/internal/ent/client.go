@@ -654,6 +654,22 @@ func (c *AppPackageClient) GetX(ctx context.Context, id model.InternalID) *AppPa
 	return obj
 }
 
+// QueryOwner queries the owner edge of a AppPackage.
+func (c *AppPackageClient) QueryOwner(ap *AppPackage) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ap.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppackage.Table, apppackage.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppackage.OwnerTable, apppackage.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ap.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryApp queries the app edge of a AppPackage.
 func (c *AppPackageClient) QueryApp(ap *AppPackage) *AppQuery {
 	query := (&AppClient{config: c.config}).Query()
@@ -1247,6 +1263,22 @@ func (c *UserClient) QueryPurchasedApp(u *User) *AppQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppPackage queries the app_package edge of a User.
+func (c *UserClient) QueryAppPackage(u *User) *AppPackageQuery {
+	query := (&AppPackageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(apppackage.Table, apppackage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AppPackageTable, user.AppPackageColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

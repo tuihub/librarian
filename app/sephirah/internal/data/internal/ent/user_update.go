@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -106,6 +107,21 @@ func (uu *UserUpdate) AddPurchasedApp(a ...*App) *UserUpdate {
 	return uu.AddPurchasedAppIDs(ids...)
 }
 
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (uu *UserUpdate) AddAppPackageIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddAppPackageIDs(ids...)
+	return uu
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (uu *UserUpdate) AddAppPackage(a ...*AppPackage) *UserUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uu.AddAppPackageIDs(ids...)
+}
+
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
 func (uu *UserUpdate) AddFeedConfigIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddFeedConfigIDs(ids...)
@@ -192,6 +208,27 @@ func (uu *UserUpdate) RemovePurchasedApp(a ...*App) *UserUpdate {
 		ids[i] = a[i].ID
 	}
 	return uu.RemovePurchasedAppIDs(ids...)
+}
+
+// ClearAppPackage clears all "app_package" edges to the AppPackage entity.
+func (uu *UserUpdate) ClearAppPackage() *UserUpdate {
+	uu.mutation.ClearAppPackage()
+	return uu
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
+func (uu *UserUpdate) RemoveAppPackageIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveAppPackageIDs(ids...)
+	return uu
+}
+
+// RemoveAppPackage removes "app_package" edges to AppPackage entities.
+func (uu *UserUpdate) RemoveAppPackage(a ...*AppPackage) *UserUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uu.RemoveAppPackageIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -416,6 +453,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedAppPackageIDs(); len(nodes) > 0 && !uu.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.FeedConfigCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -629,6 +711,21 @@ func (uuo *UserUpdateOne) AddPurchasedApp(a ...*App) *UserUpdateOne {
 	return uuo.AddPurchasedAppIDs(ids...)
 }
 
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (uuo *UserUpdateOne) AddAppPackageIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddAppPackageIDs(ids...)
+	return uuo
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (uuo *UserUpdateOne) AddAppPackage(a ...*AppPackage) *UserUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uuo.AddAppPackageIDs(ids...)
+}
+
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
 func (uuo *UserUpdateOne) AddFeedConfigIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddFeedConfigIDs(ids...)
@@ -715,6 +812,27 @@ func (uuo *UserUpdateOne) RemovePurchasedApp(a ...*App) *UserUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return uuo.RemovePurchasedAppIDs(ids...)
+}
+
+// ClearAppPackage clears all "app_package" edges to the AppPackage entity.
+func (uuo *UserUpdateOne) ClearAppPackage() *UserUpdateOne {
+	uuo.mutation.ClearAppPackage()
+	return uuo
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to AppPackage entities by IDs.
+func (uuo *UserUpdateOne) RemoveAppPackageIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveAppPackageIDs(ids...)
+	return uuo
+}
+
+// RemoveAppPackage removes "app_package" edges to AppPackage entities.
+func (uuo *UserUpdateOne) RemoveAppPackage(a ...*AppPackage) *UserUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uuo.RemoveAppPackageIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -962,6 +1080,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedAppPackageIDs(); len(nodes) > 0 && !uuo.mutation.AppPackageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

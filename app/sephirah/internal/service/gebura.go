@@ -46,7 +46,7 @@ func (s *LibrarianSephirahServiceService) UpdateApp(ctx context.Context, req *pb
 func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.ListAppsRequest) (
 	*pb.ListAppsResponse, error,
 ) {
-	a, total, err := s.g.ListApp(ctx,
+	a, total, err := s.g.ListApps(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
@@ -156,7 +156,7 @@ func (s *LibrarianSephirahServiceService) ListAppPackages(
 	ctx context.Context,
 	req *pb.ListAppPackagesRequest,
 ) (*pb.ListAppPackagesResponse, error) {
-	ap, err := s.g.ListAppPackage(ctx,
+	ap, total, err := s.g.ListAppPackages(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
@@ -168,7 +168,7 @@ func (s *LibrarianSephirahServiceService) ListAppPackages(
 		return nil, err
 	}
 	return &pb.ListAppPackagesResponse{
-		Paging:      nil,
+		Paging:      &librarian.PagingResponse{TotalSize: int64(total)},
 		AppPackages: converter.ToPBAppPackageList(ap),
 	}, nil
 }
@@ -176,31 +176,10 @@ func (s *LibrarianSephirahServiceService) AssignAppPackage(
 	ctx context.Context,
 	req *pb.AssignAppPackageRequest,
 ) (*pb.AssignAppPackageResponse, error) {
-	err := s.g.AssignAppPackage(ctx, modelgebura.App{ // TODO
-		ID:               converter.ToBizInternalID(req.GetAppId()),
-		Source:           0,
-		SourceAppID:      "",
-		SourceURL:        "",
-		Name:             "",
-		Type:             0,
-		ShortDescription: "",
-		ImageURL:         "",
-		Details:          nil,
-		BoundInternal:    0,
-	}, modelgebura.AppPackage{
-		ID:              converter.ToBizInternalID(req.GetAppPackageId()),
-		Source:          0,
-		SourceID:        0,
-		SourcePackageID: "",
-		Name:            "",
-		Description:     "",
-		Binary: &modelgebura.AppPackageBinary{
-			Name:      "",
-			SizeByte:  0,
-			PublicURL: "",
-		},
-		Public: false,
-	})
+	err := s.g.AssignAppPackage(ctx,
+		converter.ToBizInternalID(req.GetAppId()),
+		converter.ToBizInternalID(req.GetAppPackageId()),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +189,11 @@ func (s *LibrarianSephirahServiceService) UnAssignAppPackage(
 	ctx context.Context,
 	req *pb.UnAssignAppPackageRequest,
 ) (*pb.UnAssignAppPackageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnBindAppPackage not implemented")
+	err := s.g.UnAssignAppPackage(ctx, converter.ToBizInternalID(req.GetAppPackageId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UnAssignAppPackageResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) ReportAppPackages(
 	conn pb.LibrarianSephirahService_ReportAppPackagesServer,

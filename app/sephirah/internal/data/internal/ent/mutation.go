@@ -2136,6 +2136,8 @@ type AppPackageMutation struct {
 	updated_at          *time.Time
 	created_at          *time.Time
 	clearedFields       map[string]struct{}
+	owner               *model.InternalID
+	clearedowner        bool
 	app                 *model.InternalID
 	clearedapp          bool
 	done                bool
@@ -2683,6 +2685,45 @@ func (m *AppPackageMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *AppPackageMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *AppPackageMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *AppPackageMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *AppPackageMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *AppPackageMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *AppPackageMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
 // SetAppID sets the "app" edge to the App entity by id.
 func (m *AppPackageMutation) SetAppID(id model.InternalID) {
 	m.app = &id
@@ -3052,7 +3093,10 @@ func (m *AppPackageMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppPackageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.owner != nil {
+		edges = append(edges, apppackage.EdgeOwner)
+	}
 	if m.app != nil {
 		edges = append(edges, apppackage.EdgeApp)
 	}
@@ -3063,6 +3107,10 @@ func (m *AppPackageMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AppPackageMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case apppackage.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
 	case apppackage.EdgeApp:
 		if id := m.app; id != nil {
 			return []ent.Value{*id}
@@ -3073,7 +3121,7 @@ func (m *AppPackageMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppPackageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -3085,7 +3133,10 @@ func (m *AppPackageMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppPackageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.clearedowner {
+		edges = append(edges, apppackage.EdgeOwner)
+	}
 	if m.clearedapp {
 		edges = append(edges, apppackage.EdgeApp)
 	}
@@ -3096,6 +3147,8 @@ func (m *AppPackageMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AppPackageMutation) EdgeCleared(name string) bool {
 	switch name {
+	case apppackage.EdgeOwner:
+		return m.clearedowner
 	case apppackage.EdgeApp:
 		return m.clearedapp
 	}
@@ -3106,6 +3159,9 @@ func (m *AppPackageMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *AppPackageMutation) ClearEdge(name string) error {
 	switch name {
+	case apppackage.EdgeOwner:
+		m.ClearOwner()
+		return nil
 	case apppackage.EdgeApp:
 		m.ClearApp()
 		return nil
@@ -3117,6 +3173,9 @@ func (m *AppPackageMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AppPackageMutation) ResetEdge(name string) error {
 	switch name {
+	case apppackage.EdgeOwner:
+		m.ResetOwner()
+		return nil
 	case apppackage.EdgeApp:
 		m.ResetApp()
 		return nil
@@ -6615,6 +6674,9 @@ type UserMutation struct {
 	purchased_app        map[model.InternalID]struct{}
 	removedpurchased_app map[model.InternalID]struct{}
 	clearedpurchased_app bool
+	app_package          map[model.InternalID]struct{}
+	removedapp_package   map[model.InternalID]struct{}
+	clearedapp_package   bool
 	feed_config          map[model.InternalID]struct{}
 	removedfeed_config   map[model.InternalID]struct{}
 	clearedfeed_config   bool
@@ -7056,6 +7118,60 @@ func (m *UserMutation) ResetPurchasedApp() {
 	m.removedpurchased_app = nil
 }
 
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by ids.
+func (m *UserMutation) AddAppPackageIDs(ids ...model.InternalID) {
+	if m.app_package == nil {
+		m.app_package = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app_package[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppPackage clears the "app_package" edge to the AppPackage entity.
+func (m *UserMutation) ClearAppPackage() {
+	m.clearedapp_package = true
+}
+
+// AppPackageCleared reports if the "app_package" edge to the AppPackage entity was cleared.
+func (m *UserMutation) AppPackageCleared() bool {
+	return m.clearedapp_package
+}
+
+// RemoveAppPackageIDs removes the "app_package" edge to the AppPackage entity by IDs.
+func (m *UserMutation) RemoveAppPackageIDs(ids ...model.InternalID) {
+	if m.removedapp_package == nil {
+		m.removedapp_package = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app_package, ids[i])
+		m.removedapp_package[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppPackage returns the removed IDs of the "app_package" edge to the AppPackage entity.
+func (m *UserMutation) RemovedAppPackageIDs() (ids []model.InternalID) {
+	for id := range m.removedapp_package {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppPackageIDs returns the "app_package" edge IDs in the mutation.
+func (m *UserMutation) AppPackageIDs() (ids []model.InternalID) {
+	for id := range m.app_package {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppPackage resets all changes to the "app_package" edge.
+func (m *UserMutation) ResetAppPackage() {
+	m.app_package = nil
+	m.clearedapp_package = false
+	m.removedapp_package = nil
+}
+
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
 func (m *UserMutation) AddFeedConfigIDs(ids ...model.InternalID) {
 	if m.feed_config == nil {
@@ -7421,12 +7537,15 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.purchased_app != nil {
 		edges = append(edges, user.EdgePurchasedApp)
+	}
+	if m.app_package != nil {
+		edges = append(edges, user.EdgeAppPackage)
 	}
 	if m.feed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -7456,6 +7575,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeAppPackage:
+		ids := make([]ent.Value, 0, len(m.app_package))
+		for id := range m.app_package {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeFeedConfig:
 		ids := make([]ent.Value, 0, len(m.feed_config))
 		for id := range m.feed_config {
@@ -7478,12 +7603,15 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.removedpurchased_app != nil {
 		edges = append(edges, user.EdgePurchasedApp)
+	}
+	if m.removedapp_package != nil {
+		edges = append(edges, user.EdgeAppPackage)
 	}
 	if m.removedfeed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -7510,6 +7638,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeAppPackage:
+		ids := make([]ent.Value, 0, len(m.removedapp_package))
+		for id := range m.removedapp_package {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeFeedConfig:
 		ids := make([]ent.Value, 0, len(m.removedfeed_config))
 		for id := range m.removedfeed_config {
@@ -7528,12 +7662,15 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
+	edges := make([]string, 0, 6)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.clearedpurchased_app {
 		edges = append(edges, user.EdgePurchasedApp)
+	}
+	if m.clearedapp_package {
+		edges = append(edges, user.EdgeAppPackage)
 	}
 	if m.clearedfeed_config {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -7555,6 +7692,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedbind_account
 	case user.EdgePurchasedApp:
 		return m.clearedpurchased_app
+	case user.EdgeAppPackage:
+		return m.clearedapp_package
 	case user.EdgeFeedConfig:
 		return m.clearedfeed_config
 	case user.EdgeCreator:
@@ -7585,6 +7724,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgePurchasedApp:
 		m.ResetPurchasedApp()
+		return nil
+	case user.EdgeAppPackage:
+		m.ResetAppPackage()
 		return nil
 	case user.EdgeFeedConfig:
 		m.ResetFeedConfig()

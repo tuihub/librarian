@@ -80,7 +80,7 @@ func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb
 	if req.GetPaging() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	u, total, err := s.t.ListUser(ctx,
+	u, total, err := s.t.ListUsers(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),
@@ -148,7 +148,7 @@ func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, r
 	if req.GetPaging() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	res, total, err := s.t.ListLinkAccount(ctx,
+	res, total, err := s.t.ListLinkAccounts(ctx,
 		model.Paging{
 			PageSize: int(req.GetPaging().GetPageSize()),
 			PageNum:  int(req.GetPaging().GetPageNum()),

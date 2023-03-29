@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -28,6 +29,7 @@ type UserQuery struct {
 	predicates       []predicate.User
 	withBindAccount  *AccountQuery
 	withPurchasedApp *AppQuery
+	withAppPackage   *AppPackageQuery
 	withFeedConfig   *FeedConfigQuery
 	withCreator      *UserQuery
 	withCreatedUser  *UserQuery
@@ -105,6 +107,28 @@ func (uq *UserQuery) QueryPurchasedApp() *AppQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAppPackage chains the current query on the "app_package" edge.
+func (uq *UserQuery) QueryAppPackage() *AppPackageQuery {
+	query := (&AppPackageClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(apppackage.Table, apppackage.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AppPackageTable, user.AppPackageColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -372,6 +396,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		predicates:       append([]predicate.User{}, uq.predicates...),
 		withBindAccount:  uq.withBindAccount.Clone(),
 		withPurchasedApp: uq.withPurchasedApp.Clone(),
+		withAppPackage:   uq.withAppPackage.Clone(),
 		withFeedConfig:   uq.withFeedConfig.Clone(),
 		withCreator:      uq.withCreator.Clone(),
 		withCreatedUser:  uq.withCreatedUser.Clone(),
@@ -400,6 +425,17 @@ func (uq *UserQuery) WithPurchasedApp(opts ...func(*AppQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withPurchasedApp = query
+	return uq
+}
+
+// WithAppPackage tells the query-builder to eager-load the nodes that are connected to
+// the "app_package" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithAppPackage(opts ...func(*AppPackageQuery)) *UserQuery {
+	query := (&AppPackageClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withAppPackage = query
 	return uq
 }
 
@@ -515,9 +551,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [5]bool{
+		loadedTypes = [6]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
+			uq.withAppPackage != nil,
 			uq.withFeedConfig != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
@@ -558,6 +595,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadPurchasedApp(ctx, query, nodes,
 			func(n *User) { n.Edges.PurchasedApp = []*App{} },
 			func(n *User, e *App) { n.Edges.PurchasedApp = append(n.Edges.PurchasedApp, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withAppPackage; query != nil {
+		if err := uq.loadAppPackage(ctx, query, nodes,
+			func(n *User) { n.Edges.AppPackage = []*AppPackage{} },
+			func(n *User, e *AppPackage) { n.Edges.AppPackage = append(n.Edges.AppPackage, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -673,6 +717,37 @@ func (uq *UserQuery) loadPurchasedApp(ctx context.Context, query *AppQuery, node
 		for kn := range nodes {
 			assign(kn, n)
 		}
+	}
+	return nil
+}
+func (uq *UserQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery, nodes []*User, init func(*User), assign func(*User, *AppPackage)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.AppPackage(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.AppPackageColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_app_package
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_app_package" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_app_package" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

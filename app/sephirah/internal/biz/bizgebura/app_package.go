@@ -21,6 +21,9 @@ func (g *Gebura) CreateAppPackage(
 	ctx context.Context,
 	a *modelgebura.AppPackage,
 ) (*modelgebura.AppPackage, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	}
 	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 	if err != nil {
 		logger.Infof("NewID failed: %s", err.Error())
@@ -45,6 +48,9 @@ func (g *Gebura) CreateAppPackage(
 }
 
 func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage) *errors.Error {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	}
 	a.Source = modelgebura.AppPackageSourceManual
 	err := g.repo.UpdateAppPackage(ctx, a)
 	if err != nil {
@@ -53,36 +59,52 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage
 	return nil
 }
 
-func (g *Gebura) ListAppPackage(
+func (g *Gebura) ListAppPackages(
 	ctx context.Context,
 	paging model.Paging,
 	sources []modelgebura.AppPackageSource,
 	ids []model.InternalID,
-) ([]*modelgebura.AppPackage, *errors.Error) {
-	res, err := g.repo.ListAppPackage(ctx, paging, sources, ids)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+) ([]*modelgebura.AppPackage, int, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	return res, nil
+	res, total, err := g.repo.ListAppPackages(ctx, paging, sources, ids)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res, total, nil
 }
 
 func (g *Gebura) AssignAppPackage(
 	ctx context.Context,
-	app modelgebura.App,
-	appPackage modelgebura.AppPackage,
+	appID model.InternalID,
+	appPackageID model.InternalID,
 ) *errors.Error {
-	if err := g.repo.IsApp(ctx, app.ID); err != nil {
-		return pb.ErrorErrorReasonBadRequest("%s", err.Error())
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return pb.ErrorErrorReasonForbidden("no permission")
 	}
-	if err := g.repo.IsAppPackage(ctx, appPackage.ID); err != nil {
-		return pb.ErrorErrorReasonBadRequest("%s", err.Error())
+	if claims, ok := libauth.FromContext(ctx); !ok {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	} else {
+		err := g.repo.AssignAppPackage(ctx, claims.InternalID, appID, appPackageID)
+		if err != nil {
+			return pb.ErrorErrorReasonUnspecified("%s", err)
+		}
 	}
-	if _, err := g.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{{
-		SrcVid: int64(app.ID),
-		DstVid: int64(appPackage.ID),
-		Type:   mapper.EdgeType_EDGE_TYPE_DESCRIBE,
-	}}}); err != nil {
-		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	return nil
+}
+
+func (g *Gebura) UnAssignAppPackage(ctx context.Context, appPackageID model.InternalID) *errors.Error {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	}
+	if claims, ok := libauth.FromContext(ctx); !ok {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	} else {
+		err := g.repo.UnAssignAppPackage(ctx, claims.InternalID, appPackageID)
+		if err != nil {
+			return pb.ErrorErrorReasonUnspecified("%s", err)
+		}
 	}
 	return nil
 }
@@ -132,7 +154,7 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, apl []*modelgebura
 		if _, err := r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		if err := r.g.repo.UpsertAppPackage(ctx, apl); err != nil {
+		if err := r.g.repo.UpsertAppPackages(ctx, apl); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
 	}

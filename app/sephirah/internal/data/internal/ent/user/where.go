@@ -380,6 +380,33 @@ func HasPurchasedAppWith(preds ...predicate.App) predicate.User {
 	})
 }
 
+// HasAppPackage applies the HasEdge predicate on the "app_package" edge.
+func HasAppPackage() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppPackageWith applies the HasEdge predicate on the "app_package" edge with a given conditions (other predicates).
+func HasAppPackageWith(preds ...predicate.AppPackage) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(AppPackageInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasFeedConfig applies the HasEdge predicate on the "feed_config" edge.
 func HasFeedConfig() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

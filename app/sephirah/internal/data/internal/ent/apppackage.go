@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -42,23 +43,39 @@ type AppPackage struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppPackageQuery when eager-loading is set.
-	Edges           AppPackageEdges `json:"edges"`
-	app_app_package *model.InternalID
+	Edges            AppPackageEdges `json:"edges"`
+	app_app_package  *model.InternalID
+	user_app_package *model.InternalID
 }
 
 // AppPackageEdges holds the relations/edges for other nodes in the graph.
 type AppPackageEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *User `json:"owner,omitempty"`
 	// App holds the value of the app edge.
 	App *App `json:"app,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// OwnerOrErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppPackageEdges) OwnerOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Owner == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Owner, nil
+	}
+	return nil, &NotLoadedError{edge: "owner"}
 }
 
 // AppOrErr returns the App value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppPackageEdges) AppOrErr() (*App, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		if e.App == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: app.Label}
@@ -82,6 +99,8 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 		case apppackage.FieldUpdatedAt, apppackage.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		case apppackage.ForeignKeys[0]: // app_app_package
+			values[i] = new(sql.NullInt64)
+		case apppackage.ForeignKeys[1]: // user_app_package
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type AppPackage", columns[i])
@@ -177,9 +196,21 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 				ap.app_app_package = new(model.InternalID)
 				*ap.app_app_package = model.InternalID(value.Int64)
 			}
+		case apppackage.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_app_package", values[i])
+			} else if value.Valid {
+				ap.user_app_package = new(model.InternalID)
+				*ap.user_app_package = model.InternalID(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryOwner queries the "owner" edge of the AppPackage entity.
+func (ap *AppPackage) QueryOwner() *UserQuery {
+	return NewAppPackageClient(ap.config).QueryOwner(ap)
 }
 
 // QueryApp queries the "app" edge of the AppPackage entity.

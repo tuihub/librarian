@@ -56,7 +56,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Er
 	return nil
 }
 
-func (g *Gebura) ListApp(
+func (g *Gebura) ListApps(
 	ctx context.Context,
 	paging model.Paging,
 	sources []modelgebura.AppSource,
@@ -67,7 +67,7 @@ func (g *Gebura) ListApp(
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	apps, total, err := g.repo.ListApp(ctx, paging, sources, types, ids, containDetails)
+	apps, total, err := g.repo.ListApps(ctx, paging, sources, types, ids, containDetails)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

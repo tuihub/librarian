@@ -56,6 +56,10 @@ func (AppPackage) Indexes() []ent.Index {
 // Edges of the AppPackage.
 func (AppPackage) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.From("owner", User.Type).
+			Ref("app_package").
+			Required().
+			Unique(),
 		edge.From("app", App.Type).
 			Ref("app_package").
 			Unique(),

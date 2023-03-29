@@ -28,20 +28,6 @@ func NewGeburaRepo(data *Data) bizgebura.GeburaRepo {
 	}
 }
 
-func (g geburaRepo) IsApp(ctx context.Context, id model.InternalID) error {
-	a, _, err := g.ListApp(ctx, model.Paging{
-		PageSize: 1,
-		PageNum:  0,
-	}, nil, nil, []model.InternalID{id}, false)
-	if err != nil {
-		return err
-	}
-	if len(a) != 1 {
-		return errors.New("no such app")
-	}
-	return nil
-}
-
 func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 	if a.Details == nil {
 		a.Details = new(modelgebura.AppDetails)
@@ -87,7 +73,7 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpsertApp(ctx context.Context, al []*modelgebura.App) error {
+func (g geburaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) error {
 	apps := make([]*ent.AppCreate, len(al))
 	for i, a := range al {
 		if a.Details == nil {
@@ -123,7 +109,7 @@ func (g geburaRepo) UpsertApp(ctx context.Context, al []*modelgebura.App) error 
 		Exec(ctx)
 }
 
-func (g geburaRepo) ListApp(
+func (g geburaRepo) ListApps(
 	ctx context.Context,
 	paging model.Paging,
 	sources []modelgebura.AppSource,
@@ -280,20 +266,6 @@ func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) (
 	return appIDs, nil
 }
 
-func (g geburaRepo) IsAppPackage(ctx context.Context, id model.InternalID) error {
-	a, err := g.ListAppPackage(ctx, model.Paging{
-		PageSize: 1,
-		PageNum:  0,
-	}, nil, []model.InternalID{id})
-	if err != nil {
-		return err
-	}
-	if len(a) != 1 {
-		return errors.New("no such app package")
-	}
-	return nil
-}
-
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Create().
 		SetID(ap.ID).
@@ -320,7 +292,7 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*modelgebura.AppPackage) error {
+func (g geburaRepo) UpsertAppPackages(ctx context.Context, apl []*modelgebura.AppPackage) error {
 	appPackages := make([]*ent.AppPackageCreate, len(apl))
 	for i, ap := range apl {
 		appPackages[i] = g.data.db.AppPackage.Create().
@@ -363,31 +335,62 @@ func (g geburaRepo) UpsertAppPackage(ctx context.Context, apl []*modelgebura.App
 		Exec(ctx)
 }
 
-func (g geburaRepo) ListAppPackage(
+func (g geburaRepo) ListAppPackages(
 	ctx context.Context,
 	paging model.Paging,
 	sources []modelgebura.AppPackageSource,
 	ids []model.InternalID,
-) ([]*modelgebura.AppPackage, error) {
+) ([]*modelgebura.AppPackage, int, error) {
 	q := g.data.db.AppPackage.Query()
 	if len(sources) > 0 {
-		sourceFilter := make([]apppackage.Source, len(sources))
-		for i, apSource := range sources {
-			sourceFilter[i] = converter.ToEntAppPackageSource(apSource)
-		}
-		q.Where(apppackage.SourceIn(sourceFilter...))
+		q.Where(apppackage.SourceIn(converter.ToEntAppPackageSourceList(sources)...))
 	}
 	if len(ids) > 0 {
 		q.Where(apppackage.IDIn(ids...))
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
 	}
 	ap, err := q.
 		Limit(paging.PageSize).
 		Offset((paging.PageNum - 1) * paging.PageSize).
 		All(ctx)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return converter.ToBizAppPackageList(ap), nil
+	return converter.ToBizAppPackageList(ap), total, nil
+}
+
+func (g geburaRepo) AssignAppPackage(
+	ctx context.Context,
+	userID model.InternalID,
+	appID model.InternalID,
+	appPackageID model.InternalID,
+) error {
+	err := g.data.db.AppPackage.Update().
+		Where(
+			apppackage.HasOwnerWith(user.IDEQ(userID)),
+			apppackage.IDEQ(appPackageID),
+		).
+		SetAppID(appID).
+		Exec(ctx)
+	return err
+}
+
+func (g geburaRepo) UnAssignAppPackage(
+	ctx context.Context,
+	userID model.InternalID,
+	appPackageID model.InternalID,
+) error {
+	err := g.data.db.AppPackage.Update().
+		Where(
+			apppackage.HasOwnerWith(user.IDEQ(userID)),
+			apppackage.IDEQ(appPackageID),
+		).
+		ClearApp().
+		Exec(ctx)
+	return err
 }
 
 func (g geburaRepo) ListAllAppPackageIDOfOneSource(

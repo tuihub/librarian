@@ -636,6 +636,33 @@ func CreatedAtLTE(v time.Time) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldCreatedAt, v))
 }
 
+// HasOwner applies the HasEdge predicate on the "owner" edge.
+func HasOwner() predicate.AppPackage {
+	return predicate.AppPackage(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
+func HasOwnerWith(preds ...predicate.User) predicate.AppPackage {
+	return predicate.AppPackage(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.To(OwnerInverseTable, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		)
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasApp applies the HasEdge predicate on the "app" edge.
 func HasApp() predicate.AppPackage {
 	return predicate.AppPackage(func(s *sql.Selector) {

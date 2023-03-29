@@ -46,6 +46,7 @@ func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("bind_account", Account.Type),
 		edge.To("purchased_app", App.Type),
+		edge.To("app_package", AppPackage.Type),
 		edge.To("feed_config", FeedConfig.Type),
 		edge.To("created_user", User.Type).
 			From("creator").

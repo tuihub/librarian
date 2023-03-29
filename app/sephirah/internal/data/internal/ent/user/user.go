@@ -28,6 +28,8 @@ const (
 	EdgeBindAccount = "bind_account"
 	// EdgePurchasedApp holds the string denoting the purchased_app edge name in mutations.
 	EdgePurchasedApp = "purchased_app"
+	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
+	EdgeAppPackage = "app_package"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
@@ -48,6 +50,13 @@ const (
 	// PurchasedAppInverseTable is the table name for the App entity.
 	// It exists in this package in order to avoid circular dependency with the "app" package.
 	PurchasedAppInverseTable = "apps"
+	// AppPackageTable is the table that holds the app_package relation/edge.
+	AppPackageTable = "app_packages"
+	// AppPackageInverseTable is the table name for the AppPackage entity.
+	// It exists in this package in order to avoid circular dependency with the "apppackage" package.
+	AppPackageInverseTable = "app_packages"
+	// AppPackageColumn is the table column denoting the app_package relation/edge.
+	AppPackageColumn = "user_app_package"
 	// FeedConfigTable is the table that holds the feed_config relation/edge.
 	FeedConfigTable = "feed_configs"
 	// FeedConfigInverseTable is the table name for the FeedConfig entity.

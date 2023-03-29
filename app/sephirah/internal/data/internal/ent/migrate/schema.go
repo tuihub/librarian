@@ -96,6 +96,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "app_app_package", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_app_package", Type: field.TypeInt64},
 	}
 	// AppPackagesTable holds the schema information for the "app_packages" table.
 	AppPackagesTable = &schema.Table{
@@ -108,6 +109,12 @@ var (
 				Columns:    []*schema.Column{AppPackagesColumns[12]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "app_packages_users_app_package",
+				Columns:    []*schema.Column{AppPackagesColumns[13]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
@@ -282,6 +289,7 @@ func init() {
 	AccountsTable.ForeignKeys[0].RefTable = UsersTable
 	AppsTable.ForeignKeys[0].RefTable = AppsTable
 	AppPackagesTable.ForeignKeys[0].RefTable = AppsTable
+	AppPackagesTable.ForeignKeys[1].RefTable = UsersTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable

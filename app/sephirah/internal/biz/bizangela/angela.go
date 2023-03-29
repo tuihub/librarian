@@ -227,10 +227,10 @@ func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 			if _, err := a.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: el}); err != nil {
 				return err
 			}
-			if err := a.g.UpsertApp(ctx, internalApps); err != nil {
+			if err := a.g.UpsertApps(ctx, internalApps); err != nil {
 				return err
 			}
-			if err := a.g.UpsertApp(ctx, steamApps); err != nil {
+			if err := a.g.UpsertApps(ctx, steamApps); err != nil {
 				return err
 			}
 			for _, app := range steamApps {

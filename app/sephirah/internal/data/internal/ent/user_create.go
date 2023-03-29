@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -112,6 +113,21 @@ func (uc *UserCreate) AddPurchasedApp(a ...*App) *UserCreate {
 		ids[i] = a[i].ID
 	}
 	return uc.AddPurchasedAppIDs(ids...)
+}
+
+// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
+func (uc *UserCreate) AddAppPackageIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddAppPackageIDs(ids...)
+	return uc
+}
+
+// AddAppPackage adds the "app_package" edges to the AppPackage entity.
+func (uc *UserCreate) AddAppPackage(a ...*AppPackage) *UserCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uc.AddAppPackageIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -315,6 +331,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.AppPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppPackageTable,
+			Columns: []string{user.AppPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

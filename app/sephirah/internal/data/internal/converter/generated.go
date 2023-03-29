@@ -4,6 +4,7 @@ package converter
 
 import (
 	ent "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	apppackage "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -324,6 +325,16 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	}
 	entApp.Version = xstring5
 	return entApp
+}
+func (c *toEntConverterImpl) ToEntAppPackageSourceList(source []modelgebura.AppPackageSource) []apppackage.Source {
+	var apppackageSourceList []apppackage.Source
+	if source != nil {
+		apppackageSourceList = make([]apppackage.Source, len(source))
+		for i := 0; i < len(source); i++ {
+			apppackageSourceList[i] = ToEntAppPackageSource(source[i])
+		}
+	}
+	return apppackageSourceList
 }
 func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []modelyesod.FeedConfigSource) []feedconfig.Source {
 	var feedconfigSourceList []feedconfig.Source

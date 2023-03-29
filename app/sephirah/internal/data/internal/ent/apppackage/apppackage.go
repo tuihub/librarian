@@ -34,10 +34,19 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeOwner holds the string denoting the owner edge name in mutations.
+	EdgeOwner = "owner"
 	// EdgeApp holds the string denoting the app edge name in mutations.
 	EdgeApp = "app"
 	// Table holds the table name of the apppackage in the database.
 	Table = "app_packages"
+	// OwnerTable is the table that holds the owner relation/edge.
+	OwnerTable = "app_packages"
+	// OwnerInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	OwnerInverseTable = "users"
+	// OwnerColumn is the table column denoting the owner relation/edge.
+	OwnerColumn = "user_app_package"
 	// AppTable is the table that holds the app relation/edge.
 	AppTable = "app_packages"
 	// AppInverseTable is the table name for the App entity.
@@ -67,6 +76,7 @@ var Columns = []string{
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
 	"app_app_package",
+	"user_app_package",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

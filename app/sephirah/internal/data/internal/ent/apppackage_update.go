@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -118,6 +119,17 @@ func (apu *AppPackageUpdate) SetNillableCreatedAt(t *time.Time) *AppPackageUpdat
 	return apu
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (apu *AppPackageUpdate) SetOwnerID(id model.InternalID) *AppPackageUpdate {
+	apu.mutation.SetOwnerID(id)
+	return apu
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (apu *AppPackageUpdate) SetOwner(u *User) *AppPackageUpdate {
+	return apu.SetOwnerID(u.ID)
+}
+
 // SetAppID sets the "app" edge to the App entity by ID.
 func (apu *AppPackageUpdate) SetAppID(id model.InternalID) *AppPackageUpdate {
 	apu.mutation.SetAppID(id)
@@ -140,6 +152,12 @@ func (apu *AppPackageUpdate) SetApp(a *App) *AppPackageUpdate {
 // Mutation returns the AppPackageMutation object of the builder.
 func (apu *AppPackageUpdate) Mutation() *AppPackageMutation {
 	return apu.mutation
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (apu *AppPackageUpdate) ClearOwner() *AppPackageUpdate {
+	apu.mutation.ClearOwner()
+	return apu
 }
 
 // ClearApp clears the "app" edge to the App entity.
@@ -190,6 +208,9 @@ func (apu *AppPackageUpdate) check() error {
 		if err := apppackage.SourceValidator(v); err != nil {
 			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "AppPackage.source": %w`, err)}
 		}
+	}
+	if _, ok := apu.mutation.OwnerID(); apu.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "AppPackage.owner"`)
 	}
 	return nil
 }
@@ -244,6 +265,35 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := apu.mutation.CreatedAt(); ok {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
+	}
+	if apu.mutation.OwnerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.OwnerTable,
+			Columns: []string{apppackage.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apu.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.OwnerTable,
+			Columns: []string{apppackage.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apu.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -382,6 +432,17 @@ func (apuo *AppPackageUpdateOne) SetNillableCreatedAt(t *time.Time) *AppPackageU
 	return apuo
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (apuo *AppPackageUpdateOne) SetOwnerID(id model.InternalID) *AppPackageUpdateOne {
+	apuo.mutation.SetOwnerID(id)
+	return apuo
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (apuo *AppPackageUpdateOne) SetOwner(u *User) *AppPackageUpdateOne {
+	return apuo.SetOwnerID(u.ID)
+}
+
 // SetAppID sets the "app" edge to the App entity by ID.
 func (apuo *AppPackageUpdateOne) SetAppID(id model.InternalID) *AppPackageUpdateOne {
 	apuo.mutation.SetAppID(id)
@@ -404,6 +465,12 @@ func (apuo *AppPackageUpdateOne) SetApp(a *App) *AppPackageUpdateOne {
 // Mutation returns the AppPackageMutation object of the builder.
 func (apuo *AppPackageUpdateOne) Mutation() *AppPackageMutation {
 	return apuo.mutation
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (apuo *AppPackageUpdateOne) ClearOwner() *AppPackageUpdateOne {
+	apuo.mutation.ClearOwner()
+	return apuo
 }
 
 // ClearApp clears the "app" edge to the App entity.
@@ -467,6 +534,9 @@ func (apuo *AppPackageUpdateOne) check() error {
 		if err := apppackage.SourceValidator(v); err != nil {
 			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "AppPackage.source": %w`, err)}
 		}
+	}
+	if _, ok := apuo.mutation.OwnerID(); apuo.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "AppPackage.owner"`)
 	}
 	return nil
 }
@@ -538,6 +608,35 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	}
 	if value, ok := apuo.mutation.CreatedAt(); ok {
 		_spec.SetField(apppackage.FieldCreatedAt, field.TypeTime, value)
+	}
+	if apuo.mutation.OwnerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.OwnerTable,
+			Columns: []string{apppackage.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := apuo.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   apppackage.OwnerTable,
+			Columns: []string{apppackage.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if apuo.mutation.AppCleared() {
 		edge := &sqlgraph.EdgeSpec{

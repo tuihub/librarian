@@ -67,7 +67,7 @@ func (t tipherethRepo) UpdateUser(ctx context.Context, u *modeltiphereth.User, p
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) ListUser(
+func (t tipherethRepo) ListUsers(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
@@ -148,7 +148,7 @@ func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Accou
 		Exec(ctx)
 }
 
-func (t tipherethRepo) ListLinkAccount(
+func (t tipherethRepo) ListLinkAccounts(
 	ctx context.Context,
 	paging model.Paging,
 	userID model.InternalID,

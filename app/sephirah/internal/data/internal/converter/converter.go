@@ -2,6 +2,7 @@ package converter
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -24,6 +25,9 @@ func ToEntUserStatusList(a []modeltiphereth.UserStatus) []user.Status {
 }
 func ToEntApp(a modelgebura.App) ent.App {
 	return toEnt.ToEntApp(a)
+}
+func ToEntAppPackageSourceList(a []modelgebura.AppPackageSource) []apppackage.Source {
+	return toEnt.ToEntAppPackageSourceList(a)
 }
 func ToEntFeedConfigSourceList(a []modelyesod.FeedConfigSource) []feedconfig.Source {
 	return toEnt.ToEntFeedConfigSourceList(a)

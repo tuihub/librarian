@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -23,6 +24,7 @@ type AppPackageQuery struct {
 	order      []OrderFunc
 	inters     []Interceptor
 	predicates []predicate.AppPackage
+	withOwner  *UserQuery
 	withApp    *AppQuery
 	withFKs    bool
 	// intermediate query (i.e. traversal path).
@@ -59,6 +61,28 @@ func (apq *AppPackageQuery) Unique(unique bool) *AppPackageQuery {
 func (apq *AppPackageQuery) Order(o ...OrderFunc) *AppPackageQuery {
 	apq.order = append(apq.order, o...)
 	return apq
+}
+
+// QueryOwner chains the current query on the "owner" edge.
+func (apq *AppPackageQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: apq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := apq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := apq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(apppackage.Table, apppackage.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, apppackage.OwnerTable, apppackage.OwnerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(apq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // QueryApp chains the current query on the "app" edge.
@@ -275,11 +299,23 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 		order:      append([]OrderFunc{}, apq.order...),
 		inters:     append([]Interceptor{}, apq.inters...),
 		predicates: append([]predicate.AppPackage{}, apq.predicates...),
+		withOwner:  apq.withOwner.Clone(),
 		withApp:    apq.withApp.Clone(),
 		// clone intermediate query.
 		sql:  apq.sql.Clone(),
 		path: apq.path,
 	}
+}
+
+// WithOwner tells the query-builder to eager-load the nodes that are connected to
+// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
+func (apq *AppPackageQuery) WithOwner(opts ...func(*UserQuery)) *AppPackageQuery {
+	query := (&UserClient{config: apq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	apq.withOwner = query
+	return apq
 }
 
 // WithApp tells the query-builder to eager-load the nodes that are connected to
@@ -372,11 +408,12 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*AppPackage{}
 		withFKs     = apq.withFKs
 		_spec       = apq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
+			apq.withOwner != nil,
 			apq.withApp != nil,
 		}
 	)
-	if apq.withApp != nil {
+	if apq.withOwner != nil || apq.withApp != nil {
 		withFKs = true
 	}
 	if withFKs {
@@ -400,6 +437,12 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := apq.withOwner; query != nil {
+		if err := apq.loadOwner(ctx, query, nodes, nil,
+			func(n *AppPackage, e *User) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
 	if query := apq.withApp; query != nil {
 		if err := apq.loadApp(ctx, query, nodes, nil,
 			func(n *AppPackage, e *App) { n.Edges.App = e }); err != nil {
@@ -409,6 +452,38 @@ func (apq *AppPackageQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
+func (apq *AppPackageQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*AppPackage, init func(*AppPackage), assign func(*AppPackage, *User)) error {
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*AppPackage)
+	for i := range nodes {
+		if nodes[i].user_app_package == nil {
+			continue
+		}
+		fk := *nodes[i].user_app_package
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(user.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_app_package" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
 func (apq *AppPackageQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppPackage, init func(*AppPackage), assign func(*AppPackage, *App)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*AppPackage)

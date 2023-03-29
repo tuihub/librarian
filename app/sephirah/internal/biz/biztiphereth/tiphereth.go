@@ -22,13 +22,13 @@ type TipherethRepo interface {
 	FetchUserByPassword(context.Context, *modeltiphereth.User) (*modeltiphereth.User, error)
 	CreateUser(context.Context, *modeltiphereth.User, model.InternalID) error
 	UpdateUser(context.Context, *modeltiphereth.User, string) error
-	ListUser(context.Context, model.Paging, []model.InternalID,
+	ListUsers(context.Context, model.Paging, []model.InternalID,
 		[]libauth.UserType, []modeltiphereth.UserStatus, []model.InternalID,
 		*model.InternalID) ([]*modeltiphereth.User, int64, error)
 	CreateAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	UpdateAccount(context.Context, modeltiphereth.Account) error
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
-	ListLinkAccount(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
+	ListLinkAccounts(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
 }
 
@@ -213,7 +213,7 @@ func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
 	}
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) &&
 		claims.InternalID != user.ID {
-		res, _, err := t.repo.ListUser(ctx,
+		res, _, err := t.repo.ListUsers(ctx,
 			model.Paging{
 				PageSize: 1,
 				PageNum:  1,
@@ -248,7 +248,7 @@ func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
 	return nil
 }
 
-func (t *Tiphereth) ListUser(
+func (t *Tiphereth) ListUsers(
 	ctx context.Context, paging model.Paging, types []libauth.UserType, statuses []modeltiphereth.UserStatus,
 ) ([]*modeltiphereth.User, int64, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
@@ -264,7 +264,7 @@ func (t *Tiphereth) ListUser(
 		}
 		exclude = append(exclude, c.InternalID)
 	}
-	users, total, err := t.repo.ListUser(ctx, paging, nil, types, statuses, exclude, creator)
+	users, total, err := t.repo.ListUsers(ctx, paging, nil, types, statuses, exclude, creator)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -355,7 +355,7 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account)
 	return nil
 }
 
-func (t *Tiphereth) ListLinkAccount(
+func (t *Tiphereth) ListLinkAccounts(
 	ctx context.Context, paging model.Paging, id model.InternalID,
 ) ([]*modeltiphereth.Account, int64, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
@@ -368,7 +368,7 @@ func (t *Tiphereth) ListLinkAccount(
 	if id == 0 {
 		id = claims.InternalID
 	}
-	a, total, err := t.repo.ListLinkAccount(ctx, paging, id)
+	a, total, err := t.repo.ListLinkAccounts(ctx, paging, id)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
