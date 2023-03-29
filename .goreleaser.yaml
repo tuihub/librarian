@@ -37,8 +37,10 @@ builds:
       - CXX_linux_arm=arm-linux-gnueabihf-g++
       - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
       - 'CXX={{ index .Env (print "CXX_" .Os "_" .Arch) }}'
+    flags:
+      - -tags=release
     ldflags:
-      - -s -w -tags release -X main.name={{.ProjectName}} -X main.version={{.Summary}}
+      - -s -w -X main.name={{.ProjectName}} -X main.version={{.Summary}}
     #buildmode: c-archive
 
 archives:
