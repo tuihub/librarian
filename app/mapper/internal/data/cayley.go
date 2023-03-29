@@ -38,7 +38,7 @@ type Vertex struct {
 }
 
 // NewCayley .
-func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func(), error) {
+func NewCayley(c *conf.Mapper_Data, app *libapp.Settings) (*cayley.Handle, func(), error) {
 	if c == nil || c.GetCayley() == nil {
 		return nil, func() {}, nil
 	}
@@ -51,7 +51,7 @@ func NewCayley(c *conf.Mapper_Data) (*cayley.Handle, func(), error) {
 			return nil, func() {}, err
 		}
 	case "sqlite":
-		dbpath := path.Join(libapp.GetDataPath(), "cayley.db")
+		dbpath := path.Join(app.DataPath, "cayley.db")
 		_, err = os.Stat(dbpath)
 		if err != nil {
 			err = graph.InitQuadStore("sqlite", dbpath, nil)

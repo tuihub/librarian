@@ -14,6 +14,7 @@ import (
 	service4 "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -23,30 +24,30 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq)
+	libmqMQ, cleanup, err := libmq.NewMQ(mq, settings)
 	if err != nil {
 		return nil, nil, err
 	}
 	cron := libcron.NewCron()
-	librarianMapperServiceServer, cleanup2, err := service.NewMapperService(mapper_Data)
+	librarianMapperServiceServer, cleanup2, err := service.NewMapperService(mapper_Data, settings)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	librarianMapperServiceClient := inprocgrpc.NewInprocMapperChannel(librarianMapperServiceServer)
-	librarianSearcherServiceServer, cleanup3, err := service2.NewSearcherService(searcher_Data)
+	librarianSearcherServiceServer, cleanup3, err := service2.NewSearcherService(searcher_Data, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	librarianSearcherServiceClient := inprocgrpc.NewInprocSearcherChannel(librarianSearcherServiceServer)
-	librarianPorterServiceServer, cleanup4, err := service3.NewPorterService(porter_Data)
+	librarianPorterServiceServer, cleanup4, err := service3.NewPorterService(porter_Data, settings)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -54,7 +55,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -62,8 +63,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer)
-	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth)
+	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
+	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
 	app := newApp(grpcServer, httpServer, libmqMQ, cron)
 	return app, func() {
 		cleanup5()

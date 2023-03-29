@@ -12,11 +12,11 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Porter_Server, greeter pb.LibrarianPorterServiceServer) *grpc.Server {
+func NewGRPCServer(c *conf.Porter_Server, greeter pb.LibrarianPorterServiceServer, app *libapp.Settings) *grpc.Server {
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 	}
-	if libapp.GetInherentSettings().EnablePanicRecovery {
+	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	var opts = []grpc.ServerOption{

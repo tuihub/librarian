@@ -29,7 +29,7 @@ type pubSub struct {
 	subscriber message.Subscriber
 }
 
-func NewMQ(c *conf.MQ) (*MQ, func(), error) {
+func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
 	switch c.Driver {
@@ -59,7 +59,7 @@ func NewMQ(c *conf.MQ) (*MQ, func(), error) {
 			Logger:              loggerAdapter,
 		}.Middleware,
 	)
-	if libapp.GetInherentSettings().EnablePanicRecovery {
+	if app.EnablePanicRecovery {
 		router.AddMiddleware(middleware.Recoverer)
 	}
 	cleanup := func() {

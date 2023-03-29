@@ -11,6 +11,7 @@ import (
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -29,6 +30,7 @@ func wireApp(
 	*conf.Porter_Data,
 	*conf.Auth,
 	*conf.MQ,
+	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(
 		wire.Build(

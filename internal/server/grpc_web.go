@@ -23,6 +23,7 @@ func NewGrpcWebServer(
 	s *grpc.Server,
 	c *conf.Sephirah_Server,
 	auth *libauth.Auth,
+	app *libapp.Settings,
 ) *http.Server {
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
@@ -42,7 +43,7 @@ func NewGrpcWebServer(
 			),
 		).Match(NewRefreshTokenMatcher()).Build(),
 	}
-	if libapp.GetInherentSettings().EnablePanicRecovery {
+	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	var opts = []http.ServerOption{

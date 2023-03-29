@@ -16,12 +16,13 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
 // Injectors from wire.go:
 
-func NewPorterService(porter_Data *conf.Porter_Data) (v1.LibrarianPorterServiceServer, func(), error) {
+func NewPorterService(porter_Data *conf.Porter_Data, settings *libapp.Settings) (v1.LibrarianPorterServiceServer, func(), error) {
 	collector := client.NewColly()
 	rssRepo, err := feed.NewRSSRepo(collector)
 	if err != nil {

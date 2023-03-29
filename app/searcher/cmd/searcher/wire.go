@@ -10,12 +10,13 @@ import (
 	"github.com/tuihub/librarian/app/searcher/internal/server"
 	"github.com/tuihub/librarian/app/searcher/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Searcher_Server, *conf.Searcher_Data) (*kratos.App, func(), error) {
+func wireApp(*conf.Searcher_Server, *conf.Searcher_Data, *libapp.Settings) (*kratos.App, func(), error) {
 	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"os"
 
 	"github.com/tuihub/librarian/internal/conf"
@@ -35,16 +34,15 @@ func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) 
 }
 
 func main() {
-	// flagconf is the config flag.
-	var flagconf string
-	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
-	flag.Parse()
-	libapp.InitLogger(id, name, version)
+	appSettings, err := libapp.NewAppSettings(id, name, version)
+	if err != nil {
+		panic(err)
+	}
 
 	var bc conf.Sephirah
-	libapp.LoadConfig(flagconf, &bc)
+	appSettings.LoadConfig(&bc)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Auth, bc.Mq)
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Auth, bc.Mq, appSettings)
 	if err != nil {
 		panic(err)
 	}

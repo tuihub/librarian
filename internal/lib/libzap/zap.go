@@ -71,18 +71,6 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 func New(basePath string, accessLogLevel Level) *zap.Logger {
 	var tops = []TeeOption{
 		{
-			Filename: path.Join(basePath, "log", "access.log"),
-			Rotate: RotateOptions{
-				MaxSize:    1,
-				MaxAge:     1,
-				MaxBackups: 3, //nolint:gomnd // default settings
-				Compress:   true,
-			},
-			LevelEnablerFunc: func(lvl Level) bool {
-				return lvl >= accessLogLevel
-			},
-		},
-		{
 			Filename: path.Join(basePath, "log", "error.log"),
 			Rotate: RotateOptions{
 				MaxSize:    1,
@@ -94,6 +82,22 @@ func New(basePath string, accessLogLevel Level) *zap.Logger {
 				return lvl >= ErrorLevel
 			},
 		},
+	}
+	if accessLogLevel < ErrorLevel {
+		tops = append(tops,
+			TeeOption{
+				Filename: path.Join(basePath, "log", "access.log"),
+				Rotate: RotateOptions{
+					MaxSize:    1,
+					MaxAge:     1,
+					MaxBackups: 3, //nolint:gomnd // default settings
+					Compress:   true,
+				},
+				LevelEnablerFunc: func(lvl Level) bool {
+					return lvl >= accessLogLevel
+				},
+			},
+		)
 	}
 
 	return NewTeeWithRotate(tops)

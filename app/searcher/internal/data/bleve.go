@@ -20,9 +20,9 @@ type bleveSearcherRepo struct {
 	search bleve.Index
 }
 
-func NewBleve() (bleve.Index, error) {
+func NewBleve(app *libapp.Settings) (bleve.Index, error) {
 	mapping := bleve.NewIndexMapping()
-	dbPath := path.Join(libapp.GetDataPath(), "bleve.db")
+	dbPath := path.Join(app.DataPath, "bleve.db")
 	index, err := bleve.Open(dbPath)
 	if err != nil {
 		if !errors.Is(err, bleve.ErrorIndexPathDoesNotExist) {

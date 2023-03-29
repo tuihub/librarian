@@ -3,11 +3,9 @@ package data_test
 import (
 	"context"
 	"errors"
-	"path"
 	"testing"
 
 	"github.com/tuihub/librarian/app/searcher/internal/data"
-	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model"
 
@@ -42,7 +40,7 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 		},
 	}
 	mapping := bleve.NewIndexMapping()
-	dbPath := path.Join(libapp.GetDataPath(), "bleve.db")
+	dbPath := "bleve.db"
 	index, err := bleve.Open(dbPath)
 	if err != nil {
 		if !errors.Is(err, bleve.ErrorIndexPathDoesNotExist) {

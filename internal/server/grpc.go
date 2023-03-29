@@ -23,6 +23,7 @@ func NewGRPCServer(
 	c *conf.Sephirah_Server,
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
+	app *libapp.Settings,
 ) *grpc.Server {
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
@@ -42,7 +43,7 @@ func NewGRPCServer(
 			),
 		).Match(NewRefreshTokenMatcher()).Build(),
 	}
-	if libapp.GetInherentSettings().EnablePanicRecovery {
+	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	var opts = []grpc.ServerOption{

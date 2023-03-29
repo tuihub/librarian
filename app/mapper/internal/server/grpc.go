@@ -12,11 +12,11 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Mapper_Server, service pb.LibrarianMapperServiceServer) *grpc.Server {
+func NewGRPCServer(c *conf.Mapper_Server, service pb.LibrarianMapperServiceServer, app *libapp.Settings) *grpc.Server {
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 	}
-	if libapp.GetInherentSettings().EnablePanicRecovery {
+	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	var opts = []grpc.ServerOption{

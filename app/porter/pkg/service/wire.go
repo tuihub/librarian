@@ -10,12 +10,13 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 
 	"github.com/google/wire"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
-func NewPorterService(*conf.Porter_Data) (pb.LibrarianPorterServiceServer, func(), error) {
+func NewPorterService(*conf.Porter_Data, *libapp.Settings) (pb.LibrarianPorterServiceServer, func(), error) {
 	panic(wire.Build(
 		data.ProviderSet,
 		biz.ProviderSet,

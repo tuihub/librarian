@@ -13,13 +13,14 @@ import (
 	"github.com/tuihub/librarian/app/searcher/internal/server"
 	"github.com/tuihub/librarian/app/searcher/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data) (*kratos.App, func(), error) {
-	index, err := data.NewBleve()
+func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
+	index, err := data.NewBleve(settings)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -27,7 +28,7 @@ func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher
 	searcherRepo := data.NewSearcherRepo(index, sonyflake)
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
-	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer)
+	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer, settings)
 	app := newApp(grpcServer)
 	return app, func() {
 	}, nil

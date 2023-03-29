@@ -11,13 +11,14 @@ import (
 	"github.com/tuihub/librarian/app/searcher/internal/data"
 	"github.com/tuihub/librarian/app/searcher/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
 // Injectors from wire.go:
 
-func NewSearcherService(searcher_Data *conf.Searcher_Data) (v1.LibrarianSearcherServiceServer, func(), error) {
-	index, err := data.NewBleve()
+func NewSearcherService(searcher_Data *conf.Searcher_Data, settings *libapp.Settings) (v1.LibrarianSearcherServiceServer, func(), error) {
+	index, err := data.NewBleve(settings)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -18,12 +18,13 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/server"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data) (*kratos.App, func(), error) {
+func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
 	collector := client.NewColly()
 	rssRepo, err := feed.NewRSSRepo(collector)
 	if err != nil {
@@ -47,7 +48,7 @@ func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data) (
 	s3Repo := data.NewS3Repo(dataData)
 	s3 := bizs3.NewS3(s3Repo)
 	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, steamUseCase, s3)
-	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer)
+	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer, settings)
 	app := newApp(grpcServer)
 	return app, func() {
 	}, nil

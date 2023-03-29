@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"os"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
@@ -10,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
@@ -28,8 +28,9 @@ func NewLibrarianSephirahServiceService(
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,
 	y *bizyesod.Yesod,
+	app *libapp.Settings,
 ) pb.LibrarianSephirahServiceServer {
-	if _, exist := os.LookupEnv("CREATE_ADMIN"); exist {
+	if enable, err := app.GetEnvBool(libapp.EnvCreateAdmin); err == nil && enable {
 		t.CreateDefaultAdmin(context.Background(), &modeltiphereth.User{
 			ID:       0,
 			UserName: "admin",

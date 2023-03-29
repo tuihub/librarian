@@ -4,9 +4,10 @@ package libapp
 
 import "github.com/tuihub/librarian/internal/lib/libzap"
 
-func GetInherentSettings() Settings {
-	return Settings{
+func getInherentSettings() InherentSettings {
+	return InherentSettings{
 		EnablePanicRecovery: true,
 		LogLevel:            libzap.InfoLevel,
+		DefaultConfPath:     "../../configs/config.yaml",
 	}
 }

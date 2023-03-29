@@ -2,7 +2,8 @@ package libapp
 
 import "github.com/tuihub/librarian/internal/lib/libzap"
 
-type Settings struct {
+type InherentSettings struct {
 	EnablePanicRecovery bool
 	LogLevel            libzap.Level
+	DefaultConfPath     string
 }
