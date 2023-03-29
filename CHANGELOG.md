@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.0.10](https://github.com/TuiHub/Librarian/compare/v0.0.9...v0.0.10) (2023-03-29)
+
+
+### Features
+
+* add two build mode ([2ea35ef](https://github.com/TuiHub/Librarian/commit/2ea35efa3d64b661f5239ceba8aabe0cc566f64c))
+* **gebura:** impl MergeApps SearchApps PurchaseApp GetAppLibrary ([98a8dda](https://github.com/TuiHub/Librarian/commit/98a8dda3d4dd653fc5e2287f67ab76524a9ff849))
+* **gebura:** impl UnAssignAppPackage & review ([91bc8ab](https://github.com/TuiHub/Librarian/commit/91bc8ab5289a31487a0c8f4f90b1ab6b67005d58))
+
+
+### Bug Fixes
+
+* improve server config & startup logic ([061e3ac](https://github.com/TuiHub/Librarian/commit/061e3ac654518536f51735d85122c3a0030692fc))
+* PullSteamApp ([537ae7d](https://github.com/TuiHub/Librarian/commit/537ae7dd493d8da248d4fd94ea66cf2dd955096a))
+
 ## [0.0.9](https://github.com/TuiHub/Librarian/compare/v0.0.8...v0.0.9) (2023-03-20)
 
 
