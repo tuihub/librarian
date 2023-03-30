@@ -3,6 +3,7 @@ GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 GOLANG_CROSS_VERSION  ?= v1.19.6
+SHELL:=/bin/bash
 
 ifeq ($(GOHOSTOS), windows)
 	#the `find.exe` is different from `find` in bash/shell.
@@ -55,7 +56,19 @@ test-unit:
 test-goc:
 	cd tests && make all
 
-test-all: test-unit test-goc
+test-postprocess:
+	@while read -r p || [ -n "$$p" ]; \
+	do \
+	if [[ "$(GOHOSTOS)" == "darwin" ]]; then \
+	  sed -i '' "/$${p//\//\\/}/d" ./coverage-unit.out; \
+	  sed -i '' "/$${p//\//\\/}/d" ./coverage-goc.out; \
+	else \
+	  sed -i "/$${p//\//\\/}/d" ./coverage-unit.out; \
+	  sed -i "/$${p//\//\\/}/d" ./coverage-goc.out; \
+	fi \
+	done < ./.coverageignore
+
+test-all: test-unit test-goc test-postprocess
 
 .PHONY: run
 # run server
