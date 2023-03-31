@@ -198,9 +198,13 @@ func (s *LibrarianSephirahServiceService) UnAssignAppPackage(
 func (s *LibrarianSephirahServiceService) ReportAppPackages(
 	conn pb.LibrarianSephirahService_ReportAppPackagesServer,
 ) error {
-	handler, err0 := s.g.NewReportAppPackageHandler(conn.Context())
-	if err0 != nil {
-		return err0
+	ctx, err1 := s.authFunc(conn.Context())
+	if err1 != nil {
+		return err1
+	}
+	handler, err2 := s.g.NewReportAppPackageHandler(ctx)
+	if err2 != nil {
+		return err2
 	}
 	for {
 		var apl []*modelgebura.AppPackage
@@ -211,12 +215,12 @@ func (s *LibrarianSephirahServiceService) ReportAppPackages(
 			return err
 		} else {
 			for id, a := range req.GetAppPackages() {
-				apl = append(apl, &modelgebura.AppPackage{ // TODO
+				apl = append(apl, &modelgebura.AppPackage{
 					ID:              0,
 					Source:          0,
 					SourceID:        0,
 					SourcePackageID: id,
-					Name:            "",
+					Name:            a.GetName(),
 					Description:     "",
 					Binary: &modelgebura.AppPackageBinary{
 						Name:      a.GetName(),

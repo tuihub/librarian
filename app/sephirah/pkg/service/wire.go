@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/server"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
@@ -36,5 +37,6 @@ func NewSephirahService(
 		data.ProviderSet,
 		biz.ProviderSet,
 		service.ProviderSet,
+		server.ProviderSet,
 	))
 }

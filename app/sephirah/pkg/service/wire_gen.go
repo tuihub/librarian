@@ -19,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v1_2 "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -63,7 +64,8 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, settings)
+	v := server.NewAuthMiddleware(auth)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, settings, v)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

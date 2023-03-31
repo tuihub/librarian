@@ -14,7 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent/dialect/sql"
-	"golang.org/x/exp/slices"
 )
 
 type geburaRepo struct {
@@ -292,44 +291,33 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpsertAppPackages(ctx context.Context, apl []*modelgebura.AppPackage) error {
+func (g geburaRepo) UpsertAppPackages(
+	ctx context.Context,
+	userID model.InternalID,
+	apl []*modelgebura.AppPackage,
+) error {
 	appPackages := make([]*ent.AppPackageCreate, len(apl))
 	for i, ap := range apl {
 		appPackages[i] = g.data.db.AppPackage.Create().
 			SetID(ap.ID).
+			SetOwnerID(userID).
 			SetSource(converter.ToEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
-			SetSourcePackageID(ap.SourcePackageID)
-		if len(ap.Name) > 0 {
-			appPackages[i].SetName(ap.Name)
-		}
-		if len(ap.Description) > 0 {
-			appPackages[i].SetDescription(ap.Description)
-		}
-		if len(ap.Binary.Name) > 0 {
-			appPackages[i].SetBinaryName(ap.Binary.Name)
-		}
-		if ap.Binary.SizeByte > 0 {
-			appPackages[i].SetBinarySizeByte(ap.Binary.SizeByte)
-		}
+			SetSourcePackageID(ap.SourcePackageID).
+			SetName(ap.Name).
+			SetDescription(ap.Description).
+			SetPublic(ap.Public).
+			SetBinaryName(ap.Binary.Name).
+			SetBinarySizeByte(ap.Binary.SizeByte).
+			SetBinaryPublicURL(ap.Binary.PublicURL)
 	}
 	return g.data.db.AppPackage.
 		CreateBulk(appPackages...).
 		OnConflict(
 			sql.ConflictColumns(apppackage.FieldSource, apppackage.FieldSourceID, apppackage.FieldSourcePackageID),
-			sql.ResolveWith(func(u *sql.UpdateSet) {
-				ignores := []string{
-					apppackage.FieldID,
-					apppackage.FieldSource,
-					apppackage.FieldSourceID,
-					apppackage.FieldSourcePackageID,
-				}
-				for _, c := range u.Columns() {
-					if slices.Contains(ignores, c) {
-						u.SetIgnore(c)
-					}
-					u.SetExcluded(c)
-				}
+			resolveWithIgnores([]string{
+				apppackage.FieldID,
+				apppackage.FieldPublic,
 			}),
 		).
 		Exec(ctx)

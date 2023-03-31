@@ -120,14 +120,14 @@ func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPacka
 	}
 	return &reportAppPackageHandler{
 		g:          g,
-		sourceID:   int64(claims.InternalID),
+		sourceID:   claims.InternalID,
 		packageIDs: ids,
 	}, nil
 }
 
 type reportAppPackageHandler struct {
 	g          *Gebura
-	sourceID   int64
+	sourceID   model.InternalID
 	packageIDs []string
 }
 
@@ -148,13 +148,13 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, apl []*modelgebura
 			})
 		}
 		apl[i].Source = modelgebura.AppPackageSourceSentinel
-		apl[i].SourceID = model.InternalID(r.sourceID)
+		apl[i].SourceID = r.sourceID
 	}
 	if len(vl) > 0 {
 		if _, err := r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		if err := r.g.repo.UpsertAppPackages(ctx, apl); err != nil {
+		if err := r.g.repo.UpsertAppPackages(ctx, r.sourceID, apl); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
 	}

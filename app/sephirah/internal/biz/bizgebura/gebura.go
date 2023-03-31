@@ -32,7 +32,7 @@ type GeburaRepo interface {
 
 	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
 	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
-	UpsertAppPackages(context.Context, []*modelgebura.AppPackage) error
+	UpsertAppPackages(context.Context, model.InternalID, []*modelgebura.AppPackage) error
 	ListAppPackages(context.Context, model.Paging, []modelgebura.AppPackageSource,
 		[]model.InternalID) ([]*modelgebura.AppPackage, int, error)
 	AssignAppPackage(context.Context, model.InternalID, model.InternalID, model.InternalID) error

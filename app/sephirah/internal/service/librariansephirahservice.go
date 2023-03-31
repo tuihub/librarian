@@ -16,10 +16,11 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	t *biztiphereth.Tiphereth
-	g *bizgebura.Gebura
-	b *bizbinah.Binah
-	y *bizyesod.Yesod
+	t        *biztiphereth.Tiphereth
+	g        *bizgebura.Gebura
+	b        *bizbinah.Binah
+	y        *bizyesod.Yesod
+	authFunc func(context.Context) (context.Context, error)
 }
 
 func NewLibrarianSephirahServiceService(
@@ -29,6 +30,7 @@ func NewLibrarianSephirahServiceService(
 	b *bizbinah.Binah,
 	y *bizyesod.Yesod,
 	app *libapp.Settings,
+	authFunc func(context.Context) (context.Context, error),
 ) pb.LibrarianSephirahServiceServer {
 	if enable, err := app.GetEnvBool(libapp.EnvCreateAdmin); err == nil && enable {
 		t.CreateDefaultAdmin(context.Background(), &modeltiphereth.User{
@@ -41,9 +43,10 @@ func NewLibrarianSephirahServiceService(
 	}
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
-		t: t,
-		g: g,
-		b: b,
-		y: y,
+		t:        t,
+		g:        g,
+		b:        b,
+		y:        y,
+		authFunc: authFunc,
 	}
 }
