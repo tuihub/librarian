@@ -49,7 +49,11 @@ func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data, s
 	s3 := bizs3.NewS3(s3Repo)
 	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, steamUseCase, s3)
 	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer, settings)
-	app := newApp(grpcServer)
+	registrar, err := libapp.NewRegistrar()
+	if err != nil {
+		return nil, nil, err
+	}
+	app := newApp(grpcServer, registrar)
 	return app, func() {
 	}, nil
 }

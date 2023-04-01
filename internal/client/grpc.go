@@ -12,37 +12,15 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
-type DiscoverClients struct {
-	Mapper   mapper.LibrarianMapperServiceClient
-	Searcher searcher.LibrarianSearcherServiceClient
-	Porter   porter.LibrarianPorterServiceClient
-}
-
-func NewDiscoverClients() (*DiscoverClients, error) {
-	m, err := NewMapperClient()
-	if err != nil {
-		return nil, err
-	}
-	s, err := NewSearcherClient()
-	if err != nil {
-		return nil, err
-	}
-	p, err := NewPorterClient()
-	if err != nil {
-		return nil, err
-	}
-	return &DiscoverClients{
-		Mapper:   m,
-		Searcher: s,
-		Porter:   p,
-	}, nil
-}
-
 func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
+	r, err := libapp.NewDiscovery()
+	if err != nil {
+		return nil, err
+	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery:///mapper"),
-		grpc.WithDiscovery(libapp.NewDiscovery()),
+		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
@@ -53,10 +31,14 @@ func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
 }
 
 func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
+	r, err := libapp.NewDiscovery()
+	if err != nil {
+		return nil, err
+	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery:///searcher"),
-		grpc.WithDiscovery(libapp.NewDiscovery()),
+		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
@@ -67,10 +49,14 @@ func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 }
 
 func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
+	r, err := libapp.NewDiscovery()
+	if err != nil {
+		return nil, err
+	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery:///porter"),
-		grpc.WithDiscovery(libapp.NewDiscovery()),
+		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
 			recovery.Recovery(),

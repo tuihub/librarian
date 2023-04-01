@@ -12,7 +12,6 @@ import (
 	service3 "github.com/tuihub/librarian/app/porter/pkg/service"
 	service2 "github.com/tuihub/librarian/app/searcher/pkg/service"
 	service4 "github.com/tuihub/librarian/app/sephirah/pkg/service"
-	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -54,7 +53,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	inprocClients := inprocgrpc.NewInprocClients(librarianMapperServiceServer, librarianSearcherServiceServer, librarianPorterServiceServer)
-	discoverClients, err := client.NewDiscoverClients()
+	librarianMapperServiceClient, err := mapperClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -62,9 +61,22 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMapperServiceClient := mapperClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
-	librarianSearcherServiceClient := searcherClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
-	librarianPorterServiceClient := porterClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
+	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, inprocClients)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	librarianPorterServiceClient, err := porterClientSelector(librarian_EnableServiceDiscovery, inprocClients)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup4()

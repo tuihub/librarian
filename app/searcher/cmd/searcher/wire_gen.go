@@ -29,7 +29,11 @@ func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer, settings)
-	app := newApp(grpcServer)
+	registrar, err := libapp.NewRegistrar()
+	if err != nil {
+		return nil, nil, err
+	}
+	app := newApp(grpcServer, registrar)
 	return app, func() {
 	}, nil
 }

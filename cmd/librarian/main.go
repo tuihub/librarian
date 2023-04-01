@@ -79,32 +79,29 @@ func main() {
 func mapperClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
-	discover *client.DiscoverClients,
-) mapper.LibrarianMapperServiceClient {
+) (mapper.LibrarianMapperServiceClient, error) {
 	if conf.Mapper {
-		return discover.Mapper
+		return client.NewMapperClient()
 	}
-	return inproc.Mapper
+	return inproc.Mapper, nil
 }
 
 func searcherClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
-	discover *client.DiscoverClients,
-) searcher.LibrarianSearcherServiceClient {
+) (searcher.LibrarianSearcherServiceClient, error) {
 	if conf.Searcher {
-		return discover.Searcher
+		return client.NewSearcherClient()
 	}
-	return inproc.Searcher
+	return inproc.Searcher, nil
 }
 
 func porterClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
-	discover *client.DiscoverClients,
-) porter.LibrarianPorterServiceClient {
+) (porter.LibrarianPorterServiceClient, error) {
 	if conf.Porter {
-		return discover.Porter
+		return client.NewPorterClient()
 	}
-	return inproc.Porter
+	return inproc.Porter, nil
 }

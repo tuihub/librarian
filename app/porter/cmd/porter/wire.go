@@ -25,6 +25,7 @@ func wireApp(*conf.Porter_Server, *conf.Porter_Data, *libapp.Settings) (*kratos.
 		biz.ProviderSet,
 		client.ProviderSet,
 		service.ProviderSet,
+		libapp.ProviderSet,
 		newApp,
 	))
 }

@@ -18,5 +18,12 @@ import (
 
 // wireApp init kratos application.
 func wireApp(*conf.Searcher_Server, *conf.Searcher_Data, *libapp.Settings) (*kratos.App, func(), error) {
-	panic(wire.Build(server.ProviderSet, data.ProviderSet, biz.ProviderSet, service.ProviderSet, newApp))
+	panic(wire.Build(
+		server.ProviderSet,
+		data.ProviderSet,
+		biz.ProviderSet,
+		service.ProviderSet,
+		libapp.ProviderSet,
+		newApp,
+	))
 }

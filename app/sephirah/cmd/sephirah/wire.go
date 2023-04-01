@@ -37,6 +37,6 @@ func wireApp(
 		libauth.ProviderSet,
 		libmq.ProviderSet,
 		libcron.ProviderSet,
-		ProviderSet,
+		newApp,
 	))
 }

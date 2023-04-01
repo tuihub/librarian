@@ -45,15 +45,24 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
 	yesodRepo := data.NewYesodRepo(dataData)
-	discoverClients, err := client.NewDiscoverClients()
+	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMapperServiceClient := mapperClientUnpack(discoverClients)
-	librarianPorterServiceClient := porterClientUnpack(discoverClients)
-	librarianSearcherServiceClient := searcherClientUnpack(discoverClients)
+	librarianPorterServiceClient, err := client.NewPorterClient()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	librarianSearcherServiceClient, err := client.NewSearcherClient()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, yesodRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
 		cleanup2()

@@ -9,7 +9,6 @@ import (
 	porterService "github.com/tuihub/librarian/app/porter/pkg/service"
 	searcherService "github.com/tuihub/librarian/app/searcher/pkg/service"
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
-	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -45,7 +44,6 @@ func wireApp(
 			libauth.ProviderSet,
 			libmq.ProviderSet,
 			libcron.ProviderSet,
-			client.ProviderSet,
 			ProviderSet,
 		),
 	)

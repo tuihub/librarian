@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 
 	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
@@ -20,14 +21,14 @@ var (
 	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
 )
 
-func newApp(gs *grpc.Server) *kratos.App {
+func newApp(gs *grpc.Server, r registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs),
-		kratos.Registrar(libapp.NewRegistrar()),
+		kratos.Registrar(r),
 	)
 }
 

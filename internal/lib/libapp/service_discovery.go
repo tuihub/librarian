@@ -11,20 +11,20 @@ import (
 
 type requiredFeatureKey struct{}
 
-func NewDiscovery() registry.Discovery {
+func NewDiscovery() (registry.Discovery, error) {
 	client, err := capi.NewClient(capi.DefaultConfig())
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return consul.New(client)
+	return consul.New(client), nil
 }
 
-func NewRegistrar() registry.Registrar {
+func NewRegistrar() (registry.Registrar, error) {
 	client, err := capi.NewClient(capi.DefaultConfig())
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return consul.New(client)
+	return consul.New(client), nil
 }
 
 func NewContext(ctx context.Context, requiredFeature string) context.Context {

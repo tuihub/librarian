@@ -35,7 +35,13 @@ func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data, s
 	mapper := biz.NewMapper(mapperRepo)
 	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapper)
 	grpcServer := server.NewGRPCServer(mapper_Server, librarianMapperServiceServer, settings)
-	app := newApp(grpcServer)
+	registrar, err := libapp.NewRegistrar()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	app := newApp(grpcServer, registrar)
 	return app, func() {
 		cleanup2()
 		cleanup()
