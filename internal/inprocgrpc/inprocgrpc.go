@@ -9,7 +9,25 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewInprocMapperChannel, NewInprocSearcherChannel, NewInprocPorterChannel)
+var ProviderSet = wire.NewSet(NewInprocClients)
+
+type InprocClients struct {
+	Mapper   mapper.LibrarianMapperServiceClient
+	Searcher searcher.LibrarianSearcherServiceClient
+	Porter   porter.LibrarianPorterServiceClient
+}
+
+func NewInprocClients(
+	m mapper.LibrarianMapperServiceServer,
+	s searcher.LibrarianSearcherServiceServer,
+	p porter.LibrarianPorterServiceServer,
+) *InprocClients {
+	return &InprocClients{
+		Mapper:   NewInprocMapperChannel(m),
+		Searcher: NewInprocSearcherChannel(s),
+		Porter:   NewInprocPorterChannel(p),
+	}
+}
 
 func NewInprocMapperChannel(s mapper.LibrarianMapperServiceServer) mapper.LibrarianMapperServiceClient {
 	channel := inprocgrpc.Channel{}

@@ -9,9 +9,15 @@ import "conf/searcher.proto";
 import "conf/porter.proto";
 
 message Librarian {
-  Sephirah sephirah = 1;
-  Mapper mapper = 2;
-  Searcher searcher = 3;
-  Porter porter = 4;
+  message EnableServiceDiscovery {
+    bool mapper = 1;
+    bool searcher = 2;
+    bool porter = 3;
+  }
+  EnableServiceDiscovery enable_service_discovery = 1;
+  Sephirah sephirah = 2;
+  Mapper mapper = 3;
+  Searcher searcher = 4;
+  Porter porter = 5;
 }
 

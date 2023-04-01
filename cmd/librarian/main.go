@@ -3,14 +3,20 @@ package main
 import (
 	"os"
 
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/google/wire"
 )
 
 // go build -ldflags "-X main.version=x.y.z".
@@ -22,6 +28,8 @@ var (
 
 	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
 )
+
+var ProviderSet = wire.NewSet(newApp, mapperClientSelector, searcherClientSelector, porterClientSelector)
 
 func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) *kratos.App {
 	return kratos.New(
@@ -42,7 +50,12 @@ func main() {
 	var bc conf.Librarian
 	appSettings.LoadConfig(&bc)
 
+	if bc.EnableServiceDiscovery == nil {
+		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
+	}
+
 	app, cleanup, err := wireApp(
+		bc.EnableServiceDiscovery,
 		bc.Sephirah.Server,
 		bc.Sephirah.Data,
 		bc.Mapper.Data,
@@ -61,4 +74,37 @@ func main() {
 	if err = app.Run(); err != nil {
 		panic(err)
 	}
+}
+
+func mapperClientSelector(
+	conf *conf.Librarian_EnableServiceDiscovery,
+	inproc *inprocgrpc.InprocClients,
+	discover *client.DiscoverClients,
+) mapper.LibrarianMapperServiceClient {
+	if conf.Mapper {
+		return discover.Mapper
+	}
+	return inproc.Mapper
+}
+
+func searcherClientSelector(
+	conf *conf.Librarian_EnableServiceDiscovery,
+	inproc *inprocgrpc.InprocClients,
+	discover *client.DiscoverClients,
+) searcher.LibrarianSearcherServiceClient {
+	if conf.Searcher {
+		return discover.Searcher
+	}
+	return inproc.Searcher
+}
+
+func porterClientSelector(
+	conf *conf.Librarian_EnableServiceDiscovery,
+	inproc *inprocgrpc.InprocClients,
+	discover *client.DiscoverClients,
+) porter.LibrarianPorterServiceClient {
+	if conf.Porter {
+		return discover.Porter
+	}
+	return inproc.Porter
 }

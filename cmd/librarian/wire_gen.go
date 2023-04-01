@@ -12,6 +12,7 @@ import (
 	service3 "github.com/tuihub/librarian/app/porter/pkg/service"
 	service2 "github.com/tuihub/librarian/app/searcher/pkg/service"
 	service4 "github.com/tuihub/librarian/app/sephirah/pkg/service"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -24,7 +25,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -39,14 +40,12 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMapperServiceClient := inprocgrpc.NewInprocMapperChannel(librarianMapperServiceServer)
 	librarianSearcherServiceServer, cleanup3, err := service2.NewSearcherService(searcher_Data, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSearcherServiceClient := inprocgrpc.NewInprocSearcherChannel(librarianSearcherServiceServer)
 	librarianPorterServiceServer, cleanup4, err := service3.NewPorterService(porter_Data, settings)
 	if err != nil {
 		cleanup3()
@@ -54,7 +53,18 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	librarianPorterServiceClient := inprocgrpc.NewInprocPorterChannel(librarianPorterServiceServer)
+	inprocClients := inprocgrpc.NewInprocClients(librarianMapperServiceServer, librarianSearcherServiceServer, librarianPorterServiceServer)
+	discoverClients, err := client.NewDiscoverClients()
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	librarianMapperServiceClient := mapperClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
+	librarianSearcherServiceClient := searcherClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
+	librarianPorterServiceClient := porterClientSelector(librarian_EnableServiceDiscovery, inprocClients, discoverClients)
 	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup4()

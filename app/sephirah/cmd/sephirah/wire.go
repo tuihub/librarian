@@ -6,9 +6,9 @@ package main
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -37,6 +37,6 @@ func wireApp(
 		libauth.ProviderSet,
 		libmq.ProviderSet,
 		libcron.ProviderSet,
-		newApp,
+		ProviderSet,
 	))
 }

@@ -13,7 +13,7 @@ import (
 // go build -ldflags "-X main.version=x.y.z".
 var (
 	// name is the name of the compiled software.
-	name string //nolint:gochecknoglobals //TODO
+	name = "searcher" //nolint:gochecknoglobals //TODO
 	// version is the version of the compiled software.
 	version string
 
@@ -27,6 +27,7 @@ func newApp(gs *grpc.Server) *kratos.App {
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs),
+		kratos.Registrar(libapp.NewRegistrar()),
 	)
 }
 
