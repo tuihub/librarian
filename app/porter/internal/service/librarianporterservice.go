@@ -93,11 +93,11 @@ func (s *LibrarianPorterServiceService) PullApp(
 	case librarian.AppSource_APP_SOURCE_INTERNAL:
 		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	case librarian.AppSource_APP_SOURCE_STEAM:
-		appID, err := strconv.ParseInt(req.GetAppId().GetSourceAppId(), 10, 64)
+		appID, err := strconv.Atoi(req.GetAppId().GetSourceAppId())
 		if err != nil {
 			return nil, err
 		}
-		a, err := s.steam.GetAppDetails(ctx, int(appID))
+		a, err := s.steam.GetAppDetails(ctx, appID)
 		if err != nil {
 			return nil, err
 		}
