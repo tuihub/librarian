@@ -20,7 +20,7 @@ type WebAPI struct {
 	c   *colly.Collector
 }
 
-func NewWebAPI(c *colly.Collector, config *conf.Porter_Data) (*WebAPI, error) {
+func NewWebAPI(c *colly.Collector, config *conf.Porter_Data_Steam) (*WebAPI, error) {
 	err := c.Limit(&colly.LimitRule{
 		DomainRegexp: "",
 		DomainGlob:   "*api.steampowered.com*",
@@ -32,7 +32,7 @@ func NewWebAPI(c *colly.Collector, config *conf.Porter_Data) (*WebAPI, error) {
 		return nil, err
 	}
 	return &WebAPI{
-		key: config.Steam.ApiKey,
+		key: config.GetApiKey(),
 		c:   c,
 	}, nil
 }

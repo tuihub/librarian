@@ -3,8 +3,11 @@ package main
 import (
 	"os"
 
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
+	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
@@ -21,12 +24,12 @@ var (
 	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
 )
 
-func newApp(gs *grpc.Server, r registry.Registrar) *kratos.App {
+func newApp(gs *grpc.Server, r registry.Registrar, m metadata) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(name),
 		kratos.Version(version),
-		kratos.Metadata(map[string]string{}),
+		kratos.Metadata(m),
 		kratos.Server(gs),
 		kratos.Registrar(r),
 	)
@@ -51,4 +54,18 @@ func main() {
 	if err = app.Run(); err != nil {
 		panic(err)
 	}
+}
+
+type metadata map[string]string
+
+func newMetadata(steam *bizsteam.SteamUseCase, s3 *bizs3.S3) metadata {
+	v := "enable"
+	res := metadata{}
+	if steam.FeatureEnabled() {
+		res[pb.FeatureFlag_name[int32(pb.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM)]] = v
+	}
+	if s3.FeatureEnabled() {
+		res[pb.FeatureFlag_name[int32(pb.FeatureFlag_FEATURE_FLAG_DEFAULT_DATA_STORAGE)]] = v
+	}
+	return res
 }

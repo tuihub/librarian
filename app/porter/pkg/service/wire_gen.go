@@ -29,21 +29,15 @@ func NewPorterService(porter_Data *conf.Porter_Data, settings *libapp.Settings) 
 		return nil, nil, err
 	}
 	feedUseCase := bizfeed.NewFeed(rssRepo)
-	storeAPI, err := steam.NewStoreAPI(collector)
+	steamSteam, err := steam.NewSteam(collector, porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
-	webAPI, err := steam.NewWebAPI(collector, porter_Data)
+	steamUseCase := bizsteam.NewSteamUseCase(steamSteam)
+	s3Repo, err := data.NewS3Repo(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
-	steamSteam := steam.NewSteam(storeAPI, webAPI)
-	dataData, err := data.NewData(porter_Data)
-	if err != nil {
-		return nil, nil, err
-	}
-	steamUseCase := bizsteam.NewSteamUseCase(steamSteam, dataData)
-	s3Repo := data.NewS3Repo(dataData)
 	s3 := bizs3.NewS3(s3Repo)
 	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, steamUseCase, s3)
 	return librarianPorterServiceServer, func() {

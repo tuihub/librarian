@@ -2,14 +2,14 @@ package bizsteam
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
-	"github.com/tuihub/librarian/app/porter/internal/data"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type User struct {
@@ -58,16 +58,26 @@ type SteamUseCase struct {
 	c *steam.Steam
 }
 
-func NewSteamUseCase(client *steam.Steam, _ *data.Data) *SteamUseCase {
+func NewSteamUseCase(client *steam.Steam) *SteamUseCase {
+	if !client.FeatureEnabled() {
+		return new(SteamUseCase)
+	}
 	return &SteamUseCase{c: client}
 }
 
+func (s *SteamUseCase) FeatureEnabled() bool {
+	return s.c != nil
+}
+
 func (s *SteamUseCase) GetUser(ctx context.Context, steamID string) (*User, error) {
+	if !s.FeatureEnabled() {
+		return nil, errors.BadRequest("request disabled feature", "")
+	}
 	id, err := strconv.ParseUint(steamID, 10, 64)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := s.c.WebAPI.GetPlayerSummary(ctx, model.GetPlayerSummariesRequest{
+	resp, err := s.c.GetPlayerSummary(ctx, model.GetPlayerSummariesRequest{
 		SteamID: id,
 	})
 	if err != nil {
@@ -82,11 +92,14 @@ func (s *SteamUseCase) GetUser(ctx context.Context, steamID string) (*User, erro
 }
 
 func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*App, error) {
+	if !s.FeatureEnabled() {
+		return nil, errors.BadRequest("request disabled feature", "")
+	}
 	id, err := strconv.ParseUint(steamID, 10, 64)
 	if err != nil {
 		return nil, err
 	}
-	resp, err := s.c.WebAPI.GetOwnedGames(ctx, model.GetOwnedGamesRequest{
+	resp, err := s.c.GetOwnedGames(ctx, model.GetOwnedGamesRequest{
 		SteamID:                id,
 		IncludeAppInfo:         true,
 		IncludePlayedFreeGames: true,
@@ -117,7 +130,10 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 }
 
 func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, error) {
-	resp, err := s.c.StoreAPI.GetAppDetails(ctx, model.GetAppDetailsRequest{
+	if !s.FeatureEnabled() {
+		return nil, errors.BadRequest("request disabled feature", "")
+	}
+	resp, err := s.c.GetAppDetails(ctx, model.GetAppDetailsRequest{
 		AppIDs:      []int{appID},
 		CountryCode: "",
 		Language:    "",
@@ -126,7 +142,7 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 		return nil, err
 	}
 	if len(resp) != 1 {
-		return nil, errors.New("unexpected result")
+		return nil, errors.InternalServer("unexpected result", "")
 	}
 	var res *App
 	for _, app := range resp {

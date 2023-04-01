@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -95,6 +96,12 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
+			switch info.Platform {
+			case modeltiphereth.AccountPlatformUnspecified:
+			case modeltiphereth.AccountPlatformSteam:
+				ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
+			default:
+			}
 			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
 				Platform:          converter.ToPBAccountPlatform(info.Platform),
 				PlatformAccountId: info.PlatformAccountID,
@@ -136,6 +143,7 @@ func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
 		func(ctx context.Context, r *modelangela.PullSteamAccountAppRelation) error {
+			ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
 			var appList []*librarian.App
 			if resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
 				RelationType: porter.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
@@ -250,6 +258,7 @@ func NewPullSteamAppTopic(
 	return libmq.NewTopic[modelangela.PullSteamApp](
 		"PullSteamApp",
 		func(ctx context.Context, r *modelangela.PullSteamApp) error {
+			ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
 			resp, err := a.porter.PullApp(ctx, &porter.PullAppRequest{AppId: &librarian.AppID{
 				Source:      librarian.AppSource_APP_SOURCE_STEAM,
 				SourceAppId: r.AppID,
@@ -278,7 +287,7 @@ func NewPullFeedTopic(
 		func(ctx context.Context, p *modelyesod.PullFeed) error {
 			resp, err := a.porter.PullFeed(ctx, &porter.PullFeedRequest{
 				Source:    porter.FeedSource_FEED_SOURCE_COMMON,
-				ContentId: p.URL,
+				ChannelId: p.URL,
 			})
 			if err != nil {
 				return err

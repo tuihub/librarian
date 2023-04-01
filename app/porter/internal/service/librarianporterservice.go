@@ -47,7 +47,7 @@ func (s *LibrarianPorterServiceService) PullFeed(
 		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	case pb.FeedSource_FEED_SOURCE_COMMON:
 		{
-			feed, err := s.feed.GetFeed(ctx, req.GetContentId())
+			feed, err := s.feed.GetFeed(ctx, req.GetChannelId())
 			if err != nil {
 				return nil, err
 			}

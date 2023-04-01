@@ -3,6 +3,8 @@ package bizs3
 import (
 	"context"
 	"io"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 type PutObject struct {
@@ -23,6 +25,7 @@ func (p *PutObject) Write(b []byte) (int, error) {
 }
 
 type S3Repo interface {
+	FeatureEnabled() bool
 	PutObject(context.Context, io.Reader, Bucket, string) error
 }
 
@@ -38,12 +41,22 @@ const (
 )
 
 func NewS3(repo S3Repo) *S3 {
+	if !repo.FeatureEnabled() {
+		return new(S3)
+	}
 	return &S3{
 		repo,
 	}
 }
 
+func (s *S3) FeatureEnabled() bool {
+	return s.repo != nil
+}
+
 func (s *S3) NewPushData(ctx context.Context, bucket Bucket, objectName string) (*PutObject, error) {
+	if !s.FeatureEnabled() {
+		return nil, errors.BadRequest("request disabled feature", "")
+	}
 	reader, writer := io.Pipe()
 	ch := make(chan error)
 	go func() {
