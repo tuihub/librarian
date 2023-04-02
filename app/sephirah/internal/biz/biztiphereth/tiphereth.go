@@ -38,7 +38,7 @@ type Tiphereth struct {
 	mapper      mapper.LibrarianMapperServiceClient
 	searcher    searcher.LibrarianSearcherServiceClient
 	porter      porter.LibrarianPorterServiceClient
-	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo]
+	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo]
 }
 
 func NewTiphereth(
@@ -47,7 +47,7 @@ func NewTiphereth(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo],
+	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 ) (*Tiphereth, error) {
 	return &Tiphereth{
 		auth:        auth,

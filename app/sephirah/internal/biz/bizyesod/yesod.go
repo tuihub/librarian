@@ -37,7 +37,7 @@ type Yesod struct {
 	mapper   mapper.LibrarianMapperServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
 	porter   porter.LibrarianPorterServiceClient
-	pullFeed *libmq.TopicImpl[modelyesod.PullFeed]
+	pullFeed *libmq.Topic[modelyesod.PullFeed]
 }
 
 func NewYesod(
@@ -46,7 +46,7 @@ func NewYesod(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
-	pullFeed *libmq.TopicImpl[modelyesod.PullFeed],
+	pullFeed *libmq.Topic[modelyesod.PullFeed],
 ) (*Yesod, error) {
 	y := &Yesod{
 		repo:     repo,

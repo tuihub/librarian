@@ -67,10 +67,10 @@ func NewAngelaBase(
 
 func NewAngela(
 	mq *libmq.MQ,
-	pullAccount *libmq.TopicImpl[modeltiphereth.PullAccountInfo],
-	pullSteamAccountAppRelation *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation],
-	pullSteamApp *libmq.TopicImpl[modelangela.PullSteamApp],
-	pullFeed *libmq.TopicImpl[modelyesod.PullFeed],
+	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
+	pullSteamAccountAppRelation *libmq.Topic[modelangela.PullSteamAccountAppRelation],
+	pullSteamApp *libmq.Topic[modelangela.PullSteamApp],
+	pullFeed *libmq.Topic[modelyesod.PullFeed],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -91,8 +91,8 @@ func NewAngela(
 
 func NewPullAccountTopic(
 	a *AngelaBase,
-	sr *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation],
-) *libmq.TopicImpl[modeltiphereth.PullAccountInfo] {
+	sr *libmq.Topic[modelangela.PullSteamAccountAppRelation],
+) *libmq.Topic[modeltiphereth.PullAccountInfo] {
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
@@ -138,8 +138,8 @@ func NewPullAccountTopic(
 
 func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 	a *AngelaBase,
-	sa *libmq.TopicImpl[modelangela.PullSteamApp],
-) *libmq.TopicImpl[modelangela.PullSteamAccountAppRelation] {
+	sa *libmq.Topic[modelangela.PullSteamApp],
+) *libmq.Topic[modelangela.PullSteamAccountAppRelation] {
 	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
 		"PullSteamAccountAppRelation",
 		func(ctx context.Context, r *modelangela.PullSteamAccountAppRelation) error {
@@ -254,7 +254,7 @@ func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 
 func NewPullSteamAppTopic(
 	a *AngelaBase,
-) *libmq.TopicImpl[modelangela.PullSteamApp] {
+) *libmq.Topic[modelangela.PullSteamApp] {
 	return libmq.NewTopic[modelangela.PullSteamApp](
 		"PullSteamApp",
 		func(ctx context.Context, r *modelangela.PullSteamApp) error {
@@ -281,7 +281,7 @@ func NewPullSteamAppTopic(
 
 func NewPullFeedTopic(
 	a *AngelaBase,
-) *libmq.TopicImpl[modelyesod.PullFeed] {
+) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
 		func(ctx context.Context, p *modelyesod.PullFeed) error {

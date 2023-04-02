@@ -19,4 +19,5 @@ message Sephirah {
   Data data = 2;
   Auth auth = 3;
   MQ mq = 4;
+  Cache cache = 5;
 }

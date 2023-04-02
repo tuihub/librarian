@@ -69,17 +69,17 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
-	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
-	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
-	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
-	angela, err := bizangela.NewAngela(libmqMQ, topicImpl2, libmqTopicImpl, topicImpl, topicImpl3)
+	topic := bizangela.NewPullSteamAppTopic(angelaBase)
+	libmqTopic := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topic)
+	topic2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopic)
+	topic3 := bizangela.NewPullFeedTopic(angelaBase)
+	angela, err := bizangela.NewAngela(libmqMQ, topic2, libmqTopic, topic, topic3)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic2)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -89,7 +89,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	cron := libcron.NewCron()
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl3)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic3)
 	if err != nil {
 		cleanup2()
 		cleanup()

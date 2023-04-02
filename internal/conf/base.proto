@@ -31,3 +31,7 @@ message Auth {
   string issuer = 2;
   string jwt_secret = 3;
 }
+
+message Cache {
+  string driver = 1;
+}

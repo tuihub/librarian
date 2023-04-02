@@ -42,16 +42,16 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	topicImpl := bizangela.NewPullSteamAppTopic(angelaBase)
-	libmqTopicImpl := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topicImpl)
-	topicImpl2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopicImpl)
-	topicImpl3 := bizangela.NewPullFeedTopic(angelaBase)
-	angela, err := bizangela.NewAngela(mq, topicImpl2, libmqTopicImpl, topicImpl, topicImpl3)
+	topic := bizangela.NewPullSteamAppTopic(angelaBase)
+	libmqTopic := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topic)
+	topic2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopic)
+	topic3 := bizangela.NewPullFeedTopic(angelaBase)
+	angela, err := bizangela.NewAngela(mq, topic2, libmqTopic, topic, topic3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl2)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic2)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -59,7 +59,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	gebura := bizgebura.NewGebura(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topicImpl3)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

@@ -79,7 +79,7 @@ func (a *MQ) Stop(ctx context.Context) error {
 	return a.router.Close()
 }
 
-func (a *MQ) RegisterTopic(topic Topic) error {
+func (a *MQ) RegisterTopic(topic TopicInterface) error {
 	if _, exist := a.topicList[topic.Name()]; exist {
 		return fmt.Errorf("topic %s already registered", topic)
 	}

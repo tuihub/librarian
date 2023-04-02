@@ -9,6 +9,7 @@ require (
 	github.com/blevesearch/bleve/v2 v2.3.6
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
+	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-co-op/gocron v1.19.0
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230326145430-f03f5f89881f
@@ -25,6 +26,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/minio/minio-go/v7 v7.0.49
 	github.com/mmcdole/gofeed v1.2.1
+	github.com/redis/go-redis/v9 v9.0.2
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tuihub/protos v0.2.15
@@ -65,8 +67,10 @@ require (
 	github.com/blevesearch/zapx/v15 v15.3.8 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.0 // indirect
+	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-kratos/aegis v0.1.4 // indirect
@@ -78,6 +82,7 @@ require (
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/geo v0.0.0-20210211234256-740aa86cb551 // indirect
+	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -141,6 +146,7 @@ require (
 	golang.org/x/tools v0.6.1-0.20230222164832-25d2519c8696 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
