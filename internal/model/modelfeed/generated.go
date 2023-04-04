@@ -24,14 +24,7 @@ func (c *ConverterImpl) FromPBFeed(source *v1.Feed) *Feed {
 		modelfeedFeed.Authors = pModelfeedPersonList
 		modelfeedFeed.Language = (*source).Language
 		modelfeedFeed.Image = c.FromPBFeedImage((*source).Image)
-		var pModelfeedItemList []*Item
-		if (*source).Items != nil {
-			pModelfeedItemList = make([]*Item, len((*source).Items))
-			for j := 0; j < len((*source).Items); j++ {
-				pModelfeedItemList[j] = c.FromPBFeedItem((*source).Items[j])
-			}
-		}
-		modelfeedFeed.Items = pModelfeedItemList
+		modelfeedFeed.Items = c.FromPBFeedItemList((*source).Items)
 		pModelfeedFeed = &modelfeedFeed
 	}
 	return pModelfeedFeed
@@ -92,6 +85,16 @@ func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem
+}
+func (c *ConverterImpl) FromPBFeedItemList(source []*v1.FeedItem) []*Item {
+	var pModelfeedItemList []*Item
+	if source != nil {
+		pModelfeedItemList = make([]*Item, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelfeedItemList[i] = c.FromPBFeedItem(source[i])
+		}
+	}
+	return pModelfeedItemList
 }
 func (c *ConverterImpl) ToPBFeed(source *Feed) *v1.Feed {
 	var pV1Feed *v1.Feed

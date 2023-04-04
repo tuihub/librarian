@@ -18,7 +18,6 @@ type NotifyFlowTarget struct {
 // Fields of the NotifyFlowTarget.
 func (NotifyFlowTarget) Fields() []ent.Field {
 	return []ent.Field{
-		defaultPrimaryKey(),
 		field.Int64("notify_flow_id").GoType(model.InternalID(0)),
 		field.Int64("notify_target_id").GoType(model.InternalID(0)),
 		field.String("channel_id"),

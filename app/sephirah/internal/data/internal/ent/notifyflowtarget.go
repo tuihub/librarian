@@ -18,7 +18,7 @@ import (
 type NotifyFlowTarget struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID model.InternalID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// NotifyFlowID holds the value of the "notify_flow_id" field.
 	NotifyFlowID model.InternalID `json:"notify_flow_id,omitempty"`
 	// NotifyTargetID holds the value of the "notify_target_id" field.
@@ -98,11 +98,11 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 	for i := range columns {
 		switch columns[i] {
 		case notifyflowtarget.FieldID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				nft.ID = model.InternalID(value.Int64)
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			nft.ID = int(value.Int64)
 		case notifyflowtarget.FieldNotifyFlowID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field notify_flow_id", values[i])

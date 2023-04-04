@@ -6766,8 +6766,8 @@ type NotifyFlowMutation struct {
 	feed_config               map[model.InternalID]struct{}
 	removedfeed_config        map[model.InternalID]struct{}
 	clearedfeed_config        bool
-	notify_flow_target        map[model.InternalID]struct{}
-	removednotify_flow_target map[model.InternalID]struct{}
+	notify_flow_target        map[int]struct{}
+	removednotify_flow_target map[int]struct{}
 	clearednotify_flow_target bool
 	done                      bool
 	oldValue                  func(context.Context) (*NotifyFlow, error)
@@ -7206,9 +7206,9 @@ func (m *NotifyFlowMutation) ResetFeedConfig() {
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by ids.
-func (m *NotifyFlowMutation) AddNotifyFlowTargetIDs(ids ...model.InternalID) {
+func (m *NotifyFlowMutation) AddNotifyFlowTargetIDs(ids ...int) {
 	if m.notify_flow_target == nil {
-		m.notify_flow_target = make(map[model.InternalID]struct{})
+		m.notify_flow_target = make(map[int]struct{})
 	}
 	for i := range ids {
 		m.notify_flow_target[ids[i]] = struct{}{}
@@ -7226,9 +7226,9 @@ func (m *NotifyFlowMutation) NotifyFlowTargetCleared() bool {
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (m *NotifyFlowMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) {
+func (m *NotifyFlowMutation) RemoveNotifyFlowTargetIDs(ids ...int) {
 	if m.removednotify_flow_target == nil {
-		m.removednotify_flow_target = make(map[model.InternalID]struct{})
+		m.removednotify_flow_target = make(map[int]struct{})
 	}
 	for i := range ids {
 		delete(m.notify_flow_target, ids[i])
@@ -7237,7 +7237,7 @@ func (m *NotifyFlowMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) 
 }
 
 // RemovedNotifyFlowTarget returns the removed IDs of the "notify_flow_target" edge to the NotifyFlowTarget entity.
-func (m *NotifyFlowMutation) RemovedNotifyFlowTargetIDs() (ids []model.InternalID) {
+func (m *NotifyFlowMutation) RemovedNotifyFlowTargetIDs() (ids []int) {
 	for id := range m.removednotify_flow_target {
 		ids = append(ids, id)
 	}
@@ -7245,7 +7245,7 @@ func (m *NotifyFlowMutation) RemovedNotifyFlowTargetIDs() (ids []model.InternalI
 }
 
 // NotifyFlowTargetIDs returns the "notify_flow_target" edge IDs in the mutation.
-func (m *NotifyFlowMutation) NotifyFlowTargetIDs() (ids []model.InternalID) {
+func (m *NotifyFlowMutation) NotifyFlowTargetIDs() (ids []int) {
 	for id := range m.notify_flow_target {
 		ids = append(ids, id)
 	}
@@ -7617,7 +7617,7 @@ type NotifyFlowTargetMutation struct {
 	config
 	op                   Op
 	typ                  string
-	id                   *model.InternalID
+	id                   *int
 	channel_id           *string
 	updated_at           *time.Time
 	created_at           *time.Time
@@ -7651,7 +7651,7 @@ func newNotifyFlowTargetMutation(c config, op Op, opts ...notifyflowtargetOption
 }
 
 // withNotifyFlowTargetID sets the ID field of the mutation.
-func withNotifyFlowTargetID(id model.InternalID) notifyflowtargetOption {
+func withNotifyFlowTargetID(id int) notifyflowtargetOption {
 	return func(m *NotifyFlowTargetMutation) {
 		var (
 			err   error
@@ -7701,15 +7701,9 @@ func (m NotifyFlowTargetMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of NotifyFlowTarget entities.
-func (m *NotifyFlowTargetMutation) SetID(id model.InternalID) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *NotifyFlowTargetMutation) ID() (id model.InternalID, exists bool) {
+func (m *NotifyFlowTargetMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -7720,12 +7714,12 @@ func (m *NotifyFlowTargetMutation) ID() (id model.InternalID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *NotifyFlowTargetMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+func (m *NotifyFlowTargetMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []model.InternalID{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -8280,8 +8274,8 @@ type NotifyTargetMutation struct {
 	notify_flow               map[model.InternalID]struct{}
 	removednotify_flow        map[model.InternalID]struct{}
 	clearednotify_flow        bool
-	notify_flow_target        map[model.InternalID]struct{}
-	removednotify_flow_target map[model.InternalID]struct{}
+	notify_flow_target        map[int]struct{}
+	removednotify_flow_target map[int]struct{}
 	clearednotify_flow_target bool
 	done                      bool
 	oldValue                  func(context.Context) (*NotifyTarget, error)
@@ -8738,9 +8732,9 @@ func (m *NotifyTargetMutation) ResetNotifyFlow() {
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by ids.
-func (m *NotifyTargetMutation) AddNotifyFlowTargetIDs(ids ...model.InternalID) {
+func (m *NotifyTargetMutation) AddNotifyFlowTargetIDs(ids ...int) {
 	if m.notify_flow_target == nil {
-		m.notify_flow_target = make(map[model.InternalID]struct{})
+		m.notify_flow_target = make(map[int]struct{})
 	}
 	for i := range ids {
 		m.notify_flow_target[ids[i]] = struct{}{}
@@ -8758,9 +8752,9 @@ func (m *NotifyTargetMutation) NotifyFlowTargetCleared() bool {
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (m *NotifyTargetMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) {
+func (m *NotifyTargetMutation) RemoveNotifyFlowTargetIDs(ids ...int) {
 	if m.removednotify_flow_target == nil {
-		m.removednotify_flow_target = make(map[model.InternalID]struct{})
+		m.removednotify_flow_target = make(map[int]struct{})
 	}
 	for i := range ids {
 		delete(m.notify_flow_target, ids[i])
@@ -8769,7 +8763,7 @@ func (m *NotifyTargetMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID
 }
 
 // RemovedNotifyFlowTarget returns the removed IDs of the "notify_flow_target" edge to the NotifyFlowTarget entity.
-func (m *NotifyTargetMutation) RemovedNotifyFlowTargetIDs() (ids []model.InternalID) {
+func (m *NotifyTargetMutation) RemovedNotifyFlowTargetIDs() (ids []int) {
 	for id := range m.removednotify_flow_target {
 		ids = append(ids, id)
 	}
@@ -8777,7 +8771,7 @@ func (m *NotifyTargetMutation) RemovedNotifyFlowTargetIDs() (ids []model.Interna
 }
 
 // NotifyFlowTargetIDs returns the "notify_flow_target" edge IDs in the mutation.
-func (m *NotifyTargetMutation) NotifyFlowTargetIDs() (ids []model.InternalID) {
+func (m *NotifyTargetMutation) NotifyFlowTargetIDs() (ids []int) {
 	for id := range m.notify_flow_target {
 		ids = append(ids, id)
 	}

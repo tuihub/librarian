@@ -39,6 +39,7 @@ type Converter interface {
 	// goverter:map UpdatedParsed | FromPBTime
 	// goverter:map PublishedParsed | FromPBTime
 	FromPBFeedItem(*librarian.FeedItem) *Item
+	FromPBFeedItemList([]*librarian.FeedItem) []*Item
 	// goverter:matchIgnoreCase
 	FromPBFeedImage(*librarian.FeedImage) *Image
 	// goverter:matchIgnoreCase

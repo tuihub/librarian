@@ -71,12 +71,6 @@ func (nftc *NotifyFlowTargetCreate) SetNillableCreatedAt(t *time.Time) *NotifyFl
 	return nftc
 }
 
-// SetID sets the "id" field.
-func (nftc *NotifyFlowTargetCreate) SetID(mi model.InternalID) *NotifyFlowTargetCreate {
-	nftc.mutation.SetID(mi)
-	return nftc
-}
-
 // SetNotifyFlow sets the "notify_flow" edge to the NotifyFlow entity.
 func (nftc *NotifyFlowTargetCreate) SetNotifyFlow(n *NotifyFlow) *NotifyFlowTargetCreate {
 	return nftc.SetNotifyFlowID(n.ID)
@@ -169,10 +163,8 @@ func (nftc *NotifyFlowTargetCreate) sqlSave(ctx context.Context) (*NotifyFlowTar
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = model.InternalID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	nftc.mutation.id = &_node.ID
 	nftc.mutation.done = true
 	return _node, nil
@@ -181,13 +173,9 @@ func (nftc *NotifyFlowTargetCreate) sqlSave(ctx context.Context) (*NotifyFlowTar
 func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.CreateSpec) {
 	var (
 		_node = &NotifyFlowTarget{config: nftc.config}
-		_spec = sqlgraph.NewCreateSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64))
+		_spec = sqlgraph.NewCreateSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = nftc.conflict
-	if id, ok := nftc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := nftc.mutation.ChannelID(); ok {
 		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
 		_node.ChannelID = value
@@ -346,24 +334,16 @@ func (u *NotifyFlowTargetUpsert) UpdateCreatedAt() *NotifyFlowTargetUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.NotifyFlowTarget.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(notifyflowtarget.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *NotifyFlowTargetUpsertOne) UpdateNewValues() *NotifyFlowTargetUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(notifyflowtarget.FieldID)
-		}
-	}))
 	return u
 }
 
@@ -480,7 +460,7 @@ func (u *NotifyFlowTargetUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *NotifyFlowTargetUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
+func (u *NotifyFlowTargetUpsertOne) ID(ctx context.Context) (id int, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -489,7 +469,7 @@ func (u *NotifyFlowTargetUpsertOne) ID(ctx context.Context) (id model.InternalID
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *NotifyFlowTargetUpsertOne) IDX(ctx context.Context) model.InternalID {
+func (u *NotifyFlowTargetUpsertOne) IDX(ctx context.Context) int {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -540,9 +520,9 @@ func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlo
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = model.InternalID(id)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -630,20 +610,10 @@ type NotifyFlowTargetUpsertBulk struct {
 //	client.NotifyFlowTarget.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(notifyflowtarget.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *NotifyFlowTargetUpsertBulk) UpdateNewValues() *NotifyFlowTargetUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(notifyflowtarget.FieldID)
-			}
-		}
-	}))
 	return u
 }
 

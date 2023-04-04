@@ -109,14 +109,14 @@ func (ntu *NotifyTargetUpdate) AddNotifyFlow(n ...*NotifyFlow) *NotifyTargetUpda
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (ntu *NotifyTargetUpdate) AddNotifyFlowTargetIDs(ids ...model.InternalID) *NotifyTargetUpdate {
+func (ntu *NotifyTargetUpdate) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
 	ntu.mutation.AddNotifyFlowTargetIDs(ids...)
 	return ntu
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
 func (ntu *NotifyTargetUpdate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdate {
-	ids := make([]model.InternalID, len(n))
+	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
@@ -162,14 +162,14 @@ func (ntu *NotifyTargetUpdate) ClearNotifyFlowTarget() *NotifyTargetUpdate {
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) *NotifyTargetUpdate {
+func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdate {
 	ntu.mutation.RemoveNotifyFlowTargetIDs(ids...)
 	return ntu
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
 func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdate {
-	ids := make([]model.InternalID, len(n))
+	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
@@ -357,7 +357,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -370,7 +370,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -386,7 +386,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -491,14 +491,14 @@ func (ntuo *NotifyTargetUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *NotifyTarget
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowTargetIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
+func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
 	ntuo.mutation.AddNotifyFlowTargetIDs(ids...)
 	return ntuo
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
 func (ntuo *NotifyTargetUpdateOne) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
-	ids := make([]model.InternalID, len(n))
+	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
@@ -544,14 +544,14 @@ func (ntuo *NotifyTargetUpdateOne) ClearNotifyFlowTarget() *NotifyTargetUpdateOn
 }
 
 // RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to NotifyFlowTarget entities by IDs.
-func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) *NotifyTargetUpdateOne {
+func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowTargetIDs(ids ...int) *NotifyTargetUpdateOne {
 	ntuo.mutation.RemoveNotifyFlowTargetIDs(ids...)
 	return ntuo
 }
 
 // RemoveNotifyFlowTarget removes "notify_flow_target" edges to NotifyFlowTarget entities.
 func (ntuo *NotifyTargetUpdateOne) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyTargetUpdateOne {
-	ids := make([]model.InternalID, len(n))
+	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
@@ -769,7 +769,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -782,7 +782,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -798,7 +798,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 			Columns: []string{notifytarget.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -59,6 +59,20 @@ func (s *LibrarianPorterServiceService) PullFeed(
 	}
 }
 
+func (s *LibrarianPorterServiceService) PushFeedItems(ctx context.Context, req *pb.PushFeedItemsRequest) (
+	*pb.PushFeedItemsResponse, error) {
+	err := s.feed.PushFeedItems(ctx,
+		ToBizFeedDestination(req.GetDestination()),
+		modelfeed.NewConverter().FromPBFeedItemList(req.GetItems()),
+		req.GetChannelId(),
+		req.GetToken(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.PushFeedItemsResponse{}, nil
+}
+
 func (s *LibrarianPorterServiceService) PullAccount(
 	ctx context.Context,
 	req *pb.PullAccountRequest,

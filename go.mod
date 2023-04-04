@@ -26,6 +26,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/minio/minio-go/v7 v7.0.49
 	github.com/mmcdole/gofeed v1.2.1
+	github.com/nikoksr/notify v0.38.1
 	github.com/redis/go-redis/v9 v9.0.2
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
@@ -76,6 +77,7 @@ require (
 	github.com/go-kratos/aegis v0.1.4 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible // indirect
 	github.com/gobuffalo/logger v1.0.7 // indirect
 	github.com/gobuffalo/packd v1.0.2 // indirect
 	github.com/gobuffalo/packr/v2 v2.8.3 // indirect
@@ -134,6 +136,7 @@ require (
 	github.com/spf13/cobra v1.6.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
+	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect

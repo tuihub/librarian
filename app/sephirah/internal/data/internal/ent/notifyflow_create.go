@@ -121,14 +121,14 @@ func (nfc *NotifyFlowCreate) AddFeedConfig(f ...*FeedConfig) *NotifyFlowCreate {
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
-func (nfc *NotifyFlowCreate) AddNotifyFlowTargetIDs(ids ...model.InternalID) *NotifyFlowCreate {
+func (nfc *NotifyFlowCreate) AddNotifyFlowTargetIDs(ids ...int) *NotifyFlowCreate {
 	nfc.mutation.AddNotifyFlowTargetIDs(ids...)
 	return nfc
 }
 
 // AddNotifyFlowTarget adds the "notify_flow_target" edges to the NotifyFlowTarget entity.
 func (nfc *NotifyFlowCreate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *NotifyFlowCreate {
-	ids := make([]model.InternalID, len(n))
+	ids := make([]int, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
@@ -319,7 +319,7 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 			Columns: []string{notifyflow.NotifyFlowTargetColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -130,8 +130,8 @@ func (nftq *NotifyFlowTargetQuery) FirstX(ctx context.Context) *NotifyFlowTarget
 
 // FirstID returns the first NotifyFlowTarget ID from the query.
 // Returns a *NotFoundError when no NotifyFlowTarget ID was found.
-func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
-	var ids []model.InternalID
+func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = nftq.Limit(1).IDs(setContextOp(ctx, nftq.ctx, "FirstID")); err != nil {
 		return
 	}
@@ -143,7 +143,7 @@ func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id model.Intern
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) model.InternalID {
+func (nftq *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) int {
 	id, err := nftq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -181,8 +181,8 @@ func (nftq *NotifyFlowTargetQuery) OnlyX(ctx context.Context) *NotifyFlowTarget 
 // OnlyID is like Only, but returns the only NotifyFlowTarget ID in the query.
 // Returns a *NotSingularError when more than one NotifyFlowTarget ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
-	var ids []model.InternalID
+func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = nftq.Limit(2).IDs(setContextOp(ctx, nftq.ctx, "OnlyID")); err != nil {
 		return
 	}
@@ -198,7 +198,7 @@ func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id model.Interna
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) model.InternalID {
+func (nftq *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) int {
 	id, err := nftq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -226,7 +226,7 @@ func (nftq *NotifyFlowTargetQuery) AllX(ctx context.Context) []*NotifyFlowTarget
 }
 
 // IDs executes the query and returns a list of NotifyFlowTarget IDs.
-func (nftq *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+func (nftq *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if nftq.ctx.Unique == nil && nftq.path != nil {
 		nftq.Unique(true)
 	}
@@ -238,7 +238,7 @@ func (nftq *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []model.Interna
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (nftq *NotifyFlowTargetQuery) IDsX(ctx context.Context) []model.InternalID {
+func (nftq *NotifyFlowTargetQuery) IDsX(ctx context.Context) []int {
 	ids, err := nftq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -513,7 +513,7 @@ func (nftq *NotifyFlowTargetQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (nftq *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewQuerySpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	_spec.From = nftq.sql
 	if unique := nftq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

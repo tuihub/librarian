@@ -1415,7 +1415,7 @@ func (c *NotifyFlowTargetClient) UpdateOne(nft *NotifyFlowTarget) *NotifyFlowTar
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *NotifyFlowTargetClient) UpdateOneID(id model.InternalID) *NotifyFlowTargetUpdateOne {
+func (c *NotifyFlowTargetClient) UpdateOneID(id int) *NotifyFlowTargetUpdateOne {
 	mutation := newNotifyFlowTargetMutation(c.config, OpUpdateOne, withNotifyFlowTargetID(id))
 	return &NotifyFlowTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -1432,7 +1432,7 @@ func (c *NotifyFlowTargetClient) DeleteOne(nft *NotifyFlowTarget) *NotifyFlowTar
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *NotifyFlowTargetClient) DeleteOneID(id model.InternalID) *NotifyFlowTargetDeleteOne {
+func (c *NotifyFlowTargetClient) DeleteOneID(id int) *NotifyFlowTargetDeleteOne {
 	builder := c.Delete().Where(notifyflowtarget.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -1449,12 +1449,12 @@ func (c *NotifyFlowTargetClient) Query() *NotifyFlowTargetQuery {
 }
 
 // Get returns a NotifyFlowTarget entity by its id.
-func (c *NotifyFlowTargetClient) Get(ctx context.Context, id model.InternalID) (*NotifyFlowTarget, error) {
+func (c *NotifyFlowTargetClient) Get(ctx context.Context, id int) (*NotifyFlowTarget, error) {
 	return c.Query().Where(notifyflowtarget.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *NotifyFlowTargetClient) GetX(ctx context.Context, id model.InternalID) *NotifyFlowTarget {
+func (c *NotifyFlowTargetClient) GetX(ctx context.Context, id int) *NotifyFlowTarget {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

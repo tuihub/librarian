@@ -40,7 +40,7 @@ func (nftd *NotifyFlowTargetDelete) ExecX(ctx context.Context) int {
 }
 
 func (nftd *NotifyFlowTargetDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewDeleteSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	if ps := nftd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

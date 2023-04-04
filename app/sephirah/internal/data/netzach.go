@@ -29,6 +29,8 @@ func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalI
 	q := n.data.db.NotifyTarget.Create().
 		SetOwnerID(id).
 		SetID(t.ID).
+		SetName(t.Name).
+		SetDescription(t.Description).
 		SetToken(t.Token).
 		SetType(converter.ToEntNotifyTargetType(t.Type)).
 		SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
@@ -44,6 +46,12 @@ func (n *netzachRepo) UpdateNotifyTarget(
 		notifytarget.HasOwnerWith(user.IDEQ(userID)),
 		notifytarget.IDEQ(t.ID),
 	)
+	if len(t.Name) > 0 {
+		q.SetName(t.Name)
+	}
+	if len(t.Description) > 0 {
+		q.SetDescription(t.Description)
+	}
 	if len(t.Token) > 0 {
 		q.SetToken(t.Token)
 	}
@@ -99,15 +107,33 @@ func (n *netzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) 
 }
 
 func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
-	q := n.data.db.NotifyFlow.Create().
-		SetOwnerID(userID).
-		SetName(f.Name).
-		SetDescription(f.Description).
-		SetStatus(converter.ToEntNotifySourceSource(f.Status))
-	if len(f.Source.FeedIDFilter) > 0 {
-		q.AddFeedConfigIDs(f.Source.FeedIDFilter...)
+	err := n.data.WithTx(ctx, func(tx *ent.Tx) error {
+		flowTargets := make([]*ent.NotifyFlowTargetCreate, len(f.Targets))
+		for i, target := range f.Targets {
+			flowTargets[i] = tx.NotifyFlowTarget.Create().
+				SetNotifyFlowID(f.ID).
+				SetNotifyTargetID(target.TargetID).
+				SetChannelID(target.ChannelID)
+		}
+		_, err := tx.NotifyFlowTarget.CreateBulk(flowTargets...).Save(ctx)
+		if err != nil {
+			return err
+		}
+		q := n.data.db.NotifyFlow.Create().
+			SetID(f.ID).
+			SetOwnerID(userID).
+			SetName(f.Name).
+			SetDescription(f.Description).
+			SetStatus(converter.ToEntNotifySourceSource(f.Status))
+		if len(f.Source.FeedIDFilter) > 0 {
+			q.AddFeedConfigIDs(f.Source.FeedIDFilter...)
+		}
+		return q.Exec(ctx)
+	})
+	if err != nil {
+		return err
 	}
-	return q.Exec(ctx)
+	return nil
 }
 
 func (n *netzachRepo) UpdateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
@@ -169,12 +195,8 @@ func (n *netzachRepo) ListNotifyFlows(
 func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyFlow, error) {
 	res, err := n.data.db.NotifyFlow.Query().
 		Where(notifyflow.IDEQ(id)).
-		WithFeedConfig(func(q *ent.FeedConfigQuery) {
-			q.Select(feedconfig.FieldID)
-		}).
-		WithNotifyFlowTarget(func(q *ent.NotifyFlowTargetQuery) {
-			q.Select(notifyflowtarget.FieldNotifyTargetID, notifyflowtarget.FieldChannelID)
-		}).
+		WithFeedConfig().
+		WithNotifyFlowTarget().
 		Only(ctx)
 	if err != nil {
 		return nil, err

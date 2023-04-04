@@ -147,7 +147,7 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 	if err := nftu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	if ps := nftu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -371,7 +371,7 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 	if err := nftuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(notifyflowtarget.Table, notifyflowtarget.Columns, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	id, ok := nftuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NotifyFlowTarget.id" for update`)}

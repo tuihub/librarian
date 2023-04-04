@@ -117,13 +117,13 @@ func init() {
 	notifyflowtargetFields := schema.NotifyFlowTarget{}.Fields()
 	_ = notifyflowtargetFields
 	// notifyflowtargetDescUpdatedAt is the schema descriptor for updated_at field.
-	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[4].Descriptor()
+	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[3].Descriptor()
 	// notifyflowtarget.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	notifyflowtarget.DefaultUpdatedAt = notifyflowtargetDescUpdatedAt.Default.(func() time.Time)
 	// notifyflowtarget.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	notifyflowtarget.UpdateDefaultUpdatedAt = notifyflowtargetDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// notifyflowtargetDescCreatedAt is the schema descriptor for created_at field.
-	notifyflowtargetDescCreatedAt := notifyflowtargetFields[5].Descriptor()
+	notifyflowtargetDescCreatedAt := notifyflowtargetFields[4].Descriptor()
 	// notifyflowtarget.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifyflowtarget.DefaultCreatedAt = notifyflowtargetDescCreatedAt.Default.(func() time.Time)
 	notifytargetFields := schema.NotifyTarget{}.Fields()

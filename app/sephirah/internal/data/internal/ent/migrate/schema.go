@@ -248,7 +248,7 @@ var (
 	}
 	// NotifyFlowTargetsColumns holds the columns for the "notify_flow_targets" table.
 	NotifyFlowTargetsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "channel_id", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
