@@ -8,8 +8,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -66,6 +69,15 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
 	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
+
+	// goverter:map Type | ToBizNotifyTargetType
+	// goverter:map Status | ToBizNotifyTargetStatus
+	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
+	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget
+	// goverter:ignore Source
+	// goverter:ignore Targets
+	// goverter:map Status | ToBizNotifyFlowStatus
+	ToBizNotifyFlow(*ent.NotifyFlow) *modelnetzach.NotifyFlow
 }
 
 func TimeToTime(t time.Time) time.Time {
@@ -157,5 +169,36 @@ func ToBizAccountPlatform(p account.Platform) modeltiphereth.AccountPlatform {
 		return modeltiphereth.AccountPlatformSteam
 	default:
 		return modeltiphereth.AccountPlatformUnspecified
+	}
+}
+
+func ToBizNotifyTargetType(t notifytarget.Type) modelnetzach.NotifyTargetType {
+	switch t {
+	case notifytarget.TypeTelegram:
+		return modelnetzach.NotifyTargetTypeTelegram
+	default:
+		return modelnetzach.NotifyTargetTypeUnspecified
+	}
+}
+
+func ToBizNotifyTargetStatus(s notifytarget.Status) modelnetzach.NotifyTargetStatus {
+	switch s {
+	case notifytarget.StatusActive:
+		return modelnetzach.NotifyTargetStatusActive
+	case notifytarget.StatusSuspend:
+		return modelnetzach.NotifyTargetStatusSuspend
+	default:
+		return modelnetzach.NotifyTargetStatusUnspecified
+	}
+}
+
+func ToBizNotifyFlowStatus(s notifyflow.Status) modelnetzach.NotifyFlowStatus {
+	switch s {
+	case notifyflow.StatusActive:
+		return modelnetzach.NotifyFlowStatusActive
+	case notifyflow.StatusSuspend:
+		return modelnetzach.NotifyFlowStatusSuspend
+	default:
+		return modelnetzach.NotifyFlowStatusUnspecified
 	}
 }

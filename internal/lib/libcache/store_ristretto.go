@@ -29,7 +29,7 @@ func (s *ristrettoStore) Get(_ context.Context, key any) (any, error) {
 
 	value, exists := s.client.Get(key)
 	if !exists {
-		err = errors.New("value not found in Ristretto store")
+		err = newNotFound(errors.New("value not found in Ristretto store"))
 	}
 
 	return value, err
@@ -38,7 +38,14 @@ func (s *ristrettoStore) Get(_ context.Context, key any) (any, error) {
 // GetWithTTL returns data stored from a given key and its corresponding TTL.
 func (s *ristrettoStore) GetWithTTL(ctx context.Context, key any) (any, time.Duration, error) {
 	value, err := s.Get(ctx, key)
-	return value, 0, err
+	if err != nil {
+		return nil, 0, err
+	}
+	ttl, exist := s.client.GetTTL(key)
+	if !exist {
+		ttl = time.Duration(0)
+	}
+	return value, ttl, err
 }
 
 // Set defines data in Ristretto memoey cache for given key identifier.

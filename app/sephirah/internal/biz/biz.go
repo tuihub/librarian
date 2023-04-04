@@ -4,6 +4,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 
@@ -18,4 +19,5 @@ var ProviderSet = wire.NewSet(
 	bizbinah.NewBinah,
 	bizbinah.NewCallbackControl,
 	bizyesod.NewYesod,
+	biznetzach.NewNetzach,
 )

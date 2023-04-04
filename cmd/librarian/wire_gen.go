@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
@@ -24,7 +25,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -34,6 +35,11 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	cron := libcron.NewCron()
+	store, err := libcache.NewStore(cache)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	librarianMapperServiceServer, cleanup2, err := service.NewMapperService(mapper_Data, settings)
 	if err != nil {
 		cleanup()
@@ -77,7 +83,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
 	if err != nil {
 		cleanup4()
 		cleanup3()

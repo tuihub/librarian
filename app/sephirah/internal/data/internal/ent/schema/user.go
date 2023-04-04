@@ -3,10 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
-
 	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -18,15 +15,8 @@ type User struct {
 
 // Fields of the User.
 func (User) Fields() []ent.Field {
-	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("id").
-			Unique().
-			Immutable().
-			GoType(model.InternalID(0)).
-			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
-				Incremental: &incrementalEnabled,
-			}),
+		defaultPrimaryKey(),
 		field.String("username").
 			Unique(),
 		field.String("password"),
@@ -48,6 +38,8 @@ func (User) Edges() []ent.Edge {
 		edge.To("purchased_app", App.Type),
 		edge.To("app_package", AppPackage.Type),
 		edge.To("feed_config", FeedConfig.Type),
+		edge.To("notify_target", NotifyTarget.Type),
+		edge.To("notify_flow", NotifyFlow.Type),
 		edge.To("created_user", User.Type).
 			From("creator").
 			Unique().

@@ -6,8 +6,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -21,6 +24,8 @@ import (
 // goverter:extend ToEntAppPackageSource
 // goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
+// goverter:extend ToEntNotifyTargetType
+// goverter:extend ToEntNotifyTargetStatus
 type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
@@ -35,6 +40,9 @@ type toEntConverter interface { //nolint:unused // used by generator
 
 	ToEntFeedConfigSourceList([]modelyesod.FeedConfigSource) []feedconfig.Source
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
+
+	ToEntNotifyTargetTypeList([]modelnetzach.NotifyTargetType) []notifytarget.Type
+	ToEntNotifyTargetStatusList([]modelnetzach.NotifyTargetStatus) []notifytarget.Status
 }
 
 func ToEntUserType(t libauth.UserType) user.Type {
@@ -132,6 +140,43 @@ func ToEntFeedConfigSource(s modelyesod.FeedConfigSource) feedconfig.Source {
 		return ""
 	case modelyesod.FeedConfigSourceCommon:
 		return feedconfig.SourceCommon
+	default:
+		return ""
+	}
+}
+
+func ToEntNotifyTargetType(t modelnetzach.NotifyTargetType) notifytarget.Type {
+	switch t {
+	case modelnetzach.NotifyTargetTypeUnspecified:
+		return ""
+	case modelnetzach.NotifyTargetTypeTelegram:
+		return notifytarget.TypeTelegram
+	default:
+		return ""
+	}
+}
+
+func ToEntNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) notifytarget.Status {
+	switch s {
+	case modelnetzach.NotifyTargetStatusUnspecified:
+		return ""
+	case modelnetzach.NotifyTargetStatusActive:
+		return notifytarget.StatusActive
+	case modelnetzach.NotifyTargetStatusSuspend:
+		return notifytarget.StatusSuspend
+	default:
+		return ""
+	}
+}
+
+func ToEntNotifySourceSource(s modelnetzach.NotifyFlowStatus) notifyflow.Status {
+	switch s {
+	case modelnetzach.NotifyFlowStatusUnspecified:
+		return ""
+	case modelnetzach.NotifyFlowStatusActive:
+		return notifyflow.StatusActive
+	case modelnetzach.NotifyFlowStatusSuspend:
+		return notifyflow.StatusSuspend
 	default:
 		return ""
 	}

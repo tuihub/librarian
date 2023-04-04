@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -20,6 +21,7 @@ type LibrarianSephirahServiceService struct {
 	g        *bizgebura.Gebura
 	b        *bizbinah.Binah
 	y        *bizyesod.Yesod
+	n        *biznetzach.Netzach
 	authFunc func(context.Context) (context.Context, error)
 }
 
@@ -29,6 +31,7 @@ func NewLibrarianSephirahServiceService(
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,
 	y *bizyesod.Yesod,
+	n *biznetzach.Netzach,
 	app *libapp.Settings,
 	authFunc func(context.Context) (context.Context, error),
 ) pb.LibrarianSephirahServiceServer {
@@ -47,6 +50,7 @@ func NewLibrarianSephirahServiceService(
 		g:        g,
 		b:        b,
 		y:        y,
+		n:        n,
 		authFunc: authFunc,
 	}
 }

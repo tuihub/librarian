@@ -15,6 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -137,6 +139,36 @@ func (uu *UserUpdate) AddFeedConfig(f ...*FeedConfig) *UserUpdate {
 	return uu.AddFeedConfigIDs(ids...)
 }
 
+// AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
+func (uu *UserUpdate) AddNotifyTargetIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddNotifyTargetIDs(ids...)
+	return uu
+}
+
+// AddNotifyTarget adds the "notify_target" edges to the NotifyTarget entity.
+func (uu *UserUpdate) AddNotifyTarget(n ...*NotifyTarget) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.AddNotifyTargetIDs(ids...)
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (uu *UserUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddNotifyFlowIDs(ids...)
+	return uu
+}
+
+// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
+func (uu *UserUpdate) AddNotifyFlow(n ...*NotifyFlow) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.AddNotifyFlowIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uu *UserUpdate) SetCreatorID(id model.InternalID) *UserUpdate {
 	uu.mutation.SetCreatorID(id)
@@ -250,6 +282,48 @@ func (uu *UserUpdate) RemoveFeedConfig(f ...*FeedConfig) *UserUpdate {
 		ids[i] = f[i].ID
 	}
 	return uu.RemoveFeedConfigIDs(ids...)
+}
+
+// ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
+func (uu *UserUpdate) ClearNotifyTarget() *UserUpdate {
+	uu.mutation.ClearNotifyTarget()
+	return uu
+}
+
+// RemoveNotifyTargetIDs removes the "notify_target" edge to NotifyTarget entities by IDs.
+func (uu *UserUpdate) RemoveNotifyTargetIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveNotifyTargetIDs(ids...)
+	return uu
+}
+
+// RemoveNotifyTarget removes "notify_target" edges to NotifyTarget entities.
+func (uu *UserUpdate) RemoveNotifyTarget(n ...*NotifyTarget) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.RemoveNotifyTargetIDs(ids...)
+}
+
+// ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
+func (uu *UserUpdate) ClearNotifyFlow() *UserUpdate {
+	uu.mutation.ClearNotifyFlow()
+	return uu
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
+func (uu *UserUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveNotifyFlowIDs(ids...)
+	return uu
+}
+
+// RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
+func (uu *UserUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -543,6 +617,96 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.NotifyTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !uu.mutation.NotifyTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.NotifyFlowCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !uu.mutation.NotifyFlowCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -741,6 +905,36 @@ func (uuo *UserUpdateOne) AddFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 	return uuo.AddFeedConfigIDs(ids...)
 }
 
+// AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
+func (uuo *UserUpdateOne) AddNotifyTargetIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddNotifyTargetIDs(ids...)
+	return uuo
+}
+
+// AddNotifyTarget adds the "notify_target" edges to the NotifyTarget entity.
+func (uuo *UserUpdateOne) AddNotifyTarget(n ...*NotifyTarget) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.AddNotifyTargetIDs(ids...)
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (uuo *UserUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddNotifyFlowIDs(ids...)
+	return uuo
+}
+
+// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
+func (uuo *UserUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.AddNotifyFlowIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
 	uuo.mutation.SetCreatorID(id)
@@ -854,6 +1048,48 @@ func (uuo *UserUpdateOne) RemoveFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 		ids[i] = f[i].ID
 	}
 	return uuo.RemoveFeedConfigIDs(ids...)
+}
+
+// ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
+func (uuo *UserUpdateOne) ClearNotifyTarget() *UserUpdateOne {
+	uuo.mutation.ClearNotifyTarget()
+	return uuo
+}
+
+// RemoveNotifyTargetIDs removes the "notify_target" edge to NotifyTarget entities by IDs.
+func (uuo *UserUpdateOne) RemoveNotifyTargetIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveNotifyTargetIDs(ids...)
+	return uuo
+}
+
+// RemoveNotifyTarget removes "notify_target" edges to NotifyTarget entities.
+func (uuo *UserUpdateOne) RemoveNotifyTarget(n ...*NotifyTarget) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.RemoveNotifyTargetIDs(ids...)
+}
+
+// ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
+func (uuo *UserUpdateOne) ClearNotifyFlow() *UserUpdateOne {
+	uuo.mutation.ClearNotifyFlow()
+	return uuo
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
+func (uuo *UserUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveNotifyFlowIDs(ids...)
+	return uuo
+}
+
+// RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
+func (uuo *UserUpdateOne) RemoveNotifyFlow(n ...*NotifyFlow) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.RemoveNotifyFlowIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -1170,6 +1406,96 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.NotifyTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedNotifyTargetIDs(); len(nodes) > 0 && !uuo.mutation.NotifyTargetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.NotifyTargetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyTargetTable,
+			Columns: []string{user.NotifyTargetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifytarget.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.NotifyFlowCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !uuo.mutation.NotifyFlowCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifyFlowTable,
+			Columns: []string{user.NotifyFlowColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

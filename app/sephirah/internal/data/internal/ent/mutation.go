@@ -17,6 +17,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -32,13 +35,16 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccount    = "Account"
-	TypeApp        = "App"
-	TypeAppPackage = "AppPackage"
-	TypeFeed       = "Feed"
-	TypeFeedConfig = "FeedConfig"
-	TypeFeedItem   = "FeedItem"
-	TypeUser       = "User"
+	TypeAccount          = "Account"
+	TypeApp              = "App"
+	TypeAppPackage       = "AppPackage"
+	TypeFeed             = "Feed"
+	TypeFeedConfig       = "FeedConfig"
+	TypeFeedItem         = "FeedItem"
+	TypeNotifyFlow       = "NotifyFlow"
+	TypeNotifyFlowTarget = "NotifyFlowTarget"
+	TypeNotifyTarget     = "NotifyTarget"
+	TypeUser             = "User"
 )
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
@@ -4202,6 +4208,9 @@ type FeedConfigMutation struct {
 	clearedowner       bool
 	feed               *model.InternalID
 	clearedfeed        bool
+	notify_flow        map[model.InternalID]struct{}
+	removednotify_flow map[model.InternalID]struct{}
+	clearednotify_flow bool
 	done               bool
 	oldValue           func(context.Context) (*FeedConfig, error)
 	predicates         []predicate.FeedConfig
@@ -4789,6 +4798,60 @@ func (m *FeedConfigMutation) ResetFeed() {
 	m.clearedfeed = false
 }
 
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by ids.
+func (m *FeedConfigMutation) AddNotifyFlowIDs(ids ...model.InternalID) {
+	if m.notify_flow == nil {
+		m.notify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
+func (m *FeedConfigMutation) ClearNotifyFlow() {
+	m.clearednotify_flow = true
+}
+
+// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
+func (m *FeedConfigMutation) NotifyFlowCleared() bool {
+	return m.clearednotify_flow
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (m *FeedConfigMutation) RemoveNotifyFlowIDs(ids ...model.InternalID) {
+	if m.removednotify_flow == nil {
+		m.removednotify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow, ids[i])
+		m.removednotify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlow returns the removed IDs of the "notify_flow" edge to the NotifyFlow entity.
+func (m *FeedConfigMutation) RemovedNotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
+func (m *FeedConfigMutation) NotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlow resets all changes to the "notify_flow" edge.
+func (m *FeedConfigMutation) ResetNotifyFlow() {
+	m.notify_flow = nil
+	m.clearednotify_flow = false
+	m.removednotify_flow = nil
+}
+
 // Where appends a list predicates to the FeedConfigMutation builder.
 func (m *FeedConfigMutation) Where(ps ...predicate.FeedConfig) {
 	m.predicates = append(m.predicates, ps...)
@@ -5102,12 +5165,15 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedConfigMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.owner != nil {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
 	if m.feed != nil {
 		edges = append(edges, feedconfig.EdgeFeed)
+	}
+	if m.notify_flow != nil {
+		edges = append(edges, feedconfig.EdgeNotifyFlow)
 	}
 	return edges
 }
@@ -5124,30 +5190,50 @@ func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
 		if id := m.feed; id != nil {
 			return []ent.Value{*id}
 		}
+	case feedconfig.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.notify_flow))
+		for id := range m.notify_flow {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedConfigMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
+	if m.removednotify_flow != nil {
+		edges = append(edges, feedconfig.EdgeNotifyFlow)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feedconfig.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow))
+		for id := range m.removednotify_flow {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedConfigMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedowner {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
 	if m.clearedfeed {
 		edges = append(edges, feedconfig.EdgeFeed)
+	}
+	if m.clearednotify_flow {
+		edges = append(edges, feedconfig.EdgeNotifyFlow)
 	}
 	return edges
 }
@@ -5160,6 +5246,8 @@ func (m *FeedConfigMutation) EdgeCleared(name string) bool {
 		return m.clearedowner
 	case feedconfig.EdgeFeed:
 		return m.clearedfeed
+	case feedconfig.EdgeNotifyFlow:
+		return m.clearednotify_flow
 	}
 	return false
 }
@@ -5187,6 +5275,9 @@ func (m *FeedConfigMutation) ResetEdge(name string) error {
 		return nil
 	case feedconfig.EdgeFeed:
 		m.ResetFeed()
+		return nil
+	case feedconfig.EdgeNotifyFlow:
+		m.ResetNotifyFlow()
 		return nil
 	}
 	return fmt.Errorf("unknown FeedConfig edge %s", name)
@@ -6655,6 +6746,2412 @@ func (m *FeedItemMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown FeedItem edge %s", name)
 }
 
+// NotifyFlowMutation represents an operation that mutates the NotifyFlow nodes in the graph.
+type NotifyFlowMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *model.InternalID
+	name                      *string
+	description               *string
+	status                    *notifyflow.Status
+	updated_at                *time.Time
+	created_at                *time.Time
+	clearedFields             map[string]struct{}
+	owner                     *model.InternalID
+	clearedowner              bool
+	notify_target             map[model.InternalID]struct{}
+	removednotify_target      map[model.InternalID]struct{}
+	clearednotify_target      bool
+	feed_config               map[model.InternalID]struct{}
+	removedfeed_config        map[model.InternalID]struct{}
+	clearedfeed_config        bool
+	notify_flow_target        map[model.InternalID]struct{}
+	removednotify_flow_target map[model.InternalID]struct{}
+	clearednotify_flow_target bool
+	done                      bool
+	oldValue                  func(context.Context) (*NotifyFlow, error)
+	predicates                []predicate.NotifyFlow
+}
+
+var _ ent.Mutation = (*NotifyFlowMutation)(nil)
+
+// notifyflowOption allows management of the mutation configuration using functional options.
+type notifyflowOption func(*NotifyFlowMutation)
+
+// newNotifyFlowMutation creates new mutation for the NotifyFlow entity.
+func newNotifyFlowMutation(c config, op Op, opts ...notifyflowOption) *NotifyFlowMutation {
+	m := &NotifyFlowMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeNotifyFlow,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withNotifyFlowID sets the ID field of the mutation.
+func withNotifyFlowID(id model.InternalID) notifyflowOption {
+	return func(m *NotifyFlowMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *NotifyFlow
+		)
+		m.oldValue = func(ctx context.Context) (*NotifyFlow, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().NotifyFlow.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withNotifyFlow sets the old NotifyFlow of the mutation.
+func withNotifyFlow(node *NotifyFlow) notifyflowOption {
+	return func(m *NotifyFlowMutation) {
+		m.oldValue = func(context.Context) (*NotifyFlow, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m NotifyFlowMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m NotifyFlowMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NotifyFlow entities.
+func (m *NotifyFlowMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *NotifyFlowMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *NotifyFlowMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().NotifyFlow.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *NotifyFlowMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *NotifyFlowMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the NotifyFlow entity.
+// If the NotifyFlow object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *NotifyFlowMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *NotifyFlowMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *NotifyFlowMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the NotifyFlow entity.
+// If the NotifyFlow object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *NotifyFlowMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *NotifyFlowMutation) SetStatus(n notifyflow.Status) {
+	m.status = &n
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *NotifyFlowMutation) Status() (r notifyflow.Status, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the NotifyFlow entity.
+// If the NotifyFlow object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowMutation) OldStatus(ctx context.Context) (v notifyflow.Status, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *NotifyFlowMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *NotifyFlowMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *NotifyFlowMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the NotifyFlow entity.
+// If the NotifyFlow object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *NotifyFlowMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *NotifyFlowMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *NotifyFlowMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the NotifyFlow entity.
+// If the NotifyFlow object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *NotifyFlowMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *NotifyFlowMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *NotifyFlowMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *NotifyFlowMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *NotifyFlowMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *NotifyFlowMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *NotifyFlowMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by ids.
+func (m *NotifyFlowMutation) AddNotifyTargetIDs(ids ...model.InternalID) {
+	if m.notify_target == nil {
+		m.notify_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_target[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyTarget clears the "notify_target" edge to the NotifyTarget entity.
+func (m *NotifyFlowMutation) ClearNotifyTarget() {
+	m.clearednotify_target = true
+}
+
+// NotifyTargetCleared reports if the "notify_target" edge to the NotifyTarget entity was cleared.
+func (m *NotifyFlowMutation) NotifyTargetCleared() bool {
+	return m.clearednotify_target
+}
+
+// RemoveNotifyTargetIDs removes the "notify_target" edge to the NotifyTarget entity by IDs.
+func (m *NotifyFlowMutation) RemoveNotifyTargetIDs(ids ...model.InternalID) {
+	if m.removednotify_target == nil {
+		m.removednotify_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_target, ids[i])
+		m.removednotify_target[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyTarget returns the removed IDs of the "notify_target" edge to the NotifyTarget entity.
+func (m *NotifyFlowMutation) RemovedNotifyTargetIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyTargetIDs returns the "notify_target" edge IDs in the mutation.
+func (m *NotifyFlowMutation) NotifyTargetIDs() (ids []model.InternalID) {
+	for id := range m.notify_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyTarget resets all changes to the "notify_target" edge.
+func (m *NotifyFlowMutation) ResetNotifyTarget() {
+	m.notify_target = nil
+	m.clearednotify_target = false
+	m.removednotify_target = nil
+}
+
+// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
+func (m *NotifyFlowMutation) AddFeedConfigIDs(ids ...model.InternalID) {
+	if m.feed_config == nil {
+		m.feed_config = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_config[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
+func (m *NotifyFlowMutation) ClearFeedConfig() {
+	m.clearedfeed_config = true
+}
+
+// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
+func (m *NotifyFlowMutation) FeedConfigCleared() bool {
+	return m.clearedfeed_config
+}
+
+// RemoveFeedConfigIDs removes the "feed_config" edge to the FeedConfig entity by IDs.
+func (m *NotifyFlowMutation) RemoveFeedConfigIDs(ids ...model.InternalID) {
+	if m.removedfeed_config == nil {
+		m.removedfeed_config = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_config, ids[i])
+		m.removedfeed_config[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedConfig returns the removed IDs of the "feed_config" edge to the FeedConfig entity.
+func (m *NotifyFlowMutation) RemovedFeedConfigIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
+func (m *NotifyFlowMutation) FeedConfigIDs() (ids []model.InternalID) {
+	for id := range m.feed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedConfig resets all changes to the "feed_config" edge.
+func (m *NotifyFlowMutation) ResetFeedConfig() {
+	m.feed_config = nil
+	m.clearedfeed_config = false
+	m.removedfeed_config = nil
+}
+
+// AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by ids.
+func (m *NotifyFlowMutation) AddNotifyFlowTargetIDs(ids ...model.InternalID) {
+	if m.notify_flow_target == nil {
+		m.notify_flow_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow_target[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlowTarget clears the "notify_flow_target" edge to the NotifyFlowTarget entity.
+func (m *NotifyFlowMutation) ClearNotifyFlowTarget() {
+	m.clearednotify_flow_target = true
+}
+
+// NotifyFlowTargetCleared reports if the "notify_flow_target" edge to the NotifyFlowTarget entity was cleared.
+func (m *NotifyFlowMutation) NotifyFlowTargetCleared() bool {
+	return m.clearednotify_flow_target
+}
+
+// RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
+func (m *NotifyFlowMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) {
+	if m.removednotify_flow_target == nil {
+		m.removednotify_flow_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow_target, ids[i])
+		m.removednotify_flow_target[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlowTarget returns the removed IDs of the "notify_flow_target" edge to the NotifyFlowTarget entity.
+func (m *NotifyFlowMutation) RemovedNotifyFlowTargetIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowTargetIDs returns the "notify_flow_target" edge IDs in the mutation.
+func (m *NotifyFlowMutation) NotifyFlowTargetIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlowTarget resets all changes to the "notify_flow_target" edge.
+func (m *NotifyFlowMutation) ResetNotifyFlowTarget() {
+	m.notify_flow_target = nil
+	m.clearednotify_flow_target = false
+	m.removednotify_flow_target = nil
+}
+
+// Where appends a list predicates to the NotifyFlowMutation builder.
+func (m *NotifyFlowMutation) Where(ps ...predicate.NotifyFlow) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the NotifyFlowMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *NotifyFlowMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.NotifyFlow, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *NotifyFlowMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *NotifyFlowMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (NotifyFlow).
+func (m *NotifyFlowMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *NotifyFlowMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.name != nil {
+		fields = append(fields, notifyflow.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, notifyflow.FieldDescription)
+	}
+	if m.status != nil {
+		fields = append(fields, notifyflow.FieldStatus)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, notifyflow.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, notifyflow.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *NotifyFlowMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case notifyflow.FieldName:
+		return m.Name()
+	case notifyflow.FieldDescription:
+		return m.Description()
+	case notifyflow.FieldStatus:
+		return m.Status()
+	case notifyflow.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case notifyflow.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *NotifyFlowMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case notifyflow.FieldName:
+		return m.OldName(ctx)
+	case notifyflow.FieldDescription:
+		return m.OldDescription(ctx)
+	case notifyflow.FieldStatus:
+		return m.OldStatus(ctx)
+	case notifyflow.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case notifyflow.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown NotifyFlow field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyFlowMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case notifyflow.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case notifyflow.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case notifyflow.FieldStatus:
+		v, ok := value.(notifyflow.Status)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case notifyflow.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case notifyflow.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlow field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *NotifyFlowMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *NotifyFlowMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyFlowMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown NotifyFlow numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *NotifyFlowMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *NotifyFlowMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *NotifyFlowMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown NotifyFlow nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *NotifyFlowMutation) ResetField(name string) error {
+	switch name {
+	case notifyflow.FieldName:
+		m.ResetName()
+		return nil
+	case notifyflow.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case notifyflow.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case notifyflow.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case notifyflow.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlow field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *NotifyFlowMutation) AddedEdges() []string {
+	edges := make([]string, 0, 4)
+	if m.owner != nil {
+		edges = append(edges, notifyflow.EdgeOwner)
+	}
+	if m.notify_target != nil {
+		edges = append(edges, notifyflow.EdgeNotifyTarget)
+	}
+	if m.feed_config != nil {
+		edges = append(edges, notifyflow.EdgeFeedConfig)
+	}
+	if m.notify_flow_target != nil {
+		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *NotifyFlowMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case notifyflow.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifyflow.EdgeNotifyTarget:
+		ids := make([]ent.Value, 0, len(m.notify_target))
+		for id := range m.notify_target {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifyflow.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.feed_config))
+		for id := range m.feed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifyflow.EdgeNotifyFlowTarget:
+		ids := make([]ent.Value, 0, len(m.notify_flow_target))
+		for id := range m.notify_flow_target {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *NotifyFlowMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 4)
+	if m.removednotify_target != nil {
+		edges = append(edges, notifyflow.EdgeNotifyTarget)
+	}
+	if m.removedfeed_config != nil {
+		edges = append(edges, notifyflow.EdgeFeedConfig)
+	}
+	if m.removednotify_flow_target != nil {
+		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *NotifyFlowMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case notifyflow.EdgeNotifyTarget:
+		ids := make([]ent.Value, 0, len(m.removednotify_target))
+		for id := range m.removednotify_target {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifyflow.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.removedfeed_config))
+		for id := range m.removedfeed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifyflow.EdgeNotifyFlowTarget:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow_target))
+		for id := range m.removednotify_flow_target {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *NotifyFlowMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 4)
+	if m.clearedowner {
+		edges = append(edges, notifyflow.EdgeOwner)
+	}
+	if m.clearednotify_target {
+		edges = append(edges, notifyflow.EdgeNotifyTarget)
+	}
+	if m.clearedfeed_config {
+		edges = append(edges, notifyflow.EdgeFeedConfig)
+	}
+	if m.clearednotify_flow_target {
+		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *NotifyFlowMutation) EdgeCleared(name string) bool {
+	switch name {
+	case notifyflow.EdgeOwner:
+		return m.clearedowner
+	case notifyflow.EdgeNotifyTarget:
+		return m.clearednotify_target
+	case notifyflow.EdgeFeedConfig:
+		return m.clearedfeed_config
+	case notifyflow.EdgeNotifyFlowTarget:
+		return m.clearednotify_flow_target
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *NotifyFlowMutation) ClearEdge(name string) error {
+	switch name {
+	case notifyflow.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlow unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *NotifyFlowMutation) ResetEdge(name string) error {
+	switch name {
+	case notifyflow.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case notifyflow.EdgeNotifyTarget:
+		m.ResetNotifyTarget()
+		return nil
+	case notifyflow.EdgeFeedConfig:
+		m.ResetFeedConfig()
+		return nil
+	case notifyflow.EdgeNotifyFlowTarget:
+		m.ResetNotifyFlowTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlow edge %s", name)
+}
+
+// NotifyFlowTargetMutation represents an operation that mutates the NotifyFlowTarget nodes in the graph.
+type NotifyFlowTargetMutation struct {
+	config
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	channel_id           *string
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	notify_flow          *model.InternalID
+	clearednotify_flow   bool
+	notify_target        *model.InternalID
+	clearednotify_target bool
+	done                 bool
+	oldValue             func(context.Context) (*NotifyFlowTarget, error)
+	predicates           []predicate.NotifyFlowTarget
+}
+
+var _ ent.Mutation = (*NotifyFlowTargetMutation)(nil)
+
+// notifyflowtargetOption allows management of the mutation configuration using functional options.
+type notifyflowtargetOption func(*NotifyFlowTargetMutation)
+
+// newNotifyFlowTargetMutation creates new mutation for the NotifyFlowTarget entity.
+func newNotifyFlowTargetMutation(c config, op Op, opts ...notifyflowtargetOption) *NotifyFlowTargetMutation {
+	m := &NotifyFlowTargetMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeNotifyFlowTarget,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withNotifyFlowTargetID sets the ID field of the mutation.
+func withNotifyFlowTargetID(id model.InternalID) notifyflowtargetOption {
+	return func(m *NotifyFlowTargetMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *NotifyFlowTarget
+		)
+		m.oldValue = func(ctx context.Context) (*NotifyFlowTarget, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().NotifyFlowTarget.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withNotifyFlowTarget sets the old NotifyFlowTarget of the mutation.
+func withNotifyFlowTarget(node *NotifyFlowTarget) notifyflowtargetOption {
+	return func(m *NotifyFlowTargetMutation) {
+		m.oldValue = func(context.Context) (*NotifyFlowTarget, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m NotifyFlowTargetMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m NotifyFlowTargetMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NotifyFlowTarget entities.
+func (m *NotifyFlowTargetMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *NotifyFlowTargetMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *NotifyFlowTargetMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().NotifyFlowTarget.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetNotifyFlowID sets the "notify_flow_id" field.
+func (m *NotifyFlowTargetMutation) SetNotifyFlowID(mi model.InternalID) {
+	m.notify_flow = &mi
+}
+
+// NotifyFlowID returns the value of the "notify_flow_id" field in the mutation.
+func (m *NotifyFlowTargetMutation) NotifyFlowID() (r model.InternalID, exists bool) {
+	v := m.notify_flow
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNotifyFlowID returns the old "notify_flow_id" field's value of the NotifyFlowTarget entity.
+// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowTargetMutation) OldNotifyFlowID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNotifyFlowID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNotifyFlowID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNotifyFlowID: %w", err)
+	}
+	return oldValue.NotifyFlowID, nil
+}
+
+// ResetNotifyFlowID resets all changes to the "notify_flow_id" field.
+func (m *NotifyFlowTargetMutation) ResetNotifyFlowID() {
+	m.notify_flow = nil
+}
+
+// SetNotifyTargetID sets the "notify_target_id" field.
+func (m *NotifyFlowTargetMutation) SetNotifyTargetID(mi model.InternalID) {
+	m.notify_target = &mi
+}
+
+// NotifyTargetID returns the value of the "notify_target_id" field in the mutation.
+func (m *NotifyFlowTargetMutation) NotifyTargetID() (r model.InternalID, exists bool) {
+	v := m.notify_target
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNotifyTargetID returns the old "notify_target_id" field's value of the NotifyFlowTarget entity.
+// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowTargetMutation) OldNotifyTargetID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNotifyTargetID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNotifyTargetID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNotifyTargetID: %w", err)
+	}
+	return oldValue.NotifyTargetID, nil
+}
+
+// ResetNotifyTargetID resets all changes to the "notify_target_id" field.
+func (m *NotifyFlowTargetMutation) ResetNotifyTargetID() {
+	m.notify_target = nil
+}
+
+// SetChannelID sets the "channel_id" field.
+func (m *NotifyFlowTargetMutation) SetChannelID(s string) {
+	m.channel_id = &s
+}
+
+// ChannelID returns the value of the "channel_id" field in the mutation.
+func (m *NotifyFlowTargetMutation) ChannelID() (r string, exists bool) {
+	v := m.channel_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChannelID returns the old "channel_id" field's value of the NotifyFlowTarget entity.
+// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowTargetMutation) OldChannelID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChannelID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChannelID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChannelID: %w", err)
+	}
+	return oldValue.ChannelID, nil
+}
+
+// ResetChannelID resets all changes to the "channel_id" field.
+func (m *NotifyFlowTargetMutation) ResetChannelID() {
+	m.channel_id = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *NotifyFlowTargetMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *NotifyFlowTargetMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the NotifyFlowTarget entity.
+// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowTargetMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *NotifyFlowTargetMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *NotifyFlowTargetMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *NotifyFlowTargetMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the NotifyFlowTarget entity.
+// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyFlowTargetMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *NotifyFlowTargetMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
+func (m *NotifyFlowTargetMutation) ClearNotifyFlow() {
+	m.clearednotify_flow = true
+}
+
+// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
+func (m *NotifyFlowTargetMutation) NotifyFlowCleared() bool {
+	return m.clearednotify_flow
+}
+
+// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NotifyFlowID instead. It exists only for internal usage by the builders.
+func (m *NotifyFlowTargetMutation) NotifyFlowIDs() (ids []model.InternalID) {
+	if id := m.notify_flow; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetNotifyFlow resets all changes to the "notify_flow" edge.
+func (m *NotifyFlowTargetMutation) ResetNotifyFlow() {
+	m.notify_flow = nil
+	m.clearednotify_flow = false
+}
+
+// ClearNotifyTarget clears the "notify_target" edge to the NotifyTarget entity.
+func (m *NotifyFlowTargetMutation) ClearNotifyTarget() {
+	m.clearednotify_target = true
+}
+
+// NotifyTargetCleared reports if the "notify_target" edge to the NotifyTarget entity was cleared.
+func (m *NotifyFlowTargetMutation) NotifyTargetCleared() bool {
+	return m.clearednotify_target
+}
+
+// NotifyTargetIDs returns the "notify_target" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// NotifyTargetID instead. It exists only for internal usage by the builders.
+func (m *NotifyFlowTargetMutation) NotifyTargetIDs() (ids []model.InternalID) {
+	if id := m.notify_target; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetNotifyTarget resets all changes to the "notify_target" edge.
+func (m *NotifyFlowTargetMutation) ResetNotifyTarget() {
+	m.notify_target = nil
+	m.clearednotify_target = false
+}
+
+// Where appends a list predicates to the NotifyFlowTargetMutation builder.
+func (m *NotifyFlowTargetMutation) Where(ps ...predicate.NotifyFlowTarget) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the NotifyFlowTargetMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *NotifyFlowTargetMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.NotifyFlowTarget, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *NotifyFlowTargetMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *NotifyFlowTargetMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (NotifyFlowTarget).
+func (m *NotifyFlowTargetMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *NotifyFlowTargetMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.notify_flow != nil {
+		fields = append(fields, notifyflowtarget.FieldNotifyFlowID)
+	}
+	if m.notify_target != nil {
+		fields = append(fields, notifyflowtarget.FieldNotifyTargetID)
+	}
+	if m.channel_id != nil {
+		fields = append(fields, notifyflowtarget.FieldChannelID)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, notifyflowtarget.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, notifyflowtarget.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *NotifyFlowTargetMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case notifyflowtarget.FieldNotifyFlowID:
+		return m.NotifyFlowID()
+	case notifyflowtarget.FieldNotifyTargetID:
+		return m.NotifyTargetID()
+	case notifyflowtarget.FieldChannelID:
+		return m.ChannelID()
+	case notifyflowtarget.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case notifyflowtarget.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *NotifyFlowTargetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case notifyflowtarget.FieldNotifyFlowID:
+		return m.OldNotifyFlowID(ctx)
+	case notifyflowtarget.FieldNotifyTargetID:
+		return m.OldNotifyTargetID(ctx)
+	case notifyflowtarget.FieldChannelID:
+		return m.OldChannelID(ctx)
+	case notifyflowtarget.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case notifyflowtarget.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown NotifyFlowTarget field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyFlowTargetMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case notifyflowtarget.FieldNotifyFlowID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNotifyFlowID(v)
+		return nil
+	case notifyflowtarget.FieldNotifyTargetID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNotifyTargetID(v)
+		return nil
+	case notifyflowtarget.FieldChannelID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChannelID(v)
+		return nil
+	case notifyflowtarget.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case notifyflowtarget.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlowTarget field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *NotifyFlowTargetMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *NotifyFlowTargetMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyFlowTargetMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown NotifyFlowTarget numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *NotifyFlowTargetMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *NotifyFlowTargetMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *NotifyFlowTargetMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown NotifyFlowTarget nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *NotifyFlowTargetMutation) ResetField(name string) error {
+	switch name {
+	case notifyflowtarget.FieldNotifyFlowID:
+		m.ResetNotifyFlowID()
+		return nil
+	case notifyflowtarget.FieldNotifyTargetID:
+		m.ResetNotifyTargetID()
+		return nil
+	case notifyflowtarget.FieldChannelID:
+		m.ResetChannelID()
+		return nil
+	case notifyflowtarget.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case notifyflowtarget.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlowTarget field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *NotifyFlowTargetMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.notify_flow != nil {
+		edges = append(edges, notifyflowtarget.EdgeNotifyFlow)
+	}
+	if m.notify_target != nil {
+		edges = append(edges, notifyflowtarget.EdgeNotifyTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *NotifyFlowTargetMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case notifyflowtarget.EdgeNotifyFlow:
+		if id := m.notify_flow; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifyflowtarget.EdgeNotifyTarget:
+		if id := m.notify_target; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *NotifyFlowTargetMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *NotifyFlowTargetMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *NotifyFlowTargetMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearednotify_flow {
+		edges = append(edges, notifyflowtarget.EdgeNotifyFlow)
+	}
+	if m.clearednotify_target {
+		edges = append(edges, notifyflowtarget.EdgeNotifyTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *NotifyFlowTargetMutation) EdgeCleared(name string) bool {
+	switch name {
+	case notifyflowtarget.EdgeNotifyFlow:
+		return m.clearednotify_flow
+	case notifyflowtarget.EdgeNotifyTarget:
+		return m.clearednotify_target
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *NotifyFlowTargetMutation) ClearEdge(name string) error {
+	switch name {
+	case notifyflowtarget.EdgeNotifyFlow:
+		m.ClearNotifyFlow()
+		return nil
+	case notifyflowtarget.EdgeNotifyTarget:
+		m.ClearNotifyTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlowTarget unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *NotifyFlowTargetMutation) ResetEdge(name string) error {
+	switch name {
+	case notifyflowtarget.EdgeNotifyFlow:
+		m.ResetNotifyFlow()
+		return nil
+	case notifyflowtarget.EdgeNotifyTarget:
+		m.ResetNotifyTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyFlowTarget edge %s", name)
+}
+
+// NotifyTargetMutation represents an operation that mutates the NotifyTarget nodes in the graph.
+type NotifyTargetMutation struct {
+	config
+	op                        Op
+	typ                       string
+	id                        *model.InternalID
+	token                     *string
+	name                      *string
+	description               *string
+	_type                     *notifytarget.Type
+	status                    *notifytarget.Status
+	updated_at                *time.Time
+	created_at                *time.Time
+	clearedFields             map[string]struct{}
+	owner                     *model.InternalID
+	clearedowner              bool
+	notify_flow               map[model.InternalID]struct{}
+	removednotify_flow        map[model.InternalID]struct{}
+	clearednotify_flow        bool
+	notify_flow_target        map[model.InternalID]struct{}
+	removednotify_flow_target map[model.InternalID]struct{}
+	clearednotify_flow_target bool
+	done                      bool
+	oldValue                  func(context.Context) (*NotifyTarget, error)
+	predicates                []predicate.NotifyTarget
+}
+
+var _ ent.Mutation = (*NotifyTargetMutation)(nil)
+
+// notifytargetOption allows management of the mutation configuration using functional options.
+type notifytargetOption func(*NotifyTargetMutation)
+
+// newNotifyTargetMutation creates new mutation for the NotifyTarget entity.
+func newNotifyTargetMutation(c config, op Op, opts ...notifytargetOption) *NotifyTargetMutation {
+	m := &NotifyTargetMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeNotifyTarget,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withNotifyTargetID sets the ID field of the mutation.
+func withNotifyTargetID(id model.InternalID) notifytargetOption {
+	return func(m *NotifyTargetMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *NotifyTarget
+		)
+		m.oldValue = func(ctx context.Context) (*NotifyTarget, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().NotifyTarget.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withNotifyTarget sets the old NotifyTarget of the mutation.
+func withNotifyTarget(node *NotifyTarget) notifytargetOption {
+	return func(m *NotifyTargetMutation) {
+		m.oldValue = func(context.Context) (*NotifyTarget, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m NotifyTargetMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m NotifyTargetMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NotifyTarget entities.
+func (m *NotifyTargetMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *NotifyTargetMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *NotifyTargetMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().NotifyTarget.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetToken sets the "token" field.
+func (m *NotifyTargetMutation) SetToken(s string) {
+	m.token = &s
+}
+
+// Token returns the value of the "token" field in the mutation.
+func (m *NotifyTargetMutation) Token() (r string, exists bool) {
+	v := m.token
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldToken returns the old "token" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldToken(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldToken is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldToken requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldToken: %w", err)
+	}
+	return oldValue.Token, nil
+}
+
+// ResetToken resets all changes to the "token" field.
+func (m *NotifyTargetMutation) ResetToken() {
+	m.token = nil
+}
+
+// SetName sets the "name" field.
+func (m *NotifyTargetMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *NotifyTargetMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *NotifyTargetMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *NotifyTargetMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *NotifyTargetMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *NotifyTargetMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetType sets the "type" field.
+func (m *NotifyTargetMutation) SetType(n notifytarget.Type) {
+	m._type = &n
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *NotifyTargetMutation) GetType() (r notifytarget.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldType(ctx context.Context) (v notifytarget.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *NotifyTargetMutation) ResetType() {
+	m._type = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *NotifyTargetMutation) SetStatus(n notifytarget.Status) {
+	m.status = &n
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *NotifyTargetMutation) Status() (r notifytarget.Status, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldStatus(ctx context.Context) (v notifytarget.Status, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *NotifyTargetMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *NotifyTargetMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *NotifyTargetMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *NotifyTargetMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *NotifyTargetMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *NotifyTargetMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the NotifyTarget entity.
+// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifyTargetMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *NotifyTargetMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *NotifyTargetMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *NotifyTargetMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *NotifyTargetMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *NotifyTargetMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *NotifyTargetMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *NotifyTargetMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by ids.
+func (m *NotifyTargetMutation) AddNotifyFlowIDs(ids ...model.InternalID) {
+	if m.notify_flow == nil {
+		m.notify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
+func (m *NotifyTargetMutation) ClearNotifyFlow() {
+	m.clearednotify_flow = true
+}
+
+// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
+func (m *NotifyTargetMutation) NotifyFlowCleared() bool {
+	return m.clearednotify_flow
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (m *NotifyTargetMutation) RemoveNotifyFlowIDs(ids ...model.InternalID) {
+	if m.removednotify_flow == nil {
+		m.removednotify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow, ids[i])
+		m.removednotify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlow returns the removed IDs of the "notify_flow" edge to the NotifyFlow entity.
+func (m *NotifyTargetMutation) RemovedNotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
+func (m *NotifyTargetMutation) NotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlow resets all changes to the "notify_flow" edge.
+func (m *NotifyTargetMutation) ResetNotifyFlow() {
+	m.notify_flow = nil
+	m.clearednotify_flow = false
+	m.removednotify_flow = nil
+}
+
+// AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by ids.
+func (m *NotifyTargetMutation) AddNotifyFlowTargetIDs(ids ...model.InternalID) {
+	if m.notify_flow_target == nil {
+		m.notify_flow_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow_target[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlowTarget clears the "notify_flow_target" edge to the NotifyFlowTarget entity.
+func (m *NotifyTargetMutation) ClearNotifyFlowTarget() {
+	m.clearednotify_flow_target = true
+}
+
+// NotifyFlowTargetCleared reports if the "notify_flow_target" edge to the NotifyFlowTarget entity was cleared.
+func (m *NotifyTargetMutation) NotifyFlowTargetCleared() bool {
+	return m.clearednotify_flow_target
+}
+
+// RemoveNotifyFlowTargetIDs removes the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
+func (m *NotifyTargetMutation) RemoveNotifyFlowTargetIDs(ids ...model.InternalID) {
+	if m.removednotify_flow_target == nil {
+		m.removednotify_flow_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow_target, ids[i])
+		m.removednotify_flow_target[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlowTarget returns the removed IDs of the "notify_flow_target" edge to the NotifyFlowTarget entity.
+func (m *NotifyTargetMutation) RemovedNotifyFlowTargetIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowTargetIDs returns the "notify_flow_target" edge IDs in the mutation.
+func (m *NotifyTargetMutation) NotifyFlowTargetIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlowTarget resets all changes to the "notify_flow_target" edge.
+func (m *NotifyTargetMutation) ResetNotifyFlowTarget() {
+	m.notify_flow_target = nil
+	m.clearednotify_flow_target = false
+	m.removednotify_flow_target = nil
+}
+
+// Where appends a list predicates to the NotifyTargetMutation builder.
+func (m *NotifyTargetMutation) Where(ps ...predicate.NotifyTarget) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the NotifyTargetMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *NotifyTargetMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.NotifyTarget, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *NotifyTargetMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *NotifyTargetMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (NotifyTarget).
+func (m *NotifyTargetMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *NotifyTargetMutation) Fields() []string {
+	fields := make([]string, 0, 7)
+	if m.token != nil {
+		fields = append(fields, notifytarget.FieldToken)
+	}
+	if m.name != nil {
+		fields = append(fields, notifytarget.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, notifytarget.FieldDescription)
+	}
+	if m._type != nil {
+		fields = append(fields, notifytarget.FieldType)
+	}
+	if m.status != nil {
+		fields = append(fields, notifytarget.FieldStatus)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, notifytarget.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, notifytarget.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *NotifyTargetMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case notifytarget.FieldToken:
+		return m.Token()
+	case notifytarget.FieldName:
+		return m.Name()
+	case notifytarget.FieldDescription:
+		return m.Description()
+	case notifytarget.FieldType:
+		return m.GetType()
+	case notifytarget.FieldStatus:
+		return m.Status()
+	case notifytarget.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case notifytarget.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *NotifyTargetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case notifytarget.FieldToken:
+		return m.OldToken(ctx)
+	case notifytarget.FieldName:
+		return m.OldName(ctx)
+	case notifytarget.FieldDescription:
+		return m.OldDescription(ctx)
+	case notifytarget.FieldType:
+		return m.OldType(ctx)
+	case notifytarget.FieldStatus:
+		return m.OldStatus(ctx)
+	case notifytarget.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case notifytarget.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown NotifyTarget field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case notifytarget.FieldToken:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetToken(v)
+		return nil
+	case notifytarget.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case notifytarget.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case notifytarget.FieldType:
+		v, ok := value.(notifytarget.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case notifytarget.FieldStatus:
+		v, ok := value.(notifytarget.Status)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case notifytarget.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case notifytarget.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyTarget field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *NotifyTargetMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *NotifyTargetMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifyTargetMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown NotifyTarget numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *NotifyTargetMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *NotifyTargetMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *NotifyTargetMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown NotifyTarget nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *NotifyTargetMutation) ResetField(name string) error {
+	switch name {
+	case notifytarget.FieldToken:
+		m.ResetToken()
+		return nil
+	case notifytarget.FieldName:
+		m.ResetName()
+		return nil
+	case notifytarget.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case notifytarget.FieldType:
+		m.ResetType()
+		return nil
+	case notifytarget.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case notifytarget.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case notifytarget.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyTarget field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *NotifyTargetMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.owner != nil {
+		edges = append(edges, notifytarget.EdgeOwner)
+	}
+	if m.notify_flow != nil {
+		edges = append(edges, notifytarget.EdgeNotifyFlow)
+	}
+	if m.notify_flow_target != nil {
+		edges = append(edges, notifytarget.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *NotifyTargetMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case notifytarget.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifytarget.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.notify_flow))
+		for id := range m.notify_flow {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifytarget.EdgeNotifyFlowTarget:
+		ids := make([]ent.Value, 0, len(m.notify_flow_target))
+		for id := range m.notify_flow_target {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *NotifyTargetMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.removednotify_flow != nil {
+		edges = append(edges, notifytarget.EdgeNotifyFlow)
+	}
+	if m.removednotify_flow_target != nil {
+		edges = append(edges, notifytarget.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *NotifyTargetMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case notifytarget.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow))
+		for id := range m.removednotify_flow {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifytarget.EdgeNotifyFlowTarget:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow_target))
+		for id := range m.removednotify_flow_target {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *NotifyTargetMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedowner {
+		edges = append(edges, notifytarget.EdgeOwner)
+	}
+	if m.clearednotify_flow {
+		edges = append(edges, notifytarget.EdgeNotifyFlow)
+	}
+	if m.clearednotify_flow_target {
+		edges = append(edges, notifytarget.EdgeNotifyFlowTarget)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *NotifyTargetMutation) EdgeCleared(name string) bool {
+	switch name {
+	case notifytarget.EdgeOwner:
+		return m.clearedowner
+	case notifytarget.EdgeNotifyFlow:
+		return m.clearednotify_flow
+	case notifytarget.EdgeNotifyFlowTarget:
+		return m.clearednotify_flow_target
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *NotifyTargetMutation) ClearEdge(name string) error {
+	switch name {
+	case notifytarget.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyTarget unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *NotifyTargetMutation) ResetEdge(name string) error {
+	switch name {
+	case notifytarget.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case notifytarget.EdgeNotifyFlow:
+		m.ResetNotifyFlow()
+		return nil
+	case notifytarget.EdgeNotifyFlowTarget:
+		m.ResetNotifyFlowTarget()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifyTarget edge %s", name)
+}
+
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
@@ -6680,6 +9177,12 @@ type UserMutation struct {
 	feed_config          map[model.InternalID]struct{}
 	removedfeed_config   map[model.InternalID]struct{}
 	clearedfeed_config   bool
+	notify_target        map[model.InternalID]struct{}
+	removednotify_target map[model.InternalID]struct{}
+	clearednotify_target bool
+	notify_flow          map[model.InternalID]struct{}
+	removednotify_flow   map[model.InternalID]struct{}
+	clearednotify_flow   bool
 	creator              *model.InternalID
 	clearedcreator       bool
 	created_user         map[model.InternalID]struct{}
@@ -7226,6 +9729,114 @@ func (m *UserMutation) ResetFeedConfig() {
 	m.removedfeed_config = nil
 }
 
+// AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by ids.
+func (m *UserMutation) AddNotifyTargetIDs(ids ...model.InternalID) {
+	if m.notify_target == nil {
+		m.notify_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_target[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyTarget clears the "notify_target" edge to the NotifyTarget entity.
+func (m *UserMutation) ClearNotifyTarget() {
+	m.clearednotify_target = true
+}
+
+// NotifyTargetCleared reports if the "notify_target" edge to the NotifyTarget entity was cleared.
+func (m *UserMutation) NotifyTargetCleared() bool {
+	return m.clearednotify_target
+}
+
+// RemoveNotifyTargetIDs removes the "notify_target" edge to the NotifyTarget entity by IDs.
+func (m *UserMutation) RemoveNotifyTargetIDs(ids ...model.InternalID) {
+	if m.removednotify_target == nil {
+		m.removednotify_target = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_target, ids[i])
+		m.removednotify_target[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyTarget returns the removed IDs of the "notify_target" edge to the NotifyTarget entity.
+func (m *UserMutation) RemovedNotifyTargetIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyTargetIDs returns the "notify_target" edge IDs in the mutation.
+func (m *UserMutation) NotifyTargetIDs() (ids []model.InternalID) {
+	for id := range m.notify_target {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyTarget resets all changes to the "notify_target" edge.
+func (m *UserMutation) ResetNotifyTarget() {
+	m.notify_target = nil
+	m.clearednotify_target = false
+	m.removednotify_target = nil
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by ids.
+func (m *UserMutation) AddNotifyFlowIDs(ids ...model.InternalID) {
+	if m.notify_flow == nil {
+		m.notify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
+func (m *UserMutation) ClearNotifyFlow() {
+	m.clearednotify_flow = true
+}
+
+// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
+func (m *UserMutation) NotifyFlowCleared() bool {
+	return m.clearednotify_flow
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (m *UserMutation) RemoveNotifyFlowIDs(ids ...model.InternalID) {
+	if m.removednotify_flow == nil {
+		m.removednotify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow, ids[i])
+		m.removednotify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlow returns the removed IDs of the "notify_flow" edge to the NotifyFlow entity.
+func (m *UserMutation) RemovedNotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
+func (m *UserMutation) NotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlow resets all changes to the "notify_flow" edge.
+func (m *UserMutation) ResetNotifyFlow() {
+	m.notify_flow = nil
+	m.clearednotify_flow = false
+	m.removednotify_flow = nil
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by id.
 func (m *UserMutation) SetCreatorID(id model.InternalID) {
 	m.creator = &id
@@ -7537,7 +10148,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -7549,6 +10160,12 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.feed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.notify_target != nil {
+		edges = append(edges, user.EdgeNotifyTarget)
+	}
+	if m.notify_flow != nil {
+		edges = append(edges, user.EdgeNotifyFlow)
 	}
 	if m.creator != nil {
 		edges = append(edges, user.EdgeCreator)
@@ -7587,6 +10204,18 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeNotifyTarget:
+		ids := make([]ent.Value, 0, len(m.notify_target))
+		for id := range m.notify_target {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.notify_flow))
+		for id := range m.notify_flow {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreator:
 		if id := m.creator; id != nil {
 			return []ent.Value{*id}
@@ -7603,7 +10232,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -7615,6 +10244,12 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedfeed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.removednotify_target != nil {
+		edges = append(edges, user.EdgeNotifyTarget)
+	}
+	if m.removednotify_flow != nil {
+		edges = append(edges, user.EdgeNotifyFlow)
 	}
 	if m.removedcreated_user != nil {
 		edges = append(edges, user.EdgeCreatedUser)
@@ -7650,6 +10285,18 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeNotifyTarget:
+		ids := make([]ent.Value, 0, len(m.removednotify_target))
+		for id := range m.removednotify_target {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow))
+		for id := range m.removednotify_flow {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreatedUser:
 		ids := make([]ent.Value, 0, len(m.removedcreated_user))
 		for id := range m.removedcreated_user {
@@ -7662,7 +10309,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 6)
+	edges := make([]string, 0, 8)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -7674,6 +10321,12 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.clearedfeed_config {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.clearednotify_target {
+		edges = append(edges, user.EdgeNotifyTarget)
+	}
+	if m.clearednotify_flow {
+		edges = append(edges, user.EdgeNotifyFlow)
 	}
 	if m.clearedcreator {
 		edges = append(edges, user.EdgeCreator)
@@ -7696,6 +10349,10 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedapp_package
 	case user.EdgeFeedConfig:
 		return m.clearedfeed_config
+	case user.EdgeNotifyTarget:
+		return m.clearednotify_target
+	case user.EdgeNotifyFlow:
+		return m.clearednotify_flow
 	case user.EdgeCreator:
 		return m.clearedcreator
 	case user.EdgeCreatedUser:
@@ -7730,6 +10387,12 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeFeedConfig:
 		m.ResetFeedConfig()
+		return nil
+	case user.EdgeNotifyTarget:
+		m.ResetNotifyTarget()
+		return nil
+	case user.EdgeNotifyFlow:
+		m.ResetNotifyFlow()
 		return nil
 	case user.EdgeCreator:
 		m.ResetCreator()

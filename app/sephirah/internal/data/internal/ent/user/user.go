@@ -32,6 +32,10 @@ const (
 	EdgeAppPackage = "app_package"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
+	// EdgeNotifyTarget holds the string denoting the notify_target edge name in mutations.
+	EdgeNotifyTarget = "notify_target"
+	// EdgeNotifyFlow holds the string denoting the notify_flow edge name in mutations.
+	EdgeNotifyFlow = "notify_flow"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
@@ -64,6 +68,20 @@ const (
 	FeedConfigInverseTable = "feed_configs"
 	// FeedConfigColumn is the table column denoting the feed_config relation/edge.
 	FeedConfigColumn = "user_feed_config"
+	// NotifyTargetTable is the table that holds the notify_target relation/edge.
+	NotifyTargetTable = "notify_targets"
+	// NotifyTargetInverseTable is the table name for the NotifyTarget entity.
+	// It exists in this package in order to avoid circular dependency with the "notifytarget" package.
+	NotifyTargetInverseTable = "notify_targets"
+	// NotifyTargetColumn is the table column denoting the notify_target relation/edge.
+	NotifyTargetColumn = "user_notify_target"
+	// NotifyFlowTable is the table that holds the notify_flow relation/edge.
+	NotifyFlowTable = "notify_flows"
+	// NotifyFlowInverseTable is the table name for the NotifyFlow entity.
+	// It exists in this package in order to avoid circular dependency with the "notifyflow" package.
+	NotifyFlowInverseTable = "notify_flows"
+	// NotifyFlowColumn is the table column denoting the notify_flow relation/edge.
+	NotifyFlowColumn = "user_notify_flow"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.

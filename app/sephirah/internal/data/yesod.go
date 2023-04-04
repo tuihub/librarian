@@ -123,7 +123,22 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	})
 }
 
-func (y *yesodRepo) UpsertFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) error {
+func (y *yesodRepo) UpsertFeedItems(
+	ctx context.Context,
+	items []*modelfeed.Item,
+	feedID model.InternalID,
+) ([]string, error) {
+	guids := make([]string, 0, len(items))
+	for _, item := range items {
+		guids = append(guids, item.GUID)
+	}
+	existItems, err := y.data.db.FeedItem.Query().Where(
+		feeditem.FeedID(feedID),
+		feeditem.GUIDIn(guids...),
+	).Select(feeditem.FieldGUID).All(ctx)
+	if err != nil {
+		return nil, err
+	}
 	il := make([]*ent.FeedItemCreate, len(items))
 	for i, item := range items {
 		il[i] = y.data.db.FeedItem.Create().
@@ -143,14 +158,27 @@ func (y *yesodRepo) UpsertFeedItems(ctx context.Context, items []*modelfeed.Item
 			SetEnclosures(item.Enclosures).
 			SetPublishPlatform(item.PublishPlatform)
 	}
-	return y.data.db.FeedItem.CreateBulk(il...).
+	err = y.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
 			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
 			resolveWithIgnores([]string{
 				feeditem.FieldID,
 			}),
-		).
-		Exec(ctx)
+		).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	existItemMap := make(map[string]bool)
+	res := make([]string, 0, len(items)-len(existItems))
+	for _, item := range existItems {
+		existItemMap[item.GUID] = true
+	}
+	for _, item := range items {
+		if v, exist := existItemMap[item.GUID]; exist && v {
+			res = append(res, item.GUID)
+		}
+	}
+	return res, nil
 }
 
 func (y *yesodRepo) ListFeedConfigs(

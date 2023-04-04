@@ -8,16 +8,25 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 )
 
-func NewKey[T any](store StoreInterface, key string) *Key[T] {
+type fallBackFunc[T any] func(context.Context) (*T, error)
+
+func NewKey[T any](store Store, key string, defaultFallBackFunc fallBackFunc[T], defaultOptions ...Option) *Key[T] {
+	if defaultOptions == nil {
+		defaultOptions = []Option{}
+	}
 	return &Key[T]{
-		store:   store,
-		keyName: key,
+		store,
+		key,
+		defaultOptions,
+		defaultFallBackFunc,
 	}
 }
 
 type Key[T any] struct {
-	store   StoreInterface
-	keyName string
+	store               Store
+	keyName             string
+	defaultOptions      []Option
+	defaultFallBackFunc fallBackFunc[T]
 }
 
 func (k *Key[T]) Get(ctx context.Context) (*T, error) {
@@ -58,6 +67,28 @@ func (k *Key[T]) GetWithTTL(ctx context.Context) (*T, time.Duration, error) {
 		return nil, 0, err
 	}
 	return res, ttl, nil
+}
+
+func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[T]) (*T, error) {
+	res, err := k.Get(ctx)
+	if err != nil {
+		return res, nil
+	}
+	if fallBackFunc != nil { //nolint:gocritic // no need
+		res, err = fallBackFunc(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if k.defaultFallBackFunc != nil {
+		res, err = k.defaultFallBackFunc(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, err
+	}
+	_ = k.Set(ctx, res)
+	return res, nil
 }
 
 func (k *Key[T]) Set(ctx context.Context, value *T, options ...Option) error {

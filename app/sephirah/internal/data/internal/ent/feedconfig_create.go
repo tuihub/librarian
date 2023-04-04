@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -151,6 +152,21 @@ func (fcc *FeedConfigCreate) SetNillableFeedID(id *model.InternalID) *FeedConfig
 // SetFeed sets the "feed" edge to the Feed entity.
 func (fcc *FeedConfigCreate) SetFeed(f *Feed) *FeedConfigCreate {
 	return fcc.SetFeedID(f.ID)
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (fcc *FeedConfigCreate) AddNotifyFlowIDs(ids ...model.InternalID) *FeedConfigCreate {
+	fcc.mutation.AddNotifyFlowIDs(ids...)
+	return fcc
+}
+
+// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
+func (fcc *FeedConfigCreate) AddNotifyFlow(n ...*NotifyFlow) *FeedConfigCreate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return fcc.AddNotifyFlowIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -350,6 +366,22 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(feed.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fcc.mutation.NotifyFlowIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.NotifyFlowTable,
+			Columns: feedconfig.NotifyFlowPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

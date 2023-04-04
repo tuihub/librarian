@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
@@ -17,6 +18,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
@@ -28,7 +30,7 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
@@ -45,8 +47,14 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	topic := bizangela.NewPullSteamAppTopic(angelaBase)
 	libmqTopic := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topic)
 	topic2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopic)
-	topic3 := bizangela.NewPullFeedTopic(angelaBase)
-	angela, err := bizangela.NewAngela(mq, topic2, libmqTopic, topic, topic3)
+	netzachRepo := data.NewNetzachRepo(dataData)
+	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)
+	map2 := bizangela.NewFeedToNotifyFlowMap(netzachRepo, store)
+	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
+	topic3 := bizangela.NewNotifyPushTopic(angelaBase, map3)
+	topic4 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic3)
+	topic5 := bizangela.NewPullFeedTopic(angelaBase, topic4)
+	angela, err := bizangela.NewAngela(mq, topic2, libmqTopic, topic, topic5, topic4, topic3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -59,13 +67,14 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	callbackControlBlock := bizbinah.NewCallbackControl()
 	gebura := bizgebura.NewGebura(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic3)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
+	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
 	v := server.NewAuthMiddleware(auth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, settings, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, settings, v)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

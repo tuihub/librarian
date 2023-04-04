@@ -3,10 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
-
 	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
@@ -19,15 +16,8 @@ type App struct {
 
 // Fields of the App.
 func (App) Fields() []ent.Field {
-	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("id").
-			Unique().
-			Immutable().
-			GoType(model.InternalID(0)).
-			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
-				Incremental: &incrementalEnabled,
-			}),
+		defaultPrimaryKey(),
 		field.Enum("source").
 			Values("internal", "steam"),
 		field.String("source_app_id"),

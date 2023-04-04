@@ -17,6 +17,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 )
 
@@ -71,13 +74,16 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		account.Table:    account.ValidColumn,
-		app.Table:        app.ValidColumn,
-		apppackage.Table: apppackage.ValidColumn,
-		feed.Table:       feed.ValidColumn,
-		feedconfig.Table: feedconfig.ValidColumn,
-		feeditem.Table:   feeditem.ValidColumn,
-		user.Table:       user.ValidColumn,
+		account.Table:          account.ValidColumn,
+		app.Table:              app.ValidColumn,
+		apppackage.Table:       apppackage.ValidColumn,
+		feed.Table:             feed.ValidColumn,
+		feedconfig.Table:       feedconfig.ValidColumn,
+		feeditem.Table:         feeditem.ValidColumn,
+		notifyflow.Table:       notifyflow.ValidColumn,
+		notifyflowtarget.Table: notifyflowtarget.ValidColumn,
+		notifytarget.Table:     notifytarget.ValidColumn,
+		user.Table:             user.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

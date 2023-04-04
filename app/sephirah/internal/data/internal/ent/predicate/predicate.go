@@ -24,5 +24,14 @@ type FeedConfig func(*sql.Selector)
 // FeedItem is the predicate function for feeditem builders.
 type FeedItem func(*sql.Selector)
 
+// NotifyFlow is the predicate function for notifyflow builders.
+type NotifyFlow func(*sql.Selector)
+
+// NotifyFlowTarget is the predicate function for notifyflowtarget builders.
+type NotifyFlowTarget func(*sql.Selector)
+
+// NotifyTarget is the predicate function for notifytarget builders.
+type NotifyTarget func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

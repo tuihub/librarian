@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
@@ -19,6 +20,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
@@ -27,7 +29,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, mq *conf.MQ, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -72,8 +74,20 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	topic := bizangela.NewPullSteamAppTopic(angelaBase)
 	libmqTopic := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topic)
 	topic2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopic)
-	topic3 := bizangela.NewPullFeedTopic(angelaBase)
-	angela, err := bizangela.NewAngela(libmqMQ, topic2, libmqTopic, topic, topic3)
+	netzachRepo := data.NewNetzachRepo(dataData)
+	store, err := libcache.NewStore(cache)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)
+	map2 := bizangela.NewFeedToNotifyFlowMap(netzachRepo, store)
+	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
+	topic3 := bizangela.NewNotifyPushTopic(angelaBase, map3)
+	topic4 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic3)
+	topic5 := bizangela.NewPullFeedTopic(angelaBase, topic4)
+	angela, err := bizangela.NewAngela(libmqMQ, topic2, libmqTopic, topic, topic5, topic4, topic3)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -89,14 +103,15 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	binah := bizbinah.NewBinah(callbackControlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	cron := libcron.NewCron()
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic3)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
+	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
 	v := server.NewAuthMiddleware(libauthAuth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, settings, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, settings, v)
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
 	app := newApp(grpcServer, httpServer, libmqMQ, cron)

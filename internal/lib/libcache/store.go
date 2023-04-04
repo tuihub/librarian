@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-// StoreInterface is the interface for all available stores
+// Store is the interface for all available stores
 // Inspired by https://github.com/eko/gocache
-type StoreInterface interface {
+type Store interface {
 	Get(ctx context.Context, key any) (any, error)
 	GetWithTTL(ctx context.Context, key any) (any, time.Duration, error)
 	Set(ctx context.Context, key any, value any, options ...Option) error

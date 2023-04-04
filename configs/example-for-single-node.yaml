@@ -29,6 +29,8 @@ sephirah:
       user: librarian
       password: librarian
       no_ssl: true
+  cache:
+    driver: memory
 mapper:
   data:
     cayley:

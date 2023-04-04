@@ -21,7 +21,7 @@ type YesodRepo interface {
 	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpsertFeed(context.Context, *modelfeed.Feed) error
-	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) error
+	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
 		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus) ([]*modelyesod.FeedWithConfig, int, error)
 	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,

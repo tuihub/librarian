@@ -51,9 +51,11 @@ type FeedConfigEdges struct {
 	Owner *User `json:"owner,omitempty"`
 	// Feed holds the value of the feed edge.
 	Feed *Feed `json:"feed,omitempty"`
+	// NotifyFlow holds the value of the notify_flow edge.
+	NotifyFlow []*NotifyFlow `json:"notify_flow,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [3]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -80,6 +82,15 @@ func (e FeedConfigEdges) FeedOrErr() (*Feed, error) {
 		return e.Feed, nil
 	}
 	return nil, &NotLoadedError{edge: "feed"}
+}
+
+// NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedConfigEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
+	if e.loadedTypes[2] {
+		return e.NotifyFlow, nil
+	}
+	return nil, &NotLoadedError{edge: "notify_flow"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -196,6 +207,11 @@ func (fc *FeedConfig) QueryOwner() *UserQuery {
 // QueryFeed queries the "feed" edge of the FeedConfig entity.
 func (fc *FeedConfig) QueryFeed() *FeedQuery {
 	return NewFeedConfigClient(fc.config).QueryFeed(fc)
+}
+
+// QueryNotifyFlow queries the "notify_flow" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewFeedConfigClient(fc.config).QueryNotifyFlow(fc)
 }
 
 // Update returns a builder for updating this FeedConfig.

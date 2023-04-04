@@ -36,6 +36,8 @@ const (
 	EdgeOwner = "owner"
 	// EdgeFeed holds the string denoting the feed edge name in mutations.
 	EdgeFeed = "feed"
+	// EdgeNotifyFlow holds the string denoting the notify_flow edge name in mutations.
+	EdgeNotifyFlow = "notify_flow"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
 	// OwnerTable is the table that holds the owner relation/edge.
@@ -52,6 +54,11 @@ const (
 	FeedInverseTable = "feeds"
 	// FeedColumn is the table column denoting the feed relation/edge.
 	FeedColumn = "feed_config_feed"
+	// NotifyFlowTable is the table that holds the notify_flow relation/edge. The primary key declared below.
+	NotifyFlowTable = "feed_config_notify_flow"
+	// NotifyFlowInverseTable is the table name for the NotifyFlow entity.
+	// It exists in this package in order to avoid circular dependency with the "notifyflow" package.
+	NotifyFlowInverseTable = "notify_flows"
 )
 
 // Columns holds all SQL columns for feedconfig fields.
@@ -74,6 +81,12 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"user_feed_config",
 }
+
+var (
+	// NotifyFlowPrimaryKey and NotifyFlowColumn2 are the table columns denoting the
+	// primary key for the notify_flow relation (M2M).
+	NotifyFlowPrimaryKey = []string{"feed_config_id", "notify_flow_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {

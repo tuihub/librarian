@@ -4,6 +4,7 @@ package converter
 
 import (
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
@@ -141,6 +142,80 @@ func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []mode
 		}
 	}
 	return modelInternalIDList
+}
+func (c *toBizConverterImpl) ToBizNotifyFlow(source *v11.NotifyFlow) *modelnetzach.NotifyFlow {
+	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
+	if source != nil {
+		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
+		modelnetzachNotifyFlow.ID = ToBizInternalID((*source).Id)
+		modelnetzachNotifyFlow.Name = (*source).Name
+		modelnetzachNotifyFlow.Description = (*source).Description
+		modelnetzachNotifyFlow.Source = c.ToBizNotifyFlowSource((*source).Source)
+		var pModelnetzachNotifyFlowTargetList []*modelnetzach.NotifyFlowTarget
+		if (*source).Targets != nil {
+			pModelnetzachNotifyFlowTargetList = make([]*modelnetzach.NotifyFlowTarget, len((*source).Targets))
+			for i := 0; i < len((*source).Targets); i++ {
+				pModelnetzachNotifyFlowTargetList[i] = c.ToBizNotifyFlowTarget((*source).Targets[i])
+			}
+		}
+		modelnetzachNotifyFlow.Targets = pModelnetzachNotifyFlowTargetList
+		modelnetzachNotifyFlow.Status = ToBizNotifyFlowStatus((*source).Status)
+		pModelnetzachNotifyFlow = &modelnetzachNotifyFlow
+	}
+	return pModelnetzachNotifyFlow
+}
+func (c *toBizConverterImpl) ToBizNotifyFlowSource(source *v11.NotifyFlowSource) *modelnetzach.NotifyFlowSource {
+	var pModelnetzachNotifyFlowSource *modelnetzach.NotifyFlowSource
+	if source != nil {
+		var modelnetzachNotifyFlowSource modelnetzach.NotifyFlowSource
+		modelnetzachNotifyFlowSource.FeedIDFilter = c.ToBizInternalIDList((*source).FeedIdFilter)
+		pModelnetzachNotifyFlowSource = &modelnetzachNotifyFlowSource
+	}
+	return pModelnetzachNotifyFlowSource
+}
+func (c *toBizConverterImpl) ToBizNotifyFlowTarget(source *v11.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget {
+	var pModelnetzachNotifyFlowTarget *modelnetzach.NotifyFlowTarget
+	if source != nil {
+		var modelnetzachNotifyFlowTarget modelnetzach.NotifyFlowTarget
+		modelnetzachNotifyFlowTarget.TargetID = ToBizInternalID((*source).TargetId)
+		modelnetzachNotifyFlowTarget.ChannelID = (*source).ChannelId
+		pModelnetzachNotifyFlowTarget = &modelnetzachNotifyFlowTarget
+	}
+	return pModelnetzachNotifyFlowTarget
+}
+func (c *toBizConverterImpl) ToBizNotifyTarget(source *v11.NotifyTarget) *modelnetzach.NotifyTarget {
+	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
+	if source != nil {
+		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
+		modelnetzachNotifyTarget.ID = ToBizInternalID((*source).Id)
+		modelnetzachNotifyTarget.Name = (*source).Name
+		modelnetzachNotifyTarget.Description = (*source).Description
+		modelnetzachNotifyTarget.Type = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
+		modelnetzachNotifyTarget.Token = (*source).Token
+		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
+	}
+	return pModelnetzachNotifyTarget
+}
+func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.TargetStatus) []modelnetzach.NotifyTargetStatus {
+	var modelnetzachNotifyTargetStatusList []modelnetzach.NotifyTargetStatus
+	if source != nil {
+		modelnetzachNotifyTargetStatusList = make([]modelnetzach.NotifyTargetStatus, len(source))
+		for i := 0; i < len(source); i++ {
+			modelnetzachNotifyTargetStatusList[i] = ToBizNotifyTargetStatus(source[i])
+		}
+	}
+	return modelnetzachNotifyTargetStatusList
+}
+func (c *toBizConverterImpl) ToBizNotifyTargetTypeList(source []v11.TargetType) []modelnetzach.NotifyTargetType {
+	var modelnetzachNotifyTargetTypeList []modelnetzach.NotifyTargetType
+	if source != nil {
+		modelnetzachNotifyTargetTypeList = make([]modelnetzach.NotifyTargetType, len(source))
+		for i := 0; i < len(source); i++ {
+			modelnetzachNotifyTargetTypeList[i] = ToBizNotifyTargetType(source[i])
+		}
+	}
+	return modelnetzachNotifyTargetTypeList
 }
 func (c *toBizConverterImpl) ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	var pModelTimeRange *model.TimeRange
@@ -453,6 +528,80 @@ func (c *toPBConverterImpl) ToPBItemIDWithFeedIDList(source []*modelyesod.FeedIt
 		}
 	}
 	return pV1FeedItemIDWithFeedIDList
+}
+func (c *toPBConverterImpl) ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *v11.NotifyFlow {
+	var pV1NotifyFlow *v11.NotifyFlow
+	if source != nil {
+		var v1NotifyFlow v11.NotifyFlow
+		v1NotifyFlow.Id = ToPBInternalID((*source).ID)
+		v1NotifyFlow.Name = (*source).Name
+		v1NotifyFlow.Description = (*source).Description
+		v1NotifyFlow.Source = c.ToPBNotifyFlowSource((*source).Source)
+		var pV1NotifyFlowTargetList []*v11.NotifyFlowTarget
+		if (*source).Targets != nil {
+			pV1NotifyFlowTargetList = make([]*v11.NotifyFlowTarget, len((*source).Targets))
+			for i := 0; i < len((*source).Targets); i++ {
+				pV1NotifyFlowTargetList[i] = c.ToPBNotifyFlowTarget((*source).Targets[i])
+			}
+		}
+		v1NotifyFlow.Targets = pV1NotifyFlowTargetList
+		v1NotifyFlow.Status = ToPBNotifyFlowStatus((*source).Status)
+		pV1NotifyFlow = &v1NotifyFlow
+	}
+	return pV1NotifyFlow
+}
+func (c *toPBConverterImpl) ToPBNotifyFlowList(source []*modelnetzach.NotifyFlow) []*v11.NotifyFlow {
+	var pV1NotifyFlowList []*v11.NotifyFlow
+	if source != nil {
+		pV1NotifyFlowList = make([]*v11.NotifyFlow, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1NotifyFlowList[i] = c.ToPBNotifyFlow(source[i])
+		}
+	}
+	return pV1NotifyFlowList
+}
+func (c *toPBConverterImpl) ToPBNotifyFlowSource(source *modelnetzach.NotifyFlowSource) *v11.NotifyFlowSource {
+	var pV1NotifyFlowSource *v11.NotifyFlowSource
+	if source != nil {
+		var v1NotifyFlowSource v11.NotifyFlowSource
+		v1NotifyFlowSource.FeedIdFilter = c.ToPBInternalIDList((*source).FeedIDFilter)
+		pV1NotifyFlowSource = &v1NotifyFlowSource
+	}
+	return pV1NotifyFlowSource
+}
+func (c *toPBConverterImpl) ToPBNotifyFlowTarget(source *modelnetzach.NotifyFlowTarget) *v11.NotifyFlowTarget {
+	var pV1NotifyFlowTarget *v11.NotifyFlowTarget
+	if source != nil {
+		var v1NotifyFlowTarget v11.NotifyFlowTarget
+		v1NotifyFlowTarget.TargetId = ToPBInternalID((*source).TargetID)
+		v1NotifyFlowTarget.ChannelId = (*source).ChannelID
+		pV1NotifyFlowTarget = &v1NotifyFlowTarget
+	}
+	return pV1NotifyFlowTarget
+}
+func (c *toPBConverterImpl) ToPBNotifyTarget(source *modelnetzach.NotifyTarget) *v11.NotifyTarget {
+	var pV1NotifyTarget *v11.NotifyTarget
+	if source != nil {
+		var v1NotifyTarget v11.NotifyTarget
+		v1NotifyTarget.Id = ToPBInternalID((*source).ID)
+		v1NotifyTarget.Name = (*source).Name
+		v1NotifyTarget.Description = (*source).Description
+		v1NotifyTarget.Type = ToPBNotifyTargetType((*source).Type)
+		v1NotifyTarget.Status = ToPBNotifyTargetStatus((*source).Status)
+		v1NotifyTarget.Token = (*source).Token
+		pV1NotifyTarget = &v1NotifyTarget
+	}
+	return pV1NotifyTarget
+}
+func (c *toPBConverterImpl) ToPBNotifyTargetList(source []*modelnetzach.NotifyTarget) []*v11.NotifyTarget {
+	var pV1NotifyTargetList []*v11.NotifyTarget
+	if source != nil {
+		pV1NotifyTargetList = make([]*v11.NotifyTarget, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1NotifyTargetList[i] = c.ToPBNotifyTarget(source[i])
+		}
+	}
+	return pV1NotifyTargetList
 }
 func (c *toPBConverterImpl) ToPBTimeRange(source *model.TimeRange) *v1.TimeRange {
 	var pV1TimeRange *v1.TimeRange

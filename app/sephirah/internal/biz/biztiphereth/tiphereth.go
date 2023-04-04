@@ -2,12 +2,12 @@ package biztiphereth
 
 import (
 	"context"
-	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -81,13 +81,13 @@ func (t *Tiphereth) GetToken(
 
 	var accessToken, refreshToken string
 	accessToken, err = t.auth.GenerateToken(user.ID,
-		libauth.ClaimsTypeAccessToken, user.Type, nil, time.Hour)
+		libauth.ClaimsTypeAccessToken, user.Type, nil, libtime.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("generate access token failed: %s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(user.ID,
-		libauth.ClaimsTypeRefreshToken, user.Type, nil, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, user.Type, nil, libtime.SevenDays)
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("generate access token failed: %s", err.Error())
@@ -108,13 +108,13 @@ func (t *Tiphereth) RefreshToken(
 	}
 	var accessToken, refreshToken string
 	accessToken, err := t.auth.GenerateToken(claims.InternalID,
-		libauth.ClaimsTypeAccessToken, claims.UserType, nil, time.Hour)
+		libauth.ClaimsTypeAccessToken, claims.UserType, nil, libtime.Hour)
 	if err != nil {
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err = t.auth.GenerateToken(claims.InternalID,
-		libauth.ClaimsTypeRefreshToken, claims.UserType, nil, time.Hour*24*7) //nolint:gomnd //TODO
+		libauth.ClaimsTypeRefreshToken, claims.UserType, nil, libtime.SevenDays)
 	if err != nil {
 		logger.Infof("generate refresh token failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())

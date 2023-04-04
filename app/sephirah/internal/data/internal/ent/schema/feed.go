@@ -3,11 +3,9 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -19,15 +17,8 @@ type Feed struct {
 
 // Fields of the Feed.
 func (Feed) Fields() []ent.Field {
-	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("id").
-			Unique().
-			Immutable().
-			GoType(model.InternalID(0)).
-			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
-				Incremental: &incrementalEnabled,
-			}),
+		defaultPrimaryKey(),
 		field.String("title").Optional(),
 		field.String("link").Optional(),
 		field.String("description").Optional(),

@@ -2,6 +2,7 @@ package libcache
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -24,6 +25,9 @@ func newRedis(client *redis.Client, options ...Option) *redisStore {
 // Get returns data stored from a given key.
 func (s *redisStore) Get(ctx context.Context, key any) (any, error) {
 	object, err := s.client.Get(ctx, key.(string)).Result()
+	if errors.Is(err, redis.Nil) {
+		return nil, newNotFound(err)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +37,9 @@ func (s *redisStore) Get(ctx context.Context, key any) (any, error) {
 // GetWithTTL returns data stored from a given key and its corresponding TTL.
 func (s *redisStore) GetWithTTL(ctx context.Context, key any) (any, time.Duration, error) {
 	object, err := s.client.Get(ctx, key.(string)).Result()
+	if errors.Is(err, redis.Nil) {
+		return nil, 0, newNotFound(err)
+	}
 	if err != nil {
 		return nil, 0, err
 	}

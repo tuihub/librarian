@@ -6,8 +6,10 @@ import (
 	ent "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	apppackage "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
@@ -196,6 +198,42 @@ func (c *toBizConverterImpl) ToBizFeedItemList(source []*ent.FeedItem) []*modelf
 	}
 	return pModelfeedItemList
 }
+func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
+	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
+	if source != nil {
+		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
+		modelnetzachNotifyFlow.ID = model.InternalID((*source).ID)
+		modelnetzachNotifyFlow.Name = (*source).Name
+		modelnetzachNotifyFlow.Description = (*source).Description
+		modelnetzachNotifyFlow.Status = ToBizNotifyFlowStatus((*source).Status)
+		pModelnetzachNotifyFlow = &modelnetzachNotifyFlow
+	}
+	return pModelnetzachNotifyFlow
+}
+func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
+	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
+	if source != nil {
+		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
+		modelnetzachNotifyTarget.ID = model.InternalID((*source).ID)
+		modelnetzachNotifyTarget.Name = (*source).Name
+		modelnetzachNotifyTarget.Description = (*source).Description
+		modelnetzachNotifyTarget.Type = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
+		modelnetzachNotifyTarget.Token = (*source).Token
+		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
+	}
+	return pModelnetzachNotifyTarget
+}
+func (c *toBizConverterImpl) ToBizNotifyTargetList(source []*ent.NotifyTarget) []*modelnetzach.NotifyTarget {
+	var pModelnetzachNotifyTargetList []*modelnetzach.NotifyTarget
+	if source != nil {
+		pModelnetzachNotifyTargetList = make([]*modelnetzach.NotifyTarget, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelnetzachNotifyTargetList[i] = c.ToBizNotifyTarget(source[i])
+		}
+	}
+	return pModelnetzachNotifyTargetList
+}
 func (c *toBizConverterImpl) ToBizUser(source *ent.User) *modeltiphereth.User {
 	var pModeltipherethUser *modeltiphereth.User
 	if source != nil {
@@ -355,6 +393,26 @@ func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedC
 		}
 	}
 	return feedconfigStatusList
+}
+func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
+	var notifytargetStatusList []notifytarget.Status
+	if source != nil {
+		notifytargetStatusList = make([]notifytarget.Status, len(source))
+		for i := 0; i < len(source); i++ {
+			notifytargetStatusList[i] = ToEntNotifyTargetStatus(source[i])
+		}
+	}
+	return notifytargetStatusList
+}
+func (c *toEntConverterImpl) ToEntNotifyTargetTypeList(source []modelnetzach.NotifyTargetType) []notifytarget.Type {
+	var notifytargetTypeList []notifytarget.Type
+	if source != nil {
+		notifytargetTypeList = make([]notifytarget.Type, len(source))
+		for i := 0; i < len(source); i++ {
+			notifytargetTypeList[i] = ToEntNotifyTargetType(source[i])
+		}
+	}
+	return notifytargetTypeList
 }
 func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
 	var userStatusList []user.Status

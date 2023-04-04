@@ -45,13 +45,17 @@ type UserEdges struct {
 	AppPackage []*AppPackage `json:"app_package,omitempty"`
 	// FeedConfig holds the value of the feed_config edge.
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
+	// NotifyTarget holds the value of the notify_target edge.
+	NotifyTarget []*NotifyTarget `json:"notify_target,omitempty"`
+	// NotifyFlow holds the value of the notify_flow edge.
+	NotifyFlow []*NotifyFlow `json:"notify_flow,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
 	CreatedUser []*User `json:"created_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
+	loadedTypes [8]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -90,10 +94,28 @@ func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
 	return nil, &NotLoadedError{edge: "feed_config"}
 }
 
+// NotifyTargetOrErr returns the NotifyTarget value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
+	if e.loadedTypes[4] {
+		return e.NotifyTarget, nil
+	}
+	return nil, &NotLoadedError{edge: "notify_target"}
+}
+
+// NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
+	if e.loadedTypes[5] {
+		return e.NotifyFlow, nil
+	}
+	return nil, &NotLoadedError{edge: "notify_flow"}
+}
+
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[6] {
 		if e.Creator == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
@@ -106,7 +128,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[7] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -212,6 +234,16 @@ func (u *User) QueryAppPackage() *AppPackageQuery {
 // QueryFeedConfig queries the "feed_config" edge of the User entity.
 func (u *User) QueryFeedConfig() *FeedConfigQuery {
 	return NewUserClient(u.config).QueryFeedConfig(u)
+}
+
+// QueryNotifyTarget queries the "notify_target" edge of the User entity.
+func (u *User) QueryNotifyTarget() *NotifyTargetQuery {
+	return NewUserClient(u.config).QueryNotifyTarget(u)
+}
+
+// QueryNotifyFlow queries the "notify_flow" edge of the User entity.
+func (u *User) QueryNotifyFlow() *NotifyFlowQuery {
+	return NewUserClient(u.config).QueryNotifyFlow(u)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.

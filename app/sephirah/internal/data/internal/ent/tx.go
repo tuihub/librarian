@@ -24,6 +24,12 @@ type Tx struct {
 	FeedConfig *FeedConfigClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
+	// NotifyFlow is the client for interacting with the NotifyFlow builders.
+	NotifyFlow *NotifyFlowClient
+	// NotifyFlowTarget is the client for interacting with the NotifyFlowTarget builders.
+	NotifyFlowTarget *NotifyFlowTargetClient
+	// NotifyTarget is the client for interacting with the NotifyTarget builders.
+	NotifyTarget *NotifyTargetClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -163,6 +169,9 @@ func (tx *Tx) init() {
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
 	tx.FeedItem = NewFeedItemClient(tx.config)
+	tx.NotifyFlow = NewNotifyFlowClient(tx.config)
+	tx.NotifyFlowTarget = NewNotifyFlowTargetClient(tx.config)
+	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -28,7 +29,12 @@ import (
 // goverter:extend DurationPBToDuration
 // goverter:extend ToBizFeedConfigSource
 // goverter:extend ToBizFeedConfigStatus
+// goverter:extend ToBizNotifyTargetStatus
+// goverter:extend ToBizNotifyTargetType
+// goverter:extend ToBizNotifyFlowStatus
 type toBizConverter interface { //nolint:unused // used by generator
+	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
+
 	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
@@ -53,7 +59,16 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedConfigSourceList([]pb.FeedConfigSource) []modelyesod.FeedConfigSource
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
-	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
+	// goverter:matchIgnoreCase
+	ToBizNotifyTarget(*pb.NotifyTarget) *modelnetzach.NotifyTarget
+	ToBizNotifyTargetTypeList([]pb.TargetType) []modelnetzach.NotifyTargetType
+	ToBizNotifyTargetStatusList([]pb.TargetStatus) []modelnetzach.NotifyTargetStatus
+	// goverter:matchIgnoreCase
+	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
+	// goverter:matchIgnoreCase
+	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
+	// goverter:matchIgnoreCase
+	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget
 }
 
 func ToBizInternalID(id *librarian.InternalID) model.InternalID {
@@ -191,5 +206,42 @@ func ToBizGroupFeedItemsBy(by pb.GroupFeedItemsRequest_GroupBy) modelyesod.Group
 		return modelyesod.GroupFeedItemsByDay
 	default:
 		return modelyesod.GroupFeedItemsByUnspecified
+	}
+}
+
+func ToBizNotifyTargetStatus(s pb.TargetStatus) modelnetzach.NotifyTargetStatus {
+	switch s {
+	case pb.TargetStatus_TARGET_STATUS_UNSPECIFIED:
+		return modelnetzach.NotifyTargetStatusUnspecified
+	case pb.TargetStatus_TARGET_STATUS_ACTIVE:
+		return modelnetzach.NotifyTargetStatusActive
+	case pb.TargetStatus_TARGET_STATUS_SUSPEND:
+		return modelnetzach.NotifyTargetStatusSuspend
+	default:
+		return modelnetzach.NotifyTargetStatusUnspecified
+	}
+}
+
+func ToBizNotifyTargetType(t pb.TargetType) modelnetzach.NotifyTargetType {
+	switch t {
+	case pb.TargetType_TARGET_TYPE_UNSPECIFIED:
+		return modelnetzach.NotifyTargetTypeUnspecified
+	case pb.TargetType_TARGET_TYPE_TELEGRAM:
+		return modelnetzach.NotifyTargetTypeTelegram
+	default:
+		return modelnetzach.NotifyTargetTypeUnspecified
+	}
+}
+
+func ToBizNotifyFlowStatus(s pb.FlowStatus) modelnetzach.NotifyFlowStatus {
+	switch s {
+	case pb.FlowStatus_FLOW_STATUS_UNSPECIFIED:
+		return modelnetzach.NotifyFlowStatusUnspecified
+	case pb.FlowStatus_FLOW_STATUS_ACTIVE:
+		return modelnetzach.NotifyFlowStatusActive
+	case pb.FlowStatus_FLOW_STATUS_SUSPEND:
+		return modelnetzach.NotifyFlowStatusSuspend
+	default:
+		return modelnetzach.NotifyFlowStatusUnspecified
 	}
 }

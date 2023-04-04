@@ -4,11 +4,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -34,6 +37,12 @@ func ToEntFeedConfigSourceList(a []modelyesod.FeedConfigSource) []feedconfig.Sou
 }
 func ToEntFeedConfigStatusList(a []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	return toEnt.ToEntFeedConfigStatusList(a)
+}
+func ToEntNotifyTargetTypeList(a []modelnetzach.NotifyTargetType) []notifytarget.Type {
+	return toEnt.ToEntNotifyTargetTypeList(a)
+}
+func ToEntNotifyTargetStatusList(a []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
+	return toEnt.ToEntNotifyTargetStatusList(a)
 }
 
 func ToBizUser(a *ent.User) *modeltiphereth.User {
@@ -77,4 +86,36 @@ func ToBizFeedItem(a *ent.FeedItem) *modelfeed.Item {
 }
 func ToBizFeedItemList(a []*ent.FeedItem) []*modelfeed.Item {
 	return toBiz.ToBizFeedItemList(a)
+}
+func ToBizNotifyTarget(a *ent.NotifyTarget) *modelnetzach.NotifyTarget {
+	return toBiz.ToBizNotifyTarget(a)
+}
+func ToBizNotifyTargetList(a []*ent.NotifyTarget) []*modelnetzach.NotifyTarget {
+	return toBiz.ToBizNotifyTargetList(a)
+}
+func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
+	res := toBiz.ToBizNotifyFlow(a)
+	if res == nil {
+		return res
+	}
+	if len(a.Edges.FeedConfig) > 0 {
+		feedIDs := make([]model.InternalID, 0, len(a.Edges.FeedConfig))
+		for _, config := range a.Edges.FeedConfig {
+			feedIDs = append(feedIDs, config.ID)
+		}
+		res.Source = &modelnetzach.NotifyFlowSource{
+			FeedIDFilter: feedIDs,
+		}
+	}
+	if len(a.Edges.NotifyFlowTarget) > 0 {
+		targets := make([]*modelnetzach.NotifyFlowTarget, 0, len(a.Edges.NotifyFlowTarget))
+		for _, target := range a.Edges.NotifyFlowTarget {
+			targets = append(targets, &modelnetzach.NotifyFlowTarget{
+				TargetID:  target.NotifyTargetID,
+				ChannelID: target.ChannelID,
+			})
+		}
+		res.Targets = targets
+	}
+	return res
 }

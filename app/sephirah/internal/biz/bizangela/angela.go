@@ -2,6 +2,7 @@ package bizangela
 
 import (
 	"context"
+	"errors"
 	"net/url"
 	"strconv"
 	"time"
@@ -12,9 +13,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -24,6 +27,7 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/google/wire"
+	"golang.org/x/exp/slices"
 )
 
 var ProviderSet = wire.NewSet(
@@ -33,6 +37,11 @@ var ProviderSet = wire.NewSet(
 	NewPullSteamAccountAppRelationTopic,
 	NewPullSteamAppTopic,
 	NewPullFeedTopic,
+	NewNotifyRouterTopic,
+	NewNotifyPushTopic,
+	NewFeedToNotifyFlowMap,
+	NewNotifyFlowCache,
+	NewNotifyTargetCache,
 )
 
 type Angela struct {
@@ -71,6 +80,8 @@ func NewAngela(
 	pullSteamAccountAppRelation *libmq.Topic[modelangela.PullSteamAccountAppRelation],
 	pullSteamApp *libmq.Topic[modelangela.PullSteamApp],
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
+	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
+	notifyPush *libmq.Topic[modelangela.NotifyPush],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -82,6 +93,12 @@ func NewAngela(
 		return nil, err
 	}
 	if err := mq.RegisterTopic(pullFeed); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(notifyRouter); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(notifyPush); err != nil {
 		return nil, err
 	}
 	return &Angela{
@@ -279,8 +296,9 @@ func NewPullSteamAppTopic(
 	)
 }
 
-func NewPullFeedTopic(
+func NewPullFeedTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
+	notify *libmq.Topic[modelangela.NotifyRouter],
 ) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
@@ -321,7 +339,89 @@ func NewPullFeedTopic(
 					item.PublishedParsed = &t
 				}
 			}
-			return a.y.UpsertFeedItems(ctx, feed.Items, feed.ID)
+			newItemGUIDs, err := a.y.UpsertFeedItems(ctx, feed.Items, feed.ID)
+			if err != nil {
+				return err
+			}
+			newItems := make([]*modelfeed.Item, 0, len(newItemGUIDs))
+			for _, item := range feed.Items {
+				if slices.Contains(newItemGUIDs, item.GUID) {
+					newItems = append(newItems, item)
+				}
+			}
+			err = notify.Publish(ctx, modelangela.NotifyRouter{
+				FeedID:   feed.ID,
+				Messages: newItems,
+			})
+			if err != nil {
+				return err
+			}
+			return nil
+		},
+	)
+}
+
+func NewNotifyRouterTopic(
+	a *AngelaBase,
+	flowMap *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
+	feedToFlowMap *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
+	push *libmq.Topic[modelangela.NotifyPush],
+) *libmq.Topic[modelangela.NotifyRouter] {
+	return libmq.NewTopic[modelangela.NotifyRouter](
+		"NotifyRouter",
+		func(ctx context.Context, r *modelangela.NotifyRouter) error {
+			flowIDs, err := feedToFlowMap.GetWithFallBack(ctx, r.FeedID, nil)
+			if err != nil {
+				return err
+			}
+			if flowIDs == nil {
+				return errors.New("nil result from feedToFlowMap")
+			}
+			for _, flowID := range *flowIDs {
+				var flow *modelnetzach.NotifyFlow
+				flow, err = flowMap.GetWithFallBack(ctx, flowID, nil)
+				if err != nil {
+					return err
+				}
+				for _, target := range flow.Targets {
+					if target == nil {
+						continue
+					}
+					err = push.Publish(ctx, modelangela.NotifyPush{
+						Target:   *target,
+						Messages: r.Messages,
+					})
+					if err != nil {
+						return err
+					}
+				}
+			}
+			return nil
+		},
+	)
+}
+
+func NewNotifyPushTopic(
+	a *AngelaBase,
+	targetMap *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
+) *libmq.Topic[modelangela.NotifyPush] {
+	return libmq.NewTopic[modelangela.NotifyPush](
+		"NotifyPush",
+		func(ctx context.Context, p *modelangela.NotifyPush) error {
+			target, err := targetMap.GetWithFallBack(ctx, p.Target.TargetID, nil)
+			if err != nil {
+				return err
+			}
+			_, err = a.porter.PushFeedItems(ctx, &porter.PushFeedItemsRequest{
+				Destination: converter.ToPBFeedDestination(target.Type),
+				ChannelId:   p.Target.ChannelID,
+				Items:       converter.ToPBFeedItemList(p.Messages),
+				Token:       target.Token,
+			})
+			if err != nil {
+				return err
+			}
+			return nil
 		},
 	)
 }

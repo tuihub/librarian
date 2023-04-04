@@ -4,11 +4,13 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -22,6 +24,9 @@ import (
 // goverter:extend ToPBTimePtr
 // goverter:extend ToPBDuration
 type toPBConverter interface { //nolint:unused // used by generator
+	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
+	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
+
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBUserType
 	// goverter:map Status | ToPBUserStatus
@@ -69,8 +74,20 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBItemIDWithFeedID(*modelyesod.FeedItemIDWithFeedID) *pb.FeedItemIDWithFeedID
 	ToPBItemIDWithFeedIDList([]*modelyesod.FeedItemIDWithFeedID) []*pb.FeedItemIDWithFeedID
 
-	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
-	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
+	// goverter:matchIgnoreCase
+	// goverter:map Type | ToPBNotifyTargetType
+	// goverter:map Status | ToPBNotifyTargetStatus
+	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
+	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
+
+	// goverter:matchIgnoreCase
+	// goverter:map Status | ToPBNotifyFlowStatus
+	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *pb.NotifyFlow
+	// goverter:matchIgnoreCase
+	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
+	// goverter:matchIgnoreCase
+	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
+	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
 }
 
 func ToPBInternalID(id model.InternalID) *librarian.InternalID {
@@ -189,5 +206,53 @@ func ToPBFeedConfigSource(s modelyesod.FeedConfigSource) pb.FeedConfigSource {
 		return pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON
 	default:
 		return pb.FeedConfigSource_FEED_CONFIG_SOURCE_UNSPECIFIED
+	}
+}
+
+func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.TargetStatus {
+	switch s {
+	case modelnetzach.NotifyTargetStatusUnspecified:
+		return pb.TargetStatus_TARGET_STATUS_UNSPECIFIED
+	case modelnetzach.NotifyTargetStatusActive:
+		return pb.TargetStatus_TARGET_STATUS_ACTIVE
+	case modelnetzach.NotifyTargetStatusSuspend:
+		return pb.TargetStatus_TARGET_STATUS_SUSPEND
+	default:
+		return pb.TargetStatus_TARGET_STATUS_UNSPECIFIED
+	}
+}
+
+func ToPBNotifyTargetType(t modelnetzach.NotifyTargetType) pb.TargetType {
+	switch t {
+	case modelnetzach.NotifyTargetTypeUnspecified:
+		return pb.TargetType_TARGET_TYPE_UNSPECIFIED
+	case modelnetzach.NotifyTargetTypeTelegram:
+		return pb.TargetType_TARGET_TYPE_TELEGRAM
+	default:
+		return pb.TargetType_TARGET_TYPE_UNSPECIFIED
+	}
+}
+
+func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.FlowStatus {
+	switch s {
+	case modelnetzach.NotifyFlowStatusUnspecified:
+		return pb.FlowStatus_FLOW_STATUS_UNSPECIFIED
+	case modelnetzach.NotifyFlowStatusActive:
+		return pb.FlowStatus_FLOW_STATUS_ACTIVE
+	case modelnetzach.NotifyFlowStatusSuspend:
+		return pb.FlowStatus_FLOW_STATUS_SUSPEND
+	default:
+		return pb.FlowStatus_FLOW_STATUS_UNSPECIFIED
+	}
+}
+
+func ToPBFeedDestination(t modelnetzach.NotifyTargetType) porter.FeedDestination {
+	switch t {
+	case modelnetzach.NotifyTargetTypeUnspecified:
+		return porter.FeedDestination_FEED_DESTINATION_UNSPECIFIED
+	case modelnetzach.NotifyTargetTypeTelegram:
+		return porter.FeedDestination_FEED_DESTINATION_TELEGRAM
+	default:
+		return porter.FeedDestination_FEED_DESTINATION_UNSPECIFIED
 	}
 }

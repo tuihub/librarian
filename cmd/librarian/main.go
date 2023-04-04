@@ -63,6 +63,7 @@ func main() {
 		bc.Porter.Data,
 		bc.Sephirah.Auth,
 		bc.Sephirah.Mq,
+		bc.Sephirah.Cache,
 		appSettings,
 	)
 	if err != nil {

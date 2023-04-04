@@ -81,6 +81,42 @@ func (f FeedItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedItemMutation", m)
 }
 
+// The NotifyFlowFunc type is an adapter to allow the use of ordinary
+// function as NotifyFlow mutator.
+type NotifyFlowFunc func(context.Context, *ent.NotifyFlowMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotifyFlowFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotifyFlowMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyFlowMutation", m)
+}
+
+// The NotifyFlowTargetFunc type is an adapter to allow the use of ordinary
+// function as NotifyFlowTarget mutator.
+type NotifyFlowTargetFunc func(context.Context, *ent.NotifyFlowTargetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotifyFlowTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotifyFlowTargetMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyFlowTargetMutation", m)
+}
+
+// The NotifyTargetFunc type is an adapter to allow the use of ordinary
+// function as NotifyTarget mutator.
+type NotifyTargetFunc func(context.Context, *ent.NotifyTargetMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotifyTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotifyTargetMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyTargetMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

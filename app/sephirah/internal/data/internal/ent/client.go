@@ -21,6 +21,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 )
 
@@ -41,6 +44,12 @@ type Client struct {
 	FeedConfig *FeedConfigClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
+	// NotifyFlow is the client for interacting with the NotifyFlow builders.
+	NotifyFlow *NotifyFlowClient
+	// NotifyFlowTarget is the client for interacting with the NotifyFlowTarget builders.
+	NotifyFlowTarget *NotifyFlowTargetClient
+	// NotifyTarget is the client for interacting with the NotifyTarget builders.
+	NotifyTarget *NotifyTargetClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -62,6 +71,9 @@ func (c *Client) init() {
 	c.Feed = NewFeedClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
+	c.NotifyFlow = NewNotifyFlowClient(c.config)
+	c.NotifyFlowTarget = NewNotifyFlowTargetClient(c.config)
+	c.NotifyTarget = NewNotifyTargetClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -143,15 +155,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Account:    NewAccountClient(cfg),
-		App:        NewAppClient(cfg),
-		AppPackage: NewAppPackageClient(cfg),
-		Feed:       NewFeedClient(cfg),
-		FeedConfig: NewFeedConfigClient(cfg),
-		FeedItem:   NewFeedItemClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		Account:          NewAccountClient(cfg),
+		App:              NewAppClient(cfg),
+		AppPackage:       NewAppPackageClient(cfg),
+		Feed:             NewFeedClient(cfg),
+		FeedConfig:       NewFeedConfigClient(cfg),
+		FeedItem:         NewFeedItemClient(cfg),
+		NotifyFlow:       NewNotifyFlowClient(cfg),
+		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
+		NotifyTarget:     NewNotifyTargetClient(cfg),
+		User:             NewUserClient(cfg),
 	}, nil
 }
 
@@ -169,15 +184,18 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Account:    NewAccountClient(cfg),
-		App:        NewAppClient(cfg),
-		AppPackage: NewAppPackageClient(cfg),
-		Feed:       NewFeedClient(cfg),
-		FeedConfig: NewFeedConfigClient(cfg),
-		FeedItem:   NewFeedItemClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:              ctx,
+		config:           cfg,
+		Account:          NewAccountClient(cfg),
+		App:              NewAppClient(cfg),
+		AppPackage:       NewAppPackageClient(cfg),
+		Feed:             NewFeedClient(cfg),
+		FeedConfig:       NewFeedConfigClient(cfg),
+		FeedItem:         NewFeedItemClient(cfg),
+		NotifyFlow:       NewNotifyFlowClient(cfg),
+		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
+		NotifyTarget:     NewNotifyTargetClient(cfg),
+		User:             NewUserClient(cfg),
 	}, nil
 }
 
@@ -207,7 +225,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.User,
+		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.NotifyFlow,
+		c.NotifyFlowTarget, c.NotifyTarget, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -217,7 +236,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.User,
+		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.NotifyFlow,
+		c.NotifyFlowTarget, c.NotifyTarget, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -238,6 +258,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.FeedConfig.mutate(ctx, m)
 	case *FeedItemMutation:
 		return c.FeedItem.mutate(ctx, m)
+	case *NotifyFlowMutation:
+		return c.NotifyFlow.mutate(ctx, m)
+	case *NotifyFlowTargetMutation:
+		return c.NotifyFlowTarget.mutate(ctx, m)
+	case *NotifyTargetMutation:
+		return c.NotifyTarget.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -986,6 +1012,22 @@ func (c *FeedConfigClient) QueryFeed(fc *FeedConfig) *FeedQuery {
 	return query
 }
 
+// QueryNotifyFlow queries the notify_flow edge of a FeedConfig.
+func (c *FeedConfigClient) QueryNotifyFlow(fc *FeedConfig) *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, feedconfig.NotifyFlowTable, feedconfig.NotifyFlowPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FeedConfigClient) Hooks() []Hook {
 	return c.hooks.FeedConfig
@@ -1142,6 +1184,504 @@ func (c *FeedItemClient) mutate(ctx context.Context, m *FeedItemMutation) (Value
 		return (&FeedItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown FeedItem mutation op: %q", m.Op())
+	}
+}
+
+// NotifyFlowClient is a client for the NotifyFlow schema.
+type NotifyFlowClient struct {
+	config
+}
+
+// NewNotifyFlowClient returns a client for the NotifyFlow from the given config.
+func NewNotifyFlowClient(c config) *NotifyFlowClient {
+	return &NotifyFlowClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notifyflow.Hooks(f(g(h())))`.
+func (c *NotifyFlowClient) Use(hooks ...Hook) {
+	c.hooks.NotifyFlow = append(c.hooks.NotifyFlow, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notifyflow.Intercept(f(g(h())))`.
+func (c *NotifyFlowClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NotifyFlow = append(c.inters.NotifyFlow, interceptors...)
+}
+
+// Create returns a builder for creating a NotifyFlow entity.
+func (c *NotifyFlowClient) Create() *NotifyFlowCreate {
+	mutation := newNotifyFlowMutation(c.config, OpCreate)
+	return &NotifyFlowCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NotifyFlow entities.
+func (c *NotifyFlowClient) CreateBulk(builders ...*NotifyFlowCreate) *NotifyFlowCreateBulk {
+	return &NotifyFlowCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NotifyFlow.
+func (c *NotifyFlowClient) Update() *NotifyFlowUpdate {
+	mutation := newNotifyFlowMutation(c.config, OpUpdate)
+	return &NotifyFlowUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotifyFlowClient) UpdateOne(nf *NotifyFlow) *NotifyFlowUpdateOne {
+	mutation := newNotifyFlowMutation(c.config, OpUpdateOne, withNotifyFlow(nf))
+	return &NotifyFlowUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotifyFlowClient) UpdateOneID(id model.InternalID) *NotifyFlowUpdateOne {
+	mutation := newNotifyFlowMutation(c.config, OpUpdateOne, withNotifyFlowID(id))
+	return &NotifyFlowUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NotifyFlow.
+func (c *NotifyFlowClient) Delete() *NotifyFlowDelete {
+	mutation := newNotifyFlowMutation(c.config, OpDelete)
+	return &NotifyFlowDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotifyFlowClient) DeleteOne(nf *NotifyFlow) *NotifyFlowDeleteOne {
+	return c.DeleteOneID(nf.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotifyFlowClient) DeleteOneID(id model.InternalID) *NotifyFlowDeleteOne {
+	builder := c.Delete().Where(notifyflow.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotifyFlowDeleteOne{builder}
+}
+
+// Query returns a query builder for NotifyFlow.
+func (c *NotifyFlowClient) Query() *NotifyFlowQuery {
+	return &NotifyFlowQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotifyFlow},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NotifyFlow entity by its id.
+func (c *NotifyFlowClient) Get(ctx context.Context, id model.InternalID) (*NotifyFlow, error) {
+	return c.Query().Where(notifyflow.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotifyFlowClient) GetX(ctx context.Context, id model.InternalID) *NotifyFlow {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a NotifyFlow.
+func (c *NotifyFlowClient) QueryOwner(nf *NotifyFlow) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nf.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notifyflow.OwnerTable, notifyflow.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(nf.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyTarget queries the notify_target edge of a NotifyFlow.
+func (c *NotifyFlowClient) QueryNotifyTarget(nf *NotifyFlow) *NotifyTargetQuery {
+	query := (&NotifyTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nf.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, id),
+			sqlgraph.To(notifytarget.Table, notifytarget.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, notifyflow.NotifyTargetTable, notifyflow.NotifyTargetPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(nf.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedConfig queries the feed_config edge of a NotifyFlow.
+func (c *NotifyFlowClient) QueryFeedConfig(nf *NotifyFlow) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nf.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, notifyflow.FeedConfigTable, notifyflow.FeedConfigPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(nf.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlowTarget queries the notify_flow_target edge of a NotifyFlow.
+func (c *NotifyFlowClient) QueryNotifyFlowTarget(nf *NotifyFlow) *NotifyFlowTargetQuery {
+	query := (&NotifyFlowTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nf.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, id),
+			sqlgraph.To(notifyflowtarget.Table, notifyflowtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, notifyflow.NotifyFlowTargetTable, notifyflow.NotifyFlowTargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(nf.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *NotifyFlowClient) Hooks() []Hook {
+	return c.hooks.NotifyFlow
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotifyFlowClient) Interceptors() []Interceptor {
+	return c.inters.NotifyFlow
+}
+
+func (c *NotifyFlowClient) mutate(ctx context.Context, m *NotifyFlowMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotifyFlowCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotifyFlowUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotifyFlowUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotifyFlowDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NotifyFlow mutation op: %q", m.Op())
+	}
+}
+
+// NotifyFlowTargetClient is a client for the NotifyFlowTarget schema.
+type NotifyFlowTargetClient struct {
+	config
+}
+
+// NewNotifyFlowTargetClient returns a client for the NotifyFlowTarget from the given config.
+func NewNotifyFlowTargetClient(c config) *NotifyFlowTargetClient {
+	return &NotifyFlowTargetClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notifyflowtarget.Hooks(f(g(h())))`.
+func (c *NotifyFlowTargetClient) Use(hooks ...Hook) {
+	c.hooks.NotifyFlowTarget = append(c.hooks.NotifyFlowTarget, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notifyflowtarget.Intercept(f(g(h())))`.
+func (c *NotifyFlowTargetClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NotifyFlowTarget = append(c.inters.NotifyFlowTarget, interceptors...)
+}
+
+// Create returns a builder for creating a NotifyFlowTarget entity.
+func (c *NotifyFlowTargetClient) Create() *NotifyFlowTargetCreate {
+	mutation := newNotifyFlowTargetMutation(c.config, OpCreate)
+	return &NotifyFlowTargetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NotifyFlowTarget entities.
+func (c *NotifyFlowTargetClient) CreateBulk(builders ...*NotifyFlowTargetCreate) *NotifyFlowTargetCreateBulk {
+	return &NotifyFlowTargetCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NotifyFlowTarget.
+func (c *NotifyFlowTargetClient) Update() *NotifyFlowTargetUpdate {
+	mutation := newNotifyFlowTargetMutation(c.config, OpUpdate)
+	return &NotifyFlowTargetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotifyFlowTargetClient) UpdateOne(nft *NotifyFlowTarget) *NotifyFlowTargetUpdateOne {
+	mutation := newNotifyFlowTargetMutation(c.config, OpUpdateOne, withNotifyFlowTarget(nft))
+	return &NotifyFlowTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotifyFlowTargetClient) UpdateOneID(id model.InternalID) *NotifyFlowTargetUpdateOne {
+	mutation := newNotifyFlowTargetMutation(c.config, OpUpdateOne, withNotifyFlowTargetID(id))
+	return &NotifyFlowTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NotifyFlowTarget.
+func (c *NotifyFlowTargetClient) Delete() *NotifyFlowTargetDelete {
+	mutation := newNotifyFlowTargetMutation(c.config, OpDelete)
+	return &NotifyFlowTargetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotifyFlowTargetClient) DeleteOne(nft *NotifyFlowTarget) *NotifyFlowTargetDeleteOne {
+	return c.DeleteOneID(nft.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotifyFlowTargetClient) DeleteOneID(id model.InternalID) *NotifyFlowTargetDeleteOne {
+	builder := c.Delete().Where(notifyflowtarget.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotifyFlowTargetDeleteOne{builder}
+}
+
+// Query returns a query builder for NotifyFlowTarget.
+func (c *NotifyFlowTargetClient) Query() *NotifyFlowTargetQuery {
+	return &NotifyFlowTargetQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotifyFlowTarget},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NotifyFlowTarget entity by its id.
+func (c *NotifyFlowTargetClient) Get(ctx context.Context, id model.InternalID) (*NotifyFlowTarget, error) {
+	return c.Query().Where(notifyflowtarget.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotifyFlowTargetClient) GetX(ctx context.Context, id model.InternalID) *NotifyFlowTarget {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryNotifyFlow queries the notify_flow edge of a NotifyFlowTarget.
+func (c *NotifyFlowTargetClient) QueryNotifyFlow(nft *NotifyFlowTarget) *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nft.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflowtarget.Table, notifyflowtarget.FieldID, id),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowtarget.NotifyFlowTable, notifyflowtarget.NotifyFlowColumn),
+		)
+		fromV = sqlgraph.Neighbors(nft.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyTarget queries the notify_target edge of a NotifyFlowTarget.
+func (c *NotifyFlowTargetClient) QueryNotifyTarget(nft *NotifyFlowTarget) *NotifyTargetQuery {
+	query := (&NotifyTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nft.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflowtarget.Table, notifyflowtarget.FieldID, id),
+			sqlgraph.To(notifytarget.Table, notifytarget.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowtarget.NotifyTargetTable, notifyflowtarget.NotifyTargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(nft.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *NotifyFlowTargetClient) Hooks() []Hook {
+	return c.hooks.NotifyFlowTarget
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotifyFlowTargetClient) Interceptors() []Interceptor {
+	return c.inters.NotifyFlowTarget
+}
+
+func (c *NotifyFlowTargetClient) mutate(ctx context.Context, m *NotifyFlowTargetMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotifyFlowTargetCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotifyFlowTargetUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotifyFlowTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotifyFlowTargetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NotifyFlowTarget mutation op: %q", m.Op())
+	}
+}
+
+// NotifyTargetClient is a client for the NotifyTarget schema.
+type NotifyTargetClient struct {
+	config
+}
+
+// NewNotifyTargetClient returns a client for the NotifyTarget from the given config.
+func NewNotifyTargetClient(c config) *NotifyTargetClient {
+	return &NotifyTargetClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notifytarget.Hooks(f(g(h())))`.
+func (c *NotifyTargetClient) Use(hooks ...Hook) {
+	c.hooks.NotifyTarget = append(c.hooks.NotifyTarget, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notifytarget.Intercept(f(g(h())))`.
+func (c *NotifyTargetClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NotifyTarget = append(c.inters.NotifyTarget, interceptors...)
+}
+
+// Create returns a builder for creating a NotifyTarget entity.
+func (c *NotifyTargetClient) Create() *NotifyTargetCreate {
+	mutation := newNotifyTargetMutation(c.config, OpCreate)
+	return &NotifyTargetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NotifyTarget entities.
+func (c *NotifyTargetClient) CreateBulk(builders ...*NotifyTargetCreate) *NotifyTargetCreateBulk {
+	return &NotifyTargetCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NotifyTarget.
+func (c *NotifyTargetClient) Update() *NotifyTargetUpdate {
+	mutation := newNotifyTargetMutation(c.config, OpUpdate)
+	return &NotifyTargetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotifyTargetClient) UpdateOne(nt *NotifyTarget) *NotifyTargetUpdateOne {
+	mutation := newNotifyTargetMutation(c.config, OpUpdateOne, withNotifyTarget(nt))
+	return &NotifyTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotifyTargetClient) UpdateOneID(id model.InternalID) *NotifyTargetUpdateOne {
+	mutation := newNotifyTargetMutation(c.config, OpUpdateOne, withNotifyTargetID(id))
+	return &NotifyTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NotifyTarget.
+func (c *NotifyTargetClient) Delete() *NotifyTargetDelete {
+	mutation := newNotifyTargetMutation(c.config, OpDelete)
+	return &NotifyTargetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotifyTargetClient) DeleteOne(nt *NotifyTarget) *NotifyTargetDeleteOne {
+	return c.DeleteOneID(nt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotifyTargetClient) DeleteOneID(id model.InternalID) *NotifyTargetDeleteOne {
+	builder := c.Delete().Where(notifytarget.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotifyTargetDeleteOne{builder}
+}
+
+// Query returns a query builder for NotifyTarget.
+func (c *NotifyTargetClient) Query() *NotifyTargetQuery {
+	return &NotifyTargetQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotifyTarget},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NotifyTarget entity by its id.
+func (c *NotifyTargetClient) Get(ctx context.Context, id model.InternalID) (*NotifyTarget, error) {
+	return c.Query().Where(notifytarget.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotifyTargetClient) GetX(ctx context.Context, id model.InternalID) *NotifyTarget {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a NotifyTarget.
+func (c *NotifyTargetClient) QueryOwner(nt *NotifyTarget) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifytarget.Table, notifytarget.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notifytarget.OwnerTable, notifytarget.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(nt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlow queries the notify_flow edge of a NotifyTarget.
+func (c *NotifyTargetClient) QueryNotifyFlow(nt *NotifyTarget) *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifytarget.Table, notifytarget.FieldID, id),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, notifytarget.NotifyFlowTable, notifytarget.NotifyFlowPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(nt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlowTarget queries the notify_flow_target edge of a NotifyTarget.
+func (c *NotifyTargetClient) QueryNotifyFlowTarget(nt *NotifyTarget) *NotifyFlowTargetQuery {
+	query := (&NotifyFlowTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := nt.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifytarget.Table, notifytarget.FieldID, id),
+			sqlgraph.To(notifyflowtarget.Table, notifyflowtarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, notifytarget.NotifyFlowTargetTable, notifytarget.NotifyFlowTargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(nt.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *NotifyTargetClient) Hooks() []Hook {
+	return c.hooks.NotifyTarget
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotifyTargetClient) Interceptors() []Interceptor {
+	return c.inters.NotifyTarget
+}
+
+func (c *NotifyTargetClient) mutate(ctx context.Context, m *NotifyTargetMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotifyTargetCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotifyTargetUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotifyTargetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotifyTargetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NotifyTarget mutation op: %q", m.Op())
 	}
 }
 
@@ -1302,6 +1842,38 @@ func (c *UserClient) QueryFeedConfig(u *User) *FeedConfigQuery {
 	return query
 }
 
+// QueryNotifyTarget queries the notify_target edge of a User.
+func (c *UserClient) QueryNotifyTarget(u *User) *NotifyTargetQuery {
+	query := (&NotifyTargetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(notifytarget.Table, notifytarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifyTargetTable, user.NotifyTargetColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlow queries the notify_flow edge of a User.
+func (c *UserClient) QueryNotifyFlow(u *User) *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifyFlowTable, user.NotifyFlowColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryCreator queries the creator edge of a User.
 func (c *UserClient) QueryCreator(u *User) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
@@ -1362,9 +1934,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Account, App, AppPackage, Feed, FeedConfig, FeedItem, User []ent.Hook
+		Account, App, AppPackage, Feed, FeedConfig, FeedItem, NotifyFlow,
+		NotifyFlowTarget, NotifyTarget, User []ent.Hook
 	}
 	inters struct {
-		Account, App, AppPackage, Feed, FeedConfig, FeedItem, User []ent.Interceptor
+		Account, App, AppPackage, Feed, FeedConfig, FeedItem, NotifyFlow,
+		NotifyFlowTarget, NotifyTarget, User []ent.Interceptor
 	}
 )

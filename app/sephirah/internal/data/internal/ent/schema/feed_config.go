@@ -6,7 +6,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
-	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -18,15 +17,8 @@ type FeedConfig struct {
 
 // Fields of the FeedConfig.
 func (FeedConfig) Fields() []ent.Field {
-	incrementalEnabled := false
 	return []ent.Field{
-		field.Int64("id").
-			Unique().
-			Immutable().
-			GoType(model.InternalID(0)).
-			Annotations(entsql.Annotation{ //nolint:exhaustruct // no need
-				Incremental: &incrementalEnabled,
-			}),
+		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("feed_url"),
 		field.Int64("author_account").
@@ -56,5 +48,6 @@ func (FeedConfig) Edges() []ent.Edge {
 			Unique(),
 		edge.To("feed", Feed.Type).
 			Unique(),
+		edge.To("notify_flow", NotifyFlow.Type),
 	}
 }

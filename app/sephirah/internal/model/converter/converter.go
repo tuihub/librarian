@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -97,6 +98,18 @@ func ToPBTimeRange(a *model.TimeRange) *librarian.TimeRange {
 func ToPBInternalIDList(a []model.InternalID) []*librarian.InternalID {
 	return toPB.ToPBInternalIDList(a)
 }
+func ToPBNotifyTarget(a *modelnetzach.NotifyTarget) *pb.NotifyTarget {
+	return toPB.ToPBNotifyTarget(a)
+}
+func ToPBNotifyTargetList(a []*modelnetzach.NotifyTarget) []*pb.NotifyTarget {
+	return toPB.ToPBNotifyTargetList(a)
+}
+func ToPBNotifyFlow(a *modelnetzach.NotifyFlow) *pb.NotifyFlow {
+	return toPB.ToPBNotifyFlow(a)
+}
+func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
+	return toPB.ToPBNotifyFlowList(a)
+}
 func ToBizInternalIDList(a []*librarian.InternalID) []model.InternalID {
 	return toBiz.ToBizInternalIDList(a)
 }
@@ -138,4 +151,16 @@ func ToBizFeedConfigStatusList(a []pb.FeedConfigStatus) []modelyesod.FeedConfigS
 }
 func ToBizTimeRange(a *librarian.TimeRange) *model.TimeRange {
 	return toBiz.ToBizTimeRange(a)
+}
+func ToBizNotifyTarget(a *pb.NotifyTarget) *modelnetzach.NotifyTarget {
+	return toBiz.ToBizNotifyTarget(a)
+}
+func ToBizNotifyTargetTypeList(a []pb.TargetType) []modelnetzach.NotifyTargetType {
+	return toBiz.ToBizNotifyTargetTypeList(a)
+}
+func ToBizNotifyTargetStatusList(a []pb.TargetStatus) []modelnetzach.NotifyTargetStatus {
+	return toBiz.ToBizNotifyTargetStatusList(a)
+}
+func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
+	return toBiz.ToBizNotifyFlow(a)
 }

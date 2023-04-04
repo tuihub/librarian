@@ -15,6 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -31,6 +33,8 @@ type UserQuery struct {
 	withPurchasedApp *AppQuery
 	withAppPackage   *AppPackageQuery
 	withFeedConfig   *FeedConfigQuery
+	withNotifyTarget *NotifyTargetQuery
+	withNotifyFlow   *NotifyFlowQuery
 	withCreator      *UserQuery
 	withCreatedUser  *UserQuery
 	withFKs          bool
@@ -151,6 +155,50 @@ func (uq *UserQuery) QueryFeedConfig() *FeedConfigQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedConfigTable, user.FeedConfigColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryNotifyTarget chains the current query on the "notify_target" edge.
+func (uq *UserQuery) QueryNotifyTarget() *NotifyTargetQuery {
+	query := (&NotifyTargetClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(notifytarget.Table, notifytarget.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifyTargetTable, user.NotifyTargetColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryNotifyFlow chains the current query on the "notify_flow" edge.
+func (uq *UserQuery) QueryNotifyFlow() *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifyFlowTable, user.NotifyFlowColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -398,6 +446,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withPurchasedApp: uq.withPurchasedApp.Clone(),
 		withAppPackage:   uq.withAppPackage.Clone(),
 		withFeedConfig:   uq.withFeedConfig.Clone(),
+		withNotifyTarget: uq.withNotifyTarget.Clone(),
+		withNotifyFlow:   uq.withNotifyFlow.Clone(),
 		withCreator:      uq.withCreator.Clone(),
 		withCreatedUser:  uq.withCreatedUser.Clone(),
 		// clone intermediate query.
@@ -447,6 +497,28 @@ func (uq *UserQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withFeedConfig = query
+	return uq
+}
+
+// WithNotifyTarget tells the query-builder to eager-load the nodes that are connected to
+// the "notify_target" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNotifyTarget(opts ...func(*NotifyTargetQuery)) *UserQuery {
+	query := (&NotifyTargetClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withNotifyTarget = query
+	return uq
+}
+
+// WithNotifyFlow tells the query-builder to eager-load the nodes that are connected to
+// the "notify_flow" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *UserQuery {
+	query := (&NotifyFlowClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withNotifyFlow = query
 	return uq
 }
 
@@ -551,11 +623,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [6]bool{
+		loadedTypes = [8]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withAppPackage != nil,
 			uq.withFeedConfig != nil,
+			uq.withNotifyTarget != nil,
+			uq.withNotifyFlow != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
 		}
@@ -609,6 +683,20 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadFeedConfig(ctx, query, nodes,
 			func(n *User) { n.Edges.FeedConfig = []*FeedConfig{} },
 			func(n *User, e *FeedConfig) { n.Edges.FeedConfig = append(n.Edges.FeedConfig, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withNotifyTarget; query != nil {
+		if err := uq.loadNotifyTarget(ctx, query, nodes,
+			func(n *User) { n.Edges.NotifyTarget = []*NotifyTarget{} },
+			func(n *User, e *NotifyTarget) { n.Edges.NotifyTarget = append(n.Edges.NotifyTarget, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withNotifyFlow; query != nil {
+		if err := uq.loadNotifyFlow(ctx, query, nodes,
+			func(n *User) { n.Edges.NotifyFlow = []*NotifyFlow{} },
+			func(n *User, e *NotifyFlow) { n.Edges.NotifyFlow = append(n.Edges.NotifyFlow, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -777,6 +865,68 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "user_feed_config" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQuery, nodes []*User, init func(*User), assign func(*User, *NotifyTarget)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.NotifyTarget(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.NotifyTargetColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_notify_target
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_notify_target" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_notify_target" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery, nodes []*User, init func(*User), assign func(*User, *NotifyFlow)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.NotifyFlow(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.NotifyFlowColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_notify_flow
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_notify_flow" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_notify_flow" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

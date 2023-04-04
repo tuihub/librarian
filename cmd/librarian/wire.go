@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
@@ -31,6 +32,7 @@ func wireApp(
 	*conf.Porter_Data,
 	*conf.Auth,
 	*conf.MQ,
+	*conf.Cache,
 	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(
@@ -44,6 +46,7 @@ func wireApp(
 			libauth.ProviderSet,
 			libmq.ProviderSet,
 			libcron.ProviderSet,
+			libcache.ProviderSet,
 			ProviderSet,
 		),
 	)
