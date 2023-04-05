@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.1.0](https://github.com/TuiHub/Librarian/compare/v0.0.11...v0.1.0) (2023-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* add consul support
+
+### Features
+
+* add consul support ([dd9a85f](https://github.com/TuiHub/Librarian/commit/dd9a85f0b59c435fcba535a21aa716ea83db0ad2))
+* add Netzach module ([92e6863](https://github.com/TuiHub/Librarian/commit/92e686386e2f9fcfde41d5c6bfa3d8f667548d46))
+* add ristretto & redis support ([fa38035](https://github.com/TuiHub/Librarian/commit/fa38035cec5d748765d5ead5dabd53b51fae0b0d))
+* **porter:** support feature flag ([dded94c](https://github.com/TuiHub/Librarian/commit/dded94cadd5d407a113d9c8df24a6bcb80b170f4))
+
+
+### Bug Fixes
+
+* allow run in single mode without consul ([bf93c24](https://github.com/TuiHub/Librarian/commit/bf93c2450a5165e9147e53ace3c0e24334eb5791))
+* avoid repeat queue ([dd2c9ca](https://github.com/TuiHub/Librarian/commit/dd2c9ca161140ac89a184a0152f0f1295db78537))
+* tested push to telegram ([a2886d4](https://github.com/TuiHub/Librarian/commit/a2886d41bfc31883d3e7f08e57475964c4545233))
+* tested ReportAppPackages ([92ff407](https://github.com/TuiHub/Librarian/commit/92ff40738e39d8d15077692a3370e95d01d792ab))
+* use correct conversion ([f5f25e9](https://github.com/TuiHub/Librarian/commit/f5f25e9c38e43402371f6ec5f948548cfb01cc47))
+
 ## [0.0.11](https://github.com/TuiHub/Librarian/compare/v0.0.10...v0.0.11) (2023-03-29)
 
 
