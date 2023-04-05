@@ -46,19 +46,7 @@ func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
 		message.RouterConfig{CloseTimeout: 0},
 		loggerAdapter,
 	)
-	router.AddMiddleware(
-		middleware.CorrelationID,
-		middleware.Retry{
-			MaxRetries:          5,                      //nolint:gomnd //TODO
-			InitialInterval:     time.Millisecond * 100, //nolint:gomnd //TODO
-			MaxInterval:         0,
-			Multiplier:          0,
-			MaxElapsedTime:      0,
-			RandomizationFactor: 0,
-			OnRetryHook:         nil,
-			Logger:              loggerAdapter,
-		}.Middleware,
-	)
+	router.AddMiddleware(middleware.CorrelationID)
 	if app.EnablePanicRecovery {
 		router.AddMiddleware(middleware.Recoverer)
 	}
@@ -79,23 +67,38 @@ func (a *MQ) Stop(ctx context.Context) error {
 	return a.router.Close()
 }
 
+// RegisterTopic register Topic to MQ
+// If a message keep fail after retry, It will be sent to the PoisonQueue.
+// PoisonQueue will retry messages in a very low rate.
 func (a *MQ) RegisterTopic(topic TopicInterface) error {
 	if _, exist := a.topicList[topic.Name()]; exist {
 		return fmt.Errorf("topic %s already registered", topic)
 	}
 	a.topicList[topic.Name()] = true
+	poisonQueue, err := middleware.PoisonQueue(a.pubSub.publisher, poisonedTopicName(topic.Name()))
+	if err != nil {
+		return err
+	}
+	// Normal queue
 	a.router.AddNoPublisherHandler(
 		topic.Name(),
 		topic.Name(),
 		a.pubSub.subscriber,
 		func(msg *message.Message) error {
-			err := topic.Consume(msg.Context(), msg.Payload)
-			if err != nil {
-				return err
-			}
-			return nil
+			return topic.Consume(msg.Context(), msg.Payload)
 		},
-	)
+	).AddMiddleware(poisonQueue, retryMiddleware())
+	// Poison queue
+	if topic.GetOptions() != nil && topic.GetOptions().ConsumePoisoned {
+		a.router.AddNoPublisherHandler(
+			poisonedTopicName(topic.Name()),
+			poisonedTopicName(topic.Name()),
+			a.pubSub.subscriber,
+			func(msg *message.Message) error {
+				return topic.Consume(msg.Context(), msg.Payload)
+			},
+		).AddMiddleware(poisonQueue, middleware.NewThrottle(1, time.Hour).Middleware)
+	}
 	topic.SetMQ(a)
 	logger.Infof("topic %s registered", topic.Name())
 	return nil
@@ -113,4 +116,21 @@ func (a *MQ) Publish(ctx context.Context, topic string, payload []byte) error {
 		err = a.pubSub.publisher.Publish(topic, msg)
 	}
 	return err
+}
+
+func poisonedTopicName(topic string) string {
+	return topic + "_poisoned"
+}
+
+func retryMiddleware() func(h message.HandlerFunc) message.HandlerFunc {
+	return middleware.Retry{
+		MaxRetries:          10, //nolint:gomnd //TODO
+		InitialInterval:     time.Second,
+		MaxInterval:         time.Minute,
+		Multiplier:          2, //nolint:gomnd //TODO
+		MaxElapsedTime:      0,
+		RandomizationFactor: 0.1, //nolint:gomnd //TODO
+		OnRetryHook:         nil,
+		Logger:              newMQLogger(),
+	}.Middleware
 }

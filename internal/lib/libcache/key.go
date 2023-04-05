@@ -69,7 +69,7 @@ func (k *Key[T]) GetWithTTL(ctx context.Context) (*T, time.Duration, error) {
 	return res, ttl, nil
 }
 
-func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[T]) (*T, error) {
+func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[T], options ...Option) (*T, error) {
 	res, err := k.Get(ctx)
 	if err != nil {
 		return res, nil
@@ -87,7 +87,7 @@ func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[
 	} else {
 		return nil, err
 	}
-	_ = k.Set(ctx, res)
+	_ = k.Set(ctx, res, options...)
 	return res, nil
 }
 

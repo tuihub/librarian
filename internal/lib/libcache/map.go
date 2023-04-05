@@ -77,7 +77,8 @@ func (m *Map[K, V]) GetWithTTL(ctx context.Context, key K) (*V, time.Duration, e
 	return res, ttl, nil
 }
 
-func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K, fallBackFunc mapFallBackFunc[K, V]) (*V, error) {
+func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K,
+	fallBackFunc mapFallBackFunc[K, V], options ...Option) (*V, error) {
 	res, err := m.Get(ctx, key)
 	if err == nil {
 		return res, nil
@@ -95,7 +96,7 @@ func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K, fallBackFunc map
 	} else {
 		return nil, err
 	}
-	_ = m.Set(ctx, key, res)
+	_ = m.Set(ctx, key, res, options...)
 	return res, nil
 }
 

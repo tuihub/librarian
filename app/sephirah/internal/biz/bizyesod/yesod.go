@@ -20,6 +20,7 @@ type YesodRepo interface {
 	UpdateFeedConfig(context.Context, *modelyesod.FeedConfig) error
 	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
+	UpdateFeedConfigAsInQueue(context.Context, model.InternalID) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
@@ -76,6 +77,11 @@ func (y *Yesod) PullFeeds(ctx context.Context) {
 			URL:        c.FeedURL,
 			Source:     c.Source,
 		})
+		if err != nil {
+			logger.Errorf("%s", err.Error())
+			continue
+		}
+		err = y.repo.UpdateFeedConfigAsInQueue(ctx, c.ID)
 		if err != nil {
 			logger.Errorf("%s", err.Error())
 		}

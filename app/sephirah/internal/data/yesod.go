@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
@@ -62,6 +63,15 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, c *modelyesod.FeedConf
 	if c.PullInterval > 0 {
 		q.SetPullInterval(c.PullInterval)
 	}
+	return q.Exec(ctx)
+}
+
+// UpdateFeedConfigAsInQueue set SetNextPullBeginAt to one day later to avoid repeat queue.
+// While pull success, UpsertFeed will set correct value.
+// While pull failed, server will retry task next day.
+func (y *yesodRepo) UpdateFeedConfigAsInQueue(ctx context.Context, id model.InternalID) error {
+	q := y.data.db.FeedConfig.UpdateOneID(id).
+		SetNextPullBeginAt(time.Now().Add(libtime.Day))
 	return q.Exec(ctx)
 }
 
@@ -117,6 +127,7 @@ func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 		}
 		err = tx.FeedConfig.Update().
 			Where(feedconfig.IDEQ(f.ID)).
+			SetLatestPullAt(time.Now()).
 			SetNextPullBeginAt(time.Now().Add(conf.PullInterval)).
 			Exec(ctx)
 		return err
@@ -174,7 +185,7 @@ func (y *yesodRepo) UpsertFeedItems(
 		existItemMap[item.GUID] = true
 	}
 	for _, item := range items {
-		if v, exist := existItemMap[item.GUID]; exist && v {
+		if _, exist := existItemMap[item.GUID]; !exist {
 			res = append(res, item.GUID)
 		}
 	}

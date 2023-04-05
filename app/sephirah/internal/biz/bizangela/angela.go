@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"sort"
 	"strconv"
 	"time"
 
@@ -312,6 +313,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
+			sort.Sort(feed)
 			err = a.y.UpsertFeed(ctx, feed)
 			if err != nil {
 				return err
@@ -349,10 +351,12 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 					newItems = append(newItems, item)
 				}
 			}
-			err = notify.Publish(ctx, modelangela.NotifyRouter{
-				FeedID:   feed.ID,
-				Messages: newItems,
-			})
+			if len(newItems) > 0 {
+				err = notify.Publish(ctx, modelangela.NotifyRouter{
+					FeedID:   feed.ID,
+					Messages: newItems,
+				})
+			}
 			if err != nil {
 				return err
 			}

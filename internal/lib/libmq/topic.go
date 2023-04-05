@@ -11,13 +11,15 @@ type TopicInterface interface {
 	Name() string
 	Consume(context.Context, []byte) error
 	SetMQ(*MQ)
+	GetOptions() *Options
 }
 
-func NewTopic[T any](topic string, consumerFunc func(context.Context, *T) error) *Topic[T] {
+func NewTopic[T any](topic string, consumerFunc func(context.Context, *T) error, opts ...Option) *Topic[T] {
 	return &Topic[T]{
 		mq:           nil,
 		topicName:    topic,
 		consumerFunc: consumerFunc,
+		options:      applyOptions(opts...),
 	}
 }
 
@@ -25,6 +27,7 @@ type Topic[T any] struct {
 	mq           *MQ
 	topicName    string
 	consumerFunc func(context.Context, *T) error
+	options      *Options
 }
 
 func (t *Topic[T]) SetMQ(mq *MQ) {
@@ -53,4 +56,8 @@ func (t *Topic[T]) Consume(ctx context.Context, i []byte) error {
 		return err
 	}
 	return t.consumerFunc(ctx, p)
+}
+
+func (t *Topic[T]) GetOptions() *Options {
+	return t.options
 }
