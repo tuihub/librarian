@@ -21,15 +21,9 @@ func NewS3Repo(c *conf.Porter_Data) (bizs3.S3Repo, error) {
 	if c == nil || c.S3 == nil {
 		return new(s3Repo), nil
 	}
-	minioClient, err := minio.New(c.S3.GetEndPoint(), &minio.Options{
-		Creds:           credentials.NewStaticV4(c.S3.GetAccessKey(), c.S3.GetSecretKey(), ""),
-		Secure:          c.S3.GetUseSsl(),
-		Transport:       nil,
-		Region:          "",
-		BucketLookup:    0,
-		TrailingHeaders: false,
-		CustomMD5:       nil,
-		CustomSHA256:    nil,
+	minioClient, err := minio.New(c.S3.GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
+		Creds:  credentials.NewStaticV4(c.S3.GetAccessKey(), c.S3.GetSecretKey(), ""),
+		Secure: c.S3.GetUseSsl(),
 	})
 	if err != nil {
 		return nil, err
