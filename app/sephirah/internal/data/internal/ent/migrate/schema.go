@@ -180,6 +180,13 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feedconfig_user_feed_config_feed_url",
+				Unique:  true,
+				Columns: []*schema.Column{FeedConfigsColumns[11], FeedConfigsColumns[2]},
+			},
+		},
 	}
 	// FeedItemsColumns holds the columns for the "feed_items" table.
 	FeedItemsColumns = []*schema.Column{

@@ -12,6 +12,8 @@ const (
 	Label = "feed_config"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUserFeedConfig holds the string denoting the user_feed_config field in the database.
+	FieldUserFeedConfig = "user_feed_config"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldFeedURL holds the string denoting the feed_url field in the database.
@@ -64,6 +66,7 @@ const (
 // Columns holds all SQL columns for feedconfig fields.
 var Columns = []string{
 	FieldID,
+	FieldUserFeedConfig,
 	FieldName,
 	FieldFeedURL,
 	FieldAuthorAccount,
@@ -76,12 +79,6 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "feed_configs"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"user_feed_config",
-}
-
 var (
 	// NotifyFlowPrimaryKey and NotifyFlowColumn2 are the table columns denoting the
 	// primary key for the notify_flow relation (M2M).
@@ -92,11 +89,6 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

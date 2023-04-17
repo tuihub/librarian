@@ -56,6 +56,12 @@ func IDLTE(id model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldID, id))
 }
 
+// UserFeedConfig applies equality check predicate on the "user_feed_config" field. It's identical to UserFeedConfigEQ.
+func UserFeedConfig(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldUserFeedConfig, vc))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldName, v))
@@ -96,6 +102,36 @@ func UpdatedAt(v time.Time) predicate.FeedConfig {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UserFeedConfigEQ applies the EQ predicate on the "user_feed_config" field.
+func UserFeedConfigEQ(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldEQ(FieldUserFeedConfig, vc))
+}
+
+// UserFeedConfigNEQ applies the NEQ predicate on the "user_feed_config" field.
+func UserFeedConfigNEQ(v model.InternalID) predicate.FeedConfig {
+	vc := int64(v)
+	return predicate.FeedConfig(sql.FieldNEQ(FieldUserFeedConfig, vc))
+}
+
+// UserFeedConfigIn applies the In predicate on the "user_feed_config" field.
+func UserFeedConfigIn(vs ...model.InternalID) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldIn(FieldUserFeedConfig, v...))
+}
+
+// UserFeedConfigNotIn applies the NotIn predicate on the "user_feed_config" field.
+func UserFeedConfigNotIn(vs ...model.InternalID) predicate.FeedConfig {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedConfig(sql.FieldNotIn(FieldUserFeedConfig, v...))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.

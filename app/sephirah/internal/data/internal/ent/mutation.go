@@ -4320,6 +4320,42 @@ func (m *FeedConfigMutation) IDs(ctx context.Context) ([]model.InternalID, error
 	}
 }
 
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (m *FeedConfigMutation) SetUserFeedConfig(mi model.InternalID) {
+	m.owner = &mi
+}
+
+// UserFeedConfig returns the value of the "user_feed_config" field in the mutation.
+func (m *FeedConfigMutation) UserFeedConfig() (r model.InternalID, exists bool) {
+	v := m.owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserFeedConfig returns the old "user_feed_config" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldUserFeedConfig(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserFeedConfig is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserFeedConfig requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserFeedConfig: %w", err)
+	}
+	return oldValue.UserFeedConfig, nil
+}
+
+// ResetUserFeedConfig resets all changes to the "user_feed_config" field.
+func (m *FeedConfigMutation) ResetUserFeedConfig() {
+	m.owner = nil
+}
+
 // SetName sets the "name" field.
 func (m *FeedConfigMutation) SetName(s string) {
 	m.name = &s
@@ -4886,7 +4922,10 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
+	if m.owner != nil {
+		fields = append(fields, feedconfig.FieldUserFeedConfig)
+	}
 	if m.name != nil {
 		fields = append(fields, feedconfig.FieldName)
 	}
@@ -4925,6 +4964,8 @@ func (m *FeedConfigMutation) Fields() []string {
 // schema.
 func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case feedconfig.FieldUserFeedConfig:
+		return m.UserFeedConfig()
 	case feedconfig.FieldName:
 		return m.Name()
 	case feedconfig.FieldFeedURL:
@@ -4954,6 +4995,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case feedconfig.FieldUserFeedConfig:
+		return m.OldUserFeedConfig(ctx)
 	case feedconfig.FieldName:
 		return m.OldName(ctx)
 	case feedconfig.FieldFeedURL:
@@ -4983,6 +5026,13 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case feedconfig.FieldUserFeedConfig:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserFeedConfig(v)
+		return nil
 	case feedconfig.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -5129,6 +5179,9 @@ func (m *FeedConfigMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *FeedConfigMutation) ResetField(name string) error {
 	switch name {
+	case feedconfig.FieldUserFeedConfig:
+		m.ResetUserFeedConfig()
+		return nil
 	case feedconfig.FieldName:
 		m.ResetName()
 		return nil

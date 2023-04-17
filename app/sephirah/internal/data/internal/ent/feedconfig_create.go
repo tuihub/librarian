@@ -26,6 +26,12 @@ type FeedConfigCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (fcc *FeedConfigCreate) SetUserFeedConfig(mi model.InternalID) *FeedConfigCreate {
+	fcc.mutation.SetUserFeedConfig(mi)
+	return fcc
+}
+
 // SetName sets the "name" field.
 func (fcc *FeedConfigCreate) SetName(s string) *FeedConfigCreate {
 	fcc.mutation.SetName(s)
@@ -224,6 +230,9 @@ func (fcc *FeedConfigCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcc *FeedConfigCreate) check() error {
+	if _, ok := fcc.mutation.UserFeedConfig(); !ok {
+		return &ValidationError{Name: "user_feed_config", err: errors.New(`ent: missing required field "FeedConfig.user_feed_config"`)}
+	}
 	if _, ok := fcc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "FeedConfig.name"`)}
 	}
@@ -354,7 +363,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_feed_config = &nodes[0]
+		_node.UserFeedConfig = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := fcc.mutation.FeedIDs(); len(nodes) > 0 {
@@ -396,7 +405,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.FeedConfig.Create().
-//		SetName(v).
+//		SetUserFeedConfig(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -405,7 +414,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetName(v+v).
+//			SetUserFeedConfig(v+v).
 //		}).
 //		Exec(ctx)
 func (fcc *FeedConfigCreate) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertOne {
@@ -440,6 +449,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (u *FeedConfigUpsert) SetUserFeedConfig(v model.InternalID) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldUserFeedConfig, v)
+	return u
+}
+
+// UpdateUserFeedConfig sets the "user_feed_config" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateUserFeedConfig() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldUserFeedConfig)
+	return u
+}
 
 // SetName sets the "name" field.
 func (u *FeedConfigUpsert) SetName(v string) *FeedConfigUpsert {
@@ -619,6 +640,20 @@ func (u *FeedConfigUpsertOne) Update(set func(*FeedConfigUpsert)) *FeedConfigUps
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (u *FeedConfigUpsertOne) SetUserFeedConfig(v model.InternalID) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetUserFeedConfig(v)
+	})
+}
+
+// UpdateUserFeedConfig sets the "user_feed_config" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateUserFeedConfig() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateUserFeedConfig()
+	})
 }
 
 // SetName sets the "name" field.
@@ -906,7 +941,7 @@ func (fccb *FeedConfigCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.FeedConfigUpsert) {
-//			SetName(v+v).
+//			SetUserFeedConfig(v+v).
 //		}).
 //		Exec(ctx)
 func (fccb *FeedConfigCreateBulk) OnConflict(opts ...sql.ConflictOption) *FeedConfigUpsertBulk {
@@ -983,6 +1018,20 @@ func (u *FeedConfigUpsertBulk) Update(set func(*FeedConfigUpsert)) *FeedConfigUp
 		set(&FeedConfigUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (u *FeedConfigUpsertBulk) SetUserFeedConfig(v model.InternalID) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetUserFeedConfig(v)
+	})
+}
+
+// UpdateUserFeedConfig sets the "user_feed_config" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateUserFeedConfig() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateUserFeedConfig()
+	})
 }
 
 // SetName sets the "name" field.

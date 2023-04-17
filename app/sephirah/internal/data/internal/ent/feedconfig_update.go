@@ -32,6 +32,12 @@ func (fcu *FeedConfigUpdate) Where(ps ...predicate.FeedConfig) *FeedConfigUpdate
 	return fcu
 }
 
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (fcu *FeedConfigUpdate) SetUserFeedConfig(mi model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.SetUserFeedConfig(mi)
+	return fcu
+}
+
 // SetName sets the "name" field.
 func (fcu *FeedConfigUpdate) SetName(s string) *FeedConfigUpdate {
 	fcu.mutation.SetName(s)
@@ -436,6 +442,12 @@ type FeedConfigUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *FeedConfigMutation
+}
+
+// SetUserFeedConfig sets the "user_feed_config" field.
+func (fcuo *FeedConfigUpdateOne) SetUserFeedConfig(mi model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.SetUserFeedConfig(mi)
+	return fcuo
 }
 
 // SetName sets the "name" field.

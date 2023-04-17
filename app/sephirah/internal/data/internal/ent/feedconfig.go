@@ -19,6 +19,8 @@ type FeedConfig struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
+	// UserFeedConfig holds the value of the "user_feed_config" field.
+	UserFeedConfig model.InternalID `json:"user_feed_config,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// FeedURL holds the value of the "feed_url" field.
@@ -41,8 +43,7 @@ type FeedConfig struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedConfigQuery when eager-loading is set.
-	Edges            FeedConfigEdges `json:"edges"`
-	user_feed_config *model.InternalID
+	Edges FeedConfigEdges `json:"edges"`
 }
 
 // FeedConfigEdges holds the relations/edges for other nodes in the graph.
@@ -98,14 +99,12 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feedconfig.FieldID, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
+		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
 		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case feedconfig.ForeignKeys[0]: // user_feed_config
-			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type FeedConfig", columns[i])
 		}
@@ -126,6 +125,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				fc.ID = model.InternalID(value.Int64)
+			}
+		case feedconfig.FieldUserFeedConfig:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_feed_config", values[i])
+			} else if value.Valid {
+				fc.UserFeedConfig = model.InternalID(value.Int64)
 			}
 		case feedconfig.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -187,13 +192,6 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fc.CreatedAt = value.Time
 			}
-		case feedconfig.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_feed_config", values[i])
-			} else if value.Valid {
-				fc.user_feed_config = new(model.InternalID)
-				*fc.user_feed_config = model.InternalID(value.Int64)
-			}
 		}
 	}
 	return nil
@@ -237,6 +235,9 @@ func (fc *FeedConfig) String() string {
 	var builder strings.Builder
 	builder.WriteString("FeedConfig(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", fc.ID))
+	builder.WriteString("user_feed_config=")
+	builder.WriteString(fmt.Sprintf("%v", fc.UserFeedConfig))
+	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(fc.Name)
 	builder.WriteString(", ")

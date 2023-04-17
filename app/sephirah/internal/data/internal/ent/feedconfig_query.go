@@ -29,7 +29,6 @@ type FeedConfigQuery struct {
 	withOwner      *UserQuery
 	withFeed       *FeedQuery
 	withNotifyFlow *NotifyFlowQuery
-	withFKs        bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -372,12 +371,12 @@ func (fcq *FeedConfigQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *Feed
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		UserFeedConfig model.InternalID `json:"user_feed_config,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.FeedConfig.Query().
-//		GroupBy(feedconfig.FieldName).
+//		GroupBy(feedconfig.FieldUserFeedConfig).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigGroupBy {
@@ -395,11 +394,11 @@ func (fcq *FeedConfigQuery) GroupBy(field string, fields ...string) *FeedConfigG
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		UserFeedConfig model.InternalID `json:"user_feed_config,omitempty"`
 //	}
 //
 //	client.FeedConfig.Query().
-//		Select(feedconfig.FieldName).
+//		Select(feedconfig.FieldUserFeedConfig).
 //		Scan(ctx, &v)
 func (fcq *FeedConfigQuery) Select(fields ...string) *FeedConfigSelect {
 	fcq.ctx.Fields = append(fcq.ctx.Fields, fields...)
@@ -443,7 +442,6 @@ func (fcq *FeedConfigQuery) prepareQuery(ctx context.Context) error {
 func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*FeedConfig, error) {
 	var (
 		nodes       = []*FeedConfig{}
-		withFKs     = fcq.withFKs
 		_spec       = fcq.querySpec()
 		loadedTypes = [3]bool{
 			fcq.withOwner != nil,
@@ -451,12 +449,6 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			fcq.withNotifyFlow != nil,
 		}
 	)
-	if fcq.withOwner != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, feedconfig.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*FeedConfig).scanValues(nil, columns)
 	}
@@ -501,10 +493,7 @@ func (fcq *FeedConfigQuery) loadOwner(ctx context.Context, query *UserQuery, nod
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*FeedConfig)
 	for i := range nodes {
-		if nodes[i].user_feed_config == nil {
-			continue
-		}
-		fk := *nodes[i].user_feed_config
+		fk := nodes[i].UserFeedConfig
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}

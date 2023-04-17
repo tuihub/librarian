@@ -849,7 +849,6 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
 	query.Where(predicate.FeedConfig(func(s *sql.Selector) {
 		s.Where(sql.InValues(user.FeedConfigColumn, fks...))
 	}))
@@ -858,13 +857,10 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_feed_config
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_feed_config" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.UserFeedConfig
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_feed_config" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_feed_config" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
