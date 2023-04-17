@@ -2,7 +2,8 @@ PACKAGE_NAME := github.com/tuihub/librarian
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
-GOLANG_CROSS_VERSION  ?= v1.19.6
+PROTO_VERSION=$(shell go list -m -f '{{.Version}}' github.com/tuihub/protos)
+GOLANG_CROSS_VERSION ?= v1.19.6
 SHELL:=/bin/bash
 
 ifeq ($(GOHOSTOS), windows)
@@ -78,7 +79,7 @@ run:
 .PHONY: build
 # build server in debug mode
 build:
-	mkdir -p bin/ && go build -tags debug -ldflags "-X main.version=$(VERSION)" -o ./bin/ ./...
+	mkdir -p bin/ && go build -tags debug -ldflags "-X main.version=$(VERSION) -X main.protoVersion=$(PROTO_VERSION)" -o ./bin/ ./...
 
 .PHONY: release-dry-run
 # build server in release mode, for manual test
@@ -86,6 +87,7 @@ release-dry-run:
 	@docker run \
 		--rm \
 		-e CGO_ENABLED=1 \
+		-e PROTO_VERSION=$(PROTO_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/$(PACKAGE_NAME) \
 		-w /go/src/$(PACKAGE_NAME) \
@@ -106,6 +108,7 @@ release:
 	docker run \
 		--rm \
 		-e CGO_ENABLED=1 \
+		-e PROTO_VERSION=$(PROTO_VERSION) \
 		--env-file .release-env \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v $(HOME)/.docker/config.json:/root/.docker/config.json \

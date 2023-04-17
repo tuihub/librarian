@@ -27,6 +27,12 @@ var (
 	version string
 
 	id, _ = os.Hostname() //nolint:gochecknoglobals //TODO
+
+	// date is the build date of the compiled software.
+	date string //nolint:gochecknoglobals //TODO
+
+	// version is the proto version of the compiled software.
+	protoVersion string //nolint:gochecknoglobals //TODO
 )
 
 var ProviderSet = wire.NewSet(newApp, mapperClientSelector, searcherClientSelector, porterClientSelector)
@@ -42,7 +48,7 @@ func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) 
 }
 
 func main() {
-	appSettings, err := libapp.NewAppSettings(id, name, version)
+	appSettings, err := libapp.NewAppSettings(id, name, version, protoVersion, date)
 	if err != nil {
 		panic(err)
 	}

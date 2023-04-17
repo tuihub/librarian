@@ -40,7 +40,7 @@ builds:
     flags:
       - -tags=release
     ldflags:
-      - -s -w -X main.name={{.ProjectName}} -X main.version={{.Summary}}
+      - -s -w -X main.name={{.ProjectName}} -X main.version={{.Summary}} -X main.date={{.Date}} -X main.protoVersion={{.Env.PROTO_VERSION}}
     #buildmode: c-archive
 
 archives:

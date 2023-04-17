@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
@@ -12,6 +13,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type LibrarianSephirahServiceService struct {
@@ -22,6 +25,7 @@ type LibrarianSephirahServiceService struct {
 	b        *bizbinah.Binah
 	y        *bizyesod.Yesod
 	n        *biznetzach.Netzach
+	app      *libapp.Settings
 	authFunc func(context.Context) (context.Context, error)
 }
 
@@ -51,6 +55,22 @@ func NewLibrarianSephirahServiceService(
 		b:        b,
 		y:        y,
 		n:        n,
+		app:      app,
 		authFunc: authFunc,
 	}
+}
+
+func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context,
+	_ *pb.GetServerInformationRequest) (*pb.GetServerInformationResponse, error) {
+	return &pb.GetServerInformationResponse{
+		ServerBinarySummary: &pb.ServerBinarySummary{
+			SourceCodeAddress: s.app.SourceCodeAddress,
+			BuildVersion:      s.app.Version,
+			BuildDate:         s.app.BuildDate,
+		},
+		ProtocolSummary: &pb.ServerProtocolSummary{
+			Version: s.app.ProtoVersion,
+		},
+		CurrentTime: timestamppb.New(time.Now()),
+	}, nil
 }

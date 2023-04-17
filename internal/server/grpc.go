@@ -67,6 +67,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList := make(map[string]struct{})
 	whiteList["/grpc.health.v1.Health/Check"] = struct{}{}
 	whiteList["/grpc.health.v1.Health/Watch"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetServerInformation"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetToken"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {

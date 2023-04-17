@@ -23,6 +23,10 @@ type Settings struct {
 	env config.Config
 	InherentSettings
 	Flags
+	Version           string
+	ProtoVersion      string
+	BuildDate         string
+	SourceCodeAddress string
 }
 
 type Flags struct {
@@ -37,7 +41,7 @@ const (
 	EnvLogLevel    Env = "LOG_LEVEL"
 )
 
-func NewAppSettings(id, name, version string) (*Settings, error) {
+func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, error) {
 	var as Settings
 	flags := loadFlags()
 	if err := checkDataPath(flags.DataPath); err != nil {
@@ -51,6 +55,10 @@ func NewAppSettings(id, name, version string) (*Settings, error) {
 			e,
 			getInherentSettings(),
 			flags,
+			version,
+			protoVersion,
+			date,
+			"https://github.com/TuiHub/Librarian",
 		}
 	}
 	if as.ConfPath == "" {
