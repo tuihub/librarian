@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1](https://github.com/TuiHub/Librarian/compare/v0.1.0...v0.1.1) (2023-04-17)
+
+
+### Features
+
+* impl GetServerInformation ([771aa2c](https://github.com/TuiHub/Librarian/commit/771aa2c15e9f9dbe9691a13a03137f135f074b1b))
+
+
+### Bug Fixes
+
+* add unique check to feed_config ([4f96349](https://github.com/TuiHub/Librarian/commit/4f96349f396a35af3901931662dd33987a2fa5df))
+
 ## [0.1.0](https://github.com/TuiHub/Librarian/compare/v0.0.11...v0.1.0) (2023-04-05)
 
 
