@@ -197,7 +197,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *v11.NotifyTarget) *modeln
 	}
 	return pModelnetzachNotifyTarget
 }
-func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.TargetStatus) []modelnetzach.NotifyTargetStatus {
+func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus {
 	var modelnetzachNotifyTargetStatusList []modelnetzach.NotifyTargetStatus
 	if source != nil {
 		modelnetzachNotifyTargetStatusList = make([]modelnetzach.NotifyTargetStatus, len(source))
@@ -207,7 +207,7 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.TargetStat
 	}
 	return modelnetzachNotifyTargetStatusList
 }
-func (c *toBizConverterImpl) ToBizNotifyTargetTypeList(source []v11.TargetType) []modelnetzach.NotifyTargetType {
+func (c *toBizConverterImpl) ToBizNotifyTargetTypeList(source []v11.NotifyTargetType) []modelnetzach.NotifyTargetType {
 	var modelnetzachNotifyTargetTypeList []modelnetzach.NotifyTargetType
 	if source != nil {
 		modelnetzachNotifyTargetTypeList = make([]modelnetzach.NotifyTargetType, len(source))

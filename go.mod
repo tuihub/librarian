@@ -30,7 +30,7 @@ require (
 	github.com/redis/go-redis/v9 v9.0.3
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.16
+	github.com/tuihub/protos v0.2.17
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.8.0
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29

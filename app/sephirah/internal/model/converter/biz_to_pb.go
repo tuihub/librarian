@@ -209,40 +209,40 @@ func ToPBFeedConfigSource(s modelyesod.FeedConfigSource) pb.FeedConfigSource {
 	}
 }
 
-func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.TargetStatus {
+func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus {
 	switch s {
 	case modelnetzach.NotifyTargetStatusUnspecified:
-		return pb.TargetStatus_TARGET_STATUS_UNSPECIFIED
+		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	case modelnetzach.NotifyTargetStatusActive:
-		return pb.TargetStatus_TARGET_STATUS_ACTIVE
+		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
 	case modelnetzach.NotifyTargetStatusSuspend:
-		return pb.TargetStatus_TARGET_STATUS_SUSPEND
+		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
 	default:
-		return pb.TargetStatus_TARGET_STATUS_UNSPECIFIED
+		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	}
 }
 
-func ToPBNotifyTargetType(t modelnetzach.NotifyTargetType) pb.TargetType {
+func ToPBNotifyTargetType(t modelnetzach.NotifyTargetType) pb.NotifyTargetType {
 	switch t {
 	case modelnetzach.NotifyTargetTypeUnspecified:
-		return pb.TargetType_TARGET_TYPE_UNSPECIFIED
+		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED
 	case modelnetzach.NotifyTargetTypeTelegram:
-		return pb.TargetType_TARGET_TYPE_TELEGRAM
+		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_TELEGRAM
 	default:
-		return pb.TargetType_TARGET_TYPE_UNSPECIFIED
+		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED
 	}
 }
 
-func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.FlowStatus {
+func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus {
 	switch s {
 	case modelnetzach.NotifyFlowStatusUnspecified:
-		return pb.FlowStatus_FLOW_STATUS_UNSPECIFIED
+		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	case modelnetzach.NotifyFlowStatusActive:
-		return pb.FlowStatus_FLOW_STATUS_ACTIVE
+		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
 	case modelnetzach.NotifyFlowStatusSuspend:
-		return pb.FlowStatus_FLOW_STATUS_SUSPEND
+		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	default:
-		return pb.FlowStatus_FLOW_STATUS_UNSPECIFIED
+		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	}
 }
 

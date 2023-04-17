@@ -61,8 +61,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	ToBizNotifyTarget(*pb.NotifyTarget) *modelnetzach.NotifyTarget
-	ToBizNotifyTargetTypeList([]pb.TargetType) []modelnetzach.NotifyTargetType
-	ToBizNotifyTargetStatusList([]pb.TargetStatus) []modelnetzach.NotifyTargetStatus
+	ToBizNotifyTargetTypeList([]pb.NotifyTargetType) []modelnetzach.NotifyTargetType
+	ToBizNotifyTargetStatusList([]pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
 	// goverter:matchIgnoreCase
@@ -209,37 +209,37 @@ func ToBizGroupFeedItemsBy(by pb.GroupFeedItemsRequest_GroupBy) modelyesod.Group
 	}
 }
 
-func ToBizNotifyTargetStatus(s pb.TargetStatus) modelnetzach.NotifyTargetStatus {
+func ToBizNotifyTargetStatus(s pb.NotifyTargetStatus) modelnetzach.NotifyTargetStatus {
 	switch s {
-	case pb.TargetStatus_TARGET_STATUS_UNSPECIFIED:
+	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED:
 		return modelnetzach.NotifyTargetStatusUnspecified
-	case pb.TargetStatus_TARGET_STATUS_ACTIVE:
+	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE:
 		return modelnetzach.NotifyTargetStatusActive
-	case pb.TargetStatus_TARGET_STATUS_SUSPEND:
+	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND:
 		return modelnetzach.NotifyTargetStatusSuspend
 	default:
 		return modelnetzach.NotifyTargetStatusUnspecified
 	}
 }
 
-func ToBizNotifyTargetType(t pb.TargetType) modelnetzach.NotifyTargetType {
+func ToBizNotifyTargetType(t pb.NotifyTargetType) modelnetzach.NotifyTargetType {
 	switch t {
-	case pb.TargetType_TARGET_TYPE_UNSPECIFIED:
+	case pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED:
 		return modelnetzach.NotifyTargetTypeUnspecified
-	case pb.TargetType_TARGET_TYPE_TELEGRAM:
+	case pb.NotifyTargetType_NOTIFY_TARGET_TYPE_TELEGRAM:
 		return modelnetzach.NotifyTargetTypeTelegram
 	default:
 		return modelnetzach.NotifyTargetTypeUnspecified
 	}
 }
 
-func ToBizNotifyFlowStatus(s pb.FlowStatus) modelnetzach.NotifyFlowStatus {
+func ToBizNotifyFlowStatus(s pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus {
 	switch s {
-	case pb.FlowStatus_FLOW_STATUS_UNSPECIFIED:
+	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED:
 		return modelnetzach.NotifyFlowStatusUnspecified
-	case pb.FlowStatus_FLOW_STATUS_ACTIVE:
+	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE:
 		return modelnetzach.NotifyFlowStatusActive
-	case pb.FlowStatus_FLOW_STATUS_SUSPEND:
+	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND:
 		return modelnetzach.NotifyFlowStatusSuspend
 	default:
 		return modelnetzach.NotifyFlowStatusUnspecified

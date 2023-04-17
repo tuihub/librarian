@@ -155,10 +155,10 @@ func ToBizTimeRange(a *librarian.TimeRange) *model.TimeRange {
 func ToBizNotifyTarget(a *pb.NotifyTarget) *modelnetzach.NotifyTarget {
 	return toBiz.ToBizNotifyTarget(a)
 }
-func ToBizNotifyTargetTypeList(a []pb.TargetType) []modelnetzach.NotifyTargetType {
+func ToBizNotifyTargetTypeList(a []pb.NotifyTargetType) []modelnetzach.NotifyTargetType {
 	return toBiz.ToBizNotifyTargetTypeList(a)
 }
-func ToBizNotifyTargetStatusList(a []pb.TargetStatus) []modelnetzach.NotifyTargetStatus {
+func ToBizNotifyTargetStatusList(a []pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus {
 	return toBiz.ToBizNotifyTargetStatusList(a)
 }
 func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
