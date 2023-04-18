@@ -313,11 +313,6 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
-			sort.Sort(feed)
-			err = a.y.UpsertFeed(ctx, feed)
-			if err != nil {
-				return err
-			}
 			for _, item := range feed.Items {
 				// generate internal_id
 				var res *searcher.NewIDResponse
@@ -341,6 +336,10 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 					item.PublishedParsed = &t
 				}
 			}
+			sort.Sort(feed)
+			if err = a.y.UpsertFeed(ctx, feed); err != nil {
+				return err
+			}
 			newItemGUIDs, err := a.y.UpsertFeedItems(ctx, feed.Items, feed.ID)
 			if err != nil {
 				return err
@@ -357,10 +356,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 					Messages: newItems,
 				})
 			}
-			if err != nil {
-				return err
-			}
-			return nil
+			return err
 		},
 	)
 }
