@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/TuiHub/Librarian/compare/v0.1.1...v0.1.2) (2023-04-18)
+
+
+### Bug Fixes
+
+* **angela:** check publishParsed before sort ([3e32080](https://github.com/TuiHub/Librarian/commit/3e32080b857b8a5dc327927979b7dc44147db6ea))
+
 ## [0.1.1](https://github.com/TuiHub/Librarian/compare/v0.1.0...v0.1.1) (2023-04-17)
 
 
