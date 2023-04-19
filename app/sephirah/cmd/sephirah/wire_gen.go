@@ -119,7 +119,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, settings, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth, v)
 	grpcServer := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
 	app := newApp(grpcServer, httpServer, libmqMQ, cron)

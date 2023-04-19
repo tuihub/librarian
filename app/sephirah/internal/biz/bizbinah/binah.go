@@ -27,6 +27,14 @@ type UploadFile struct {
 }
 
 func (f *UploadFile) Finish(ctx context.Context) error {
+	err := f.file.Sync()
+	if err != nil {
+		return err
+	}
+	_, err = f.file.Seek(0, 0)
+	if err != nil {
+		return err
+	}
 	cli, err := f.porter.PushData(ctx)
 	if err != nil {
 		return err
@@ -44,10 +52,11 @@ func (f *UploadFile) Finish(ctx context.Context) error {
 	}
 	buf := make([]byte, 16<<10) //nolint:gomnd //TODO
 	for {
-		_, err = f.file.Read(buf)
-		if errors.Is(err, io.EOF) {
+		var n int
+		n, err = f.file.Read(buf)
+		if n == 0 && errors.Is(err, io.EOF) {
 			_, err = cli.CloseAndRecv()
-			if err != nil {
+			if !errors.Is(err, io.EOF) {
 				return err
 			}
 			break

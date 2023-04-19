@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/logger"
 )
 
@@ -78,9 +79,14 @@ func (c *ControlBlock) getUploadPayload(ctx context.Context) (*uploadTokenPayloa
 	if claims.TransferMetadata == nil {
 		return nil, errors.New("broken token")
 	}
-	payload, met := claims.TransferMetadata.(*uploadTokenPayload)
-	if !met {
-		return nil, errors.New("broken token")
+	bytes, err := libcodec.Marshal(libcodec.JSON, claims.TransferMetadata)
+	if err != nil {
+		return nil, err
+	}
+	payload := new(uploadTokenPayload)
+	err = libcodec.Unmarshal(libcodec.JSON, bytes, &payload)
+	if err != nil {
+		return nil, err
 	}
 	return payload, nil
 }

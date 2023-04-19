@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io"
 
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"google.golang.org/grpc/codes"
@@ -19,13 +20,17 @@ func (s *LibrarianSephirahServiceService) DownloadFile(conn pb.LibrarianSephirah
 func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 	conn pb.LibrarianSephirahService_SimpleUploadFileServer,
 ) error {
-	ctx := conn.Context()
+	ctx, err := libapp.NewStreamMiddlewareJwt(s.auth)(conn.Context())
+	if err != nil {
+		return err
+	}
 	file, bizErr := s.b.NewUploadFile(ctx)
 	if bizErr != nil {
 		return bizErr
 	}
 	for {
-		if req, err := conn.Recv(); err != nil {
+		var req *pb.SimpleUploadFileRequest
+		if req, err = conn.Recv(); err != nil {
 			if errors.Is(err, io.EOF) {
 				return file.Finish(ctx)
 			}
@@ -33,7 +38,7 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 		} else if _, err = file.Writer.Write(req.Data); err != nil {
 			return err
 		}
-		if err := conn.Send(&pb.SimpleUploadFileResponse{
+		if err = conn.Send(&pb.SimpleUploadFileResponse{
 			Status: pb.FileTransferStatus_FILE_TRANSFER_STATUS_IN_PROGRESS,
 		}); err != nil {
 			return err

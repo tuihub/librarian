@@ -70,6 +70,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetServerInformation"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/GetToken"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/SimpleUploadFile"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {
 			return false

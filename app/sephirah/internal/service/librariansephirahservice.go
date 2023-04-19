@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -28,6 +29,7 @@ type LibrarianSephirahServiceService struct {
 	n        *biznetzach.Netzach
 	c        *bizchesed.Chesed
 	app      *libapp.Settings
+	auth     *libauth.Auth
 	authFunc func(context.Context) (context.Context, error)
 }
 
@@ -40,6 +42,7 @@ func NewLibrarianSephirahServiceService(
 	n *biznetzach.Netzach,
 	c *bizchesed.Chesed,
 	app *libapp.Settings,
+	auth *libauth.Auth,
 	authFunc func(context.Context) (context.Context, error),
 ) pb.LibrarianSephirahServiceServer {
 	if enable, err := app.GetEnvBool(libapp.EnvCreateAdmin); err == nil && enable {
@@ -60,6 +63,7 @@ func NewLibrarianSephirahServiceService(
 		n:        n,
 		c:        c,
 		app:      app,
+		auth:     auth,
 		authFunc: authFunc,
 	}
 }

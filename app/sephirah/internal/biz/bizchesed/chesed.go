@@ -100,5 +100,6 @@ func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 }
 
 func UploadImageCallback() error {
-	panic("not impl")
+	//TODO
+	return nil
 }
