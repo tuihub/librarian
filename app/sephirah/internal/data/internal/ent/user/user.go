@@ -36,6 +36,10 @@ const (
 	EdgeNotifyTarget = "notify_target"
 	// EdgeNotifyFlow holds the string denoting the notify_flow edge name in mutations.
 	EdgeNotifyFlow = "notify_flow"
+	// EdgeImage holds the string denoting the image edge name in mutations.
+	EdgeImage = "image"
+	// EdgeFile holds the string denoting the file edge name in mutations.
+	EdgeFile = "file"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
@@ -82,6 +86,20 @@ const (
 	NotifyFlowInverseTable = "notify_flows"
 	// NotifyFlowColumn is the table column denoting the notify_flow relation/edge.
 	NotifyFlowColumn = "user_notify_flow"
+	// ImageTable is the table that holds the image relation/edge.
+	ImageTable = "images"
+	// ImageInverseTable is the table name for the Image entity.
+	// It exists in this package in order to avoid circular dependency with the "image" package.
+	ImageInverseTable = "images"
+	// ImageColumn is the table column denoting the image relation/edge.
+	ImageColumn = "user_image"
+	// FileTable is the table that holds the file relation/edge.
+	FileTable = "files"
+	// FileInverseTable is the table name for the File entity.
+	// It exists in this package in order to avoid circular dependency with the "file" package.
+	FileInverseTable = "files"
+	// FileColumn is the table column denoting the file relation/edge.
+	FileColumn = "user_file"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.

@@ -49,13 +49,17 @@ type UserEdges struct {
 	NotifyTarget []*NotifyTarget `json:"notify_target,omitempty"`
 	// NotifyFlow holds the value of the notify_flow edge.
 	NotifyFlow []*NotifyFlow `json:"notify_flow,omitempty"`
+	// Image holds the value of the image edge.
+	Image []*Image `json:"image,omitempty"`
+	// File holds the value of the file edge.
+	File []*File `json:"file,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
 	CreatedUser []*User `json:"created_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [8]bool
+	loadedTypes [10]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -112,10 +116,28 @@ func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
 	return nil, &NotLoadedError{edge: "notify_flow"}
 }
 
+// ImageOrErr returns the Image value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) ImageOrErr() ([]*Image, error) {
+	if e.loadedTypes[6] {
+		return e.Image, nil
+	}
+	return nil, &NotLoadedError{edge: "image"}
+}
+
+// FileOrErr returns the File value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) FileOrErr() ([]*File, error) {
+	if e.loadedTypes[7] {
+		return e.File, nil
+	}
+	return nil, &NotLoadedError{edge: "file"}
+}
+
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[8] {
 		if e.Creator == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
@@ -128,7 +150,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[9] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -244,6 +266,16 @@ func (u *User) QueryNotifyTarget() *NotifyTargetQuery {
 // QueryNotifyFlow queries the "notify_flow" edge of the User entity.
 func (u *User) QueryNotifyFlow() *NotifyFlowQuery {
 	return NewUserClient(u.config).QueryNotifyFlow(u)
+}
+
+// QueryImage queries the "image" edge of the User entity.
+func (u *User) QueryImage() *ImageQuery {
+	return NewUserClient(u.config).QueryImage(u)
+}
+
+// QueryFile queries the "file" edge of the User entity.
+func (u *User) QueryFile() *FileQuery {
+	return NewUserClient(u.config).QueryFile(u)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.

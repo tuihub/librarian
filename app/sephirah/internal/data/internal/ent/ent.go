@@ -17,6 +17,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
@@ -80,6 +82,8 @@ func columnChecker(table string) func(string) error {
 		feed.Table:             feed.ValidColumn,
 		feedconfig.Table:       feedconfig.ValidColumn,
 		feeditem.Table:         feeditem.ValidColumn,
+		file.Table:             file.ValidColumn,
+		image.Table:            image.ValidColumn,
 		notifyflow.Table:       notifyflow.ValidColumn,
 		notifyflowtarget.Table: notifyflowtarget.ValidColumn,
 		notifytarget.Table:     notifytarget.ValidColumn,

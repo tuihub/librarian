@@ -9,6 +9,7 @@ package service
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
@@ -64,17 +65,23 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	callbackControlBlock := bizbinah.NewCallbackControl()
-	gebura := bizgebura.NewGebura(geburaRepo, auth, callbackControlBlock, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
-	binah := bizbinah.NewBinah(callbackControlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	controlBlock := bizbinah.NewControlBlock(auth)
+	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
+	map4 := bizchesed.NewImageCache(store)
+	chesed, err := bizchesed.NewChesed(librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, controlBlock, map4)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	v := server.NewAuthMiddleware(auth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, settings, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, settings, v)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

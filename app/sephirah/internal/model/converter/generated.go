@@ -3,6 +3,7 @@
 package converter
 
 import (
+	modelbinah "github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -132,6 +133,26 @@ func (c *toBizConverterImpl) ToBizFeedConfigStatusList(source []v11.FeedConfigSt
 		}
 	}
 	return modelyesodFeedConfigStatusList
+}
+func (c *toBizConverterImpl) ToBizFileMetadata(source *v11.FileMetadata) *modelbinah.FileMetadata {
+	var pModelbinahFileMetadata *modelbinah.FileMetadata
+	if source != nil {
+		var modelbinahFileMetadata modelbinah.FileMetadata
+		modelbinahFileMetadata.ID = ToBizInternalID((*source).Id)
+		modelbinahFileMetadata.Name = (*source).Name
+		modelbinahFileMetadata.Size = (*source).Size
+		modelbinahFileMetadata.Type = ToBizFileType((*source).Type)
+		var byteList []uint8
+		if (*source).Sha256 != nil {
+			byteList = make([]uint8, len((*source).Sha256))
+			for i := 0; i < len((*source).Sha256); i++ {
+				byteList[i] = (*source).Sha256[i]
+			}
+		}
+		modelbinahFileMetadata.Sha256 = byteList
+		pModelbinahFileMetadata = &modelbinahFileMetadata
+	}
+	return pModelbinahFileMetadata
 }
 func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []model.InternalID {
 	var modelInternalIDList []model.InternalID

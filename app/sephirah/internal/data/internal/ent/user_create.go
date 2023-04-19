@@ -15,6 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -175,6 +177,36 @@ func (uc *UserCreate) AddNotifyFlow(n ...*NotifyFlow) *UserCreate {
 		ids[i] = n[i].ID
 	}
 	return uc.AddNotifyFlowIDs(ids...)
+}
+
+// AddImageIDs adds the "image" edge to the Image entity by IDs.
+func (uc *UserCreate) AddImageIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddImageIDs(ids...)
+	return uc
+}
+
+// AddImage adds the "image" edges to the Image entity.
+func (uc *UserCreate) AddImage(i ...*Image) *UserCreate {
+	ids := make([]model.InternalID, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return uc.AddImageIDs(ids...)
+}
+
+// AddFileIDs adds the "file" edge to the File entity by IDs.
+func (uc *UserCreate) AddFileIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddFileIDs(ids...)
+	return uc
+}
+
+// AddFile adds the "file" edges to the File entity.
+func (uc *UserCreate) AddFile(f ...*File) *UserCreate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uc.AddFileIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -427,6 +459,38 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.ImageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.FileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

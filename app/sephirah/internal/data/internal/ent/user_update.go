@@ -15,6 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
@@ -167,6 +169,36 @@ func (uu *UserUpdate) AddNotifyFlow(n ...*NotifyFlow) *UserUpdate {
 		ids[i] = n[i].ID
 	}
 	return uu.AddNotifyFlowIDs(ids...)
+}
+
+// AddImageIDs adds the "image" edge to the Image entity by IDs.
+func (uu *UserUpdate) AddImageIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddImageIDs(ids...)
+	return uu
+}
+
+// AddImage adds the "image" edges to the Image entity.
+func (uu *UserUpdate) AddImage(i ...*Image) *UserUpdate {
+	ids := make([]model.InternalID, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return uu.AddImageIDs(ids...)
+}
+
+// AddFileIDs adds the "file" edge to the File entity by IDs.
+func (uu *UserUpdate) AddFileIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddFileIDs(ids...)
+	return uu
+}
+
+// AddFile adds the "file" edges to the File entity.
+func (uu *UserUpdate) AddFile(f ...*File) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.AddFileIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -324,6 +356,48 @@ func (uu *UserUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *UserUpdate {
 		ids[i] = n[i].ID
 	}
 	return uu.RemoveNotifyFlowIDs(ids...)
+}
+
+// ClearImage clears all "image" edges to the Image entity.
+func (uu *UserUpdate) ClearImage() *UserUpdate {
+	uu.mutation.ClearImage()
+	return uu
+}
+
+// RemoveImageIDs removes the "image" edge to Image entities by IDs.
+func (uu *UserUpdate) RemoveImageIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveImageIDs(ids...)
+	return uu
+}
+
+// RemoveImage removes "image" edges to Image entities.
+func (uu *UserUpdate) RemoveImage(i ...*Image) *UserUpdate {
+	ids := make([]model.InternalID, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return uu.RemoveImageIDs(ids...)
+}
+
+// ClearFile clears all "file" edges to the File entity.
+func (uu *UserUpdate) ClearFile() *UserUpdate {
+	uu.mutation.ClearFile()
+	return uu
+}
+
+// RemoveFileIDs removes the "file" edge to File entities by IDs.
+func (uu *UserUpdate) RemoveFileIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveFileIDs(ids...)
+	return uu
+}
+
+// RemoveFile removes "file" edges to File entities.
+func (uu *UserUpdate) RemoveFile(f ...*File) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.RemoveFileIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -707,6 +781,96 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.ImageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedImageIDs(); len(nodes) > 0 && !uu.mutation.ImageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.ImageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.FileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedFileIDs(); len(nodes) > 0 && !uu.mutation.FileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.FileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -935,6 +1099,36 @@ func (uuo *UserUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *UserUpdateOne {
 	return uuo.AddNotifyFlowIDs(ids...)
 }
 
+// AddImageIDs adds the "image" edge to the Image entity by IDs.
+func (uuo *UserUpdateOne) AddImageIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddImageIDs(ids...)
+	return uuo
+}
+
+// AddImage adds the "image" edges to the Image entity.
+func (uuo *UserUpdateOne) AddImage(i ...*Image) *UserUpdateOne {
+	ids := make([]model.InternalID, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return uuo.AddImageIDs(ids...)
+}
+
+// AddFileIDs adds the "file" edge to the File entity by IDs.
+func (uuo *UserUpdateOne) AddFileIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddFileIDs(ids...)
+	return uuo
+}
+
+// AddFile adds the "file" edges to the File entity.
+func (uuo *UserUpdateOne) AddFile(f ...*File) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.AddFileIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
 	uuo.mutation.SetCreatorID(id)
@@ -1090,6 +1284,48 @@ func (uuo *UserUpdateOne) RemoveNotifyFlow(n ...*NotifyFlow) *UserUpdateOne {
 		ids[i] = n[i].ID
 	}
 	return uuo.RemoveNotifyFlowIDs(ids...)
+}
+
+// ClearImage clears all "image" edges to the Image entity.
+func (uuo *UserUpdateOne) ClearImage() *UserUpdateOne {
+	uuo.mutation.ClearImage()
+	return uuo
+}
+
+// RemoveImageIDs removes the "image" edge to Image entities by IDs.
+func (uuo *UserUpdateOne) RemoveImageIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveImageIDs(ids...)
+	return uuo
+}
+
+// RemoveImage removes "image" edges to Image entities.
+func (uuo *UserUpdateOne) RemoveImage(i ...*Image) *UserUpdateOne {
+	ids := make([]model.InternalID, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return uuo.RemoveImageIDs(ids...)
+}
+
+// ClearFile clears all "file" edges to the File entity.
+func (uuo *UserUpdateOne) ClearFile() *UserUpdateOne {
+	uuo.mutation.ClearFile()
+	return uuo
+}
+
+// RemoveFileIDs removes the "file" edge to File entities by IDs.
+func (uuo *UserUpdateOne) RemoveFileIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveFileIDs(ids...)
+	return uuo
+}
+
+// RemoveFile removes "file" edges to File entities.
+func (uuo *UserUpdateOne) RemoveFile(f ...*File) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.RemoveFileIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -1496,6 +1732,96 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.ImageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedImageIDs(); len(nodes) > 0 && !uuo.mutation.ImageCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.ImageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.ImageTable,
+			Columns: []string{user.ImageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(image.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.FileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedFileIDs(); len(nodes) > 0 && !uuo.mutation.FileCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.FileIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FileTable,
+			Columns: []string{user.FileColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

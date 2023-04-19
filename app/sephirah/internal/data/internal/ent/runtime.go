@@ -11,6 +11,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
@@ -102,6 +104,30 @@ func init() {
 	feeditemDescCreatedAt := feeditemFields[16].Descriptor()
 	// feeditem.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feeditem.DefaultCreatedAt = feeditemDescCreatedAt.Default.(func() time.Time)
+	fileFields := schema.File{}.Fields()
+	_ = fileFields
+	// fileDescUpdatedAt is the schema descriptor for updated_at field.
+	fileDescUpdatedAt := fileFields[5].Descriptor()
+	// file.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	file.DefaultUpdatedAt = fileDescUpdatedAt.Default.(func() time.Time)
+	// file.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	file.UpdateDefaultUpdatedAt = fileDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// fileDescCreatedAt is the schema descriptor for created_at field.
+	fileDescCreatedAt := fileFields[6].Descriptor()
+	// file.DefaultCreatedAt holds the default value on creation for the created_at field.
+	file.DefaultCreatedAt = fileDescCreatedAt.Default.(func() time.Time)
+	imageFields := schema.Image{}.Fields()
+	_ = imageFields
+	// imageDescUpdatedAt is the schema descriptor for updated_at field.
+	imageDescUpdatedAt := imageFields[3].Descriptor()
+	// image.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	image.DefaultUpdatedAt = imageDescUpdatedAt.Default.(func() time.Time)
+	// image.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	image.UpdateDefaultUpdatedAt = imageDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// imageDescCreatedAt is the schema descriptor for created_at field.
+	imageDescCreatedAt := imageFields[4].Descriptor()
+	// image.DefaultCreatedAt holds the default value on creation for the created_at field.
+	image.DefaultCreatedAt = imageDescCreatedAt.Default.(func() time.Time)
 	notifyflowFields := schema.NotifyFlow{}.Fields()
 	_ = notifyflowFields
 	// notifyflowDescUpdatedAt is the schema descriptor for updated_at field.

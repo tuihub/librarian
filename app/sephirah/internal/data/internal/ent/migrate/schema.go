@@ -229,6 +229,61 @@ var (
 			},
 		},
 	}
+	// FilesColumns holds the columns for the "files" table.
+	FilesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "size", Type: field.TypeInt64},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"gebura_save", "chesed_image"}},
+		{Name: "sha256", Type: field.TypeBytes},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_file", Type: field.TypeInt64, Nullable: true},
+	}
+	// FilesTable holds the schema information for the "files" table.
+	FilesTable = &schema.Table{
+		Name:       "files",
+		Columns:    FilesColumns,
+		PrimaryKey: []*schema.Column{FilesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "files_users_file",
+				Columns:    []*schema.Column{FilesColumns[7]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
+	}
+	// ImagesColumns holds the columns for the "images" table.
+	ImagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "file_image", Type: field.TypeInt64, Unique: true, Nullable: true},
+		{Name: "user_image", Type: field.TypeInt64},
+	}
+	// ImagesTable holds the schema information for the "images" table.
+	ImagesTable = &schema.Table{
+		Name:       "images",
+		Columns:    ImagesColumns,
+		PrimaryKey: []*schema.Column{ImagesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "images_files_image",
+				Columns:    []*schema.Column{ImagesColumns[5]},
+				RefColumns: []*schema.Column{FilesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "images_users_image",
+				Columns:    []*schema.Column{ImagesColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// NotifyFlowsColumns holds the columns for the "notify_flows" table.
 	NotifyFlowsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -398,6 +453,8 @@ var (
 		FeedsTable,
 		FeedConfigsTable,
 		FeedItemsTable,
+		FilesTable,
+		ImagesTable,
 		NotifyFlowsTable,
 		NotifyFlowTargetsTable,
 		NotifyTargetsTable,
@@ -415,6 +472,9 @@ func init() {
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable
+	FilesTable.ForeignKeys[0].RefTable = UsersTable
+	ImagesTable.ForeignKeys[0].RefTable = FilesTable
+	ImagesTable.ForeignKeys[1].RefTable = UsersTable
 	NotifyFlowsTable.ForeignKeys[0].RefTable = UsersTable
 	NotifyFlowTargetsTable.ForeignKeys[0].RefTable = NotifyFlowsTable
 	NotifyFlowTargetsTable.ForeignKeys[1].RefTable = NotifyTargetsTable

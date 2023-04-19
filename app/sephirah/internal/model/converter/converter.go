@@ -3,6 +3,7 @@ package converter
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -163,4 +164,7 @@ func ToBizNotifyTargetStatusList(a []pb.NotifyTargetStatus) []modelnetzach.Notif
 }
 func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
 	return toBiz.ToBizNotifyFlow(a)
+}
+func ToBizFileMetadata(a *pb.FileMetadata) *modelbinah.FileMetadata {
+	return toBiz.ToBizFileMetadata(a)
 }

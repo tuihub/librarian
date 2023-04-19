@@ -4,39 +4,87 @@ import (
 	"context"
 	"io"
 	"os"
+	"strconv"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/google/uuid"
 )
 
 type UploadFile struct {
-	callback UploadCallbackFunc
+	id       model.InternalID
+	porter   porter.LibrarianPorterServiceClient
+	callback modelbinah.UploadCallbackFunc
 	file     *os.File
 	Writer   io.Writer
 }
 
-func (f *UploadFile) Finish() error {
-	return f.callback(f)
+func (f *UploadFile) Finish(ctx context.Context) error {
+	cli, err := f.porter.PushData(ctx)
+	if err != nil {
+		return err
+	}
+	err = cli.Send(&porter.PushDataRequest{
+		Content: &porter.PushDataRequest_Metadata{
+			Metadata: &porter.PushDataRequest_DataMeta{
+				Source:    porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
+				ContentId: strconv.FormatInt(int64(f.id), 10),
+			},
+		},
+	})
+	if err != nil {
+		return err
+	}
+	buf := make([]byte, 16<<10) //nolint:gomnd //TODO
+	for {
+		_, err = f.file.Read(buf)
+		if errors.Is(err, io.EOF) {
+			_, err = cli.CloseAndRecv()
+			if err != nil {
+				return err
+			}
+			break
+		}
+		if err != nil {
+			return err
+		}
+		err = cli.Send(&porter.PushDataRequest{
+			Content: &porter.PushDataRequest_Data{
+				Data: buf,
+			},
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return f.callback()
 }
 
 type BinahRepo interface {
 }
 
 type Binah struct {
-	callback CallbackControlBlock
+	callback *modelbinah.ControlBlock
 	auth     *libauth.Auth
 	mapper   mapper.LibrarianMapperServiceClient
 	porter   porter.LibrarianPorterServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
 }
 
-func NewBinah(callback CallbackControlBlock, auth *libauth.Auth, mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient, sClient searcher.LibrarianSearcherServiceClient) *Binah {
+func NewBinah(
+	callback *modelbinah.ControlBlock,
+	auth *libauth.Auth,
+	mClient mapper.LibrarianMapperServiceClient,
+	pClient porter.LibrarianPorterServiceClient,
+	sClient searcher.LibrarianSearcherServiceClient,
+) *Binah {
 	return &Binah{
 		callback: callback,
 		auth:     auth,
@@ -46,12 +94,8 @@ func NewBinah(callback CallbackControlBlock, auth *libauth.Auth, mClient mapper.
 	}
 }
 
-func (b *Binah) getUploadCallback(id UploadCallbackID) UploadCallbackFunc {
-	f, exist := b.callback.uploadCallbackMap[id]
-	if exist {
-		return f
-	}
-	return emptyUploadCallback
+func NewControlBlock(a *libauth.Auth) *modelbinah.ControlBlock {
+	return modelbinah.NewControlBlock(a)
 }
 
 func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) {
@@ -59,12 +103,22 @@ func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) 
 	if !exist || claims == nil || claims.TransferMetadata == nil {
 		return nil, pb.ErrorErrorReasonUnauthorized("token required")
 	}
-	f, err := os.CreateTemp("", claims.TransferMetadata.Name)
+	callback, err := b.callback.GetUploadCallback(ctx)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	meta, err := b.callback.GetUploadFileMetadata(ctx)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	f, err := os.CreateTemp("", uuid.NewString())
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("create temp file failed")
 	}
 	return &UploadFile{
-		callback: b.getUploadCallback(UploadCallbackID(claims.TransferMetadata.CallBack)),
+		id:       meta.ID,
+		porter:   b.porter,
+		callback: callback,
 		file:     f,
 		Writer:   f,
 	}, nil

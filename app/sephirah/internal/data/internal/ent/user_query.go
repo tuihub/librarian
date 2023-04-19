@@ -15,6 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
@@ -35,6 +37,8 @@ type UserQuery struct {
 	withFeedConfig   *FeedConfigQuery
 	withNotifyTarget *NotifyTargetQuery
 	withNotifyFlow   *NotifyFlowQuery
+	withImage        *ImageQuery
+	withFile         *FileQuery
 	withCreator      *UserQuery
 	withCreatedUser  *UserQuery
 	withFKs          bool
@@ -199,6 +203,50 @@ func (uq *UserQuery) QueryNotifyFlow() *NotifyFlowQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifyFlowTable, user.NotifyFlowColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryImage chains the current query on the "image" edge.
+func (uq *UserQuery) QueryImage() *ImageQuery {
+	query := (&ImageClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(image.Table, image.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.ImageTable, user.ImageColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFile chains the current query on the "file" edge.
+func (uq *UserQuery) QueryFile() *FileQuery {
+	query := (&FileClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(file.Table, file.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FileTable, user.FileColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -448,6 +496,8 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withFeedConfig:   uq.withFeedConfig.Clone(),
 		withNotifyTarget: uq.withNotifyTarget.Clone(),
 		withNotifyFlow:   uq.withNotifyFlow.Clone(),
+		withImage:        uq.withImage.Clone(),
+		withFile:         uq.withFile.Clone(),
 		withCreator:      uq.withCreator.Clone(),
 		withCreatedUser:  uq.withCreatedUser.Clone(),
 		// clone intermediate query.
@@ -519,6 +569,28 @@ func (uq *UserQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withNotifyFlow = query
+	return uq
+}
+
+// WithImage tells the query-builder to eager-load the nodes that are connected to
+// the "image" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithImage(opts ...func(*ImageQuery)) *UserQuery {
+	query := (&ImageClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withImage = query
+	return uq
+}
+
+// WithFile tells the query-builder to eager-load the nodes that are connected to
+// the "file" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithFile(opts ...func(*FileQuery)) *UserQuery {
+	query := (&FileClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withFile = query
 	return uq
 }
 
@@ -623,13 +695,15 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [8]bool{
+		loadedTypes = [10]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withAppPackage != nil,
 			uq.withFeedConfig != nil,
 			uq.withNotifyTarget != nil,
 			uq.withNotifyFlow != nil,
+			uq.withImage != nil,
+			uq.withFile != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
 		}
@@ -697,6 +771,20 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadNotifyFlow(ctx, query, nodes,
 			func(n *User) { n.Edges.NotifyFlow = []*NotifyFlow{} },
 			func(n *User, e *NotifyFlow) { n.Edges.NotifyFlow = append(n.Edges.NotifyFlow, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withImage; query != nil {
+		if err := uq.loadImage(ctx, query, nodes,
+			func(n *User) { n.Edges.Image = []*Image{} },
+			func(n *User, e *Image) { n.Edges.Image = append(n.Edges.Image, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withFile; query != nil {
+		if err := uq.loadFile(ctx, query, nodes,
+			func(n *User) { n.Edges.File = []*File{} },
+			func(n *User, e *File) { n.Edges.File = append(n.Edges.File, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -923,6 +1011,68 @@ func (uq *UserQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery,
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected foreign-key "user_notify_flow" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadImage(ctx context.Context, query *ImageQuery, nodes []*User, init func(*User), assign func(*User, *Image)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.Image(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.ImageColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_image
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_image" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_image" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*User, init func(*User), assign func(*User, *File)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.File(func(s *sql.Selector) {
+		s.Where(sql.InValues(user.FileColumn, fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_file
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_file" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_file" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -3,6 +3,7 @@ package converter
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -32,6 +33,7 @@ import (
 // goverter:extend ToBizNotifyTargetStatus
 // goverter:extend ToBizNotifyTargetType
 // goverter:extend ToBizNotifyFlowStatus
+// goverter:extend ToBizFileType
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 
@@ -69,6 +71,9 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget
+
+	// goverter:matchIgnoreCase
+	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
 }
 
 func ToBizInternalID(id *librarian.InternalID) model.InternalID {
@@ -243,5 +248,18 @@ func ToBizNotifyFlowStatus(s pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus 
 		return modelnetzach.NotifyFlowStatusSuspend
 	default:
 		return modelnetzach.NotifyFlowStatusUnspecified
+	}
+}
+
+func ToBizFileType(t pb.FileType) modelbinah.FileType {
+	switch t {
+	case pb.FileType_FILE_TYPE_UNSPECIFIED:
+		return modelbinah.FileTypeUnspecified
+	case pb.FileType_FILE_TYPE_GEBURA_SAVE:
+		return modelbinah.FileTypeGeburaSave
+	case pb.FileType_FILE_TYPE_CHESED_IMAGE:
+		return modelbinah.FileTypeChesedImage
+	default:
+		return modelbinah.FileTypeUnspecified
 	}
 }

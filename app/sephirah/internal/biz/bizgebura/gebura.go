@@ -3,7 +3,6 @@ package bizgebura
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -52,18 +51,9 @@ type Gebura struct {
 func NewGebura(
 	repo GeburaRepo,
 	auth *libauth.Auth,
-	block bizbinah.CallbackControlBlock,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
 ) *Gebura {
-	block.RegisterUploadCallback(bizbinah.UploadCallback{
-		ID:   bizbinah.UploadArtifacts,
-		Func: UploadArtifactsCallback,
-	})
 	return &Gebura{auth: auth, repo: repo, mapper: mClient, porter: pClient, searcher: sClient}
-}
-
-func UploadArtifactsCallback(file *bizbinah.UploadFile) error {
-	panic("not impl")
 }

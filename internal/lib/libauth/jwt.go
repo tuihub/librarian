@@ -12,10 +12,10 @@ import (
 )
 
 type Claims struct {
-	InternalID       model.InternalID  `json:"iid"`
-	Type             ClaimsType        `json:"ct"`
-	UserType         UserType          `json:"ut"`
-	TransferMetadata *TransferMetadata `json:"tm,omitempty"`
+	InternalID       model.InternalID `json:"iid"`
+	Type             ClaimsType       `json:"ct"`
+	UserType         UserType         `json:"ut"`
+	TransferMetadata any              `json:"tm,omitempty"`
 	jwtv4.RegisteredClaims
 }
 
@@ -37,13 +37,6 @@ const (
 	UserTypeNormal
 	UserTypeSentinel
 )
-
-type TransferMetadata struct {
-	Name      string `json:"n"`
-	Size      int64  `json:"s"`
-	ChunkSize int64  `json:"cs"`
-	CallBack  int    `json:"cb"`
-}
 
 func (a *Auth) KeyFunc(t ClaimsType) jwtv4.Keyfunc {
 	return func(token *jwtv4.Token) (interface{}, error) {
@@ -80,7 +73,7 @@ func (a *Auth) generateSecret(t ClaimsType) interface{} {
 }
 
 func (a *Auth) GenerateToken(id model.InternalID, claimsType ClaimsType, userType UserType,
-	transferMetadata *TransferMetadata, expire time.Duration) (string, error) {
+	transferMetadata any, expire time.Duration) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
 

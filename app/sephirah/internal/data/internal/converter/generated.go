@@ -48,7 +48,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
-		modelgeburaApp.ID = model.InternalID((*source).ID)
+		modelgeburaApp.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaApp.Source = ToBizAppSource((*source).Source)
 		modelgeburaApp.SourceAppID = (*source).SourceAppID
 		modelgeburaApp.SourceURL = (*source).SourceURL
@@ -75,9 +75,9 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 	var pModelgeburaAppPackage *modelgebura.AppPackage
 	if source != nil {
 		var modelgeburaAppPackage modelgebura.AppPackage
-		modelgeburaAppPackage.ID = model.InternalID((*source).ID)
+		modelgeburaAppPackage.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
-		modelgeburaAppPackage.SourceID = model.InternalID((*source).SourceID)
+		modelgeburaAppPackage.SourceID = c.modelInternalIDToModelInternalID((*source).SourceID)
 		modelgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
 		modelgeburaAppPackage.Name = (*source).Name
 		modelgeburaAppPackage.Description = (*source).Description
@@ -108,7 +108,7 @@ func (c *toBizConverterImpl) ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {
 		var modelfeedFeed modelfeed.Feed
-		modelfeedFeed.ID = model.InternalID((*source).ID)
+		modelfeedFeed.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelfeedFeed.Title = (*source).Title
 		modelfeedFeed.Description = (*source).Description
 		modelfeedFeed.Link = (*source).Link
@@ -130,10 +130,10 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
-		modelyesodFeedConfig.ID = model.InternalID((*source).ID)
+		modelyesodFeedConfig.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.FeedURL = (*source).FeedURL
-		modelyesodFeedConfig.AuthorAccount = model.InternalID((*source).AuthorAccount)
+		modelyesodFeedConfig.AuthorAccount = c.modelInternalIDToModelInternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
@@ -156,7 +156,7 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 	var pModelfeedItem *modelfeed.Item
 	if source != nil {
 		var modelfeedItem modelfeed.Item
-		modelfeedItem.ID = model.InternalID((*source).ID)
+		modelfeedItem.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelfeedItem.Title = (*source).Title
 		modelfeedItem.Description = (*source).Description
 		modelfeedItem.Content = (*source).Content
@@ -202,7 +202,7 @@ func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetza
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
 		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
-		modelnetzachNotifyFlow.ID = model.InternalID((*source).ID)
+		modelnetzachNotifyFlow.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyFlow.Name = (*source).Name
 		modelnetzachNotifyFlow.Description = (*source).Description
 		modelnetzachNotifyFlow.Status = ToBizNotifyFlowStatus((*source).Status)
@@ -214,7 +214,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modeln
 	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
 	if source != nil {
 		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
-		modelnetzachNotifyTarget.ID = model.InternalID((*source).ID)
+		modelnetzachNotifyTarget.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
 		modelnetzachNotifyTarget.Type = ToBizNotifyTargetType((*source).Type)
@@ -238,7 +238,7 @@ func (c *toBizConverterImpl) ToBizUser(source *ent.User) *modeltiphereth.User {
 	var pModeltipherethUser *modeltiphereth.User
 	if source != nil {
 		var modeltipherethUser modeltiphereth.User
-		modeltipherethUser.ID = model.InternalID((*source).ID)
+		modeltipherethUser.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethUser.UserName = (*source).Username
 		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
 		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
@@ -272,6 +272,9 @@ func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) model
 func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
 	modelgeburaAppDetails := c.entAppToModelgeburaAppDetails(source)
 	return &modelgeburaAppDetails
+}
+func (c *toBizConverterImpl) modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
+	return model.InternalID(source)
 }
 func (c *toBizConverterImpl) pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
 	var pModelfeedEnclosure *modelfeed.Enclosure

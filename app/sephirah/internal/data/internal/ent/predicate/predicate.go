@@ -24,6 +24,12 @@ type FeedConfig func(*sql.Selector)
 // FeedItem is the predicate function for feeditem builders.
 type FeedItem func(*sql.Selector)
 
+// File is the predicate function for file builders.
+type File func(*sql.Selector)
+
+// Image is the predicate function for image builders.
+type Image func(*sql.Selector)
+
 // NotifyFlow is the predicate function for notifyflow builders.
 type NotifyFlow func(*sql.Selector)
 
