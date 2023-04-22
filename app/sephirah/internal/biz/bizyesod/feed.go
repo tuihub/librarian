@@ -37,7 +37,7 @@ func (y *Yesod) ListFeedItems(
 	authorIDs []model.InternalID,
 	platforms []string,
 	timeRange *model.TimeRange,
-) ([]*modelyesod.FeedItemIDWithFeedID, int, *errors.Error) {
+) ([]*modelyesod.FeedItemDigest, int, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -60,7 +60,7 @@ func (y *Yesod) GroupFeedItems(
 	platforms []string,
 	timeRange *model.TimeRange,
 	groupSize int,
-) (map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID, *errors.Error) {
+) (map[model.TimeRange][]*modelyesod.FeedItemDigest, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}

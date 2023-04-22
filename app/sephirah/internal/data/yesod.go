@@ -162,12 +162,16 @@ func (y *yesodRepo) UpsertFeedItems(
 			SetUpdated(item.Updated).
 			SetNillableUpdatedParsed(item.UpdatedParsed).
 			SetPublished(item.Published).
-			SetNillablePublishedParsed(item.PublishedParsed).
 			SetAuthors(item.Authors).
 			SetGUID(item.GUID).
 			SetImage(item.Image).
 			SetEnclosures(item.Enclosures).
 			SetPublishPlatform(item.PublishPlatform)
+		if item.PublishedParsed != nil {
+			il[i].SetPublishedParsed(*item.PublishedParsed)
+		} else {
+			il[i].SetPublishedParsed(time.Now())
+		}
 	}
 	err = y.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
@@ -256,8 +260,8 @@ func (y *yesodRepo) ListFeedItems(
 	authorIDs []model.InternalID,
 	platforms []string,
 	timeRange *model.TimeRange,
-) ([]*modelyesod.FeedItemIDWithFeedID, int, error) {
-	var res []*modelyesod.FeedItemIDWithFeedID
+) ([]*modelyesod.FeedItemDigest, int, error) {
+	var res []*modelyesod.FeedItemDigest
 	var total int
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
 		user, err := tx.User.Get(ctx, userID)
@@ -283,19 +287,15 @@ func (y *yesodRepo) ListFeedItems(
 		}
 		items, err := iq.
 			Order(ent.Desc(feeditem.FieldPublishedParsed)).
-			Select(feeditem.FieldID, feeditem.FieldFeedID, feeditem.FieldPublishedParsed).
 			Limit(paging.PageSize).
 			Offset((paging.PageNum - 1) * paging.PageSize).
 			All(ctx)
 		if err != nil {
 			return err
 		}
-		res = make([]*modelyesod.FeedItemIDWithFeedID, 0, len(items))
+		res = make([]*modelyesod.FeedItemDigest, 0, len(items))
 		for _, item := range items {
-			res = append(res, &modelyesod.FeedItemIDWithFeedID{
-				FeedID: item.FeedID,
-				ItemID: item.ID,
-			})
+			res = append(res, converter.ToBizFeedItemDigest(item))
 		}
 		return nil
 	})
@@ -313,8 +313,8 @@ func (y *yesodRepo) GroupFeedItems(
 	authorIDs []model.InternalID,
 	platforms []string,
 	groupSize int,
-) (map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID, error) {
-	res := make(map[model.TimeRange][]*modelyesod.FeedItemIDWithFeedID)
+) (map[model.TimeRange][]*modelyesod.FeedItemDigest, error) {
+	res := make(map[model.TimeRange][]*modelyesod.FeedItemDigest)
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
 		user, err := tx.User.Get(ctx, userID)
 		if err != nil {
@@ -334,7 +334,6 @@ func (y *yesodRepo) GroupFeedItems(
 				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
 				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration))).
 				Order(ent.Desc(feeditem.FieldPublishedParsed)).
-				Select(feeditem.FieldID, feeditem.FieldFeedID, feeditem.FieldPublishedParsed).
 				Limit(groupSize).
 				All(ctx)
 			if err != nil {
@@ -343,12 +342,9 @@ func (y *yesodRepo) GroupFeedItems(
 			if len(items) == 0 {
 				continue
 			}
-			il := make([]*modelyesod.FeedItemIDWithFeedID, len(items))
-			for i, item := range items {
-				il[i] = &modelyesod.FeedItemIDWithFeedID{
-					FeedID: item.FeedID,
-					ItemID: item.ID,
-				}
+			il := make([]*modelyesod.FeedItemDigest, 0, len(items))
+			for _, item := range items {
+				il = append(il, converter.ToBizFeedItemDigest(item))
 			}
 			res[timeRange] = il
 		}

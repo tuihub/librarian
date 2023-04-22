@@ -7,9 +7,16 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
-type FeedItemIDWithFeedID struct {
-	FeedID model.InternalID
-	ItemID model.InternalID
+type FeedItemDigest struct {
+	FeedID           model.InternalID
+	ItemID           model.InternalID
+	AvatarURL        string
+	Authors          string
+	PublishedParsed  time.Time
+	Title            string
+	ShortDescription string
+	ImageUrls        []string
+	PublishPlatform  string
 }
 
 type FeedWithConfig struct {

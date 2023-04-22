@@ -490,6 +490,40 @@ func (c *toPBConverterImpl) ToPBFeedItem(source *modelfeed.Item) *v1.FeedItem {
 	}
 	return pV1FeedItem
 }
+func (c *toPBConverterImpl) ToPBFeedItemDigest(source *modelyesod.FeedItemDigest) *v11.FeedItemDigest {
+	var pV1FeedItemDigest *v11.FeedItemDigest
+	if source != nil {
+		var v1FeedItemDigest v11.FeedItemDigest
+		v1FeedItemDigest.FeedId = ToPBInternalID((*source).FeedID)
+		v1FeedItemDigest.ItemId = ToPBInternalID((*source).ItemID)
+		v1FeedItemDigest.AvatarUrl = (*source).AvatarURL
+		v1FeedItemDigest.Authors = (*source).Authors
+		v1FeedItemDigest.PublishedParsed = ToPBTime((*source).PublishedParsed)
+		v1FeedItemDigest.Title = (*source).Title
+		v1FeedItemDigest.ShortDescription = (*source).ShortDescription
+		var stringList []string
+		if (*source).ImageUrls != nil {
+			stringList = make([]string, len((*source).ImageUrls))
+			for i := 0; i < len((*source).ImageUrls); i++ {
+				stringList[i] = (*source).ImageUrls[i]
+			}
+		}
+		v1FeedItemDigest.ImageUrls = stringList
+		v1FeedItemDigest.PublishPlatform = (*source).PublishPlatform
+		pV1FeedItemDigest = &v1FeedItemDigest
+	}
+	return pV1FeedItemDigest
+}
+func (c *toPBConverterImpl) ToPBFeedItemDigestList(source []*modelyesod.FeedItemDigest) []*v11.FeedItemDigest {
+	var pV1FeedItemDigestList []*v11.FeedItemDigest
+	if source != nil {
+		pV1FeedItemDigestList = make([]*v11.FeedItemDigest, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1FeedItemDigestList[i] = c.ToPBFeedItemDigest(source[i])
+		}
+	}
+	return pV1FeedItemDigestList
+}
 func (c *toPBConverterImpl) ToPBFeedItemList(source []*modelfeed.Item) []*v1.FeedItem {
 	var pV1FeedItemList []*v1.FeedItem
 	if source != nil {
@@ -529,26 +563,6 @@ func (c *toPBConverterImpl) ToPBInternalIDList(source []model.InternalID) []*v1.
 		}
 	}
 	return pV1InternalIDList
-}
-func (c *toPBConverterImpl) ToPBItemIDWithFeedID(source *modelyesod.FeedItemIDWithFeedID) *v11.FeedItemIDWithFeedID {
-	var pV1FeedItemIDWithFeedID *v11.FeedItemIDWithFeedID
-	if source != nil {
-		var v1FeedItemIDWithFeedID v11.FeedItemIDWithFeedID
-		v1FeedItemIDWithFeedID.FeedId = ToPBInternalID((*source).FeedID)
-		v1FeedItemIDWithFeedID.ItemId = ToPBInternalID((*source).ItemID)
-		pV1FeedItemIDWithFeedID = &v1FeedItemIDWithFeedID
-	}
-	return pV1FeedItemIDWithFeedID
-}
-func (c *toPBConverterImpl) ToPBItemIDWithFeedIDList(source []*modelyesod.FeedItemIDWithFeedID) []*v11.FeedItemIDWithFeedID {
-	var pV1FeedItemIDWithFeedIDList []*v11.FeedItemIDWithFeedID
-	if source != nil {
-		pV1FeedItemIDWithFeedIDList = make([]*v11.FeedItemIDWithFeedID, len(source))
-		for i := 0; i < len(source); i++ {
-			pV1FeedItemIDWithFeedIDList[i] = c.ToPBItemIDWithFeedID(source[i])
-		}
-	}
-	return pV1FeedItemIDWithFeedIDList
 }
 func (c *toPBConverterImpl) ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *v11.NotifyFlow {
 	var pV1NotifyFlow *v11.NotifyFlow

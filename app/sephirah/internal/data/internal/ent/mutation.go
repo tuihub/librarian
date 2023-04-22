@@ -5923,7 +5923,7 @@ func (m *FeedItemMutation) PublishedParsed() (r time.Time, exists bool) {
 // OldPublishedParsed returns the old "published_parsed" field's value of the FeedItem entity.
 // If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemMutation) OldPublishedParsed(ctx context.Context) (v *time.Time, err error) {
+func (m *FeedItemMutation) OldPublishedParsed(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPublishedParsed is only allowed on UpdateOne operations")
 	}
@@ -5937,22 +5937,9 @@ func (m *FeedItemMutation) OldPublishedParsed(ctx context.Context) (v *time.Time
 	return oldValue.PublishedParsed, nil
 }
 
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (m *FeedItemMutation) ClearPublishedParsed() {
-	m.published_parsed = nil
-	m.clearedFields[feeditem.FieldPublishedParsed] = struct{}{}
-}
-
-// PublishedParsedCleared returns if the "published_parsed" field was cleared in this mutation.
-func (m *FeedItemMutation) PublishedParsedCleared() bool {
-	_, ok := m.clearedFields[feeditem.FieldPublishedParsed]
-	return ok
-}
-
 // ResetPublishedParsed resets all changes to the "published_parsed" field.
 func (m *FeedItemMutation) ResetPublishedParsed() {
 	m.published_parsed = nil
-	delete(m.clearedFields, feeditem.FieldPublishedParsed)
 }
 
 // SetUpdated sets the "updated" field.
@@ -6604,9 +6591,6 @@ func (m *FeedItemMutation) ClearedFields() []string {
 	if m.FieldCleared(feeditem.FieldPublished) {
 		fields = append(fields, feeditem.FieldPublished)
 	}
-	if m.FieldCleared(feeditem.FieldPublishedParsed) {
-		fields = append(fields, feeditem.FieldPublishedParsed)
-	}
 	if m.FieldCleared(feeditem.FieldUpdated) {
 		fields = append(fields, feeditem.FieldUpdated)
 	}
@@ -6653,9 +6637,6 @@ func (m *FeedItemMutation) ClearField(name string) error {
 		return nil
 	case feeditem.FieldPublished:
 		m.ClearPublished()
-		return nil
-	case feeditem.FieldPublishedParsed:
-		m.ClearPublishedParsed()
 		return nil
 	case feeditem.FieldUpdated:
 		m.ClearUpdated()

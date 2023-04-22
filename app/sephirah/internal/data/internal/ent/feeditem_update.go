@@ -166,20 +166,6 @@ func (fiu *FeedItemUpdate) SetPublishedParsed(t time.Time) *FeedItemUpdate {
 	return fiu
 }
 
-// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
-func (fiu *FeedItemUpdate) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdate {
-	if t != nil {
-		fiu.SetPublishedParsed(*t)
-	}
-	return fiu
-}
-
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (fiu *FeedItemUpdate) ClearPublishedParsed() *FeedItemUpdate {
-	fiu.mutation.ClearPublishedParsed()
-	return fiu
-}
-
 // SetUpdated sets the "updated" field.
 func (fiu *FeedItemUpdate) SetUpdated(s string) *FeedItemUpdate {
 	fiu.mutation.SetUpdated(s)
@@ -389,9 +375,6 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fiu.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
 	}
-	if fiu.mutation.PublishedParsedCleared() {
-		_spec.ClearField(feeditem.FieldPublishedParsed, field.TypeTime)
-	}
 	if value, ok := fiu.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
 	}
@@ -580,20 +563,6 @@ func (fiuo *FeedItemUpdateOne) ClearPublished() *FeedItemUpdateOne {
 // SetPublishedParsed sets the "published_parsed" field.
 func (fiuo *FeedItemUpdateOne) SetPublishedParsed(t time.Time) *FeedItemUpdateOne {
 	fiuo.mutation.SetPublishedParsed(t)
-	return fiuo
-}
-
-// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
-func (fiuo *FeedItemUpdateOne) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdateOne {
-	if t != nil {
-		fiuo.SetPublishedParsed(*t)
-	}
-	return fiuo
-}
-
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (fiuo *FeedItemUpdateOne) ClearPublishedParsed() *FeedItemUpdateOne {
-	fiuo.mutation.ClearPublishedParsed()
 	return fiuo
 }
 
@@ -835,9 +804,6 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	}
 	if value, ok := fiuo.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
-	}
-	if fiuo.mutation.PublishedParsedCleared() {
-		_spec.ClearField(feeditem.FieldPublishedParsed, field.TypeTime)
 	}
 	if value, ok := fiuo.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)

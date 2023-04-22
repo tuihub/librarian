@@ -164,7 +164,7 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 		modelfeedItem.Updated = (*source).Updated
 		modelfeedItem.UpdatedParsed = TimeToTimePtr((*source).UpdatedParsed)
 		modelfeedItem.Published = (*source).Published
-		modelfeedItem.PublishedParsed = TimeToTimePtr((*source).PublishedParsed)
+		modelfeedItem.PublishedParsed = c.timeTimeToPTimeTime((*source).PublishedParsed)
 		var pModelfeedPersonList []*modelfeed.Person
 		if (*source).Authors != nil {
 			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
@@ -306,6 +306,10 @@ func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfee
 		pModelfeedPerson = &modelfeedPerson
 	}
 	return pModelfeedPerson
+}
+func (c *toBizConverterImpl) timeTimeToPTimeTime(source time.Time) *time.Time {
+	timeTime := TimeToTime(source)
+	return &timeTime
 }
 
 type toEntConverterImpl struct{}

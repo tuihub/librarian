@@ -199,7 +199,7 @@ var (
 		{Name: "link", Type: field.TypeString, Nullable: true},
 		{Name: "image", Type: field.TypeJSON, Nullable: true},
 		{Name: "published", Type: field.TypeString, Nullable: true},
-		{Name: "published_parsed", Type: field.TypeTime, Nullable: true},
+		{Name: "published_parsed", Type: field.TypeTime},
 		{Name: "updated", Type: field.TypeString, Nullable: true},
 		{Name: "updated_parsed", Type: field.TypeTime, Nullable: true},
 		{Name: "enclosures", Type: field.TypeJSON, Nullable: true},

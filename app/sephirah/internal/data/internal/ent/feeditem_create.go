@@ -125,14 +125,6 @@ func (fic *FeedItemCreate) SetPublishedParsed(t time.Time) *FeedItemCreate {
 	return fic
 }
 
-// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
-func (fic *FeedItemCreate) SetNillablePublishedParsed(t *time.Time) *FeedItemCreate {
-	if t != nil {
-		fic.SetPublishedParsed(*t)
-	}
-	return fic
-}
-
 // SetUpdated sets the "updated" field.
 func (fic *FeedItemCreate) SetUpdated(s string) *FeedItemCreate {
 	fic.mutation.SetUpdated(s)
@@ -273,6 +265,9 @@ func (fic *FeedItemCreate) check() error {
 	if _, ok := fic.mutation.GUID(); !ok {
 		return &ValidationError{Name: "guid", err: errors.New(`ent: missing required field "FeedItem.guid"`)}
 	}
+	if _, ok := fic.mutation.PublishedParsed(); !ok {
+		return &ValidationError{Name: "published_parsed", err: errors.New(`ent: missing required field "FeedItem.published_parsed"`)}
+	}
 	if _, ok := fic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedItem.updated_at"`)}
 	}
@@ -349,7 +344,7 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := fic.mutation.PublishedParsed(); ok {
 		_spec.SetField(feeditem.FieldPublishedParsed, field.TypeTime, value)
-		_node.PublishedParsed = &value
+		_node.PublishedParsed = value
 	}
 	if value, ok := fic.mutation.Updated(); ok {
 		_spec.SetField(feeditem.FieldUpdated, field.TypeString, value)
@@ -579,12 +574,6 @@ func (u *FeedItemUpsert) SetPublishedParsed(v time.Time) *FeedItemUpsert {
 // UpdatePublishedParsed sets the "published_parsed" field to the value that was provided on create.
 func (u *FeedItemUpsert) UpdatePublishedParsed() *FeedItemUpsert {
 	u.SetExcluded(feeditem.FieldPublishedParsed)
-	return u
-}
-
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (u *FeedItemUpsert) ClearPublishedParsed() *FeedItemUpsert {
-	u.SetNull(feeditem.FieldPublishedParsed)
 	return u
 }
 
@@ -896,13 +885,6 @@ func (u *FeedItemUpsertOne) SetPublishedParsed(v time.Time) *FeedItemUpsertOne {
 func (u *FeedItemUpsertOne) UpdatePublishedParsed() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdatePublishedParsed()
-	})
-}
-
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (u *FeedItemUpsertOne) ClearPublishedParsed() *FeedItemUpsertOne {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.ClearPublishedParsed()
 	})
 }
 
@@ -1392,13 +1374,6 @@ func (u *FeedItemUpsertBulk) SetPublishedParsed(v time.Time) *FeedItemUpsertBulk
 func (u *FeedItemUpsertBulk) UpdatePublishedParsed() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.UpdatePublishedParsed()
-	})
-}
-
-// ClearPublishedParsed clears the value of the "published_parsed" field.
-func (u *FeedItemUpsertBulk) ClearPublishedParsed() *FeedItemUpsertBulk {
-	return u.Update(func(s *FeedItemUpsert) {
-		s.ClearPublishedParsed()
 	})
 }
 

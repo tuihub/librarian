@@ -1,6 +1,8 @@
 package converter
 
 import (
+	"strings"
+
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -118,4 +120,27 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 		res.Targets = targets
 	}
 	return res
+}
+func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
+	if a == nil {
+		return nil
+	}
+	digest := new(modelyesod.FeedItemDigest)
+	digest.FeedID = a.FeedID
+	digest.ItemID = a.ID
+	digest.PublishedParsed = a.PublishedParsed
+	digest.Title = a.Title
+	digest.PublishPlatform = a.PublishPlatform
+	if a.Image != nil {
+		digest.AvatarURL = a.Image.URL
+	}
+	if len(a.Authors) > 0 {
+		digest.Authors = ""
+		for _, author := range a.Authors {
+			digest.Authors = strings.Join([]string{digest.Authors, author.Name}, ", ")
+		}
+		digest.Authors = strings.TrimPrefix(digest.Authors, ", ")
+	}
+	// TODO incomplete
+	return digest
 }

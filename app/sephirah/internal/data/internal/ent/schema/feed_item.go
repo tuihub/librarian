@@ -32,7 +32,7 @@ func (FeedItem) Fields() []ent.Field {
 		field.String("link").Optional(),
 		field.JSON("image", new(modelfeed.Image)).Optional(),
 		field.String("published").Optional(),
-		field.Time("published_parsed").Optional().Nillable(),
+		field.Time("published_parsed"),
 		field.String("updated").Optional(),
 		field.Time("updated_parsed").Optional().Nillable(),
 		field.JSON("enclosures", []*modelfeed.Enclosure{}).Optional(),

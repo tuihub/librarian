@@ -39,7 +39,7 @@ type FeedItem struct {
 	// Published holds the value of the "published" field.
 	Published string `json:"published,omitempty"`
 	// PublishedParsed holds the value of the "published_parsed" field.
-	PublishedParsed *time.Time `json:"published_parsed,omitempty"`
+	PublishedParsed time.Time `json:"published_parsed,omitempty"`
 	// Updated holds the value of the "updated" field.
 	Updated string `json:"updated,omitempty"`
 	// UpdatedParsed holds the value of the "updated_parsed" field.
@@ -175,8 +175,7 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field published_parsed", values[i])
 			} else if value.Valid {
-				fi.PublishedParsed = new(time.Time)
-				*fi.PublishedParsed = value.Time
+				fi.PublishedParsed = value.Time
 			}
 		case feeditem.FieldUpdated:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -277,10 +276,8 @@ func (fi *FeedItem) String() string {
 	builder.WriteString("published=")
 	builder.WriteString(fi.Published)
 	builder.WriteString(", ")
-	if v := fi.PublishedParsed; v != nil {
-		builder.WriteString("published_parsed=")
-		builder.WriteString(v.Format(time.ANSIC))
-	}
+	builder.WriteString("published_parsed=")
+	builder.WriteString(fi.PublishedParsed.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated=")
 	builder.WriteString(fi.Updated)

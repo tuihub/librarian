@@ -652,16 +652,6 @@ func PublishedParsedLTE(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldLTE(FieldPublishedParsed, v))
 }
 
-// PublishedParsedIsNil applies the IsNil predicate on the "published_parsed" field.
-func PublishedParsedIsNil() predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldIsNull(FieldPublishedParsed))
-}
-
-// PublishedParsedNotNil applies the NotNil predicate on the "published_parsed" field.
-func PublishedParsedNotNil() predicate.FeedItem {
-	return predicate.FeedItem(sql.FieldNotNull(FieldPublishedParsed))
-}
-
 // UpdatedEQ applies the EQ predicate on the "updated" field.
 func UpdatedEQ(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldUpdated, v))

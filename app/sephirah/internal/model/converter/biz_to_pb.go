@@ -71,8 +71,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig
 	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*pb.ListFeedConfigsResponse_FeedWithConfig
 	// goverter:matchIgnoreCase
-	ToPBItemIDWithFeedID(*modelyesod.FeedItemIDWithFeedID) *pb.FeedItemIDWithFeedID
-	ToPBItemIDWithFeedIDList([]*modelyesod.FeedItemIDWithFeedID) []*pb.FeedItemIDWithFeedID
+	ToPBFeedItemDigest(*modelyesod.FeedItemDigest) *pb.FeedItemDigest
+	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBNotifyTargetType
