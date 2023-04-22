@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.3](https://github.com/TuiHub/Librarian/compare/v0.1.2...v0.1.3) (2023-04-22)
+
+
+### Features
+
+* **chesed:** impl UploadImage ([519de90](https://github.com/TuiHub/Librarian/commit/519de905866c83db27af3f4566ae1653bba3fee2))
+
+
+### Bug Fixes
+
+* **chesed:** tested UploadImage ([ee5f186](https://github.com/TuiHub/Librarian/commit/ee5f18635a15bd578474c05d39c1356fd98d8a82))
+* **tiphereth:** change error reason of GetToken ([ae5ec60](https://github.com/TuiHub/Librarian/commit/ae5ec609f51e82e24444e1164d7e5a341afe4cca))
+* **yesod:** follow proto changes ([db288c4](https://github.com/TuiHub/Librarian/commit/db288c4c37ff549fcbce7e26e4571dde6e8af899))
+
 ## [0.1.2](https://github.com/TuiHub/Librarian/compare/v0.1.1...v0.1.2) (2023-04-18)
 
 
