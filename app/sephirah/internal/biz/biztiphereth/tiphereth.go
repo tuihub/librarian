@@ -66,17 +66,18 @@ func (t *Tiphereth) GetToken(
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
-		return "", "", pb.ErrorErrorReasonBadRequest("invalid password")
+
+		return "", "", pb.ErrorErrorReasonUnauthorized("invalid user or password")
 	}
 	user.PassWord = password
 
 	user, err = t.repo.FetchUserByPassword(ctx, user)
 	if err != nil {
 		logger.Infof("FetchUserByPassword failed: %s", err.Error())
-		return "", "", pb.ErrorErrorReasonBadRequest("invalid password")
+		return "", "", pb.ErrorErrorReasonUnauthorized("invalid user or password")
 	}
 	if user.Status != modeltiphereth.UserStatusActive {
-		return "", "", pb.ErrorErrorReasonBadRequest("user not active")
+		return "", "", pb.ErrorErrorReasonUnauthorized("user not active")
 	}
 
 	var accessToken, refreshToken string
