@@ -3,7 +3,7 @@ module github.com/tuihub/librarian
 go 1.19
 
 require (
-	entgo.io/ent v0.11.10
+	entgo.io/ent v0.12.2
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-sql v1.3.8
 	github.com/blevesearch/bleve/v2 v2.3.7
@@ -11,10 +11,10 @@ require (
 	github.com/cayleygraph/quad v1.2.4
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron v1.19.0
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230408145812-e9870cb48f7f
+	github.com/go-co-op/gocron v1.22.4
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230410063538-3958f9d5c06e
 	github.com/go-kratos/kratos/v2 v2.6.1
-	github.com/gocolly/colly/v2 v2.1.1-0.20230116162851-487ef118797d
+	github.com/gocolly/colly/v2 v2.1.1-0.20230417203752-70168cfd0bac
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/go-cmp v0.5.9
 	github.com/google/go-querystring v1.1.0
@@ -22,9 +22,9 @@ require (
 	github.com/hashicorp/consul/api v1.20.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230310080033-c0edf658332b
-	github.com/lib/pq v1.10.7
+	github.com/lib/pq v1.10.8
 	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/minio/minio-go/v7 v7.0.50
+	github.com/minio/minio-go/v7 v7.0.52
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/nikoksr/notify v0.38.1
 	github.com/redis/go-redis/v9 v9.0.3
@@ -33,13 +33,13 @@ require (
 	github.com/tuihub/protos v0.2.19
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.8.0
-	golang.org/x/exp v0.0.0-20230321023759-10a507213a29
+	golang.org/x/exp v0.0.0-20230420155640-133eef4313cb
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
 )
 
 require (
-	ariga.io/atlas v0.9.2-0.20230303073438-03a4779a6338 // indirect
+	ariga.io/atlas v0.10.0 // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
@@ -133,7 +133,7 @@ require (
 	github.com/shabbyrobe/gocovmerge v0.0.0-20190829150210-3e036491d500 // indirect
 	github.com/shirou/gopsutil/v3 v3.23.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
-	github.com/spf13/cobra v1.6.1 // indirect
+	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
@@ -157,7 +157,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230408145812-e9870cb48f7f
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230410063538-3958f9d5c06e
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
