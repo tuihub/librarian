@@ -3,7 +3,7 @@ module github.com/tuihub/librarian
 go 1.19
 
 require (
-	entgo.io/ent v0.12.2
+	entgo.io/ent v0.12.3
 	github.com/ThreeDotsLabs/watermill v1.2.0
 	github.com/ThreeDotsLabs/watermill-sql v1.3.8
 	github.com/blevesearch/bleve/v2 v2.3.7
@@ -11,8 +11,8 @@ require (
 	github.com/cayleygraph/quad v1.2.4
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron v1.22.4
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230410063538-3958f9d5c06e
+	github.com/go-co-op/gocron v1.23.0
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230504091536-aed172b8ddd3
 	github.com/go-kratos/kratos/v2 v2.6.1
 	github.com/gocolly/colly/v2 v2.1.1-0.20230417203752-70168cfd0bac
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -22,7 +22,7 @@ require (
 	github.com/hashicorp/consul/api v1.20.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230310080033-c0edf658332b
-	github.com/lib/pq v1.10.8
+	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/minio/minio-go/v7 v7.0.52
 	github.com/mmcdole/gofeed v1.2.1
@@ -33,13 +33,13 @@ require (
 	github.com/tuihub/protos v0.2.19
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.8.0
-	golang.org/x/exp v0.0.0-20230420155640-133eef4313cb
+	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0
 )
 
 require (
-	ariga.io/atlas v0.10.0 // indirect
+	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
@@ -146,7 +146,7 @@ require (
 	go.etcd.io/bbolt v1.3.5 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/term v0.7.0 // indirect
-	golang.org/x/tools v0.7.0 // indirect
+	golang.org/x/tools v0.8.1-0.20230428195545-5283a0178901 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
@@ -157,7 +157,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230410063538-3958f9d5c06e
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230504091536-aed172b8ddd3
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
