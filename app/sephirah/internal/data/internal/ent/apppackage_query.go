@@ -21,7 +21,7 @@ import (
 type AppPackageQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []apppackage.OrderOption
 	inters     []Interceptor
 	predicates []predicate.AppPackage
 	withOwner  *UserQuery
@@ -58,7 +58,7 @@ func (apq *AppPackageQuery) Unique(unique bool) *AppPackageQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (apq *AppPackageQuery) Order(o ...OrderFunc) *AppPackageQuery {
+func (apq *AppPackageQuery) Order(o ...apppackage.OrderOption) *AppPackageQuery {
 	apq.order = append(apq.order, o...)
 	return apq
 }
@@ -296,7 +296,7 @@ func (apq *AppPackageQuery) Clone() *AppPackageQuery {
 	return &AppPackageQuery{
 		config:     apq.config,
 		ctx:        apq.ctx.Clone(),
-		order:      append([]OrderFunc{}, apq.order...),
+		order:      append([]apppackage.OrderOption{}, apq.order...),
 		inters:     append([]Interceptor{}, apq.inters...),
 		predicates: append([]predicate.AppPackage{}, apq.predicates...),
 		withOwner:  apq.withOwner.Clone(),

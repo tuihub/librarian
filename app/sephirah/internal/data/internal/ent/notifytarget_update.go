@@ -179,7 +179,7 @@ func (ntu *NotifyTargetUpdate) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *N
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (ntu *NotifyTargetUpdate) Save(ctx context.Context) (int, error) {
 	ntu.defaults()
-	return withHooks[int, NotifyTargetMutation](ctx, ntu.sqlSave, ntu.mutation, ntu.hooks)
+	return withHooks(ctx, ntu.sqlSave, ntu.mutation, ntu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -574,7 +574,7 @@ func (ntuo *NotifyTargetUpdateOne) Select(field string, fields ...string) *Notif
 // Save executes the query and returns the updated NotifyTarget entity.
 func (ntuo *NotifyTargetUpdateOne) Save(ctx context.Context) (*NotifyTarget, error) {
 	ntuo.defaults()
-	return withHooks[*NotifyTarget, NotifyTargetMutation](ctx, ntuo.sqlSave, ntuo.mutation, ntuo.hooks)
+	return withHooks(ctx, ntuo.sqlSave, ntuo.mutation, ntuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

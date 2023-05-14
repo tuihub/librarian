@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -54,7 +55,8 @@ type FeedItem struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FeedItemQuery when eager-loading is set.
-	Edges FeedItemEdges `json:"edges"`
+	Edges        FeedItemEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // FeedItemEdges holds the relations/edges for other nodes in the graph.
@@ -93,7 +95,7 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 		case feeditem.FieldPublishedParsed, feeditem.FieldUpdatedParsed, feeditem.FieldUpdatedAt, feeditem.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type FeedItem", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -216,9 +218,17 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fi.CreatedAt = value.Time
 			}
+		default:
+			fi.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the FeedItem.
+// This includes values selected through modifiers, order, etc.
+func (fi *FeedItem) Value(name string) (ent.Value, error) {
+	return fi.selectValues.Get(name)
 }
 
 // QueryFeed queries the "feed" edge of the FeedItem entity.

@@ -222,7 +222,7 @@ func (fcu *FeedConfigUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *FeedConfigUpdat
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fcu *FeedConfigUpdate) Save(ctx context.Context) (int, error) {
 	fcu.defaults()
-	return withHooks[int, FeedConfigMutation](ctx, fcu.sqlSave, fcu.mutation, fcu.hooks)
+	return withHooks(ctx, fcu.sqlSave, fcu.mutation, fcu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -647,7 +647,7 @@ func (fcuo *FeedConfigUpdateOne) Select(field string, fields ...string) *FeedCon
 // Save executes the query and returns the updated FeedConfig entity.
 func (fcuo *FeedConfigUpdateOne) Save(ctx context.Context) (*FeedConfig, error) {
 	fcuo.defaults()
-	return withHooks[*FeedConfig, FeedConfigMutation](ctx, fcuo.sqlSave, fcuo.mutation, fcuo.hooks)
+	return withHooks(ctx, fcuo.sqlSave, fcuo.mutation, fcuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

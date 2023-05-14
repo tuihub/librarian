@@ -586,11 +586,7 @@ func HasOwner() predicate.FeedConfig {
 // HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
 func HasOwnerWith(preds ...predicate.User) predicate.FeedConfig {
 	return predicate.FeedConfig(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OwnerInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
-		)
+		step := newOwnerStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -613,11 +609,7 @@ func HasFeed() predicate.FeedConfig {
 // HasFeedWith applies the HasEdge predicate on the "feed" edge with a given conditions (other predicates).
 func HasFeedWith(preds ...predicate.Feed) predicate.FeedConfig {
 	return predicate.FeedConfig(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FeedInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, FeedTable, FeedColumn),
-		)
+		step := newFeedStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -640,11 +632,7 @@ func HasNotifyFlow() predicate.FeedConfig {
 // HasNotifyFlowWith applies the HasEdge predicate on the "notify_flow" edge with a given conditions (other predicates).
 func HasNotifyFlowWith(preds ...predicate.NotifyFlow) predicate.FeedConfig {
 	return predicate.FeedConfig(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(NotifyFlowInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, NotifyFlowTable, NotifyFlowPrimaryKey...),
-		)
+		step := newNotifyFlowStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

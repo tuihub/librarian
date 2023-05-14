@@ -5,6 +5,9 @@ package user
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -202,4 +205,245 @@ func TypeValidator(_type Type) error {
 	default:
 		return fmt.Errorf("user: invalid enum value for type field: %q", _type)
 	}
+}
+
+// OrderOption defines the ordering options for the User queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByUsername orders the results by the username field.
+func ByUsername(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUsername, opts...).ToFunc()
+}
+
+// ByPassword orders the results by the password field.
+func ByPassword(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPassword, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByBindAccountCount orders the results by bind_account count.
+func ByBindAccountCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newBindAccountStep(), opts...)
+	}
+}
+
+// ByBindAccount orders the results by bind_account terms.
+func ByBindAccount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBindAccountStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPurchasedAppCount orders the results by purchased_app count.
+func ByPurchasedAppCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPurchasedAppStep(), opts...)
+	}
+}
+
+// ByPurchasedApp orders the results by purchased_app terms.
+func ByPurchasedApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPurchasedAppStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAppPackageCount orders the results by app_package count.
+func ByAppPackageCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppPackageStep(), opts...)
+	}
+}
+
+// ByAppPackage orders the results by app_package terms.
+func ByAppPackage(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppPackageStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByFeedConfigCount orders the results by feed_config count.
+func ByFeedConfigCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedConfigStep(), opts...)
+	}
+}
+
+// ByFeedConfig orders the results by feed_config terms.
+func ByFeedConfig(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedConfigStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotifyTargetCount orders the results by notify_target count.
+func ByNotifyTargetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyTargetStep(), opts...)
+	}
+}
+
+// ByNotifyTarget orders the results by notify_target terms.
+func ByNotifyTarget(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyTargetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotifyFlowCount orders the results by notify_flow count.
+func ByNotifyFlowCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowStep(), opts...)
+	}
+}
+
+// ByNotifyFlow orders the results by notify_flow terms.
+func ByNotifyFlow(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByImageCount orders the results by image count.
+func ByImageCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newImageStep(), opts...)
+	}
+}
+
+// ByImage orders the results by image terms.
+func ByImage(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newImageStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByFileCount orders the results by file count.
+func ByFileCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFileStep(), opts...)
+	}
+}
+
+// ByFile orders the results by file terms.
+func ByFile(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFileStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByCreatorField orders the results by creator field.
+func ByCreatorField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCreatorStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByCreatedUserCount orders the results by created_user count.
+func ByCreatedUserCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newCreatedUserStep(), opts...)
+	}
+}
+
+// ByCreatedUser orders the results by created_user terms.
+func ByCreatedUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newCreatedUserStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newBindAccountStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(BindAccountInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, BindAccountTable, BindAccountColumn),
+	)
+}
+func newPurchasedAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PurchasedAppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+	)
+}
+func newAppPackageStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppPackageInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+	)
+}
+func newFeedConfigStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedConfigInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FeedConfigTable, FeedConfigColumn),
+	)
+}
+func newNotifyTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotifyTargetTable, NotifyTargetColumn),
+	)
+}
+func newNotifyFlowStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyFlowInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotifyFlowTable, NotifyFlowColumn),
+	)
+}
+func newImageStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ImageInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ImageTable, ImageColumn),
+	)
+}
+func newFileStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FileInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FileTable, FileColumn),
+	)
+}
+func newCreatorStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, CreatorTable, CreatorColumn),
+	)
+}
+func newCreatedUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, CreatedUserTable, CreatedUserColumn),
+	)
 }

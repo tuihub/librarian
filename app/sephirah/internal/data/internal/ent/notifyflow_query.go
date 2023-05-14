@@ -24,7 +24,7 @@ import (
 type NotifyFlowQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []OrderFunc
+	order                []notifyflow.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.NotifyFlow
 	withOwner            *UserQuery
@@ -63,7 +63,7 @@ func (nfq *NotifyFlowQuery) Unique(unique bool) *NotifyFlowQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (nfq *NotifyFlowQuery) Order(o ...OrderFunc) *NotifyFlowQuery {
+func (nfq *NotifyFlowQuery) Order(o ...notifyflow.OrderOption) *NotifyFlowQuery {
 	nfq.order = append(nfq.order, o...)
 	return nfq
 }
@@ -345,7 +345,7 @@ func (nfq *NotifyFlowQuery) Clone() *NotifyFlowQuery {
 	return &NotifyFlowQuery{
 		config:               nfq.config,
 		ctx:                  nfq.ctx.Clone(),
-		order:                append([]OrderFunc{}, nfq.order...),
+		order:                append([]notifyflow.OrderOption{}, nfq.order...),
 		inters:               append([]Interceptor{}, nfq.inters...),
 		predicates:           append([]predicate.NotifyFlow{}, nfq.predicates...),
 		withOwner:            nfq.withOwner.Clone(),
@@ -708,8 +708,11 @@ func (nfq *NotifyFlowQuery) loadNotifyFlowTarget(ctx context.Context, query *Not
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(notifyflowtarget.FieldNotifyFlowID)
+	}
 	query.Where(predicate.NotifyFlowTarget(func(s *sql.Selector) {
-		s.Where(sql.InValues(notifyflow.NotifyFlowTargetColumn, fks...))
+		s.Where(sql.InValues(s.C(notifyflow.NotifyFlowTargetColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -719,7 +722,7 @@ func (nfq *NotifyFlowQuery) loadNotifyFlowTarget(ctx context.Context, query *Not
 		fk := n.NotifyFlowID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "notify_flow_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "notify_flow_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -500,11 +500,7 @@ func HasItem() predicate.Feed {
 // HasItemWith applies the HasEdge predicate on the "item" edge with a given conditions (other predicates).
 func HasItemWith(preds ...predicate.FeedItem) predicate.Feed {
 	return predicate.Feed(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ItemInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ItemTable, ItemColumn),
-		)
+		step := newItemStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -527,11 +523,7 @@ func HasConfig() predicate.Feed {
 // HasConfigWith applies the HasEdge predicate on the "config" edge with a given conditions (other predicates).
 func HasConfigWith(preds ...predicate.FeedConfig) predicate.Feed {
 	return predicate.Feed(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ConfigInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, ConfigTable, ConfigColumn),
-		)
+		step := newConfigStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

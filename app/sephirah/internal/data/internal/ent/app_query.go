@@ -22,7 +22,7 @@ import (
 type AppQuery struct {
 	config
 	ctx              *QueryContext
-	order            []OrderFunc
+	order            []app.OrderOption
 	inters           []Interceptor
 	predicates       []predicate.App
 	withPurchasedBy  *UserQuery
@@ -61,7 +61,7 @@ func (aq *AppQuery) Unique(unique bool) *AppQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (aq *AppQuery) Order(o ...OrderFunc) *AppQuery {
+func (aq *AppQuery) Order(o ...app.OrderOption) *AppQuery {
 	aq.order = append(aq.order, o...)
 	return aq
 }
@@ -343,7 +343,7 @@ func (aq *AppQuery) Clone() *AppQuery {
 	return &AppQuery{
 		config:           aq.config,
 		ctx:              aq.ctx.Clone(),
-		order:            append([]OrderFunc{}, aq.order...),
+		order:            append([]app.OrderOption{}, aq.order...),
 		inters:           append([]Interceptor{}, aq.inters...),
 		predicates:       append([]predicate.App{}, aq.predicates...),
 		withPurchasedBy:  aq.withPurchasedBy.Clone(),
@@ -613,7 +613,7 @@ func (aq *AppQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery, 
 	}
 	query.withFKs = true
 	query.Where(predicate.AppPackage(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.AppPackageColumn, fks...))
+		s.Where(sql.InValues(s.C(app.AppPackageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -626,7 +626,7 @@ func (aq *AppQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery, 
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_app_package" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_app_package" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -676,7 +676,7 @@ func (aq *AppQuery) loadBindExternal(ctx context.Context, query *AppQuery, nodes
 	}
 	query.withFKs = true
 	query.Where(predicate.App(func(s *sql.Selector) {
-		s.Where(sql.InValues(app.BindExternalColumn, fks...))
+		s.Where(sql.InValues(s.C(app.BindExternalColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -689,7 +689,7 @@ func (aq *AppQuery) loadBindExternal(ctx context.Context, query *AppQuery, nodes
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_bind_external" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "app_bind_external" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -27,7 +27,7 @@ func (ntd *NotifyTargetDelete) Where(ps ...predicate.NotifyTarget) *NotifyTarget
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (ntd *NotifyTargetDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, NotifyTargetMutation](ctx, ntd.sqlExec, ntd.mutation, ntd.hooks)
+	return withHooks(ctx, ntd.sqlExec, ntd.mutation, ntd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

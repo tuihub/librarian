@@ -320,11 +320,7 @@ func HasOwner() predicate.NotifyFlow {
 // HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
 func HasOwnerWith(preds ...predicate.User) predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OwnerInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
-		)
+		step := newOwnerStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -347,11 +343,7 @@ func HasNotifyTarget() predicate.NotifyFlow {
 // HasNotifyTargetWith applies the HasEdge predicate on the "notify_target" edge with a given conditions (other predicates).
 func HasNotifyTargetWith(preds ...predicate.NotifyTarget) predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(NotifyTargetInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, NotifyTargetTable, NotifyTargetPrimaryKey...),
-		)
+		step := newNotifyTargetStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -374,11 +366,7 @@ func HasFeedConfig() predicate.NotifyFlow {
 // HasFeedConfigWith applies the HasEdge predicate on the "feed_config" edge with a given conditions (other predicates).
 func HasFeedConfigWith(preds ...predicate.FeedConfig) predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FeedConfigInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, FeedConfigTable, FeedConfigPrimaryKey...),
-		)
+		step := newFeedConfigStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -401,11 +389,7 @@ func HasNotifyFlowTarget() predicate.NotifyFlow {
 // HasNotifyFlowTargetWith applies the HasEdge predicate on the "notify_flow_target" edge with a given conditions (other predicates).
 func HasNotifyFlowTargetWith(preds ...predicate.NotifyFlowTarget) predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(NotifyFlowTargetInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, NotifyFlowTargetTable, NotifyFlowTargetColumn),
-		)
+		step := newNotifyFlowTargetStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

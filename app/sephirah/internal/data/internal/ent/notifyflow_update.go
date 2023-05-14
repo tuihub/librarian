@@ -204,7 +204,7 @@ func (nfu *NotifyFlowUpdate) RemoveNotifyFlowTarget(n ...*NotifyFlowTarget) *Not
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (nfu *NotifyFlowUpdate) Save(ctx context.Context) (int, error) {
 	nfu.defaults()
-	return withHooks[int, NotifyFlowMutation](ctx, nfu.sqlSave, nfu.mutation, nfu.hooks)
+	return withHooks(ctx, nfu.sqlSave, nfu.mutation, nfu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -657,7 +657,7 @@ func (nfuo *NotifyFlowUpdateOne) Select(field string, fields ...string) *NotifyF
 // Save executes the query and returns the updated NotifyFlow entity.
 func (nfuo *NotifyFlowUpdateOne) Save(ctx context.Context) (*NotifyFlow, error) {
 	nfuo.defaults()
-	return withHooks[*NotifyFlow, NotifyFlowMutation](ctx, nfuo.sqlSave, nfuo.mutation, nfuo.hooks)
+	return withHooks(ctx, nfuo.sqlSave, nfuo.mutation, nfuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

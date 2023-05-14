@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -29,9 +30,10 @@ type Image struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ImageQuery when eager-loading is set.
-	Edges      ImageEdges `json:"edges"`
-	file_image *model.InternalID
-	user_image *model.InternalID
+	Edges        ImageEdges `json:"edges"`
+	file_image   *model.InternalID
+	user_image   *model.InternalID
+	selectValues sql.SelectValues
 }
 
 // ImageEdges holds the relations/edges for other nodes in the graph.
@@ -87,7 +89,7 @@ func (*Image) scanValues(columns []string) ([]any, error) {
 		case image.ForeignKeys[1]: // user_image
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Image", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -145,9 +147,17 @@ func (i *Image) assignValues(columns []string, values []any) error {
 				i.user_image = new(model.InternalID)
 				*i.user_image = model.InternalID(value.Int64)
 			}
+		default:
+			i.selectValues.Set(columns[j], values[j])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Image.
+// This includes values selected through modifiers, order, etc.
+func (i *Image) Value(name string) (ent.Value, error) {
+	return i.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the Image entity.

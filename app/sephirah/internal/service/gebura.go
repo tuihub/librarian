@@ -4,8 +4,9 @@ import (
 	"context"
 	"io"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -120,15 +121,15 @@ func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *
 	}
 	return &pb.PurchaseAppResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req *pb.GetAppLibraryRequest) (
-	*pb.GetAppLibraryResponse, error,
+func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req *pb.GetPurchasedAppsRequest) (
+	*pb.GetPurchasedAppsResponse, error,
 ) {
-	appIDs, err := s.g.GetPurchasedApps(ctx)
+	apps, err := s.g.GetPurchasedApps(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetAppLibraryResponse{
-		AppIds: converter.ToPBInternalIDList(appIDs),
+	return &pb.GetPurchasedAppsResponse{
+		Apps: converter.ToPBAppList(apps),
 	}, nil
 }
 
@@ -207,31 +208,16 @@ func (s *LibrarianSephirahServiceService) ReportAppPackages(
 		return err2
 	}
 	for {
-		var apl []*modelgebura.AppPackage
+		var binaries []*modelgebura.AppPackageBinary
 		if req, err := conn.Recv(); err != nil {
 			if errors.Is(err, io.EOF) {
 				return nil
 			}
 			return err
 		} else {
-			for id, a := range req.GetAppPackages() {
-				apl = append(apl, &modelgebura.AppPackage{
-					ID:              0,
-					Source:          0,
-					SourceID:        0,
-					SourcePackageID: id,
-					Name:            a.GetName(),
-					Description:     "",
-					Binary: &modelgebura.AppPackageBinary{
-						Name:      a.GetName(),
-						SizeByte:  a.GetSizeByte(),
-						PublicURL: a.GetPublicUrl(),
-					},
-					Public: false,
-				})
-			}
+			binaries = converter.ToBizAppPackageBinaryList(req.GetAppPackageBinaries())
 		}
-		if err := handler.Handle(conn.Context(), apl); err != nil {
+		if err := handler.Handle(conn.Context(), binaries); err != nil {
 			return err
 		}
 		if err := conn.Send(&pb.ReportAppPackagesResponse{}); err != nil {

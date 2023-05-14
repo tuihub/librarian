@@ -24,13 +24,13 @@ func (AppPackage) Fields() []ent.Field {
 			Values("manual", "sentinel"),
 		field.Int64("source_id").
 			GoType(model.InternalID(0)),
-		field.String("source_package_id"),
 		field.String("name"),
 		field.Text("description"),
 		field.Bool("public"),
 		field.String("binary_name"),
 		field.Int64("binary_size_byte"),
 		field.String("binary_public_url"),
+		field.Bytes("binary_sha256"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -40,7 +40,7 @@ func (AppPackage) Fields() []ent.Field {
 
 func (AppPackage) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("source", "source_id", "source_package_id").
+		index.Fields("binary_sha256").
 			Unique(),
 	}
 }

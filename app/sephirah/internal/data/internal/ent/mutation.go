@@ -2135,7 +2135,6 @@ type AppPackageMutation struct {
 	source              *apppackage.Source
 	source_id           *model.InternalID
 	addsource_id        *model.InternalID
-	source_package_id   *string
 	name                *string
 	description         *string
 	public              *bool
@@ -2143,6 +2142,7 @@ type AppPackageMutation struct {
 	binary_size_byte    *int64
 	addbinary_size_byte *int64
 	binary_public_url   *string
+	binary_sha256       *[]byte
 	updated_at          *time.Time
 	created_at          *time.Time
 	clearedFields       map[string]struct{}
@@ -2349,42 +2349,6 @@ func (m *AppPackageMutation) AddedSourceID() (r model.InternalID, exists bool) {
 func (m *AppPackageMutation) ResetSourceID() {
 	m.source_id = nil
 	m.addsource_id = nil
-}
-
-// SetSourcePackageID sets the "source_package_id" field.
-func (m *AppPackageMutation) SetSourcePackageID(s string) {
-	m.source_package_id = &s
-}
-
-// SourcePackageID returns the value of the "source_package_id" field in the mutation.
-func (m *AppPackageMutation) SourcePackageID() (r string, exists bool) {
-	v := m.source_package_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSourcePackageID returns the old "source_package_id" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldSourcePackageID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSourcePackageID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourcePackageID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSourcePackageID: %w", err)
-	}
-	return oldValue.SourcePackageID, nil
-}
-
-// ResetSourcePackageID resets all changes to the "source_package_id" field.
-func (m *AppPackageMutation) ResetSourcePackageID() {
-	m.source_package_id = nil
 }
 
 // SetName sets the "name" field.
@@ -2623,6 +2587,42 @@ func (m *AppPackageMutation) ResetBinaryPublicURL() {
 	m.binary_public_url = nil
 }
 
+// SetBinarySha256 sets the "binary_sha256" field.
+func (m *AppPackageMutation) SetBinarySha256(b []byte) {
+	m.binary_sha256 = &b
+}
+
+// BinarySha256 returns the value of the "binary_sha256" field in the mutation.
+func (m *AppPackageMutation) BinarySha256() (r []byte, exists bool) {
+	v := m.binary_sha256
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBinarySha256 returns the old "binary_sha256" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldBinarySha256(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBinarySha256 is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBinarySha256 requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBinarySha256: %w", err)
+	}
+	return oldValue.BinarySha256, nil
+}
+
+// ResetBinarySha256 resets all changes to the "binary_sha256" field.
+func (m *AppPackageMutation) ResetBinarySha256() {
+	m.binary_sha256 = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *AppPackageMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -2814,9 +2814,6 @@ func (m *AppPackageMutation) Fields() []string {
 	if m.source_id != nil {
 		fields = append(fields, apppackage.FieldSourceID)
 	}
-	if m.source_package_id != nil {
-		fields = append(fields, apppackage.FieldSourcePackageID)
-	}
 	if m.name != nil {
 		fields = append(fields, apppackage.FieldName)
 	}
@@ -2834,6 +2831,9 @@ func (m *AppPackageMutation) Fields() []string {
 	}
 	if m.binary_public_url != nil {
 		fields = append(fields, apppackage.FieldBinaryPublicURL)
+	}
+	if m.binary_sha256 != nil {
+		fields = append(fields, apppackage.FieldBinarySha256)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, apppackage.FieldUpdatedAt)
@@ -2853,8 +2853,6 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.Source()
 	case apppackage.FieldSourceID:
 		return m.SourceID()
-	case apppackage.FieldSourcePackageID:
-		return m.SourcePackageID()
 	case apppackage.FieldName:
 		return m.Name()
 	case apppackage.FieldDescription:
@@ -2867,6 +2865,8 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.BinarySizeByte()
 	case apppackage.FieldBinaryPublicURL:
 		return m.BinaryPublicURL()
+	case apppackage.FieldBinarySha256:
+		return m.BinarySha256()
 	case apppackage.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case apppackage.FieldCreatedAt:
@@ -2884,8 +2884,6 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldSource(ctx)
 	case apppackage.FieldSourceID:
 		return m.OldSourceID(ctx)
-	case apppackage.FieldSourcePackageID:
-		return m.OldSourcePackageID(ctx)
 	case apppackage.FieldName:
 		return m.OldName(ctx)
 	case apppackage.FieldDescription:
@@ -2898,6 +2896,8 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldBinarySizeByte(ctx)
 	case apppackage.FieldBinaryPublicURL:
 		return m.OldBinaryPublicURL(ctx)
+	case apppackage.FieldBinarySha256:
+		return m.OldBinarySha256(ctx)
 	case apppackage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case apppackage.FieldCreatedAt:
@@ -2924,13 +2924,6 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSourceID(v)
-		return nil
-	case apppackage.FieldSourcePackageID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSourcePackageID(v)
 		return nil
 	case apppackage.FieldName:
 		v, ok := value.(string)
@@ -2973,6 +2966,13 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetBinaryPublicURL(v)
+		return nil
+	case apppackage.FieldBinarySha256:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBinarySha256(v)
 		return nil
 	case apppackage.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -3070,9 +3070,6 @@ func (m *AppPackageMutation) ResetField(name string) error {
 	case apppackage.FieldSourceID:
 		m.ResetSourceID()
 		return nil
-	case apppackage.FieldSourcePackageID:
-		m.ResetSourcePackageID()
-		return nil
 	case apppackage.FieldName:
 		m.ResetName()
 		return nil
@@ -3090,6 +3087,9 @@ func (m *AppPackageMutation) ResetField(name string) error {
 		return nil
 	case apppackage.FieldBinaryPublicURL:
 		m.ResetBinaryPublicURL()
+		return nil
+	case apppackage.FieldBinarySha256:
+		m.ResetBinarySha256()
 		return nil
 	case apppackage.FieldUpdatedAt:
 		m.ResetUpdatedAt()

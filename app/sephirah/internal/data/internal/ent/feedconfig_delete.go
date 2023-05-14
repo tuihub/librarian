@@ -27,7 +27,7 @@ func (fcd *FeedConfigDelete) Where(ps ...predicate.FeedConfig) *FeedConfigDelete
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (fcd *FeedConfigDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, FeedConfigMutation](ctx, fcd.sqlExec, fcd.mutation, fcd.hooks)
+	return withHooks(ctx, fcd.sqlExec, fcd.mutation, fcd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

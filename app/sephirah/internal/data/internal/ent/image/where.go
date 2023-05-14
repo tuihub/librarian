@@ -300,11 +300,7 @@ func HasOwner() predicate.Image {
 // HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
 func HasOwnerWith(preds ...predicate.User) predicate.Image {
 	return predicate.Image(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OwnerInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
-		)
+		step := newOwnerStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -327,11 +323,7 @@ func HasFile() predicate.Image {
 // HasFileWith applies the HasEdge predicate on the "file" edge with a given conditions (other predicates).
 func HasFileWith(preds ...predicate.File) predicate.Image {
 	return predicate.Image(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FileInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, FileTable, FileColumn),
-		)
+		step := newFileStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

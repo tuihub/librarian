@@ -2,7 +2,6 @@ package bizgebura
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -32,7 +31,6 @@ func (g *Gebura) CreateAppPackage(
 	a.ID = converter.ToBizInternalID(resp.Id)
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
-	a.SourcePackageID = strconv.FormatInt(int64(converter.ToBizInternalID(resp.Id)), 10)
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
 			Vid:  int64(a.ID),
@@ -114,47 +112,50 @@ func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPacka
 	if !exist || claims == nil {
 		return nil, pb.ErrorErrorReasonUnauthorized("token required")
 	}
-	ids, err := g.repo.ListAllAppPackageIDOfOneSource(ctx, modelgebura.AppPackageSourceSentinel, claims.InternalID)
+	checksums, err := g.repo.ListAppPackageBinaryChecksumOfOneSource(ctx,
+		modelgebura.AppPackageSourceSentinel, claims.InternalID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &reportAppPackageHandler{
-		g:          g,
-		sourceID:   claims.InternalID,
-		packageIDs: ids,
+		g:        g,
+		sourceID: claims.InternalID,
+		sha256:   checksums,
 	}, nil
 }
 
 type reportAppPackageHandler struct {
-	g          *Gebura
-	sourceID   model.InternalID
-	packageIDs []string
+	g        *Gebura
+	sourceID model.InternalID
+	sha256   []string
 }
 
-func (r *reportAppPackageHandler) Handle(ctx context.Context, apl []*modelgebura.AppPackage) *errors.Error {
+func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelgebura.AppPackageBinary) *errors.Error {
 	var vl []*mapper.Vertex
-	for i := range apl {
-		if !slices.Contains(r.packageIDs, apl[i].SourcePackageID) {
+	packages := make([]*modelgebura.AppPackage, 0, len(binaries))
+	for i := range binaries {
+		packages = append(packages, new(modelgebura.AppPackage))
+		if !slices.Contains(r.sha256, string(binaries[i].Sha256)) {
 			resp, err := r.g.searcher.NewID(ctx, &searcher.NewIDRequest{})
 			if err != nil {
 				logger.Infof("NewID failed: %s", err.Error())
 				return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 			}
-			apl[i].ID = converter.ToBizInternalID(resp.Id)
+			packages[i].ID = converter.ToBizInternalID(resp.Id)
 			vl = append(vl, &mapper.Vertex{
 				Vid:  int64(converter.ToBizInternalID(resp.Id)),
 				Type: mapper.VertexType_VERTEX_TYPE_OBJECT,
 				Prop: nil,
 			})
 		}
-		apl[i].Source = modelgebura.AppPackageSourceSentinel
-		apl[i].SourceID = r.sourceID
+		packages[i].Source = modelgebura.AppPackageSourceSentinel
+		packages[i].SourceID = r.sourceID
 	}
 	if len(vl) > 0 {
 		if _, err := r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		if err := r.g.repo.UpsertAppPackages(ctx, r.sourceID, apl); err != nil {
+		if err := r.g.repo.UpsertAppPackages(ctx, r.sourceID, packages); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
 	}

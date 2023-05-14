@@ -40,20 +40,20 @@ const (
 )
 
 type AppPackage struct {
-	ID              model.InternalID
-	Source          AppPackageSource
-	SourceID        model.InternalID
-	SourcePackageID string
-	Name            string
-	Description     string
-	Binary          *AppPackageBinary
-	Public          bool
+	ID          model.InternalID
+	Source      AppPackageSource
+	SourceID    model.InternalID
+	Name        string
+	Description string
+	Binary      *AppPackageBinary
+	Public      bool
 }
 
 type AppPackageBinary struct {
 	Name      string
 	SizeByte  int64
 	PublicURL string
+	Sha256    []byte
 }
 
 type AppPackageSource int

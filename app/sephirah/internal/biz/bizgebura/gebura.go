@@ -14,7 +14,7 @@ import (
 )
 
 type ReportAppPackageHandler interface {
-	Handle(context.Context, []*modelgebura.AppPackage) *errors.Error
+	Handle(context.Context, []*modelgebura.AppPackageBinary) *errors.Error
 }
 
 type GeburaRepo interface {
@@ -27,7 +27,7 @@ type GeburaRepo interface {
 	SearchApps(context.Context, model.Paging, string) ([]*modelgebura.App, int, error)
 	GetBindApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
-	GetPurchasedApps(context.Context, model.InternalID) ([]model.InternalID, error)
+	GetPurchasedApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 
 	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
 	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
@@ -35,7 +35,7 @@ type GeburaRepo interface {
 	ListAppPackages(context.Context, model.Paging, []modelgebura.AppPackageSource,
 		[]model.InternalID) ([]*modelgebura.AppPackage, int, error)
 	AssignAppPackage(context.Context, model.InternalID, model.InternalID, model.InternalID) error
-	ListAllAppPackageIDOfOneSource(context.Context, modelgebura.AppPackageSource,
+	ListAppPackageBinaryChecksumOfOneSource(context.Context, modelgebura.AppPackageSource,
 		model.InternalID) ([]string, error)
 	UnAssignAppPackage(context.Context, model.InternalID, model.InternalID) error
 }

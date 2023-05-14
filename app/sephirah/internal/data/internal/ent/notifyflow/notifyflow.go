@@ -5,6 +5,9 @@ package notifyflow
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -128,4 +131,114 @@ func StatusValidator(s Status) error {
 	default:
 		return fmt.Errorf("notifyflow: invalid enum value for status field: %q", s)
 	}
+}
+
+// OrderOption defines the ordering options for the NotifyFlow queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByOwnerField orders the results by owner field.
+func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByNotifyTargetCount orders the results by notify_target count.
+func ByNotifyTargetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyTargetStep(), opts...)
+	}
+}
+
+// ByNotifyTarget orders the results by notify_target terms.
+func ByNotifyTarget(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyTargetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByFeedConfigCount orders the results by feed_config count.
+func ByFeedConfigCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedConfigStep(), opts...)
+	}
+}
+
+// ByFeedConfig orders the results by feed_config terms.
+func ByFeedConfig(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedConfigStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotifyFlowTargetCount orders the results by notify_flow_target count.
+func ByNotifyFlowTargetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowTargetStep(), opts...)
+	}
+}
+
+// ByNotifyFlowTarget orders the results by notify_flow_target terms.
+func ByNotifyFlowTarget(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowTargetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newOwnerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OwnerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+	)
+}
+func newNotifyTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, NotifyTargetTable, NotifyTargetPrimaryKey...),
+	)
+}
+func newFeedConfigStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedConfigInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, FeedConfigTable, FeedConfigPrimaryKey...),
+	)
+}
+func newNotifyFlowTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyFlowTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, NotifyFlowTargetTable, NotifyFlowTargetColumn),
+	)
 }

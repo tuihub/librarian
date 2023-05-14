@@ -99,7 +99,7 @@ func (nftu *NotifyFlowTargetUpdate) ClearNotifyTarget() *NotifyFlowTargetUpdate 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (nftu *NotifyFlowTargetUpdate) Save(ctx context.Context) (int, error) {
 	nftu.defaults()
-	return withHooks[int, NotifyFlowTargetMutation](ctx, nftu.sqlSave, nftu.mutation, nftu.hooks)
+	return withHooks(ctx, nftu.sqlSave, nftu.mutation, nftu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -323,7 +323,7 @@ func (nftuo *NotifyFlowTargetUpdateOne) Select(field string, fields ...string) *
 // Save executes the query and returns the updated NotifyFlowTarget entity.
 func (nftuo *NotifyFlowTargetUpdateOne) Save(ctx context.Context) (*NotifyFlowTarget, error) {
 	nftuo.defaults()
-	return withHooks[*NotifyFlowTarget, NotifyFlowTargetMutation](ctx, nftuo.sqlSave, nftuo.mutation, nftuo.hooks)
+	return withHooks(ctx, nftuo.sqlSave, nftuo.mutation, nftuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

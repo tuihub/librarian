@@ -78,7 +78,6 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 		modelgeburaAppPackage.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
 		modelgeburaAppPackage.SourceID = c.modelInternalIDToModelInternalID((*source).SourceID)
-		modelgeburaAppPackage.SourcePackageID = (*source).SourcePackageID
 		modelgeburaAppPackage.Name = (*source).Name
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.entAppPackageToPModelgeburaAppPackageBinary((*source))
@@ -92,6 +91,14 @@ func (c *toBizConverterImpl) ToBizAppPackageBinary(source ent.AppPackage) modelg
 	modelgeburaAppPackageBinary.Name = source.BinaryName
 	modelgeburaAppPackageBinary.SizeByte = source.BinarySizeByte
 	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
+	var byteList []uint8
+	if source.BinarySha256 != nil {
+		byteList = make([]uint8, len(source.BinarySha256))
+		for i := 0; i < len(source.BinarySha256); i++ {
+			byteList[i] = source.BinarySha256[i]
+		}
+	}
+	modelgeburaAppPackageBinary.Sha256 = byteList
 	return modelgeburaAppPackageBinary
 }
 func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*modelgebura.AppPackage {

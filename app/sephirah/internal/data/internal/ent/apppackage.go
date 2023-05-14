@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
@@ -23,8 +24,6 @@ type AppPackage struct {
 	Source apppackage.Source `json:"source,omitempty"`
 	// SourceID holds the value of the "source_id" field.
 	SourceID model.InternalID `json:"source_id,omitempty"`
-	// SourcePackageID holds the value of the "source_package_id" field.
-	SourcePackageID string `json:"source_package_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
@@ -37,6 +36,8 @@ type AppPackage struct {
 	BinarySizeByte int64 `json:"binary_size_byte,omitempty"`
 	// BinaryPublicURL holds the value of the "binary_public_url" field.
 	BinaryPublicURL string `json:"binary_public_url,omitempty"`
+	// BinarySha256 holds the value of the "binary_sha256" field.
+	BinarySha256 []byte `json:"binary_sha256,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -46,6 +47,7 @@ type AppPackage struct {
 	Edges            AppPackageEdges `json:"edges"`
 	app_app_package  *model.InternalID
 	user_app_package *model.InternalID
+	selectValues     sql.SelectValues
 }
 
 // AppPackageEdges holds the relations/edges for other nodes in the graph.
@@ -90,11 +92,13 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case apppackage.FieldBinarySha256:
+			values[i] = new([]byte)
 		case apppackage.FieldPublic:
 			values[i] = new(sql.NullBool)
 		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeByte:
 			values[i] = new(sql.NullInt64)
-		case apppackage.FieldSource, apppackage.FieldSourcePackageID, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
+		case apppackage.FieldSource, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
 		case apppackage.FieldUpdatedAt, apppackage.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -103,7 +107,7 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 		case apppackage.ForeignKeys[1]: // user_app_package
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type AppPackage", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -134,12 +138,6 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field source_id", values[i])
 			} else if value.Valid {
 				ap.SourceID = model.InternalID(value.Int64)
-			}
-		case apppackage.FieldSourcePackageID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field source_package_id", values[i])
-			} else if value.Valid {
-				ap.SourcePackageID = value.String
 			}
 		case apppackage.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -177,6 +175,12 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.BinaryPublicURL = value.String
 			}
+		case apppackage.FieldBinarySha256:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field binary_sha256", values[i])
+			} else if value != nil {
+				ap.BinarySha256 = *value
+			}
 		case apppackage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -203,9 +207,17 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 				ap.user_app_package = new(model.InternalID)
 				*ap.user_app_package = model.InternalID(value.Int64)
 			}
+		default:
+			ap.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the AppPackage.
+// This includes values selected through modifiers, order, etc.
+func (ap *AppPackage) Value(name string) (ent.Value, error) {
+	return ap.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the AppPackage entity.
@@ -247,9 +259,6 @@ func (ap *AppPackage) String() string {
 	builder.WriteString("source_id=")
 	builder.WriteString(fmt.Sprintf("%v", ap.SourceID))
 	builder.WriteString(", ")
-	builder.WriteString("source_package_id=")
-	builder.WriteString(ap.SourcePackageID)
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(ap.Name)
 	builder.WriteString(", ")
@@ -267,6 +276,9 @@ func (ap *AppPackage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("binary_public_url=")
 	builder.WriteString(ap.BinaryPublicURL)
+	builder.WriteString(", ")
+	builder.WriteString("binary_sha256=")
+	builder.WriteString(fmt.Sprintf("%v", ap.BinarySha256))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ap.UpdatedAt.Format(time.ANSIC))

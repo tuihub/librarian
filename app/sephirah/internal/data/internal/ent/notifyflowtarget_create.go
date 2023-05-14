@@ -89,7 +89,7 @@ func (nftc *NotifyFlowTargetCreate) Mutation() *NotifyFlowTargetMutation {
 // Save creates the NotifyFlowTarget in the database.
 func (nftc *NotifyFlowTargetCreate) Save(ctx context.Context) (*NotifyFlowTarget, error) {
 	nftc.defaults()
-	return withHooks[*NotifyFlowTarget, NotifyFlowTargetMutation](ctx, nftc.sqlSave, nftc.mutation, nftc.hooks)
+	return withHooks(ctx, nftc.sqlSave, nftc.mutation, nftc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -502,8 +502,8 @@ func (nftcb *NotifyFlowTargetCreateBulk) Save(ctx context.Context) ([]*NotifyFlo
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, nftcb.builders[i+1].mutation)
 				} else {

@@ -22,7 +22,7 @@ import (
 type FileQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []file.OrderOption
 	inters     []Interceptor
 	predicates []predicate.File
 	withOwner  *UserQuery
@@ -59,7 +59,7 @@ func (fq *FileQuery) Unique(unique bool) *FileQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (fq *FileQuery) Order(o ...OrderFunc) *FileQuery {
+func (fq *FileQuery) Order(o ...file.OrderOption) *FileQuery {
 	fq.order = append(fq.order, o...)
 	return fq
 }
@@ -297,7 +297,7 @@ func (fq *FileQuery) Clone() *FileQuery {
 	return &FileQuery{
 		config:     fq.config,
 		ctx:        fq.ctx.Clone(),
-		order:      append([]OrderFunc{}, fq.order...),
+		order:      append([]file.OrderOption{}, fq.order...),
 		inters:     append([]Interceptor{}, fq.inters...),
 		predicates: append([]predicate.File{}, fq.predicates...),
 		withOwner:  fq.withOwner.Clone(),
@@ -494,7 +494,7 @@ func (fq *FileQuery) loadImage(ctx context.Context, query *ImageQuery, nodes []*
 	}
 	query.withFKs = true
 	query.Where(predicate.Image(func(s *sql.Selector) {
-		s.Where(sql.InValues(file.ImageColumn, fks...))
+		s.Where(sql.InValues(s.C(file.ImageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -507,7 +507,7 @@ func (fq *FileQuery) loadImage(ctx context.Context, query *ImageQuery, nodes []*
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "file_image" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "file_image" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

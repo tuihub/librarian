@@ -23,7 +23,7 @@ import (
 type FeedConfigQuery struct {
 	config
 	ctx            *QueryContext
-	order          []OrderFunc
+	order          []feedconfig.OrderOption
 	inters         []Interceptor
 	predicates     []predicate.FeedConfig
 	withOwner      *UserQuery
@@ -60,7 +60,7 @@ func (fcq *FeedConfigQuery) Unique(unique bool) *FeedConfigQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (fcq *FeedConfigQuery) Order(o ...OrderFunc) *FeedConfigQuery {
+func (fcq *FeedConfigQuery) Order(o ...feedconfig.OrderOption) *FeedConfigQuery {
 	fcq.order = append(fcq.order, o...)
 	return fcq
 }
@@ -320,7 +320,7 @@ func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
 	return &FeedConfigQuery{
 		config:         fcq.config,
 		ctx:            fcq.ctx.Clone(),
-		order:          append([]OrderFunc{}, fcq.order...),
+		order:          append([]feedconfig.OrderOption{}, fcq.order...),
 		inters:         append([]Interceptor{}, fcq.inters...),
 		predicates:     append([]predicate.FeedConfig{}, fcq.predicates...),
 		withOwner:      fcq.withOwner.Clone(),
@@ -527,7 +527,7 @@ func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, node
 	}
 	query.withFKs = true
 	query.Where(predicate.Feed(func(s *sql.Selector) {
-		s.Where(sql.InValues(feedconfig.FeedColumn, fks...))
+		s.Where(sql.InValues(s.C(feedconfig.FeedColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -540,7 +540,7 @@ func (fcq *FeedConfigQuery) loadFeed(ctx context.Context, query *FeedQuery, node
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "feed_config_feed" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "feed_config_feed" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -632,6 +632,9 @@ func (fcq *FeedConfigQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != feedconfig.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if fcq.withOwner != nil {
+			_spec.Node.AddColumnOnce(feedconfig.FieldUserFeedConfig)
 		}
 	}
 	if ps := fcq.predicates; len(ps) > 0 {

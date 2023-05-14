@@ -272,7 +272,7 @@ func (fiu *FeedItemUpdate) Mutation() *FeedItemMutation {
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (fiu *FeedItemUpdate) Save(ctx context.Context) (int, error) {
 	fiu.defaults()
-	return withHooks[int, FeedItemMutation](ctx, fiu.sqlSave, fiu.mutation, fiu.hooks)
+	return withHooks(ctx, fiu.sqlSave, fiu.mutation, fiu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -685,7 +685,7 @@ func (fiuo *FeedItemUpdateOne) Select(field string, fields ...string) *FeedItemU
 // Save executes the query and returns the updated FeedItem entity.
 func (fiuo *FeedItemUpdateOne) Save(ctx context.Context) (*FeedItem, error) {
 	fiuo.defaults()
-	return withHooks[*FeedItem, FeedItemMutation](ctx, fiuo.sqlSave, fiuo.mutation, fiuo.hooks)
+	return withHooks(ctx, fiuo.sqlSave, fiuo.mutation, fiuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

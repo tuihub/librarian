@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -36,6 +37,7 @@ type NotifyTarget struct {
 	// The values are being populated by the NotifyTargetQuery when eager-loading is set.
 	Edges              NotifyTargetEdges `json:"edges"`
 	user_notify_target *model.InternalID
+	selectValues       sql.SelectValues
 }
 
 // NotifyTargetEdges holds the relations/edges for other nodes in the graph.
@@ -96,7 +98,7 @@ func (*NotifyTarget) scanValues(columns []string) ([]any, error) {
 		case notifytarget.ForeignKeys[0]: // user_notify_target
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type NotifyTarget", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -165,9 +167,17 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 				nt.user_notify_target = new(model.InternalID)
 				*nt.user_notify_target = model.InternalID(value.Int64)
 			}
+		default:
+			nt.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the NotifyTarget.
+// This includes values selected through modifiers, order, etc.
+func (nt *NotifyTarget) Value(name string) (ent.Value, error) {
+	return nt.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the NotifyTarget entity.

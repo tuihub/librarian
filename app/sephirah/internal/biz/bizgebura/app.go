@@ -125,7 +125,7 @@ func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.E
 	return nil
 }
 
-func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]model.InternalID, *errors.Error) {
+func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.App, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}

@@ -53,6 +53,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppPackage(*librarian.AppPackage) *modelgebura.AppPackage
 	// goverter:matchIgnoreCase
 	ToBizAppPackageBinary(*librarian.AppPackageBinary) *modelgebura.AppPackageBinary
+	ToBizAppPackageBinaryList([]*librarian.AppPackageBinary) []*modelgebura.AppPackageBinary
 	ToBizAppPackageSourceList([]librarian.AppPackageSource) []modelgebura.AppPackageSource
 
 	// goverter:matchIgnoreCase

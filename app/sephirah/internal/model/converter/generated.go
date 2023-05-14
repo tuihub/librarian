@@ -41,7 +41,6 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura
 		modelgeburaAppPackage.ID = ToBizInternalID((*source).Id)
 		modelgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
 		modelgeburaAppPackage.SourceID = ToBizInternalID((*source).SourceId)
-		modelgeburaAppPackage.SourcePackageID = (*source).SourcePackageId
 		modelgeburaAppPackage.Name = (*source).Name
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.ToBizAppPackageBinary((*source).Binary)
@@ -57,9 +56,27 @@ func (c *toBizConverterImpl) ToBizAppPackageBinary(source *v1.AppPackageBinary) 
 		modelgeburaAppPackageBinary.Name = (*source).Name
 		modelgeburaAppPackageBinary.SizeByte = (*source).SizeByte
 		modelgeburaAppPackageBinary.PublicURL = (*source).PublicUrl
+		var byteList []uint8
+		if (*source).Sha256 != nil {
+			byteList = make([]uint8, len((*source).Sha256))
+			for i := 0; i < len((*source).Sha256); i++ {
+				byteList[i] = (*source).Sha256[i]
+			}
+		}
+		modelgeburaAppPackageBinary.Sha256 = byteList
 		pModelgeburaAppPackageBinary = &modelgeburaAppPackageBinary
 	}
 	return pModelgeburaAppPackageBinary
+}
+func (c *toBizConverterImpl) ToBizAppPackageBinaryList(source []*v1.AppPackageBinary) []*modelgebura.AppPackageBinary {
+	var pModelgeburaAppPackageBinaryList []*modelgebura.AppPackageBinary
+	if source != nil {
+		pModelgeburaAppPackageBinaryList = make([]*modelgebura.AppPackageBinary, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppPackageBinaryList[i] = c.ToBizAppPackageBinary(source[i])
+		}
+	}
+	return pModelgeburaAppPackageBinaryList
 }
 func (c *toBizConverterImpl) ToBizAppPackageSourceList(source []v1.AppPackageSource) []modelgebura.AppPackageSource {
 	var modelgeburaAppPackageSourceList []modelgebura.AppPackageSource
@@ -356,7 +373,6 @@ func (c *toPBConverterImpl) ToPBAppPackage(source *modelgebura.AppPackage) *v1.A
 		v1AppPackage.Id = ToPBInternalID((*source).ID)
 		v1AppPackage.Source = ToPBAppPackageSource((*source).Source)
 		v1AppPackage.SourceId = ToPBInternalID((*source).SourceID)
-		v1AppPackage.SourcePackageId = (*source).SourcePackageID
 		v1AppPackage.Name = (*source).Name
 		v1AppPackage.Description = (*source).Description
 		v1AppPackage.Binary = c.ToPBAppPackageBinary((*source).Binary)
@@ -372,6 +388,14 @@ func (c *toPBConverterImpl) ToPBAppPackageBinary(source *modelgebura.AppPackageB
 		v1AppPackageBinary.Name = (*source).Name
 		v1AppPackageBinary.SizeByte = (*source).SizeByte
 		v1AppPackageBinary.PublicUrl = (*source).PublicURL
+		var byteList []uint8
+		if (*source).Sha256 != nil {
+			byteList = make([]uint8, len((*source).Sha256))
+			for i := 0; i < len((*source).Sha256); i++ {
+				byteList[i] = (*source).Sha256[i]
+			}
+		}
+		v1AppPackageBinary.Sha256 = byteList
 		pV1AppPackageBinary = &v1AppPackageBinary
 	}
 	return pV1AppPackageBinary

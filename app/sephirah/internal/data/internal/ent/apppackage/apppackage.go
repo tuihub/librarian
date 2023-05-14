@@ -5,6 +5,9 @@ package apppackage
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -16,8 +19,6 @@ const (
 	FieldSource = "source"
 	// FieldSourceID holds the string denoting the source_id field in the database.
 	FieldSourceID = "source_id"
-	// FieldSourcePackageID holds the string denoting the source_package_id field in the database.
-	FieldSourcePackageID = "source_package_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -30,6 +31,8 @@ const (
 	FieldBinarySizeByte = "binary_size_byte"
 	// FieldBinaryPublicURL holds the string denoting the binary_public_url field in the database.
 	FieldBinaryPublicURL = "binary_public_url"
+	// FieldBinarySha256 holds the string denoting the binary_sha256 field in the database.
+	FieldBinarySha256 = "binary_sha256"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -61,13 +64,13 @@ var Columns = []string{
 	FieldID,
 	FieldSource,
 	FieldSourceID,
-	FieldSourcePackageID,
 	FieldName,
 	FieldDescription,
 	FieldPublic,
 	FieldBinaryName,
 	FieldBinarySizeByte,
 	FieldBinaryPublicURL,
+	FieldBinarySha256,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -124,4 +127,90 @@ func SourceValidator(s Source) error {
 	default:
 		return fmt.Errorf("apppackage: invalid enum value for source field: %q", s)
 	}
+}
+
+// OrderOption defines the ordering options for the AppPackage queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// BySource orders the results by the source field.
+func BySource(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSource, opts...).ToFunc()
+}
+
+// BySourceID orders the results by the source_id field.
+func BySourceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceID, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByPublic orders the results by the public field.
+func ByPublic(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublic, opts...).ToFunc()
+}
+
+// ByBinaryName orders the results by the binary_name field.
+func ByBinaryName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBinaryName, opts...).ToFunc()
+}
+
+// ByBinarySizeByte orders the results by the binary_size_byte field.
+func ByBinarySizeByte(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBinarySizeByte, opts...).ToFunc()
+}
+
+// ByBinaryPublicURL orders the results by the binary_public_url field.
+func ByBinaryPublicURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBinaryPublicURL, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByOwnerField orders the results by owner field.
+func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByAppField orders the results by app field.
+func ByAppField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newOwnerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OwnerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+	)
+}
+func newAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, AppTable, AppColumn),
+	)
 }

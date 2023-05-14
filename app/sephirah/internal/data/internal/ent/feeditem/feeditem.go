@@ -4,6 +4,9 @@ package feeditem
 
 import (
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -95,3 +98,90 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
+
+// OrderOption defines the ordering options for the FeedItem queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByFeedID orders the results by the feed_id field.
+func ByFeedID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFeedID, opts...).ToFunc()
+}
+
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByContent orders the results by the content field.
+func ByContent(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContent, opts...).ToFunc()
+}
+
+// ByGUID orders the results by the guid field.
+func ByGUID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGUID, opts...).ToFunc()
+}
+
+// ByLink orders the results by the link field.
+func ByLink(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLink, opts...).ToFunc()
+}
+
+// ByPublished orders the results by the published field.
+func ByPublished(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublished, opts...).ToFunc()
+}
+
+// ByPublishedParsed orders the results by the published_parsed field.
+func ByPublishedParsed(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublishedParsed, opts...).ToFunc()
+}
+
+// ByUpdated orders the results by the updated field.
+func ByUpdated(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdated, opts...).ToFunc()
+}
+
+// ByUpdatedParsed orders the results by the updated_parsed field.
+func ByUpdatedParsed(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedParsed, opts...).ToFunc()
+}
+
+// ByPublishPlatform orders the results by the publish_platform field.
+func ByPublishPlatform(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublishPlatform, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByFeedField orders the results by feed field.
+func ByFeedField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newFeedStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, FeedTable, FeedColumn),
+	)
+}

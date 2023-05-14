@@ -30,7 +30,7 @@ require (
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.19
+	github.com/tuihub/protos v0.2.21
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.9.0
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
@@ -148,7 +148,7 @@ require (
 	golang.org/x/term v0.8.0 // indirect
 	golang.org/x/tools v0.8.1-0.20230428195545-5283a0178901 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
+	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
@@ -160,7 +160,7 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect

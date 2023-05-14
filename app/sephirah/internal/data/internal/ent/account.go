@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -36,6 +37,7 @@ type Account struct {
 	// The values are being populated by the AccountQuery when eager-loading is set.
 	Edges             AccountEdges `json:"edges"`
 	user_bind_account *model.InternalID
+	selectValues      sql.SelectValues
 }
 
 // AccountEdges holds the relations/edges for other nodes in the graph.
@@ -74,7 +76,7 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 		case account.ForeignKeys[0]: // user_bind_account
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Account", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -143,9 +145,17 @@ func (a *Account) assignValues(columns []string, values []any) error {
 				a.user_bind_account = new(model.InternalID)
 				*a.user_bind_account = model.InternalID(value.Int64)
 			}
+		default:
+			a.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Account.
+// This includes values selected through modifiers, order, etc.
+func (a *Account) Value(name string) (ent.Value, error) {
+	return a.selectValues.Get(name)
 }
 
 // QueryBindUser queries the "bind_user" edge of the Account entity.

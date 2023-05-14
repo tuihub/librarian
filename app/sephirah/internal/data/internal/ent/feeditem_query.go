@@ -20,7 +20,7 @@ import (
 type FeedItemQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []feeditem.OrderOption
 	inters     []Interceptor
 	predicates []predicate.FeedItem
 	withFeed   *FeedQuery
@@ -55,7 +55,7 @@ func (fiq *FeedItemQuery) Unique(unique bool) *FeedItemQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (fiq *FeedItemQuery) Order(o ...OrderFunc) *FeedItemQuery {
+func (fiq *FeedItemQuery) Order(o ...feeditem.OrderOption) *FeedItemQuery {
 	fiq.order = append(fiq.order, o...)
 	return fiq
 }
@@ -271,7 +271,7 @@ func (fiq *FeedItemQuery) Clone() *FeedItemQuery {
 	return &FeedItemQuery{
 		config:     fiq.config,
 		ctx:        fiq.ctx.Clone(),
-		order:      append([]OrderFunc{}, fiq.order...),
+		order:      append([]feeditem.OrderOption{}, fiq.order...),
 		inters:     append([]Interceptor{}, fiq.inters...),
 		predicates: append([]predicate.FeedItem{}, fiq.predicates...),
 		withFeed:   fiq.withFeed.Clone(),
@@ -455,6 +455,9 @@ func (fiq *FeedItemQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != feeditem.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if fiq.withFeed != nil {
+			_spec.Node.AddColumnOnce(feeditem.FieldFeedID)
 		}
 	}
 	if ps := fiq.predicates; len(ps) > 0 {

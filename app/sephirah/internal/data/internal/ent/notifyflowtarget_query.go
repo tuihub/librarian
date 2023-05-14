@@ -21,7 +21,7 @@ import (
 type NotifyFlowTargetQuery struct {
 	config
 	ctx              *QueryContext
-	order            []OrderFunc
+	order            []notifyflowtarget.OrderOption
 	inters           []Interceptor
 	predicates       []predicate.NotifyFlowTarget
 	withNotifyFlow   *NotifyFlowQuery
@@ -57,7 +57,7 @@ func (nftq *NotifyFlowTargetQuery) Unique(unique bool) *NotifyFlowTargetQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (nftq *NotifyFlowTargetQuery) Order(o ...OrderFunc) *NotifyFlowTargetQuery {
+func (nftq *NotifyFlowTargetQuery) Order(o ...notifyflowtarget.OrderOption) *NotifyFlowTargetQuery {
 	nftq.order = append(nftq.order, o...)
 	return nftq
 }
@@ -295,7 +295,7 @@ func (nftq *NotifyFlowTargetQuery) Clone() *NotifyFlowTargetQuery {
 	return &NotifyFlowTargetQuery{
 		config:           nftq.config,
 		ctx:              nftq.ctx.Clone(),
-		order:            append([]OrderFunc{}, nftq.order...),
+		order:            append([]notifyflowtarget.OrderOption{}, nftq.order...),
 		inters:           append([]Interceptor{}, nftq.inters...),
 		predicates:       append([]predicate.NotifyFlowTarget{}, nftq.predicates...),
 		withNotifyFlow:   nftq.withNotifyFlow.Clone(),
@@ -527,6 +527,12 @@ func (nftq *NotifyFlowTargetQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != notifyflowtarget.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if nftq.withNotifyFlow != nil {
+			_spec.Node.AddColumnOnce(notifyflowtarget.FieldNotifyFlowID)
+		}
+		if nftq.withNotifyTarget != nil {
+			_spec.Node.AddColumnOnce(notifyflowtarget.FieldNotifyTargetID)
 		}
 	}
 	if ps := nftq.predicates; len(ps) > 0 {

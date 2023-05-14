@@ -37,12 +37,6 @@ func (apc *AppPackageCreate) SetSourceID(mi model.InternalID) *AppPackageCreate 
 	return apc
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (apc *AppPackageCreate) SetSourcePackageID(s string) *AppPackageCreate {
-	apc.mutation.SetSourcePackageID(s)
-	return apc
-}
-
 // SetName sets the "name" field.
 func (apc *AppPackageCreate) SetName(s string) *AppPackageCreate {
 	apc.mutation.SetName(s)
@@ -76,6 +70,12 @@ func (apc *AppPackageCreate) SetBinarySizeByte(i int64) *AppPackageCreate {
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apc *AppPackageCreate) SetBinaryPublicURL(s string) *AppPackageCreate {
 	apc.mutation.SetBinaryPublicURL(s)
+	return apc
+}
+
+// SetBinarySha256 sets the "binary_sha256" field.
+func (apc *AppPackageCreate) SetBinarySha256(b []byte) *AppPackageCreate {
+	apc.mutation.SetBinarySha256(b)
 	return apc
 }
 
@@ -151,7 +151,7 @@ func (apc *AppPackageCreate) Mutation() *AppPackageMutation {
 // Save creates the AppPackage in the database.
 func (apc *AppPackageCreate) Save(ctx context.Context) (*AppPackage, error) {
 	apc.defaults()
-	return withHooks[*AppPackage, AppPackageMutation](ctx, apc.sqlSave, apc.mutation, apc.hooks)
+	return withHooks(ctx, apc.sqlSave, apc.mutation, apc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -201,9 +201,6 @@ func (apc *AppPackageCreate) check() error {
 	if _, ok := apc.mutation.SourceID(); !ok {
 		return &ValidationError{Name: "source_id", err: errors.New(`ent: missing required field "AppPackage.source_id"`)}
 	}
-	if _, ok := apc.mutation.SourcePackageID(); !ok {
-		return &ValidationError{Name: "source_package_id", err: errors.New(`ent: missing required field "AppPackage.source_package_id"`)}
-	}
 	if _, ok := apc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppPackage.name"`)}
 	}
@@ -221,6 +218,9 @@ func (apc *AppPackageCreate) check() error {
 	}
 	if _, ok := apc.mutation.BinaryPublicURL(); !ok {
 		return &ValidationError{Name: "binary_public_url", err: errors.New(`ent: missing required field "AppPackage.binary_public_url"`)}
+	}
+	if _, ok := apc.mutation.BinarySha256(); !ok {
+		return &ValidationError{Name: "binary_sha256", err: errors.New(`ent: missing required field "AppPackage.binary_sha256"`)}
 	}
 	if _, ok := apc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppPackage.updated_at"`)}
@@ -272,10 +272,6 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 		_spec.SetField(apppackage.FieldSourceID, field.TypeInt64, value)
 		_node.SourceID = value
 	}
-	if value, ok := apc.mutation.SourcePackageID(); ok {
-		_spec.SetField(apppackage.FieldSourcePackageID, field.TypeString, value)
-		_node.SourcePackageID = value
-	}
 	if value, ok := apc.mutation.Name(); ok {
 		_spec.SetField(apppackage.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -299,6 +295,10 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 	if value, ok := apc.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
 		_node.BinaryPublicURL = value
+	}
+	if value, ok := apc.mutation.BinarySha256(); ok {
+		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
+		_node.BinarySha256 = value
 	}
 	if value, ok := apc.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -424,18 +424,6 @@ func (u *AppPackageUpsert) AddSourceID(v model.InternalID) *AppPackageUpsert {
 	return u
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (u *AppPackageUpsert) SetSourcePackageID(v string) *AppPackageUpsert {
-	u.Set(apppackage.FieldSourcePackageID, v)
-	return u
-}
-
-// UpdateSourcePackageID sets the "source_package_id" field to the value that was provided on create.
-func (u *AppPackageUpsert) UpdateSourcePackageID() *AppPackageUpsert {
-	u.SetExcluded(apppackage.FieldSourcePackageID)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *AppPackageUpsert) SetName(v string) *AppPackageUpsert {
 	u.Set(apppackage.FieldName, v)
@@ -511,6 +499,18 @@ func (u *AppPackageUpsert) SetBinaryPublicURL(v string) *AppPackageUpsert {
 // UpdateBinaryPublicURL sets the "binary_public_url" field to the value that was provided on create.
 func (u *AppPackageUpsert) UpdateBinaryPublicURL() *AppPackageUpsert {
 	u.SetExcluded(apppackage.FieldBinaryPublicURL)
+	return u
+}
+
+// SetBinarySha256 sets the "binary_sha256" field.
+func (u *AppPackageUpsert) SetBinarySha256(v []byte) *AppPackageUpsert {
+	u.Set(apppackage.FieldBinarySha256, v)
+	return u
+}
+
+// UpdateBinarySha256 sets the "binary_sha256" field to the value that was provided on create.
+func (u *AppPackageUpsert) UpdateBinarySha256() *AppPackageUpsert {
+	u.SetExcluded(apppackage.FieldBinarySha256)
 	return u
 }
 
@@ -621,20 +621,6 @@ func (u *AppPackageUpsertOne) UpdateSourceID() *AppPackageUpsertOne {
 	})
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (u *AppPackageUpsertOne) SetSourcePackageID(v string) *AppPackageUpsertOne {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.SetSourcePackageID(v)
-	})
-}
-
-// UpdateSourcePackageID sets the "source_package_id" field to the value that was provided on create.
-func (u *AppPackageUpsertOne) UpdateSourcePackageID() *AppPackageUpsertOne {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateSourcePackageID()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *AppPackageUpsertOne) SetName(v string) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -726,6 +712,20 @@ func (u *AppPackageUpsertOne) UpdateBinaryPublicURL() *AppPackageUpsertOne {
 	})
 }
 
+// SetBinarySha256 sets the "binary_sha256" field.
+func (u *AppPackageUpsertOne) SetBinarySha256(v []byte) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetBinarySha256(v)
+	})
+}
+
+// UpdateBinarySha256 sets the "binary_sha256" field to the value that was provided on create.
+func (u *AppPackageUpsertOne) UpdateBinarySha256() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateBinarySha256()
+	})
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *AppPackageUpsertOne) SetUpdatedAt(v time.Time) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -812,8 +812,8 @@ func (apcb *AppPackageCreateBulk) Save(ctx context.Context) ([]*AppPackage, erro
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, apcb.builders[i+1].mutation)
 				} else {
@@ -999,20 +999,6 @@ func (u *AppPackageUpsertBulk) UpdateSourceID() *AppPackageUpsertBulk {
 	})
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (u *AppPackageUpsertBulk) SetSourcePackageID(v string) *AppPackageUpsertBulk {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.SetSourcePackageID(v)
-	})
-}
-
-// UpdateSourcePackageID sets the "source_package_id" field to the value that was provided on create.
-func (u *AppPackageUpsertBulk) UpdateSourcePackageID() *AppPackageUpsertBulk {
-	return u.Update(func(s *AppPackageUpsert) {
-		s.UpdateSourcePackageID()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *AppPackageUpsertBulk) SetName(v string) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -1101,6 +1087,20 @@ func (u *AppPackageUpsertBulk) SetBinaryPublicURL(v string) *AppPackageUpsertBul
 func (u *AppPackageUpsertBulk) UpdateBinaryPublicURL() *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.UpdateBinaryPublicURL()
+	})
+}
+
+// SetBinarySha256 sets the "binary_sha256" field.
+func (u *AppPackageUpsertBulk) SetBinarySha256(v []byte) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetBinarySha256(v)
+	})
+}
+
+// UpdateBinarySha256 sets the "binary_sha256" field to the value that was provided on create.
+func (u *AppPackageUpsertBulk) UpdateBinarySha256() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateBinarySha256()
 	})
 }
 

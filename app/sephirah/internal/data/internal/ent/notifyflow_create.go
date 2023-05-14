@@ -143,7 +143,7 @@ func (nfc *NotifyFlowCreate) Mutation() *NotifyFlowMutation {
 // Save creates the NotifyFlow in the database.
 func (nfc *NotifyFlowCreate) Save(ctx context.Context) (*NotifyFlow, error) {
 	nfc.defaults()
-	return withHooks[*NotifyFlow, NotifyFlowMutation](ctx, nfc.sqlSave, nfc.mutation, nfc.hooks)
+	return withHooks(ctx, nfc.sqlSave, nfc.mutation, nfc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -615,8 +615,8 @@ func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, erro
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, nfcb.builders[i+1].mutation)
 				} else {

@@ -5,6 +5,9 @@ package account
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -101,4 +104,61 @@ func PlatformValidator(pl Platform) error {
 	default:
 		return fmt.Errorf("account: invalid enum value for platform field: %q", pl)
 	}
+}
+
+// OrderOption defines the ordering options for the Account queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByPlatform orders the results by the platform field.
+func ByPlatform(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPlatform, opts...).ToFunc()
+}
+
+// ByPlatformAccountID orders the results by the platform_account_id field.
+func ByPlatformAccountID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPlatformAccountID, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByProfileURL orders the results by the profile_url field.
+func ByProfileURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProfileURL, opts...).ToFunc()
+}
+
+// ByAvatarURL orders the results by the avatar_url field.
+func ByAvatarURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatarURL, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByBindUserField orders the results by bind_user field.
+func ByBindUserField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBindUserStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newBindUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(BindUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, BindUserTable, BindUserColumn),
+	)
 }

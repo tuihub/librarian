@@ -4,6 +4,9 @@ package notifyflowtarget
 
 import (
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -71,3 +74,64 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
+
+// OrderOption defines the ordering options for the NotifyFlowTarget queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByNotifyFlowID orders the results by the notify_flow_id field.
+func ByNotifyFlowID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNotifyFlowID, opts...).ToFunc()
+}
+
+// ByNotifyTargetID orders the results by the notify_target_id field.
+func ByNotifyTargetID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNotifyTargetID, opts...).ToFunc()
+}
+
+// ByChannelID orders the results by the channel_id field.
+func ByChannelID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldChannelID, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByNotifyFlowField orders the results by notify_flow field.
+func ByNotifyFlowField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByNotifyTargetField orders the results by notify_target field.
+func ByNotifyTargetField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyTargetStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newNotifyFlowStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyFlowInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, NotifyFlowTable, NotifyFlowColumn),
+	)
+}
+func newNotifyTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, NotifyTargetTable, NotifyTargetColumn),
+	)
+}

@@ -62,11 +62,6 @@ func SourceID(v model.InternalID) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldSourceID, vc))
 }
 
-// SourcePackageID applies equality check predicate on the "source_package_id" field. It's identical to SourcePackageIDEQ.
-func SourcePackageID(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldSourcePackageID, v))
-}
-
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldName, v))
@@ -95,6 +90,11 @@ func BinarySizeByte(v int64) predicate.AppPackage {
 // BinaryPublicURL applies equality check predicate on the "binary_public_url" field. It's identical to BinaryPublicURLEQ.
 func BinaryPublicURL(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinaryPublicURL, v))
+}
+
+// BinarySha256 applies equality check predicate on the "binary_sha256" field. It's identical to BinarySha256EQ.
+func BinarySha256(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinarySha256, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -179,71 +179,6 @@ func SourceIDLT(v model.InternalID) predicate.AppPackage {
 func SourceIDLTE(v model.InternalID) predicate.AppPackage {
 	vc := int64(v)
 	return predicate.AppPackage(sql.FieldLTE(FieldSourceID, vc))
-}
-
-// SourcePackageIDEQ applies the EQ predicate on the "source_package_id" field.
-func SourcePackageIDEQ(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEQ(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDNEQ applies the NEQ predicate on the "source_package_id" field.
-func SourcePackageIDNEQ(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNEQ(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDIn applies the In predicate on the "source_package_id" field.
-func SourcePackageIDIn(vs ...string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldIn(FieldSourcePackageID, vs...))
-}
-
-// SourcePackageIDNotIn applies the NotIn predicate on the "source_package_id" field.
-func SourcePackageIDNotIn(vs ...string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldNotIn(FieldSourcePackageID, vs...))
-}
-
-// SourcePackageIDGT applies the GT predicate on the "source_package_id" field.
-func SourcePackageIDGT(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGT(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDGTE applies the GTE predicate on the "source_package_id" field.
-func SourcePackageIDGTE(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldGTE(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDLT applies the LT predicate on the "source_package_id" field.
-func SourcePackageIDLT(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLT(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDLTE applies the LTE predicate on the "source_package_id" field.
-func SourcePackageIDLTE(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldLTE(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDContains applies the Contains predicate on the "source_package_id" field.
-func SourcePackageIDContains(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldContains(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDHasPrefix applies the HasPrefix predicate on the "source_package_id" field.
-func SourcePackageIDHasPrefix(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldHasPrefix(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDHasSuffix applies the HasSuffix predicate on the "source_package_id" field.
-func SourcePackageIDHasSuffix(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldHasSuffix(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDEqualFold applies the EqualFold predicate on the "source_package_id" field.
-func SourcePackageIDEqualFold(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldEqualFold(FieldSourcePackageID, v))
-}
-
-// SourcePackageIDContainsFold applies the ContainsFold predicate on the "source_package_id" field.
-func SourcePackageIDContainsFold(v string) predicate.AppPackage {
-	return predicate.AppPackage(sql.FieldContainsFold(FieldSourcePackageID, v))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -556,6 +491,46 @@ func BinaryPublicURLContainsFold(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldContainsFold(FieldBinaryPublicURL, v))
 }
 
+// BinarySha256EQ applies the EQ predicate on the "binary_sha256" field.
+func BinarySha256EQ(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldEQ(FieldBinarySha256, v))
+}
+
+// BinarySha256NEQ applies the NEQ predicate on the "binary_sha256" field.
+func BinarySha256NEQ(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNEQ(FieldBinarySha256, v))
+}
+
+// BinarySha256In applies the In predicate on the "binary_sha256" field.
+func BinarySha256In(vs ...[]byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIn(FieldBinarySha256, vs...))
+}
+
+// BinarySha256NotIn applies the NotIn predicate on the "binary_sha256" field.
+func BinarySha256NotIn(vs ...[]byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotIn(FieldBinarySha256, vs...))
+}
+
+// BinarySha256GT applies the GT predicate on the "binary_sha256" field.
+func BinarySha256GT(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGT(FieldBinarySha256, v))
+}
+
+// BinarySha256GTE applies the GTE predicate on the "binary_sha256" field.
+func BinarySha256GTE(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldGTE(FieldBinarySha256, v))
+}
+
+// BinarySha256LT applies the LT predicate on the "binary_sha256" field.
+func BinarySha256LT(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLT(FieldBinarySha256, v))
+}
+
+// BinarySha256LTE applies the LTE predicate on the "binary_sha256" field.
+func BinarySha256LTE(v []byte) predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldLTE(FieldBinarySha256, v))
+}
+
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
 func UpdatedAtEQ(v time.Time) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldUpdatedAt, v))
@@ -650,11 +625,7 @@ func HasOwner() predicate.AppPackage {
 // HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
 func HasOwnerWith(preds ...predicate.User) predicate.AppPackage {
 	return predicate.AppPackage(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(OwnerInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
-		)
+		step := newOwnerStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -677,11 +648,7 @@ func HasApp() predicate.AppPackage {
 // HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
 func HasAppWith(preds ...predicate.App) predicate.AppPackage {
 	return predicate.AppPackage(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, AppTable, AppColumn),
-		)
+		step := newAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -220,7 +220,7 @@ func (fic *FeedItemCreate) Mutation() *FeedItemMutation {
 // Save creates the FeedItem in the database.
 func (fic *FeedItemCreate) Save(ctx context.Context) (*FeedItem, error) {
 	fic.defaults()
-	return withHooks[*FeedItem, FeedItemMutation](ctx, fic.sqlSave, fic.mutation, fic.hooks)
+	return withHooks(ctx, fic.sqlSave, fic.mutation, fic.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -1058,8 +1058,8 @@ func (ficb *FeedItemCreateBulk) Save(ctx context.Context) ([]*FeedItem, error) {
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, ficb.builders[i+1].mutation)
 				} else {

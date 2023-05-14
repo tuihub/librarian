@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -40,6 +41,7 @@ type Feed struct {
 	// The values are being populated by the FeedQuery when eager-loading is set.
 	Edges            FeedEdges `json:"edges"`
 	feed_config_feed *model.InternalID
+	selectValues     sql.SelectValues
 }
 
 // FeedEdges holds the relations/edges for other nodes in the graph.
@@ -91,7 +93,7 @@ func (*Feed) scanValues(columns []string) ([]any, error) {
 		case feed.ForeignKeys[0]: // feed_config_feed
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type Feed", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -170,9 +172,17 @@ func (f *Feed) assignValues(columns []string, values []any) error {
 				f.feed_config_feed = new(model.InternalID)
 				*f.feed_config_feed = model.InternalID(value.Int64)
 			}
+		default:
+			f.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the Feed.
+// This includes values selected through modifiers, order, etc.
+func (f *Feed) Value(name string) (ent.Value, error) {
+	return f.selectValues.Get(name)
 }
 
 // QueryItem queries the "item" edge of the Feed entity.

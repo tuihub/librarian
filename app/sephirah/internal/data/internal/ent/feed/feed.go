@@ -4,6 +4,9 @@ package feed
 
 import (
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -91,3 +94,76 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
+
+// OrderOption defines the ordering options for the Feed queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByTitle orders the results by the title field.
+func ByTitle(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTitle, opts...).ToFunc()
+}
+
+// ByLink orders the results by the link field.
+func ByLink(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLink, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByLanguage orders the results by the language field.
+func ByLanguage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLanguage, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByItemCount orders the results by item count.
+func ByItemCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newItemStep(), opts...)
+	}
+}
+
+// ByItem orders the results by item terms.
+func ByItem(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newItemStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByConfigField orders the results by config field.
+func ByConfigField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newConfigStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newItemStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ItemInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ItemTable, ItemColumn),
+	)
+}
+func newConfigStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ConfigInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2O, true, ConfigTable, ConfigColumn),
+	)
+}

@@ -253,16 +253,16 @@ func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, ap
 	return err
 }
 
-func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
-	appIDs, err := g.data.db.App.Query().
+func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
+	apps, err := g.data.db.App.Query().
 		Where(
 			app.HasPurchasedByWith(user.IDEQ(id)),
 		).
-		IDs(ctx)
+		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return appIDs, nil
+	return converter.ToBizAppList(apps), nil
 }
 
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPackage) error {
@@ -270,7 +270,6 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 		SetID(ap.ID).
 		SetSource(converter.ToEntAppPackageSource(ap.Source)).
 		SetSourceID(ap.SourceID).
-		SetSourcePackageID(ap.SourcePackageID).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
@@ -303,7 +302,6 @@ func (g geburaRepo) UpsertAppPackages(
 			SetOwnerID(userID).
 			SetSource(converter.ToEntAppPackageSource(ap.Source)).
 			SetSourceID(ap.SourceID).
-			SetSourcePackageID(ap.SourcePackageID).
 			SetName(ap.Name).
 			SetDescription(ap.Description).
 			SetPublic(ap.Public).
@@ -314,7 +312,7 @@ func (g geburaRepo) UpsertAppPackages(
 	return g.data.db.AppPackage.
 		CreateBulk(appPackages...).
 		OnConflict(
-			sql.ConflictColumns(apppackage.FieldSource, apppackage.FieldSourceID, apppackage.FieldSourcePackageID),
+			sql.ConflictColumns(apppackage.FieldBinarySha256),
 			resolveWithIgnores([]string{
 				apppackage.FieldID,
 				apppackage.FieldPublic,
@@ -381,7 +379,7 @@ func (g geburaRepo) UnAssignAppPackage(
 	return err
 }
 
-func (g geburaRepo) ListAllAppPackageIDOfOneSource(
+func (g geburaRepo) ListAppPackageBinaryChecksumOfOneSource(
 	ctx context.Context,
 	source modelgebura.AppPackageSource,
 	sourceID model.InternalID,
@@ -392,6 +390,6 @@ func (g geburaRepo) ListAllAppPackageIDOfOneSource(
 			apppackage.SourceIDEQ(sourceID),
 		).
 		Unique(true).
-		Select(apppackage.FieldSourcePackageID).
+		Select(apppackage.FieldBinarySha256).
 		Strings(ctx)
 }

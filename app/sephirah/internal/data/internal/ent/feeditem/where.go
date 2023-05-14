@@ -956,11 +956,7 @@ func HasFeed() predicate.FeedItem {
 // HasFeedWith applies the HasEdge predicate on the "feed" edge with a given conditions (other predicates).
 func HasFeedWith(preds ...predicate.Feed) predicate.FeedItem {
 	return predicate.FeedItem(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FeedInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, FeedTable, FeedColumn),
-		)
+		step := newFeedStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

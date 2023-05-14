@@ -113,7 +113,7 @@ func (iu *ImageUpdate) ClearFile() *ImageUpdate {
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (iu *ImageUpdate) Save(ctx context.Context) (int, error) {
 	iu.defaults()
-	return withHooks[int, ImageMutation](ctx, iu.sqlSave, iu.mutation, iu.hooks)
+	return withHooks(ctx, iu.sqlSave, iu.mutation, iu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -351,7 +351,7 @@ func (iuo *ImageUpdateOne) Select(field string, fields ...string) *ImageUpdateOn
 // Save executes the query and returns the updated Image entity.
 func (iuo *ImageUpdateOne) Save(ctx context.Context) (*Image, error) {
 	iuo.defaults()
-	return withHooks[*Image, ImageMutation](ctx, iuo.sqlSave, iuo.mutation, iuo.hooks)
+	return withHooks(ctx, iuo.sqlSave, iuo.mutation, iuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.

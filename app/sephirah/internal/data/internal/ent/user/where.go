@@ -340,11 +340,7 @@ func HasBindAccount() predicate.User {
 // HasBindAccountWith applies the HasEdge predicate on the "bind_account" edge with a given conditions (other predicates).
 func HasBindAccountWith(preds ...predicate.Account) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindAccountInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindAccountTable, BindAccountColumn),
-		)
+		step := newBindAccountStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -367,11 +363,7 @@ func HasPurchasedApp() predicate.User {
 // HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
 func HasPurchasedAppWith(preds ...predicate.App) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PurchasedAppInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
-		)
+		step := newPurchasedAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -394,11 +386,7 @@ func HasAppPackage() predicate.User {
 // HasAppPackageWith applies the HasEdge predicate on the "app_package" edge with a given conditions (other predicates).
 func HasAppPackageWith(preds ...predicate.AppPackage) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppPackageInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
-		)
+		step := newAppPackageStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -421,11 +409,7 @@ func HasFeedConfig() predicate.User {
 // HasFeedConfigWith applies the HasEdge predicate on the "feed_config" edge with a given conditions (other predicates).
 func HasFeedConfigWith(preds ...predicate.FeedConfig) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FeedConfigInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, FeedConfigTable, FeedConfigColumn),
-		)
+		step := newFeedConfigStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -448,11 +432,7 @@ func HasNotifyTarget() predicate.User {
 // HasNotifyTargetWith applies the HasEdge predicate on the "notify_target" edge with a given conditions (other predicates).
 func HasNotifyTargetWith(preds ...predicate.NotifyTarget) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(NotifyTargetInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, NotifyTargetTable, NotifyTargetColumn),
-		)
+		step := newNotifyTargetStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -475,11 +455,7 @@ func HasNotifyFlow() predicate.User {
 // HasNotifyFlowWith applies the HasEdge predicate on the "notify_flow" edge with a given conditions (other predicates).
 func HasNotifyFlowWith(preds ...predicate.NotifyFlow) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(NotifyFlowInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, NotifyFlowTable, NotifyFlowColumn),
-		)
+		step := newNotifyFlowStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -502,11 +478,7 @@ func HasImage() predicate.User {
 // HasImageWith applies the HasEdge predicate on the "image" edge with a given conditions (other predicates).
 func HasImageWith(preds ...predicate.Image) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(ImageInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, ImageTable, ImageColumn),
-		)
+		step := newImageStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -529,11 +501,7 @@ func HasFile() predicate.User {
 // HasFileWith applies the HasEdge predicate on the "file" edge with a given conditions (other predicates).
 func HasFileWith(preds ...predicate.File) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(FileInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, FileTable, FileColumn),
-		)
+		step := newFileStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -556,11 +524,7 @@ func HasCreator() predicate.User {
 // HasCreatorWith applies the HasEdge predicate on the "creator" edge with a given conditions (other predicates).
 func HasCreatorWith(preds ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, CreatorTable, CreatorColumn),
-		)
+		step := newCreatorStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -583,11 +547,7 @@ func HasCreatedUser() predicate.User {
 // HasCreatedUserWith applies the HasEdge predicate on the "created_user" edge with a given conditions (other predicates).
 func HasCreatedUserWith(preds ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, CreatedUserTable, CreatedUserColumn),
-		)
+		step := newCreatedUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -86,13 +86,13 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"manual", "sentinel"}},
 		{Name: "source_id", Type: field.TypeInt64},
-		{Name: "source_package_id", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
 		{Name: "public", Type: field.TypeBool},
 		{Name: "binary_name", Type: field.TypeString},
 		{Name: "binary_size_byte", Type: field.TypeInt64},
 		{Name: "binary_public_url", Type: field.TypeString},
+		{Name: "binary_sha256", Type: field.TypeBytes},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "app_app_package", Type: field.TypeInt64, Nullable: true},
@@ -119,9 +119,9 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "apppackage_source_source_id_source_package_id",
+				Name:    "apppackage_binary_sha256",
 				Unique:  true,
-				Columns: []*schema.Column{AppPackagesColumns[1], AppPackagesColumns[2], AppPackagesColumns[3]},
+				Columns: []*schema.Column{AppPackagesColumns[9]},
 			},
 		},
 	}

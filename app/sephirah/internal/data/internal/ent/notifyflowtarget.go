@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
@@ -31,7 +32,8 @@ type NotifyFlowTarget struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the NotifyFlowTargetQuery when eager-loading is set.
-	Edges NotifyFlowTargetEdges `json:"edges"`
+	Edges        NotifyFlowTargetEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // NotifyFlowTargetEdges holds the relations/edges for other nodes in the graph.
@@ -83,7 +85,7 @@ func (*NotifyFlowTarget) scanValues(columns []string) ([]any, error) {
 		case notifyflowtarget.FieldUpdatedAt, notifyflowtarget.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type NotifyFlowTarget", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -133,9 +135,17 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 			} else if value.Valid {
 				nft.CreatedAt = value.Time
 			}
+		default:
+			nft.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the NotifyFlowTarget.
+// This includes values selected through modifiers, order, etc.
+func (nft *NotifyFlowTarget) Value(name string) (ent.Value, error) {
+	return nft.selectValues.Get(name)
 }
 
 // QueryNotifyFlow queries the "notify_flow" edge of the NotifyFlowTarget entity.

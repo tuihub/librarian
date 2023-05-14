@@ -81,9 +81,9 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{AppId: appID2}); err != nil {
 		panic(err)
 	}
-	if resp, err := c.cli.GetAppLibrary(ctx, &pb.GetAppLibraryRequest{}); err != nil {
+	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
 		panic(err)
-	} else if len(resp.GetAppIds()) != 1 || resp.GetAppIds()[0].GetId() != appID2.GetId() {
+	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].Id.GetId() != appID2.GetId() {
 		panic("unexpected search result")
 	}
 	if _, err := c.cli.MergeApps(ctx, &pb.MergeAppsRequest{
@@ -102,9 +102,9 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 	}); err != nil {
 		panic(err)
 	}
-	if resp, err := c.cli.GetAppLibrary(ctx, &pb.GetAppLibraryRequest{}); err != nil {
+	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
 		panic(err)
-	} else if len(resp.GetAppIds()) != 1 || resp.GetAppIds()[0].GetId() != appID.GetId() {
+	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].Id.GetId() != appID.GetId() {
 		panic("unexpected search result")
 	}
 }

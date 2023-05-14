@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -32,6 +33,7 @@ type NotifyFlow struct {
 	// The values are being populated by the NotifyFlowQuery when eager-loading is set.
 	Edges            NotifyFlowEdges `json:"edges"`
 	user_notify_flow *model.InternalID
+	selectValues     sql.SelectValues
 }
 
 // NotifyFlowEdges holds the relations/edges for other nodes in the graph.
@@ -103,7 +105,7 @@ func (*NotifyFlow) scanValues(columns []string) ([]any, error) {
 		case notifyflow.ForeignKeys[0]: // user_notify_flow
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type NotifyFlow", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -160,9 +162,17 @@ func (nf *NotifyFlow) assignValues(columns []string, values []any) error {
 				nf.user_notify_flow = new(model.InternalID)
 				*nf.user_notify_flow = model.InternalID(value.Int64)
 			}
+		default:
+			nf.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the NotifyFlow.
+// This includes values selected through modifiers, order, etc.
+func (nf *NotifyFlow) Value(name string) (ent.Value, error) {
+	return nf.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the NotifyFlow entity.

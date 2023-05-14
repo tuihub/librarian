@@ -5,6 +5,9 @@ package notifytarget
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -146,4 +149,103 @@ func StatusValidator(s Status) error {
 	default:
 		return fmt.Errorf("notifytarget: invalid enum value for status field: %q", s)
 	}
+}
+
+// OrderOption defines the ordering options for the NotifyTarget queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByToken orders the results by the token field.
+func ByToken(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldToken, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByOwnerField orders the results by owner field.
+func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByNotifyFlowCount orders the results by notify_flow count.
+func ByNotifyFlowCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowStep(), opts...)
+	}
+}
+
+// ByNotifyFlow orders the results by notify_flow terms.
+func ByNotifyFlow(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotifyFlowTargetCount orders the results by notify_flow_target count.
+func ByNotifyFlowTargetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowTargetStep(), opts...)
+	}
+}
+
+// ByNotifyFlowTarget orders the results by notify_flow_target terms.
+func ByNotifyFlowTarget(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowTargetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newOwnerStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(OwnerInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+	)
+}
+func newNotifyFlowStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyFlowInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, NotifyFlowTable, NotifyFlowPrimaryKey...),
+	)
+}
+func newNotifyFlowTargetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifyFlowTargetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, NotifyFlowTargetTable, NotifyFlowTargetColumn),
+	)
 }

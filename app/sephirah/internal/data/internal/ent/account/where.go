@@ -460,11 +460,7 @@ func HasBindUser() predicate.Account {
 // HasBindUserWith applies the HasEdge predicate on the "bind_user" edge with a given conditions (other predicates).
 func HasBindUserWith(preds ...predicate.User) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(BindUserInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, BindUserTable, BindUserColumn),
-		)
+		step := newBindUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

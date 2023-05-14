@@ -139,7 +139,7 @@ func (ntc *NotifyTargetCreate) Mutation() *NotifyTargetMutation {
 // Save creates the NotifyTarget in the database.
 func (ntc *NotifyTargetCreate) Save(ctx context.Context) (*NotifyTarget, error) {
 	ntc.defaults()
-	return withHooks[*NotifyTarget, NotifyTargetMutation](ctx, ntc.sqlSave, ntc.mutation, ntc.hooks)
+	return withHooks(ctx, ntc.sqlSave, ntc.mutation, ntc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -666,8 +666,8 @@ func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, 
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, ntcb.builders[i+1].mutation)
 				} else {

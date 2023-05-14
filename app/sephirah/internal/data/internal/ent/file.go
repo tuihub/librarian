@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -33,8 +34,9 @@ type File struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FileQuery when eager-loading is set.
-	Edges     FileEdges `json:"edges"`
-	user_file *model.InternalID
+	Edges        FileEdges `json:"edges"`
+	user_file    *model.InternalID
+	selectValues sql.SelectValues
 }
 
 // FileEdges holds the relations/edges for other nodes in the graph.
@@ -90,7 +92,7 @@ func (*File) scanValues(columns []string) ([]any, error) {
 		case file.ForeignKeys[0]: // user_file
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type File", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -153,9 +155,17 @@ func (f *File) assignValues(columns []string, values []any) error {
 				f.user_file = new(model.InternalID)
 				*f.user_file = model.InternalID(value.Int64)
 			}
+		default:
+			f.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the File.
+// This includes values selected through modifiers, order, etc.
+func (f *File) Value(name string) (ent.Value, error) {
+	return f.selectValues.Get(name)
 }
 
 // QueryOwner queries the "owner" edge of the File entity.

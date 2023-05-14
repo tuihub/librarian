@@ -2,6 +2,7 @@ package steam
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -49,6 +50,9 @@ func (s *WebAPI) GetPlayerSummary(
 	err = s.Get(ctx, "ISteamUser/GetPlayerSummaries/v2", reqStr, res)
 	if err != nil {
 		return nil, err
+	}
+	if len(res.Response.Players) == 0 {
+		return nil, errors.New("empty response")
 	}
 
 	return &res.Response.Players[0], nil

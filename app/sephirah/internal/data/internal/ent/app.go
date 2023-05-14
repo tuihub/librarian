@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/internal/model"
@@ -49,6 +50,7 @@ type App struct {
 	// The values are being populated by the AppQuery when eager-loading is set.
 	Edges             AppEdges `json:"edges"`
 	app_bind_external *model.InternalID
+	selectValues      sql.SelectValues
 }
 
 // AppEdges holds the relations/edges for other nodes in the graph.
@@ -120,7 +122,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		case app.ForeignKeys[0]: // app_bind_external
 			values[i] = new(sql.NullInt64)
 		default:
-			return nil, fmt.Errorf("unexpected column %q for type App", columns[i])
+			values[i] = new(sql.UnknownType)
 		}
 	}
 	return values, nil
@@ -231,9 +233,17 @@ func (a *App) assignValues(columns []string, values []any) error {
 				a.app_bind_external = new(model.InternalID)
 				*a.app_bind_external = model.InternalID(value.Int64)
 			}
+		default:
+			a.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
+}
+
+// Value returns the ent.Value that was dynamically selected and assigned to the App.
+// This includes values selected through modifiers, order, etc.
+func (a *App) Value(name string) (ent.Value, error) {
+	return a.selectValues.Get(name)
 }
 
 // QueryPurchasedBy queries the "purchased_by" edge of the App entity.

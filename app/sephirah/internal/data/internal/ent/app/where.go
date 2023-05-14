@@ -900,11 +900,7 @@ func HasPurchasedBy() predicate.App {
 // HasPurchasedByWith applies the HasEdge predicate on the "purchased_by" edge with a given conditions (other predicates).
 func HasPurchasedByWith(preds ...predicate.User) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(PurchasedByInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByTable, PurchasedByPrimaryKey...),
-		)
+		step := newPurchasedByStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -927,11 +923,7 @@ func HasAppPackage() predicate.App {
 // HasAppPackageWith applies the HasEdge predicate on the "app_package" edge with a given conditions (other predicates).
 func HasAppPackageWith(preds ...predicate.AppPackage) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(AppPackageInverseTable, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
-		)
+		step := newAppPackageStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -954,11 +946,7 @@ func HasBindInternal() predicate.App {
 // HasBindInternalWith applies the HasEdge predicate on the "bind_internal" edge with a given conditions (other predicates).
 func HasBindInternalWith(preds ...predicate.App) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, BindInternalTable, BindInternalColumn),
-		)
+		step := newBindInternalStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -981,11 +969,7 @@ func HasBindExternal() predicate.App {
 // HasBindExternalWith applies the HasEdge predicate on the "bind_external" edge with a given conditions (other predicates).
 func HasBindExternalWith(preds ...predicate.App) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.To(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindExternalTable, BindExternalColumn),
-		)
+		step := newBindExternalStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

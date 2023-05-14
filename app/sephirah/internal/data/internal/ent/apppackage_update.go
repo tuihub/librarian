@@ -50,12 +50,6 @@ func (apu *AppPackageUpdate) AddSourceID(mi model.InternalID) *AppPackageUpdate 
 	return apu
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (apu *AppPackageUpdate) SetSourcePackageID(s string) *AppPackageUpdate {
-	apu.mutation.SetSourcePackageID(s)
-	return apu
-}
-
 // SetName sets the "name" field.
 func (apu *AppPackageUpdate) SetName(s string) *AppPackageUpdate {
 	apu.mutation.SetName(s)
@@ -96,6 +90,12 @@ func (apu *AppPackageUpdate) AddBinarySizeByte(i int64) *AppPackageUpdate {
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apu *AppPackageUpdate) SetBinaryPublicURL(s string) *AppPackageUpdate {
 	apu.mutation.SetBinaryPublicURL(s)
+	return apu
+}
+
+// SetBinarySha256 sets the "binary_sha256" field.
+func (apu *AppPackageUpdate) SetBinarySha256(b []byte) *AppPackageUpdate {
+	apu.mutation.SetBinarySha256(b)
 	return apu
 }
 
@@ -169,7 +169,7 @@ func (apu *AppPackageUpdate) ClearApp() *AppPackageUpdate {
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (apu *AppPackageUpdate) Save(ctx context.Context) (int, error) {
 	apu.defaults()
-	return withHooks[int, AppPackageMutation](ctx, apu.sqlSave, apu.mutation, apu.hooks)
+	return withHooks(ctx, apu.sqlSave, apu.mutation, apu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -236,9 +236,6 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.AddedSourceID(); ok {
 		_spec.AddField(apppackage.FieldSourceID, field.TypeInt64, value)
 	}
-	if value, ok := apu.mutation.SourcePackageID(); ok {
-		_spec.SetField(apppackage.FieldSourcePackageID, field.TypeString, value)
-	}
 	if value, ok := apu.mutation.Name(); ok {
 		_spec.SetField(apppackage.FieldName, field.TypeString, value)
 	}
@@ -259,6 +256,9 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := apu.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
+	}
+	if value, ok := apu.mutation.BinarySha256(); ok {
+		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
 	}
 	if value, ok := apu.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -363,12 +363,6 @@ func (apuo *AppPackageUpdateOne) AddSourceID(mi model.InternalID) *AppPackageUpd
 	return apuo
 }
 
-// SetSourcePackageID sets the "source_package_id" field.
-func (apuo *AppPackageUpdateOne) SetSourcePackageID(s string) *AppPackageUpdateOne {
-	apuo.mutation.SetSourcePackageID(s)
-	return apuo
-}
-
 // SetName sets the "name" field.
 func (apuo *AppPackageUpdateOne) SetName(s string) *AppPackageUpdateOne {
 	apuo.mutation.SetName(s)
@@ -409,6 +403,12 @@ func (apuo *AppPackageUpdateOne) AddBinarySizeByte(i int64) *AppPackageUpdateOne
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apuo *AppPackageUpdateOne) SetBinaryPublicURL(s string) *AppPackageUpdateOne {
 	apuo.mutation.SetBinaryPublicURL(s)
+	return apuo
+}
+
+// SetBinarySha256 sets the "binary_sha256" field.
+func (apuo *AppPackageUpdateOne) SetBinarySha256(b []byte) *AppPackageUpdateOne {
+	apuo.mutation.SetBinarySha256(b)
 	return apuo
 }
 
@@ -495,7 +495,7 @@ func (apuo *AppPackageUpdateOne) Select(field string, fields ...string) *AppPack
 // Save executes the query and returns the updated AppPackage entity.
 func (apuo *AppPackageUpdateOne) Save(ctx context.Context) (*AppPackage, error) {
 	apuo.defaults()
-	return withHooks[*AppPackage, AppPackageMutation](ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
+	return withHooks(ctx, apuo.sqlSave, apuo.mutation, apuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -579,9 +579,6 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	if value, ok := apuo.mutation.AddedSourceID(); ok {
 		_spec.AddField(apppackage.FieldSourceID, field.TypeInt64, value)
 	}
-	if value, ok := apuo.mutation.SourcePackageID(); ok {
-		_spec.SetField(apppackage.FieldSourcePackageID, field.TypeString, value)
-	}
 	if value, ok := apuo.mutation.Name(); ok {
 		_spec.SetField(apppackage.FieldName, field.TypeString, value)
 	}
@@ -602,6 +599,9 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	}
 	if value, ok := apuo.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
+	}
+	if value, ok := apuo.mutation.BinarySha256(); ok {
+		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
 	}
 	if value, ok := apuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)

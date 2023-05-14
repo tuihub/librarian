@@ -5,6 +5,9 @@ package app
 import (
 	"fmt"
 	"time"
+
+	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -170,4 +173,159 @@ func TypeValidator(_type Type) error {
 	default:
 		return fmt.Errorf("app: invalid enum value for type field: %q", _type)
 	}
+}
+
+// OrderOption defines the ordering options for the App queries.
+type OrderOption func(*sql.Selector)
+
+// ByID orders the results by the id field.
+func ByID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// BySource orders the results by the source field.
+func BySource(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSource, opts...).ToFunc()
+}
+
+// BySourceAppID orders the results by the source_app_id field.
+func BySourceAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceAppID, opts...).ToFunc()
+}
+
+// BySourceURL orders the results by the source_url field.
+func BySourceURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceURL, opts...).ToFunc()
+}
+
+// ByName orders the results by the name field.
+func ByName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByShortDescription orders the results by the short_description field.
+func ByShortDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldShortDescription, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByImageURL orders the results by the image_url field.
+func ByImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldImageURL, opts...).ToFunc()
+}
+
+// ByReleaseDate orders the results by the release_date field.
+func ByReleaseDate(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReleaseDate, opts...).ToFunc()
+}
+
+// ByDeveloper orders the results by the developer field.
+func ByDeveloper(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeveloper, opts...).ToFunc()
+}
+
+// ByPublisher orders the results by the publisher field.
+func ByPublisher(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublisher, opts...).ToFunc()
+}
+
+// ByVersion orders the results by the version field.
+func ByVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldVersion, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByPurchasedByCount orders the results by purchased_by count.
+func ByPurchasedByCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPurchasedByStep(), opts...)
+	}
+}
+
+// ByPurchasedBy orders the results by purchased_by terms.
+func ByPurchasedBy(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPurchasedByStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAppPackageCount orders the results by app_package count.
+func ByAppPackageCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppPackageStep(), opts...)
+	}
+}
+
+// ByAppPackage orders the results by app_package terms.
+func ByAppPackage(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppPackageStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByBindInternalField orders the results by bind_internal field.
+func ByBindInternalField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBindInternalStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// ByBindExternalCount orders the results by bind_external count.
+func ByBindExternalCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newBindExternalStep(), opts...)
+	}
+}
+
+// ByBindExternal orders the results by bind_external terms.
+func ByBindExternal(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newBindExternalStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newPurchasedByStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PurchasedByInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByTable, PurchasedByPrimaryKey...),
+	)
+}
+func newAppPackageStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppPackageInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+	)
+}
+func newBindInternalStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, BindInternalTable, BindInternalColumn),
+	)
+}
+func newBindExternalStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(Table, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, BindExternalTable, BindExternalColumn),
+	)
 }

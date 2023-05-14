@@ -129,7 +129,7 @@ func (fc *FileCreate) Mutation() *FileMutation {
 // Save creates the File in the database.
 func (fc *FileCreate) Save(ctx context.Context) (*File, error) {
 	fc.defaults()
-	return withHooks[*File, FileMutation](ctx, fc.sqlSave, fc.mutation, fc.hooks)
+	return withHooks(ctx, fc.sqlSave, fc.mutation, fc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -608,8 +608,8 @@ func (fcb *FileCreateBulk) Save(ctx context.Context) ([]*File, error) {
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, fcb.builders[i+1].mutation)
 				} else {

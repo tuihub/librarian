@@ -27,7 +27,7 @@ func (nftd *NotifyFlowTargetDelete) Where(ps ...predicate.NotifyFlowTarget) *Not
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (nftd *NotifyFlowTargetDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, NotifyFlowTargetMutation](ctx, nftd.sqlExec, nftd.mutation, nftd.hooks)
+	return withHooks(ctx, nftd.sqlExec, nftd.mutation, nftd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

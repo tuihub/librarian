@@ -22,7 +22,7 @@ import (
 type FeedQuery struct {
 	config
 	ctx        *QueryContext
-	order      []OrderFunc
+	order      []feed.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Feed
 	withItem   *FeedItemQuery
@@ -59,7 +59,7 @@ func (fq *FeedQuery) Unique(unique bool) *FeedQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (fq *FeedQuery) Order(o ...OrderFunc) *FeedQuery {
+func (fq *FeedQuery) Order(o ...feed.OrderOption) *FeedQuery {
 	fq.order = append(fq.order, o...)
 	return fq
 }
@@ -297,7 +297,7 @@ func (fq *FeedQuery) Clone() *FeedQuery {
 	return &FeedQuery{
 		config:     fq.config,
 		ctx:        fq.ctx.Clone(),
-		order:      append([]OrderFunc{}, fq.order...),
+		order:      append([]feed.OrderOption{}, fq.order...),
 		inters:     append([]Interceptor{}, fq.inters...),
 		predicates: append([]predicate.Feed{}, fq.predicates...),
 		withItem:   fq.withItem.Clone(),
@@ -464,8 +464,11 @@ func (fq *FeedQuery) loadItem(ctx context.Context, query *FeedItemQuery, nodes [
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(feeditem.FieldFeedID)
+	}
 	query.Where(predicate.FeedItem(func(s *sql.Selector) {
-		s.Where(sql.InValues(feed.ItemColumn, fks...))
+		s.Where(sql.InValues(s.C(feed.ItemColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -475,7 +478,7 @@ func (fq *FeedQuery) loadItem(ctx context.Context, query *FeedItemQuery, nodes [
 		fk := n.FeedID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "feed_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "feed_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

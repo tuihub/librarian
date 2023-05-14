@@ -135,8 +135,8 @@ func ToBizAppSourceList(a []librarian.AppSource) []modelgebura.AppSource {
 func ToBizAppPackage(a *librarian.AppPackage) *modelgebura.AppPackage {
 	return toBiz.ToBizAppPackage(a)
 }
-func ToBizAppPackageBinary(a *librarian.AppPackageBinary) *modelgebura.AppPackageBinary {
-	return toBiz.ToBizAppPackageBinary(a)
+func ToBizAppPackageBinaryList(a []*librarian.AppPackageBinary) []*modelgebura.AppPackageBinary {
+	return toBiz.ToBizAppPackageBinaryList(a)
 }
 func ToBizAppPackageSourceList(a []librarian.AppPackageSource) []modelgebura.AppPackageSource {
 	return toBiz.ToBizAppPackageSourceList(a)

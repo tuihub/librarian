@@ -28,7 +28,7 @@ import (
 type UserQuery struct {
 	config
 	ctx              *QueryContext
-	order            []OrderFunc
+	order            []user.OrderOption
 	inters           []Interceptor
 	predicates       []predicate.User
 	withBindAccount  *AccountQuery
@@ -73,7 +73,7 @@ func (uq *UserQuery) Unique(unique bool) *UserQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (uq *UserQuery) Order(o ...OrderFunc) *UserQuery {
+func (uq *UserQuery) Order(o ...user.OrderOption) *UserQuery {
 	uq.order = append(uq.order, o...)
 	return uq
 }
@@ -487,7 +487,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 	return &UserQuery{
 		config:           uq.config,
 		ctx:              uq.ctx.Clone(),
-		order:            append([]OrderFunc{}, uq.order...),
+		order:            append([]user.OrderOption{}, uq.order...),
 		inters:           append([]Interceptor{}, uq.inters...),
 		predicates:       append([]predicate.User{}, uq.predicates...),
 		withBindAccount:  uq.withBindAccount.Clone(),
@@ -816,7 +816,7 @@ func (uq *UserQuery) loadBindAccount(ctx context.Context, query *AccountQuery, n
 	}
 	query.withFKs = true
 	query.Where(predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.BindAccountColumn, fks...))
+		s.Where(sql.InValues(s.C(user.BindAccountColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -829,7 +829,7 @@ func (uq *UserQuery) loadBindAccount(ctx context.Context, query *AccountQuery, n
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_bind_account" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_bind_account" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -908,7 +908,7 @@ func (uq *UserQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery,
 	}
 	query.withFKs = true
 	query.Where(predicate.AppPackage(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.AppPackageColumn, fks...))
+		s.Where(sql.InValues(s.C(user.AppPackageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -921,7 +921,7 @@ func (uq *UserQuery) loadAppPackage(ctx context.Context, query *AppPackageQuery,
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_app_package" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_app_package" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -937,8 +937,11 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(feedconfig.FieldUserFeedConfig)
+	}
 	query.Where(predicate.FeedConfig(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.FeedConfigColumn, fks...))
+		s.Where(sql.InValues(s.C(user.FeedConfigColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -948,7 +951,7 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 		fk := n.UserFeedConfig
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_feed_config" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_feed_config" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -966,7 +969,7 @@ func (uq *UserQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQu
 	}
 	query.withFKs = true
 	query.Where(predicate.NotifyTarget(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.NotifyTargetColumn, fks...))
+		s.Where(sql.InValues(s.C(user.NotifyTargetColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -979,7 +982,7 @@ func (uq *UserQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQu
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_notify_target" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_notify_target" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -997,7 +1000,7 @@ func (uq *UserQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery,
 	}
 	query.withFKs = true
 	query.Where(predicate.NotifyFlow(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.NotifyFlowColumn, fks...))
+		s.Where(sql.InValues(s.C(user.NotifyFlowColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1010,7 +1013,7 @@ func (uq *UserQuery) loadNotifyFlow(ctx context.Context, query *NotifyFlowQuery,
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_notify_flow" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_notify_flow" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1028,7 +1031,7 @@ func (uq *UserQuery) loadImage(ctx context.Context, query *ImageQuery, nodes []*
 	}
 	query.withFKs = true
 	query.Where(predicate.Image(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.ImageColumn, fks...))
+		s.Where(sql.InValues(s.C(user.ImageColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1041,7 +1044,7 @@ func (uq *UserQuery) loadImage(ctx context.Context, query *ImageQuery, nodes []*
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_image" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_image" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1059,7 +1062,7 @@ func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Us
 	}
 	query.withFKs = true
 	query.Where(predicate.File(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.FileColumn, fks...))
+		s.Where(sql.InValues(s.C(user.FileColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1072,7 +1075,7 @@ func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Us
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_file" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_file" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1122,7 +1125,7 @@ func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, node
 	}
 	query.withFKs = true
 	query.Where(predicate.User(func(s *sql.Selector) {
-		s.Where(sql.InValues(user.CreatedUserColumn, fks...))
+		s.Where(sql.InValues(s.C(user.CreatedUserColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -1135,7 +1138,7 @@ func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, node
 		}
 		node, ok := nodeids[*fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_created_user" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_created_user" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

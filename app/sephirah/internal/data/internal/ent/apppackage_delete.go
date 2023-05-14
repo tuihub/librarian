@@ -27,7 +27,7 @@ func (apd *AppPackageDelete) Where(ps ...predicate.AppPackage) *AppPackageDelete
 
 // Exec executes the deletion query and returns how many vertices were deleted.
 func (apd *AppPackageDelete) Exec(ctx context.Context) (int, error) {
-	return withHooks[int, AppPackageMutation](ctx, apd.sqlExec, apd.mutation, apd.hooks)
+	return withHooks(ctx, apd.sqlExec, apd.mutation, apd.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.

@@ -183,7 +183,7 @@ func (fcc *FeedConfigCreate) Mutation() *FeedConfigMutation {
 // Save creates the FeedConfig in the database.
 func (fcc *FeedConfigCreate) Save(ctx context.Context) (*FeedConfig, error) {
 	fcc.defaults()
-	return withHooks[*FeedConfig, FeedConfigMutation](ctx, fcc.sqlSave, fcc.mutation, fcc.hooks)
+	return withHooks(ctx, fcc.sqlSave, fcc.mutation, fcc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -868,8 +868,8 @@ func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, erro
 					return nil, err
 				}
 				builder.mutation = mutation
-				nodes[i], specs[i] = builder.createSpec()
 				var err error
+				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
 					_, err = mutators[i+1].Mutate(root, fccb.builders[i+1].mutation)
 				} else {

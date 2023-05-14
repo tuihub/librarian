@@ -23,7 +23,7 @@ import (
 type NotifyTargetQuery struct {
 	config
 	ctx                  *QueryContext
-	order                []OrderFunc
+	order                []notifytarget.OrderOption
 	inters               []Interceptor
 	predicates           []predicate.NotifyTarget
 	withOwner            *UserQuery
@@ -61,7 +61,7 @@ func (ntq *NotifyTargetQuery) Unique(unique bool) *NotifyTargetQuery {
 }
 
 // Order specifies how the records should be ordered.
-func (ntq *NotifyTargetQuery) Order(o ...OrderFunc) *NotifyTargetQuery {
+func (ntq *NotifyTargetQuery) Order(o ...notifytarget.OrderOption) *NotifyTargetQuery {
 	ntq.order = append(ntq.order, o...)
 	return ntq
 }
@@ -321,7 +321,7 @@ func (ntq *NotifyTargetQuery) Clone() *NotifyTargetQuery {
 	return &NotifyTargetQuery{
 		config:               ntq.config,
 		ctx:                  ntq.ctx.Clone(),
-		order:                append([]OrderFunc{}, ntq.order...),
+		order:                append([]notifytarget.OrderOption{}, ntq.order...),
 		inters:               append([]Interceptor{}, ntq.inters...),
 		predicates:           append([]predicate.NotifyTarget{}, ntq.predicates...),
 		withOwner:            ntq.withOwner.Clone(),
@@ -603,8 +603,11 @@ func (ntq *NotifyTargetQuery) loadNotifyFlowTarget(ctx context.Context, query *N
 			init(nodes[i])
 		}
 	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(notifyflowtarget.FieldNotifyTargetID)
+	}
 	query.Where(predicate.NotifyFlowTarget(func(s *sql.Selector) {
-		s.Where(sql.InValues(notifytarget.NotifyFlowTargetColumn, fks...))
+		s.Where(sql.InValues(s.C(notifytarget.NotifyFlowTargetColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -614,7 +617,7 @@ func (ntq *NotifyTargetQuery) loadNotifyFlowTarget(ctx context.Context, query *N
 		fk := n.NotifyTargetID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "notify_target_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "notify_target_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
