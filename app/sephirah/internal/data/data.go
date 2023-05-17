@@ -26,6 +26,7 @@ var ProviderSet = wire.NewSet(
 	NewGeburaRepo,
 	NewYesodRepo,
 	NewNetzachRepo,
+	NewChesedRepo,
 )
 
 // Data .

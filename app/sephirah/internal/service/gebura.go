@@ -4,9 +4,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"

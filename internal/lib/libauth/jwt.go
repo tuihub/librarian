@@ -12,7 +12,7 @@ import (
 )
 
 type Claims struct {
-	InternalID       model.InternalID `json:"iid"`
+	InternalID       model.InternalID `json:"iid,string"`
 	Type             ClaimsType       `json:"ct"`
 	UserType         UserType         `json:"ut"`
 	TransferMetadata any              `json:"tm,omitempty"`

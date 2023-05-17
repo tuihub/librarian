@@ -7,7 +7,7 @@ import (
 )
 
 type FileMetadata struct {
-	ID     model.InternalID
+	ID     model.InternalID `json:"id,string"`
 	Name   string
 	Size   int64
 	Type   FileType

@@ -50,7 +50,7 @@ func (f *UploadFile) Finish(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	buf := make([]byte, 16<<10) //nolint:gomnd //TODO
+	buf := make([]byte, 32<<10) //nolint:gomnd //TODO
 	for {
 		var n int
 		n, err = f.file.Read(buf)
@@ -66,14 +66,14 @@ func (f *UploadFile) Finish(ctx context.Context) error {
 		}
 		err = cli.Send(&porter.PushDataRequest{
 			Content: &porter.PushDataRequest_Data{
-				Data: buf,
+				Data: buf[:n],
 			},
 		})
 		if err != nil {
 			return err
 		}
 	}
-	return f.callback()
+	return f.callback(ctx, f.id)
 }
 
 type BinahRepo interface {

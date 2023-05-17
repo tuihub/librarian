@@ -26,7 +26,7 @@ func newRistretto(client *ristretto.Cache, options ...Option) *ristrettoStore {
 // Get returns data stored from a given key.
 func (s *ristrettoStore) Get(_ context.Context, key any) (any, error) {
 	var err error
-
+	s.client.Wait()
 	value, exists := s.client.Get(key)
 	if !exists {
 		err = newNotFound(errors.New("value not found in Ristretto store"))
@@ -37,6 +37,7 @@ func (s *ristrettoStore) Get(_ context.Context, key any) (any, error) {
 
 // GetWithTTL returns data stored from a given key and its corresponding TTL.
 func (s *ristrettoStore) GetWithTTL(ctx context.Context, key any) (any, time.Duration, error) {
+	s.client.Wait()
 	value, err := s.Get(ctx, key)
 	if err != nil {
 		return nil, 0, err

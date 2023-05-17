@@ -26,10 +26,11 @@ var ProviderSet = wire.NewSet(
 )
 
 type ChesedRepo interface {
+	CreateImage(context.Context, model.InternalID, *modelchesed.Image) error
 }
 
 type Chesed struct {
-	// repo       ChesedRepo
+	repo       ChesedRepo
 	mapper     mapper.LibrarianMapperServiceClient
 	searcher   searcher.LibrarianSearcherServiceClient
 	porter     porter.LibrarianPorterServiceClient
@@ -38,25 +39,25 @@ type Chesed struct {
 }
 
 func NewChesed(
-	// repo ChesedRepo,
+	repo ChesedRepo,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
 	block *modelbinah.ControlBlock,
 	imageCache *libcache.Map[model.InternalID, modelchesed.Image],
 ) (*Chesed, error) {
-	upload := block.RegisterUploadCallback(
-		modelbinah.UploadArtifacts,
-		UploadImageCallback,
-	)
 	y := &Chesed{
-		//repo:       repo,
+		repo:       repo,
 		mapper:     mClient,
 		porter:     pClient,
 		searcher:   sClient,
-		upload:     upload,
+		upload:     nil,
 		imageCache: imageCache,
 	}
+	y.upload = block.RegisterUploadCallback(
+		modelbinah.UploadArtifacts,
+		y.UploadImageCallback,
+	)
 	return y, nil
 }
 
@@ -99,7 +100,18 @@ func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 	return token, nil
 }
 
-func UploadImageCallback() error {
-	// TODO
+func (c *Chesed) UploadImageCallback(ctx context.Context, id model.InternalID) error {
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return pb.ErrorErrorReasonForbidden("no permission")
+	}
+	image, err := c.imageCache.Get(ctx, id)
+	if err != nil {
+		return err
+	}
+	err = c.repo.CreateImage(ctx, claims.InternalID, image)
+	if err != nil {
+		return err
+	}
 	return nil
 }

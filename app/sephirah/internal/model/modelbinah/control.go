@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 type ControlBlock struct {
@@ -15,7 +16,7 @@ type ControlBlock struct {
 }
 
 type UploadCallbackID int
-type UploadCallbackFunc func() error
+type UploadCallbackFunc func(context.Context, model.InternalID) error
 
 const (
 	Empty UploadCallbackID = iota
@@ -31,8 +32,8 @@ func NewControlBlock(a *libauth.Auth) *ControlBlock {
 		},
 	}
 }
-func emptyUploadCallback() error { return nil }
-func unregisteredCallback() error {
+func emptyUploadCallback(_ context.Context, _ model.InternalID) error { return nil }
+func unregisteredCallback(_ context.Context, _ model.InternalID) error {
 	err := errors.New("calling unregistered upload callback")
 	logger.Error(err)
 	return err
