@@ -11,8 +11,8 @@ require (
 	github.com/cayleygraph/quad v1.2.4
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron v1.25.0
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230509063647-4a56b5669def
+	github.com/go-co-op/gocron v1.27.0
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 1d50f502622a
 	github.com/go-kratos/kratos/v2 v2.6.2
 	github.com/gocolly/colly/v2 v2.1.1-0.20230417203752-70168cfd0bac
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -33,8 +33,8 @@ require (
 	github.com/tuihub/protos v0.2.21
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.9.0
-	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
-	google.golang.org/grpc v1.54.0
+	golang.org/x/exp f3d0a9c9a5cc
+	google.golang.org/grpc v1.55.0
 	google.golang.org/protobuf v1.30.0
 )
 
@@ -156,7 +156,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230509063647-4a56b5669def
+	github.com/go-kratos/kratos/contrib/log/zap/v2 1d50f502622a
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
