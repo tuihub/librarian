@@ -120,7 +120,7 @@ func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *
 	}
 	return &pb.PurchaseAppResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) GetAppLibrary(ctx context.Context, req *pb.GetPurchasedAppsRequest) (
+func (s *LibrarianSephirahServiceService) GetPurchasedApps(ctx context.Context, req *pb.GetPurchasedAppsRequest) (
 	*pb.GetPurchasedAppsResponse, error,
 ) {
 	apps, err := s.g.GetPurchasedApps(ctx)
