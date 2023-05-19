@@ -8,6 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/uuid"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 type UploadFile struct {
@@ -131,4 +133,26 @@ func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) 
 		file:     f,
 		Writer:   f,
 	}, nil
+}
+
+func (b *Binah) PresignedDownloadFile(ctx context.Context) (string, *errors.Error) {
+	claims, exist := libauth.FromContext(ctx)
+	if !exist || claims == nil || claims.TransferMetadata == nil {
+		return "", pb.ErrorErrorReasonUnauthorized("token required")
+	}
+	var id model.InternalID
+	if meta, met := claims.TransferMetadata.(modelbinah.FileMetadata); !met {
+		return "", pb.ErrorErrorReasonBadRequest("bad token info")
+	} else {
+		id = meta.ID
+	}
+	res, err := b.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
+		Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
+		ContentId:  strconv.FormatInt(int64(id), 10),
+		ExpireTime: durationpb.New(libtime.Day),
+	})
+	if err != nil {
+		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res.PullUrl, nil
 }

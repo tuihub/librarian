@@ -24,13 +24,14 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20230506070712-04da935ef877
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/meilisearch/meilisearch-go v0.24.0
 	github.com/minio/minio-go/v7 v7.0.52
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/nikoksr/notify v0.38.1
 	github.com/redis/go-redis/v9 v9.0.4
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.21
+	github.com/tuihub/protos v0.2.23
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.9.0
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
@@ -43,6 +44,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.1 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
+	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/htmlquery v1.3.0 // indirect
 	github.com/antchfx/xmlquery v1.3.15 // indirect
@@ -98,6 +100,7 @@ require (
 	github.com/hashicorp/serf v0.10.1 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jhump/protoreflect v1.14.1 // indirect
+	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karrick/godirwalk v1.17.0 // indirect
 	github.com/kennygrant/sanitize v1.2.4 // indirect
@@ -105,6 +108,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.4 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/lufia/plan9stats v0.0.0-20230110061619-bbe2e5e100de // indirect
+	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/markbates/errx v1.1.0 // indirect
 	github.com/markbates/oncer v1.0.0 // indirect
 	github.com/markbates/safe v1.0.1 // indirect
@@ -140,6 +144,8 @@ require (
 	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+	github.com/valyala/fasthttp v1.37.1-0.20220607072126-8a320890c08d // indirect
 	github.com/vesoft-inc/nebula-go/v2 v2.6.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect

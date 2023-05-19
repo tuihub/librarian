@@ -259,6 +259,7 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"uploaded", "scanned"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "file_image", Type: field.TypeInt64, Unique: true, Nullable: true},
@@ -272,13 +273,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "images_files_image",
-				Columns:    []*schema.Column{ImagesColumns[5]},
+				Columns:    []*schema.Column{ImagesColumns[6]},
 				RefColumns: []*schema.Column{FilesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "images_users_image",
-				Columns:    []*schema.Column{ImagesColumns[6]},
+				Columns:    []*schema.Column{ImagesColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

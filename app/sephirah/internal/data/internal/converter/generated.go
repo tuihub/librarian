@@ -8,6 +8,7 @@ import (
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	modelchesed "github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -204,6 +205,28 @@ func (c *toBizConverterImpl) ToBizFeedItemList(source []*ent.FeedItem) []*modelf
 		}
 	}
 	return pModelfeedItemList
+}
+func (c *toBizConverterImpl) ToBizImage(source *ent.Image) *modelchesed.Image {
+	var pModelchesedImage *modelchesed.Image
+	if source != nil {
+		var modelchesedImage modelchesed.Image
+		modelchesedImage.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelchesedImage.Name = (*source).Name
+		modelchesedImage.Description = (*source).Description
+		modelchesedImage.Status = ToBizImageStatus((*source).Status)
+		pModelchesedImage = &modelchesedImage
+	}
+	return pModelchesedImage
+}
+func (c *toBizConverterImpl) ToBizImageList(source []*ent.Image) []*modelchesed.Image {
+	var pModelchesedImageList []*modelchesed.Image
+	if source != nil {
+		pModelchesedImageList = make([]*modelchesed.Image, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelchesedImageList[i] = c.ToBizImage(source[i])
+		}
+	}
+	return pModelchesedImageList
 }
 func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow

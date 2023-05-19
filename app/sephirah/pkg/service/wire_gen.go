@@ -76,7 +76,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

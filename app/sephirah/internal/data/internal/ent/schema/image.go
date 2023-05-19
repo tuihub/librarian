@@ -19,6 +19,7 @@ func (Image) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("description"),
+		field.Enum("status").Values("uploaded", "scanned"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

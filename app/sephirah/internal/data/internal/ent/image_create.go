@@ -37,6 +37,12 @@ func (ic *ImageCreate) SetDescription(s string) *ImageCreate {
 	return ic
 }
 
+// SetStatus sets the "status" field.
+func (ic *ImageCreate) SetStatus(i image.Status) *ImageCreate {
+	ic.mutation.SetStatus(i)
+	return ic
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (ic *ImageCreate) SetUpdatedAt(t time.Time) *ImageCreate {
 	ic.mutation.SetUpdatedAt(t)
@@ -154,6 +160,14 @@ func (ic *ImageCreate) check() error {
 	if _, ok := ic.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Image.description"`)}
 	}
+	if _, ok := ic.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Image.status"`)}
+	}
+	if v, ok := ic.mutation.Status(); ok {
+		if err := image.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
+		}
+	}
 	if _, ok := ic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Image.updated_at"`)}
 	}
@@ -203,6 +217,10 @@ func (ic *ImageCreate) createSpec() (*Image, *sqlgraph.CreateSpec) {
 	if value, ok := ic.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
 		_node.Description = value
+	}
+	if value, ok := ic.mutation.Status(); ok {
+		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
+		_node.Status = value
 	}
 	if value, ok := ic.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)
@@ -322,6 +340,18 @@ func (u *ImageUpsert) UpdateDescription() *ImageUpsert {
 	return u
 }
 
+// SetStatus sets the "status" field.
+func (u *ImageUpsert) SetStatus(v image.Status) *ImageUpsert {
+	u.Set(image.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *ImageUpsert) UpdateStatus() *ImageUpsert {
+	u.SetExcluded(image.FieldStatus)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *ImageUpsert) SetUpdatedAt(v time.Time) *ImageUpsert {
 	u.Set(image.FieldUpdatedAt, v)
@@ -419,6 +449,20 @@ func (u *ImageUpsertOne) SetDescription(v string) *ImageUpsertOne {
 func (u *ImageUpsertOne) UpdateDescription() *ImageUpsertOne {
 	return u.Update(func(s *ImageUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *ImageUpsertOne) SetStatus(v image.Status) *ImageUpsertOne {
+	return u.Update(func(s *ImageUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *ImageUpsertOne) UpdateStatus() *ImageUpsertOne {
+	return u.Update(func(s *ImageUpsert) {
+		s.UpdateStatus()
 	})
 }
 
@@ -685,6 +729,20 @@ func (u *ImageUpsertBulk) SetDescription(v string) *ImageUpsertBulk {
 func (u *ImageUpsertBulk) UpdateDescription() *ImageUpsertBulk {
 	return u.Update(func(s *ImageUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *ImageUpsertBulk) SetStatus(v image.Status) *ImageUpsertBulk {
+	return u.Update(func(s *ImageUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *ImageUpsertBulk) UpdateStatus() *ImageUpsertBulk {
+	return u.Update(func(s *ImageUpsert) {
+		s.UpdateStatus()
 	})
 }
 

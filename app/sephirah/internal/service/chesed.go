@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -21,6 +22,7 @@ func (s *LibrarianSephirahServiceService) UploadImage(ctx context.Context, req *
 		ID:          0,
 		Name:        req.GetName(),
 		Description: req.GetDescription(),
+		Status:      modelchesed.ImageStatusUploaded,
 	}, *fm)
 	if err != nil {
 		return nil, err
@@ -34,6 +36,17 @@ func (s *LibrarianSephirahServiceService) UpdateImage(ctx context.Context, req *
 func (s *LibrarianSephirahServiceService) ListImages(ctx context.Context, req *pb.ListImagesRequest) (
 	*pb.ListImagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListImages not implemented")
+}
+func (s *LibrarianSephirahServiceService) SearchImages(ctx context.Context,
+	req *pb.SearchImagesRequest) (*pb.SearchImagesResponse, error) {
+	res, err := s.c.SearchImages(ctx, req.GetKeywords())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SearchImagesResponse{
+		Paging: &librarian.PagingResponse{TotalSize: int64(len(res))},
+		Ids:    converter.ToPBInternalIDList(res),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetImage(ctx context.Context, req *pb.GetImageRequest) (
 	*pb.GetImageResponse, error) {

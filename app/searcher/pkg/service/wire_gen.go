@@ -18,12 +18,19 @@ import (
 // Injectors from wire.go:
 
 func NewSearcherService(searcher_Data *conf.Searcher_Data, settings *libapp.Settings) (v1.LibrarianSearcherServiceServer, func(), error) {
-	index, err := data.NewBleve(settings)
+	index, err := data.NewBleve(searcher_Data, settings)
+	if err != nil {
+		return nil, nil, err
+	}
+	client, err := data.NewMeili(searcher_Data, settings)
 	if err != nil {
 		return nil, nil, err
 	}
 	sonyflake := data.NewSnowFlake()
-	searcherRepo := data.NewSearcherRepo(index, sonyflake)
+	searcherRepo, err := data.NewSearcherRepo(index, client, sonyflake)
+	if err != nil {
+		return nil, nil, err
+	}
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	return librarianSearcherServiceServer, func() {

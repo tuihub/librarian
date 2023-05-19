@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"io"
 
@@ -48,4 +49,13 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 func (s *LibrarianSephirahServiceService) SimpleDownloadFile(req *pb.SimpleDownloadFileRequest,
 	conn pb.LibrarianSephirahService_SimpleDownloadFileServer) error {
 	return status.Errorf(codes.Unimplemented, "method SimpleDownloadFile not implemented")
+}
+
+func (s *LibrarianSephirahServiceService) PresignedDownloadFile(ctx context.Context,
+	req *pb.PresignedDownloadFileRequest) (*pb.PresignedDownloadFileResponse, error) {
+	res, err := s.b.PresignedDownloadFile(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.PresignedDownloadFileResponse{DownloadUrl: res}, nil
 }

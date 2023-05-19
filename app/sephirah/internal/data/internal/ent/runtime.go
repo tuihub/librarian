@@ -119,13 +119,13 @@ func init() {
 	imageFields := schema.Image{}.Fields()
 	_ = imageFields
 	// imageDescUpdatedAt is the schema descriptor for updated_at field.
-	imageDescUpdatedAt := imageFields[3].Descriptor()
+	imageDescUpdatedAt := imageFields[4].Descriptor()
 	// image.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	image.DefaultUpdatedAt = imageDescUpdatedAt.Default.(func() time.Time)
 	// image.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	image.UpdateDefaultUpdatedAt = imageDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// imageDescCreatedAt is the schema descriptor for created_at field.
-	imageDescCreatedAt := imageFields[4].Descriptor()
+	imageDescCreatedAt := imageFields[5].Descriptor()
 	// image.DefaultCreatedAt holds the default value on creation for the created_at field.
 	image.DefaultCreatedAt = imageDescCreatedAt.Default.(func() time.Time)
 	notifyflowFields := schema.NotifyFlow{}.Fields()

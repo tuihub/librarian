@@ -6,9 +6,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -177,6 +179,19 @@ func ToEntNotifySourceSource(s modelnetzach.NotifyFlowStatus) notifyflow.Status 
 		return notifyflow.StatusActive
 	case modelnetzach.NotifyFlowStatusSuspend:
 		return notifyflow.StatusSuspend
+	default:
+		return ""
+	}
+}
+
+func ToEntImageStatus(s modelchesed.ImageStatus) image.Status {
+	switch s {
+	case modelchesed.ImageStatusUnspecified:
+		return ""
+	case modelchesed.ImageStatusUploaded:
+		return image.StatusUploaded
+	case modelchesed.ImageStatusScanned:
+		return image.StatusScanned
 	default:
 		return ""
 	}

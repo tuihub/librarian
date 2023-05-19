@@ -126,6 +126,12 @@ type Searcher_Data struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	// Types that are assignable to SearchEngine:
+	//
+	//	*Searcher_Data_Bleve_
+	//	*Searcher_Data_Meilisearch
+	SearchEngine isSearcher_Data_SearchEngine `protobuf_oneof:"SearchEngine"`
 }
 
 func (x *Searcher_Data) Reset() {
@@ -160,13 +166,143 @@ func (*Searcher_Data) Descriptor() ([]byte, []int) {
 	return file_conf_searcher_proto_rawDescGZIP(), []int{0, 1}
 }
 
+func (m *Searcher_Data) GetSearchEngine() isSearcher_Data_SearchEngine {
+	if m != nil {
+		return m.SearchEngine
+	}
+	return nil
+}
+
+func (x *Searcher_Data) GetBleve() *Searcher_Data_Bleve {
+	if x, ok := x.GetSearchEngine().(*Searcher_Data_Bleve_); ok {
+		return x.Bleve
+	}
+	return nil
+}
+
+func (x *Searcher_Data) GetMeilisearch() *Searcher_Data_MeiliSearch {
+	if x, ok := x.GetSearchEngine().(*Searcher_Data_Meilisearch); ok {
+		return x.Meilisearch
+	}
+	return nil
+}
+
+type isSearcher_Data_SearchEngine interface {
+	isSearcher_Data_SearchEngine()
+}
+
+type Searcher_Data_Bleve_ struct {
+	Bleve *Searcher_Data_Bleve `protobuf:"bytes,1,opt,name=bleve,proto3,oneof"`
+}
+
+type Searcher_Data_Meilisearch struct {
+	Meilisearch *Searcher_Data_MeiliSearch `protobuf:"bytes,2,opt,name=meilisearch,proto3,oneof"`
+}
+
+func (*Searcher_Data_Bleve_) isSearcher_Data_SearchEngine() {}
+
+func (*Searcher_Data_Meilisearch) isSearcher_Data_SearchEngine() {}
+
+type Searcher_Data_Bleve struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Searcher_Data_Bleve) Reset() {
+	*x = Searcher_Data_Bleve{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_conf_searcher_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Searcher_Data_Bleve) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Searcher_Data_Bleve) ProtoMessage() {}
+
+func (x *Searcher_Data_Bleve) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_searcher_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Searcher_Data_Bleve.ProtoReflect.Descriptor instead.
+func (*Searcher_Data_Bleve) Descriptor() ([]byte, []int) {
+	return file_conf_searcher_proto_rawDescGZIP(), []int{0, 1, 0}
+}
+
+type Searcher_Data_MeiliSearch struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Addr   string `protobuf:"bytes,1,opt,name=addr,proto3" json:"addr,omitempty"`
+	ApiKey string `protobuf:"bytes,2,opt,name=api_key,json=apiKey,proto3" json:"api_key,omitempty"`
+}
+
+func (x *Searcher_Data_MeiliSearch) Reset() {
+	*x = Searcher_Data_MeiliSearch{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_conf_searcher_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Searcher_Data_MeiliSearch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Searcher_Data_MeiliSearch) ProtoMessage() {}
+
+func (x *Searcher_Data_MeiliSearch) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_searcher_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Searcher_Data_MeiliSearch.ProtoReflect.Descriptor instead.
+func (*Searcher_Data_MeiliSearch) Descriptor() ([]byte, []int) {
+	return file_conf_searcher_proto_rawDescGZIP(), []int{0, 1, 1}
+}
+
+func (x *Searcher_Data_MeiliSearch) GetAddr() string {
+	if x != nil {
+		return x.Addr
+	}
+	return ""
+}
+
+func (x *Searcher_Data_MeiliSearch) GetApiKey() string {
+	if x != nil {
+		return x.ApiKey
+	}
+	return ""
+}
+
 var File_conf_searcher_proto protoreflect.FileDescriptor
 
 var file_conf_searcher_proto_rawDesc = []byte{
 	0x0a, 0x13, 0x63, 0x6f, 0x6e, 0x66, 0x2f, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68, 0x65, 0x72, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0a, 0x6b, 0x72, 0x61, 0x74, 0x6f, 0x73, 0x2e, 0x61, 0x70,
 	0x69, 0x1a, 0x0f, 0x63, 0x6f, 0x6e, 0x66, 0x2f, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x22, 0xa6, 0x01, 0x0a, 0x08, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x65, 0x72, 0x12,
+	0x74, 0x6f, 0x22, 0x80, 0x03, 0x0a, 0x08, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x65, 0x72, 0x12,
 	0x33, 0x0a, 0x06, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x1b, 0x2e, 0x6b, 0x72, 0x61, 0x74, 0x6f, 0x73, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x61,
 	0x72, 0x63, 0x68, 0x65, 0x72, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x52, 0x06, 0x73, 0x65,
@@ -176,10 +312,23 @@ var file_conf_searcher_proto_rawDesc = []byte{
 	0x61, 0x74, 0x61, 0x1a, 0x2e, 0x0a, 0x06, 0x53, 0x65, 0x72, 0x76, 0x65, 0x72, 0x12, 0x24, 0x0a,
 	0x04, 0x67, 0x72, 0x70, 0x63, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x6b, 0x72,
 	0x61, 0x74, 0x6f, 0x73, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x47, 0x52, 0x50, 0x43, 0x52, 0x04, 0x67,
-	0x72, 0x70, 0x63, 0x1a, 0x06, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x61, 0x42, 0x1e, 0x5a, 0x1c, 0x4c,
-	0x69, 0x62, 0x72, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61,
-	0x6c, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x72, 0x70, 0x63, 0x1a, 0xdf, 0x01, 0x0a, 0x04, 0x44, 0x61, 0x74, 0x61, 0x12, 0x37, 0x0a, 0x05,
+	0x62, 0x6c, 0x65, 0x76, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x6b, 0x72,
+	0x61, 0x74, 0x6f, 0x73, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x65,
+	0x72, 0x2e, 0x44, 0x61, 0x74, 0x61, 0x2e, 0x42, 0x6c, 0x65, 0x76, 0x65, 0x48, 0x00, 0x52, 0x05,
+	0x62, 0x6c, 0x65, 0x76, 0x65, 0x12, 0x49, 0x0a, 0x0b, 0x6d, 0x65, 0x69, 0x6c, 0x69, 0x73, 0x65,
+	0x61, 0x72, 0x63, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x6b, 0x72, 0x61,
+	0x74, 0x6f, 0x73, 0x2e, 0x61, 0x70, 0x69, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x65, 0x72,
+	0x2e, 0x44, 0x61, 0x74, 0x61, 0x2e, 0x4d, 0x65, 0x69, 0x6c, 0x69, 0x53, 0x65, 0x61, 0x72, 0x63,
+	0x68, 0x48, 0x00, 0x52, 0x0b, 0x6d, 0x65, 0x69, 0x6c, 0x69, 0x73, 0x65, 0x61, 0x72, 0x63, 0x68,
+	0x1a, 0x07, 0x0a, 0x05, 0x42, 0x6c, 0x65, 0x76, 0x65, 0x1a, 0x3a, 0x0a, 0x0b, 0x4d, 0x65, 0x69,
+	0x6c, 0x69, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x64, 0x64, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x64, 0x64, 0x72, 0x12, 0x17, 0x0a, 0x07,
+	0x61, 0x70, 0x69, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x61,
+	0x70, 0x69, 0x4b, 0x65, 0x79, 0x42, 0x0e, 0x0a, 0x0c, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x45,
+	0x6e, 0x67, 0x69, 0x6e, 0x65, 0x42, 0x1e, 0x5a, 0x1c, 0x4c, 0x69, 0x62, 0x72, 0x61, 0x72, 0x69,
+	0x61, 0x6e, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6e, 0x66,
+	0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -194,22 +343,26 @@ func file_conf_searcher_proto_rawDescGZIP() []byte {
 	return file_conf_searcher_proto_rawDescData
 }
 
-var file_conf_searcher_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_conf_searcher_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_conf_searcher_proto_goTypes = []interface{}{
-	(*Searcher)(nil),        // 0: kratos.api.Searcher
-	(*Searcher_Server)(nil), // 1: kratos.api.Searcher.Server
-	(*Searcher_Data)(nil),   // 2: kratos.api.Searcher.Data
-	(*GRPC)(nil),            // 3: kratos.api.GRPC
+	(*Searcher)(nil),                  // 0: kratos.api.Searcher
+	(*Searcher_Server)(nil),           // 1: kratos.api.Searcher.Server
+	(*Searcher_Data)(nil),             // 2: kratos.api.Searcher.Data
+	(*Searcher_Data_Bleve)(nil),       // 3: kratos.api.Searcher.Data.Bleve
+	(*Searcher_Data_MeiliSearch)(nil), // 4: kratos.api.Searcher.Data.MeiliSearch
+	(*GRPC)(nil),                      // 5: kratos.api.GRPC
 }
 var file_conf_searcher_proto_depIdxs = []int32{
 	1, // 0: kratos.api.Searcher.server:type_name -> kratos.api.Searcher.Server
 	2, // 1: kratos.api.Searcher.data:type_name -> kratos.api.Searcher.Data
-	3, // 2: kratos.api.Searcher.Server.grpc:type_name -> kratos.api.GRPC
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 2: kratos.api.Searcher.Server.grpc:type_name -> kratos.api.GRPC
+	3, // 3: kratos.api.Searcher.Data.bleve:type_name -> kratos.api.Searcher.Data.Bleve
+	4, // 4: kratos.api.Searcher.Data.meilisearch:type_name -> kratos.api.Searcher.Data.MeiliSearch
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_conf_searcher_proto_init() }
@@ -255,6 +408,34 @@ func file_conf_searcher_proto_init() {
 				return nil
 			}
 		}
+		file_conf_searcher_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Searcher_Data_Bleve); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_conf_searcher_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Searcher_Data_MeiliSearch); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
+	file_conf_searcher_proto_msgTypes[2].OneofWrappers = []interface{}{
+		(*Searcher_Data_Bleve_)(nil),
+		(*Searcher_Data_Meilisearch)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -262,7 +443,7 @@ func file_conf_searcher_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_conf_searcher_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

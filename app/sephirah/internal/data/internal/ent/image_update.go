@@ -43,6 +43,12 @@ func (iu *ImageUpdate) SetDescription(s string) *ImageUpdate {
 	return iu
 }
 
+// SetStatus sets the "status" field.
+func (iu *ImageUpdate) SetStatus(i image.Status) *ImageUpdate {
+	iu.mutation.SetStatus(i)
+	return iu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (iu *ImageUpdate) SetUpdatedAt(t time.Time) *ImageUpdate {
 	iu.mutation.SetUpdatedAt(t)
@@ -148,6 +154,11 @@ func (iu *ImageUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (iu *ImageUpdate) check() error {
+	if v, ok := iu.mutation.Status(); ok {
+		if err := image.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
+		}
+	}
 	if _, ok := iu.mutation.OwnerID(); iu.mutation.OwnerCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
@@ -171,6 +182,9 @@ func (iu *ImageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := iu.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := iu.mutation.Status(); ok {
+		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := iu.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)
@@ -265,6 +279,12 @@ func (iuo *ImageUpdateOne) SetName(s string) *ImageUpdateOne {
 // SetDescription sets the "description" field.
 func (iuo *ImageUpdateOne) SetDescription(s string) *ImageUpdateOne {
 	iuo.mutation.SetDescription(s)
+	return iuo
+}
+
+// SetStatus sets the "status" field.
+func (iuo *ImageUpdateOne) SetStatus(i image.Status) *ImageUpdateOne {
+	iuo.mutation.SetStatus(i)
 	return iuo
 }
 
@@ -386,6 +406,11 @@ func (iuo *ImageUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (iuo *ImageUpdateOne) check() error {
+	if v, ok := iuo.mutation.Status(); ok {
+		if err := image.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
+		}
+	}
 	if _, ok := iuo.mutation.OwnerID(); iuo.mutation.OwnerCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
@@ -426,6 +451,9 @@ func (iuo *ImageUpdateOne) sqlSave(ctx context.Context) (_node *Image, err error
 	}
 	if value, ok := iuo.mutation.Description(); ok {
 		_spec.SetField(image.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := iuo.mutation.Status(); ok {
+		_spec.SetField(image.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := iuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(image.FieldUpdatedAt, field.TypeTime, value)

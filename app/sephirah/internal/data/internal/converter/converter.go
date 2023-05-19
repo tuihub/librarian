@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -143,4 +144,8 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	}
 	// TODO incomplete
 	return digest
+}
+
+func ToBizImageList(a []*ent.Image) []*modelchesed.Image {
+	return toBiz.ToBizImageList(a)
 }

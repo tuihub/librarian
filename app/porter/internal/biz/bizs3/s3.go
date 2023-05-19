@@ -3,6 +3,7 @@ package bizs3
 import (
 	"context"
 	"io"
+	"time"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -27,6 +28,7 @@ func (p *PutObject) Write(b []byte) (int, error) {
 type S3Repo interface {
 	FeatureEnabled() bool
 	PutObject(context.Context, io.Reader, Bucket, string) error
+	PresignedGetObject(context.Context, Bucket, string, time.Duration) (string, error)
 }
 
 type S3 struct {
@@ -66,4 +68,9 @@ func (s *S3) NewPushData(ctx context.Context, bucket Bucket, objectName string) 
 		ch,
 		writer,
 	}, nil
+}
+
+func (s *S3) PresignedGetData(ctx context.Context, bucket Bucket, objectName string,
+	expires time.Duration) (string, error) {
+	return s.repo.PresignedGetObject(ctx, bucket, objectName, expires)
 }

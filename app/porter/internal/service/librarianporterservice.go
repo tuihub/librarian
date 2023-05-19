@@ -200,3 +200,16 @@ func (s *LibrarianPorterServiceService) PushData(conn pb.LibrarianPorterService_
 		}
 	}
 }
+
+func (s *LibrarianPorterServiceService) PresignedPullData(ctx context.Context, req *pb.PresignedPullDataRequest) (
+	*pb.PresignedPullDataResponse, error) {
+	res, err := s.s3.PresignedGetData(ctx,
+		ToBizBucket(req.GetSource()),
+		req.GetContentId(),
+		req.GetExpireTime().AsDuration(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.PresignedPullDataResponse{PullUrl: res}, nil
+}

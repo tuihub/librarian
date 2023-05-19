@@ -8,9 +8,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -79,6 +81,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore Targets
 	// goverter:map Status | ToBizNotifyFlowStatus
 	ToBizNotifyFlow(*ent.NotifyFlow) *modelnetzach.NotifyFlow
+
+	// goverter:map Status | ToBizImageStatus
+	ToBizImage(*ent.Image) *modelchesed.Image
+	ToBizImageList([]*ent.Image) []*modelchesed.Image
 }
 
 func TimeToTime(t time.Time) time.Time {
@@ -201,5 +207,16 @@ func ToBizNotifyFlowStatus(s notifyflow.Status) modelnetzach.NotifyFlowStatus {
 		return modelnetzach.NotifyFlowStatusSuspend
 	default:
 		return modelnetzach.NotifyFlowStatusUnspecified
+	}
+}
+
+func ToBizImageStatus(s image.Status) modelchesed.ImageStatus {
+	switch s {
+	case image.StatusUploaded:
+		return modelchesed.ImageStatusUploaded
+	case image.StatusScanned:
+		return modelchesed.ImageStatusScanned
+	default:
+		return modelchesed.ImageStatusUnspecified
 	}
 }

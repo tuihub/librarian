@@ -24,6 +24,8 @@ type Image struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
+	// Status holds the value of the "status" field.
+	Status image.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -80,7 +82,7 @@ func (*Image) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case image.FieldID:
 			values[i] = new(sql.NullInt64)
-		case image.FieldName, image.FieldDescription:
+		case image.FieldName, image.FieldDescription, image.FieldStatus:
 			values[i] = new(sql.NullString)
 		case image.FieldUpdatedAt, image.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -120,6 +122,12 @@ func (i *Image) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field description", values[j])
 			} else if value.Valid {
 				i.Description = value.String
+			}
+		case image.FieldStatus:
+			if value, ok := values[j].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[j])
+			} else if value.Valid {
+				i.Status = image.Status(value.String)
 			}
 		case image.FieldUpdatedAt:
 			if value, ok := values[j].(*sql.NullTime); !ok {
@@ -198,6 +206,9 @@ func (i *Image) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(i.Description)
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", i.Status))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(i.UpdatedAt.Format(time.ANSIC))

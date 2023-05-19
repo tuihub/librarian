@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model"
@@ -20,7 +21,10 @@ type bleveSearcherRepo struct {
 	search bleve.Index
 }
 
-func NewBleve(app *libapp.Settings) (bleve.Index, error) {
+func NewBleve(conf *conf.Searcher_Data, app *libapp.Settings) (bleve.Index, error) {
+	if conf.GetBleve() == nil {
+		return nil, nil
+	}
 	mapping := bleve.NewIndexMapping()
 	dbPath := path.Join(app.DataPath, "bleve.db")
 	index, err := bleve.Open(dbPath)

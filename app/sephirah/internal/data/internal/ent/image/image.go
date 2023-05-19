@@ -3,6 +3,7 @@
 package image
 
 import (
+	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -18,6 +19,8 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -49,6 +52,7 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldDescription,
+	FieldStatus,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -84,6 +88,29 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
+// Status defines the type for the "status" enum field.
+type Status string
+
+// Status values.
+const (
+	StatusUploaded Status = "uploaded"
+	StatusScanned  Status = "scanned"
+)
+
+func (s Status) String() string {
+	return string(s)
+}
+
+// StatusValidator is a validator for the "status" field enum values. It is called by the builders before save.
+func StatusValidator(s Status) error {
+	switch s {
+	case StatusUploaded, StatusScanned:
+		return nil
+	default:
+		return fmt.Errorf("image: invalid enum value for status field: %q", s)
+	}
+}
+
 // OrderOption defines the ordering options for the Image queries.
 type OrderOption func(*sql.Selector)
 
@@ -100,6 +127,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

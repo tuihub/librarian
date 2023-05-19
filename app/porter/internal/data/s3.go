@@ -3,6 +3,8 @@ package data
 import (
 	"context"
 	"io"
+	"net/url"
+	"time"
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
 	"github.com/tuihub/librarian/internal/conf"
@@ -91,4 +93,18 @@ func (s *s3Repo) PutObject(ctx context.Context, r io.Reader, bucket bizs3.Bucket
 		minio.PutObjectOptions{}, //nolint:exhaustruct // default value
 	)
 	return err
+}
+
+func (s *s3Repo) PresignedGetObject(
+	ctx context.Context,
+	bucket bizs3.Bucket,
+	objectName string,
+	expires time.Duration,
+) (string, error) {
+	reqParams := make(url.Values)
+	res, err := s.mc.PresignedGetObject(ctx, s.buckets[bucket], objectName, expires, reqParams)
+	if err != nil {
+		return "", err
+	}
+	return res.String(), nil
 }

@@ -57,7 +57,10 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	r := data.NewSearcherRepo(index, nil)
+	r, err := data.NewSearcherRepo(index, nil, nil)
+	if err != nil {
+		t.Error(err)
+	}
 	for i := range docs {
 		var str []byte
 		str, err = libcodec.Marshal(libcodec.JSON, &docs[i])
