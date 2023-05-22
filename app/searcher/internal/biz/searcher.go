@@ -9,7 +9,7 @@ import (
 type SearcherRepo interface {
 	NewID(context.Context) (int64, error)
 	DescribeID(context.Context, model.InternalID, string) error
-	SearchID(context.Context, string) ([]*SearchResult, error)
+	SearchID(context.Context, model.Paging, string) ([]*SearchResult, error)
 }
 
 type Searcher struct {
@@ -45,6 +45,6 @@ func (g *Searcher) DescribeID(ctx context.Context, id model.InternalID, descript
 	return g.repo.DescribeID(ctx, id, description)
 }
 
-func (g *Searcher) SearchID(ctx context.Context, keyword string) ([]*SearchResult, error) {
-	return g.repo.SearchID(ctx, keyword)
+func (g *Searcher) SearchID(ctx context.Context, paging model.Paging, keyword string) ([]*SearchResult, error) {
+	return g.repo.SearchID(ctx, paging, keyword)
 }

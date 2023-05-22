@@ -37,6 +37,8 @@ mapper:
       store: sqlite
 searcher:
   data:
+    meilisearch:
+      addr: "http://localhost:7700"
 porter:
   data:
     s3:

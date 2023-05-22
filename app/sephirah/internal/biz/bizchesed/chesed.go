@@ -22,6 +22,7 @@ import (
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/wire"
@@ -35,8 +36,10 @@ var ProviderSet = wire.NewSet(
 
 type ChesedRepo interface {
 	CreateImage(context.Context, model.InternalID, *modelchesed.Image) error
+	ListImages(context.Context, model.InternalID, model.Paging) ([]*modelchesed.Image, int64, error)
 	ListImageNeedScan(context.Context) ([]*modelchesed.Image, error)
 	SetImageStatus(context.Context, model.InternalID, modelchesed.ImageStatus) error
+	GetImage(context.Context, model.InternalID, model.InternalID) (*modelchesed.Image, error)
 }
 
 type Chesed struct {
@@ -45,6 +48,7 @@ type Chesed struct {
 	searcher    searcher.LibrarianSearcherServiceClient
 	porter      porter.LibrarianPorterServiceClient
 	upload      *modelbinah.UploadCallBack
+	download    *modelbinah.DownloadCallBack
 	imageCache  *libcache.Map[model.InternalID, modelchesed.Image]
 	muScanImage sync.Mutex
 }
@@ -64,12 +68,17 @@ func NewChesed(
 		porter:      pClient,
 		searcher:    sClient,
 		upload:      nil,
+		download:    nil,
 		imageCache:  imageCache,
 		muScanImage: sync.Mutex{},
 	}
 	c.upload = block.RegisterUploadCallback(
-		modelbinah.UploadArtifacts,
+		modelbinah.UploadChesedImage,
 		c.UploadImageCallback,
+	)
+	c.download = block.RegisterDownloadCallback(
+		modelbinah.DownloadEmpty,
+		nil,
 	)
 	err := cron.BySeconds(60, c.ScanImage, context.Background()) //nolint:gomnd //TODO
 	if err != nil {
@@ -228,11 +237,39 @@ func (c *Chesed) ScanImage(ctx context.Context) { //nolint:funlen,gocognit //TOD
 	}
 }
 
-func (c *Chesed) SearchImages(ctx context.Context, keywords string) ([]model.InternalID, *errors.Error) {
+func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.InternalID, int64, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	}
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	}
+	images, total, err := c.repo.ListImages(ctx, claims.InternalID, paging)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	res := make([]model.InternalID, 0, len(images))
+	for _, image := range images {
+		res = append(res, image.ID)
+	}
+	return res, total, nil
+}
+
+func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords string) (
+	[]model.InternalID, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	resp, err := c.searcher.SearchID(ctx, &searcher.SearchIDRequest{Keyword: keywords})
+	resp, err := c.searcher.SearchID(ctx,
+		&searcher.SearchIDRequest{
+			Paging: &librarian.PagingRequest{
+				PageNum:  int32(paging.PageNum),
+				PageSize: int32(paging.PageSize),
+			},
+			Keyword: keywords,
+		},
+	)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -241,4 +278,29 @@ func (c *Chesed) SearchImages(ctx context.Context, keywords string) ([]model.Int
 		res = append(res, converter.ToBizInternalID(r.Id))
 	}
 	return res, nil
+}
+
+func (c *Chesed) DownloadImage(ctx context.Context, id model.InternalID) (string, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return "", pb.ErrorErrorReasonForbidden("no permission")
+	}
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return "", pb.ErrorErrorReasonUnauthorized("empty token")
+	}
+	image, err := c.repo.GetImage(ctx, claims.InternalID, id)
+	if err != nil {
+		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	token, err := c.download.GenerateDownloadToken(ctx, modelbinah.FileMetadata{
+		ID:     id,
+		Name:   image.Name,
+		Size:   0,
+		Type:   0,
+		Sha256: nil,
+	}, libtime.HalfDay)
+	if err != nil {
+		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return token, nil
 }

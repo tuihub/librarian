@@ -89,8 +89,8 @@ func (n *netzachRepo) ListNotifyTargets(
 		return nil, 0, err
 	}
 	res, err := q.
-		Limit(paging.PageSize).
-		Offset((paging.PageNum - 1) * paging.PageSize).
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		All(ctx)
 	if err != nil {
 		return nil, 0, err
@@ -179,8 +179,8 @@ func (n *netzachRepo) ListNotifyFlows(
 		WithNotifyFlowTarget(func(q *ent.NotifyFlowTargetQuery) {
 			q.Select(notifyflowtarget.FieldNotifyTargetID, notifyflowtarget.FieldChannelID)
 		}).
-		Limit(paging.PageSize).
-		Offset((paging.PageNum - 1) * paging.PageSize).
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		All(ctx)
 	if err != nil {
 		return nil, 0, err

@@ -93,8 +93,8 @@ func (t tipherethRepo) ListUsers(
 		q.Where(user.IDNotIn(exclude...))
 	}
 	u, err := q.
-		Limit(paging.PageSize).
-		Offset((paging.PageNum - 1) * paging.PageSize).
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		All(ctx)
 	if err != nil {
 		return nil, 0, err
@@ -157,8 +157,8 @@ func (t tipherethRepo) ListLinkAccounts(
 		account.HasBindUserWith(user.IDEQ(userID)),
 	)
 	a, err := q.
-		Limit(paging.PageSize).
-		Offset((paging.PageNum - 1) * paging.PageSize).
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
 		All(ctx)
 	if err != nil {
 		return nil, 0, err

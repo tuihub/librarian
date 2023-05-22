@@ -71,7 +71,10 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 			t.Errorf("DescribeID() error = %v", err)
 		}
 	}
-	ids, err := r.SearchID(context.Background(), "your")
+	ids, err := r.SearchID(context.Background(), model.Paging{
+		PageSize: 10,
+		PageNum:  1,
+	}, "your")
 	if err != nil {
 		t.Errorf("SearchID() error = %v", err)
 	}

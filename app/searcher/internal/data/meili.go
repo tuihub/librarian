@@ -62,11 +62,25 @@ func (m *meiliSearcherRepo) DescribeID(ctx context.Context, id model.InternalID,
 	return nil
 }
 
-func (m *meiliSearcherRepo) SearchID(ctx context.Context, keyword string) ([]*biz.SearchResult, error) {
+func (m *meiliSearcherRepo) SearchID(ctx context.Context, paging model.Paging, keyword string) (
+	[]*biz.SearchResult, error) {
 	request := &meilisearch.SearchRequest{ //nolint:exhaustruct //TODO
-		Limit: 20, //nolint:gomnd // TODO
+		Limit:  int64(paging.ToLimit()),
+		Offset: int64(paging.ToOffset()),
 	}
-	result, err := m.search.Index(IndexName).Search(keyword, request)
+	// https://github.com/meilisearch/meilisearch-go/issues/406
+	resultRaw, err := m.search.Index(IndexName).SearchRaw(keyword, request)
+	if err != nil {
+		return nil, err
+	}
+	resultStr, err := resultRaw.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	result := struct {
+		Hits []document
+	}{}
+	err = libcodec.Unmarshal(libcodec.JSON, resultStr, &result)
 	if err != nil {
 		return nil, err
 	}

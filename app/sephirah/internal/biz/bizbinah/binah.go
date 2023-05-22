@@ -23,7 +23,7 @@ import (
 type UploadFile struct {
 	id       model.InternalID
 	porter   porter.LibrarianPorterServiceClient
-	callback modelbinah.UploadCallbackFunc
+	callback modelbinah.CallbackFunc
 	file     *os.File
 	Writer   io.Writer
 }
@@ -111,7 +111,7 @@ func NewControlBlock(a *libauth.Auth) *modelbinah.ControlBlock {
 
 func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) {
 	claims, exist := libauth.FromContext(ctx)
-	if !exist || claims == nil || claims.TransferMetadata == nil {
+	if !exist || claims == nil {
 		return nil, pb.ErrorErrorReasonUnauthorized("token required")
 	}
 	callback, err := b.callback.GetUploadCallback(ctx)
@@ -137,18 +137,16 @@ func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) 
 
 func (b *Binah) PresignedDownloadFile(ctx context.Context) (string, *errors.Error) {
 	claims, exist := libauth.FromContext(ctx)
-	if !exist || claims == nil || claims.TransferMetadata == nil {
+	if !exist || claims == nil {
 		return "", pb.ErrorErrorReasonUnauthorized("token required")
 	}
-	var id model.InternalID
-	if meta, met := claims.TransferMetadata.(modelbinah.FileMetadata); !met {
-		return "", pb.ErrorErrorReasonBadRequest("bad token info")
-	} else {
-		id = meta.ID
+	callback, err := b.callback.GetDownloadFileMetadata(ctx)
+	if err != nil {
+		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	res, err := b.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
 		Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-		ContentId:  strconv.FormatInt(int64(id), 10),
+		ContentId:  strconv.FormatInt(int64(callback.ID), 10),
 		ExpireTime: durationpb.New(libtime.Day),
 	})
 	if err != nil {

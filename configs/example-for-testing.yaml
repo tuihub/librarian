@@ -23,5 +23,6 @@ mapper:
       store: memory
 searcher:
   data:
+    bleve:
 porter:
   data:

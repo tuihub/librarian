@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -32,6 +33,26 @@ func (c chesedRepo) CreateImage(ctx context.Context, userID model.InternalID, im
 		Exec(ctx)
 }
 
+func (c chesedRepo) ListImages(ctx context.Context, userID model.InternalID, paging model.Paging) (
+	[]*modelchesed.Image, int64, error) {
+	q := c.data.db.Image.Query().
+		Where(
+			image.HasOwnerWith(user.IDEQ(userID)),
+		)
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	res, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizImageList(res), int64(total), nil
+}
+
 func (c chesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
 	res, err := c.data.db.Image.Query().
 		Where(image.StatusEQ(image.StatusUploaded)).
@@ -47,4 +68,18 @@ func (c chesedRepo) SetImageStatus(ctx context.Context, id model.InternalID, sta
 	return c.data.db.Image.UpdateOneID(id).
 		SetStatus(converter.ToEntImageStatus(status)).
 		Exec(ctx)
+}
+
+func (c chesedRepo) GetImage(ctx context.Context, userID model.InternalID, id model.InternalID) (
+	*modelchesed.Image, error) {
+	res, err := c.data.db.Image.Query().
+		Where(
+			image.IDEQ(id),
+			image.HasOwnerWith(user.IDEQ(userID)),
+		).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizImage(res), nil
 }

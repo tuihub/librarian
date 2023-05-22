@@ -230,8 +230,8 @@ func (y *yesodRepo) ListFeedConfigs(
 			return err
 		}
 		configs, err := q.
-			Limit(paging.PageSize).
-			Offset((paging.PageNum - 1) * paging.PageSize).
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
 			WithFeed().
 			All(ctx)
 		if err != nil {
@@ -287,8 +287,8 @@ func (y *yesodRepo) ListFeedItems(
 		}
 		items, err := iq.
 			Order(ent.Desc(feeditem.FieldPublishedParsed)).
-			Limit(paging.PageSize).
-			Offset((paging.PageNum - 1) * paging.PageSize).
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
 			All(ctx)
 		if err != nil {
 			return err

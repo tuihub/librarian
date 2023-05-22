@@ -56,7 +56,10 @@ func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *p
 }
 func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.SearchIDRequest) (
 	*pb.SearchIDResponse, error) {
-	res, err := s.uc.SearchID(ctx, req.GetKeyword())
+	res, err := s.uc.SearchID(ctx, model.Paging{
+		PageSize: int(req.GetPaging().GetPageSize()),
+		PageNum:  int(req.GetPaging().GetPageNum()),
+	}, req.GetKeyword())
 	if err != nil {
 		return nil, err
 	}
@@ -67,5 +70,8 @@ func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.
 			Rank: res[i].Rank,
 		}
 	}
-	return &pb.SearchIDResponse{Result: result}, nil
+	return &pb.SearchIDResponse{
+		Paging: nil,
+		Result: result,
+	}, nil
 }

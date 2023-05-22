@@ -28,7 +28,7 @@ func (m *mockedSearcherRepo) DescribeID(ctx context.Context, id model.InternalID
 	panic("implement me")
 }
 
-func (m *mockedSearcherRepo) SearchID(ctx context.Context, s string) ([]*biz.SearchResult, error) {
+func (m *mockedSearcherRepo) SearchID(ctx context.Context, p model.Paging, s string) ([]*biz.SearchResult, error) {
 	// TODO implement me
 	panic("implement me")
 }
