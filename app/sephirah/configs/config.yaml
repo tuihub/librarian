@@ -1,14 +1,24 @@
 server:
-  http:
-    addr: 0.0.0.0:8000
-    timeout: 1s
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 0.0.0.0:10000
+    timeout: 1s
+  grpc_web:
+    addr: 0.0.0.0:10010
     timeout: 1s
 data:
   database:
-    driver: sqlite
+    driver: postgres
+    host: localhost
+    port: 5432
+    dbname: librarian
+    user: librarian
+    password: librarian
+    no_ssl: true
 auth:
   salt: test
   issuer: test
   jwt_secret: test
+cache:
+  driver: memory
+mq:
+  driver: memory

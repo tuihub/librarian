@@ -1,5 +1,7 @@
 server:
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 0.0.0.0:10002
     timeout: 1s
 data:
+  bleve:
+    enable:

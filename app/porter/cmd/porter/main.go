@@ -32,7 +32,7 @@ var (
 
 func newApp(gs *grpc.Server, r registry.Registrar, m metadata) *kratos.App {
 	return kratos.New(
-		kratos.ID(id),
+		kratos.ID(id+"porter"),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(m),

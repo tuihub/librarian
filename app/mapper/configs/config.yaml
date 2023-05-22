@@ -1,6 +1,6 @@
 server:
   grpc:
-    addr: 0.0.0.0:9000
+    addr: 0.0.0.0:10001
     timeout: 1s
 data:
   cayley:

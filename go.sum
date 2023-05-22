@@ -986,8 +986,6 @@ github.com/tklauser/numcpus v0.6.0 h1:kebhY2Qt+3U6RNK7UqpYNA+tJ23IBEGKkB7JQBfDYm
 github.com/tklauser/numcpus v0.6.0/go.mod h1:FEZLMke0lhOUG6w2JadTzp0a+Nl8PF/GFkQ5UVIcaL4=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20170815181823-89b8d40f7ca8/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
-github.com/tuihub/protos v0.2.23 h1:Br9spq3A5mBoPqEmKbIWl4EZ2Yj6/LAkm289/ykrlMU=
-github.com/tuihub/protos v0.2.23/go.mod h1:Nny0fvjgUu4b1oqF4qrRYxRb86yt6S5W7aIsrCu90cw=
 github.com/tuihub/protos v0.2.24 h1:QjXey07zrzQVo4FI3rziiLR32tksx/C6zi7wfhY7mYE=
 github.com/tuihub/protos v0.2.24/go.mod h1:Nny0fvjgUu4b1oqF4qrRYxRb86yt6S5W7aIsrCu90cw=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=

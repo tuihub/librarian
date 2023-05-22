@@ -1,6 +1,6 @@
 server:
   grpc:
-    addr: 0.0.0.0:10000
+    addr: 0.0.0.0:10003
     timeout: 1s
 data:
   s3:
