@@ -1,82 +1,12 @@
 package bizbinah
 
 import (
-	"context"
-	"io"
-	"os"
-	"strconv"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-
-	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/google/uuid"
-	"google.golang.org/protobuf/types/known/durationpb"
 )
-
-type UploadFile struct {
-	id       model.InternalID
-	porter   porter.LibrarianPorterServiceClient
-	callback modelbinah.CallbackFunc
-	file     *os.File
-	Writer   io.Writer
-}
-
-func (f *UploadFile) Finish(ctx context.Context) error {
-	err := f.file.Sync()
-	if err != nil {
-		return err
-	}
-	_, err = f.file.Seek(0, 0)
-	if err != nil {
-		return err
-	}
-	cli, err := f.porter.PushData(ctx)
-	if err != nil {
-		return err
-	}
-	err = cli.Send(&porter.PushDataRequest{
-		Content: &porter.PushDataRequest_Metadata{
-			Metadata: &porter.PushDataRequest_DataMeta{
-				Source:    porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-				ContentId: strconv.FormatInt(int64(f.id), 10),
-			},
-		},
-	})
-	if err != nil {
-		return err
-	}
-	buf := make([]byte, 32<<10) //nolint:gomnd //TODO
-	for {
-		var n int
-		n, err = f.file.Read(buf)
-		if n == 0 && errors.Is(err, io.EOF) {
-			_, err = cli.CloseAndRecv()
-			if !errors.Is(err, io.EOF) {
-				return err
-			}
-			break
-		}
-		if err != nil {
-			return err
-		}
-		err = cli.Send(&porter.PushDataRequest{
-			Content: &porter.PushDataRequest_Data{
-				Data: buf[:n],
-			},
-		})
-		if err != nil {
-			return err
-		}
-	}
-	return f.callback(ctx, f.id)
-}
 
 type BinahRepo interface {
 }
@@ -107,50 +37,4 @@ func NewBinah(
 
 func NewControlBlock(a *libauth.Auth) *modelbinah.ControlBlock {
 	return modelbinah.NewControlBlock(a)
-}
-
-func (b *Binah) NewUploadFile(ctx context.Context) (*UploadFile, *errors.Error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist || claims == nil {
-		return nil, pb.ErrorErrorReasonUnauthorized("token required")
-	}
-	callback, err := b.callback.GetUploadCallback(ctx)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	meta, err := b.callback.GetUploadFileMetadata(ctx)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	f, err := os.CreateTemp("", uuid.NewString())
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("create temp file failed")
-	}
-	return &UploadFile{
-		id:       meta.ID,
-		porter:   b.porter,
-		callback: callback,
-		file:     f,
-		Writer:   f,
-	}, nil
-}
-
-func (b *Binah) PresignedDownloadFile(ctx context.Context) (string, *errors.Error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist || claims == nil {
-		return "", pb.ErrorErrorReasonUnauthorized("token required")
-	}
-	callback, err := b.callback.GetDownloadFileMetadata(ctx)
-	if err != nil {
-		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	res, err := b.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
-		Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-		ContentId:  strconv.FormatInt(int64(callback.ID), 10),
-		ExpireTime: durationpb.New(libtime.Day),
-	})
-	if err != nil {
-		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	return res.PullUrl, nil
 }

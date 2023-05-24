@@ -177,6 +177,9 @@ func (c *Chesed) ScanImage(ctx context.Context) { //nolint:funlen,gocognit //TOD
 		if err != nil {
 			return
 		}
+		if len(imgBytes) == 0 {
+			continue
+		}
 		err = getResp.Body.Close()
 		if err != nil {
 			return

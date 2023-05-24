@@ -29,6 +29,7 @@ type S3Repo interface {
 	FeatureEnabled() bool
 	PutObject(context.Context, io.Reader, Bucket, string) error
 	PresignedGetObject(context.Context, Bucket, string, time.Duration) (string, error)
+	PresignedPutObject(context.Context, Bucket, string, time.Duration) (string, error)
 }
 
 type S3 struct {
@@ -68,6 +69,11 @@ func (s *S3) NewPushData(ctx context.Context, bucket Bucket, objectName string) 
 		ch,
 		writer,
 	}, nil
+}
+
+func (s *S3) PresignedPutData(ctx context.Context, bucket Bucket, objectName string,
+	expires time.Duration) (string, error) {
+	return s.repo.PresignedPutObject(ctx, bucket, objectName, expires)
 }
 
 func (s *S3) PresignedGetData(ctx context.Context, bucket Bucket, objectName string,

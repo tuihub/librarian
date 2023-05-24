@@ -25,7 +25,7 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 	if err != nil {
 		return err
 	}
-	file, bizErr := s.b.NewUploadFile(ctx)
+	file, bizErr := s.b.NewSimpleUploadFile(ctx)
 	if bizErr != nil {
 		return bizErr
 	}
@@ -49,6 +49,26 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 func (s *LibrarianSephirahServiceService) SimpleDownloadFile(req *pb.SimpleDownloadFileRequest,
 	conn pb.LibrarianSephirahService_SimpleDownloadFileServer) error {
 	return status.Errorf(codes.Unimplemented, "method SimpleDownloadFile not implemented")
+}
+
+func (s *LibrarianSephirahServiceService) PresignedUploadFile(ctx context.Context,
+	req *pb.PresignedUploadFileRequest) (*pb.PresignedUploadFileResponse, error) {
+	res, err := s.b.PresignedUploadFile(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.PresignedUploadFileResponse{UploadUrl: res}, nil
+}
+
+func (s *LibrarianSephirahServiceService) PresignedUploadFileStatus(ctx context.Context,
+	req *pb.PresignedUploadFileStatusRequest) (*pb.PresignedUploadFileStatusResponse, error) {
+	if req.GetStatus() == pb.FileTransferStatus_FILE_TRANSFER_STATUS_SUCCESS {
+		err := s.b.PresignedUploadFileComplete(ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return &pb.PresignedUploadFileStatusResponse{}, nil
 }
 
 func (s *LibrarianSephirahServiceService) PresignedDownloadFile(ctx context.Context,

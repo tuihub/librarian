@@ -95,6 +95,19 @@ func (s *s3Repo) PutObject(ctx context.Context, r io.Reader, bucket bizs3.Bucket
 	return err
 }
 
+func (s *s3Repo) PresignedPutObject(
+	ctx context.Context,
+	bucket bizs3.Bucket,
+	objectName string,
+	expires time.Duration,
+) (string, error) {
+	res, err := s.mc.PresignedPutObject(ctx, s.buckets[bucket], objectName, expires)
+	if err != nil {
+		return "", err
+	}
+	return res.String(), nil
+}
+
 func (s *s3Repo) PresignedGetObject(
 	ctx context.Context,
 	bucket bizs3.Bucket,

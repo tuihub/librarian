@@ -44,6 +44,13 @@ func NewGRPCServer(
 		).Match(NewRefreshTokenMatcher()).Build(),
 		selector.Server(
 			jwt.Server(
+				auth.KeyFunc(libauth.ClaimsTypeUploadToken),
+				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithClaims(libauth.NewClaims),
+			),
+		).Match(NewUploadTokenMatcher()).Build(),
+		selector.Server(
+			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeDownloadToken),
 				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
 				jwt.WithClaims(libauth.NewClaims),
@@ -79,6 +86,8 @@ func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/SimpleUploadFile"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/SimpleDownloadFile"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFile"] = struct{}{}
+	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFileStatus"] = struct{}{}
 	whiteList["/librarian.sephirah.v1.LibrarianSephirahService/PresignedDownloadFile"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := whiteList[operation]; ok {
@@ -91,6 +100,18 @@ func NewWhiteListMatcher() selector.MatchFunc {
 func NewRefreshTokenMatcher() selector.MatchFunc {
 	list := make(map[string]struct{})
 	list["/librarian.sephirah.v1.LibrarianSephirahService/RefreshToken"] = struct{}{}
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := list[operation]; ok {
+			return true
+		}
+		return false
+	}
+}
+
+func NewUploadTokenMatcher() selector.MatchFunc {
+	list := make(map[string]struct{})
+	list["/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFile"] = struct{}{}
+	list["/librarian.sephirah.v1.LibrarianSephirahService/PresignedUploadFileStatus"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {
 		if _, ok := list[operation]; ok {
 			return true
