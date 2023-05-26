@@ -9,9 +9,10 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tuihub/librarian/app/mapper/pkg/service"
+	service4 "github.com/tuihub/librarian/app/miner/pkg/service"
 	service3 "github.com/tuihub/librarian/app/porter/pkg/service"
 	service2 "github.com/tuihub/librarian/app/searcher/pkg/service"
-	service4 "github.com/tuihub/librarian/app/sephirah/pkg/service"
+	service5 "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -25,7 +26,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, porter_Data *conf.Porter_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -58,9 +59,18 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	inprocClients := inprocgrpc.NewInprocClients(librarianMapperServiceServer, librarianSearcherServiceServer, librarianPorterServiceServer)
+	librarianMinerServiceServer, cleanup5, err := service4.NewMinerService(miner_Data, settings)
+	if err != nil {
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	inprocClients := inprocgrpc.NewInprocClients(librarianMapperServiceServer, librarianSearcherServiceServer, librarianPorterServiceServer, librarianMinerServiceServer)
 	librarianMapperServiceClient, err := mapperClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -69,6 +79,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 	}
 	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -77,14 +88,25 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 	}
 	librarianPorterServiceClient, err := porterClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient)
+	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	librarianSephirahServiceServer, cleanup6, err := service5.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient, librarianMinerServiceClient)
+	if err != nil {
+		cleanup5()
 		cleanup4()
 		cleanup3()
 		cleanup2()
@@ -95,6 +117,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
 	app := newApp(grpcServer, httpServer, libmqMQ, cron)
 	return app, func() {
+		cleanup6()
 		cleanup5()
 		cleanup4()
 		cleanup3()

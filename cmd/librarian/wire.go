@@ -6,6 +6,7 @@ package main
 
 import (
 	mapperService "github.com/tuihub/librarian/app/mapper/pkg/service"
+	minerService "github.com/tuihub/librarian/app/miner/pkg/service"
 	porterService "github.com/tuihub/librarian/app/porter/pkg/service"
 	searcherService "github.com/tuihub/librarian/app/searcher/pkg/service"
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
@@ -30,6 +31,7 @@ func wireApp(
 	*conf.Mapper_Data,
 	*conf.Searcher_Data,
 	*conf.Porter_Data,
+	*conf.Miner_Data,
 	*conf.Auth,
 	*conf.MQ,
 	*conf.Cache,
@@ -41,6 +43,7 @@ func wireApp(
 			mapperService.ProviderSet,
 			searcherService.ProviderSet,
 			porterService.ProviderSet,
+			minerService.ProviderSet,
 			server.ProviderSet,
 			inprocgrpc.ProviderSet,
 			libauth.ProviderSet,

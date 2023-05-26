@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
@@ -35,11 +36,17 @@ var (
 	protoVersion string //nolint:gochecknoglobals //TODO
 )
 
-var ProviderSet = wire.NewSet(newApp, mapperClientSelector, searcherClientSelector, porterClientSelector)
+var ProviderSet = wire.NewSet(
+	newApp,
+	mapperClientSelector,
+	searcherClientSelector,
+	porterClientSelector,
+	minerClientSelector,
+)
 
 func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) *kratos.App {
 	return kratos.New(
-		kratos.ID(id),
+		kratos.ID(id+name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
@@ -67,6 +74,7 @@ func main() {
 		bc.Mapper.Data,
 		bc.Searcher.Data,
 		bc.Porter.Data,
+		bc.Miner.Data,
 		bc.Sephirah.Auth,
 		bc.Sephirah.Mq,
 		bc.Sephirah.Cache,
@@ -111,4 +119,14 @@ func porterClientSelector(
 		return client.NewPorterClient()
 	}
 	return inproc.Porter, nil
+}
+
+func minerClientSelector(
+	conf *conf.Librarian_EnableServiceDiscovery,
+	inproc *inprocgrpc.InprocClients,
+) (miner.LibrarianMinerServiceClient, error) {
+	if conf.Miner {
+		return client.NewMinerClient()
+	}
+	return inproc.Miner, nil
 }

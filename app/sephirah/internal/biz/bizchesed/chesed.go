@@ -1,11 +1,7 @@
 package bizchesed
 
 import (
-	"bytes"
 	"context"
-	"encoding/base64"
-	"io"
-	"net/http"
 	"strconv"
 	"sync"
 
@@ -19,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -47,6 +44,7 @@ type Chesed struct {
 	mapper      mapper.LibrarianMapperServiceClient
 	searcher    searcher.LibrarianSearcherServiceClient
 	porter      porter.LibrarianPorterServiceClient
+	miner       miner.LibrarianMinerServiceClient
 	upload      *modelbinah.UploadCallBack
 	download    *modelbinah.DownloadCallBack
 	imageCache  *libcache.Map[model.InternalID, modelchesed.Image]
@@ -59,6 +57,7 @@ func NewChesed(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
+	miClient miner.LibrarianMinerServiceClient,
 	block *modelbinah.ControlBlock,
 	imageCache *libcache.Map[model.InternalID, modelchesed.Image],
 ) (*Chesed, error) {
@@ -67,6 +66,7 @@ func NewChesed(
 		mapper:      mClient,
 		porter:      pClient,
 		searcher:    sClient,
+		miner:       miClient,
 		upload:      nil,
 		download:    nil,
 		imageCache:  imageCache,
@@ -142,7 +142,7 @@ func (c *Chesed) UploadImageCallback(ctx context.Context, id model.InternalID) e
 	return nil
 }
 
-func (c *Chesed) ScanImage(ctx context.Context) { //nolint:funlen,gocognit //TODO
+func (c *Chesed) ScanImage(ctx context.Context) {
 	if c.muScanImage.TryLock() {
 		defer c.muScanImage.Unlock()
 	} else {
@@ -155,7 +155,6 @@ func (c *Chesed) ScanImage(ctx context.Context) { //nolint:funlen,gocognit //TOD
 	if len(images) == 0 {
 		return
 	}
-	httpc := new(http.Client)
 	for _, image := range images {
 		data, err := c.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
 			Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
@@ -165,73 +164,26 @@ func (c *Chesed) ScanImage(ctx context.Context) { //nolint:funlen,gocognit //TOD
 		if err != nil {
 			return
 		}
-		getReq, err := http.NewRequestWithContext(ctx, http.MethodGet, data.PullUrl, bytes.NewBuffer([]byte("")))
+		results, err := c.miner.RecognizeImageURL(ctx, &miner.RecognizeImageURLRequest{Url: data.GetPullUrl()})
 		if err != nil {
 			return
 		}
-		getResp, err := httpc.Do(getReq)
+		var desReq string
+		var desReqStr []byte
+		for _, r := range results.GetResults() {
+			desReq += r.Text + " "
+		}
+		desReqStr, err = libcodec.Marshal(libcodec.JSON, desReq)
 		if err != nil {
 			return
 		}
-		imgBytes, err := io.ReadAll(getResp.Body)
+		_, err = c.searcher.DescribeID(ctx, &searcher.DescribeIDRequest{
+			Id:          converter.ToPBInternalID(image.ID),
+			Description: string(desReqStr),
+			Mode:        searcher.DescribeIDRequest_DESCRIBE_MODE_APPEND,
+		})
 		if err != nil {
 			return
-		}
-		if len(imgBytes) == 0 {
-			continue
-		}
-		err = getResp.Body.Close()
-		if err != nil {
-			return
-		}
-		ocrReq, err := http.NewRequestWithContext(
-			ctx,
-			http.MethodPost,
-			"http://localhost:9010/predict/ocr_system",
-			bytes.NewBuffer([]byte("{\"images\":[\""+base64.StdEncoding.EncodeToString(imgBytes)+"\"]}")),
-		)
-		if err != nil {
-			return
-		}
-		ocrReq.Header.Set("Content-Type", "application/json")
-		ocrResp, err := httpc.Do(ocrReq)
-		if err != nil {
-			return
-		}
-		body, err := io.ReadAll(ocrResp.Body)
-		if err != nil {
-			return
-		}
-		err = ocrResp.Body.Close()
-		if err != nil {
-			return
-		}
-		ocrResponse := modelchesed.OCRResponse{} //nolint:exhaustruct //TODO
-		err = libcodec.Unmarshal(libcodec.JSON, body, &ocrResponse)
-		if err != nil {
-			return
-		}
-		if len(ocrResponse.Results) != 1 {
-			return
-		}
-		if len(ocrResponse.Results[0]) > 0 {
-			var desReq string
-			var desReqStr []byte
-			for _, r := range ocrResponse.Results[0] {
-				desReq += r.Text + " "
-			}
-			desReqStr, err = libcodec.Marshal(libcodec.JSON, desReq)
-			if err != nil {
-				return
-			}
-			_, err = c.searcher.DescribeID(ctx, &searcher.DescribeIDRequest{
-				Id:          converter.ToPBInternalID(image.ID),
-				Description: string(desReqStr),
-				Mode:        searcher.DescribeIDRequest_DESCRIBE_MODE_APPEND,
-			})
-			if err != nil {
-				return
-			}
 		}
 		err = c.repo.SetImageStatus(ctx, image.ID, modelchesed.ImageStatusScanned)
 		if err != nil {

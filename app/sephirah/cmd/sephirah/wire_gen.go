@@ -112,8 +112,14 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
+	librarianMinerServiceClient, err := client.NewMinerClient()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup2()
 		cleanup()

@@ -7,17 +7,20 @@ import "conf/sephirah.proto";
 import "conf/mapper.proto";
 import "conf/searcher.proto";
 import "conf/porter.proto";
+import "conf/miner.proto";
 
 message Librarian {
   message EnableServiceDiscovery {
     bool mapper = 1;
     bool searcher = 2;
     bool porter = 3;
+    bool miner = 4;
   }
   EnableServiceDiscovery enable_service_discovery = 1;
   Sephirah sephirah = 2;
   Mapper mapper = 3;
   Searcher searcher = 4;
   Porter porter = 5;
+  Miner miner = 6;
 }
 

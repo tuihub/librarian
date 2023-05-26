@@ -31,7 +31,7 @@ var (
 
 func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) *kratos.App {
 	return kratos.New(
-		kratos.ID(id),
+		kratos.ID(id+name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),

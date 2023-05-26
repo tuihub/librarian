@@ -24,14 +24,15 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	v1_4 "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v1_2 "github.com/tuihub/protos/pkg/librarian/searcher/v1"
-	v1_4 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	v1_5 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient, librarianMinerServiceClient v1_4.LibrarianMinerServiceClient) (v1_5.LibrarianSephirahServiceServer, func(), error) {
 	client, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
@@ -76,7 +77,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

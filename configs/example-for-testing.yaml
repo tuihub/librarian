@@ -27,3 +27,5 @@ searcher:
       enable:
 porter:
   data:
+miner:
+  data:

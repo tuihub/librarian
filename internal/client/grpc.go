@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
@@ -63,5 +64,23 @@ func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
 		),
 	)
 	cli := porter.NewLibrarianPorterServiceClient(conn)
+	return cli, err
+}
+
+func NewMinerClient() (miner.LibrarianMinerServiceClient, error) {
+	r, err := libapp.NewDiscovery()
+	if err != nil {
+		return nil, err
+	}
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///porter"),
+		grpc.WithDiscovery(r),
+		grpc.WithNodeFilter(libapp.NewNodeFilter()),
+		grpc.WithMiddleware(
+			recovery.Recovery(),
+		),
+	)
+	cli := miner.NewLibrarianMinerServiceClient(conn)
 	return cli, err
 }

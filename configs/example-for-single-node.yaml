@@ -48,3 +48,5 @@ porter:
       use_ssl: false
     steam:
       api_key:
+miner:
+  data:
