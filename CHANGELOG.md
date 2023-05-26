@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.4](https://github.com/TuiHub/Librarian/compare/v0.1.3...v0.1.4) (2023-05-26)
+
+
+### Features
+
+* add chesed module ([742df82](https://github.com/TuiHub/Librarian/commit/742df82fc39036e024c0f9ea9bd0792f593c788f))
+* **chesed:** impl ListImages DownloadImage ([f6e508f](https://github.com/TuiHub/Librarian/commit/f6e508fe3229ce1d42c3dab9282db005e9f8a1a8))
+* **chesed:** impl SearchImages PresignedDownloadFile ([4b80aa9](https://github.com/TuiHub/Librarian/commit/4b80aa99cfe08dfa2acc76b641848a268f9f316a))
+* impl PresignedUploadFile PresignedUploadFileStatus ([ba65b50](https://github.com/TuiHub/Librarian/commit/ba65b5068eb7ac0c0d56c9129380afd2aed6db72))
+
+
+### Bug Fixes
+
+* method name ([4159003](https://github.com/TuiHub/Librarian/commit/415900383a29dcdba22ec0739da02d6b226ac440))
+* tested UploadImage ([17338cb](https://github.com/TuiHub/Librarian/commit/17338cb2fab65b6c44c21e01067b5cf91932d6ac))
+* upgrade proto ([4db56db](https://github.com/TuiHub/Librarian/commit/4db56dbc00b1b116b0a1bb1fdd13588533ecebe8))
+
 ## [0.1.3](https://github.com/TuiHub/Librarian/compare/v0.1.2...v0.1.3) (2023-04-22)
 
 
