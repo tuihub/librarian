@@ -19,7 +19,7 @@ var ProviderSet = wire.NewSet(NewMinerRepo)
 
 // NewMinerRepo .
 func NewMinerRepo(conf *conf.Miner_Data) biz.MinerRepo {
-	if conf.Ocr == nil || len(conf.Ocr.GetAddress()) == 0 {
+	if conf == nil || conf.Ocr == nil || len(conf.Ocr.GetAddress()) == 0 {
 		return nil
 	}
 	return &minerRepo{
