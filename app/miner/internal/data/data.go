@@ -49,7 +49,7 @@ func (m *minerRepo) RecognizeImage(ctx context.Context, imgBytes []byte) ([]*biz
 		ctx,
 		http.MethodPost,
 		m.c.Ocr.GetAddress(),
-		bytes.NewBuffer([]byte("{\"images\":[\""+base64.StdEncoding.EncodeToString(imgBytes)+"\"]}")),
+		bytes.NewBufferString("{\"images\":[\""+base64.StdEncoding.EncodeToString(imgBytes)+"\"]}"),
 	)
 	if err != nil {
 		return nil, err

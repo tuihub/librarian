@@ -37,7 +37,7 @@ func (m *Miner) RecognizeImageURL(ctx context.Context, url string) ([]*OCRResult
 		return nil, errors.BadRequest("request disabled feature", "")
 	}
 	hc := new(http.Client)
-	getReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, bytes.NewBuffer([]byte("")))
+	getReq, err := http.NewRequestWithContext(ctx, http.MethodGet, url, bytes.NewBufferString(""))
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

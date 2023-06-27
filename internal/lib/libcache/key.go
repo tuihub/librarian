@@ -71,7 +71,7 @@ func (k *Key[T]) GetWithTTL(ctx context.Context) (*T, time.Duration, error) {
 
 func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[T], options ...Option) (*T, error) {
 	res, err := k.Get(ctx)
-	if err != nil {
+	if err == nil {
 		return res, nil
 	}
 	if fallBackFunc != nil { //nolint:gocritic // no need

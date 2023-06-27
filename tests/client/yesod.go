@@ -64,7 +64,7 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 		resp.GetFeedsWithConfig()[0].GetFeed().GetId().GetId() != feedConfigID {
 		panic(fmt.Sprintf("unexpected ListFeeds response, %+v", resp))
 	}
-	if resp, err := c.cli.ListFeedItems(ctx, &pb.ListFeedItemsRequest{ //nolint:gocritic // no need
+	if resp, err := c.cli.ListFeedItems(ctx, &pb.ListFeedItemsRequest{
 		Paging:                defaultPaging,
 		FeedIdFilter:          nil,
 		AuthorIdFilter:        nil,

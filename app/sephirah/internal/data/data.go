@@ -89,7 +89,7 @@ func (data *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {
 	}()
 	if err = fn(tx); err != nil {
 		if rerr := tx.Rollback(); rerr != nil {
-			err = fmt.Errorf("%w: rolling back transaction: %v", err, rerr)
+			err = fmt.Errorf("%w: rolling back transaction: %s", err, rerr.Error())
 		}
 		return err
 	}
