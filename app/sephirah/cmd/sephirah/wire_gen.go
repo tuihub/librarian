@@ -45,9 +45,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
-	tipherethRepo := data.NewTipherethRepo(dataData)
+	angelaRepo := data.NewAngelaRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	yesodRepo := data.NewYesodRepo(dataData)
 	librarianMapperServiceClient, err := client.NewMapperClient()
 	if err != nil {
 		cleanup2()
@@ -66,7 +65,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, yesodRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -94,6 +93,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
+	tipherethRepo := data.NewTipherethRepo(dataData)
 	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic2)
 	if err != nil {
 		cleanup2()
@@ -103,6 +103,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	yesodRepo := data.NewYesodRepo(dataData)
 	cron := libcron.NewCron()
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
 	if err != nil {

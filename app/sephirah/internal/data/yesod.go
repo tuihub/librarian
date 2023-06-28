@@ -14,8 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-
-	"entgo.io/ent/dialect/sql"
 )
 
 type yesodRepo struct {
@@ -98,102 +96,6 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []modely
 		return nil, err
 	}
 	return converter.ToBizFeedConfigList(feedConfigs), nil
-}
-
-func (y *yesodRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
-	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		conf, err := tx.FeedConfig.Query().
-			Where(feedconfig.IDEQ(f.ID)).
-			Only(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.Feed.Create().
-			SetConfig(conf).
-			SetID(f.ID).
-			SetTitle(f.Title).
-			SetDescription(f.Description).
-			SetLink(f.Link).
-			SetAuthors(f.Authors).
-			SetLanguage(f.Language).
-			SetImage(f.Image).
-			OnConflict(
-				sql.ConflictColumns(feed.FieldID),
-				sql.ResolveWithNewValues(),
-			).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.FeedConfig.Update().
-			Where(feedconfig.IDEQ(f.ID)).
-			SetLatestPullAt(time.Now()).
-			SetNextPullBeginAt(time.Now().Add(conf.PullInterval)).
-			Exec(ctx)
-		return err
-	})
-}
-
-func (y *yesodRepo) UpsertFeedItems(
-	ctx context.Context,
-	items []*modelfeed.Item,
-	feedID model.InternalID,
-) ([]string, error) {
-	guids := make([]string, 0, len(items))
-	for _, item := range items {
-		guids = append(guids, item.GUID)
-	}
-	existItems, err := y.data.db.FeedItem.Query().Where(
-		feeditem.FeedID(feedID),
-		feeditem.GUIDIn(guids...),
-	).Select(feeditem.FieldGUID).All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	il := make([]*ent.FeedItemCreate, len(items))
-	for i, item := range items {
-		il[i] = y.data.db.FeedItem.Create().
-			SetFeedID(feedID).
-			SetID(item.ID).
-			SetTitle(item.Title).
-			SetDescription(item.Description).
-			SetContent(item.Content).
-			SetLink(item.Link).
-			SetUpdated(item.Updated).
-			SetNillableUpdatedParsed(item.UpdatedParsed).
-			SetPublished(item.Published).
-			SetAuthors(item.Authors).
-			SetGUID(item.GUID).
-			SetImage(item.Image).
-			SetEnclosures(item.Enclosures).
-			SetPublishPlatform(item.PublishPlatform)
-		if item.PublishedParsed != nil {
-			il[i].SetPublishedParsed(*item.PublishedParsed)
-		} else {
-			il[i].SetPublishedParsed(time.Now())
-		}
-	}
-	err = y.data.db.FeedItem.CreateBulk(il...).
-		OnConflict(
-			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
-			resolveWithIgnores([]string{
-				feeditem.FieldID,
-			}),
-		).Exec(ctx)
-	if err != nil {
-		return nil, err
-	}
-	existItemMap := make(map[string]bool)
-	res := make([]string, 0, len(items)-len(existItems))
-	for _, item := range existItems {
-		existItemMap[item.GUID] = true
-	}
-	for _, item := range items {
-		if _, exist := existItemMap[item.GUID]; !exist {
-			res = append(res, item.GUID)
-		}
-	}
-	return res, nil
 }
 
 func (y *yesodRepo) ListFeedConfigs(

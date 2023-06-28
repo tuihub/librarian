@@ -72,42 +72,6 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) error {
-	apps := make([]*ent.AppCreate, len(al))
-	for i, a := range al {
-		if a.Details == nil {
-			a.Details = new(modelgebura.AppDetails)
-		}
-		apps[i] = g.data.db.App.Create().
-			SetID(a.ID).
-			SetSource(converter.ToEntAppSource(a.Source)).
-			SetSourceAppID(a.SourceAppID).
-			SetSourceURL(a.SourceURL).
-			SetName(a.Name).
-			SetType(converter.ToEntAppType(a.Type)).
-			SetShortDescription(a.ShortDescription).
-			SetImageURL(a.ImageURL).
-			SetBindInternalID(a.BoundInternal)
-		if a.Details != nil {
-			apps[i].
-				SetDescription(a.Details.Description).
-				SetReleaseDate(a.Details.ReleaseDate).
-				SetDeveloper(a.Details.Developer).
-				SetPublisher(a.Details.Publisher).
-				SetVersion(a.Details.Version)
-		}
-	}
-	return g.data.db.App.
-		CreateBulk(apps...).
-		OnConflict(
-			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
-			resolveWithIgnores([]string{
-				app.FieldID,
-			}),
-		).
-		Exec(ctx)
-}
-
 func (g geburaRepo) ListApps(
 	ctx context.Context,
 	paging model.Paging,

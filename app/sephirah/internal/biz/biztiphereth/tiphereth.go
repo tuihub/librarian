@@ -26,7 +26,6 @@ type TipherethRepo interface {
 		[]libauth.UserType, []modeltiphereth.UserStatus, []model.InternalID,
 		*model.InternalID) ([]*modeltiphereth.User, int64, error)
 	CreateAccount(context.Context, modeltiphereth.Account, model.InternalID) error
-	UpdateAccount(context.Context, modeltiphereth.Account) error
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	ListLinkAccounts(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)

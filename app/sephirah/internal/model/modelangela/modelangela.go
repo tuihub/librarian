@@ -27,3 +27,7 @@ type NotifyPush struct {
 	Target   modelnetzach.NotifyFlowTarget
 	Messages []*modelfeed.Item
 }
+
+type ParseFeedItem struct {
+	ID model.InternalID
+}

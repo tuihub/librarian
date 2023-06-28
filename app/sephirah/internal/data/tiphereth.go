@@ -126,18 +126,6 @@ func (t tipherethRepo) CreateAccount(ctx context.Context, a modeltiphereth.Accou
 		Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateAccount(ctx context.Context, a modeltiphereth.Account) error {
-	return t.data.db.Account.Update().Where(
-		account.IDEQ(a.ID),
-		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
-		account.PlatformAccountIDEQ(a.PlatformAccountID),
-	).
-		SetName(a.Name).
-		SetProfileURL(a.ProfileURL).
-		SetAvatarURL(a.AvatarURL).
-		Exec(ctx)
-}
-
 func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),

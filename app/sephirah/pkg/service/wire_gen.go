@@ -38,10 +38,9 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		return nil, nil, err
 	}
 	dataData := data.NewData(client)
-	tipherethRepo := data.NewTipherethRepo(dataData)
+	angelaRepo := data.NewAngelaRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	yesodRepo := data.NewYesodRepo(dataData)
-	angelaBase, err := bizangela.NewAngelaBase(tipherethRepo, geburaRepo, yesodRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -61,6 +60,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
+	tipherethRepo := data.NewTipherethRepo(dataData)
 	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic2)
 	if err != nil {
 		cleanup()
@@ -69,6 +69,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	controlBlock := bizbinah.NewControlBlock(auth)
 	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	yesodRepo := data.NewYesodRepo(dataData)
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
 	if err != nil {
 		cleanup()
