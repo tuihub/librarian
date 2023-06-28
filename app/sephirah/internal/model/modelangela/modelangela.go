@@ -28,6 +28,6 @@ type NotifyPush struct {
 	Messages []*modelfeed.Item
 }
 
-type ParseFeedItem struct {
+type ParseFeedItemDigest struct {
 	ID model.InternalID
 }

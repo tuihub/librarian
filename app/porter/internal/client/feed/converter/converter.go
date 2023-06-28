@@ -20,6 +20,8 @@ type Converter interface {
 	// goverter:map UpdatedParsed | TimeToTime
 	// goverter:map PublishedParsed | TimeToTime
 	// goverter:ignore PublishPlatform
+	// goverter:ignore DigestDescription
+	// goverter:ignore DigestImages
 	ToPBFeedItem(t *gofeed.Item) *modelfeed.Item
 }
 

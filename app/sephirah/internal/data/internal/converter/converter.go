@@ -132,6 +132,7 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	digest.PublishedParsed = a.PublishedParsed
 	digest.Title = a.Title
 	digest.PublishPlatform = a.PublishPlatform
+	digest.ShortDescription = a.DigestDescription
 	if a.Image != nil {
 		digest.AvatarURL = a.Image.URL
 	}
@@ -141,6 +142,9 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 			digest.Authors = strings.Join([]string{digest.Authors, author.Name}, ", ")
 		}
 		digest.Authors = strings.TrimPrefix(digest.Authors, ", ")
+	}
+	for _, img := range a.DigestImages {
+		digest.ImageUrls = append(digest.ImageUrls, img.URL)
 	}
 	// TODO incomplete
 	return digest

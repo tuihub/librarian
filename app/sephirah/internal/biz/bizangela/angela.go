@@ -30,6 +30,7 @@ var ProviderSet = wire.NewSet(
 	NewFeedToNotifyFlowMap,
 	NewNotifyFlowCache,
 	NewNotifyTargetCache,
+	NewParseFeedItemDigestTopic,
 )
 
 type Angela struct {
@@ -48,6 +49,8 @@ type AngelaRepo interface {
 	UpsertApps(context.Context, []*modelgebura.App) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
+	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
+	UpdateFeedItemDigest(context.Context, *modelfeed.Item) error
 }
 
 func NewAngelaBase(
@@ -74,6 +77,7 @@ func NewAngela(
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
 	notifyPush *libmq.Topic[modelangela.NotifyPush],
+	parseFeedItem *libmq.Topic[modelangela.ParseFeedItemDigest],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -91,6 +95,9 @@ func NewAngela(
 		return nil, err
 	}
 	if err := mq.RegisterTopic(notifyPush); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(parseFeedItem); err != nil {
 		return nil, err
 	}
 	return &Angela{

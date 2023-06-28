@@ -5343,32 +5343,35 @@ func (m *FeedConfigMutation) ResetEdge(name string) error {
 // FeedItemMutation represents an operation that mutates the FeedItem nodes in the graph.
 type FeedItemMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *model.InternalID
-	title            *string
-	authors          *[]*modelfeed.Person
-	appendauthors    []*modelfeed.Person
-	description      *string
-	content          *string
-	guid             *string
-	link             *string
-	image            **modelfeed.Image
-	published        *string
-	published_parsed *time.Time
-	updated          *string
-	updated_parsed   *time.Time
-	enclosures       *[]*modelfeed.Enclosure
-	appendenclosures []*modelfeed.Enclosure
-	publish_platform *string
-	updated_at       *time.Time
-	created_at       *time.Time
-	clearedFields    map[string]struct{}
-	feed             *model.InternalID
-	clearedfeed      bool
-	done             bool
-	oldValue         func(context.Context) (*FeedItem, error)
-	predicates       []predicate.FeedItem
+	op                  Op
+	typ                 string
+	id                  *model.InternalID
+	title               *string
+	authors             *[]*modelfeed.Person
+	appendauthors       []*modelfeed.Person
+	description         *string
+	content             *string
+	guid                *string
+	link                *string
+	image               **modelfeed.Image
+	published           *string
+	published_parsed    *time.Time
+	updated             *string
+	updated_parsed      *time.Time
+	enclosures          *[]*modelfeed.Enclosure
+	appendenclosures    []*modelfeed.Enclosure
+	publish_platform    *string
+	digest_description  *string
+	digest_images       *[]*modelfeed.Image
+	appenddigest_images []*modelfeed.Image
+	updated_at          *time.Time
+	created_at          *time.Time
+	clearedFields       map[string]struct{}
+	feed                *model.InternalID
+	clearedfeed         bool
+	done                bool
+	oldValue            func(context.Context) (*FeedItem, error)
+	predicates          []predicate.FeedItem
 }
 
 var _ ent.Mutation = (*FeedItemMutation)(nil)
@@ -6154,6 +6157,120 @@ func (m *FeedItemMutation) ResetPublishPlatform() {
 	delete(m.clearedFields, feeditem.FieldPublishPlatform)
 }
 
+// SetDigestDescription sets the "digest_description" field.
+func (m *FeedItemMutation) SetDigestDescription(s string) {
+	m.digest_description = &s
+}
+
+// DigestDescription returns the value of the "digest_description" field in the mutation.
+func (m *FeedItemMutation) DigestDescription() (r string, exists bool) {
+	v := m.digest_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDigestDescription returns the old "digest_description" field's value of the FeedItem entity.
+// If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemMutation) OldDigestDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDigestDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDigestDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDigestDescription: %w", err)
+	}
+	return oldValue.DigestDescription, nil
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (m *FeedItemMutation) ClearDigestDescription() {
+	m.digest_description = nil
+	m.clearedFields[feeditem.FieldDigestDescription] = struct{}{}
+}
+
+// DigestDescriptionCleared returns if the "digest_description" field was cleared in this mutation.
+func (m *FeedItemMutation) DigestDescriptionCleared() bool {
+	_, ok := m.clearedFields[feeditem.FieldDigestDescription]
+	return ok
+}
+
+// ResetDigestDescription resets all changes to the "digest_description" field.
+func (m *FeedItemMutation) ResetDigestDescription() {
+	m.digest_description = nil
+	delete(m.clearedFields, feeditem.FieldDigestDescription)
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (m *FeedItemMutation) SetDigestImages(value []*modelfeed.Image) {
+	m.digest_images = &value
+	m.appenddigest_images = nil
+}
+
+// DigestImages returns the value of the "digest_images" field in the mutation.
+func (m *FeedItemMutation) DigestImages() (r []*modelfeed.Image, exists bool) {
+	v := m.digest_images
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDigestImages returns the old "digest_images" field's value of the FeedItem entity.
+// If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemMutation) OldDigestImages(ctx context.Context) (v []*modelfeed.Image, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDigestImages is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDigestImages requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDigestImages: %w", err)
+	}
+	return oldValue.DigestImages, nil
+}
+
+// AppendDigestImages adds value to the "digest_images" field.
+func (m *FeedItemMutation) AppendDigestImages(value []*modelfeed.Image) {
+	m.appenddigest_images = append(m.appenddigest_images, value...)
+}
+
+// AppendedDigestImages returns the list of values that were appended to the "digest_images" field in this mutation.
+func (m *FeedItemMutation) AppendedDigestImages() ([]*modelfeed.Image, bool) {
+	if len(m.appenddigest_images) == 0 {
+		return nil, false
+	}
+	return m.appenddigest_images, true
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (m *FeedItemMutation) ClearDigestImages() {
+	m.digest_images = nil
+	m.appenddigest_images = nil
+	m.clearedFields[feeditem.FieldDigestImages] = struct{}{}
+}
+
+// DigestImagesCleared returns if the "digest_images" field was cleared in this mutation.
+func (m *FeedItemMutation) DigestImagesCleared() bool {
+	_, ok := m.clearedFields[feeditem.FieldDigestImages]
+	return ok
+}
+
+// ResetDigestImages resets all changes to the "digest_images" field.
+func (m *FeedItemMutation) ResetDigestImages() {
+	m.digest_images = nil
+	m.appenddigest_images = nil
+	delete(m.clearedFields, feeditem.FieldDigestImages)
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *FeedItemMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -6286,7 +6403,7 @@ func (m *FeedItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedItemMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 18)
 	if m.feed != nil {
 		fields = append(fields, feeditem.FieldFeedID)
 	}
@@ -6328,6 +6445,12 @@ func (m *FeedItemMutation) Fields() []string {
 	}
 	if m.publish_platform != nil {
 		fields = append(fields, feeditem.FieldPublishPlatform)
+	}
+	if m.digest_description != nil {
+		fields = append(fields, feeditem.FieldDigestDescription)
+	}
+	if m.digest_images != nil {
+		fields = append(fields, feeditem.FieldDigestImages)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, feeditem.FieldUpdatedAt)
@@ -6371,6 +6494,10 @@ func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Enclosures()
 	case feeditem.FieldPublishPlatform:
 		return m.PublishPlatform()
+	case feeditem.FieldDigestDescription:
+		return m.DigestDescription()
+	case feeditem.FieldDigestImages:
+		return m.DigestImages()
 	case feeditem.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case feeditem.FieldCreatedAt:
@@ -6412,6 +6539,10 @@ func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEnclosures(ctx)
 	case feeditem.FieldPublishPlatform:
 		return m.OldPublishPlatform(ctx)
+	case feeditem.FieldDigestDescription:
+		return m.OldDigestDescription(ctx)
+	case feeditem.FieldDigestImages:
+		return m.OldDigestImages(ctx)
 	case feeditem.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case feeditem.FieldCreatedAt:
@@ -6523,6 +6654,20 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPublishPlatform(v)
 		return nil
+	case feeditem.FieldDigestDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDigestDescription(v)
+		return nil
+	case feeditem.FieldDigestImages:
+		v, ok := value.([]*modelfeed.Image)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDigestImages(v)
+		return nil
 	case feeditem.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -6603,6 +6748,12 @@ func (m *FeedItemMutation) ClearedFields() []string {
 	if m.FieldCleared(feeditem.FieldPublishPlatform) {
 		fields = append(fields, feeditem.FieldPublishPlatform)
 	}
+	if m.FieldCleared(feeditem.FieldDigestDescription) {
+		fields = append(fields, feeditem.FieldDigestDescription)
+	}
+	if m.FieldCleared(feeditem.FieldDigestImages) {
+		fields = append(fields, feeditem.FieldDigestImages)
+	}
 	return fields
 }
 
@@ -6649,6 +6800,12 @@ func (m *FeedItemMutation) ClearField(name string) error {
 		return nil
 	case feeditem.FieldPublishPlatform:
 		m.ClearPublishPlatform()
+		return nil
+	case feeditem.FieldDigestDescription:
+		m.ClearDigestDescription()
+		return nil
+	case feeditem.FieldDigestImages:
+		m.ClearDigestImages()
 		return nil
 	}
 	return fmt.Errorf("unknown FeedItem nullable field %s", name)
@@ -6699,6 +6856,12 @@ func (m *FeedItemMutation) ResetField(name string) error {
 		return nil
 	case feeditem.FieldPublishPlatform:
 		m.ResetPublishPlatform()
+		return nil
+	case feeditem.FieldDigestDescription:
+		m.ResetDigestDescription()
+		return nil
+	case feeditem.FieldDigestImages:
+		m.ResetDigestImages()
 		return nil
 	case feeditem.FieldUpdatedAt:
 		m.ResetUpdatedAt()

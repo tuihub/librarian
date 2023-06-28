@@ -38,6 +38,8 @@ type Converter interface {
 	// goverter:map Id ID
 	// goverter:map UpdatedParsed | FromPBTime
 	// goverter:map PublishedParsed | FromPBTime
+	// goverter:ignore DigestDescription
+	// goverter:ignore DigestImages
 	FromPBFeedItem(*librarian.FeedItem) *Item
 	FromPBFeedItemList([]*librarian.FeedItem) []*Item
 	// goverter:matchIgnoreCase

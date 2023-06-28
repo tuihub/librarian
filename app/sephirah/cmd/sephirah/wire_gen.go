@@ -86,8 +86,9 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
 	topic3 := bizangela.NewNotifyPushTopic(angelaBase, map3)
 	topic4 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic3)
-	topic5 := bizangela.NewPullFeedTopic(angelaBase, topic4)
-	angela, err := bizangela.NewAngela(libmqMQ, topic2, libmqTopic, topic, topic5, topic4, topic3)
+	topic5 := bizangela.NewParseFeedItemDigestTopic(angelaBase)
+	topic6 := bizangela.NewPullFeedTopic(angelaBase, topic4, topic5)
+	angela, err := bizangela.NewAngela(libmqMQ, topic2, libmqTopic, topic, topic6, topic4, topic3, topic5)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -105,7 +106,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
 	cron := libcron.NewCron()
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic5)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic6)
 	if err != nil {
 		cleanup2()
 		cleanup()

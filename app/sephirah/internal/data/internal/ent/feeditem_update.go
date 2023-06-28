@@ -244,6 +244,44 @@ func (fiu *FeedItemUpdate) ClearPublishPlatform() *FeedItemUpdate {
 	return fiu
 }
 
+// SetDigestDescription sets the "digest_description" field.
+func (fiu *FeedItemUpdate) SetDigestDescription(s string) *FeedItemUpdate {
+	fiu.mutation.SetDigestDescription(s)
+	return fiu
+}
+
+// SetNillableDigestDescription sets the "digest_description" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableDigestDescription(s *string) *FeedItemUpdate {
+	if s != nil {
+		fiu.SetDigestDescription(*s)
+	}
+	return fiu
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (fiu *FeedItemUpdate) ClearDigestDescription() *FeedItemUpdate {
+	fiu.mutation.ClearDigestDescription()
+	return fiu
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (fiu *FeedItemUpdate) SetDigestImages(m []*modelfeed.Image) *FeedItemUpdate {
+	fiu.mutation.SetDigestImages(m)
+	return fiu
+}
+
+// AppendDigestImages appends m to the "digest_images" field.
+func (fiu *FeedItemUpdate) AppendDigestImages(m []*modelfeed.Image) *FeedItemUpdate {
+	fiu.mutation.AppendDigestImages(m)
+	return fiu
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (fiu *FeedItemUpdate) ClearDigestImages() *FeedItemUpdate {
+	fiu.mutation.ClearDigestImages()
+	return fiu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (fiu *FeedItemUpdate) SetUpdatedAt(t time.Time) *FeedItemUpdate {
 	fiu.mutation.SetUpdatedAt(t)
@@ -403,6 +441,23 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if fiu.mutation.PublishPlatformCleared() {
 		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
+	}
+	if value, ok := fiu.mutation.DigestDescription(); ok {
+		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
+	}
+	if fiu.mutation.DigestDescriptionCleared() {
+		_spec.ClearField(feeditem.FieldDigestDescription, field.TypeString)
+	}
+	if value, ok := fiu.mutation.DigestImages(); ok {
+		_spec.SetField(feeditem.FieldDigestImages, field.TypeJSON, value)
+	}
+	if value, ok := fiu.mutation.AppendedDigestImages(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, feeditem.FieldDigestImages, value)
+		})
+	}
+	if fiu.mutation.DigestImagesCleared() {
+		_spec.ClearField(feeditem.FieldDigestImages, field.TypeJSON)
 	}
 	if value, ok := fiu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
@@ -644,6 +699,44 @@ func (fiuo *FeedItemUpdateOne) ClearPublishPlatform() *FeedItemUpdateOne {
 	return fiuo
 }
 
+// SetDigestDescription sets the "digest_description" field.
+func (fiuo *FeedItemUpdateOne) SetDigestDescription(s string) *FeedItemUpdateOne {
+	fiuo.mutation.SetDigestDescription(s)
+	return fiuo
+}
+
+// SetNillableDigestDescription sets the "digest_description" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableDigestDescription(s *string) *FeedItemUpdateOne {
+	if s != nil {
+		fiuo.SetDigestDescription(*s)
+	}
+	return fiuo
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (fiuo *FeedItemUpdateOne) ClearDigestDescription() *FeedItemUpdateOne {
+	fiuo.mutation.ClearDigestDescription()
+	return fiuo
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (fiuo *FeedItemUpdateOne) SetDigestImages(m []*modelfeed.Image) *FeedItemUpdateOne {
+	fiuo.mutation.SetDigestImages(m)
+	return fiuo
+}
+
+// AppendDigestImages appends m to the "digest_images" field.
+func (fiuo *FeedItemUpdateOne) AppendDigestImages(m []*modelfeed.Image) *FeedItemUpdateOne {
+	fiuo.mutation.AppendDigestImages(m)
+	return fiuo
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (fiuo *FeedItemUpdateOne) ClearDigestImages() *FeedItemUpdateOne {
+	fiuo.mutation.ClearDigestImages()
+	return fiuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (fiuo *FeedItemUpdateOne) SetUpdatedAt(t time.Time) *FeedItemUpdateOne {
 	fiuo.mutation.SetUpdatedAt(t)
@@ -833,6 +926,23 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	}
 	if fiuo.mutation.PublishPlatformCleared() {
 		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
+	}
+	if value, ok := fiuo.mutation.DigestDescription(); ok {
+		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
+	}
+	if fiuo.mutation.DigestDescriptionCleared() {
+		_spec.ClearField(feeditem.FieldDigestDescription, field.TypeString)
+	}
+	if value, ok := fiuo.mutation.DigestImages(); ok {
+		_spec.SetField(feeditem.FieldDigestImages, field.TypeJSON, value)
+	}
+	if value, ok := fiuo.mutation.AppendedDigestImages(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, feeditem.FieldDigestImages, value)
+		})
+	}
+	if fiuo.mutation.DigestImagesCleared() {
+		_spec.ClearField(feeditem.FieldDigestImages, field.TypeJSON)
 	}
 	if value, ok := fiuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)

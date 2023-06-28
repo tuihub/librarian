@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
@@ -14,12 +15,14 @@ import (
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
+	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/exp/slices"
 )
 
 func NewPullFeedTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
 	notify *libmq.Topic[modelangela.NotifyRouter],
+	parse *libmq.Topic[modelangela.ParseFeedItemDigest],
 ) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
@@ -65,6 +68,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			for _, item := range feed.Items {
 				if slices.Contains(newItemGUIDs, item.GUID) {
 					newItems = append(newItems, item)
+					_ = parse.Publish(ctx, modelangela.ParseFeedItemDigest{ID: item.ID})
 				}
 			}
 			if len(newItems) > 0 {
@@ -74,6 +78,60 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 				})
 			}
 			return err
+		},
+	)
+}
+
+func NewParseFeedItemDigestTopic( //nolint:gocognit // TODO
+	a *AngelaBase,
+) *libmq.Topic[modelangela.ParseFeedItemDigest] {
+	return libmq.NewTopic[modelangela.ParseFeedItemDigest](
+		"ParseFeedItemDigest",
+		func(ctx context.Context, p *modelangela.ParseFeedItemDigest) error {
+			const maxImgNum = 9
+			const maxDescLen = 128
+			item, err := a.repo.GetFeedItem(ctx, p.ID)
+			if err != nil {
+				return err
+			}
+			content := item.Content
+			if len(content) == 0 {
+				content = item.Description
+			}
+			doc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
+			if err != nil {
+				return err
+			}
+			digestDesc := doc.Text()
+			digestDesc = strings.ReplaceAll(digestDesc, " ", "")
+			digestDesc = strings.ReplaceAll(digestDesc, "\n", "")
+			digestDescRune := []rune(digestDesc)
+			if len(digestDescRune) > maxDescLen {
+				digestDescRune = digestDescRune[:maxDescLen]
+			}
+			digestDesc = string(digestDescRune)
+			item.DigestDescription = digestDesc
+
+			for i, n := range doc.Find("img").Nodes {
+				if i == maxImgNum {
+					break
+				}
+				image := new(modelfeed.Image)
+				for _, attr := range n.Attr {
+					if attr.Key == "src" {
+						image.URL = attr.Val
+					}
+					if attr.Key == "alt" {
+						image.Title = attr.Val
+					}
+				}
+				item.DigestImages = append(item.DigestImages, image)
+			}
+			err = a.repo.UpdateFeedItemDigest(ctx, item)
+			if err != nil {
+				return err
+			}
+			return nil
 		},
 	)
 }

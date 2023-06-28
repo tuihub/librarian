@@ -173,6 +173,26 @@ func (fic *FeedItemCreate) SetNillablePublishPlatform(s *string) *FeedItemCreate
 	return fic
 }
 
+// SetDigestDescription sets the "digest_description" field.
+func (fic *FeedItemCreate) SetDigestDescription(s string) *FeedItemCreate {
+	fic.mutation.SetDigestDescription(s)
+	return fic
+}
+
+// SetNillableDigestDescription sets the "digest_description" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableDigestDescription(s *string) *FeedItemCreate {
+	if s != nil {
+		fic.SetDigestDescription(*s)
+	}
+	return fic
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (fic *FeedItemCreate) SetDigestImages(m []*modelfeed.Image) *FeedItemCreate {
+	fic.mutation.SetDigestImages(m)
+	return fic
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (fic *FeedItemCreate) SetUpdatedAt(t time.Time) *FeedItemCreate {
 	fic.mutation.SetUpdatedAt(t)
@@ -361,6 +381,14 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	if value, ok := fic.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
 		_node.PublishPlatform = value
+	}
+	if value, ok := fic.mutation.DigestDescription(); ok {
+		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
+		_node.DigestDescription = value
+	}
+	if value, ok := fic.mutation.DigestImages(); ok {
+		_spec.SetField(feeditem.FieldDigestImages, field.TypeJSON, value)
+		_node.DigestImages = value
 	}
 	if value, ok := fic.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditem.FieldUpdatedAt, field.TypeTime, value)
@@ -646,6 +674,42 @@ func (u *FeedItemUpsert) UpdatePublishPlatform() *FeedItemUpsert {
 // ClearPublishPlatform clears the value of the "publish_platform" field.
 func (u *FeedItemUpsert) ClearPublishPlatform() *FeedItemUpsert {
 	u.SetNull(feeditem.FieldPublishPlatform)
+	return u
+}
+
+// SetDigestDescription sets the "digest_description" field.
+func (u *FeedItemUpsert) SetDigestDescription(v string) *FeedItemUpsert {
+	u.Set(feeditem.FieldDigestDescription, v)
+	return u
+}
+
+// UpdateDigestDescription sets the "digest_description" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdateDigestDescription() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldDigestDescription)
+	return u
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (u *FeedItemUpsert) ClearDigestDescription() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldDigestDescription)
+	return u
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (u *FeedItemUpsert) SetDigestImages(v []*modelfeed.Image) *FeedItemUpsert {
+	u.Set(feeditem.FieldDigestImages, v)
+	return u
+}
+
+// UpdateDigestImages sets the "digest_images" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdateDigestImages() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldDigestImages)
+	return u
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (u *FeedItemUpsert) ClearDigestImages() *FeedItemUpsert {
+	u.SetNull(feeditem.FieldDigestImages)
 	return u
 }
 
@@ -969,6 +1033,48 @@ func (u *FeedItemUpsertOne) UpdatePublishPlatform() *FeedItemUpsertOne {
 func (u *FeedItemUpsertOne) ClearPublishPlatform() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.ClearPublishPlatform()
+	})
+}
+
+// SetDigestDescription sets the "digest_description" field.
+func (u *FeedItemUpsertOne) SetDigestDescription(v string) *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetDigestDescription(v)
+	})
+}
+
+// UpdateDigestDescription sets the "digest_description" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdateDigestDescription() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateDigestDescription()
+	})
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (u *FeedItemUpsertOne) ClearDigestDescription() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDigestDescription()
+	})
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (u *FeedItemUpsertOne) SetDigestImages(v []*modelfeed.Image) *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetDigestImages(v)
+	})
+}
+
+// UpdateDigestImages sets the "digest_images" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdateDigestImages() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateDigestImages()
+	})
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (u *FeedItemUpsertOne) ClearDigestImages() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDigestImages()
 	})
 }
 
@@ -1458,6 +1564,48 @@ func (u *FeedItemUpsertBulk) UpdatePublishPlatform() *FeedItemUpsertBulk {
 func (u *FeedItemUpsertBulk) ClearPublishPlatform() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.ClearPublishPlatform()
+	})
+}
+
+// SetDigestDescription sets the "digest_description" field.
+func (u *FeedItemUpsertBulk) SetDigestDescription(v string) *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetDigestDescription(v)
+	})
+}
+
+// UpdateDigestDescription sets the "digest_description" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdateDigestDescription() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateDigestDescription()
+	})
+}
+
+// ClearDigestDescription clears the value of the "digest_description" field.
+func (u *FeedItemUpsertBulk) ClearDigestDescription() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDigestDescription()
+	})
+}
+
+// SetDigestImages sets the "digest_images" field.
+func (u *FeedItemUpsertBulk) SetDigestImages(v []*modelfeed.Image) *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetDigestImages(v)
+	})
+}
+
+// UpdateDigestImages sets the "digest_images" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdateDigestImages() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateDigestImages()
+	})
+}
+
+// ClearDigestImages clears the value of the "digest_images" field.
+func (u *FeedItemUpsertBulk) ClearDigestImages() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.ClearDigestImages()
 	})
 }
 

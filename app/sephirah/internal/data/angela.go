@@ -174,3 +174,19 @@ func (a *angelaRepo) UpsertFeedItems(
 	}
 	return res, nil
 }
+
+func (a *angelaRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfeed.Item, error) {
+	item, err := a.data.db.FeedItem.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizFeedItem(item), nil
+}
+
+func (a *angelaRepo) UpdateFeedItemDigest(ctx context.Context, item *modelfeed.Item) error {
+	err := a.data.db.FeedItem.UpdateOneID(item.ID).
+		SetDigestDescription(item.DigestDescription).
+		SetDigestImages(item.DigestImages).
+		Exec(ctx)
+	return err
+}

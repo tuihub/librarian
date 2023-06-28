@@ -42,6 +42,10 @@ const (
 	FieldEnclosures = "enclosures"
 	// FieldPublishPlatform holds the string denoting the publish_platform field in the database.
 	FieldPublishPlatform = "publish_platform"
+	// FieldDigestDescription holds the string denoting the digest_description field in the database.
+	FieldDigestDescription = "digest_description"
+	// FieldDigestImages holds the string denoting the digest_images field in the database.
+	FieldDigestImages = "digest_images"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -76,6 +80,8 @@ var Columns = []string{
 	FieldUpdatedParsed,
 	FieldEnclosures,
 	FieldPublishPlatform,
+	FieldDigestDescription,
+	FieldDigestImages,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -160,6 +166,11 @@ func ByUpdatedParsed(opts ...sql.OrderTermOption) OrderOption {
 // ByPublishPlatform orders the results by the publish_platform field.
 func ByPublishPlatform(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPublishPlatform, opts...).ToFunc()
+}
+
+// ByDigestDescription orders the results by the digest_description field.
+func ByDigestDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDigestDescription, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

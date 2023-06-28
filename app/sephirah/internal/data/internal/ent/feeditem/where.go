@@ -112,6 +112,11 @@ func PublishPlatform(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldPublishPlatform, v))
 }
 
+// DigestDescription applies equality check predicate on the "digest_description" field. It's identical to DigestDescriptionEQ.
+func DigestDescription(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldDigestDescription, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldUpdatedAt, v))
@@ -860,6 +865,91 @@ func PublishPlatformEqualFold(v string) predicate.FeedItem {
 // PublishPlatformContainsFold applies the ContainsFold predicate on the "publish_platform" field.
 func PublishPlatformContainsFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldContainsFold(FieldPublishPlatform, v))
+}
+
+// DigestDescriptionEQ applies the EQ predicate on the "digest_description" field.
+func DigestDescriptionEQ(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldDigestDescription, v))
+}
+
+// DigestDescriptionNEQ applies the NEQ predicate on the "digest_description" field.
+func DigestDescriptionNEQ(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNEQ(FieldDigestDescription, v))
+}
+
+// DigestDescriptionIn applies the In predicate on the "digest_description" field.
+func DigestDescriptionIn(vs ...string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIn(FieldDigestDescription, vs...))
+}
+
+// DigestDescriptionNotIn applies the NotIn predicate on the "digest_description" field.
+func DigestDescriptionNotIn(vs ...string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotIn(FieldDigestDescription, vs...))
+}
+
+// DigestDescriptionGT applies the GT predicate on the "digest_description" field.
+func DigestDescriptionGT(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGT(FieldDigestDescription, v))
+}
+
+// DigestDescriptionGTE applies the GTE predicate on the "digest_description" field.
+func DigestDescriptionGTE(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGTE(FieldDigestDescription, v))
+}
+
+// DigestDescriptionLT applies the LT predicate on the "digest_description" field.
+func DigestDescriptionLT(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLT(FieldDigestDescription, v))
+}
+
+// DigestDescriptionLTE applies the LTE predicate on the "digest_description" field.
+func DigestDescriptionLTE(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLTE(FieldDigestDescription, v))
+}
+
+// DigestDescriptionContains applies the Contains predicate on the "digest_description" field.
+func DigestDescriptionContains(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldContains(FieldDigestDescription, v))
+}
+
+// DigestDescriptionHasPrefix applies the HasPrefix predicate on the "digest_description" field.
+func DigestDescriptionHasPrefix(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldHasPrefix(FieldDigestDescription, v))
+}
+
+// DigestDescriptionHasSuffix applies the HasSuffix predicate on the "digest_description" field.
+func DigestDescriptionHasSuffix(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldHasSuffix(FieldDigestDescription, v))
+}
+
+// DigestDescriptionIsNil applies the IsNil predicate on the "digest_description" field.
+func DigestDescriptionIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldDigestDescription))
+}
+
+// DigestDescriptionNotNil applies the NotNil predicate on the "digest_description" field.
+func DigestDescriptionNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldDigestDescription))
+}
+
+// DigestDescriptionEqualFold applies the EqualFold predicate on the "digest_description" field.
+func DigestDescriptionEqualFold(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEqualFold(FieldDigestDescription, v))
+}
+
+// DigestDescriptionContainsFold applies the ContainsFold predicate on the "digest_description" field.
+func DigestDescriptionContainsFold(v string) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldContainsFold(FieldDigestDescription, v))
+}
+
+// DigestImagesIsNil applies the IsNil predicate on the "digest_images" field.
+func DigestImagesIsNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIsNull(FieldDigestImages))
+}
+
+// DigestImagesNotNil applies the NotNil predicate on the "digest_images" field.
+func DigestImagesNotNil() predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotNull(FieldDigestImages))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

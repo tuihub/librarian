@@ -204,6 +204,8 @@ var (
 		{Name: "updated_parsed", Type: field.TypeTime, Nullable: true},
 		{Name: "enclosures", Type: field.TypeJSON, Nullable: true},
 		{Name: "publish_platform", Type: field.TypeString, Nullable: true},
+		{Name: "digest_description", Type: field.TypeString, Nullable: true},
+		{Name: "digest_images", Type: field.TypeJSON, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "feed_id", Type: field.TypeInt64},
@@ -216,7 +218,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_items_feeds_item",
-				Columns:    []*schema.Column{FeedItemsColumns[16]},
+				Columns:    []*schema.Column{FeedItemsColumns[18]},
 				RefColumns: []*schema.Column{FeedsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -225,7 +227,7 @@ var (
 			{
 				Name:    "feeditem_feed_id_guid",
 				Unique:  true,
-				Columns: []*schema.Column{FeedItemsColumns[16], FeedItemsColumns[5]},
+				Columns: []*schema.Column{FeedItemsColumns[18], FeedItemsColumns[5]},
 			},
 		},
 	}

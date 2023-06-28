@@ -20,20 +20,22 @@ type Feed struct {
 }
 
 type Item struct {
-	ID              model.InternalID `json:"internal_id,omitempty"`
-	Title           string           `json:"title,omitempty"`
-	Description     string           `json:"description,omitempty"`
-	Content         string           `json:"content,omitempty"`
-	Link            string           `json:"link,omitempty"`
-	Updated         string           `json:"updated,omitempty"`
-	UpdatedParsed   *time.Time       `json:"updatedParsed,omitempty"`
-	Published       string           `json:"published,omitempty"`
-	PublishedParsed *time.Time       `json:"publishedParsed,omitempty"`
-	Authors         []*Person        `json:"authors,omitempty"`
-	GUID            string           `json:"guid,omitempty"`
-	Image           *Image           `json:"image,omitempty"`
-	Enclosures      []*Enclosure     `json:"enclosures,omitempty"`
-	PublishPlatform string           `json:"publish_platform,omitempty"`
+	ID                model.InternalID `json:"internal_id,omitempty"`
+	Title             string           `json:"title,omitempty"`
+	Description       string           `json:"description,omitempty"`
+	Content           string           `json:"content,omitempty"`
+	Link              string           `json:"link,omitempty"`
+	Updated           string           `json:"updated,omitempty"`
+	UpdatedParsed     *time.Time       `json:"updatedParsed,omitempty"`
+	Published         string           `json:"published,omitempty"`
+	PublishedParsed   *time.Time       `json:"publishedParsed,omitempty"`
+	Authors           []*Person        `json:"authors,omitempty"`
+	GUID              string           `json:"guid,omitempty"`
+	Image             *Image           `json:"image,omitempty"`
+	Enclosures        []*Enclosure     `json:"enclosures,omitempty"`
+	PublishPlatform   string           `json:"publish_platform,omitempty"`
+	DigestDescription string           `json:"digest_description,omitempty"`
+	DigestImages      []*Image         `json:"digest_images,omitempty"`
 }
 
 // Person is an individual specified in a feed

@@ -192,6 +192,15 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 		}
 		modelfeedItem.Enclosures = pModelfeedEnclosureList
 		modelfeedItem.PublishPlatform = (*source).PublishPlatform
+		modelfeedItem.DigestDescription = (*source).DigestDescription
+		var pModelfeedImageList []*modelfeed.Image
+		if (*source).DigestImages != nil {
+			pModelfeedImageList = make([]*modelfeed.Image, len((*source).DigestImages))
+			for k := 0; k < len((*source).DigestImages); k++ {
+				pModelfeedImageList[k] = c.pModelfeedImageToPModelfeedImage((*source).DigestImages[k])
+			}
+		}
+		modelfeedItem.DigestImages = pModelfeedImageList
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem

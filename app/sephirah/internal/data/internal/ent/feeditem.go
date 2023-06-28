@@ -49,6 +49,10 @@ type FeedItem struct {
 	Enclosures []*modelfeed.Enclosure `json:"enclosures,omitempty"`
 	// PublishPlatform holds the value of the "publish_platform" field.
 	PublishPlatform string `json:"publish_platform,omitempty"`
+	// DigestDescription holds the value of the "digest_description" field.
+	DigestDescription string `json:"digest_description,omitempty"`
+	// DigestImages holds the value of the "digest_images" field.
+	DigestImages []*modelfeed.Image `json:"digest_images,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -86,11 +90,11 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosures:
+		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosures, feeditem.FieldDigestImages:
 			values[i] = new([]byte)
 		case feeditem.FieldID, feeditem.FieldFeedID:
 			values[i] = new(sql.NullInt64)
-		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated, feeditem.FieldPublishPlatform:
+		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated, feeditem.FieldPublishPlatform, feeditem.FieldDigestDescription:
 			values[i] = new(sql.NullString)
 		case feeditem.FieldPublishedParsed, feeditem.FieldUpdatedParsed, feeditem.FieldUpdatedAt, feeditem.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -206,6 +210,20 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fi.PublishPlatform = value.String
 			}
+		case feeditem.FieldDigestDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field digest_description", values[i])
+			} else if value.Valid {
+				fi.DigestDescription = value.String
+			}
+		case feeditem.FieldDigestImages:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field digest_images", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &fi.DigestImages); err != nil {
+					return fmt.Errorf("unmarshal field digest_images: %w", err)
+				}
+			}
 		case feeditem.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -302,6 +320,12 @@ func (fi *FeedItem) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("publish_platform=")
 	builder.WriteString(fi.PublishPlatform)
+	builder.WriteString(", ")
+	builder.WriteString("digest_description=")
+	builder.WriteString(fi.DigestDescription)
+	builder.WriteString(", ")
+	builder.WriteString("digest_images=")
+	builder.WriteString(fmt.Sprintf("%v", fi.DigestImages))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fi.UpdatedAt.Format(time.ANSIC))
