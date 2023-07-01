@@ -6,38 +6,38 @@ require (
 	entgo.io/ent v0.12.3
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/ThreeDotsLabs/watermill v1.2.0
-	github.com/ThreeDotsLabs/watermill-sql v1.3.8
+	github.com/ThreeDotsLabs/watermill-sql v1.4.0
 	github.com/blevesearch/bleve/v2 v2.3.8
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.4
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron v1.25.0
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230509063647-4a56b5669def
+	github.com/go-co-op/gocron v1.30.0
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 db2a565d1c79
 	github.com/go-kratos/kratos/v2 v2.6.2
-	github.com/gocolly/colly/v2 v2.1.1-0.20230417203752-70168cfd0bac
+	github.com/gocolly/colly/v2 a6e3d81fe6b7
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/go-cmp v0.5.9
 	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
-	github.com/hashicorp/consul/api v1.20.0
+	github.com/hashicorp/consul/api v1.22.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/johannesboyne/gofakes3 v0.0.0-20230506070712-04da935ef877
 	github.com/lib/pq v1.10.9
-	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/meilisearch/meilisearch-go v0.24.0
-	github.com/minio/minio-go/v7 v7.0.52
+	github.com/mattn/go-sqlite3 v1.14.17
+	github.com/meilisearch/meilisearch-go v0.25.0
+	github.com/minio/minio-go/v7 v7.0.58
 	github.com/mmcdole/gofeed v1.2.1
-	github.com/nikoksr/notify v0.38.1
-	github.com/redis/go-redis/v9 v9.0.4
+	github.com/nikoksr/notify v0.41.0
+	github.com/redis/go-redis/v9 v9.0.5
 	github.com/sony/sonyflake v1.1.0
-	github.com/stretchr/testify v1.8.2
-	github.com/tuihub/protos v0.2.27
+	github.com/stretchr/testify v1.8.4
+	github.com/tuihub/protos v0.2.30
 	github.com/zhihu/norm v0.1.11
-	golang.org/x/crypto v0.9.0
-	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
-	google.golang.org/grpc v1.54.0
-	google.golang.org/protobuf v1.30.0
+	golang.org/x/crypto v0.10.0
+	golang.org/x/exp 97b1e661b5df
+	google.golang.org/grpc v1.56.1
+	google.golang.org/protobuf v1.31.0
 )
 
 require (
@@ -162,7 +162,7 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230509063647-4a56b5669def
+	github.com/go-kratos/kratos/contrib/log/zap/v2 db2a565d1c79
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
