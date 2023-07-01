@@ -188,6 +188,11 @@ func (y *yesodRepo) ListFeedItems(
 			return err
 		}
 		items, err := iq.
+			WithFeed(func(q *ent.FeedQuery) {
+				q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
+					q.Select(feedconfig.FieldName)
+				})
+			}).
 			Order(ent.Desc(feeditem.FieldPublishedParsed)).
 			Limit(paging.ToLimit()).
 			Offset(paging.ToOffset()).
@@ -235,6 +240,11 @@ func (y *yesodRepo) GroupFeedItems(
 			items, err = iq.
 				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
 				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration))).
+				WithFeed(func(q *ent.FeedQuery) {
+					q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
+						q.Select(feedconfig.FieldName)
+					})
+				}).
 				Order(ent.Desc(feeditem.FieldPublishedParsed)).
 				Limit(groupSize).
 				All(ctx)

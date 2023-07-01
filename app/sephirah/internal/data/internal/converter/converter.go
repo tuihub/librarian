@@ -146,6 +146,14 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	for _, img := range a.DigestImages {
 		digest.ImageUrls = append(digest.ImageUrls, img.URL)
 	}
+	if a.Edges.Feed != nil {
+		if a.Edges.Feed.Image != nil {
+			digest.FeedAvatarURL = a.Edges.Feed.Image.URL
+		}
+		if a.Edges.Feed.Edges.Config != nil {
+			digest.FeedConfigName = a.Edges.Feed.Edges.Config.Name
+		}
+	}
 	// TODO incomplete
 	return digest
 }
