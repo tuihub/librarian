@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.5](https://github.com/TuiHub/Librarian/compare/v0.1.4...v0.1.5) (2023-07-01)
+
+
+### Features
+
+* support parse digest of feedItem ([ab1572b](https://github.com/TuiHub/Librarian/commit/ab1572b1c8debf44428df65b9d792bdb48aac1a2))
+
+
+### Bug Fixes
+
+* upgrade protos ([bce9c31](https://github.com/TuiHub/Librarian/commit/bce9c31c49f3a7f139f84096d70ac93cf895d081))
+* **yesod:** impl added field ([79abe07](https://github.com/TuiHub/Librarian/commit/79abe0748e87d81fc450dd01077c69e2adfcccd8))
+
 ## [0.1.4](https://github.com/TuiHub/Librarian/compare/v0.1.3...v0.1.4) (2023-05-26)
 
 
