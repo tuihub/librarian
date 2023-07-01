@@ -90,7 +90,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 func (c *toBizConverterImpl) ToBizAppPackageBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
 	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
 	modelgeburaAppPackageBinary.Name = source.BinaryName
-	modelgeburaAppPackageBinary.SizeByte = source.BinarySizeByte
+	modelgeburaAppPackageBinary.SizeBytes = source.BinarySizeBytes
 	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
 	var byteList []uint8
 	if source.BinarySha256 != nil {

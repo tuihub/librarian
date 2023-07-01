@@ -27,8 +27,8 @@ const (
 	FieldPublic = "public"
 	// FieldBinaryName holds the string denoting the binary_name field in the database.
 	FieldBinaryName = "binary_name"
-	// FieldBinarySizeByte holds the string denoting the binary_size_byte field in the database.
-	FieldBinarySizeByte = "binary_size_byte"
+	// FieldBinarySizeBytes holds the string denoting the binary_size_bytes field in the database.
+	FieldBinarySizeBytes = "binary_size_bytes"
 	// FieldBinaryPublicURL holds the string denoting the binary_public_url field in the database.
 	FieldBinaryPublicURL = "binary_public_url"
 	// FieldBinarySha256 holds the string denoting the binary_sha256 field in the database.
@@ -68,7 +68,7 @@ var Columns = []string{
 	FieldDescription,
 	FieldPublic,
 	FieldBinaryName,
-	FieldBinarySizeByte,
+	FieldBinarySizeBytes,
 	FieldBinaryPublicURL,
 	FieldBinarySha256,
 	FieldUpdatedAt,
@@ -167,9 +167,9 @@ func ByBinaryName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBinaryName, opts...).ToFunc()
 }
 
-// ByBinarySizeByte orders the results by the binary_size_byte field.
-func ByBinarySizeByte(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldBinarySizeByte, opts...).ToFunc()
+// ByBinarySizeBytes orders the results by the binary_size_bytes field.
+func ByBinarySizeBytes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBinarySizeBytes, opts...).ToFunc()
 }
 
 // ByBinaryPublicURL orders the results by the binary_public_url field.

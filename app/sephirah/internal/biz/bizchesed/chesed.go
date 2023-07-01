@@ -248,11 +248,11 @@ func (c *Chesed) DownloadImage(ctx context.Context, id model.InternalID) (string
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	token, err := c.download.GenerateDownloadToken(ctx, modelbinah.FileMetadata{
-		ID:     id,
-		Name:   image.Name,
-		Size:   0,
-		Type:   0,
-		Sha256: nil,
+		ID:        id,
+		Name:      image.Name,
+		SizeBytes: 0,
+		Type:      0,
+		Sha256:    nil,
 	}, libtime.HalfDay)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())

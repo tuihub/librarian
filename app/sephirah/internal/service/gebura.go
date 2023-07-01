@@ -236,9 +236,9 @@ func (s *LibrarianSephirahServiceService) DownloadGameSaveFile(
 ) (*pb.DownloadGameSaveFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownloadGameSaveFile not implemented")
 }
-func (s *LibrarianSephirahServiceService) ListGameSaveFile(
+func (s *LibrarianSephirahServiceService) ListGameSaveFiles(
 	ctx context.Context,
-	req *pb.ListGameSaveFileRequest,
-) (*pb.ListGameSaveFileResponse, error) {
+	req *pb.ListGameSaveFilesRequest,
+) (*pb.ListGameSaveFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListGameSaveFile not implemented")
 }

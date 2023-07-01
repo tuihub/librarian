@@ -50,7 +50,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:mapIdentity Binary
 	ToBizAppPackage(*ent.AppPackage) *modelgebura.AppPackage
 	// goverter:map BinaryName Name
-	// goverter:map BinarySizeByte SizeByte
+	// goverter:map BinarySizeBytes SizeBytes
 	// goverter:map BinaryPublicURL PublicURL
 	// goverter:map BinarySha256 Sha256
 	ToBizAppPackageBinary(ent.AppPackage) modelgebura.AppPackageBinary

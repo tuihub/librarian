@@ -90,7 +90,7 @@ var (
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
 		{Name: "public", Type: field.TypeBool},
 		{Name: "binary_name", Type: field.TypeString},
-		{Name: "binary_size_byte", Type: field.TypeInt64},
+		{Name: "binary_size_bytes", Type: field.TypeInt64},
 		{Name: "binary_public_url", Type: field.TypeString},
 		{Name: "binary_sha256", Type: field.TypeBytes},
 		{Name: "updated_at", Type: field.TypeTime},

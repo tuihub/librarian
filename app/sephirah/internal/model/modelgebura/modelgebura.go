@@ -51,7 +51,7 @@ type AppPackage struct {
 
 type AppPackageBinary struct {
 	Name      string
-	SizeByte  int64
+	SizeBytes int64
 	PublicURL string
 	Sha256    []byte
 }

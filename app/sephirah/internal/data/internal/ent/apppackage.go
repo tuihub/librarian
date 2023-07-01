@@ -32,8 +32,8 @@ type AppPackage struct {
 	Public bool `json:"public,omitempty"`
 	// BinaryName holds the value of the "binary_name" field.
 	BinaryName string `json:"binary_name,omitempty"`
-	// BinarySizeByte holds the value of the "binary_size_byte" field.
-	BinarySizeByte int64 `json:"binary_size_byte,omitempty"`
+	// BinarySizeBytes holds the value of the "binary_size_bytes" field.
+	BinarySizeBytes int64 `json:"binary_size_bytes,omitempty"`
 	// BinaryPublicURL holds the value of the "binary_public_url" field.
 	BinaryPublicURL string `json:"binary_public_url,omitempty"`
 	// BinarySha256 holds the value of the "binary_sha256" field.
@@ -96,7 +96,7 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case apppackage.FieldPublic:
 			values[i] = new(sql.NullBool)
-		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeByte:
+		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeBytes:
 			values[i] = new(sql.NullInt64)
 		case apppackage.FieldSource, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
@@ -163,11 +163,11 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ap.BinaryName = value.String
 			}
-		case apppackage.FieldBinarySizeByte:
+		case apppackage.FieldBinarySizeBytes:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field binary_size_byte", values[i])
+				return fmt.Errorf("unexpected type %T for field binary_size_bytes", values[i])
 			} else if value.Valid {
-				ap.BinarySizeByte = value.Int64
+				ap.BinarySizeBytes = value.Int64
 			}
 		case apppackage.FieldBinaryPublicURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -271,8 +271,8 @@ func (ap *AppPackage) String() string {
 	builder.WriteString("binary_name=")
 	builder.WriteString(ap.BinaryName)
 	builder.WriteString(", ")
-	builder.WriteString("binary_size_byte=")
-	builder.WriteString(fmt.Sprintf("%v", ap.BinarySizeByte))
+	builder.WriteString("binary_size_bytes=")
+	builder.WriteString(fmt.Sprintf("%v", ap.BinarySizeBytes))
 	builder.WriteString(", ")
 	builder.WriteString("binary_public_url=")
 	builder.WriteString(ap.BinaryPublicURL)

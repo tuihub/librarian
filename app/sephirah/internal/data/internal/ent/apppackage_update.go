@@ -74,16 +74,16 @@ func (apu *AppPackageUpdate) SetBinaryName(s string) *AppPackageUpdate {
 	return apu
 }
 
-// SetBinarySizeByte sets the "binary_size_byte" field.
-func (apu *AppPackageUpdate) SetBinarySizeByte(i int64) *AppPackageUpdate {
-	apu.mutation.ResetBinarySizeByte()
-	apu.mutation.SetBinarySizeByte(i)
+// SetBinarySizeBytes sets the "binary_size_bytes" field.
+func (apu *AppPackageUpdate) SetBinarySizeBytes(i int64) *AppPackageUpdate {
+	apu.mutation.ResetBinarySizeBytes()
+	apu.mutation.SetBinarySizeBytes(i)
 	return apu
 }
 
-// AddBinarySizeByte adds i to the "binary_size_byte" field.
-func (apu *AppPackageUpdate) AddBinarySizeByte(i int64) *AppPackageUpdate {
-	apu.mutation.AddBinarySizeByte(i)
+// AddBinarySizeBytes adds i to the "binary_size_bytes" field.
+func (apu *AppPackageUpdate) AddBinarySizeBytes(i int64) *AppPackageUpdate {
+	apu.mutation.AddBinarySizeBytes(i)
 	return apu
 }
 
@@ -248,11 +248,11 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.BinaryName(); ok {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
-	if value, ok := apu.mutation.BinarySizeByte(); ok {
-		_spec.SetField(apppackage.FieldBinarySizeByte, field.TypeInt64, value)
+	if value, ok := apu.mutation.BinarySizeBytes(); ok {
+		_spec.SetField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := apu.mutation.AddedBinarySizeByte(); ok {
-		_spec.AddField(apppackage.FieldBinarySizeByte, field.TypeInt64, value)
+	if value, ok := apu.mutation.AddedBinarySizeBytes(); ok {
+		_spec.AddField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
 	if value, ok := apu.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
@@ -387,16 +387,16 @@ func (apuo *AppPackageUpdateOne) SetBinaryName(s string) *AppPackageUpdateOne {
 	return apuo
 }
 
-// SetBinarySizeByte sets the "binary_size_byte" field.
-func (apuo *AppPackageUpdateOne) SetBinarySizeByte(i int64) *AppPackageUpdateOne {
-	apuo.mutation.ResetBinarySizeByte()
-	apuo.mutation.SetBinarySizeByte(i)
+// SetBinarySizeBytes sets the "binary_size_bytes" field.
+func (apuo *AppPackageUpdateOne) SetBinarySizeBytes(i int64) *AppPackageUpdateOne {
+	apuo.mutation.ResetBinarySizeBytes()
+	apuo.mutation.SetBinarySizeBytes(i)
 	return apuo
 }
 
-// AddBinarySizeByte adds i to the "binary_size_byte" field.
-func (apuo *AppPackageUpdateOne) AddBinarySizeByte(i int64) *AppPackageUpdateOne {
-	apuo.mutation.AddBinarySizeByte(i)
+// AddBinarySizeBytes adds i to the "binary_size_bytes" field.
+func (apuo *AppPackageUpdateOne) AddBinarySizeBytes(i int64) *AppPackageUpdateOne {
+	apuo.mutation.AddBinarySizeBytes(i)
 	return apuo
 }
 
@@ -591,11 +591,11 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	if value, ok := apuo.mutation.BinaryName(); ok {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
-	if value, ok := apuo.mutation.BinarySizeByte(); ok {
-		_spec.SetField(apppackage.FieldBinarySizeByte, field.TypeInt64, value)
+	if value, ok := apuo.mutation.BinarySizeBytes(); ok {
+		_spec.SetField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
-	if value, ok := apuo.mutation.AddedBinarySizeByte(); ok {
-		_spec.AddField(apppackage.FieldBinarySizeByte, field.TypeInt64, value)
+	if value, ok := apuo.mutation.AddedBinarySizeBytes(); ok {
+		_spec.AddField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
 	if value, ok := apuo.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)

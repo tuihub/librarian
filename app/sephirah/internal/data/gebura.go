@@ -237,7 +237,7 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeByte(ap.Binary.SizeByte)
+		SetBinarySizeBytes(ap.Binary.SizeBytes)
 	return q.Exec(ctx)
 }
 
@@ -250,7 +250,7 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *modelgebura.AppPac
 		SetName(ap.Name).
 		SetDescription(ap.Description).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeByte(ap.Binary.SizeByte)
+		SetBinarySizeBytes(ap.Binary.SizeBytes)
 	return q.Exec(ctx)
 }
 
@@ -270,7 +270,7 @@ func (g geburaRepo) UpsertAppPackages(
 			SetDescription(ap.Description).
 			SetPublic(ap.Public).
 			SetBinaryName(ap.Binary.Name).
-			SetBinarySizeByte(ap.Binary.SizeByte).
+			SetBinarySizeBytes(ap.Binary.SizeBytes).
 			SetBinaryPublicURL(ap.Binary.PublicURL)
 	}
 	return g.data.db.AppPackage.

@@ -28,7 +28,7 @@ func (AppPackage) Fields() []ent.Field {
 		field.Text("description"),
 		field.Bool("public"),
 		field.String("binary_name"),
-		field.Int64("binary_size_byte"),
+		field.Int64("binary_size_bytes"),
 		field.String("binary_public_url"),
 		field.Bytes("binary_sha256"),
 		field.Time("updated_at").

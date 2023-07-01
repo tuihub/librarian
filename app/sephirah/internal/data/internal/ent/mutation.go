@@ -2129,30 +2129,30 @@ func (m *AppMutation) ResetEdge(name string) error {
 // AppPackageMutation represents an operation that mutates the AppPackage nodes in the graph.
 type AppPackageMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *model.InternalID
-	source              *apppackage.Source
-	source_id           *model.InternalID
-	addsource_id        *model.InternalID
-	name                *string
-	description         *string
-	public              *bool
-	binary_name         *string
-	binary_size_byte    *int64
-	addbinary_size_byte *int64
-	binary_public_url   *string
-	binary_sha256       *[]byte
-	updated_at          *time.Time
-	created_at          *time.Time
-	clearedFields       map[string]struct{}
-	owner               *model.InternalID
-	clearedowner        bool
-	app                 *model.InternalID
-	clearedapp          bool
-	done                bool
-	oldValue            func(context.Context) (*AppPackage, error)
-	predicates          []predicate.AppPackage
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	source               *apppackage.Source
+	source_id            *model.InternalID
+	addsource_id         *model.InternalID
+	name                 *string
+	description          *string
+	public               *bool
+	binary_name          *string
+	binary_size_bytes    *int64
+	addbinary_size_bytes *int64
+	binary_public_url    *string
+	binary_sha256        *[]byte
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	owner                *model.InternalID
+	clearedowner         bool
+	app                  *model.InternalID
+	clearedapp           bool
+	done                 bool
+	oldValue             func(context.Context) (*AppPackage, error)
+	predicates           []predicate.AppPackage
 }
 
 var _ ent.Mutation = (*AppPackageMutation)(nil)
@@ -2495,60 +2495,60 @@ func (m *AppPackageMutation) ResetBinaryName() {
 	m.binary_name = nil
 }
 
-// SetBinarySizeByte sets the "binary_size_byte" field.
-func (m *AppPackageMutation) SetBinarySizeByte(i int64) {
-	m.binary_size_byte = &i
-	m.addbinary_size_byte = nil
+// SetBinarySizeBytes sets the "binary_size_bytes" field.
+func (m *AppPackageMutation) SetBinarySizeBytes(i int64) {
+	m.binary_size_bytes = &i
+	m.addbinary_size_bytes = nil
 }
 
-// BinarySizeByte returns the value of the "binary_size_byte" field in the mutation.
-func (m *AppPackageMutation) BinarySizeByte() (r int64, exists bool) {
-	v := m.binary_size_byte
+// BinarySizeBytes returns the value of the "binary_size_bytes" field in the mutation.
+func (m *AppPackageMutation) BinarySizeBytes() (r int64, exists bool) {
+	v := m.binary_size_bytes
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBinarySizeByte returns the old "binary_size_byte" field's value of the AppPackage entity.
+// OldBinarySizeBytes returns the old "binary_size_bytes" field's value of the AppPackage entity.
 // If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinarySizeByte(ctx context.Context) (v int64, err error) {
+func (m *AppPackageMutation) OldBinarySizeBytes(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinarySizeByte is only allowed on UpdateOne operations")
+		return v, errors.New("OldBinarySizeBytes is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinarySizeByte requires an ID field in the mutation")
+		return v, errors.New("OldBinarySizeBytes requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinarySizeByte: %w", err)
+		return v, fmt.Errorf("querying old value for OldBinarySizeBytes: %w", err)
 	}
-	return oldValue.BinarySizeByte, nil
+	return oldValue.BinarySizeBytes, nil
 }
 
-// AddBinarySizeByte adds i to the "binary_size_byte" field.
-func (m *AppPackageMutation) AddBinarySizeByte(i int64) {
-	if m.addbinary_size_byte != nil {
-		*m.addbinary_size_byte += i
+// AddBinarySizeBytes adds i to the "binary_size_bytes" field.
+func (m *AppPackageMutation) AddBinarySizeBytes(i int64) {
+	if m.addbinary_size_bytes != nil {
+		*m.addbinary_size_bytes += i
 	} else {
-		m.addbinary_size_byte = &i
+		m.addbinary_size_bytes = &i
 	}
 }
 
-// AddedBinarySizeByte returns the value that was added to the "binary_size_byte" field in this mutation.
-func (m *AppPackageMutation) AddedBinarySizeByte() (r int64, exists bool) {
-	v := m.addbinary_size_byte
+// AddedBinarySizeBytes returns the value that was added to the "binary_size_bytes" field in this mutation.
+func (m *AppPackageMutation) AddedBinarySizeBytes() (r int64, exists bool) {
+	v := m.addbinary_size_bytes
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetBinarySizeByte resets all changes to the "binary_size_byte" field.
-func (m *AppPackageMutation) ResetBinarySizeByte() {
-	m.binary_size_byte = nil
-	m.addbinary_size_byte = nil
+// ResetBinarySizeBytes resets all changes to the "binary_size_bytes" field.
+func (m *AppPackageMutation) ResetBinarySizeBytes() {
+	m.binary_size_bytes = nil
+	m.addbinary_size_bytes = nil
 }
 
 // SetBinaryPublicURL sets the "binary_public_url" field.
@@ -2826,8 +2826,8 @@ func (m *AppPackageMutation) Fields() []string {
 	if m.binary_name != nil {
 		fields = append(fields, apppackage.FieldBinaryName)
 	}
-	if m.binary_size_byte != nil {
-		fields = append(fields, apppackage.FieldBinarySizeByte)
+	if m.binary_size_bytes != nil {
+		fields = append(fields, apppackage.FieldBinarySizeBytes)
 	}
 	if m.binary_public_url != nil {
 		fields = append(fields, apppackage.FieldBinaryPublicURL)
@@ -2861,8 +2861,8 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.Public()
 	case apppackage.FieldBinaryName:
 		return m.BinaryName()
-	case apppackage.FieldBinarySizeByte:
-		return m.BinarySizeByte()
+	case apppackage.FieldBinarySizeBytes:
+		return m.BinarySizeBytes()
 	case apppackage.FieldBinaryPublicURL:
 		return m.BinaryPublicURL()
 	case apppackage.FieldBinarySha256:
@@ -2892,8 +2892,8 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldPublic(ctx)
 	case apppackage.FieldBinaryName:
 		return m.OldBinaryName(ctx)
-	case apppackage.FieldBinarySizeByte:
-		return m.OldBinarySizeByte(ctx)
+	case apppackage.FieldBinarySizeBytes:
+		return m.OldBinarySizeBytes(ctx)
 	case apppackage.FieldBinaryPublicURL:
 		return m.OldBinaryPublicURL(ctx)
 	case apppackage.FieldBinarySha256:
@@ -2953,12 +2953,12 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBinaryName(v)
 		return nil
-	case apppackage.FieldBinarySizeByte:
+	case apppackage.FieldBinarySizeBytes:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBinarySizeByte(v)
+		m.SetBinarySizeBytes(v)
 		return nil
 	case apppackage.FieldBinaryPublicURL:
 		v, ok := value.(string)
@@ -2999,8 +2999,8 @@ func (m *AppPackageMutation) AddedFields() []string {
 	if m.addsource_id != nil {
 		fields = append(fields, apppackage.FieldSourceID)
 	}
-	if m.addbinary_size_byte != nil {
-		fields = append(fields, apppackage.FieldBinarySizeByte)
+	if m.addbinary_size_bytes != nil {
+		fields = append(fields, apppackage.FieldBinarySizeBytes)
 	}
 	return fields
 }
@@ -3012,8 +3012,8 @@ func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case apppackage.FieldSourceID:
 		return m.AddedSourceID()
-	case apppackage.FieldBinarySizeByte:
-		return m.AddedBinarySizeByte()
+	case apppackage.FieldBinarySizeBytes:
+		return m.AddedBinarySizeBytes()
 	}
 	return nil, false
 }
@@ -3030,12 +3030,12 @@ func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddSourceID(v)
 		return nil
-	case apppackage.FieldBinarySizeByte:
+	case apppackage.FieldBinarySizeBytes:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddBinarySizeByte(v)
+		m.AddBinarySizeBytes(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppPackage numeric field %s", name)
@@ -3082,8 +3082,8 @@ func (m *AppPackageMutation) ResetField(name string) error {
 	case apppackage.FieldBinaryName:
 		m.ResetBinaryName()
 		return nil
-	case apppackage.FieldBinarySizeByte:
-		m.ResetBinarySizeByte()
+	case apppackage.FieldBinarySizeBytes:
+		m.ResetBinarySizeBytes()
 		return nil
 	case apppackage.FieldBinaryPublicURL:
 		m.ResetBinaryPublicURL()

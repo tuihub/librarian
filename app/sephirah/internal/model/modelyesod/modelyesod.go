@@ -17,6 +17,8 @@ type FeedItemDigest struct {
 	ShortDescription string
 	ImageUrls        []string
 	PublishPlatform  string
+	FeedConfigName   string
+	FeedAvatarURL    string
 }
 
 type FeedWithConfig struct {

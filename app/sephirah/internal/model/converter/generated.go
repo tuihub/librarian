@@ -54,7 +54,7 @@ func (c *toBizConverterImpl) ToBizAppPackageBinary(source *v1.AppPackageBinary) 
 	if source != nil {
 		var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
 		modelgeburaAppPackageBinary.Name = (*source).Name
-		modelgeburaAppPackageBinary.SizeByte = (*source).SizeByte
+		modelgeburaAppPackageBinary.SizeBytes = (*source).SizeBytes
 		modelgeburaAppPackageBinary.PublicURL = (*source).PublicUrl
 		var byteList []uint8
 		if (*source).Sha256 != nil {
@@ -157,7 +157,7 @@ func (c *toBizConverterImpl) ToBizFileMetadata(source *v11.FileMetadata) *modelb
 		var modelbinahFileMetadata modelbinah.FileMetadata
 		modelbinahFileMetadata.ID = ToBizInternalID((*source).Id)
 		modelbinahFileMetadata.Name = (*source).Name
-		modelbinahFileMetadata.Size = (*source).Size
+		modelbinahFileMetadata.SizeBytes = (*source).SizeBytes
 		modelbinahFileMetadata.Type = ToBizFileType((*source).Type)
 		var byteList []uint8
 		if (*source).Sha256 != nil {
@@ -386,7 +386,7 @@ func (c *toPBConverterImpl) ToPBAppPackageBinary(source *modelgebura.AppPackageB
 	if source != nil {
 		var v1AppPackageBinary v1.AppPackageBinary
 		v1AppPackageBinary.Name = (*source).Name
-		v1AppPackageBinary.SizeByte = (*source).SizeByte
+		v1AppPackageBinary.SizeBytes = (*source).SizeBytes
 		v1AppPackageBinary.PublicUrl = (*source).PublicURL
 		var byteList []uint8
 		if (*source).Sha256 != nil {
@@ -534,6 +534,8 @@ func (c *toPBConverterImpl) ToPBFeedItemDigest(source *modelyesod.FeedItemDigest
 		}
 		v1FeedItemDigest.ImageUrls = stringList
 		v1FeedItemDigest.PublishPlatform = (*source).PublishPlatform
+		v1FeedItemDigest.FeedConfigName = (*source).FeedConfigName
+		v1FeedItemDigest.FeedAvatarUrl = (*source).FeedAvatarURL
 		pV1FeedItemDigest = &v1FeedItemDigest
 	}
 	return pV1FeedItemDigest
