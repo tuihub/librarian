@@ -25,7 +25,9 @@ type App struct {
 	Name             string
 	Type             AppType
 	ShortDescription string
-	ImageURL         string
+	HeroImageURL     string
+	LogoImageURL     string
+	IconImageURL     string
 	Description      string
 	ReleaseDate      string
 	Developer        string
@@ -111,19 +113,17 @@ func (s *SteamUseCase) GetOwnedGames(ctx context.Context, steamID string) ([]*Ap
 	if err != nil {
 		return nil, err
 	}
+	const imgBaseURL = "http://media.steampowered.com/steamcommunity/public/images/apps"
 	res := make([]*App, len(resp.Games))
 	for i, game := range resp.Games {
-		res[i] = &App{
-			AppID:            game.AppID,
-			StoreURL:         "",
-			Name:             game.Name,
-			Type:             AppTypeGame,
-			ShortDescription: "",
-			ImageURL:         "",
-			Description:      "",
-			ReleaseDate:      "",
-			Developer:        "",
-			Publisher:        "",
+		res[i] = new(App)
+		res[i].AppID = game.AppID
+		res[i].Name = game.Name
+		if len(game.ImgLogoURL) > 0 {
+			res[i].LogoImageURL = fmt.Sprintf("%s/%d/%s.jpg", imgBaseURL, game.AppID, game.ImgLogoURL)
+		}
+		if len(game.ImgIconURL) > 0 {
+			res[i].IconImageURL = fmt.Sprintf("%s/%d/%s.jpg", imgBaseURL, game.AppID, game.ImgIconURL)
 		}
 	}
 	return res, nil
@@ -146,18 +146,9 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 	}
 	var res *App
 	for _, app := range resp {
-		res = &App{
-			AppID:            uint(appID),
-			StoreURL:         fmt.Sprintf("https://store.steampowered.com/app/%d", appID),
-			Name:             "",
-			Type:             "",
-			ShortDescription: "",
-			ImageURL:         "",
-			Description:      "",
-			ReleaseDate:      "",
-			Developer:        "",
-			Publisher:        "",
-		}
+		res = new(App)
+		res.AppID = uint(appID)
+		res.StoreURL = fmt.Sprintf("https://store.steampowered.com/app/%d", appID)
 		if app.Success {
 			res = &App{
 				AppID:            uint(app.Data.AppID),
@@ -165,7 +156,9 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 				Name:             app.Data.Name,
 				Type:             AppType(app.Data.Type),
 				ShortDescription: app.Data.ShortDescription,
-				ImageURL:         app.Data.HeaderImage,
+				HeroImageURL:     app.Data.HeaderImage,
+				LogoImageURL:     "",
+				IconImageURL:     "",
 				Description:      app.Data.DetailedDescription,
 				ReleaseDate:      "Coming Soon",
 				Developer:        strings.Join(app.Data.Developers, ","),

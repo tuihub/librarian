@@ -7,7 +7,7 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
+func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // no need
 	var appID, appID2 *librarian.InternalID
 	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,
@@ -17,7 +17,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 		Name:             "test app 1",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
-		ImageUrl:         "",
+		IconImageUrl:     "",
+		Tags:             nil,
 		Details:          nil,
 	}}); err != nil {
 		panic(err)
@@ -47,7 +48,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 		Name:             "test app 1",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description update",
-		ImageUrl:         "",
+		IconImageUrl:     "",
+		Tags:             nil,
 		Details:          nil,
 	}}); err != nil {
 		panic(err)
@@ -60,7 +62,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 		Name:             "test app 2",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
-		ImageUrl:         "",
+		IconImageUrl:     "",
+		Tags:             nil,
 		Details:          nil,
 	}}); err != nil {
 		panic(err)
@@ -95,7 +98,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit // no need
 			Name:             "test app 1",
 			Type:             librarian.AppType_APP_TYPE_GAME,
 			ShortDescription: "test app description update",
-			ImageUrl:         "",
+			IconImageUrl:     "",
+			Tags:             nil,
 			Details:          nil,
 		},
 		Merged: appID2,

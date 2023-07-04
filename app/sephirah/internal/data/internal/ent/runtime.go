@@ -39,13 +39,13 @@ func init() {
 	appFields := schema.App{}.Fields()
 	_ = appFields
 	// appDescUpdatedAt is the schema descriptor for updated_at field.
-	appDescUpdatedAt := appFields[13].Descriptor()
+	appDescUpdatedAt := appFields[15].Descriptor()
 	// app.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	app.DefaultUpdatedAt = appDescUpdatedAt.Default.(func() time.Time)
 	// app.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	app.UpdateDefaultUpdatedAt = appDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// appDescCreatedAt is the schema descriptor for created_at field.
-	appDescCreatedAt := appFields[14].Descriptor()
+	appDescCreatedAt := appFields[16].Descriptor()
 	// app.DefaultCreatedAt holds the default value on creation for the created_at field.
 	app.DefaultCreatedAt = appDescCreatedAt.Default.(func() time.Time)
 	apppackageFields := schema.AppPackage{}.Fields()
@@ -75,21 +75,21 @@ func init() {
 	feedconfigFields := schema.FeedConfig{}.Fields()
 	_ = feedconfigFields
 	// feedconfigDescLatestPullAt is the schema descriptor for latest_pull_at field.
-	feedconfigDescLatestPullAt := feedconfigFields[8].Descriptor()
+	feedconfigDescLatestPullAt := feedconfigFields[9].Descriptor()
 	// feedconfig.DefaultLatestPullAt holds the default value on creation for the latest_pull_at field.
 	feedconfig.DefaultLatestPullAt = feedconfigDescLatestPullAt.Default.(time.Time)
 	// feedconfigDescNextPullBeginAt is the schema descriptor for next_pull_begin_at field.
-	feedconfigDescNextPullBeginAt := feedconfigFields[9].Descriptor()
+	feedconfigDescNextPullBeginAt := feedconfigFields[10].Descriptor()
 	// feedconfig.DefaultNextPullBeginAt holds the default value on creation for the next_pull_begin_at field.
 	feedconfig.DefaultNextPullBeginAt = feedconfigDescNextPullBeginAt.Default.(time.Time)
 	// feedconfigDescUpdatedAt is the schema descriptor for updated_at field.
-	feedconfigDescUpdatedAt := feedconfigFields[10].Descriptor()
+	feedconfigDescUpdatedAt := feedconfigFields[11].Descriptor()
 	// feedconfig.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	feedconfig.DefaultUpdatedAt = feedconfigDescUpdatedAt.Default.(func() time.Time)
 	// feedconfig.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feedconfig.UpdateDefaultUpdatedAt = feedconfigDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// feedconfigDescCreatedAt is the schema descriptor for created_at field.
-	feedconfigDescCreatedAt := feedconfigFields[11].Descriptor()
+	feedconfigDescCreatedAt := feedconfigFields[12].Descriptor()
 	// feedconfig.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feedconfig.DefaultCreatedAt = feedconfigDescCreatedAt.Default.(func() time.Time)
 	feeditemFields := schema.FeedItem{}.Fields()

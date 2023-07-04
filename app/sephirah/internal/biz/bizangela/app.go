@@ -29,8 +29,7 @@ func NewPullSteamAppTopic(
 			app := converter.ToBizApp(resp.GetApp())
 			app.ID = r.ID
 			app.Source = modelgebura.AppSourceSteam
-			app.Type = modelgebura.AppTypeGame
-			err = a.g.UpdateApp(ctx, app)
+			err = a.repo.UpdateApp(ctx, app)
 			if err != nil {
 				return err
 			}

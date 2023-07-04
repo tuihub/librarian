@@ -75,6 +75,12 @@ func (fcu *FeedConfigUpdate) SetStatus(f feedconfig.Status) *FeedConfigUpdate {
 	return fcu
 }
 
+// SetCategory sets the "category" field.
+func (fcu *FeedConfigUpdate) SetCategory(s string) *FeedConfigUpdate {
+	fcu.mutation.SetCategory(s)
+	return fcu
+}
+
 // SetPullInterval sets the "pull_interval" field.
 func (fcu *FeedConfigUpdate) SetPullInterval(t time.Duration) *FeedConfigUpdate {
 	fcu.mutation.ResetPullInterval()
@@ -303,6 +309,9 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 	}
+	if value, ok := fcu.mutation.Category(); ok {
+		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
+	}
 	if value, ok := fcu.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
@@ -484,6 +493,12 @@ func (fcuo *FeedConfigUpdateOne) SetSource(f feedconfig.Source) *FeedConfigUpdat
 // SetStatus sets the "status" field.
 func (fcuo *FeedConfigUpdateOne) SetStatus(f feedconfig.Status) *FeedConfigUpdateOne {
 	fcuo.mutation.SetStatus(f)
+	return fcuo
+}
+
+// SetCategory sets the "category" field.
+func (fcuo *FeedConfigUpdateOne) SetCategory(s string) *FeedConfigUpdateOne {
+	fcuo.mutation.SetCategory(s)
 	return fcuo
 }
 
@@ -744,6 +759,9 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := fcuo.mutation.Category(); ok {
+		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
 	}
 	if value, ok := fcuo.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)

@@ -62,6 +62,12 @@ func (fcc *FeedConfigCreate) SetStatus(f feedconfig.Status) *FeedConfigCreate {
 	return fcc
 }
 
+// SetCategory sets the "category" field.
+func (fcc *FeedConfigCreate) SetCategory(s string) *FeedConfigCreate {
+	fcc.mutation.SetCategory(s)
+	return fcc
+}
+
 // SetPullInterval sets the "pull_interval" field.
 func (fcc *FeedConfigCreate) SetPullInterval(t time.Duration) *FeedConfigCreate {
 	fcc.mutation.SetPullInterval(t)
@@ -258,6 +264,9 @@ func (fcc *FeedConfigCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
+	if _, ok := fcc.mutation.Category(); !ok {
+		return &ValidationError{Name: "category", err: errors.New(`ent: missing required field "FeedConfig.category"`)}
+	}
 	if _, ok := fcc.mutation.PullInterval(); !ok {
 		return &ValidationError{Name: "pull_interval", err: errors.New(`ent: missing required field "FeedConfig.pull_interval"`)}
 	}
@@ -328,6 +337,10 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
+	}
+	if value, ok := fcc.mutation.Category(); ok {
+		_spec.SetField(feedconfig.FieldCategory, field.TypeString, value)
+		_node.Category = value
 	}
 	if value, ok := fcc.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
@@ -525,6 +538,18 @@ func (u *FeedConfigUpsert) SetStatus(v feedconfig.Status) *FeedConfigUpsert {
 // UpdateStatus sets the "status" field to the value that was provided on create.
 func (u *FeedConfigUpsert) UpdateStatus() *FeedConfigUpsert {
 	u.SetExcluded(feedconfig.FieldStatus)
+	return u
+}
+
+// SetCategory sets the "category" field.
+func (u *FeedConfigUpsert) SetCategory(v string) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldCategory, v)
+	return u
+}
+
+// UpdateCategory sets the "category" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateCategory() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldCategory)
 	return u
 }
 
@@ -730,6 +755,20 @@ func (u *FeedConfigUpsertOne) SetStatus(v feedconfig.Status) *FeedConfigUpsertOn
 func (u *FeedConfigUpsertOne) UpdateStatus() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetCategory sets the "category" field.
+func (u *FeedConfigUpsertOne) SetCategory(v string) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetCategory(v)
+	})
+}
+
+// UpdateCategory sets the "category" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateCategory() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateCategory()
 	})
 }
 
@@ -1108,6 +1147,20 @@ func (u *FeedConfigUpsertBulk) SetStatus(v feedconfig.Status) *FeedConfigUpsertB
 func (u *FeedConfigUpsertBulk) UpdateStatus() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetCategory sets the "category" field.
+func (u *FeedConfigUpsertBulk) SetCategory(v string) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetCategory(v)
+	})
+}
+
+// UpdateCategory sets the "category" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateCategory() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateCategory()
 	})
 }
 

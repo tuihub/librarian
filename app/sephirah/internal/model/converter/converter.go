@@ -90,7 +90,7 @@ func ToPBFeedWithConfigList(a []*modelyesod.FeedWithConfig) []*pb.ListFeedConfig
 func ToPBItemIDWithFeedID(a *modelyesod.FeedItemDigest) *pb.FeedItemDigest {
 	return toPB.ToPBFeedItemDigest(a)
 }
-func ToPBItemIDWithFeedIDList(a []*modelyesod.FeedItemDigest) []*pb.FeedItemDigest {
+func ToPBFeedItemDigestList(a []*modelyesod.FeedItemDigest) []*pb.FeedItemDigest {
 	return toPB.ToPBFeedItemDigestList(a)
 }
 func ToPBTimeRange(a *model.TimeRange) *librarian.TimeRange {

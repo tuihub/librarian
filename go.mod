@@ -32,7 +32,7 @@ require (
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/sony/sonyflake v1.1.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tuihub/protos v0.2.31
+	github.com/tuihub/protos v0.2.33
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.10.0
 	golang.org/x/exp v0.0.0-20230626212559-97b1e661b5df
@@ -42,6 +42,7 @@ require (
 
 require (
 	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.31.0-20230609233005-3757a25ff0b9.1 // indirect
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect

@@ -3,6 +3,7 @@ package bizangela
 import (
 	"context"
 	"strconv"
+	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
@@ -48,6 +49,7 @@ func NewPullAccountTopic(
 					Name:              resp.GetAccount().GetName(),
 					ProfileURL:        resp.GetAccount().GetProfileUrl(),
 					AvatarURL:         resp.GetAccount().GetAvatarUrl(),
+					LatestUpdateTime:  time.Time{},
 				})
 				if err != nil {
 					return err
@@ -64,7 +66,7 @@ func NewPullAccountTopic(
 	)
 }
 
-func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
+func NewPullSteamAccountAppRelationTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
 	sa *libmq.Topic[modelangela.PullSteamApp],
 ) *libmq.Topic[modelangela.PullSteamAccountAppRelation] {
@@ -106,30 +108,16 @@ func NewPullSteamAccountAppRelationTopic( //nolint:funlen,gocognit // TODO
 				internalAppIDs = converter.ToBizInternalIDList(resp.GetIds())
 			}
 			for i, app := range appList {
-				internalApps = append(internalApps, &modelgebura.App{
-					ID:               internalAppIDs[i],
-					Source:           modelgebura.AppSourceInternal,
-					SourceAppID:      strconv.FormatInt(int64(internalAppIDs[i]), 10),
-					SourceURL:        "",
-					Name:             app.GetName(),
-					Type:             modelgebura.AppTypeGame,
-					ShortDescription: "",
-					ImageURL:         "",
-					Details:          nil,
-					BoundInternal:    internalAppIDs[i],
-				})
-				steamApps = append(steamApps, &modelgebura.App{
-					ID:               steamAppIDs[i],
-					Source:           modelgebura.AppSourceSteam,
-					SourceAppID:      app.GetSourceAppId(),
-					SourceURL:        "",
-					Name:             app.GetName(),
-					Type:             modelgebura.AppTypeGame,
-					ShortDescription: "",
-					ImageURL:         "",
-					Details:          nil,
-					BoundInternal:    internalAppIDs[i],
-				})
+				internalApps = append(internalApps, converter.ToBizApp(app))
+				internalApps[i].ID = internalAppIDs[i]
+				internalApps[i].Source = modelgebura.AppSourceInternal
+				internalApps[i].SourceAppID = strconv.FormatInt(int64(internalAppIDs[i]), 10)
+				internalApps[i].BoundInternal = internalAppIDs[i]
+
+				steamApps = append(steamApps, converter.ToBizApp(app))
+				steamApps[i].ID = steamAppIDs[i]
+				steamApps[i].Source = modelgebura.AppSourceSteam
+				steamApps[i].BoundInternal = internalAppIDs[i]
 			}
 			vl := make([]*mapper.Vertex, len(steamApps)*2) //nolint:gomnd // double
 			el := make([]*mapper.Edge, len(steamApps)*2)   //nolint:gomnd // double

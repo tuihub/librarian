@@ -29,8 +29,12 @@ const (
 	FieldShortDescription = "short_description"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// FieldImageURL holds the string denoting the image_url field in the database.
-	FieldImageURL = "image_url"
+	// FieldIconImageURL holds the string denoting the icon_image_url field in the database.
+	FieldIconImageURL = "icon_image_url"
+	// FieldHeroImageURL holds the string denoting the hero_image_url field in the database.
+	FieldHeroImageURL = "hero_image_url"
+	// FieldLogoImageURL holds the string denoting the logo_image_url field in the database.
+	FieldLogoImageURL = "logo_image_url"
 	// FieldReleaseDate holds the string denoting the release_date field in the database.
 	FieldReleaseDate = "release_date"
 	// FieldDeveloper holds the string denoting the developer field in the database.
@@ -85,7 +89,9 @@ var Columns = []string{
 	FieldType,
 	FieldShortDescription,
 	FieldDescription,
-	FieldImageURL,
+	FieldIconImageURL,
+	FieldHeroImageURL,
+	FieldLogoImageURL,
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
@@ -158,7 +164,8 @@ type Type string
 
 // Type values.
 const (
-	TypeGame Type = "game"
+	TypeUnknown Type = "unknown"
+	TypeGame    Type = "game"
 )
 
 func (_type Type) String() string {
@@ -168,7 +175,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeGame:
+	case TypeUnknown, TypeGame:
 		return nil
 	default:
 		return fmt.Errorf("app: invalid enum value for type field: %q", _type)
@@ -218,9 +225,19 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByImageURL orders the results by the image_url field.
-func ByImageURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldImageURL, opts...).ToFunc()
+// ByIconImageURL orders the results by the icon_image_url field.
+func ByIconImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIconImageURL, opts...).ToFunc()
+}
+
+// ByHeroImageURL orders the results by the hero_image_url field.
+func ByHeroImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHeroImageURL, opts...).ToFunc()
+}
+
+// ByLogoImageURL orders the results by the logo_image_url field.
+func ByLogoImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLogoImageURL, opts...).ToFunc()
 }
 
 // ByReleaseDate orders the results by the release_date field.

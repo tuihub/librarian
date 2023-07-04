@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -118,6 +119,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 		Name:              "",
 		ProfileURL:        "",
 		AvatarURL:         "",
+		LatestUpdateTime:  time.Time{},
 	})
 	if err != nil {
 		return nil, err
@@ -137,12 +139,13 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 		Name:              "",
 		ProfileURL:        "",
 		AvatarURL:         "",
+		LatestUpdateTime:  time.Time{},
 	}); err != nil {
 		return nil, err
 	}
 	return &pb.UnLinkAccountResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListLinkAccount(ctx context.Context, req *pb.ListLinkAccountsRequest) (
+func (s *LibrarianSephirahServiceService) ListLinkAccounts(ctx context.Context, req *pb.ListLinkAccountsRequest) (
 	*pb.ListLinkAccountsResponse, error,
 ) {
 	if req.GetPaging() == nil {

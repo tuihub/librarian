@@ -67,9 +67,21 @@ func (ac *AppCreate) SetDescription(s string) *AppCreate {
 	return ac
 }
 
-// SetImageURL sets the "image_url" field.
-func (ac *AppCreate) SetImageURL(s string) *AppCreate {
-	ac.mutation.SetImageURL(s)
+// SetIconImageURL sets the "icon_image_url" field.
+func (ac *AppCreate) SetIconImageURL(s string) *AppCreate {
+	ac.mutation.SetIconImageURL(s)
+	return ac
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (ac *AppCreate) SetHeroImageURL(s string) *AppCreate {
+	ac.mutation.SetHeroImageURL(s)
+	return ac
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (ac *AppCreate) SetLogoImageURL(s string) *AppCreate {
+	ac.mutation.SetLogoImageURL(s)
 	return ac
 }
 
@@ -265,8 +277,14 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "App.description"`)}
 	}
-	if _, ok := ac.mutation.ImageURL(); !ok {
-		return &ValidationError{Name: "image_url", err: errors.New(`ent: missing required field "App.image_url"`)}
+	if _, ok := ac.mutation.IconImageURL(); !ok {
+		return &ValidationError{Name: "icon_image_url", err: errors.New(`ent: missing required field "App.icon_image_url"`)}
+	}
+	if _, ok := ac.mutation.HeroImageURL(); !ok {
+		return &ValidationError{Name: "hero_image_url", err: errors.New(`ent: missing required field "App.hero_image_url"`)}
+	}
+	if _, ok := ac.mutation.LogoImageURL(); !ok {
+		return &ValidationError{Name: "logo_image_url", err: errors.New(`ent: missing required field "App.logo_image_url"`)}
 	}
 	if _, ok := ac.mutation.ReleaseDate(); !ok {
 		return &ValidationError{Name: "release_date", err: errors.New(`ent: missing required field "App.release_date"`)}
@@ -350,9 +368,17 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ac.mutation.ImageURL(); ok {
-		_spec.SetField(app.FieldImageURL, field.TypeString, value)
-		_node.ImageURL = value
+	if value, ok := ac.mutation.IconImageURL(); ok {
+		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
+		_node.IconImageURL = value
+	}
+	if value, ok := ac.mutation.HeroImageURL(); ok {
+		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+		_node.HeroImageURL = value
+	}
+	if value, ok := ac.mutation.LogoImageURL(); ok {
+		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
+		_node.LogoImageURL = value
 	}
 	if value, ok := ac.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
@@ -579,15 +605,39 @@ func (u *AppUpsert) UpdateDescription() *AppUpsert {
 	return u
 }
 
-// SetImageURL sets the "image_url" field.
-func (u *AppUpsert) SetImageURL(v string) *AppUpsert {
-	u.Set(app.FieldImageURL, v)
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsert) SetIconImageURL(v string) *AppUpsert {
+	u.Set(app.FieldIconImageURL, v)
 	return u
 }
 
-// UpdateImageURL sets the "image_url" field to the value that was provided on create.
-func (u *AppUpsert) UpdateImageURL() *AppUpsert {
-	u.SetExcluded(app.FieldImageURL)
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateIconImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldIconImageURL)
+	return u
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (u *AppUpsert) SetHeroImageURL(v string) *AppUpsert {
+	u.Set(app.FieldHeroImageURL, v)
+	return u
+}
+
+// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateHeroImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldHeroImageURL)
+	return u
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (u *AppUpsert) SetLogoImageURL(v string) *AppUpsert {
+	u.Set(app.FieldLogoImageURL, v)
+	return u
+}
+
+// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateLogoImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldLogoImageURL)
 	return u
 }
 
@@ -809,17 +859,45 @@ func (u *AppUpsertOne) UpdateDescription() *AppUpsertOne {
 	})
 }
 
-// SetImageURL sets the "image_url" field.
-func (u *AppUpsertOne) SetImageURL(v string) *AppUpsertOne {
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsertOne) SetIconImageURL(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetImageURL(v)
+		s.SetIconImageURL(v)
 	})
 }
 
-// UpdateImageURL sets the "image_url" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateImageURL() *AppUpsertOne {
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateIconImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateImageURL()
+		s.UpdateIconImageURL()
+	})
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (u *AppUpsertOne) SetHeroImageURL(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetHeroImageURL(v)
+	})
+}
+
+// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateHeroImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateHeroImageURL()
+	})
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (u *AppUpsertOne) SetLogoImageURL(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogoImageURL(v)
+	})
+}
+
+// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateLogoImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogoImageURL()
 	})
 }
 
@@ -1215,17 +1293,45 @@ func (u *AppUpsertBulk) UpdateDescription() *AppUpsertBulk {
 	})
 }
 
-// SetImageURL sets the "image_url" field.
-func (u *AppUpsertBulk) SetImageURL(v string) *AppUpsertBulk {
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsertBulk) SetIconImageURL(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetImageURL(v)
+		s.SetIconImageURL(v)
 	})
 }
 
-// UpdateImageURL sets the "image_url" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateImageURL() *AppUpsertBulk {
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateIconImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateImageURL()
+		s.UpdateIconImageURL()
+	})
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (u *AppUpsertBulk) SetHeroImageURL(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetHeroImageURL(v)
+	})
+}
+
+// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateHeroImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateHeroImageURL()
+	})
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (u *AppUpsertBulk) SetLogoImageURL(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetLogoImageURL(v)
+	})
+}
+
+// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateLogoImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateLogoImageURL()
 	})
 }
 

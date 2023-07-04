@@ -99,6 +99,61 @@ func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword st
 	return apps, total, nil
 }
 
+func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.App, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	}
+	apps, err := g.repo.GetBindApps(ctx, id)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	var internalApp *modelgebura.App
+	var steamApp *modelgebura.App
+	for _, app := range apps {
+		if app.Source == modelgebura.AppSourceInternal {
+			internalApp = app
+		}
+		if app.Source == modelgebura.AppSourceSteam {
+			steamApp = app
+		}
+	}
+	if len(internalApp.Name) == 0 {
+		internalApp.Name = steamApp.Name
+	}
+	if len(internalApp.ShortDescription) == 0 {
+		internalApp.ShortDescription = steamApp.ShortDescription
+	}
+	if len(internalApp.IconImageURL) == 0 {
+		internalApp.IconImageURL = steamApp.IconImageURL
+	}
+	if internalApp.Details == nil { //nolint:nestif //TODO
+		internalApp.Details = steamApp.Details
+	} else if steamApp.Details != nil {
+		if len(internalApp.Details.Description) == 0 {
+			internalApp.Details.Description = steamApp.Details.Description
+		}
+		if len(internalApp.Details.ReleaseDate) == 0 {
+			internalApp.Details.ReleaseDate = steamApp.Details.ReleaseDate
+		}
+		if len(internalApp.Details.Developer) == 0 {
+			internalApp.Details.Developer = steamApp.Details.Developer
+		}
+		if len(internalApp.Details.Publisher) == 0 {
+			internalApp.Details.Publisher = steamApp.Details.Publisher
+		}
+		if len(internalApp.Details.Version) == 0 {
+			internalApp.Details.Version = steamApp.Details.Version
+		}
+		if len(internalApp.Details.HeroImageURL) == 0 {
+			internalApp.Details.HeroImageURL = steamApp.Details.HeroImageURL
+		}
+		if len(internalApp.Details.LogoImageURL) == 0 {
+			internalApp.Details.LogoImageURL = steamApp.Details.LogoImageURL
+		}
+	}
+	return internalApp, nil
+}
+
 func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")

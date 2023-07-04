@@ -17,15 +17,15 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 	var feedConfigID, feedItemID int64
 	if resp, err := c.cli.CreateFeedConfig(ctx, &pb.CreateFeedConfigRequest{
 		Config: &pb.FeedConfig{
-			Id:             nil,
-			Name:           "",
-			FeedUrl:        feedURL,
-			AuthorAccount:  nil,
-			Source:         pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
-			Status:         pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND,
-			PullInterval:   durationpb.New(time.Hour),
-			Tags:           nil,
-			LatestPullTime: nil,
+			Id:               nil,
+			Name:             "",
+			FeedUrl:          feedURL,
+			AuthorAccount:    nil,
+			Source:           pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
+			Status:           pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND,
+			PullInterval:     durationpb.New(time.Hour),
+			Category:         "",
+			LatestUpdateTime: nil,
 		},
 	}); err != nil {
 		panic(err)
@@ -37,14 +37,14 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 			Id: &librarian.InternalID{
 				Id: feedConfigID,
 			},
-			Name:           "",
-			FeedUrl:        feedURL,
-			AuthorAccount:  nil,
-			Source:         pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
-			Status:         pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
-			PullInterval:   durationpb.New(time.Hour),
-			Tags:           nil,
-			LatestPullTime: nil,
+			Name:             "",
+			FeedUrl:          feedURL,
+			AuthorAccount:    nil,
+			Source:           pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON,
+			Status:           pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
+			PullInterval:     durationpb.New(time.Hour),
+			Category:         "",
+			LatestUpdateTime: nil,
 		},
 	}); err != nil {
 		panic(err)
@@ -56,6 +56,7 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 		AuthorIdFilter: nil,
 		SourceFilter:   nil,
 		StatusFilter:   nil,
+		CategoryFilter: nil,
 	}); err != nil {
 		return
 	} else if resp.GetPaging().GetTotalSize() != 1 ||
@@ -70,7 +71,7 @@ func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
 		AuthorIdFilter:        nil,
 		PublishPlatformFilter: nil,
 		PublishTimeRange:      nil,
-		TagFilter:             nil,
+		CategoryFilter:        nil,
 	}); err != nil {
 		panic(err)
 	} else if resp.GetPaging().GetTotalSize() < 1 ||

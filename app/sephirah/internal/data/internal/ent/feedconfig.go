@@ -32,6 +32,8 @@ type FeedConfig struct {
 	Source feedconfig.Source `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
+	// Category holds the value of the "category" field.
+	Category string `json:"category,omitempty"`
 	// PullInterval holds the value of the "pull_interval" field.
 	PullInterval time.Duration `json:"pull_interval,omitempty"`
 	// LatestPullAt holds the value of the "latest_pull_at" field.
@@ -103,7 +105,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus:
+		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus, feedconfig.FieldCategory:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -163,6 +165,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				fc.Status = feedconfig.Status(value.String)
+			}
+		case feedconfig.FieldCategory:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field category", values[i])
+			} else if value.Valid {
+				fc.Category = value.String
 			}
 		case feedconfig.FieldPullInterval:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -262,6 +270,9 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", fc.Status))
+	builder.WriteString(", ")
+	builder.WriteString("category=")
+	builder.WriteString(fc.Category)
 	builder.WriteString(", ")
 	builder.WriteString("pull_interval=")
 	builder.WriteString(fmt.Sprintf("%v", fc.PullInterval))

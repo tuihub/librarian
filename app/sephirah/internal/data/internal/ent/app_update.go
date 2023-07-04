@@ -73,9 +73,21 @@ func (au *AppUpdate) SetDescription(s string) *AppUpdate {
 	return au
 }
 
-// SetImageURL sets the "image_url" field.
-func (au *AppUpdate) SetImageURL(s string) *AppUpdate {
-	au.mutation.SetImageURL(s)
+// SetIconImageURL sets the "icon_image_url" field.
+func (au *AppUpdate) SetIconImageURL(s string) *AppUpdate {
+	au.mutation.SetIconImageURL(s)
+	return au
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (au *AppUpdate) SetHeroImageURL(s string) *AppUpdate {
+	au.mutation.SetHeroImageURL(s)
+	return au
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (au *AppUpdate) SetLogoImageURL(s string) *AppUpdate {
+	au.mutation.SetLogoImageURL(s)
 	return au
 }
 
@@ -340,8 +352,14 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := au.mutation.ImageURL(); ok {
-		_spec.SetField(app.FieldImageURL, field.TypeString, value)
+	if value, ok := au.mutation.IconImageURL(); ok {
+		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
+	}
+	if value, ok := au.mutation.HeroImageURL(); ok {
+		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	}
+	if value, ok := au.mutation.LogoImageURL(); ok {
+		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
 	}
 	if value, ok := au.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
@@ -587,9 +605,21 @@ func (auo *AppUpdateOne) SetDescription(s string) *AppUpdateOne {
 	return auo
 }
 
-// SetImageURL sets the "image_url" field.
-func (auo *AppUpdateOne) SetImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetImageURL(s)
+// SetIconImageURL sets the "icon_image_url" field.
+func (auo *AppUpdateOne) SetIconImageURL(s string) *AppUpdateOne {
+	auo.mutation.SetIconImageURL(s)
+	return auo
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (auo *AppUpdateOne) SetHeroImageURL(s string) *AppUpdateOne {
+	auo.mutation.SetHeroImageURL(s)
+	return auo
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (auo *AppUpdateOne) SetLogoImageURL(s string) *AppUpdateOne {
+	auo.mutation.SetLogoImageURL(s)
 	return auo
 }
 
@@ -884,8 +914,14 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if value, ok := auo.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := auo.mutation.ImageURL(); ok {
-		_spec.SetField(app.FieldImageURL, field.TypeString, value)
+	if value, ok := auo.mutation.IconImageURL(); ok {
+		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.HeroImageURL(); ok {
+		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.LogoImageURL(); ok {
+		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)

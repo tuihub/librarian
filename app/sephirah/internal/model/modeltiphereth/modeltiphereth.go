@@ -1,6 +1,8 @@
 package modeltiphereth
 
 import (
+	"time"
+
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -31,6 +33,7 @@ type Account struct {
 	Name              string
 	ProfileURL        string
 	AvatarURL         string
+	LatestUpdateTime  time.Time
 }
 
 type AccountPlatform int

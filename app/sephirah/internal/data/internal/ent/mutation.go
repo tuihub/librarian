@@ -787,7 +787,9 @@ type AppMutation struct {
 	_type                *app.Type
 	short_description    *string
 	description          *string
-	image_url            *string
+	icon_image_url       *string
+	hero_image_url       *string
+	logo_image_url       *string
 	release_date         *string
 	developer            *string
 	publisher            *string
@@ -1167,40 +1169,112 @@ func (m *AppMutation) ResetDescription() {
 	m.description = nil
 }
 
-// SetImageURL sets the "image_url" field.
-func (m *AppMutation) SetImageURL(s string) {
-	m.image_url = &s
+// SetIconImageURL sets the "icon_image_url" field.
+func (m *AppMutation) SetIconImageURL(s string) {
+	m.icon_image_url = &s
 }
 
-// ImageURL returns the value of the "image_url" field in the mutation.
-func (m *AppMutation) ImageURL() (r string, exists bool) {
-	v := m.image_url
+// IconImageURL returns the value of the "icon_image_url" field in the mutation.
+func (m *AppMutation) IconImageURL() (r string, exists bool) {
+	v := m.icon_image_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldImageURL returns the old "image_url" field's value of the App entity.
+// OldIconImageURL returns the old "icon_image_url" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldImageURL(ctx context.Context) (v string, err error) {
+func (m *AppMutation) OldIconImageURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldImageURL is only allowed on UpdateOne operations")
+		return v, errors.New("OldIconImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldImageURL requires an ID field in the mutation")
+		return v, errors.New("OldIconImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldImageURL: %w", err)
+		return v, fmt.Errorf("querying old value for OldIconImageURL: %w", err)
 	}
-	return oldValue.ImageURL, nil
+	return oldValue.IconImageURL, nil
 }
 
-// ResetImageURL resets all changes to the "image_url" field.
-func (m *AppMutation) ResetImageURL() {
-	m.image_url = nil
+// ResetIconImageURL resets all changes to the "icon_image_url" field.
+func (m *AppMutation) ResetIconImageURL() {
+	m.icon_image_url = nil
+}
+
+// SetHeroImageURL sets the "hero_image_url" field.
+func (m *AppMutation) SetHeroImageURL(s string) {
+	m.hero_image_url = &s
+}
+
+// HeroImageURL returns the value of the "hero_image_url" field in the mutation.
+func (m *AppMutation) HeroImageURL() (r string, exists bool) {
+	v := m.hero_image_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHeroImageURL returns the old "hero_image_url" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldHeroImageURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHeroImageURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHeroImageURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHeroImageURL: %w", err)
+	}
+	return oldValue.HeroImageURL, nil
+}
+
+// ResetHeroImageURL resets all changes to the "hero_image_url" field.
+func (m *AppMutation) ResetHeroImageURL() {
+	m.hero_image_url = nil
+}
+
+// SetLogoImageURL sets the "logo_image_url" field.
+func (m *AppMutation) SetLogoImageURL(s string) {
+	m.logo_image_url = &s
+}
+
+// LogoImageURL returns the value of the "logo_image_url" field in the mutation.
+func (m *AppMutation) LogoImageURL() (r string, exists bool) {
+	v := m.logo_image_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLogoImageURL returns the old "logo_image_url" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldLogoImageURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLogoImageURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLogoImageURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLogoImageURL: %w", err)
+	}
+	return oldValue.LogoImageURL, nil
+}
+
+// ResetLogoImageURL resets all changes to the "logo_image_url" field.
+func (m *AppMutation) ResetLogoImageURL() {
+	m.logo_image_url = nil
 }
 
 // SetReleaseDate sets the "release_date" field.
@@ -1654,7 +1728,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 16)
 	if m.source != nil {
 		fields = append(fields, app.FieldSource)
 	}
@@ -1676,8 +1750,14 @@ func (m *AppMutation) Fields() []string {
 	if m.description != nil {
 		fields = append(fields, app.FieldDescription)
 	}
-	if m.image_url != nil {
-		fields = append(fields, app.FieldImageURL)
+	if m.icon_image_url != nil {
+		fields = append(fields, app.FieldIconImageURL)
+	}
+	if m.hero_image_url != nil {
+		fields = append(fields, app.FieldHeroImageURL)
+	}
+	if m.logo_image_url != nil {
+		fields = append(fields, app.FieldLogoImageURL)
 	}
 	if m.release_date != nil {
 		fields = append(fields, app.FieldReleaseDate)
@@ -1719,8 +1799,12 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.ShortDescription()
 	case app.FieldDescription:
 		return m.Description()
-	case app.FieldImageURL:
-		return m.ImageURL()
+	case app.FieldIconImageURL:
+		return m.IconImageURL()
+	case app.FieldHeroImageURL:
+		return m.HeroImageURL()
+	case app.FieldLogoImageURL:
+		return m.LogoImageURL()
 	case app.FieldReleaseDate:
 		return m.ReleaseDate()
 	case app.FieldDeveloper:
@@ -1756,8 +1840,12 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldShortDescription(ctx)
 	case app.FieldDescription:
 		return m.OldDescription(ctx)
-	case app.FieldImageURL:
-		return m.OldImageURL(ctx)
+	case app.FieldIconImageURL:
+		return m.OldIconImageURL(ctx)
+	case app.FieldHeroImageURL:
+		return m.OldHeroImageURL(ctx)
+	case app.FieldLogoImageURL:
+		return m.OldLogoImageURL(ctx)
 	case app.FieldReleaseDate:
 		return m.OldReleaseDate(ctx)
 	case app.FieldDeveloper:
@@ -1828,12 +1916,26 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case app.FieldImageURL:
+	case app.FieldIconImageURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetImageURL(v)
+		m.SetIconImageURL(v)
+		return nil
+	case app.FieldHeroImageURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHeroImageURL(v)
+		return nil
+	case app.FieldLogoImageURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLogoImageURL(v)
 		return nil
 	case app.FieldReleaseDate:
 		v, ok := value.(string)
@@ -1947,8 +2049,14 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case app.FieldImageURL:
-		m.ResetImageURL()
+	case app.FieldIconImageURL:
+		m.ResetIconImageURL()
+		return nil
+	case app.FieldHeroImageURL:
+		m.ResetHeroImageURL()
+		return nil
+	case app.FieldLogoImageURL:
+		m.ResetLogoImageURL()
 		return nil
 	case app.FieldReleaseDate:
 		m.ResetReleaseDate()
@@ -4201,6 +4309,7 @@ type FeedConfigMutation struct {
 	addauthor_account  *model.InternalID
 	source             *feedconfig.Source
 	status             *feedconfig.Status
+	category           *string
 	pull_interval      *time.Duration
 	addpull_interval   *time.Duration
 	latest_pull_at     *time.Time
@@ -4558,6 +4667,42 @@ func (m *FeedConfigMutation) OldStatus(ctx context.Context) (v feedconfig.Status
 // ResetStatus resets all changes to the "status" field.
 func (m *FeedConfigMutation) ResetStatus() {
 	m.status = nil
+}
+
+// SetCategory sets the "category" field.
+func (m *FeedConfigMutation) SetCategory(s string) {
+	m.category = &s
+}
+
+// Category returns the value of the "category" field in the mutation.
+func (m *FeedConfigMutation) Category() (r string, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategory returns the old "category" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldCategory(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategory: %w", err)
+	}
+	return oldValue.Category, nil
+}
+
+// ResetCategory resets all changes to the "category" field.
+func (m *FeedConfigMutation) ResetCategory() {
+	m.category = nil
 }
 
 // SetPullInterval sets the "pull_interval" field.
@@ -4926,7 +5071,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.owner != nil {
 		fields = append(fields, feedconfig.FieldUserFeedConfig)
 	}
@@ -4944,6 +5089,9 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, feedconfig.FieldStatus)
+	}
+	if m.category != nil {
+		fields = append(fields, feedconfig.FieldCategory)
 	}
 	if m.pull_interval != nil {
 		fields = append(fields, feedconfig.FieldPullInterval)
@@ -4980,6 +5128,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.Source()
 	case feedconfig.FieldStatus:
 		return m.Status()
+	case feedconfig.FieldCategory:
+		return m.Category()
 	case feedconfig.FieldPullInterval:
 		return m.PullInterval()
 	case feedconfig.FieldLatestPullAt:
@@ -5011,6 +5161,8 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldSource(ctx)
 	case feedconfig.FieldStatus:
 		return m.OldStatus(ctx)
+	case feedconfig.FieldCategory:
+		return m.OldCategory(ctx)
 	case feedconfig.FieldPullInterval:
 		return m.OldPullInterval(ctx)
 	case feedconfig.FieldLatestPullAt:
@@ -5071,6 +5223,13 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case feedconfig.FieldCategory:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategory(v)
 		return nil
 	case feedconfig.FieldPullInterval:
 		v, ok := value.(time.Duration)
@@ -5200,6 +5359,9 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case feedconfig.FieldCategory:
+		m.ResetCategory()
 		return nil
 	case feedconfig.FieldPullInterval:
 		m.ResetPullInterval()

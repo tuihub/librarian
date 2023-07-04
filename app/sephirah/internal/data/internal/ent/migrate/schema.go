@@ -48,10 +48,12 @@ var (
 		{Name: "source_app_id", Type: field.TypeString},
 		{Name: "source_url", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"game"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"unknown", "game"}},
 		{Name: "short_description", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
-		{Name: "image_url", Type: field.TypeString},
+		{Name: "icon_image_url", Type: field.TypeString},
+		{Name: "hero_image_url", Type: field.TypeString},
+		{Name: "logo_image_url", Type: field.TypeString},
 		{Name: "release_date", Type: field.TypeString},
 		{Name: "developer", Type: field.TypeString},
 		{Name: "publisher", Type: field.TypeString},
@@ -68,7 +70,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "apps_apps_bind_external",
-				Columns:    []*schema.Column{AppsColumns[15]},
+				Columns:    []*schema.Column{AppsColumns[17]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -160,6 +162,7 @@ var (
 		{Name: "author_account", Type: field.TypeInt64},
 		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
+		{Name: "category", Type: field.TypeString},
 		{Name: "pull_interval", Type: field.TypeInt64},
 		{Name: "latest_pull_at", Type: field.TypeTime},
 		{Name: "next_pull_begin_at", Type: field.TypeTime},
@@ -175,7 +178,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[11]},
+				Columns:    []*schema.Column{FeedConfigsColumns[12]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -184,7 +187,7 @@ var (
 			{
 				Name:    "feedconfig_user_feed_config_feed_url",
 				Unique:  true,
-				Columns: []*schema.Column{FeedConfigsColumns[11], FeedConfigsColumns[2]},
+				Columns: []*schema.Column{FeedConfigsColumns[12], FeedConfigsColumns[2]},
 			},
 		},
 	}

@@ -27,6 +27,8 @@ const (
 	FieldSource = "source"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldCategory holds the string denoting the category field in the database.
+	FieldCategory = "category"
 	// FieldPullInterval holds the string denoting the pull_interval field in the database.
 	FieldPullInterval = "pull_interval"
 	// FieldLatestPullAt holds the string denoting the latest_pull_at field in the database.
@@ -75,6 +77,7 @@ var Columns = []string{
 	FieldAuthorAccount,
 	FieldSource,
 	FieldStatus,
+	FieldCategory,
 	FieldPullInterval,
 	FieldLatestPullAt,
 	FieldNextPullBeginAt,
@@ -192,6 +195,11 @@ func BySource(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByCategory orders the results by the category field.
+func ByCategory(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCategory, opts...).ToFunc()
 }
 
 // ByPullInterval orders the results by the pull_interval field.

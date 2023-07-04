@@ -1,5 +1,7 @@
 ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf h1:Tq2DRB39ZHScIwWACjPKLv5oEErv7zv6PBb5RTz5CKA=
 ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf/go.mod h1:+TR129FJZ5Lvzms6dvCeGWh1yR6hMvmXBhug4hrNIGk=
+buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.31.0-20230609233005-3757a25ff0b9.1 h1:0nKm28ysQfpk1VP76OOcv33yyI92L2EQMtvhzCd7EXE=
+buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.31.0-20230609233005-3757a25ff0b9.1/go.mod h1:xafc+XIsTxTy76GJQ1TKgvJWsSugFBqMaN27WhUblew=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.34.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.37.4/go.mod h1:NHPJ89PdicEuT9hdPXMROBD91xc5uRDxsMtSB16k7hw=
@@ -1025,8 +1027,10 @@ github.com/tklauser/numcpus v0.6.0 h1:kebhY2Qt+3U6RNK7UqpYNA+tJ23IBEGKkB7JQBfDYm
 github.com/tklauser/numcpus v0.6.0/go.mod h1:FEZLMke0lhOUG6w2JadTzp0a+Nl8PF/GFkQ5UVIcaL4=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20170815181823-89b8d40f7ca8/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
-github.com/tuihub/protos v0.2.31 h1:t52dYUgN5msAlbSussaC/HJ4wQ35N+IZDbKefZglHTw=
-github.com/tuihub/protos v0.2.31/go.mod h1:Nny0fvjgUu4b1oqF4qrRYxRb86yt6S5W7aIsrCu90cw=
+github.com/tuihub/protos v0.2.32 h1:8HvMWwRojLaBNN345Ju1Z0H/+9pI4g9q01O+7ScJ7dM=
+github.com/tuihub/protos v0.2.32/go.mod h1:gYzTTWD5eHZW6rKIMtB+upMjUY+zQHatxH0RDa4axLg=
+github.com/tuihub/protos v0.2.33 h1:YVjIc8qeN1R3FTf4MzsRAwk1768D0bK4gWoqfcs1bUw=
+github.com/tuihub/protos v0.2.33/go.mod h1:gYzTTWD5eHZW6rKIMtB+upMjUY+zQHatxH0RDa4axLg=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/twmb/murmur3 v1.1.6/go.mod h1:Qq/R7NUyOfr65zD+6Q5IHKsJLwP7exErjN6lyyq3OSQ=
 github.com/tylertreat/BoomFilters v0.0.0-20181028192813-611b3dbe80e8/go.mod h1:OYRfF6eb5wY9VRFkXJH8FFBi3plw2v+giaIu7P054pM=

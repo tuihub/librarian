@@ -46,6 +46,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
 	ToBizApp(*librarian.App) *modelgebura.App
+	// goverter:matchIgnoreCase
+	ToBizAppDetail(*librarian.AppDetails) *modelgebura.AppDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
 	ToBizAppSourceList([]librarian.AppSource) []modelgebura.AppSource
 
@@ -57,7 +59,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppPackageSourceList([]librarian.AppPackageSource) []modelgebura.AppPackageSource
 
 	// goverter:matchIgnoreCase
-	// goverter:ignore LatestPullTime
+	// goverter:ignore LatestUpdateTime
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigSourceList([]pb.FeedConfigSource) []modelyesod.FeedConfigSource
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus

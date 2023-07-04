@@ -92,6 +92,7 @@ func (s *LibrarianPorterServiceService) PullAccount(
 			Name:              u.Name,
 			ProfileUrl:        u.ProfileURL,
 			AvatarUrl:         u.AvatarURL,
+			LatestUpdateTime:  nil,
 		}}, nil
 	default:
 		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
@@ -123,13 +124,16 @@ func (s *LibrarianPorterServiceService) PullApp(
 			Name:             a.Name,
 			Type:             ToPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
-			ImageUrl:         a.ImageURL,
+			IconImageUrl:     "",
+			Tags:             nil,
 			Details: &librarian.AppDetails{ // TODO
-				Description: a.Description,
-				ReleaseDate: a.ReleaseDate,
-				Developer:   a.Developer,
-				Publisher:   a.Publisher,
-				Version:     "",
+				Description:  a.Description,
+				ReleaseDate:  a.ReleaseDate,
+				Developer:    a.Developer,
+				Publisher:    a.Publisher,
+				Version:      "",
+				HeroImageUrl: a.HeroImageURL,
+				LogoImageUrl: "",
 			},
 		}}, nil
 	default:
@@ -158,8 +162,17 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 				Name:             a.Name,
 				Type:             0,
 				ShortDescription: "",
-				ImageUrl:         "",
-				Details:          nil,
+				IconImageUrl:     a.IconImageURL,
+				Tags:             nil,
+				Details: &librarian.AppDetails{
+					Description:  "",
+					ReleaseDate:  "",
+					Developer:    "",
+					Publisher:    "",
+					Version:      "",
+					HeroImageUrl: "",
+					LogoImageUrl: a.LogoImageURL,
+				},
 			}
 		}
 		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil

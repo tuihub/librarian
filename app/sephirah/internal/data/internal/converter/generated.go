@@ -31,6 +31,7 @@ func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *modeltiphereth.A
 		modeltipherethAccount.Name = (*source).Name
 		modeltipherethAccount.ProfileURL = (*source).ProfileURL
 		modeltipherethAccount.AvatarURL = (*source).AvatarURL
+		modeltipherethAccount.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
 		pModeltipherethAccount = &modeltipherethAccount
 	}
 	return pModeltipherethAccount
@@ -56,7 +57,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
-		modelgeburaApp.ImageURL = (*source).ImageURL
+		modelgeburaApp.IconImageURL = (*source).IconImageURL
 		modelgeburaApp.Details = c.entAppToPModelgeburaAppDetails((*source))
 		pModelgeburaApp = &modelgeburaApp
 	}
@@ -141,11 +142,12 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		modelyesodFeedConfig.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.FeedURL = (*source).FeedURL
+		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.AuthorAccount = c.modelInternalIDToModelInternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
-		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
+		modelyesodFeedConfig.LatestUpdateTime = TimeToTime((*source).LatestPullAt)
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
@@ -306,6 +308,8 @@ func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) model
 	modelgeburaAppDetails.Developer = source.Developer
 	modelgeburaAppDetails.Publisher = source.Publisher
 	modelgeburaAppDetails.Version = source.Version
+	modelgeburaAppDetails.HeroImageURL = source.HeroImageURL
+	modelgeburaAppDetails.LogoImageURL = source.LogoImageURL
 	return modelgeburaAppDetails
 }
 func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
@@ -371,43 +375,61 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 		xstring = *pString
 	}
 	entApp.Description = xstring
-	entApp.ImageURL = source.ImageURL
+	entApp.IconImageURL = source.IconImageURL
 	var pString2 *string
 	if source.Details != nil {
-		pString2 = &source.Details.ReleaseDate
+		pString2 = &source.Details.HeroImageURL
 	}
 	var xstring2 string
 	if pString2 != nil {
 		xstring2 = *pString2
 	}
-	entApp.ReleaseDate = xstring2
+	entApp.HeroImageURL = xstring2
 	var pString3 *string
 	if source.Details != nil {
-		pString3 = &source.Details.Developer
+		pString3 = &source.Details.LogoImageURL
 	}
 	var xstring3 string
 	if pString3 != nil {
 		xstring3 = *pString3
 	}
-	entApp.Developer = xstring3
+	entApp.LogoImageURL = xstring3
 	var pString4 *string
 	if source.Details != nil {
-		pString4 = &source.Details.Publisher
+		pString4 = &source.Details.ReleaseDate
 	}
 	var xstring4 string
 	if pString4 != nil {
 		xstring4 = *pString4
 	}
-	entApp.Publisher = xstring4
+	entApp.ReleaseDate = xstring4
 	var pString5 *string
 	if source.Details != nil {
-		pString5 = &source.Details.Version
+		pString5 = &source.Details.Developer
 	}
 	var xstring5 string
 	if pString5 != nil {
 		xstring5 = *pString5
 	}
-	entApp.Version = xstring5
+	entApp.Developer = xstring5
+	var pString6 *string
+	if source.Details != nil {
+		pString6 = &source.Details.Publisher
+	}
+	var xstring6 string
+	if pString6 != nil {
+		xstring6 = *pString6
+	}
+	entApp.Publisher = xstring6
+	var pString7 *string
+	if source.Details != nil {
+		pString7 = &source.Details.Version
+	}
+	var xstring7 string
+	if pString7 != nil {
+		xstring7 = *pString7
+	}
+	entApp.Version = xstring7
 	return entApp
 }
 func (c *toEntConverterImpl) ToEntAppPackageSourceList(source []modelgebura.AppPackageSource) []apppackage.Source {

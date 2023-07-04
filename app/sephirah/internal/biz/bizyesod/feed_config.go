@@ -37,7 +37,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	}); err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	err = y.repo.CreateFeedConfig(ctx, config, claims.InternalID)
+	err = y.repo.CreateFeedConfig(ctx, claims.InternalID, config)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -48,9 +48,28 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return pb.ErrorErrorReasonForbidden("no permission")
 	}
-	err := y.repo.UpdateFeedConfig(ctx, config)
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return pb.ErrorErrorReasonUnauthorized("empty token")
+	}
+	err := y.repo.UpdateFeedConfig(ctx, claims.InternalID, config)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
+}
+
+func (y *Yesod) ListFeedConfigCategories(ctx context.Context) ([]string, *errors.Error) {
+	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	}
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return nil, pb.ErrorErrorReasonUnauthorized("empty token")
+	}
+	res, err := y.repo.ListFeedConfigCategories(ctx, claims.InternalID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res, nil
 }

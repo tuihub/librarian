@@ -14,8 +14,13 @@ import (
 )
 
 func (y *Yesod) ListFeeds(
-	ctx context.Context, paging model.Paging, ids []model.InternalID,
-	authorIDs []model.InternalID, sources []modelyesod.FeedConfigSource, statuses []modelyesod.FeedConfigStatus,
+	ctx context.Context,
+	paging model.Paging,
+	ids []model.InternalID,
+	authorIDs []model.InternalID,
+	sources []modelyesod.FeedConfigSource,
+	statuses []modelyesod.FeedConfigStatus,
+	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
@@ -24,7 +29,7 @@ func (y *Yesod) ListFeeds(
 	if !exist {
 		return nil, 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	feeds, i, err := y.repo.ListFeedConfigs(ctx, c.InternalID, paging, ids, authorIDs, sources, statuses)
+	feeds, i, err := y.repo.ListFeedConfigs(ctx, c.InternalID, paging, ids, authorIDs, sources, statuses, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -37,6 +42,7 @@ func (y *Yesod) ListFeedItems(
 	authorIDs []model.InternalID,
 	platforms []string,
 	timeRange *model.TimeRange,
+	categories []string,
 ) ([]*modelyesod.FeedItemDigest, int, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
@@ -45,7 +51,7 @@ func (y *Yesod) ListFeedItems(
 	if !exist {
 		return nil, 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	items, i, err := y.repo.ListFeedItems(ctx, c.InternalID, paging, feedIDs, authorIDs, platforms, timeRange)
+	items, i, err := y.repo.ListFeedItems(ctx, c.InternalID, paging, feedIDs, authorIDs, platforms, timeRange, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -60,6 +66,7 @@ func (y *Yesod) GroupFeedItems(
 	platforms []string,
 	timeRange *model.TimeRange,
 	groupSize int,
+	categories []string,
 ) (map[model.TimeRange][]*modelyesod.FeedItemDigest, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
@@ -120,7 +127,7 @@ func (y *Yesod) GroupFeedItems(
 		groupSize = 100
 	}
 	items, err := y.repo.GroupFeedItems(ctx, c.InternalID, groups, feedIDs, authorIDs,
-		platforms, groupSize)
+		platforms, groupSize, categories)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

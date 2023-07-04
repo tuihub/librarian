@@ -47,6 +47,7 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
 		converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
+		req.GetCategoryFilter(),
 	)
 	if err != nil {
 		return nil, err
@@ -55,6 +56,16 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		Paging:          &librarian.PagingResponse{TotalSize: int64(total)},
 		FeedsWithConfig: converter.ToPBFeedWithConfigList(feeds),
 	}, nil
+}
+func (s *LibrarianSephirahServiceService) ListFeedConfigCategories(
+	ctx context.Context,
+	req *pb.ListFeedConfigCategoriesRequest,
+) (*pb.ListFeedConfigCategoriesResponse, error) {
+	res, err := s.y.ListFeedConfigCategories(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedConfigCategoriesResponse{Categories: res}, nil
 }
 func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,
@@ -72,13 +83,14 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),
 		converter.ToBizTimeRange(req.GetPublishTimeRange()),
+		req.GetCategoryFilter(),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListFeedItemsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
-		Items:  converter.ToPBItemIDWithFeedIDList(items),
+		Items:  converter.ToPBFeedItemDigestList(items),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GroupFeedItems(
@@ -92,6 +104,7 @@ func (s *LibrarianSephirahServiceService) GroupFeedItems(
 		req.GetPublishPlatformFilter(),
 		converter.ToBizTimeRange(req.GetPublishTimeRange()),
 		int(req.GetGroupSize()),
+		req.GetCategoryFilter(),
 	)
 	if err != nil {
 		return nil, err
@@ -100,7 +113,7 @@ func (s *LibrarianSephirahServiceService) GroupFeedItems(
 	for timeRange, items := range itemMap {
 		res = append(res, &pb.GroupFeedItemsResponse_FeedItemsGroup{
 			TimeRange: converter.ToPBTimeRange(&timeRange),
-			Items:     converter.ToPBItemIDWithFeedIDList(items),
+			Items:     converter.ToPBFeedItemDigestList(items),
 		})
 	}
 	return &pb.GroupFeedItemsResponse{Groups: res}, nil

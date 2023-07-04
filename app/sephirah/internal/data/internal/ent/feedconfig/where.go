@@ -78,6 +78,11 @@ func AuthorAccount(v model.InternalID) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, vc))
 }
 
+// Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
+func Category(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldCategory, v))
+}
+
 // PullInterval applies equality check predicate on the "pull_interval" field. It's identical to PullIntervalEQ.
 func PullInterval(v time.Duration) predicate.FeedConfig {
 	vc := int64(v)
@@ -356,6 +361,71 @@ func StatusIn(vs ...Status) predicate.FeedConfig {
 // StatusNotIn applies the NotIn predicate on the "status" field.
 func StatusNotIn(vs ...Status) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// CategoryEQ applies the EQ predicate on the "category" field.
+func CategoryEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldCategory, v))
+}
+
+// CategoryNEQ applies the NEQ predicate on the "category" field.
+func CategoryNEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldCategory, v))
+}
+
+// CategoryIn applies the In predicate on the "category" field.
+func CategoryIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldCategory, vs...))
+}
+
+// CategoryNotIn applies the NotIn predicate on the "category" field.
+func CategoryNotIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldCategory, vs...))
+}
+
+// CategoryGT applies the GT predicate on the "category" field.
+func CategoryGT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldCategory, v))
+}
+
+// CategoryGTE applies the GTE predicate on the "category" field.
+func CategoryGTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldCategory, v))
+}
+
+// CategoryLT applies the LT predicate on the "category" field.
+func CategoryLT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldCategory, v))
+}
+
+// CategoryLTE applies the LTE predicate on the "category" field.
+func CategoryLTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldCategory, v))
+}
+
+// CategoryContains applies the Contains predicate on the "category" field.
+func CategoryContains(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContains(FieldCategory, v))
+}
+
+// CategoryHasPrefix applies the HasPrefix predicate on the "category" field.
+func CategoryHasPrefix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasPrefix(FieldCategory, v))
+}
+
+// CategoryHasSuffix applies the HasSuffix predicate on the "category" field.
+func CategoryHasSuffix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasSuffix(FieldCategory, v))
+}
+
+// CategoryEqualFold applies the EqualFold predicate on the "category" field.
+func CategoryEqualFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEqualFold(FieldCategory, v))
+}
+
+// CategoryContainsFold applies the ContainsFold predicate on the "category" field.
+func CategoryContainsFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContainsFold(FieldCategory, v))
 }
 
 // PullIntervalEQ applies the EQ predicate on the "pull_interval" field.

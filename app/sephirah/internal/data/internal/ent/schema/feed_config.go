@@ -29,6 +29,7 @@ func (FeedConfig) Fields() []ent.Field {
 		field.Enum("source").Values("common"),
 		field.Enum("status").
 			Values("active", "suspend"),
+		field.String("category"),
 		field.Int64("pull_interval").
 			GoType(time.Duration(0)),
 		field.Time("latest_pull_at").

@@ -16,17 +16,18 @@ import (
 )
 
 type YesodRepo interface {
-	CreateFeedConfig(context.Context, *modelyesod.FeedConfig, model.InternalID) error
-	UpdateFeedConfig(context.Context, *modelyesod.FeedConfig) error
+	CreateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
+	UpdateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
+	ListFeedConfigCategories(context.Context, model.InternalID) ([]string, error)
 	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpdateFeedConfigAsInQueue(context.Context, model.InternalID) error
 	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
-		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus) ([]*modelyesod.FeedWithConfig, int, error)
+		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus, []string) ([]*modelyesod.FeedWithConfig, int, error)
 	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,
-		[]model.InternalID, []string, *model.TimeRange) ([]*modelyesod.FeedItemDigest, int, error)
+		[]model.InternalID, []string, *model.TimeRange, []string) ([]*modelyesod.FeedItemDigest, int, error)
 	GroupFeedItems(context.Context, model.InternalID, []model.TimeRange, []model.InternalID,
-		[]model.InternalID, []string, int) (
+		[]model.InternalID, []string, int, []string) (
 		map[model.TimeRange][]*modelyesod.FeedItemDigest, error)
 	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
 }

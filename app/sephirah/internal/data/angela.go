@@ -43,6 +43,54 @@ func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Accou
 		Exec(ctx)
 }
 
+func (a *angelaRepo) UpdateApp(ctx context.Context, ap *modelgebura.App) error {
+	q := a.data.db.App.Update().
+		Where(
+			app.IDEQ(ap.ID),
+			app.SourceEQ(converter.ToEntAppSource(ap.Source)),
+			app.SourceAppIDEQ(ap.SourceAppID),
+		)
+	if len(ap.SourceURL) > 0 {
+		q.SetSourceURL(ap.SourceURL)
+	}
+	if len(ap.Name) > 0 {
+		q.SetName(ap.Name)
+	}
+	if ap.Type != modelgebura.AppTypeUnspecified {
+		q.SetType(converter.ToEntAppType(ap.Type))
+	}
+	if len(ap.ShortDescription) > 0 {
+		q.SetShortDescription(ap.ShortDescription)
+	}
+	if len(ap.IconImageURL) > 0 {
+		q.SetIconImageURL(ap.IconImageURL)
+	}
+	if ap.Details != nil { //nolint:nestif // TODO
+		if len(ap.Details.Description) > 0 {
+			q.SetDescription(ap.Details.Description)
+		}
+		if len(ap.Details.ReleaseDate) > 0 {
+			q.SetReleaseDate(ap.Details.ReleaseDate)
+		}
+		if len(ap.Details.Developer) > 0 {
+			q.SetDeveloper(ap.Details.Developer)
+		}
+		if len(ap.Details.Publisher) > 0 {
+			q.SetPublisher(ap.Details.Publisher)
+		}
+		if len(ap.Details.Version) > 0 {
+			q.SetVersion(ap.Details.Version)
+		}
+		if len(ap.Details.HeroImageURL) > 0 {
+			q.SetHeroImageURL(ap.Details.HeroImageURL)
+		}
+		if len(ap.Details.LogoImageURL) > 0 {
+			q.SetLogoImageURL(ap.Details.LogoImageURL)
+		}
+	}
+	return q.Exec(ctx)
+}
+
 func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) error {
 	apps := make([]*ent.AppCreate, len(al))
 	for i, ap := range al {
@@ -57,7 +105,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 			SetName(ap.Name).
 			SetType(converter.ToEntAppType(ap.Type)).
 			SetShortDescription(ap.ShortDescription).
-			SetImageURL(ap.ImageURL).
+			SetIconImageURL(ap.IconImageURL).
 			SetBindInternalID(ap.BoundInternal)
 		if ap.Details != nil {
 			apps[i].
@@ -65,7 +113,9 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 				SetReleaseDate(ap.Details.ReleaseDate).
 				SetDeveloper(ap.Details.Developer).
 				SetPublisher(ap.Details.Publisher).
-				SetVersion(ap.Details.Version)
+				SetVersion(ap.Details.Version).
+				SetHeroImageURL(ap.Details.HeroImageURL).
+				SetLogoImageURL(ap.Details.LogoImageURL)
 		}
 	}
 	return a.data.db.App.

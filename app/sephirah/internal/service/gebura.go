@@ -102,6 +102,15 @@ func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *p
 		Apps:   converter.ToPBAppList(apps),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) GetApp(ctx context.Context, req *pb.GetAppRequest) (
+	*pb.GetAppResponse, error,
+) {
+	res, err := s.g.GetApp(ctx, converter.ToBizInternalID(req.GetAppId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GetAppResponse{App: converter.ToPBApp(res)}, nil
+}
 func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *pb.GetBindAppsRequest) (
 	*pb.GetBindAppsResponse, error,
 ) {

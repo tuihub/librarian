@@ -78,11 +78,11 @@ func ToEntUserStatus(s modeltiphereth.UserStatus) user.Status {
 func ToEntAppType(t modelgebura.AppType) app.Type {
 	switch t {
 	case modelgebura.AppTypeUnspecified:
-		return ""
+		return app.TypeUnknown
 	case modelgebura.AppTypeGame:
 		return app.TypeGame
 	default:
-		return ""
+		return app.TypeUnknown
 	}
 }
 

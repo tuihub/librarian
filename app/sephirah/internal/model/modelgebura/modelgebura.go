@@ -10,18 +10,21 @@ type App struct {
 	Name             string
 	Type             AppType
 	ShortDescription string
-	ImageURL         string
+	IconImageURL     string
+	Tags             []string
 	Details          *AppDetails
 	// the bound internal app id if self is external
 	BoundInternal model.InternalID
 }
 
 type AppDetails struct {
-	Description string
-	ReleaseDate string
-	Developer   string
-	Publisher   string
-	Version     string
+	Description  string
+	ReleaseDate  string
+	Developer    string
+	Publisher    string
+	Version      string
+	HeroImageURL string
+	LogoImageURL string
 }
 
 type AppSource int

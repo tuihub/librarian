@@ -129,7 +129,7 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	digest := new(modelyesod.FeedItemDigest)
 	digest.FeedID = a.FeedID
 	digest.ItemID = a.ID
-	digest.PublishedParsed = a.PublishedParsed
+	digest.PublishedParsedTime = a.PublishedParsed
 	digest.Title = a.Title
 	digest.PublishPlatform = a.PublishPlatform
 	digest.ShortDescription = a.DigestDescription

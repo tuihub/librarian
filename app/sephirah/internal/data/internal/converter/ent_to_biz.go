@@ -34,6 +34,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Platform | ToBizAccountPlatform
+	// goverter:map UpdatedAt LatestUpdateTime
 	ToBizAccount(*ent.Account) *modeltiphereth.Account
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
@@ -42,6 +43,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map Source | ToBizAppSource
 	// goverter:map . Details
 	// goverter:ignore BoundInternal
+	// goverter:ignore Tags
 	ToBizApp(*ent.App) *modelgebura.App
 	ToBizAppList([]*ent.App) []*modelgebura.App
 
@@ -59,7 +61,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map Source | ToBizFeedConfigSource
 	// goverter:map Status | ToBizFeedConfigStatus
-	// goverter:map LatestPullAt LatestPullTime
+	// goverter:map LatestPullAt LatestUpdateTime
 	// goverter:ignore Tags
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
@@ -121,6 +123,8 @@ func ToBizUserStatus(s user.Status) modeltiphereth.UserStatus {
 
 func ToBizAppType(t app.Type) modelgebura.AppType {
 	switch t {
+	case app.TypeUnknown:
+		return modelgebura.AppTypeUnspecified
 	case app.TypeGame:
 		return modelgebura.AppTypeGame
 	default:

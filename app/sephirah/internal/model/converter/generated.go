@@ -28,11 +28,34 @@ func (c *toBizConverterImpl) ToBizApp(source *v1.App) *modelgebura.App {
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
-		modelgeburaApp.ImageURL = (*source).ImageUrl
-		modelgeburaApp.Details = c.pV1AppDetailsToPModelgeburaAppDetails((*source).Details)
+		modelgeburaApp.IconImageURL = (*source).IconImageUrl
+		var stringList []string
+		if (*source).Tags != nil {
+			stringList = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				stringList[i] = (*source).Tags[i]
+			}
+		}
+		modelgeburaApp.Tags = stringList
+		modelgeburaApp.Details = c.ToBizAppDetail((*source).Details)
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
+}
+func (c *toBizConverterImpl) ToBizAppDetail(source *v1.AppDetails) *modelgebura.AppDetails {
+	var pModelgeburaAppDetails *modelgebura.AppDetails
+	if source != nil {
+		var modelgeburaAppDetails modelgebura.AppDetails
+		modelgeburaAppDetails.Description = (*source).Description
+		modelgeburaAppDetails.ReleaseDate = (*source).ReleaseDate
+		modelgeburaAppDetails.Developer = (*source).Developer
+		modelgeburaAppDetails.Publisher = (*source).Publisher
+		modelgeburaAppDetails.Version = (*source).Version
+		modelgeburaAppDetails.HeroImageURL = (*source).HeroImageUrl
+		modelgeburaAppDetails.LogoImageURL = (*source).LogoImageUrl
+		pModelgeburaAppDetails = &modelgeburaAppDetails
+	}
+	return pModelgeburaAppDetails
 }
 func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura.AppPackage {
 	var pModelgeburaAppPackage *modelgebura.AppPackage
@@ -115,14 +138,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		modelyesodFeedConfig.ID = ToBizInternalID((*source).Id)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.FeedURL = (*source).FeedUrl
-		var stringList []string
-		if (*source).Tags != nil {
-			stringList = make([]string, len((*source).Tags))
-			for i := 0; i < len((*source).Tags); i++ {
-				stringList[i] = (*source).Tags[i]
-			}
-		}
-		modelyesodFeedConfig.Tags = stringList
+		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
@@ -298,19 +314,6 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 	}
 	return libauthUserTypeList
 }
-func (c *toBizConverterImpl) pV1AppDetailsToPModelgeburaAppDetails(source *v1.AppDetails) *modelgebura.AppDetails {
-	var pModelgeburaAppDetails *modelgebura.AppDetails
-	if source != nil {
-		var modelgeburaAppDetails modelgebura.AppDetails
-		modelgeburaAppDetails.Description = (*source).Description
-		modelgeburaAppDetails.ReleaseDate = (*source).ReleaseDate
-		modelgeburaAppDetails.Developer = (*source).Developer
-		modelgeburaAppDetails.Publisher = (*source).Publisher
-		modelgeburaAppDetails.Version = (*source).Version
-		pModelgeburaAppDetails = &modelgeburaAppDetails
-	}
-	return pModelgeburaAppDetails
-}
 
 type toPBConverterImpl struct{}
 
@@ -324,6 +327,7 @@ func (c *toPBConverterImpl) ToPBAccount(source *modeltiphereth.Account) *v1.Acco
 		v1Account.Name = (*source).Name
 		v1Account.ProfileUrl = (*source).ProfileURL
 		v1Account.AvatarUrl = (*source).AvatarURL
+		v1Account.LatestUpdateTime = ToPBTime((*source).LatestUpdateTime)
 		pV1Account = &v1Account
 	}
 	return pV1Account
@@ -350,11 +354,34 @@ func (c *toPBConverterImpl) ToPBApp(source *modelgebura.App) *v1.App {
 		v1App.Name = (*source).Name
 		v1App.Type = ToPBAppType((*source).Type)
 		v1App.ShortDescription = (*source).ShortDescription
-		v1App.ImageUrl = (*source).ImageURL
-		v1App.Details = c.pModelgeburaAppDetailsToPV1AppDetails((*source).Details)
+		v1App.IconImageUrl = (*source).IconImageURL
+		var stringList []string
+		if (*source).Tags != nil {
+			stringList = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				stringList[i] = (*source).Tags[i]
+			}
+		}
+		v1App.Tags = stringList
+		v1App.Details = c.ToPBAppDetail((*source).Details)
 		pV1App = &v1App
 	}
 	return pV1App
+}
+func (c *toPBConverterImpl) ToPBAppDetail(source *modelgebura.AppDetails) *v1.AppDetails {
+	var pV1AppDetails *v1.AppDetails
+	if source != nil {
+		var v1AppDetails v1.AppDetails
+		v1AppDetails.Description = (*source).Description
+		v1AppDetails.ReleaseDate = (*source).ReleaseDate
+		v1AppDetails.Developer = (*source).Developer
+		v1AppDetails.Publisher = (*source).Publisher
+		v1AppDetails.Version = (*source).Version
+		v1AppDetails.HeroImageUrl = (*source).HeroImageURL
+		v1AppDetails.LogoImageUrl = (*source).LogoImageURL
+		pV1AppDetails = &v1AppDetails
+	}
+	return pV1AppDetails
 }
 func (c *toPBConverterImpl) ToPBAppList(source []*modelgebura.App) []*v1.App {
 	var pV1AppList []*v1.App
@@ -455,15 +482,8 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		v1FeedConfig.Source = ToPBFeedConfigSource((*source).Source)
 		v1FeedConfig.Status = ToPBFeedConfigStatus((*source).Status)
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
-		var stringList []string
-		if (*source).Tags != nil {
-			stringList = make([]string, len((*source).Tags))
-			for i := 0; i < len((*source).Tags); i++ {
-				stringList[i] = (*source).Tags[i]
-			}
-		}
-		v1FeedConfig.Tags = stringList
-		v1FeedConfig.LatestPullTime = ToPBTime((*source).LatestPullTime)
+		v1FeedConfig.Category = (*source).Category
+		v1FeedConfig.LatestUpdateTime = ToPBTime((*source).LatestUpdateTime)
 		pV1FeedConfig = &v1FeedConfig
 	}
 	return pV1FeedConfig
@@ -522,7 +542,7 @@ func (c *toPBConverterImpl) ToPBFeedItemDigest(source *modelyesod.FeedItemDigest
 		v1FeedItemDigest.ItemId = ToPBInternalID((*source).ItemID)
 		v1FeedItemDigest.AvatarUrl = (*source).AvatarURL
 		v1FeedItemDigest.Authors = (*source).Authors
-		v1FeedItemDigest.PublishedParsed = ToPBTime((*source).PublishedParsed)
+		v1FeedItemDigest.PublishedParsedTime = ToPBTime((*source).PublishedParsedTime)
 		v1FeedItemDigest.Title = (*source).Title
 		v1FeedItemDigest.ShortDescription = (*source).ShortDescription
 		var stringList []string
@@ -705,17 +725,4 @@ func (c *toPBConverterImpl) pModelfeedPersonToPV1FeedPerson(source *modelfeed.Pe
 		pV1FeedPerson = &v1FeedPerson
 	}
 	return pV1FeedPerson
-}
-func (c *toPBConverterImpl) pModelgeburaAppDetailsToPV1AppDetails(source *modelgebura.AppDetails) *v1.AppDetails {
-	var pV1AppDetails *v1.AppDetails
-	if source != nil {
-		var v1AppDetails v1.AppDetails
-		v1AppDetails.Description = (*source).Description
-		v1AppDetails.ReleaseDate = (*source).ReleaseDate
-		v1AppDetails.Developer = (*source).Developer
-		v1AppDetails.Publisher = (*source).Publisher
-		v1AppDetails.Version = (*source).Version
-		pV1AppDetails = &v1AppDetails
-	}
-	return pV1AppDetails
 }

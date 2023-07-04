@@ -8,17 +8,17 @@ import (
 )
 
 type FeedItemDigest struct {
-	FeedID           model.InternalID
-	ItemID           model.InternalID
-	AvatarURL        string
-	Authors          string
-	PublishedParsed  time.Time
-	Title            string
-	ShortDescription string
-	ImageUrls        []string
-	PublishPlatform  string
-	FeedConfigName   string
-	FeedAvatarURL    string
+	FeedID              model.InternalID
+	ItemID              model.InternalID
+	AvatarURL           string
+	Authors             string
+	PublishedParsedTime time.Time
+	Title               string
+	ShortDescription    string
+	ImageUrls           []string
+	PublishPlatform     string
+	FeedConfigName      string
+	FeedAvatarURL       string
 }
 
 type FeedWithConfig struct {
@@ -27,15 +27,15 @@ type FeedWithConfig struct {
 }
 
 type FeedConfig struct {
-	ID             model.InternalID
-	Name           string
-	FeedURL        string
-	Tags           []string
-	AuthorAccount  model.InternalID
-	Source         FeedConfigSource
-	Status         FeedConfigStatus
-	PullInterval   time.Duration
-	LatestPullTime time.Time
+	ID               model.InternalID
+	Name             string
+	FeedURL          string
+	Category         string
+	AuthorAccount    model.InternalID
+	Source           FeedConfigSource
+	Status           FeedConfigStatus
+	PullInterval     time.Duration
+	LatestUpdateTime time.Time
 }
 
 type FeedConfigSource int
