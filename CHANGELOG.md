@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/TuiHub/Librarian/compare/v0.1.5...v0.1.6) (2023-07-04)
+
+
+### Features
+
+* upgrade proto & add GetApp ListFeedConfigCategories ([41379b1](https://github.com/TuiHub/Librarian/commit/41379b1bc881d059a8c5f41cc1814c9cd684aa5b))
+
 ## [0.1.5](https://github.com/TuiHub/Librarian/compare/v0.1.4...v0.1.5) (2023-07-01)
 
 
