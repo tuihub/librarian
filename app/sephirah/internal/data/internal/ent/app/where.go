@@ -266,6 +266,16 @@ func SourceURLHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldSourceURL, v))
 }
 
+// SourceURLIsNil applies the IsNil predicate on the "source_url" field.
+func SourceURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldSourceURL))
+}
+
+// SourceURLNotNil applies the NotNil predicate on the "source_url" field.
+func SourceURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldSourceURL))
+}
+
 // SourceURLEqualFold applies the EqualFold predicate on the "source_url" field.
 func SourceURLEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldSourceURL, v))
@@ -416,6 +426,16 @@ func ShortDescriptionHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldShortDescription, v))
 }
 
+// ShortDescriptionIsNil applies the IsNil predicate on the "short_description" field.
+func ShortDescriptionIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldShortDescription))
+}
+
+// ShortDescriptionNotNil applies the NotNil predicate on the "short_description" field.
+func ShortDescriptionNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldShortDescription))
+}
+
 // ShortDescriptionEqualFold applies the EqualFold predicate on the "short_description" field.
 func ShortDescriptionEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldShortDescription, v))
@@ -479,6 +499,16 @@ func DescriptionHasPrefix(v string) predicate.App {
 // DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
 func DescriptionHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldDescription))
 }
 
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
@@ -546,6 +576,16 @@ func IconImageURLHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldIconImageURL, v))
 }
 
+// IconImageURLIsNil applies the IsNil predicate on the "icon_image_url" field.
+func IconImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldIconImageURL))
+}
+
+// IconImageURLNotNil applies the NotNil predicate on the "icon_image_url" field.
+func IconImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldIconImageURL))
+}
+
 // IconImageURLEqualFold applies the EqualFold predicate on the "icon_image_url" field.
 func IconImageURLEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldIconImageURL, v))
@@ -609,6 +649,16 @@ func HeroImageURLHasPrefix(v string) predicate.App {
 // HeroImageURLHasSuffix applies the HasSuffix predicate on the "hero_image_url" field.
 func HeroImageURLHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldHeroImageURL, v))
+}
+
+// HeroImageURLIsNil applies the IsNil predicate on the "hero_image_url" field.
+func HeroImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldHeroImageURL))
+}
+
+// HeroImageURLNotNil applies the NotNil predicate on the "hero_image_url" field.
+func HeroImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldHeroImageURL))
 }
 
 // HeroImageURLEqualFold applies the EqualFold predicate on the "hero_image_url" field.
@@ -676,6 +726,16 @@ func LogoImageURLHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldLogoImageURL, v))
 }
 
+// LogoImageURLIsNil applies the IsNil predicate on the "logo_image_url" field.
+func LogoImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldLogoImageURL))
+}
+
+// LogoImageURLNotNil applies the NotNil predicate on the "logo_image_url" field.
+func LogoImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldLogoImageURL))
+}
+
 // LogoImageURLEqualFold applies the EqualFold predicate on the "logo_image_url" field.
 func LogoImageURLEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldLogoImageURL, v))
@@ -739,6 +799,16 @@ func ReleaseDateHasPrefix(v string) predicate.App {
 // ReleaseDateHasSuffix applies the HasSuffix predicate on the "release_date" field.
 func ReleaseDateHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldReleaseDate, v))
+}
+
+// ReleaseDateIsNil applies the IsNil predicate on the "release_date" field.
+func ReleaseDateIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldReleaseDate))
+}
+
+// ReleaseDateNotNil applies the NotNil predicate on the "release_date" field.
+func ReleaseDateNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldReleaseDate))
 }
 
 // ReleaseDateEqualFold applies the EqualFold predicate on the "release_date" field.
@@ -806,6 +876,16 @@ func DeveloperHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldDeveloper, v))
 }
 
+// DeveloperIsNil applies the IsNil predicate on the "developer" field.
+func DeveloperIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldDeveloper))
+}
+
+// DeveloperNotNil applies the NotNil predicate on the "developer" field.
+func DeveloperNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldDeveloper))
+}
+
 // DeveloperEqualFold applies the EqualFold predicate on the "developer" field.
 func DeveloperEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldDeveloper, v))
@@ -871,6 +951,16 @@ func PublisherHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldPublisher, v))
 }
 
+// PublisherIsNil applies the IsNil predicate on the "publisher" field.
+func PublisherIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldPublisher))
+}
+
+// PublisherNotNil applies the NotNil predicate on the "publisher" field.
+func PublisherNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldPublisher))
+}
+
 // PublisherEqualFold applies the EqualFold predicate on the "publisher" field.
 func PublisherEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldPublisher, v))
@@ -934,6 +1024,16 @@ func VersionHasPrefix(v string) predicate.App {
 // VersionHasSuffix applies the HasSuffix predicate on the "version" field.
 func VersionHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldVersion, v))
+}
+
+// VersionIsNil applies the IsNil predicate on the "version" field.
+func VersionIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldVersion))
+}
+
+// VersionNotNil applies the NotNil predicate on the "version" field.
+func VersionNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldVersion))
 }
 
 // VersionEqualFold applies the EqualFold predicate on the "version" field.

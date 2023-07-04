@@ -21,19 +21,19 @@ func (App) Fields() []ent.Field {
 		field.Enum("source").
 			Values("internal", "steam"),
 		field.String("source_app_id"),
-		field.String("source_url"),
+		field.String("source_url").Optional(),
 		field.String("name"),
 		field.Enum("type").
 			Values("unknown", "game"),
-		field.String("short_description"),
-		field.Text("description"),
-		field.String("icon_image_url"),
-		field.String("hero_image_url"),
-		field.String("logo_image_url"),
-		field.String("release_date"),
-		field.String("developer"),
-		field.String("publisher"),
-		field.String("version"),
+		field.String("short_description").Optional(),
+		field.Text("description").Optional(),
+		field.String("icon_image_url").Optional(),
+		field.String("hero_image_url").Optional(),
+		field.String("logo_image_url").Optional(),
+		field.String("release_date").Optional(),
+		field.String("developer").Optional(),
+		field.String("publisher").Optional(),
+		field.String("version").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -56,7 +56,6 @@ func (App) Edges() []ent.Edge {
 		edge.To("app_package", AppPackage.Type),
 		edge.To("bind_external", App.Type).
 			From("bind_internal").
-			Unique().
-			Required(),
+			Unique(),
 	}
 }

@@ -43,6 +43,14 @@ func (ac *AppCreate) SetSourceURL(s string) *AppCreate {
 	return ac
 }
 
+// SetNillableSourceURL sets the "source_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableSourceURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetSourceURL(*s)
+	}
+	return ac
+}
+
 // SetName sets the "name" field.
 func (ac *AppCreate) SetName(s string) *AppCreate {
 	ac.mutation.SetName(s)
@@ -61,9 +69,25 @@ func (ac *AppCreate) SetShortDescription(s string) *AppCreate {
 	return ac
 }
 
+// SetNillableShortDescription sets the "short_description" field if the given value is not nil.
+func (ac *AppCreate) SetNillableShortDescription(s *string) *AppCreate {
+	if s != nil {
+		ac.SetShortDescription(*s)
+	}
+	return ac
+}
+
 // SetDescription sets the "description" field.
 func (ac *AppCreate) SetDescription(s string) *AppCreate {
 	ac.mutation.SetDescription(s)
+	return ac
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (ac *AppCreate) SetNillableDescription(s *string) *AppCreate {
+	if s != nil {
+		ac.SetDescription(*s)
+	}
 	return ac
 }
 
@@ -73,9 +97,25 @@ func (ac *AppCreate) SetIconImageURL(s string) *AppCreate {
 	return ac
 }
 
+// SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableIconImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetIconImageURL(*s)
+	}
+	return ac
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (ac *AppCreate) SetHeroImageURL(s string) *AppCreate {
 	ac.mutation.SetHeroImageURL(s)
+	return ac
+}
+
+// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableHeroImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetHeroImageURL(*s)
+	}
 	return ac
 }
 
@@ -85,9 +125,25 @@ func (ac *AppCreate) SetLogoImageURL(s string) *AppCreate {
 	return ac
 }
 
+// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableLogoImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetLogoImageURL(*s)
+	}
+	return ac
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (ac *AppCreate) SetReleaseDate(s string) *AppCreate {
 	ac.mutation.SetReleaseDate(s)
+	return ac
+}
+
+// SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
+func (ac *AppCreate) SetNillableReleaseDate(s *string) *AppCreate {
+	if s != nil {
+		ac.SetReleaseDate(*s)
+	}
 	return ac
 }
 
@@ -97,15 +153,39 @@ func (ac *AppCreate) SetDeveloper(s string) *AppCreate {
 	return ac
 }
 
+// SetNillableDeveloper sets the "developer" field if the given value is not nil.
+func (ac *AppCreate) SetNillableDeveloper(s *string) *AppCreate {
+	if s != nil {
+		ac.SetDeveloper(*s)
+	}
+	return ac
+}
+
 // SetPublisher sets the "publisher" field.
 func (ac *AppCreate) SetPublisher(s string) *AppCreate {
 	ac.mutation.SetPublisher(s)
 	return ac
 }
 
+// SetNillablePublisher sets the "publisher" field if the given value is not nil.
+func (ac *AppCreate) SetNillablePublisher(s *string) *AppCreate {
+	if s != nil {
+		ac.SetPublisher(*s)
+	}
+	return ac
+}
+
 // SetVersion sets the "version" field.
 func (ac *AppCreate) SetVersion(s string) *AppCreate {
 	ac.mutation.SetVersion(s)
+	return ac
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (ac *AppCreate) SetNillableVersion(s *string) *AppCreate {
+	if s != nil {
+		ac.SetVersion(*s)
+	}
 	return ac
 }
 
@@ -176,6 +256,14 @@ func (ac *AppCreate) AddAppPackage(a ...*AppPackage) *AppCreate {
 // SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
 func (ac *AppCreate) SetBindInternalID(id model.InternalID) *AppCreate {
 	ac.mutation.SetBindInternalID(id)
+	return ac
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (ac *AppCreate) SetNillableBindInternalID(id *model.InternalID) *AppCreate {
+	if id != nil {
+		ac = ac.SetBindInternalID(*id)
+	}
 	return ac
 }
 
@@ -257,9 +345,6 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.SourceAppID(); !ok {
 		return &ValidationError{Name: "source_app_id", err: errors.New(`ent: missing required field "App.source_app_id"`)}
 	}
-	if _, ok := ac.mutation.SourceURL(); !ok {
-		return &ValidationError{Name: "source_url", err: errors.New(`ent: missing required field "App.source_url"`)}
-	}
 	if _, ok := ac.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "App.name"`)}
 	}
@@ -271,41 +356,11 @@ func (ac *AppCreate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if _, ok := ac.mutation.ShortDescription(); !ok {
-		return &ValidationError{Name: "short_description", err: errors.New(`ent: missing required field "App.short_description"`)}
-	}
-	if _, ok := ac.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "App.description"`)}
-	}
-	if _, ok := ac.mutation.IconImageURL(); !ok {
-		return &ValidationError{Name: "icon_image_url", err: errors.New(`ent: missing required field "App.icon_image_url"`)}
-	}
-	if _, ok := ac.mutation.HeroImageURL(); !ok {
-		return &ValidationError{Name: "hero_image_url", err: errors.New(`ent: missing required field "App.hero_image_url"`)}
-	}
-	if _, ok := ac.mutation.LogoImageURL(); !ok {
-		return &ValidationError{Name: "logo_image_url", err: errors.New(`ent: missing required field "App.logo_image_url"`)}
-	}
-	if _, ok := ac.mutation.ReleaseDate(); !ok {
-		return &ValidationError{Name: "release_date", err: errors.New(`ent: missing required field "App.release_date"`)}
-	}
-	if _, ok := ac.mutation.Developer(); !ok {
-		return &ValidationError{Name: "developer", err: errors.New(`ent: missing required field "App.developer"`)}
-	}
-	if _, ok := ac.mutation.Publisher(); !ok {
-		return &ValidationError{Name: "publisher", err: errors.New(`ent: missing required field "App.publisher"`)}
-	}
-	if _, ok := ac.mutation.Version(); !ok {
-		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "App.version"`)}
-	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "App.updated_at"`)}
 	}
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
-	}
-	if _, ok := ac.mutation.BindInternalID(); !ok {
-		return &ValidationError{Name: "bind_internal", err: errors.New(`ent: missing required edge "App.bind_internal"`)}
 	}
 	return nil
 }
@@ -557,6 +612,12 @@ func (u *AppUpsert) UpdateSourceURL() *AppUpsert {
 	return u
 }
 
+// ClearSourceURL clears the value of the "source_url" field.
+func (u *AppUpsert) ClearSourceURL() *AppUpsert {
+	u.SetNull(app.FieldSourceURL)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsert) SetName(v string) *AppUpsert {
 	u.Set(app.FieldName, v)
@@ -593,6 +654,12 @@ func (u *AppUpsert) UpdateShortDescription() *AppUpsert {
 	return u
 }
 
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsert) ClearShortDescription() *AppUpsert {
+	u.SetNull(app.FieldShortDescription)
+	return u
+}
+
 // SetDescription sets the "description" field.
 func (u *AppUpsert) SetDescription(v string) *AppUpsert {
 	u.Set(app.FieldDescription, v)
@@ -602,6 +669,12 @@ func (u *AppUpsert) SetDescription(v string) *AppUpsert {
 // UpdateDescription sets the "description" field to the value that was provided on create.
 func (u *AppUpsert) UpdateDescription() *AppUpsert {
 	u.SetExcluded(app.FieldDescription)
+	return u
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsert) ClearDescription() *AppUpsert {
+	u.SetNull(app.FieldDescription)
 	return u
 }
 
@@ -617,6 +690,12 @@ func (u *AppUpsert) UpdateIconImageURL() *AppUpsert {
 	return u
 }
 
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsert) ClearIconImageURL() *AppUpsert {
+	u.SetNull(app.FieldIconImageURL)
+	return u
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (u *AppUpsert) SetHeroImageURL(v string) *AppUpsert {
 	u.Set(app.FieldHeroImageURL, v)
@@ -626,6 +705,12 @@ func (u *AppUpsert) SetHeroImageURL(v string) *AppUpsert {
 // UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
 func (u *AppUpsert) UpdateHeroImageURL() *AppUpsert {
 	u.SetExcluded(app.FieldHeroImageURL)
+	return u
+}
+
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (u *AppUpsert) ClearHeroImageURL() *AppUpsert {
+	u.SetNull(app.FieldHeroImageURL)
 	return u
 }
 
@@ -641,6 +726,12 @@ func (u *AppUpsert) UpdateLogoImageURL() *AppUpsert {
 	return u
 }
 
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (u *AppUpsert) ClearLogoImageURL() *AppUpsert {
+	u.SetNull(app.FieldLogoImageURL)
+	return u
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (u *AppUpsert) SetReleaseDate(v string) *AppUpsert {
 	u.Set(app.FieldReleaseDate, v)
@@ -650,6 +741,12 @@ func (u *AppUpsert) SetReleaseDate(v string) *AppUpsert {
 // UpdateReleaseDate sets the "release_date" field to the value that was provided on create.
 func (u *AppUpsert) UpdateReleaseDate() *AppUpsert {
 	u.SetExcluded(app.FieldReleaseDate)
+	return u
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsert) ClearReleaseDate() *AppUpsert {
+	u.SetNull(app.FieldReleaseDate)
 	return u
 }
 
@@ -665,6 +762,12 @@ func (u *AppUpsert) UpdateDeveloper() *AppUpsert {
 	return u
 }
 
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsert) ClearDeveloper() *AppUpsert {
+	u.SetNull(app.FieldDeveloper)
+	return u
+}
+
 // SetPublisher sets the "publisher" field.
 func (u *AppUpsert) SetPublisher(v string) *AppUpsert {
 	u.Set(app.FieldPublisher, v)
@@ -677,6 +780,12 @@ func (u *AppUpsert) UpdatePublisher() *AppUpsert {
 	return u
 }
 
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsert) ClearPublisher() *AppUpsert {
+	u.SetNull(app.FieldPublisher)
+	return u
+}
+
 // SetVersion sets the "version" field.
 func (u *AppUpsert) SetVersion(v string) *AppUpsert {
 	u.Set(app.FieldVersion, v)
@@ -686,6 +795,12 @@ func (u *AppUpsert) SetVersion(v string) *AppUpsert {
 // UpdateVersion sets the "version" field to the value that was provided on create.
 func (u *AppUpsert) UpdateVersion() *AppUpsert {
 	u.SetExcluded(app.FieldVersion)
+	return u
+}
+
+// ClearVersion clears the value of the "version" field.
+func (u *AppUpsert) ClearVersion() *AppUpsert {
+	u.SetNull(app.FieldVersion)
 	return u
 }
 
@@ -803,6 +918,13 @@ func (u *AppUpsertOne) UpdateSourceURL() *AppUpsertOne {
 	})
 }
 
+// ClearSourceURL clears the value of the "source_url" field.
+func (u *AppUpsertOne) ClearSourceURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearSourceURL()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsertOne) SetName(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -845,6 +967,13 @@ func (u *AppUpsertOne) UpdateShortDescription() *AppUpsertOne {
 	})
 }
 
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsertOne) ClearShortDescription() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearShortDescription()
+	})
+}
+
 // SetDescription sets the "description" field.
 func (u *AppUpsertOne) SetDescription(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -856,6 +985,13 @@ func (u *AppUpsertOne) SetDescription(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateDescription() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsertOne) ClearDescription() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDescription()
 	})
 }
 
@@ -873,6 +1009,13 @@ func (u *AppUpsertOne) UpdateIconImageURL() *AppUpsertOne {
 	})
 }
 
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsertOne) ClearIconImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearIconImageURL()
+	})
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (u *AppUpsertOne) SetHeroImageURL(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -884,6 +1027,13 @@ func (u *AppUpsertOne) SetHeroImageURL(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateHeroImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateHeroImageURL()
+	})
+}
+
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (u *AppUpsertOne) ClearHeroImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearHeroImageURL()
 	})
 }
 
@@ -901,6 +1051,13 @@ func (u *AppUpsertOne) UpdateLogoImageURL() *AppUpsertOne {
 	})
 }
 
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (u *AppUpsertOne) ClearLogoImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogoImageURL()
+	})
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (u *AppUpsertOne) SetReleaseDate(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -912,6 +1069,13 @@ func (u *AppUpsertOne) SetReleaseDate(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateReleaseDate() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateReleaseDate()
+	})
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsertOne) ClearReleaseDate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearReleaseDate()
 	})
 }
 
@@ -929,6 +1093,13 @@ func (u *AppUpsertOne) UpdateDeveloper() *AppUpsertOne {
 	})
 }
 
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsertOne) ClearDeveloper() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDeveloper()
+	})
+}
+
 // SetPublisher sets the "publisher" field.
 func (u *AppUpsertOne) SetPublisher(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -943,6 +1114,13 @@ func (u *AppUpsertOne) UpdatePublisher() *AppUpsertOne {
 	})
 }
 
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsertOne) ClearPublisher() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPublisher()
+	})
+}
+
 // SetVersion sets the "version" field.
 func (u *AppUpsertOne) SetVersion(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -954,6 +1132,13 @@ func (u *AppUpsertOne) SetVersion(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateVersion() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateVersion()
+	})
+}
+
+// ClearVersion clears the value of the "version" field.
+func (u *AppUpsertOne) ClearVersion() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearVersion()
 	})
 }
 
@@ -1237,6 +1422,13 @@ func (u *AppUpsertBulk) UpdateSourceURL() *AppUpsertBulk {
 	})
 }
 
+// ClearSourceURL clears the value of the "source_url" field.
+func (u *AppUpsertBulk) ClearSourceURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearSourceURL()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsertBulk) SetName(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1279,6 +1471,13 @@ func (u *AppUpsertBulk) UpdateShortDescription() *AppUpsertBulk {
 	})
 }
 
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsertBulk) ClearShortDescription() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearShortDescription()
+	})
+}
+
 // SetDescription sets the "description" field.
 func (u *AppUpsertBulk) SetDescription(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1290,6 +1489,13 @@ func (u *AppUpsertBulk) SetDescription(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateDescription() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsertBulk) ClearDescription() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDescription()
 	})
 }
 
@@ -1307,6 +1513,13 @@ func (u *AppUpsertBulk) UpdateIconImageURL() *AppUpsertBulk {
 	})
 }
 
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsertBulk) ClearIconImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearIconImageURL()
+	})
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (u *AppUpsertBulk) SetHeroImageURL(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1318,6 +1531,13 @@ func (u *AppUpsertBulk) SetHeroImageURL(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateHeroImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateHeroImageURL()
+	})
+}
+
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (u *AppUpsertBulk) ClearHeroImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearHeroImageURL()
 	})
 }
 
@@ -1335,6 +1555,13 @@ func (u *AppUpsertBulk) UpdateLogoImageURL() *AppUpsertBulk {
 	})
 }
 
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (u *AppUpsertBulk) ClearLogoImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearLogoImageURL()
+	})
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (u *AppUpsertBulk) SetReleaseDate(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1346,6 +1573,13 @@ func (u *AppUpsertBulk) SetReleaseDate(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateReleaseDate() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateReleaseDate()
+	})
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsertBulk) ClearReleaseDate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearReleaseDate()
 	})
 }
 
@@ -1363,6 +1597,13 @@ func (u *AppUpsertBulk) UpdateDeveloper() *AppUpsertBulk {
 	})
 }
 
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsertBulk) ClearDeveloper() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDeveloper()
+	})
+}
+
 // SetPublisher sets the "publisher" field.
 func (u *AppUpsertBulk) SetPublisher(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1377,6 +1618,13 @@ func (u *AppUpsertBulk) UpdatePublisher() *AppUpsertBulk {
 	})
 }
 
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsertBulk) ClearPublisher() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPublisher()
+	})
+}
+
 // SetVersion sets the "version" field.
 func (u *AppUpsertBulk) SetVersion(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -1388,6 +1636,13 @@ func (u *AppUpsertBulk) SetVersion(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateVersion() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateVersion()
+	})
+}
+
+// ClearVersion clears the value of the "version" field.
+func (u *AppUpsertBulk) ClearVersion() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearVersion()
 	})
 }
 

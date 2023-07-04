@@ -1020,9 +1020,22 @@ func (m *AppMutation) OldSourceURL(ctx context.Context) (v string, err error) {
 	return oldValue.SourceURL, nil
 }
 
+// ClearSourceURL clears the value of the "source_url" field.
+func (m *AppMutation) ClearSourceURL() {
+	m.source_url = nil
+	m.clearedFields[app.FieldSourceURL] = struct{}{}
+}
+
+// SourceURLCleared returns if the "source_url" field was cleared in this mutation.
+func (m *AppMutation) SourceURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldSourceURL]
+	return ok
+}
+
 // ResetSourceURL resets all changes to the "source_url" field.
 func (m *AppMutation) ResetSourceURL() {
 	m.source_url = nil
+	delete(m.clearedFields, app.FieldSourceURL)
 }
 
 // SetName sets the "name" field.
@@ -1128,9 +1141,22 @@ func (m *AppMutation) OldShortDescription(ctx context.Context) (v string, err er
 	return oldValue.ShortDescription, nil
 }
 
+// ClearShortDescription clears the value of the "short_description" field.
+func (m *AppMutation) ClearShortDescription() {
+	m.short_description = nil
+	m.clearedFields[app.FieldShortDescription] = struct{}{}
+}
+
+// ShortDescriptionCleared returns if the "short_description" field was cleared in this mutation.
+func (m *AppMutation) ShortDescriptionCleared() bool {
+	_, ok := m.clearedFields[app.FieldShortDescription]
+	return ok
+}
+
 // ResetShortDescription resets all changes to the "short_description" field.
 func (m *AppMutation) ResetShortDescription() {
 	m.short_description = nil
+	delete(m.clearedFields, app.FieldShortDescription)
 }
 
 // SetDescription sets the "description" field.
@@ -1164,9 +1190,22 @@ func (m *AppMutation) OldDescription(ctx context.Context) (v string, err error) 
 	return oldValue.Description, nil
 }
 
+// ClearDescription clears the value of the "description" field.
+func (m *AppMutation) ClearDescription() {
+	m.description = nil
+	m.clearedFields[app.FieldDescription] = struct{}{}
+}
+
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *AppMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[app.FieldDescription]
+	return ok
+}
+
 // ResetDescription resets all changes to the "description" field.
 func (m *AppMutation) ResetDescription() {
 	m.description = nil
+	delete(m.clearedFields, app.FieldDescription)
 }
 
 // SetIconImageURL sets the "icon_image_url" field.
@@ -1200,9 +1239,22 @@ func (m *AppMutation) OldIconImageURL(ctx context.Context) (v string, err error)
 	return oldValue.IconImageURL, nil
 }
 
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (m *AppMutation) ClearIconImageURL() {
+	m.icon_image_url = nil
+	m.clearedFields[app.FieldIconImageURL] = struct{}{}
+}
+
+// IconImageURLCleared returns if the "icon_image_url" field was cleared in this mutation.
+func (m *AppMutation) IconImageURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldIconImageURL]
+	return ok
+}
+
 // ResetIconImageURL resets all changes to the "icon_image_url" field.
 func (m *AppMutation) ResetIconImageURL() {
 	m.icon_image_url = nil
+	delete(m.clearedFields, app.FieldIconImageURL)
 }
 
 // SetHeroImageURL sets the "hero_image_url" field.
@@ -1236,9 +1288,22 @@ func (m *AppMutation) OldHeroImageURL(ctx context.Context) (v string, err error)
 	return oldValue.HeroImageURL, nil
 }
 
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (m *AppMutation) ClearHeroImageURL() {
+	m.hero_image_url = nil
+	m.clearedFields[app.FieldHeroImageURL] = struct{}{}
+}
+
+// HeroImageURLCleared returns if the "hero_image_url" field was cleared in this mutation.
+func (m *AppMutation) HeroImageURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldHeroImageURL]
+	return ok
+}
+
 // ResetHeroImageURL resets all changes to the "hero_image_url" field.
 func (m *AppMutation) ResetHeroImageURL() {
 	m.hero_image_url = nil
+	delete(m.clearedFields, app.FieldHeroImageURL)
 }
 
 // SetLogoImageURL sets the "logo_image_url" field.
@@ -1272,9 +1337,22 @@ func (m *AppMutation) OldLogoImageURL(ctx context.Context) (v string, err error)
 	return oldValue.LogoImageURL, nil
 }
 
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (m *AppMutation) ClearLogoImageURL() {
+	m.logo_image_url = nil
+	m.clearedFields[app.FieldLogoImageURL] = struct{}{}
+}
+
+// LogoImageURLCleared returns if the "logo_image_url" field was cleared in this mutation.
+func (m *AppMutation) LogoImageURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldLogoImageURL]
+	return ok
+}
+
 // ResetLogoImageURL resets all changes to the "logo_image_url" field.
 func (m *AppMutation) ResetLogoImageURL() {
 	m.logo_image_url = nil
+	delete(m.clearedFields, app.FieldLogoImageURL)
 }
 
 // SetReleaseDate sets the "release_date" field.
@@ -1308,9 +1386,22 @@ func (m *AppMutation) OldReleaseDate(ctx context.Context) (v string, err error) 
 	return oldValue.ReleaseDate, nil
 }
 
+// ClearReleaseDate clears the value of the "release_date" field.
+func (m *AppMutation) ClearReleaseDate() {
+	m.release_date = nil
+	m.clearedFields[app.FieldReleaseDate] = struct{}{}
+}
+
+// ReleaseDateCleared returns if the "release_date" field was cleared in this mutation.
+func (m *AppMutation) ReleaseDateCleared() bool {
+	_, ok := m.clearedFields[app.FieldReleaseDate]
+	return ok
+}
+
 // ResetReleaseDate resets all changes to the "release_date" field.
 func (m *AppMutation) ResetReleaseDate() {
 	m.release_date = nil
+	delete(m.clearedFields, app.FieldReleaseDate)
 }
 
 // SetDeveloper sets the "developer" field.
@@ -1344,9 +1435,22 @@ func (m *AppMutation) OldDeveloper(ctx context.Context) (v string, err error) {
 	return oldValue.Developer, nil
 }
 
+// ClearDeveloper clears the value of the "developer" field.
+func (m *AppMutation) ClearDeveloper() {
+	m.developer = nil
+	m.clearedFields[app.FieldDeveloper] = struct{}{}
+}
+
+// DeveloperCleared returns if the "developer" field was cleared in this mutation.
+func (m *AppMutation) DeveloperCleared() bool {
+	_, ok := m.clearedFields[app.FieldDeveloper]
+	return ok
+}
+
 // ResetDeveloper resets all changes to the "developer" field.
 func (m *AppMutation) ResetDeveloper() {
 	m.developer = nil
+	delete(m.clearedFields, app.FieldDeveloper)
 }
 
 // SetPublisher sets the "publisher" field.
@@ -1380,9 +1484,22 @@ func (m *AppMutation) OldPublisher(ctx context.Context) (v string, err error) {
 	return oldValue.Publisher, nil
 }
 
+// ClearPublisher clears the value of the "publisher" field.
+func (m *AppMutation) ClearPublisher() {
+	m.publisher = nil
+	m.clearedFields[app.FieldPublisher] = struct{}{}
+}
+
+// PublisherCleared returns if the "publisher" field was cleared in this mutation.
+func (m *AppMutation) PublisherCleared() bool {
+	_, ok := m.clearedFields[app.FieldPublisher]
+	return ok
+}
+
 // ResetPublisher resets all changes to the "publisher" field.
 func (m *AppMutation) ResetPublisher() {
 	m.publisher = nil
+	delete(m.clearedFields, app.FieldPublisher)
 }
 
 // SetVersion sets the "version" field.
@@ -1416,9 +1533,22 @@ func (m *AppMutation) OldVersion(ctx context.Context) (v string, err error) {
 	return oldValue.Version, nil
 }
 
+// ClearVersion clears the value of the "version" field.
+func (m *AppMutation) ClearVersion() {
+	m.version = nil
+	m.clearedFields[app.FieldVersion] = struct{}{}
+}
+
+// VersionCleared returns if the "version" field was cleared in this mutation.
+func (m *AppMutation) VersionCleared() bool {
+	_, ok := m.clearedFields[app.FieldVersion]
+	return ok
+}
+
 // ResetVersion resets all changes to the "version" field.
 func (m *AppMutation) ResetVersion() {
 	m.version = nil
+	delete(m.clearedFields, app.FieldVersion)
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -2008,7 +2138,38 @@ func (m *AppMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *AppMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(app.FieldSourceURL) {
+		fields = append(fields, app.FieldSourceURL)
+	}
+	if m.FieldCleared(app.FieldShortDescription) {
+		fields = append(fields, app.FieldShortDescription)
+	}
+	if m.FieldCleared(app.FieldDescription) {
+		fields = append(fields, app.FieldDescription)
+	}
+	if m.FieldCleared(app.FieldIconImageURL) {
+		fields = append(fields, app.FieldIconImageURL)
+	}
+	if m.FieldCleared(app.FieldHeroImageURL) {
+		fields = append(fields, app.FieldHeroImageURL)
+	}
+	if m.FieldCleared(app.FieldLogoImageURL) {
+		fields = append(fields, app.FieldLogoImageURL)
+	}
+	if m.FieldCleared(app.FieldReleaseDate) {
+		fields = append(fields, app.FieldReleaseDate)
+	}
+	if m.FieldCleared(app.FieldDeveloper) {
+		fields = append(fields, app.FieldDeveloper)
+	}
+	if m.FieldCleared(app.FieldPublisher) {
+		fields = append(fields, app.FieldPublisher)
+	}
+	if m.FieldCleared(app.FieldVersion) {
+		fields = append(fields, app.FieldVersion)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2021,6 +2182,38 @@ func (m *AppMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *AppMutation) ClearField(name string) error {
+	switch name {
+	case app.FieldSourceURL:
+		m.ClearSourceURL()
+		return nil
+	case app.FieldShortDescription:
+		m.ClearShortDescription()
+		return nil
+	case app.FieldDescription:
+		m.ClearDescription()
+		return nil
+	case app.FieldIconImageURL:
+		m.ClearIconImageURL()
+		return nil
+	case app.FieldHeroImageURL:
+		m.ClearHeroImageURL()
+		return nil
+	case app.FieldLogoImageURL:
+		m.ClearLogoImageURL()
+		return nil
+	case app.FieldReleaseDate:
+		m.ClearReleaseDate()
+		return nil
+	case app.FieldDeveloper:
+		m.ClearDeveloper()
+		return nil
+	case app.FieldPublisher:
+		m.ClearPublisher()
+		return nil
+	case app.FieldVersion:
+		m.ClearVersion()
+		return nil
+	}
 	return fmt.Errorf("unknown App nullable field %s", name)
 }
 

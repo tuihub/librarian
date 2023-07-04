@@ -49,6 +49,20 @@ func (au *AppUpdate) SetSourceURL(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableSourceURL sets the "source_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableSourceURL(s *string) *AppUpdate {
+	if s != nil {
+		au.SetSourceURL(*s)
+	}
+	return au
+}
+
+// ClearSourceURL clears the value of the "source_url" field.
+func (au *AppUpdate) ClearSourceURL() *AppUpdate {
+	au.mutation.ClearSourceURL()
+	return au
+}
+
 // SetName sets the "name" field.
 func (au *AppUpdate) SetName(s string) *AppUpdate {
 	au.mutation.SetName(s)
@@ -67,9 +81,37 @@ func (au *AppUpdate) SetShortDescription(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableShortDescription sets the "short_description" field if the given value is not nil.
+func (au *AppUpdate) SetNillableShortDescription(s *string) *AppUpdate {
+	if s != nil {
+		au.SetShortDescription(*s)
+	}
+	return au
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (au *AppUpdate) ClearShortDescription() *AppUpdate {
+	au.mutation.ClearShortDescription()
+	return au
+}
+
 // SetDescription sets the "description" field.
 func (au *AppUpdate) SetDescription(s string) *AppUpdate {
 	au.mutation.SetDescription(s)
+	return au
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (au *AppUpdate) SetNillableDescription(s *string) *AppUpdate {
+	if s != nil {
+		au.SetDescription(*s)
+	}
+	return au
+}
+
+// ClearDescription clears the value of the "description" field.
+func (au *AppUpdate) ClearDescription() *AppUpdate {
+	au.mutation.ClearDescription()
 	return au
 }
 
@@ -79,9 +121,37 @@ func (au *AppUpdate) SetIconImageURL(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableIconImageURL(s *string) *AppUpdate {
+	if s != nil {
+		au.SetIconImageURL(*s)
+	}
+	return au
+}
+
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (au *AppUpdate) ClearIconImageURL() *AppUpdate {
+	au.mutation.ClearIconImageURL()
+	return au
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (au *AppUpdate) SetHeroImageURL(s string) *AppUpdate {
 	au.mutation.SetHeroImageURL(s)
+	return au
+}
+
+// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableHeroImageURL(s *string) *AppUpdate {
+	if s != nil {
+		au.SetHeroImageURL(*s)
+	}
+	return au
+}
+
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (au *AppUpdate) ClearHeroImageURL() *AppUpdate {
+	au.mutation.ClearHeroImageURL()
 	return au
 }
 
@@ -91,9 +161,37 @@ func (au *AppUpdate) SetLogoImageURL(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableLogoImageURL(s *string) *AppUpdate {
+	if s != nil {
+		au.SetLogoImageURL(*s)
+	}
+	return au
+}
+
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (au *AppUpdate) ClearLogoImageURL() *AppUpdate {
+	au.mutation.ClearLogoImageURL()
+	return au
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (au *AppUpdate) SetReleaseDate(s string) *AppUpdate {
 	au.mutation.SetReleaseDate(s)
+	return au
+}
+
+// SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
+func (au *AppUpdate) SetNillableReleaseDate(s *string) *AppUpdate {
+	if s != nil {
+		au.SetReleaseDate(*s)
+	}
+	return au
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (au *AppUpdate) ClearReleaseDate() *AppUpdate {
+	au.mutation.ClearReleaseDate()
 	return au
 }
 
@@ -103,15 +201,57 @@ func (au *AppUpdate) SetDeveloper(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableDeveloper sets the "developer" field if the given value is not nil.
+func (au *AppUpdate) SetNillableDeveloper(s *string) *AppUpdate {
+	if s != nil {
+		au.SetDeveloper(*s)
+	}
+	return au
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (au *AppUpdate) ClearDeveloper() *AppUpdate {
+	au.mutation.ClearDeveloper()
+	return au
+}
+
 // SetPublisher sets the "publisher" field.
 func (au *AppUpdate) SetPublisher(s string) *AppUpdate {
 	au.mutation.SetPublisher(s)
 	return au
 }
 
+// SetNillablePublisher sets the "publisher" field if the given value is not nil.
+func (au *AppUpdate) SetNillablePublisher(s *string) *AppUpdate {
+	if s != nil {
+		au.SetPublisher(*s)
+	}
+	return au
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (au *AppUpdate) ClearPublisher() *AppUpdate {
+	au.mutation.ClearPublisher()
+	return au
+}
+
 // SetVersion sets the "version" field.
 func (au *AppUpdate) SetVersion(s string) *AppUpdate {
 	au.mutation.SetVersion(s)
+	return au
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (au *AppUpdate) SetNillableVersion(s *string) *AppUpdate {
+	if s != nil {
+		au.SetVersion(*s)
+	}
+	return au
+}
+
+// ClearVersion clears the value of the "version" field.
+func (au *AppUpdate) ClearVersion() *AppUpdate {
+	au.mutation.ClearVersion()
 	return au
 }
 
@@ -168,6 +308,14 @@ func (au *AppUpdate) AddAppPackage(a ...*AppPackage) *AppUpdate {
 // SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
 func (au *AppUpdate) SetBindInternalID(id model.InternalID) *AppUpdate {
 	au.mutation.SetBindInternalID(id)
+	return au
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (au *AppUpdate) SetNillableBindInternalID(id *model.InternalID) *AppUpdate {
+	if id != nil {
+		au = au.SetBindInternalID(*id)
+	}
 	return au
 }
 
@@ -313,9 +461,6 @@ func (au *AppUpdate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if _, ok := au.mutation.BindInternalID(); au.mutation.BindInternalCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "App.bind_internal"`)
-	}
 	return nil
 }
 
@@ -340,6 +485,9 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.SourceURL(); ok {
 		_spec.SetField(app.FieldSourceURL, field.TypeString, value)
 	}
+	if au.mutation.SourceURLCleared() {
+		_spec.ClearField(app.FieldSourceURL, field.TypeString)
+	}
 	if value, ok := au.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
@@ -349,29 +497,56 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.ShortDescription(); ok {
 		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 	}
+	if au.mutation.ShortDescriptionCleared() {
+		_spec.ClearField(app.FieldShortDescription, field.TypeString)
+	}
 	if value, ok := au.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
+	}
+	if au.mutation.DescriptionCleared() {
+		_spec.ClearField(app.FieldDescription, field.TypeString)
 	}
 	if value, ok := au.mutation.IconImageURL(); ok {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 	}
+	if au.mutation.IconImageURLCleared() {
+		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
+	}
 	if value, ok := au.mutation.HeroImageURL(); ok {
 		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	}
+	if au.mutation.HeroImageURLCleared() {
+		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
 	}
 	if value, ok := au.mutation.LogoImageURL(); ok {
 		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
 	}
+	if au.mutation.LogoImageURLCleared() {
+		_spec.ClearField(app.FieldLogoImageURL, field.TypeString)
+	}
 	if value, ok := au.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
+	}
+	if au.mutation.ReleaseDateCleared() {
+		_spec.ClearField(app.FieldReleaseDate, field.TypeString)
 	}
 	if value, ok := au.mutation.Developer(); ok {
 		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 	}
+	if au.mutation.DeveloperCleared() {
+		_spec.ClearField(app.FieldDeveloper, field.TypeString)
+	}
 	if value, ok := au.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 	}
+	if au.mutation.PublisherCleared() {
+		_spec.ClearField(app.FieldPublisher, field.TypeString)
+	}
 	if value, ok := au.mutation.Version(); ok {
 		_spec.SetField(app.FieldVersion, field.TypeString, value)
+	}
+	if au.mutation.VersionCleared() {
+		_spec.ClearField(app.FieldVersion, field.TypeString)
 	}
 	if value, ok := au.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
@@ -581,6 +756,20 @@ func (auo *AppUpdateOne) SetSourceURL(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableSourceURL sets the "source_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableSourceURL(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetSourceURL(*s)
+	}
+	return auo
+}
+
+// ClearSourceURL clears the value of the "source_url" field.
+func (auo *AppUpdateOne) ClearSourceURL() *AppUpdateOne {
+	auo.mutation.ClearSourceURL()
+	return auo
+}
+
 // SetName sets the "name" field.
 func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
 	auo.mutation.SetName(s)
@@ -599,9 +788,37 @@ func (auo *AppUpdateOne) SetShortDescription(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableShortDescription sets the "short_description" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableShortDescription(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetShortDescription(*s)
+	}
+	return auo
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (auo *AppUpdateOne) ClearShortDescription() *AppUpdateOne {
+	auo.mutation.ClearShortDescription()
+	return auo
+}
+
 // SetDescription sets the "description" field.
 func (auo *AppUpdateOne) SetDescription(s string) *AppUpdateOne {
 	auo.mutation.SetDescription(s)
+	return auo
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableDescription(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetDescription(*s)
+	}
+	return auo
+}
+
+// ClearDescription clears the value of the "description" field.
+func (auo *AppUpdateOne) ClearDescription() *AppUpdateOne {
+	auo.mutation.ClearDescription()
 	return auo
 }
 
@@ -611,9 +828,37 @@ func (auo *AppUpdateOne) SetIconImageURL(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableIconImageURL(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetIconImageURL(*s)
+	}
+	return auo
+}
+
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (auo *AppUpdateOne) ClearIconImageURL() *AppUpdateOne {
+	auo.mutation.ClearIconImageURL()
+	return auo
+}
+
 // SetHeroImageURL sets the "hero_image_url" field.
 func (auo *AppUpdateOne) SetHeroImageURL(s string) *AppUpdateOne {
 	auo.mutation.SetHeroImageURL(s)
+	return auo
+}
+
+// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableHeroImageURL(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetHeroImageURL(*s)
+	}
+	return auo
+}
+
+// ClearHeroImageURL clears the value of the "hero_image_url" field.
+func (auo *AppUpdateOne) ClearHeroImageURL() *AppUpdateOne {
+	auo.mutation.ClearHeroImageURL()
 	return auo
 }
 
@@ -623,9 +868,37 @@ func (auo *AppUpdateOne) SetLogoImageURL(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableLogoImageURL(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetLogoImageURL(*s)
+	}
+	return auo
+}
+
+// ClearLogoImageURL clears the value of the "logo_image_url" field.
+func (auo *AppUpdateOne) ClearLogoImageURL() *AppUpdateOne {
+	auo.mutation.ClearLogoImageURL()
+	return auo
+}
+
 // SetReleaseDate sets the "release_date" field.
 func (auo *AppUpdateOne) SetReleaseDate(s string) *AppUpdateOne {
 	auo.mutation.SetReleaseDate(s)
+	return auo
+}
+
+// SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableReleaseDate(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetReleaseDate(*s)
+	}
+	return auo
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (auo *AppUpdateOne) ClearReleaseDate() *AppUpdateOne {
+	auo.mutation.ClearReleaseDate()
 	return auo
 }
 
@@ -635,15 +908,57 @@ func (auo *AppUpdateOne) SetDeveloper(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableDeveloper sets the "developer" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableDeveloper(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetDeveloper(*s)
+	}
+	return auo
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (auo *AppUpdateOne) ClearDeveloper() *AppUpdateOne {
+	auo.mutation.ClearDeveloper()
+	return auo
+}
+
 // SetPublisher sets the "publisher" field.
 func (auo *AppUpdateOne) SetPublisher(s string) *AppUpdateOne {
 	auo.mutation.SetPublisher(s)
 	return auo
 }
 
+// SetNillablePublisher sets the "publisher" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillablePublisher(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetPublisher(*s)
+	}
+	return auo
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (auo *AppUpdateOne) ClearPublisher() *AppUpdateOne {
+	auo.mutation.ClearPublisher()
+	return auo
+}
+
 // SetVersion sets the "version" field.
 func (auo *AppUpdateOne) SetVersion(s string) *AppUpdateOne {
 	auo.mutation.SetVersion(s)
+	return auo
+}
+
+// SetNillableVersion sets the "version" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableVersion(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetVersion(*s)
+	}
+	return auo
+}
+
+// ClearVersion clears the value of the "version" field.
+func (auo *AppUpdateOne) ClearVersion() *AppUpdateOne {
+	auo.mutation.ClearVersion()
 	return auo
 }
 
@@ -700,6 +1015,14 @@ func (auo *AppUpdateOne) AddAppPackage(a ...*AppPackage) *AppUpdateOne {
 // SetBindInternalID sets the "bind_internal" edge to the App entity by ID.
 func (auo *AppUpdateOne) SetBindInternalID(id model.InternalID) *AppUpdateOne {
 	auo.mutation.SetBindInternalID(id)
+	return auo
+}
+
+// SetNillableBindInternalID sets the "bind_internal" edge to the App entity by ID if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableBindInternalID(id *model.InternalID) *AppUpdateOne {
+	if id != nil {
+		auo = auo.SetBindInternalID(*id)
+	}
 	return auo
 }
 
@@ -858,9 +1181,6 @@ func (auo *AppUpdateOne) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
 		}
 	}
-	if _, ok := auo.mutation.BindInternalID(); auo.mutation.BindInternalCleared() && !ok {
-		return errors.New(`ent: clearing a required unique edge "App.bind_internal"`)
-	}
 	return nil
 }
 
@@ -902,6 +1222,9 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if value, ok := auo.mutation.SourceURL(); ok {
 		_spec.SetField(app.FieldSourceURL, field.TypeString, value)
 	}
+	if auo.mutation.SourceURLCleared() {
+		_spec.ClearField(app.FieldSourceURL, field.TypeString)
+	}
 	if value, ok := auo.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 	}
@@ -911,29 +1234,56 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if value, ok := auo.mutation.ShortDescription(); ok {
 		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
 	}
+	if auo.mutation.ShortDescriptionCleared() {
+		_spec.ClearField(app.FieldShortDescription, field.TypeString)
+	}
 	if value, ok := auo.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
+	}
+	if auo.mutation.DescriptionCleared() {
+		_spec.ClearField(app.FieldDescription, field.TypeString)
 	}
 	if value, ok := auo.mutation.IconImageURL(); ok {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 	}
+	if auo.mutation.IconImageURLCleared() {
+		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
+	}
 	if value, ok := auo.mutation.HeroImageURL(); ok {
 		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	}
+	if auo.mutation.HeroImageURLCleared() {
+		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
 	}
 	if value, ok := auo.mutation.LogoImageURL(); ok {
 		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
 	}
+	if auo.mutation.LogoImageURLCleared() {
+		_spec.ClearField(app.FieldLogoImageURL, field.TypeString)
+	}
 	if value, ok := auo.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
+	}
+	if auo.mutation.ReleaseDateCleared() {
+		_spec.ClearField(app.FieldReleaseDate, field.TypeString)
 	}
 	if value, ok := auo.mutation.Developer(); ok {
 		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
 	}
+	if auo.mutation.DeveloperCleared() {
+		_spec.ClearField(app.FieldDeveloper, field.TypeString)
+	}
 	if value, ok := auo.mutation.Publisher(); ok {
 		_spec.SetField(app.FieldPublisher, field.TypeString, value)
 	}
+	if auo.mutation.PublisherCleared() {
+		_spec.ClearField(app.FieldPublisher, field.TypeString)
+	}
 	if value, ok := auo.mutation.Version(); ok {
 		_spec.SetField(app.FieldVersion, field.TypeString, value)
+	}
+	if auo.mutation.VersionCleared() {
+		_spec.ClearField(app.FieldVersion, field.TypeString)
 	}
 	if value, ok := auo.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)

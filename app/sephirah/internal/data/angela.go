@@ -43,52 +43,77 @@ func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Accou
 		Exec(ctx)
 }
 
-func (a *angelaRepo) UpdateApp(ctx context.Context, ap *modelgebura.App) error {
-	q := a.data.db.App.Update().
-		Where(
-			app.IDEQ(ap.ID),
+func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
+	ctx context.Context, ap *modelgebura.App, internal *modelgebura.App,
+) error {
+	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.App.Update().
+			Where(
+				app.IDEQ(ap.ID),
+				app.SourceEQ(converter.ToEntAppSource(ap.Source)),
+				app.SourceAppIDEQ(ap.SourceAppID),
+			)
+		if len(ap.SourceURL) > 0 {
+			q.SetSourceURL(ap.SourceURL)
+		}
+		if len(ap.Name) > 0 {
+			q.SetName(ap.Name)
+		}
+		if ap.Type != modelgebura.AppTypeUnspecified {
+			q.SetType(converter.ToEntAppType(ap.Type))
+		}
+		if len(ap.ShortDescription) > 0 {
+			q.SetShortDescription(ap.ShortDescription)
+		}
+		if len(ap.IconImageURL) > 0 {
+			q.SetIconImageURL(ap.IconImageURL)
+		}
+		if ap.Details != nil { //nolint:nestif // TODO
+			if len(ap.Details.Description) > 0 {
+				q.SetDescription(ap.Details.Description)
+			}
+			if len(ap.Details.ReleaseDate) > 0 {
+				q.SetReleaseDate(ap.Details.ReleaseDate)
+			}
+			if len(ap.Details.Developer) > 0 {
+				q.SetDeveloper(ap.Details.Developer)
+			}
+			if len(ap.Details.Publisher) > 0 {
+				q.SetPublisher(ap.Details.Publisher)
+			}
+			if len(ap.Details.Version) > 0 {
+				q.SetVersion(ap.Details.Version)
+			}
+			if len(ap.Details.HeroImageURL) > 0 {
+				q.SetHeroImageURL(ap.Details.HeroImageURL)
+			}
+			if len(ap.Details.LogoImageURL) > 0 {
+				q.SetLogoImageURL(ap.Details.LogoImageURL)
+			}
+		}
+		count, err := tx.App.Query().Where(
 			app.SourceEQ(converter.ToEntAppSource(ap.Source)),
 			app.SourceAppIDEQ(ap.SourceAppID),
-		)
-	if len(ap.SourceURL) > 0 {
-		q.SetSourceURL(ap.SourceURL)
-	}
-	if len(ap.Name) > 0 {
-		q.SetName(ap.Name)
-	}
-	if ap.Type != modelgebura.AppTypeUnspecified {
-		q.SetType(converter.ToEntAppType(ap.Type))
-	}
-	if len(ap.ShortDescription) > 0 {
-		q.SetShortDescription(ap.ShortDescription)
-	}
-	if len(ap.IconImageURL) > 0 {
-		q.SetIconImageURL(ap.IconImageURL)
-	}
-	if ap.Details != nil { //nolint:nestif // TODO
-		if len(ap.Details.Description) > 0 {
-			q.SetDescription(ap.Details.Description)
+			app.HasBindInternalWith(app.IDNEQ(0)),
+		).Count(ctx)
+		if err != nil {
+			return err
 		}
-		if len(ap.Details.ReleaseDate) > 0 {
-			q.SetReleaseDate(ap.Details.ReleaseDate)
+		if count == 0 {
+			err = tx.App.Create().
+				SetID(internal.ID).
+				SetSource(converter.ToEntAppSource(internal.Source)).
+				SetSourceAppID(internal.SourceAppID).
+				SetName(internal.Name).
+				SetType(converter.ToEntAppType(internal.Type)).
+				Exec(ctx)
+			if err != nil {
+				return err
+			}
+			q.SetBindInternalID(internal.ID)
 		}
-		if len(ap.Details.Developer) > 0 {
-			q.SetDeveloper(ap.Details.Developer)
-		}
-		if len(ap.Details.Publisher) > 0 {
-			q.SetPublisher(ap.Details.Publisher)
-		}
-		if len(ap.Details.Version) > 0 {
-			q.SetVersion(ap.Details.Version)
-		}
-		if len(ap.Details.HeroImageURL) > 0 {
-			q.SetHeroImageURL(ap.Details.HeroImageURL)
-		}
-		if len(ap.Details.LogoImageURL) > 0 {
-			q.SetLogoImageURL(ap.Details.LogoImageURL)
-		}
-	}
-	return q.Exec(ctx)
+		return q.Exec(ctx)
+	})
 }
 
 func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) error {
