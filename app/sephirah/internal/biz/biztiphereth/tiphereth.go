@@ -25,7 +25,7 @@ type TipherethRepo interface {
 	ListUsers(context.Context, model.Paging, []model.InternalID,
 		[]libauth.UserType, []modeltiphereth.UserStatus, []model.InternalID,
 		*model.InternalID) ([]*modeltiphereth.User, int64, error)
-	CreateAccount(context.Context, modeltiphereth.Account, model.InternalID) error
+	LinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	ListLinkAccounts(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
@@ -328,7 +328,7 @@ func (t *Tiphereth) LinkAccount(
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.repo.CreateAccount(ctx, a, claims.InternalID); err != nil {
+	if err := t.repo.LinkAccount(ctx, a, claims.InternalID); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if err := t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{

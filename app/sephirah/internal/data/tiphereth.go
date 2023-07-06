@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -114,16 +115,37 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 	return converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) CreateAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
-	return t.data.db.Account.Create().
-		SetBindUserID(u).
-		SetID(a.ID).
-		SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
-		SetPlatformAccountID(a.PlatformAccountID).
-		SetName(a.Name).
-		SetAvatarURL(a.AvatarURL).
-		SetProfileURL(a.ProfileURL).
-		Exec(ctx)
+func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
+	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
+		acc, err := tx.Account.Query().Where(
+			account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
+			account.PlatformAccountIDEQ(a.PlatformAccountID),
+		).Only(ctx)
+		if ent.IsNotFound(err) {
+			return t.data.db.Account.Create().
+				SetBindUserID(u).
+				SetID(a.ID).
+				SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
+				SetPlatformAccountID(a.PlatformAccountID).
+				SetName(a.Name).
+				SetAvatarURL(a.AvatarURL).
+				SetProfileURL(a.ProfileURL).
+				Exec(ctx)
+		}
+		if err != nil {
+			return err
+		}
+		exist, err := acc.QueryBindUser().Exist(ctx)
+		if err != nil {
+			return err
+		}
+		if exist {
+			return errors.New("account already bound to an user")
+		}
+		return t.data.db.Account.UpdateOneID(acc.ID).
+			SetBindUserID(u).
+			Exec(ctx)
+	})
 }
 
 func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
