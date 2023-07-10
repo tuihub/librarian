@@ -380,6 +380,22 @@ func (c *AccountClient) GetX(ctx context.Context, id model.InternalID) *Account 
 	return obj
 }
 
+// QueryPurchasedApp queries the purchased_app edge of a Account.
+func (c *AccountClient) QueryPurchasedApp(a *Account) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, account.PurchasedAppTable, account.PurchasedAppPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryBindUser queries the bind_user edge of a Account.
 func (c *AccountClient) QueryBindUser(a *Account) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
@@ -514,15 +530,31 @@ func (c *AppClient) GetX(ctx context.Context, id model.InternalID) *App {
 	return obj
 }
 
-// QueryPurchasedBy queries the purchased_by edge of a App.
-func (c *AppClient) QueryPurchasedBy(a *App) *UserQuery {
+// QueryPurchasedByAccount queries the purchased_by_account edge of a App.
+func (c *AppClient) QueryPurchasedByAccount(a *App) *AccountQuery {
+	query := (&AccountClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.PurchasedByAccountTable, app.PurchasedByAccountPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPurchasedByUser queries the purchased_by_user edge of a App.
+func (c *AppClient) QueryPurchasedByUser(a *App) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, app.PurchasedByTable, app.PurchasedByPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.PurchasedByUserTable, app.PurchasedByUserPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil

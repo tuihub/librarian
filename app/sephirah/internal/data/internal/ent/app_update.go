@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
@@ -275,19 +276,34 @@ func (au *AppUpdate) SetNillableCreatedAt(t *time.Time) *AppUpdate {
 	return au
 }
 
-// AddPurchasedByIDs adds the "purchased_by" edge to the User entity by IDs.
-func (au *AppUpdate) AddPurchasedByIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.AddPurchasedByIDs(ids...)
+// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
+func (au *AppUpdate) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.AddPurchasedByAccountIDs(ids...)
 	return au
 }
 
-// AddPurchasedBy adds the "purchased_by" edges to the User entity.
-func (au *AppUpdate) AddPurchasedBy(u ...*User) *AppUpdate {
+// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
+func (au *AppUpdate) AddPurchasedByAccount(a ...*Account) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddPurchasedByAccountIDs(ids...)
+}
+
+// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
+func (au *AppUpdate) AddPurchasedByUserIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.AddPurchasedByUserIDs(ids...)
+	return au
+}
+
+// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
+func (au *AppUpdate) AddPurchasedByUser(u ...*User) *AppUpdate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return au.AddPurchasedByIDs(ids...)
+	return au.AddPurchasedByUserIDs(ids...)
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
@@ -344,25 +360,46 @@ func (au *AppUpdate) Mutation() *AppMutation {
 	return au.mutation
 }
 
-// ClearPurchasedBy clears all "purchased_by" edges to the User entity.
-func (au *AppUpdate) ClearPurchasedBy() *AppUpdate {
-	au.mutation.ClearPurchasedBy()
+// ClearPurchasedByAccount clears all "purchased_by_account" edges to the Account entity.
+func (au *AppUpdate) ClearPurchasedByAccount() *AppUpdate {
+	au.mutation.ClearPurchasedByAccount()
 	return au
 }
 
-// RemovePurchasedByIDs removes the "purchased_by" edge to User entities by IDs.
-func (au *AppUpdate) RemovePurchasedByIDs(ids ...model.InternalID) *AppUpdate {
-	au.mutation.RemovePurchasedByIDs(ids...)
+// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to Account entities by IDs.
+func (au *AppUpdate) RemovePurchasedByAccountIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.RemovePurchasedByAccountIDs(ids...)
 	return au
 }
 
-// RemovePurchasedBy removes "purchased_by" edges to User entities.
-func (au *AppUpdate) RemovePurchasedBy(u ...*User) *AppUpdate {
+// RemovePurchasedByAccount removes "purchased_by_account" edges to Account entities.
+func (au *AppUpdate) RemovePurchasedByAccount(a ...*Account) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemovePurchasedByAccountIDs(ids...)
+}
+
+// ClearPurchasedByUser clears all "purchased_by_user" edges to the User entity.
+func (au *AppUpdate) ClearPurchasedByUser() *AppUpdate {
+	au.mutation.ClearPurchasedByUser()
+	return au
+}
+
+// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to User entities by IDs.
+func (au *AppUpdate) RemovePurchasedByUserIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.RemovePurchasedByUserIDs(ids...)
+	return au
+}
+
+// RemovePurchasedByUser removes "purchased_by_user" edges to User entities.
+func (au *AppUpdate) RemovePurchasedByUser(u ...*User) *AppUpdate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return au.RemovePurchasedByIDs(ids...)
+	return au.RemovePurchasedByUserIDs(ids...)
 }
 
 // ClearAppPackage clears all "app_package" edges to the AppPackage entity.
@@ -554,12 +591,57 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 	}
-	if au.mutation.PurchasedByCleared() {
+	if au.mutation.PurchasedByAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedPurchasedByAccountIDs(); len(nodes) > 0 && !au.mutation.PurchasedByAccountCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.PurchasedByUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -567,12 +649,12 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.RemovedPurchasedByIDs(); len(nodes) > 0 && !au.mutation.PurchasedByCleared() {
+	if nodes := au.mutation.RemovedPurchasedByUserIDs(); len(nodes) > 0 && !au.mutation.PurchasedByUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -583,12 +665,12 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.PurchasedByIDs(); len(nodes) > 0 {
+	if nodes := au.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -982,19 +1064,34 @@ func (auo *AppUpdateOne) SetNillableCreatedAt(t *time.Time) *AppUpdateOne {
 	return auo
 }
 
-// AddPurchasedByIDs adds the "purchased_by" edge to the User entity by IDs.
-func (auo *AppUpdateOne) AddPurchasedByIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.AddPurchasedByIDs(ids...)
+// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
+func (auo *AppUpdateOne) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.AddPurchasedByAccountIDs(ids...)
 	return auo
 }
 
-// AddPurchasedBy adds the "purchased_by" edges to the User entity.
-func (auo *AppUpdateOne) AddPurchasedBy(u ...*User) *AppUpdateOne {
+// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
+func (auo *AppUpdateOne) AddPurchasedByAccount(a ...*Account) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddPurchasedByAccountIDs(ids...)
+}
+
+// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
+func (auo *AppUpdateOne) AddPurchasedByUserIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.AddPurchasedByUserIDs(ids...)
+	return auo
+}
+
+// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
+func (auo *AppUpdateOne) AddPurchasedByUser(u ...*User) *AppUpdateOne {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return auo.AddPurchasedByIDs(ids...)
+	return auo.AddPurchasedByUserIDs(ids...)
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
@@ -1051,25 +1148,46 @@ func (auo *AppUpdateOne) Mutation() *AppMutation {
 	return auo.mutation
 }
 
-// ClearPurchasedBy clears all "purchased_by" edges to the User entity.
-func (auo *AppUpdateOne) ClearPurchasedBy() *AppUpdateOne {
-	auo.mutation.ClearPurchasedBy()
+// ClearPurchasedByAccount clears all "purchased_by_account" edges to the Account entity.
+func (auo *AppUpdateOne) ClearPurchasedByAccount() *AppUpdateOne {
+	auo.mutation.ClearPurchasedByAccount()
 	return auo
 }
 
-// RemovePurchasedByIDs removes the "purchased_by" edge to User entities by IDs.
-func (auo *AppUpdateOne) RemovePurchasedByIDs(ids ...model.InternalID) *AppUpdateOne {
-	auo.mutation.RemovePurchasedByIDs(ids...)
+// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to Account entities by IDs.
+func (auo *AppUpdateOne) RemovePurchasedByAccountIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.RemovePurchasedByAccountIDs(ids...)
 	return auo
 }
 
-// RemovePurchasedBy removes "purchased_by" edges to User entities.
-func (auo *AppUpdateOne) RemovePurchasedBy(u ...*User) *AppUpdateOne {
+// RemovePurchasedByAccount removes "purchased_by_account" edges to Account entities.
+func (auo *AppUpdateOne) RemovePurchasedByAccount(a ...*Account) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemovePurchasedByAccountIDs(ids...)
+}
+
+// ClearPurchasedByUser clears all "purchased_by_user" edges to the User entity.
+func (auo *AppUpdateOne) ClearPurchasedByUser() *AppUpdateOne {
+	auo.mutation.ClearPurchasedByUser()
+	return auo
+}
+
+// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to User entities by IDs.
+func (auo *AppUpdateOne) RemovePurchasedByUserIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.RemovePurchasedByUserIDs(ids...)
+	return auo
+}
+
+// RemovePurchasedByUser removes "purchased_by_user" edges to User entities.
+func (auo *AppUpdateOne) RemovePurchasedByUser(u ...*User) *AppUpdateOne {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return auo.RemovePurchasedByIDs(ids...)
+	return auo.RemovePurchasedByUserIDs(ids...)
 }
 
 // ClearAppPackage clears all "app_package" edges to the AppPackage entity.
@@ -1291,12 +1409,57 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.PurchasedByCleared() {
+	if auo.mutation.PurchasedByAccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedPurchasedByAccountIDs(); len(nodes) > 0 && !auo.mutation.PurchasedByAccountCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.PurchasedByUserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -1304,12 +1467,12 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.RemovedPurchasedByIDs(); len(nodes) > 0 && !auo.mutation.PurchasedByCleared() {
+	if nodes := auo.mutation.RemovedPurchasedByUserIDs(); len(nodes) > 0 && !auo.mutation.PurchasedByUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -1320,12 +1483,12 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.PurchasedByIDs(); len(nodes) > 0 {
+	if nodes := auo.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

@@ -42,17 +42,28 @@ type Account struct {
 
 // AccountEdges holds the relations/edges for other nodes in the graph.
 type AccountEdges struct {
+	// PurchasedApp holds the value of the purchased_app edge.
+	PurchasedApp []*App `json:"purchased_app,omitempty"`
 	// BindUser holds the value of the bind_user edge.
 	BindUser *User `json:"bind_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
+}
+
+// PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
+// was not loaded in eager-loading.
+func (e AccountEdges) PurchasedAppOrErr() ([]*App, error) {
+	if e.loadedTypes[0] {
+		return e.PurchasedApp, nil
+	}
+	return nil, &NotLoadedError{edge: "purchased_app"}
 }
 
 // BindUserOrErr returns the BindUser value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AccountEdges) BindUserOrErr() (*User, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		if e.BindUser == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
@@ -156,6 +167,11 @@ func (a *Account) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (a *Account) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
+}
+
+// QueryPurchasedApp queries the "purchased_app" edge of the Account entity.
+func (a *Account) QueryPurchasedApp() *AppQuery {
+	return NewAccountClient(a.config).QueryPurchasedApp(a)
 }
 
 // QueryBindUser queries the "bind_user" edge of the Account entity.

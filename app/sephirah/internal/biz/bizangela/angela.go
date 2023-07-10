@@ -48,6 +48,7 @@ type AngelaRepo interface {
 	UpdateAccount(context.Context, modeltiphereth.Account) error
 	UpdateApp(context.Context, *modelgebura.App, *modelgebura.App) error
 	UpsertApps(context.Context, []*modelgebura.App) error
+	AccountPurchaseApps(context.Context, model.InternalID, []model.InternalID) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)

@@ -446,6 +446,29 @@ func CreatedAtLTE(v time.Time) predicate.Account {
 	return predicate.Account(sql.FieldLTE(FieldCreatedAt, v))
 }
 
+// HasPurchasedApp applies the HasEdge predicate on the "purchased_app" edge.
+func HasPurchasedApp() predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
+func HasPurchasedAppWith(preds ...predicate.App) predicate.Account {
+	return predicate.Account(func(s *sql.Selector) {
+		step := newPurchasedAppStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasBindUser applies the HasEdge predicate on the "bind_user" edge.
 func HasBindUser() predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {

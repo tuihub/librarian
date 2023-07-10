@@ -59,8 +59,10 @@ type App struct {
 
 // AppEdges holds the relations/edges for other nodes in the graph.
 type AppEdges struct {
-	// PurchasedBy holds the value of the purchased_by edge.
-	PurchasedBy []*User `json:"purchased_by,omitempty"`
+	// PurchasedByAccount holds the value of the purchased_by_account edge.
+	PurchasedByAccount []*Account `json:"purchased_by_account,omitempty"`
+	// PurchasedByUser holds the value of the purchased_by_user edge.
+	PurchasedByUser []*User `json:"purchased_by_user,omitempty"`
 	// AppPackage holds the value of the app_package edge.
 	AppPackage []*AppPackage `json:"app_package,omitempty"`
 	// BindInternal holds the value of the bind_internal edge.
@@ -69,22 +71,31 @@ type AppEdges struct {
 	BindExternal []*App `json:"bind_external,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
-// PurchasedByOrErr returns the PurchasedBy value or an error if the edge
+// PurchasedByAccountOrErr returns the PurchasedByAccount value or an error if the edge
 // was not loaded in eager-loading.
-func (e AppEdges) PurchasedByOrErr() ([]*User, error) {
+func (e AppEdges) PurchasedByAccountOrErr() ([]*Account, error) {
 	if e.loadedTypes[0] {
-		return e.PurchasedBy, nil
+		return e.PurchasedByAccount, nil
 	}
-	return nil, &NotLoadedError{edge: "purchased_by"}
+	return nil, &NotLoadedError{edge: "purchased_by_account"}
+}
+
+// PurchasedByUserOrErr returns the PurchasedByUser value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) PurchasedByUserOrErr() ([]*User, error) {
+	if e.loadedTypes[1] {
+		return e.PurchasedByUser, nil
+	}
+	return nil, &NotLoadedError{edge: "purchased_by_user"}
 }
 
 // AppPackageOrErr returns the AppPackage value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) AppPackageOrErr() ([]*AppPackage, error) {
-	if e.loadedTypes[1] {
+	if e.loadedTypes[2] {
 		return e.AppPackage, nil
 	}
 	return nil, &NotLoadedError{edge: "app_package"}
@@ -93,7 +104,7 @@ func (e AppEdges) AppPackageOrErr() ([]*AppPackage, error) {
 // BindInternalOrErr returns the BindInternal value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppEdges) BindInternalOrErr() (*App, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[3] {
 		if e.BindInternal == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: app.Label}
@@ -106,7 +117,7 @@ func (e AppEdges) BindInternalOrErr() (*App, error) {
 // BindExternalOrErr returns the BindExternal value or an error if the edge
 // was not loaded in eager-loading.
 func (e AppEdges) BindExternalOrErr() ([]*App, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.BindExternal, nil
 	}
 	return nil, &NotLoadedError{edge: "bind_external"}
@@ -262,9 +273,14 @@ func (a *App) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
 }
 
-// QueryPurchasedBy queries the "purchased_by" edge of the App entity.
-func (a *App) QueryPurchasedBy() *UserQuery {
-	return NewAppClient(a.config).QueryPurchasedBy(a)
+// QueryPurchasedByAccount queries the "purchased_by_account" edge of the App entity.
+func (a *App) QueryPurchasedByAccount() *AccountQuery {
+	return NewAppClient(a.config).QueryPurchasedByAccount(a)
+}
+
+// QueryPurchasedByUser queries the "purchased_by_user" edge of the App entity.
+func (a *App) QueryPurchasedByUser() *UserQuery {
+	return NewAppClient(a.config).QueryPurchasedByUser(a)
 }
 
 // QueryAppPackage queries the "app_package" edge of the App entity.

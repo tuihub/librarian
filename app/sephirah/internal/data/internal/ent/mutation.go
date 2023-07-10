@@ -54,22 +54,25 @@ const (
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
 type AccountMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *model.InternalID
-	platform            *account.Platform
-	platform_account_id *string
-	name                *string
-	profile_url         *string
-	avatar_url          *string
-	updated_at          *time.Time
-	created_at          *time.Time
-	clearedFields       map[string]struct{}
-	bind_user           *model.InternalID
-	clearedbind_user    bool
-	done                bool
-	oldValue            func(context.Context) (*Account, error)
-	predicates          []predicate.Account
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	platform             *account.Platform
+	platform_account_id  *string
+	name                 *string
+	profile_url          *string
+	avatar_url           *string
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	purchased_app        map[model.InternalID]struct{}
+	removedpurchased_app map[model.InternalID]struct{}
+	clearedpurchased_app bool
+	bind_user            *model.InternalID
+	clearedbind_user     bool
+	done                 bool
+	oldValue             func(context.Context) (*Account, error)
+	predicates           []predicate.Account
 }
 
 var _ ent.Mutation = (*AccountMutation)(nil)
@@ -428,6 +431,60 @@ func (m *AccountMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by ids.
+func (m *AccountMutation) AddPurchasedAppIDs(ids ...model.InternalID) {
+	if m.purchased_app == nil {
+		m.purchased_app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.purchased_app[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPurchasedApp clears the "purchased_app" edge to the App entity.
+func (m *AccountMutation) ClearPurchasedApp() {
+	m.clearedpurchased_app = true
+}
+
+// PurchasedAppCleared reports if the "purchased_app" edge to the App entity was cleared.
+func (m *AccountMutation) PurchasedAppCleared() bool {
+	return m.clearedpurchased_app
+}
+
+// RemovePurchasedAppIDs removes the "purchased_app" edge to the App entity by IDs.
+func (m *AccountMutation) RemovePurchasedAppIDs(ids ...model.InternalID) {
+	if m.removedpurchased_app == nil {
+		m.removedpurchased_app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.purchased_app, ids[i])
+		m.removedpurchased_app[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPurchasedApp returns the removed IDs of the "purchased_app" edge to the App entity.
+func (m *AccountMutation) RemovedPurchasedAppIDs() (ids []model.InternalID) {
+	for id := range m.removedpurchased_app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PurchasedAppIDs returns the "purchased_app" edge IDs in the mutation.
+func (m *AccountMutation) PurchasedAppIDs() (ids []model.InternalID) {
+	for id := range m.purchased_app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPurchasedApp resets all changes to the "purchased_app" edge.
+func (m *AccountMutation) ResetPurchasedApp() {
+	m.purchased_app = nil
+	m.clearedpurchased_app = false
+	m.removedpurchased_app = nil
+}
+
 // SetBindUserID sets the "bind_user" edge to the User entity by id.
 func (m *AccountMutation) SetBindUserID(id model.InternalID) {
 	m.bind_user = &id
@@ -702,7 +759,10 @@ func (m *AccountMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AccountMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.purchased_app != nil {
+		edges = append(edges, account.EdgePurchasedApp)
+	}
 	if m.bind_user != nil {
 		edges = append(edges, account.EdgeBindUser)
 	}
@@ -713,6 +773,12 @@ func (m *AccountMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AccountMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case account.EdgePurchasedApp:
+		ids := make([]ent.Value, 0, len(m.purchased_app))
+		for id := range m.purchased_app {
+			ids = append(ids, id)
+		}
+		return ids
 	case account.EdgeBindUser:
 		if id := m.bind_user; id != nil {
 			return []ent.Value{*id}
@@ -723,19 +789,33 @@ func (m *AccountMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AccountMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedpurchased_app != nil {
+		edges = append(edges, account.EdgePurchasedApp)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AccountMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case account.EdgePurchasedApp:
+		ids := make([]ent.Value, 0, len(m.removedpurchased_app))
+		for id := range m.removedpurchased_app {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AccountMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.clearedpurchased_app {
+		edges = append(edges, account.EdgePurchasedApp)
+	}
 	if m.clearedbind_user {
 		edges = append(edges, account.EdgeBindUser)
 	}
@@ -746,6 +826,8 @@ func (m *AccountMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AccountMutation) EdgeCleared(name string) bool {
 	switch name {
+	case account.EdgePurchasedApp:
+		return m.clearedpurchased_app
 	case account.EdgeBindUser:
 		return m.clearedbind_user
 	}
@@ -767,6 +849,9 @@ func (m *AccountMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AccountMutation) ResetEdge(name string) error {
 	switch name {
+	case account.EdgePurchasedApp:
+		m.ResetPurchasedApp()
+		return nil
 	case account.EdgeBindUser:
 		m.ResetBindUser()
 		return nil
@@ -777,40 +862,43 @@ func (m *AccountMutation) ResetEdge(name string) error {
 // AppMutation represents an operation that mutates the App nodes in the graph.
 type AppMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *model.InternalID
-	source               *app.Source
-	source_app_id        *string
-	source_url           *string
-	name                 *string
-	_type                *app.Type
-	short_description    *string
-	description          *string
-	icon_image_url       *string
-	hero_image_url       *string
-	logo_image_url       *string
-	release_date         *string
-	developer            *string
-	publisher            *string
-	version              *string
-	updated_at           *time.Time
-	created_at           *time.Time
-	clearedFields        map[string]struct{}
-	purchased_by         map[model.InternalID]struct{}
-	removedpurchased_by  map[model.InternalID]struct{}
-	clearedpurchased_by  bool
-	app_package          map[model.InternalID]struct{}
-	removedapp_package   map[model.InternalID]struct{}
-	clearedapp_package   bool
-	bind_internal        *model.InternalID
-	clearedbind_internal bool
-	bind_external        map[model.InternalID]struct{}
-	removedbind_external map[model.InternalID]struct{}
-	clearedbind_external bool
-	done                 bool
-	oldValue             func(context.Context) (*App, error)
-	predicates           []predicate.App
+	op                          Op
+	typ                         string
+	id                          *model.InternalID
+	source                      *app.Source
+	source_app_id               *string
+	source_url                  *string
+	name                        *string
+	_type                       *app.Type
+	short_description           *string
+	description                 *string
+	icon_image_url              *string
+	hero_image_url              *string
+	logo_image_url              *string
+	release_date                *string
+	developer                   *string
+	publisher                   *string
+	version                     *string
+	updated_at                  *time.Time
+	created_at                  *time.Time
+	clearedFields               map[string]struct{}
+	purchased_by_account        map[model.InternalID]struct{}
+	removedpurchased_by_account map[model.InternalID]struct{}
+	clearedpurchased_by_account bool
+	purchased_by_user           map[model.InternalID]struct{}
+	removedpurchased_by_user    map[model.InternalID]struct{}
+	clearedpurchased_by_user    bool
+	app_package                 map[model.InternalID]struct{}
+	removedapp_package          map[model.InternalID]struct{}
+	clearedapp_package          bool
+	bind_internal               *model.InternalID
+	clearedbind_internal        bool
+	bind_external               map[model.InternalID]struct{}
+	removedbind_external        map[model.InternalID]struct{}
+	clearedbind_external        bool
+	done                        bool
+	oldValue                    func(context.Context) (*App, error)
+	predicates                  []predicate.App
 }
 
 var _ ent.Mutation = (*AppMutation)(nil)
@@ -1623,58 +1711,112 @@ func (m *AppMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// AddPurchasedByIDs adds the "purchased_by" edge to the User entity by ids.
-func (m *AppMutation) AddPurchasedByIDs(ids ...model.InternalID) {
-	if m.purchased_by == nil {
-		m.purchased_by = make(map[model.InternalID]struct{})
+// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by ids.
+func (m *AppMutation) AddPurchasedByAccountIDs(ids ...model.InternalID) {
+	if m.purchased_by_account == nil {
+		m.purchased_by_account = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		m.purchased_by[ids[i]] = struct{}{}
+		m.purchased_by_account[ids[i]] = struct{}{}
 	}
 }
 
-// ClearPurchasedBy clears the "purchased_by" edge to the User entity.
-func (m *AppMutation) ClearPurchasedBy() {
-	m.clearedpurchased_by = true
+// ClearPurchasedByAccount clears the "purchased_by_account" edge to the Account entity.
+func (m *AppMutation) ClearPurchasedByAccount() {
+	m.clearedpurchased_by_account = true
 }
 
-// PurchasedByCleared reports if the "purchased_by" edge to the User entity was cleared.
-func (m *AppMutation) PurchasedByCleared() bool {
-	return m.clearedpurchased_by
+// PurchasedByAccountCleared reports if the "purchased_by_account" edge to the Account entity was cleared.
+func (m *AppMutation) PurchasedByAccountCleared() bool {
+	return m.clearedpurchased_by_account
 }
 
-// RemovePurchasedByIDs removes the "purchased_by" edge to the User entity by IDs.
-func (m *AppMutation) RemovePurchasedByIDs(ids ...model.InternalID) {
-	if m.removedpurchased_by == nil {
-		m.removedpurchased_by = make(map[model.InternalID]struct{})
+// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to the Account entity by IDs.
+func (m *AppMutation) RemovePurchasedByAccountIDs(ids ...model.InternalID) {
+	if m.removedpurchased_by_account == nil {
+		m.removedpurchased_by_account = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		delete(m.purchased_by, ids[i])
-		m.removedpurchased_by[ids[i]] = struct{}{}
+		delete(m.purchased_by_account, ids[i])
+		m.removedpurchased_by_account[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedPurchasedBy returns the removed IDs of the "purchased_by" edge to the User entity.
-func (m *AppMutation) RemovedPurchasedByIDs() (ids []model.InternalID) {
-	for id := range m.removedpurchased_by {
+// RemovedPurchasedByAccount returns the removed IDs of the "purchased_by_account" edge to the Account entity.
+func (m *AppMutation) RemovedPurchasedByAccountIDs() (ids []model.InternalID) {
+	for id := range m.removedpurchased_by_account {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// PurchasedByIDs returns the "purchased_by" edge IDs in the mutation.
-func (m *AppMutation) PurchasedByIDs() (ids []model.InternalID) {
-	for id := range m.purchased_by {
+// PurchasedByAccountIDs returns the "purchased_by_account" edge IDs in the mutation.
+func (m *AppMutation) PurchasedByAccountIDs() (ids []model.InternalID) {
+	for id := range m.purchased_by_account {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetPurchasedBy resets all changes to the "purchased_by" edge.
-func (m *AppMutation) ResetPurchasedBy() {
-	m.purchased_by = nil
-	m.clearedpurchased_by = false
-	m.removedpurchased_by = nil
+// ResetPurchasedByAccount resets all changes to the "purchased_by_account" edge.
+func (m *AppMutation) ResetPurchasedByAccount() {
+	m.purchased_by_account = nil
+	m.clearedpurchased_by_account = false
+	m.removedpurchased_by_account = nil
+}
+
+// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by ids.
+func (m *AppMutation) AddPurchasedByUserIDs(ids ...model.InternalID) {
+	if m.purchased_by_user == nil {
+		m.purchased_by_user = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.purchased_by_user[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPurchasedByUser clears the "purchased_by_user" edge to the User entity.
+func (m *AppMutation) ClearPurchasedByUser() {
+	m.clearedpurchased_by_user = true
+}
+
+// PurchasedByUserCleared reports if the "purchased_by_user" edge to the User entity was cleared.
+func (m *AppMutation) PurchasedByUserCleared() bool {
+	return m.clearedpurchased_by_user
+}
+
+// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to the User entity by IDs.
+func (m *AppMutation) RemovePurchasedByUserIDs(ids ...model.InternalID) {
+	if m.removedpurchased_by_user == nil {
+		m.removedpurchased_by_user = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.purchased_by_user, ids[i])
+		m.removedpurchased_by_user[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPurchasedByUser returns the removed IDs of the "purchased_by_user" edge to the User entity.
+func (m *AppMutation) RemovedPurchasedByUserIDs() (ids []model.InternalID) {
+	for id := range m.removedpurchased_by_user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PurchasedByUserIDs returns the "purchased_by_user" edge IDs in the mutation.
+func (m *AppMutation) PurchasedByUserIDs() (ids []model.InternalID) {
+	for id := range m.purchased_by_user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPurchasedByUser resets all changes to the "purchased_by_user" edge.
+func (m *AppMutation) ResetPurchasedByUser() {
+	m.purchased_by_user = nil
+	m.clearedpurchased_by_user = false
+	m.removedpurchased_by_user = nil
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by ids.
@@ -2275,9 +2417,12 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.purchased_by != nil {
-		edges = append(edges, app.EdgePurchasedBy)
+	edges := make([]string, 0, 5)
+	if m.purchased_by_account != nil {
+		edges = append(edges, app.EdgePurchasedByAccount)
+	}
+	if m.purchased_by_user != nil {
+		edges = append(edges, app.EdgePurchasedByUser)
 	}
 	if m.app_package != nil {
 		edges = append(edges, app.EdgeAppPackage)
@@ -2295,9 +2440,15 @@ func (m *AppMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AppMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case app.EdgePurchasedBy:
-		ids := make([]ent.Value, 0, len(m.purchased_by))
-		for id := range m.purchased_by {
+	case app.EdgePurchasedByAccount:
+		ids := make([]ent.Value, 0, len(m.purchased_by_account))
+		for id := range m.purchased_by_account {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgePurchasedByUser:
+		ids := make([]ent.Value, 0, len(m.purchased_by_user))
+		for id := range m.purchased_by_user {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2323,9 +2474,12 @@ func (m *AppMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.removedpurchased_by != nil {
-		edges = append(edges, app.EdgePurchasedBy)
+	edges := make([]string, 0, 5)
+	if m.removedpurchased_by_account != nil {
+		edges = append(edges, app.EdgePurchasedByAccount)
+	}
+	if m.removedpurchased_by_user != nil {
+		edges = append(edges, app.EdgePurchasedByUser)
 	}
 	if m.removedapp_package != nil {
 		edges = append(edges, app.EdgeAppPackage)
@@ -2340,9 +2494,15 @@ func (m *AppMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case app.EdgePurchasedBy:
-		ids := make([]ent.Value, 0, len(m.removedpurchased_by))
-		for id := range m.removedpurchased_by {
+	case app.EdgePurchasedByAccount:
+		ids := make([]ent.Value, 0, len(m.removedpurchased_by_account))
+		for id := range m.removedpurchased_by_account {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgePurchasedByUser:
+		ids := make([]ent.Value, 0, len(m.removedpurchased_by_user))
+		for id := range m.removedpurchased_by_user {
 			ids = append(ids, id)
 		}
 		return ids
@@ -2364,9 +2524,12 @@ func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.clearedpurchased_by {
-		edges = append(edges, app.EdgePurchasedBy)
+	edges := make([]string, 0, 5)
+	if m.clearedpurchased_by_account {
+		edges = append(edges, app.EdgePurchasedByAccount)
+	}
+	if m.clearedpurchased_by_user {
+		edges = append(edges, app.EdgePurchasedByUser)
 	}
 	if m.clearedapp_package {
 		edges = append(edges, app.EdgeAppPackage)
@@ -2384,8 +2547,10 @@ func (m *AppMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AppMutation) EdgeCleared(name string) bool {
 	switch name {
-	case app.EdgePurchasedBy:
-		return m.clearedpurchased_by
+	case app.EdgePurchasedByAccount:
+		return m.clearedpurchased_by_account
+	case app.EdgePurchasedByUser:
+		return m.clearedpurchased_by_user
 	case app.EdgeAppPackage:
 		return m.clearedapp_package
 	case app.EdgeBindInternal:
@@ -2411,8 +2576,11 @@ func (m *AppMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AppMutation) ResetEdge(name string) error {
 	switch name {
-	case app.EdgePurchasedBy:
-		m.ResetPurchasedBy()
+	case app.EdgePurchasedByAccount:
+		m.ResetPurchasedByAccount()
+		return nil
+	case app.EdgePurchasedByUser:
+		m.ResetPurchasedByUser()
 		return nil
 	case app.EdgeAppPackage:
 		m.ResetAppPackage()

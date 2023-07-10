@@ -105,6 +105,9 @@ func NewPullSteamAccountAppRelationTopic(
 			if err := a.repo.UpsertApps(ctx, steamApps); err != nil {
 				return err
 			}
+			if err := a.repo.AccountPurchaseApps(ctx, r.ID, steamAppIDs); err != nil {
+				return err
+			}
 			for _, app := range steamApps {
 				_ = sa.Publish(ctx, modelangela.PullSteamApp{
 					ID:    app.ID,

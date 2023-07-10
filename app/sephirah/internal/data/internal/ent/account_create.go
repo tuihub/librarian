@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -86,6 +87,21 @@ func (ac *AccountCreate) SetNillableCreatedAt(t *time.Time) *AccountCreate {
 func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
 	ac.mutation.SetID(mi)
 	return ac
+}
+
+// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+func (ac *AccountCreate) AddPurchasedAppIDs(ids ...model.InternalID) *AccountCreate {
+	ac.mutation.AddPurchasedAppIDs(ids...)
+	return ac
+}
+
+// AddPurchasedApp adds the "purchased_app" edges to the App entity.
+func (ac *AccountCreate) AddPurchasedApp(a ...*App) *AccountCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddPurchasedAppIDs(ids...)
 }
 
 // SetBindUserID sets the "bind_user" edge to the User entity by ID.
@@ -240,6 +256,22 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := ac.mutation.PurchasedAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   account.PurchasedAppTable,
+			Columns: account.PurchasedAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := ac.mutation.BindUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

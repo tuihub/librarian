@@ -47,8 +47,10 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgePurchasedBy holds the string denoting the purchased_by edge name in mutations.
-	EdgePurchasedBy = "purchased_by"
+	// EdgePurchasedByAccount holds the string denoting the purchased_by_account edge name in mutations.
+	EdgePurchasedByAccount = "purchased_by_account"
+	// EdgePurchasedByUser holds the string denoting the purchased_by_user edge name in mutations.
+	EdgePurchasedByUser = "purchased_by_user"
 	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
 	EdgeAppPackage = "app_package"
 	// EdgeBindInternal holds the string denoting the bind_internal edge name in mutations.
@@ -57,11 +59,16 @@ const (
 	EdgeBindExternal = "bind_external"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
-	// PurchasedByTable is the table that holds the purchased_by relation/edge. The primary key declared below.
-	PurchasedByTable = "user_purchased_app"
-	// PurchasedByInverseTable is the table name for the User entity.
+	// PurchasedByAccountTable is the table that holds the purchased_by_account relation/edge. The primary key declared below.
+	PurchasedByAccountTable = "account_purchased_app"
+	// PurchasedByAccountInverseTable is the table name for the Account entity.
+	// It exists in this package in order to avoid circular dependency with the "account" package.
+	PurchasedByAccountInverseTable = "accounts"
+	// PurchasedByUserTable is the table that holds the purchased_by_user relation/edge. The primary key declared below.
+	PurchasedByUserTable = "user_purchased_app"
+	// PurchasedByUserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	PurchasedByInverseTable = "users"
+	PurchasedByUserInverseTable = "users"
 	// AppPackageTable is the table that holds the app_package relation/edge.
 	AppPackageTable = "app_packages"
 	// AppPackageInverseTable is the table name for the AppPackage entity.
@@ -107,9 +114,12 @@ var ForeignKeys = []string{
 }
 
 var (
-	// PurchasedByPrimaryKey and PurchasedByColumn2 are the table columns denoting the
-	// primary key for the purchased_by relation (M2M).
-	PurchasedByPrimaryKey = []string{"user_id", "app_id"}
+	// PurchasedByAccountPrimaryKey and PurchasedByAccountColumn2 are the table columns denoting the
+	// primary key for the purchased_by_account relation (M2M).
+	PurchasedByAccountPrimaryKey = []string{"account_id", "app_id"}
+	// PurchasedByUserPrimaryKey and PurchasedByUserColumn2 are the table columns denoting the
+	// primary key for the purchased_by_user relation (M2M).
+	PurchasedByUserPrimaryKey = []string{"user_id", "app_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -270,17 +280,31 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByPurchasedByCount orders the results by purchased_by count.
-func ByPurchasedByCount(opts ...sql.OrderTermOption) OrderOption {
+// ByPurchasedByAccountCount orders the results by purchased_by_account count.
+func ByPurchasedByAccountCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPurchasedByStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newPurchasedByAccountStep(), opts...)
 	}
 }
 
-// ByPurchasedBy orders the results by purchased_by terms.
-func ByPurchasedBy(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByPurchasedByAccount orders the results by purchased_by_account terms.
+func ByPurchasedByAccount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPurchasedByStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newPurchasedByAccountStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByPurchasedByUserCount orders the results by purchased_by_user count.
+func ByPurchasedByUserCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPurchasedByUserStep(), opts...)
+	}
+}
+
+// ByPurchasedByUser orders the results by purchased_by_user terms.
+func ByPurchasedByUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPurchasedByUserStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -318,11 +342,18 @@ func ByBindExternal(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newBindExternalStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newPurchasedByStep() *sqlgraph.Step {
+func newPurchasedByAccountStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PurchasedByInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByTable, PurchasedByPrimaryKey...),
+		sqlgraph.To(PurchasedByAccountInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByAccountTable, PurchasedByAccountPrimaryKey...),
+	)
+}
+func newPurchasedByUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PurchasedByUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByUserTable, PurchasedByUserPrimaryKey...),
 	)
 }
 func newAppPackageStep() *sqlgraph.Step {

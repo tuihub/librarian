@@ -154,6 +154,24 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 		Exec(ctx)
 }
 
+func (a *angelaRepo) AccountPurchaseApps(
+	ctx context.Context, id model.InternalID, ids []model.InternalID,
+) error {
+	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
+		appIDs, err := tx.App.Query().Where(
+			app.IDIn(ids...),
+		).
+			IDs(ctx)
+		if err != nil {
+			return err
+		}
+		return a.data.db.Account.
+			UpdateOneID(id).
+			AddPurchasedAppIDs(appIDs...).
+			Exec(ctx)
+	})
+}
+
 func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
 		conf, err := tx.FeedConfig.Query().

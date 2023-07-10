@@ -401,6 +401,31 @@ var (
 			},
 		},
 	}
+	// AccountPurchasedAppColumns holds the columns for the "account_purchased_app" table.
+	AccountPurchasedAppColumns = []*schema.Column{
+		{Name: "account_id", Type: field.TypeInt64},
+		{Name: "app_id", Type: field.TypeInt64},
+	}
+	// AccountPurchasedAppTable holds the schema information for the "account_purchased_app" table.
+	AccountPurchasedAppTable = &schema.Table{
+		Name:       "account_purchased_app",
+		Columns:    AccountPurchasedAppColumns,
+		PrimaryKey: []*schema.Column{AccountPurchasedAppColumns[0], AccountPurchasedAppColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "account_purchased_app_account_id",
+				Columns:    []*schema.Column{AccountPurchasedAppColumns[0]},
+				RefColumns: []*schema.Column{AccountsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "account_purchased_app_app_id",
+				Columns:    []*schema.Column{AccountPurchasedAppColumns[1]},
+				RefColumns: []*schema.Column{AppsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// FeedConfigNotifyFlowColumns holds the columns for the "feed_config_notify_flow" table.
 	FeedConfigNotifyFlowColumns = []*schema.Column{
 		{Name: "feed_config_id", Type: field.TypeInt64},
@@ -465,6 +490,7 @@ var (
 		NotifyFlowTargetsTable,
 		NotifyTargetsTable,
 		UsersTable,
+		AccountPurchasedAppTable,
 		FeedConfigNotifyFlowTable,
 		UserPurchasedAppTable,
 	}
@@ -486,6 +512,8 @@ func init() {
 	NotifyFlowTargetsTable.ForeignKeys[1].RefTable = NotifyTargetsTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
+	AccountPurchasedAppTable.ForeignKeys[0].RefTable = AccountsTable
+	AccountPurchasedAppTable.ForeignKeys[1].RefTable = AppsTable
 	FeedConfigNotifyFlowTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigNotifyFlowTable.ForeignKeys[1].RefTable = NotifyFlowsTable
 	UserPurchasedAppTable.ForeignKeys[0].RefTable = UsersTable

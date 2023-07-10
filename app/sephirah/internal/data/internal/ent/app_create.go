@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -223,19 +224,34 @@ func (ac *AppCreate) SetID(mi model.InternalID) *AppCreate {
 	return ac
 }
 
-// AddPurchasedByIDs adds the "purchased_by" edge to the User entity by IDs.
-func (ac *AppCreate) AddPurchasedByIDs(ids ...model.InternalID) *AppCreate {
-	ac.mutation.AddPurchasedByIDs(ids...)
+// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
+func (ac *AppCreate) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppCreate {
+	ac.mutation.AddPurchasedByAccountIDs(ids...)
 	return ac
 }
 
-// AddPurchasedBy adds the "purchased_by" edges to the User entity.
-func (ac *AppCreate) AddPurchasedBy(u ...*User) *AppCreate {
+// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
+func (ac *AppCreate) AddPurchasedByAccount(a ...*Account) *AppCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddPurchasedByAccountIDs(ids...)
+}
+
+// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
+func (ac *AppCreate) AddPurchasedByUserIDs(ids ...model.InternalID) *AppCreate {
+	ac.mutation.AddPurchasedByUserIDs(ids...)
+	return ac
+}
+
+// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
+func (ac *AppCreate) AddPurchasedByUser(u ...*User) *AppCreate {
 	ids := make([]model.InternalID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
-	return ac.AddPurchasedByIDs(ids...)
+	return ac.AddPurchasedByUserIDs(ids...)
 }
 
 // AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
@@ -459,12 +475,28 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.PurchasedByIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   app.PurchasedByTable,
-			Columns: app.PurchasedByPrimaryKey,
+			Table:   app.PurchasedByAccountTable,
+			Columns: app.PurchasedByAccountPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.PurchasedByUserTable,
+			Columns: app.PurchasedByUserPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

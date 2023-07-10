@@ -29,10 +29,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgePurchasedApp holds the string denoting the purchased_app edge name in mutations.
+	EdgePurchasedApp = "purchased_app"
 	// EdgeBindUser holds the string denoting the bind_user edge name in mutations.
 	EdgeBindUser = "bind_user"
 	// Table holds the table name of the account in the database.
 	Table = "accounts"
+	// PurchasedAppTable is the table that holds the purchased_app relation/edge. The primary key declared below.
+	PurchasedAppTable = "account_purchased_app"
+	// PurchasedAppInverseTable is the table name for the App entity.
+	// It exists in this package in order to avoid circular dependency with the "app" package.
+	PurchasedAppInverseTable = "apps"
 	// BindUserTable is the table that holds the bind_user relation/edge.
 	BindUserTable = "accounts"
 	// BindUserInverseTable is the table name for the User entity.
@@ -59,6 +66,12 @@ var Columns = []string{
 var ForeignKeys = []string{
 	"user_bind_account",
 }
+
+var (
+	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
+	// primary key for the purchased_app relation (M2M).
+	PurchasedAppPrimaryKey = []string{"account_id", "app_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -149,11 +162,32 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
+// ByPurchasedAppCount orders the results by purchased_app count.
+func ByPurchasedAppCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPurchasedAppStep(), opts...)
+	}
+}
+
+// ByPurchasedApp orders the results by purchased_app terms.
+func ByPurchasedApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPurchasedAppStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByBindUserField orders the results by bind_user field.
 func ByBindUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newBindUserStep(), sql.OrderByField(field, opts...))
 	}
+}
+func newPurchasedAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PurchasedAppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+	)
 }
 func newBindUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

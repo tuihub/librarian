@@ -217,14 +217,21 @@ func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*mo
 }
 
 func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, appID model.InternalID) error {
-	err := g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(appID).Exec(ctx)
+	a, err := g.data.db.App.Get(ctx, appID)
+	if err != nil {
+		return err
+	}
+	if a.Source != app.SourceInternal {
+		return errors.New("illegal app source")
+	}
+	err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(appID).Exec(ctx)
 	return err
 }
 
 func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
 	apps, err := g.data.db.App.Query().
 		Where(
-			app.HasPurchasedByWith(user.IDEQ(id)),
+			app.HasPurchasedByUserWith(user.IDEQ(id)),
 		).
 		All(ctx)
 	if err != nil {
