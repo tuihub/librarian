@@ -14,12 +14,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 		SourceAppId:      "",
 		SourceUrl:        nil,
+		Details:          nil,
 		Name:             "test app 1",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
 		IconImageUrl:     "",
+		HeroImageUrl:     "",
 		Tags:             nil,
-		Details:          nil,
+		AppCategoryIds:   nil,
 	}}); err != nil {
 		panic(err)
 	} else {
@@ -45,12 +47,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 		SourceAppId:      "",
 		SourceUrl:        nil,
+		Details:          nil,
 		Name:             "test app 1",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description update",
 		IconImageUrl:     "",
+		HeroImageUrl:     "",
 		Tags:             nil,
-		Details:          nil,
+		AppCategoryIds:   nil,
 	}}); err != nil {
 		panic(err)
 	}
@@ -59,12 +63,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 		SourceAppId:      "",
 		SourceUrl:        nil,
+		Details:          nil,
 		Name:             "test app 2",
 		Type:             librarian.AppType_APP_TYPE_GAME,
 		ShortDescription: "test app description",
 		IconImageUrl:     "",
+		HeroImageUrl:     "",
 		Tags:             nil,
-		Details:          nil,
+		AppCategoryIds:   nil,
 	}}); err != nil {
 		panic(err)
 	} else {
@@ -95,12 +101,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 			Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
 			SourceAppId:      "",
 			SourceUrl:        nil,
+			Details:          nil,
 			Name:             "test app 1",
 			Type:             librarian.AppType_APP_TYPE_GAME,
 			ShortDescription: "test app description update",
 			IconImageUrl:     "",
+			HeroImageUrl:     "",
 			Tags:             nil,
-			Details:          nil,
+			AppCategoryIds:   nil,
 		},
 		Merged: appID2,
 	}); err != nil {

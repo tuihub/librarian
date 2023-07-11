@@ -181,6 +181,7 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 			Id:          converter.ToPBInternalID(image.ID),
 			Description: string(desReqStr),
 			Mode:        searcher.DescribeIDRequest_DESCRIBE_MODE_APPEND,
+			Index:       searcher.Index_INDEX_CHESED_IMAGE,
 		})
 		if err != nil {
 			return
@@ -223,6 +224,7 @@ func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords
 				PageSize: int32(paging.PageSize),
 			},
 			Keyword: keywords,
+			Index:   searcher.Index_INDEX_CHESED_IMAGE,
 		},
 	)
 	if err != nil {

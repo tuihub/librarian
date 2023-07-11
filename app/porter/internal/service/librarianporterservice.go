@@ -125,15 +125,15 @@ func (s *LibrarianPorterServiceService) PullApp(
 			Type:             ToPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
 			IconImageUrl:     "",
+			HeroImageUrl:     a.HeroImageURL,
 			Tags:             nil,
+			AppCategoryIds:   nil,
 			Details: &librarian.AppDetails{ // TODO
-				Description:  a.Description,
-				ReleaseDate:  a.ReleaseDate,
-				Developer:    a.Developer,
-				Publisher:    a.Publisher,
-				Version:      "",
-				HeroImageUrl: a.HeroImageURL,
-				LogoImageUrl: "",
+				Description: a.Description,
+				ReleaseDate: a.ReleaseDate,
+				Developer:   a.Developer,
+				Publisher:   a.Publisher,
+				Version:     "",
 			},
 		}}, nil
 	default:
@@ -163,16 +163,10 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 				Type:             0,
 				ShortDescription: "",
 				IconImageUrl:     a.IconImageURL,
+				HeroImageUrl:     a.HeroImageURL,
 				Tags:             nil,
-				Details: &librarian.AppDetails{
-					Description:  "",
-					ReleaseDate:  "",
-					Developer:    "",
-					Publisher:    "",
-					Version:      "",
-					HeroImageUrl: "",
-					LogoImageUrl: a.LogoImageURL,
-				},
+				AppCategoryIds:   nil,
+				Details:          nil,
 			}
 		}
 		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil

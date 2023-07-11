@@ -37,23 +37,29 @@ type document struct {
 	Description interface{}
 }
 
-func (m *meiliSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, description string) error {
+func (m *meiliSearcherRepo) DescribeID(
+	ctx context.Context, id model.InternalID, append_ bool, description string,
+) error {
 	var jsonDesc interface{}
 	err := libcodec.Unmarshal(libcodec.JSON, []byte(description), &jsonDesc)
+	var documents map[string]interface{}
 	if err == nil {
-		documents := map[string]interface{}{
+		documents = map[string]interface{}{
 			"id":          id,
 			"description": jsonDesc,
 		}
-		_, err = m.search.Index(IndexName).AddDocuments(documents)
+	} else {
+		documents = map[string]interface{}{
+			"id":          id,
+			"description": description,
+		}
+	}
+	if append_ {
+		_, err = m.search.Index(IndexName).UpdateDocuments(documents)
 		if err != nil {
 			return err
 		}
 	} else {
-		documents := map[string]interface{}{
-			"id":          id,
-			"description": description,
-		}
 		_, err = m.search.Index(IndexName).AddDocuments(documents)
 		if err != nil {
 			return err

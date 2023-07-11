@@ -40,13 +40,12 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 		SetType(converter.ToEntAppType(a.Type)).
 		SetShortDescription(a.ShortDescription).
 		SetIconImageURL(a.IconImageURL).
+		SetHeroImageURL(a.HeroImageURL).
 		SetDescription(a.Details.Description).
 		SetReleaseDate(a.Details.ReleaseDate).
 		SetDeveloper(a.Details.Developer).
 		SetPublisher(a.Details.Publisher).
 		SetVersion(a.Details.Version).
-		SetHeroImageURL(a.Details.HeroImageURL).
-		SetLogoImageURL(a.Details.LogoImageURL).
 		SetBindInternalID(a.BoundInternal)
 	return q.Exec(ctx)
 }
@@ -62,16 +61,15 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 		SetName(a.Name).
 		SetType(converter.ToEntAppType(a.Type)).
 		SetShortDescription(a.ShortDescription).
-		SetIconImageURL(a.IconImageURL)
+		SetIconImageURL(a.IconImageURL).
+		SetHeroImageURL(a.HeroImageURL)
 	if a.Details != nil {
 		q.
 			SetDescription(a.Details.Description).
 			SetReleaseDate(a.Details.ReleaseDate).
 			SetDeveloper(a.Details.Developer).
 			SetPublisher(a.Details.Publisher).
-			SetVersion(a.Details.Version).
-			SetHeroImageURL(a.Details.HeroImageURL).
-			SetLogoImageURL(a.Details.LogoImageURL)
+			SetVersion(a.Details.Version)
 	}
 	return q.Exec(ctx)
 }

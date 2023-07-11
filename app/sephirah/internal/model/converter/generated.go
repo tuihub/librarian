@@ -29,6 +29,7 @@ func (c *toBizConverterImpl) ToBizApp(source *v1.App) *modelgebura.App {
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
 		modelgeburaApp.IconImageURL = (*source).IconImageUrl
+		modelgeburaApp.HeroImageURL = (*source).HeroImageUrl
 		var stringList []string
 		if (*source).Tags != nil {
 			stringList = make([]string, len((*source).Tags))
@@ -51,8 +52,6 @@ func (c *toBizConverterImpl) ToBizAppDetail(source *v1.AppDetails) *modelgebura.
 		modelgeburaAppDetails.Developer = (*source).Developer
 		modelgeburaAppDetails.Publisher = (*source).Publisher
 		modelgeburaAppDetails.Version = (*source).Version
-		modelgeburaAppDetails.HeroImageURL = (*source).HeroImageUrl
-		modelgeburaAppDetails.LogoImageURL = (*source).LogoImageUrl
 		pModelgeburaAppDetails = &modelgeburaAppDetails
 	}
 	return pModelgeburaAppDetails
@@ -351,10 +350,12 @@ func (c *toPBConverterImpl) ToPBApp(source *modelgebura.App) *v1.App {
 		v1App.SourceAppId = (*source).SourceAppID
 		pString := (*source).SourceURL
 		v1App.SourceUrl = &pString
+		v1App.Details = c.ToPBAppDetail((*source).Details)
 		v1App.Name = (*source).Name
 		v1App.Type = ToPBAppType((*source).Type)
 		v1App.ShortDescription = (*source).ShortDescription
 		v1App.IconImageUrl = (*source).IconImageURL
+		v1App.HeroImageUrl = (*source).HeroImageURL
 		var stringList []string
 		if (*source).Tags != nil {
 			stringList = make([]string, len((*source).Tags))
@@ -363,7 +364,6 @@ func (c *toPBConverterImpl) ToPBApp(source *modelgebura.App) *v1.App {
 			}
 		}
 		v1App.Tags = stringList
-		v1App.Details = c.ToPBAppDetail((*source).Details)
 		pV1App = &v1App
 	}
 	return pV1App
@@ -377,8 +377,6 @@ func (c *toPBConverterImpl) ToPBAppDetail(source *modelgebura.AppDetails) *v1.Ap
 		v1AppDetails.Developer = (*source).Developer
 		v1AppDetails.Publisher = (*source).Publisher
 		v1AppDetails.Version = (*source).Version
-		v1AppDetails.HeroImageUrl = (*source).HeroImageURL
-		v1AppDetails.LogoImageUrl = (*source).LogoImageURL
 		pV1AppDetails = &v1AppDetails
 	}
 	return pV1AppDetails

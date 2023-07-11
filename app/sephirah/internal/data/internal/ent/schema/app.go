@@ -29,7 +29,6 @@ func (App) Fields() []ent.Field {
 		field.Text("description").Optional(),
 		field.String("icon_image_url").Optional(),
 		field.String("hero_image_url").Optional(),
-		field.String("logo_image_url").Optional(),
 		field.String("release_date").Optional(),
 		field.String("developer").Optional(),
 		field.String("publisher").Optional(),

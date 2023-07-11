@@ -126,6 +126,9 @@ func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.
 	if len(internalApp.IconImageURL) == 0 {
 		internalApp.IconImageURL = steamApp.IconImageURL
 	}
+	if len(internalApp.HeroImageURL) == 0 {
+		internalApp.HeroImageURL = steamApp.HeroImageURL
+	}
 	if internalApp.Details == nil { //nolint:nestif //TODO
 		internalApp.Details = steamApp.Details
 	} else if steamApp.Details != nil {
@@ -143,12 +146,6 @@ func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.
 		}
 		if len(internalApp.Details.Version) == 0 {
 			internalApp.Details.Version = steamApp.Details.Version
-		}
-		if len(internalApp.Details.HeroImageURL) == 0 {
-			internalApp.Details.HeroImageURL = steamApp.Details.HeroImageURL
-		}
-		if len(internalApp.Details.LogoImageURL) == 0 {
-			internalApp.Details.LogoImageURL = steamApp.Details.LogoImageURL
 		}
 	}
 	return internalApp, nil

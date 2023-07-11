@@ -160,22 +160,15 @@ func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Accou
 
 func (t tipherethRepo) ListLinkAccounts(
 	ctx context.Context,
-	paging model.Paging,
 	userID model.InternalID,
-) ([]*modeltiphereth.Account, int64, error) {
-	q := t.data.db.Account.Query().Where(
-		account.HasBindUserWith(user.IDEQ(userID)),
-	)
-	a, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
+) ([]*modeltiphereth.Account, error) {
+	a, err := t.data.db.Account.Query().
+		Where(
+			account.HasBindUserWith(user.IDEQ(userID)),
+		).
 		All(ctx)
 	if err != nil {
-		return nil, 0, err
+		return nil, err
 	}
-	total, err := q.Count(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	return converter.ToBizAccountList(a), int64(total), nil
+	return converter.ToBizAccountList(a), nil
 }

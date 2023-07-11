@@ -48,7 +48,12 @@ func (s *LibrarianSearcherServiceService) NewBatchIDs(ctx context.Context, req *
 }
 func (s *LibrarianSearcherServiceService) DescribeID(ctx context.Context, req *pb.DescribeIDRequest) (
 	*pb.DescribeIDResponse, error) {
-	err := s.uc.DescribeID(ctx, model.InternalID(req.GetId().GetId()), req.GetDescription())
+	err := s.uc.DescribeID(
+		ctx,
+		model.InternalID(req.GetId().GetId()),
+		req.GetMode() == pb.DescribeIDRequest_DESCRIBE_MODE_APPEND,
+		req.GetDescription(),
+	)
 	if err != nil {
 		return nil, err
 	}

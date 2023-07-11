@@ -120,20 +120,6 @@ func (ac *AppCreate) SetNillableHeroImageURL(s *string) *AppCreate {
 	return ac
 }
 
-// SetLogoImageURL sets the "logo_image_url" field.
-func (ac *AppCreate) SetLogoImageURL(s string) *AppCreate {
-	ac.mutation.SetLogoImageURL(s)
-	return ac
-}
-
-// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
-func (ac *AppCreate) SetNillableLogoImageURL(s *string) *AppCreate {
-	if s != nil {
-		ac.SetLogoImageURL(*s)
-	}
-	return ac
-}
-
 // SetReleaseDate sets the "release_date" field.
 func (ac *AppCreate) SetReleaseDate(s string) *AppCreate {
 	ac.mutation.SetReleaseDate(s)
@@ -447,10 +433,6 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
 		_node.HeroImageURL = value
 	}
-	if value, ok := ac.mutation.LogoImageURL(); ok {
-		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
-		_node.LogoImageURL = value
-	}
 	if value, ok := ac.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
 		_node.ReleaseDate = value
@@ -743,24 +725,6 @@ func (u *AppUpsert) UpdateHeroImageURL() *AppUpsert {
 // ClearHeroImageURL clears the value of the "hero_image_url" field.
 func (u *AppUpsert) ClearHeroImageURL() *AppUpsert {
 	u.SetNull(app.FieldHeroImageURL)
-	return u
-}
-
-// SetLogoImageURL sets the "logo_image_url" field.
-func (u *AppUpsert) SetLogoImageURL(v string) *AppUpsert {
-	u.Set(app.FieldLogoImageURL, v)
-	return u
-}
-
-// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
-func (u *AppUpsert) UpdateLogoImageURL() *AppUpsert {
-	u.SetExcluded(app.FieldLogoImageURL)
-	return u
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (u *AppUpsert) ClearLogoImageURL() *AppUpsert {
-	u.SetNull(app.FieldLogoImageURL)
 	return u
 }
 
@@ -1066,27 +1030,6 @@ func (u *AppUpsertOne) UpdateHeroImageURL() *AppUpsertOne {
 func (u *AppUpsertOne) ClearHeroImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearHeroImageURL()
-	})
-}
-
-// SetLogoImageURL sets the "logo_image_url" field.
-func (u *AppUpsertOne) SetLogoImageURL(v string) *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.SetLogoImageURL(v)
-	})
-}
-
-// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateLogoImageURL() *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateLogoImageURL()
-	})
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (u *AppUpsertOne) ClearLogoImageURL() *AppUpsertOne {
-	return u.Update(func(s *AppUpsert) {
-		s.ClearLogoImageURL()
 	})
 }
 
@@ -1570,27 +1513,6 @@ func (u *AppUpsertBulk) UpdateHeroImageURL() *AppUpsertBulk {
 func (u *AppUpsertBulk) ClearHeroImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.ClearHeroImageURL()
-	})
-}
-
-// SetLogoImageURL sets the "logo_image_url" field.
-func (u *AppUpsertBulk) SetLogoImageURL(v string) *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.SetLogoImageURL(v)
-	})
-}
-
-// UpdateLogoImageURL sets the "logo_image_url" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateLogoImageURL() *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.UpdateLogoImageURL()
-	})
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (u *AppUpsertBulk) ClearLogoImageURL() *AppUpsertBulk {
-	return u.Update(func(s *AppUpsert) {
-		s.ClearLogoImageURL()
 	})
 }
 

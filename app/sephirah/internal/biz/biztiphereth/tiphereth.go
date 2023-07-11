@@ -27,7 +27,7 @@ type TipherethRepo interface {
 		*model.InternalID) ([]*modeltiphereth.User, int64, error)
 	LinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
-	ListLinkAccounts(context.Context, model.Paging, model.InternalID) ([]*modeltiphereth.Account, int64, error)
+	ListLinkAccounts(context.Context, model.InternalID) ([]*modeltiphereth.Account, error)
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
 }
 
@@ -356,21 +356,21 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account)
 }
 
 func (t *Tiphereth) ListLinkAccounts(
-	ctx context.Context, paging model.Paging, id model.InternalID,
-) ([]*modeltiphereth.Account, int64, *errors.Error) {
+	ctx context.Context, id model.InternalID,
+) ([]*modeltiphereth.Account, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
 	claims, exist := libauth.FromContext(ctx)
 	if !exist {
-		return nil, 0, pb.ErrorErrorReasonUnauthorized("invalid token")
+		return nil, pb.ErrorErrorReasonUnauthorized("invalid token")
 	}
 	if id == 0 {
 		id = claims.InternalID
 	}
-	a, total, err := t.repo.ListLinkAccounts(ctx, paging, id)
+	a, err := t.repo.ListLinkAccounts(ctx, id)
 	if err != nil {
-		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return a, total, nil
+	return a, nil
 }

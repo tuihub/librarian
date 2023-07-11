@@ -156,26 +156,6 @@ func (au *AppUpdate) ClearHeroImageURL() *AppUpdate {
 	return au
 }
 
-// SetLogoImageURL sets the "logo_image_url" field.
-func (au *AppUpdate) SetLogoImageURL(s string) *AppUpdate {
-	au.mutation.SetLogoImageURL(s)
-	return au
-}
-
-// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
-func (au *AppUpdate) SetNillableLogoImageURL(s *string) *AppUpdate {
-	if s != nil {
-		au.SetLogoImageURL(*s)
-	}
-	return au
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (au *AppUpdate) ClearLogoImageURL() *AppUpdate {
-	au.mutation.ClearLogoImageURL()
-	return au
-}
-
 // SetReleaseDate sets the "release_date" field.
 func (au *AppUpdate) SetReleaseDate(s string) *AppUpdate {
 	au.mutation.SetReleaseDate(s)
@@ -554,12 +534,6 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if au.mutation.HeroImageURLCleared() {
 		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
-	}
-	if value, ok := au.mutation.LogoImageURL(); ok {
-		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
-	}
-	if au.mutation.LogoImageURLCleared() {
-		_spec.ClearField(app.FieldLogoImageURL, field.TypeString)
 	}
 	if value, ok := au.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
@@ -941,26 +915,6 @@ func (auo *AppUpdateOne) SetNillableHeroImageURL(s *string) *AppUpdateOne {
 // ClearHeroImageURL clears the value of the "hero_image_url" field.
 func (auo *AppUpdateOne) ClearHeroImageURL() *AppUpdateOne {
 	auo.mutation.ClearHeroImageURL()
-	return auo
-}
-
-// SetLogoImageURL sets the "logo_image_url" field.
-func (auo *AppUpdateOne) SetLogoImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetLogoImageURL(s)
-	return auo
-}
-
-// SetNillableLogoImageURL sets the "logo_image_url" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableLogoImageURL(s *string) *AppUpdateOne {
-	if s != nil {
-		auo.SetLogoImageURL(*s)
-	}
-	return auo
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (auo *AppUpdateOne) ClearLogoImageURL() *AppUpdateOne {
-	auo.mutation.ClearLogoImageURL()
 	return auo
 }
 
@@ -1372,12 +1326,6 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if auo.mutation.HeroImageURLCleared() {
 		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
-	}
-	if value, ok := auo.mutation.LogoImageURL(); ok {
-		_spec.SetField(app.FieldLogoImageURL, field.TypeString, value)
-	}
-	if auo.mutation.LogoImageURLCleared() {
-		_spec.ClearField(app.FieldLogoImageURL, field.TypeString)
 	}
 	if value, ok := auo.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)

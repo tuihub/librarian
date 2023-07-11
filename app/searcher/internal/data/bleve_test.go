@@ -67,7 +67,7 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 		if err != nil {
 			return
 		}
-		if err = r.DescribeID(context.Background(), model.InternalID(i), string(str)); err != nil {
+		if err = r.DescribeID(context.Background(), model.InternalID(i), false, string(str)); err != nil {
 			t.Errorf("DescribeID() error = %v", err)
 		}
 	}

@@ -58,6 +58,7 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
 		modelgeburaApp.IconImageURL = (*source).IconImageURL
+		modelgeburaApp.HeroImageURL = (*source).HeroImageURL
 		modelgeburaApp.Details = c.entAppToPModelgeburaAppDetails((*source))
 		pModelgeburaApp = &modelgeburaApp
 	}
@@ -308,8 +309,6 @@ func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) model
 	modelgeburaAppDetails.Developer = source.Developer
 	modelgeburaAppDetails.Publisher = source.Publisher
 	modelgeburaAppDetails.Version = source.Version
-	modelgeburaAppDetails.HeroImageURL = source.HeroImageURL
-	modelgeburaAppDetails.LogoImageURL = source.LogoImageURL
 	return modelgeburaAppDetails
 }
 func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
@@ -376,60 +375,43 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	}
 	entApp.Description = xstring
 	entApp.IconImageURL = source.IconImageURL
+	entApp.HeroImageURL = source.HeroImageURL
 	var pString2 *string
 	if source.Details != nil {
-		pString2 = &source.Details.HeroImageURL
+		pString2 = &source.Details.ReleaseDate
 	}
 	var xstring2 string
 	if pString2 != nil {
 		xstring2 = *pString2
 	}
-	entApp.HeroImageURL = xstring2
+	entApp.ReleaseDate = xstring2
 	var pString3 *string
 	if source.Details != nil {
-		pString3 = &source.Details.LogoImageURL
+		pString3 = &source.Details.Developer
 	}
 	var xstring3 string
 	if pString3 != nil {
 		xstring3 = *pString3
 	}
-	entApp.LogoImageURL = xstring3
+	entApp.Developer = xstring3
 	var pString4 *string
 	if source.Details != nil {
-		pString4 = &source.Details.ReleaseDate
+		pString4 = &source.Details.Publisher
 	}
 	var xstring4 string
 	if pString4 != nil {
 		xstring4 = *pString4
 	}
-	entApp.ReleaseDate = xstring4
+	entApp.Publisher = xstring4
 	var pString5 *string
 	if source.Details != nil {
-		pString5 = &source.Details.Developer
+		pString5 = &source.Details.Version
 	}
 	var xstring5 string
 	if pString5 != nil {
 		xstring5 = *pString5
 	}
-	entApp.Developer = xstring5
-	var pString6 *string
-	if source.Details != nil {
-		pString6 = &source.Details.Publisher
-	}
-	var xstring6 string
-	if pString6 != nil {
-		xstring6 = *pString6
-	}
-	entApp.Publisher = xstring6
-	var pString7 *string
-	if source.Details != nil {
-		pString7 = &source.Details.Version
-	}
-	var xstring7 string
-	if pString7 != nil {
-		xstring7 = *pString7
-	}
-	entApp.Version = xstring7
+	entApp.Version = xstring5
 	return entApp
 }
 func (c *toEntConverterImpl) ToEntAppPackageSourceList(source []modelgebura.AppPackageSource) []apppackage.Source {

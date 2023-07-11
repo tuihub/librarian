@@ -36,8 +36,6 @@ type App struct {
 	IconImageURL string `json:"icon_image_url,omitempty"`
 	// HeroImageURL holds the value of the "hero_image_url" field.
 	HeroImageURL string `json:"hero_image_url,omitempty"`
-	// LogoImageURL holds the value of the "logo_image_url" field.
-	LogoImageURL string `json:"logo_image_url,omitempty"`
 	// ReleaseDate holds the value of the "release_date" field.
 	ReleaseDate string `json:"release_date,omitempty"`
 	// Developer holds the value of the "developer" field.
@@ -130,7 +128,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case app.FieldID:
 			values[i] = new(sql.NullInt64)
-		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldHeroImageURL, app.FieldLogoImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
+		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldHeroImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
 			values[i] = new(sql.NullString)
 		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -210,12 +208,6 @@ func (a *App) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field hero_image_url", values[i])
 			} else if value.Valid {
 				a.HeroImageURL = value.String
-			}
-		case app.FieldLogoImageURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field logo_image_url", values[i])
-			} else if value.Valid {
-				a.LogoImageURL = value.String
 			}
 		case app.FieldReleaseDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -347,9 +339,6 @@ func (a *App) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("hero_image_url=")
 	builder.WriteString(a.HeroImageURL)
-	builder.WriteString(", ")
-	builder.WriteString("logo_image_url=")
-	builder.WriteString(a.LogoImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("release_date=")
 	builder.WriteString(a.ReleaseDate)

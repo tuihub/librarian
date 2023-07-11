@@ -41,7 +41,7 @@ func NewBleve(conf *conf.Searcher_Data, app *libapp.Settings) (bleve.Index, erro
 	return index, nil
 }
 
-func (r *bleveSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, description string) error {
+func (r *bleveSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, _ bool, description string) error {
 	var jsonDesc interface{}
 	err := libcodec.Unmarshal(libcodec.JSON, []byte(description), &jsonDesc)
 	if err == nil {

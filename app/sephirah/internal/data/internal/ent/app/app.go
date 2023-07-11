@@ -33,8 +33,6 @@ const (
 	FieldIconImageURL = "icon_image_url"
 	// FieldHeroImageURL holds the string denoting the hero_image_url field in the database.
 	FieldHeroImageURL = "hero_image_url"
-	// FieldLogoImageURL holds the string denoting the logo_image_url field in the database.
-	FieldLogoImageURL = "logo_image_url"
 	// FieldReleaseDate holds the string denoting the release_date field in the database.
 	FieldReleaseDate = "release_date"
 	// FieldDeveloper holds the string denoting the developer field in the database.
@@ -98,7 +96,6 @@ var Columns = []string{
 	FieldDescription,
 	FieldIconImageURL,
 	FieldHeroImageURL,
-	FieldLogoImageURL,
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
@@ -243,11 +240,6 @@ func ByIconImageURL(opts ...sql.OrderTermOption) OrderOption {
 // ByHeroImageURL orders the results by the hero_image_url field.
 func ByHeroImageURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldHeroImageURL, opts...).ToFunc()
-}
-
-// ByLogoImageURL orders the results by the logo_image_url field.
-func ByLogoImageURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldLogoImageURL, opts...).ToFunc()
 }
 
 // ByReleaseDate orders the results by the release_date field.

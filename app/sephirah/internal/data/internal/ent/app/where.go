@@ -91,11 +91,6 @@ func HeroImageURL(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldHeroImageURL, v))
 }
 
-// LogoImageURL applies equality check predicate on the "logo_image_url" field. It's identical to LogoImageURLEQ.
-func LogoImageURL(v string) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoImageURL, v))
-}
-
 // ReleaseDate applies equality check predicate on the "release_date" field. It's identical to ReleaseDateEQ.
 func ReleaseDate(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldReleaseDate, v))
@@ -669,81 +664,6 @@ func HeroImageURLEqualFold(v string) predicate.App {
 // HeroImageURLContainsFold applies the ContainsFold predicate on the "hero_image_url" field.
 func HeroImageURLContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldHeroImageURL, v))
-}
-
-// LogoImageURLEQ applies the EQ predicate on the "logo_image_url" field.
-func LogoImageURLEQ(v string) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldLogoImageURL, v))
-}
-
-// LogoImageURLNEQ applies the NEQ predicate on the "logo_image_url" field.
-func LogoImageURLNEQ(v string) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldLogoImageURL, v))
-}
-
-// LogoImageURLIn applies the In predicate on the "logo_image_url" field.
-func LogoImageURLIn(vs ...string) predicate.App {
-	return predicate.App(sql.FieldIn(FieldLogoImageURL, vs...))
-}
-
-// LogoImageURLNotIn applies the NotIn predicate on the "logo_image_url" field.
-func LogoImageURLNotIn(vs ...string) predicate.App {
-	return predicate.App(sql.FieldNotIn(FieldLogoImageURL, vs...))
-}
-
-// LogoImageURLGT applies the GT predicate on the "logo_image_url" field.
-func LogoImageURLGT(v string) predicate.App {
-	return predicate.App(sql.FieldGT(FieldLogoImageURL, v))
-}
-
-// LogoImageURLGTE applies the GTE predicate on the "logo_image_url" field.
-func LogoImageURLGTE(v string) predicate.App {
-	return predicate.App(sql.FieldGTE(FieldLogoImageURL, v))
-}
-
-// LogoImageURLLT applies the LT predicate on the "logo_image_url" field.
-func LogoImageURLLT(v string) predicate.App {
-	return predicate.App(sql.FieldLT(FieldLogoImageURL, v))
-}
-
-// LogoImageURLLTE applies the LTE predicate on the "logo_image_url" field.
-func LogoImageURLLTE(v string) predicate.App {
-	return predicate.App(sql.FieldLTE(FieldLogoImageURL, v))
-}
-
-// LogoImageURLContains applies the Contains predicate on the "logo_image_url" field.
-func LogoImageURLContains(v string) predicate.App {
-	return predicate.App(sql.FieldContains(FieldLogoImageURL, v))
-}
-
-// LogoImageURLHasPrefix applies the HasPrefix predicate on the "logo_image_url" field.
-func LogoImageURLHasPrefix(v string) predicate.App {
-	return predicate.App(sql.FieldHasPrefix(FieldLogoImageURL, v))
-}
-
-// LogoImageURLHasSuffix applies the HasSuffix predicate on the "logo_image_url" field.
-func LogoImageURLHasSuffix(v string) predicate.App {
-	return predicate.App(sql.FieldHasSuffix(FieldLogoImageURL, v))
-}
-
-// LogoImageURLIsNil applies the IsNil predicate on the "logo_image_url" field.
-func LogoImageURLIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldLogoImageURL))
-}
-
-// LogoImageURLNotNil applies the NotNil predicate on the "logo_image_url" field.
-func LogoImageURLNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldLogoImageURL))
-}
-
-// LogoImageURLEqualFold applies the EqualFold predicate on the "logo_image_url" field.
-func LogoImageURLEqualFold(v string) predicate.App {
-	return predicate.App(sql.FieldEqualFold(FieldLogoImageURL, v))
-}
-
-// LogoImageURLContainsFold applies the ContainsFold predicate on the "logo_image_url" field.
-func LogoImageURLContainsFold(v string) predicate.App {
-	return predicate.App(sql.FieldContainsFold(FieldLogoImageURL, v))
 }
 
 // ReleaseDateEQ applies the EQ predicate on the "release_date" field.

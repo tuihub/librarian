@@ -68,6 +68,9 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 		if len(ap.IconImageURL) > 0 {
 			q.SetIconImageURL(ap.IconImageURL)
 		}
+		if len(ap.HeroImageURL) > 0 {
+			q.SetHeroImageURL(ap.HeroImageURL)
+		}
 		if ap.Details != nil { //nolint:nestif // TODO
 			if len(ap.Details.Description) > 0 {
 				q.SetDescription(ap.Details.Description)
@@ -83,12 +86,6 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 			}
 			if len(ap.Details.Version) > 0 {
 				q.SetVersion(ap.Details.Version)
-			}
-			if len(ap.Details.HeroImageURL) > 0 {
-				q.SetHeroImageURL(ap.Details.HeroImageURL)
-			}
-			if len(ap.Details.LogoImageURL) > 0 {
-				q.SetLogoImageURL(ap.Details.LogoImageURL)
 			}
 		}
 		count, err := tx.App.Query().Where(
@@ -131,6 +128,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 			SetType(converter.ToEntAppType(ap.Type)).
 			SetShortDescription(ap.ShortDescription).
 			SetIconImageURL(ap.IconImageURL).
+			SetHeroImageURL(ap.HeroImageURL).
 			SetBindInternalID(ap.BoundInternal)
 		if ap.Details != nil {
 			apps[i].
@@ -138,9 +136,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 				SetReleaseDate(ap.Details.ReleaseDate).
 				SetDeveloper(ap.Details.Developer).
 				SetPublisher(ap.Details.Publisher).
-				SetVersion(ap.Details.Version).
-				SetHeroImageURL(ap.Details.HeroImageURL).
-				SetLogoImageURL(ap.Details.LogoImageURL)
+				SetVersion(ap.Details.Version)
 		}
 	}
 	return a.data.db.App.

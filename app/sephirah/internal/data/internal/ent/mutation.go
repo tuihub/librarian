@@ -874,7 +874,6 @@ type AppMutation struct {
 	description                 *string
 	icon_image_url              *string
 	hero_image_url              *string
-	logo_image_url              *string
 	release_date                *string
 	developer                   *string
 	publisher                   *string
@@ -1392,55 +1391,6 @@ func (m *AppMutation) HeroImageURLCleared() bool {
 func (m *AppMutation) ResetHeroImageURL() {
 	m.hero_image_url = nil
 	delete(m.clearedFields, app.FieldHeroImageURL)
-}
-
-// SetLogoImageURL sets the "logo_image_url" field.
-func (m *AppMutation) SetLogoImageURL(s string) {
-	m.logo_image_url = &s
-}
-
-// LogoImageURL returns the value of the "logo_image_url" field in the mutation.
-func (m *AppMutation) LogoImageURL() (r string, exists bool) {
-	v := m.logo_image_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLogoImageURL returns the old "logo_image_url" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldLogoImageURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLogoImageURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLogoImageURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLogoImageURL: %w", err)
-	}
-	return oldValue.LogoImageURL, nil
-}
-
-// ClearLogoImageURL clears the value of the "logo_image_url" field.
-func (m *AppMutation) ClearLogoImageURL() {
-	m.logo_image_url = nil
-	m.clearedFields[app.FieldLogoImageURL] = struct{}{}
-}
-
-// LogoImageURLCleared returns if the "logo_image_url" field was cleared in this mutation.
-func (m *AppMutation) LogoImageURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldLogoImageURL]
-	return ok
-}
-
-// ResetLogoImageURL resets all changes to the "logo_image_url" field.
-func (m *AppMutation) ResetLogoImageURL() {
-	m.logo_image_url = nil
-	delete(m.clearedFields, app.FieldLogoImageURL)
 }
 
 // SetReleaseDate sets the "release_date" field.
@@ -2000,7 +1950,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 15)
 	if m.source != nil {
 		fields = append(fields, app.FieldSource)
 	}
@@ -2027,9 +1977,6 @@ func (m *AppMutation) Fields() []string {
 	}
 	if m.hero_image_url != nil {
 		fields = append(fields, app.FieldHeroImageURL)
-	}
-	if m.logo_image_url != nil {
-		fields = append(fields, app.FieldLogoImageURL)
 	}
 	if m.release_date != nil {
 		fields = append(fields, app.FieldReleaseDate)
@@ -2075,8 +2022,6 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.IconImageURL()
 	case app.FieldHeroImageURL:
 		return m.HeroImageURL()
-	case app.FieldLogoImageURL:
-		return m.LogoImageURL()
 	case app.FieldReleaseDate:
 		return m.ReleaseDate()
 	case app.FieldDeveloper:
@@ -2116,8 +2061,6 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldIconImageURL(ctx)
 	case app.FieldHeroImageURL:
 		return m.OldHeroImageURL(ctx)
-	case app.FieldLogoImageURL:
-		return m.OldLogoImageURL(ctx)
 	case app.FieldReleaseDate:
 		return m.OldReleaseDate(ctx)
 	case app.FieldDeveloper:
@@ -2201,13 +2144,6 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetHeroImageURL(v)
-		return nil
-	case app.FieldLogoImageURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLogoImageURL(v)
 		return nil
 	case app.FieldReleaseDate:
 		v, ok := value.(string)
@@ -2296,9 +2232,6 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldHeroImageURL) {
 		fields = append(fields, app.FieldHeroImageURL)
 	}
-	if m.FieldCleared(app.FieldLogoImageURL) {
-		fields = append(fields, app.FieldLogoImageURL)
-	}
 	if m.FieldCleared(app.FieldReleaseDate) {
 		fields = append(fields, app.FieldReleaseDate)
 	}
@@ -2339,9 +2272,6 @@ func (m *AppMutation) ClearField(name string) error {
 		return nil
 	case app.FieldHeroImageURL:
 		m.ClearHeroImageURL()
-		return nil
-	case app.FieldLogoImageURL:
-		m.ClearLogoImageURL()
 		return nil
 	case app.FieldReleaseDate:
 		m.ClearReleaseDate()
@@ -2389,9 +2319,6 @@ func (m *AppMutation) ResetField(name string) error {
 		return nil
 	case app.FieldHeroImageURL:
 		m.ResetHeroImageURL()
-		return nil
-	case app.FieldLogoImageURL:
-		m.ResetLogoImageURL()
 		return nil
 	case app.FieldReleaseDate:
 		m.ResetReleaseDate()

@@ -23,7 +23,7 @@ func (m *mockedSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	return args.Get(0).(int64), args.Error(1)
 }
 
-func (m *mockedSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, s string) error {
+func (m *mockedSearcherRepo) DescribeID(ctx context.Context, id model.InternalID, b bool, s string) error {
 	// TODO implement me
 	panic("implement me")
 }

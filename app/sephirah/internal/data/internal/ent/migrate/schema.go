@@ -53,7 +53,6 @@ var (
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "icon_image_url", Type: field.TypeString, Nullable: true},
 		{Name: "hero_image_url", Type: field.TypeString, Nullable: true},
-		{Name: "logo_image_url", Type: field.TypeString, Nullable: true},
 		{Name: "release_date", Type: field.TypeString, Nullable: true},
 		{Name: "developer", Type: field.TypeString, Nullable: true},
 		{Name: "publisher", Type: field.TypeString, Nullable: true},
@@ -70,7 +69,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "apps_apps_bind_external",
-				Columns:    []*schema.Column{AppsColumns[17]},
+				Columns:    []*schema.Column{AppsColumns[16]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
