@@ -16,7 +16,9 @@ import (
 // ProviderSet is data providers.
 var ProviderSet = wire.NewSet(NewSearcherRepo, NewSnowFlake, NewBleve, NewMeili)
 
-func NewSearcherRepo(b bleve.Index, m *meilisearch.Client, sf *sonyflake.Sonyflake) (biz.SearcherRepo, error) {
+func NewSearcherRepo(
+	b map[biz.Index]bleve.Index, m *meilisearch.Client, sf *sonyflake.Sonyflake,
+) (biz.SearcherRepo, error) {
 	if m != nil {
 		return &meiliSearcherRepo{
 			sf:     sf,

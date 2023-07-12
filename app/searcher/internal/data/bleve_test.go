@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	"github.com/tuihub/librarian/app/searcher/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model"
@@ -57,7 +58,12 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	r, err := data.NewSearcherRepo(index, nil, nil)
+	indexMap := make(map[biz.Index]bleve.Index)
+	indexMap[biz.IndexGeneral] = index
+	r, err := data.NewSearcherRepo(
+		indexMap,
+		nil, nil,
+	)
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,14 +73,16 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 		if err != nil {
 			return
 		}
-		if err = r.DescribeID(context.Background(), model.InternalID(i), false, string(str)); err != nil {
+		if err = r.DescribeID(context.Background(), model.InternalID(i), biz.IndexGeneral, false, string(str)); err != nil {
 			t.Errorf("DescribeID() error = %v", err)
 		}
 	}
-	ids, err := r.SearchID(context.Background(), model.Paging{
-		PageSize: 10,
-		PageNum:  1,
-	}, "your")
+	ids, err := r.SearchID(context.Background(),
+		biz.IndexGeneral,
+		model.Paging{
+			PageSize: 10,
+			PageNum:  1,
+		}, "your")
 	if err != nil {
 		t.Errorf("SearchID() error = %v", err)
 	}

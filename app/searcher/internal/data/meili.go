@@ -13,8 +13,6 @@ import (
 	"github.com/sony/sonyflake"
 )
 
-const IndexName = "default"
-
 type meiliSearcherRepo struct {
 	sf     *sonyflake.Sonyflake
 	search *meilisearch.Client
@@ -38,7 +36,7 @@ type document struct {
 }
 
 func (m *meiliSearcherRepo) DescribeID(
-	ctx context.Context, id model.InternalID, append_ bool, description string,
+	ctx context.Context, id model.InternalID, index biz.Index, append_ bool, description string,
 ) error {
 	var jsonDesc interface{}
 	err := libcodec.Unmarshal(libcodec.JSON, []byte(description), &jsonDesc)
@@ -55,12 +53,12 @@ func (m *meiliSearcherRepo) DescribeID(
 		}
 	}
 	if append_ {
-		_, err = m.search.Index(IndexName).UpdateDocuments(documents)
+		_, err = m.search.Index(biz.IndexNameMap()[index]).UpdateDocuments(documents)
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err = m.search.Index(IndexName).AddDocuments(documents)
+		_, err = m.search.Index(biz.IndexNameMap()[index]).AddDocuments(documents)
 		if err != nil {
 			return err
 		}
@@ -68,14 +66,13 @@ func (m *meiliSearcherRepo) DescribeID(
 	return nil
 }
 
-func (m *meiliSearcherRepo) SearchID(ctx context.Context, paging model.Paging, keyword string) (
+func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, keyword string) (
 	[]*biz.SearchResult, error) {
-	request := &meilisearch.SearchRequest{ //nolint:exhaustruct //TODO
-		Limit:  int64(paging.ToLimit()),
-		Offset: int64(paging.ToOffset()),
-	}
+	request := new(meilisearch.SearchRequest)
+	request.Limit = int64(paging.ToLimit())
+	request.Limit = int64(paging.ToOffset())
 	// https://github.com/meilisearch/meilisearch-go/issues/406
-	resultRaw, err := m.search.Index(IndexName).SearchRaw(keyword, request)
+	resultRaw, err := m.search.Index(biz.IndexNameMap()[index]).SearchRaw(keyword, request)
 	if err != nil {
 		return nil, err
 	}
