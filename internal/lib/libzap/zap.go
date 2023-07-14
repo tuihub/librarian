@@ -44,9 +44,9 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 	cfg.EncoderConfig.TimeKey = ""
 
 	for _, opt := range teeOptions {
-		lv := zap.LevelEnablerFunc(func(level Level) bool {
-			return opt.LevelEnablerFunc(level)
-		})
+		lv := zap.LevelEnablerFunc((func(opt TeeOption) func(level Level) bool {
+			return opt.LevelEnablerFunc
+		})(opt))
 
 		w := zapcore.AddSync(&lumberjack.Logger{
 			Filename:   opt.Filename,
