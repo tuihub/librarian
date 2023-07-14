@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.7](https://github.com/TuiHub/Librarian/compare/v0.1.6...v0.1.7) (2023-07-14)
+
+
+### Features
+
+* **searcher:** add index support ([9cb9c35](https://github.com/TuiHub/Librarian/commit/9cb9c35808cfd34eab1ea60a53e6244187b190e0))
+* use searcher to search app ([704913a](https://github.com/TuiHub/Librarian/commit/704913a6c0a9327b973a272824dff078c0477db5))
+
+
+### Bug Fixes
+
+* avoid duplicated data when re-link account ([8c3193a](https://github.com/TuiHub/Librarian/commit/8c3193a1780e57f288c64f5b3af6baae8c9b8b85))
+* closure in libzap ([9f8de5e](https://github.com/TuiHub/Librarian/commit/9f8de5edbff552ab082e0647e1fa3e78ab75bb38))
+* correct re-link account ([637d151](https://github.com/TuiHub/Librarian/commit/637d151665e67b1b6eabab2d30a3a67f653591ff))
+* **tiphereth:** check bound before bind new account ([4f9a9f0](https://github.com/TuiHub/Librarian/commit/4f9a9f04e568f83b1973d5a13547aece820ec754))
+* update purchase logic ([dddc3f4](https://github.com/TuiHub/Librarian/commit/dddc3f48b9590c30a9753bce453eb417c261b1b2))
+* upgrade proto to v0.2.37 ([65c30db](https://github.com/TuiHub/Librarian/commit/65c30db0df97fa9c1347b8f8f727cf33007a7213))
+
 ## [0.1.6](https://github.com/TuiHub/Librarian/compare/v0.1.5...v0.1.6) (2023-07-04)
 
 
