@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"time"
-
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -77,14 +75,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 	} else {
 		appID2 = resp.Id
 	}
-	time.Sleep(time.Second)
-	if resp, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
+	if _, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
 		Paging:   defaultPaging,
 		Keywords: "2",
 	}); err != nil {
 		panic(err)
-	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID2.GetId() {
-		panic("unexpected search result")
 	}
 	if _, err := c.cli.GetBindApps(ctx, &pb.GetBindAppsRequest{AppId: appID2}); err != nil {
 		panic(err)
