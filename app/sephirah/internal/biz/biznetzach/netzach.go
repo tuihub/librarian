@@ -3,16 +3,13 @@ package biznetzach
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -35,9 +32,7 @@ type NetzachRepo interface {
 
 type Netzach struct {
 	repo                  NetzachRepo
-	mapper                mapper.LibrarianMapperServiceClient
-	searcher              searcher.LibrarianSearcherServiceClient
-	porter                porter.LibrarianPorterServiceClient
+	searcher              *client.Searcher
 	feedToNotifyFlowCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
 	notifyFlowCache       *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
 	notifyTargetCache     *libcache.Map[model.InternalID, modelnetzach.NotifyTarget]
@@ -45,18 +40,14 @@ type Netzach struct {
 
 func NewNetzach(
 	repo NetzachRepo,
-	mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 	feedToNotifyFlowCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
 ) *Netzach {
 	y := &Netzach{
 		repo,
-		mClient,
 		sClient,
-		pClient,
 		feedToNotifyFlowCache,
 		notifyFlowCache,
 		notifyTargetCache,
@@ -64,7 +55,7 @@ func NewNetzach(
 	return y
 }
 
-func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.NotifyTarget) ( //nolint:dupl //TODO
+func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.NotifyTarget) (
 	model.InternalID, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return 0, pb.ErrorErrorReasonForbidden("no permission")
@@ -76,12 +67,11 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if !exist {
 		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	resp, err := n.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := n.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	target.ID = converter.ToBizInternalID(resp.Id)
+	target.ID = id
 	err = n.repo.CreateNotifyTarget(ctx, claims.InternalID, target)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -129,7 +119,7 @@ func (n *Netzach) ListNotifyTargets(
 	return targets, total, nil
 }
 
-func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.NotifyFlow) ( //nolint:dupl //TODO
+func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.NotifyFlow) (
 	model.InternalID, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return 0, pb.ErrorErrorReasonForbidden("no permission")
@@ -141,12 +131,11 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	if !exist {
 		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	resp, err := n.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := n.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	flow.ID = converter.ToBizInternalID(resp.Id)
+	flow.ID = id
 	err = n.repo.CreateNotifyFlow(ctx, claims.InternalID, flow)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())

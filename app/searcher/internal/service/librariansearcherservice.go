@@ -64,10 +64,7 @@ func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.
 	*pb.SearchIDResponse, error) {
 	res, err := s.uc.SearchID(
 		ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		toBizIndex(req.GetIndex()),
 		req.GetKeyword(),
 	)

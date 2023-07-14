@@ -39,10 +39,7 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	feeds, total, err := s.y.ListFeeds(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
@@ -75,10 +72,7 @@ func (s *LibrarianSephirahServiceService) ListFeedItems(
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	items, total, err := s.y.ListFeedItems(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetFeedIdFilter()),
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),

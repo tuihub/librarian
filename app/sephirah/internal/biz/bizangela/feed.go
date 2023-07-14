@@ -7,13 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/exp/slices"
@@ -36,12 +34,12 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
-			ids, err := a.searcher.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{Num: int32(len(feed.Items))})
+			ids, err := a.searcher.NewBatchIDs(ctx, len(feed.Items))
 			if err != nil {
 				return err
 			}
 			for i, item := range feed.Items {
-				item.ID = converter.ToBizInternalID(ids.GetIds()[i])
+				item.ID = ids[i]
 				// generate publish_platform
 				if len(item.Link) > 0 {
 					var linkParsed *url.URL

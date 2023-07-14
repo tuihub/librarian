@@ -30,10 +30,7 @@ func (s *LibrarianSephirahServiceService) UpdateNotifyTarget(ctx context.Context
 func (s *LibrarianSephirahServiceService) ListNotifyTargets(ctx context.Context, req *pb.ListNotifyTargetsRequest) (
 	*pb.ListNotifyTargetsResponse, error) {
 	t, total, err := s.n.ListNotifyTargets(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 		converter.ToBizNotifyTargetTypeList(req.GetTypeFilter()),
 		converter.ToBizNotifyTargetStatusList(req.GetStatusFilter()),
@@ -66,10 +63,10 @@ func (s *LibrarianSephirahServiceService) UpdateNotifyFlow(ctx context.Context, 
 }
 func (s *LibrarianSephirahServiceService) ListNotifyFlows(ctx context.Context, req *pb.ListNotifyFlowsRequest) (
 	*pb.ListNotifyFlowsResponse, error) {
-	res, total, err := s.n.ListNotifyFlows(ctx, model.Paging{
-		PageSize: int(req.GetPaging().GetPageSize()),
-		PageNum:  int(req.GetPaging().GetPageNum()),
-	}, converter.ToBizInternalIDList(req.GetIdFilter()))
+	res, total, err := s.n.ListNotifyFlows(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizInternalIDList(req.GetIdFilter()),
+	)
 	if err != nil {
 		return nil, err
 	}

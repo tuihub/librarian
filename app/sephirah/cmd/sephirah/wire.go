@@ -6,9 +6,10 @@ package main
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
-	"github.com/tuihub/librarian/internal/client"
+	globalclient "github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -32,9 +33,10 @@ func wireApp(
 ) (*kratos.App, func(), error) {
 	panic(wire.Build(
 		server.ProviderSet,
-		client.ProviderSet,
+		globalclient.ProviderSet,
 		data.ProviderSet,
 		biz.ProviderSet,
+		client.ProviderSet,
 		service.ProviderSet,
 		libauth.ProviderSet,
 		libmq.ProviderSet,

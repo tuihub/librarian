@@ -82,10 +82,7 @@ func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	u, total, err := s.t.ListUsers(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToLibAuthUserTypeList(req.GetTypeFilter()),
 		converter.ToBizUserStatusList(req.GetStatusFilter()),
 	)

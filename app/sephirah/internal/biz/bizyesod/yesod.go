@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -11,8 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
 type YesodRepo interface {
@@ -35,8 +34,7 @@ type YesodRepo interface {
 type Yesod struct {
 	repo     YesodRepo
 	mapper   mapper.LibrarianMapperServiceClient
-	searcher searcher.LibrarianSearcherServiceClient
-	porter   porter.LibrarianPorterServiceClient
+	searcher *client.Searcher
 	pullFeed *libmq.Topic[modelyesod.PullFeed]
 }
 
@@ -44,14 +42,12 @@ func NewYesod(
 	repo YesodRepo,
 	cron *libcron.Cron,
 	mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 ) (*Yesod, error) {
 	y := &Yesod{
 		repo:     repo,
 		mapper:   mClient,
-		porter:   pClient,
 		searcher: sClient,
 		pullFeed: pullFeed,
 	}

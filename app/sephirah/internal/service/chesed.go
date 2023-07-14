@@ -36,10 +36,7 @@ func (s *LibrarianSephirahServiceService) UpdateImage(ctx context.Context, req *
 }
 func (s *LibrarianSephirahServiceService) ListImages(ctx context.Context, req *pb.ListImagesRequest) (
 	*pb.ListImagesResponse, error) {
-	res, total, err := s.c.ListImages(ctx, model.Paging{
-		PageSize: int(req.GetPaging().GetPageSize()),
-		PageNum:  int(req.GetPaging().GetPageNum()),
-	})
+	res, total, err := s.c.ListImages(ctx, model.ToBizPaging(req.GetPaging()))
 	if err != nil {
 		return nil, err
 	}
@@ -50,10 +47,7 @@ func (s *LibrarianSephirahServiceService) ListImages(ctx context.Context, req *p
 }
 func (s *LibrarianSephirahServiceService) SearchImages(ctx context.Context,
 	req *pb.SearchImagesRequest) (*pb.SearchImagesResponse, error) {
-	res, err := s.c.SearchImages(ctx, model.Paging{
-		PageSize: int(req.GetPaging().GetPageSize()),
-		PageNum:  int(req.GetPaging().GetPageNum()),
-	}, req.GetKeywords())
+	res, err := s.c.SearchImages(ctx, model.ToBizPaging(req.GetPaging()), req.GetKeywords())
 	if err != nil {
 		return nil, err
 	}

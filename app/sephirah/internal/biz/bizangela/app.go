@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	pb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
@@ -21,7 +20,7 @@ func NewPullSteamAppTopic(
 		"PullSteamApp",
 		func(ctx context.Context, r *modelangela.PullSteamApp) error {
 			ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
-			id, err := a.searcher.NewID(ctx, &pb.NewIDRequest{})
+			id, err := a.searcher.NewID(ctx)
 			if err != nil {
 				return err
 			}
@@ -36,7 +35,7 @@ func NewPullSteamAppTopic(
 			app.ID = r.ID
 			app.Source = modelgebura.AppSourceSteam
 			internalApp := new(modelgebura.App)
-			internalApp.ID = converter.ToBizInternalID(id.GetId())
+			internalApp.ID = id
 			internalApp.Source = modelgebura.AppSourceInternal
 			internalApp.SourceAppID = strconv.FormatInt(int64(internalApp.ID), 10)
 			err = a.repo.UpdateApp(ctx, app, internalApp)

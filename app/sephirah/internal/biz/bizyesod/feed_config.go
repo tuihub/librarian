@@ -3,13 +3,10 @@ package bizyesod
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -23,12 +20,11 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if !exist {
 		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	resp, err := y.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := y.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	config.ID = converter.ToBizInternalID(resp.Id)
+	config.ID = id
 	if _, err = y.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
 			Vid:  int64(config.ID),

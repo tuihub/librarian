@@ -4,13 +4,10 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -20,12 +17,11 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := g.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	app.ID = converter.ToBizInternalID(resp.Id)
+	app.ID = id
 	app.Source = modelgebura.AppSourceInternal
 	app.SourceAppID = strconv.FormatInt(int64(app.ID), 10)
 	app.SourceURL = ""

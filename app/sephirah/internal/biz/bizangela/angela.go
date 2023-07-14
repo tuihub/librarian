@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -13,7 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/google/wire"
 )
@@ -40,7 +40,7 @@ type AngelaBase struct {
 	repo     AngelaRepo
 	g        bizgebura.GeburaRepo
 	mapper   mapper.LibrarianMapperServiceClient
-	searcher searcher.LibrarianSearcherServiceClient
+	searcher *client.Searcher
 	porter   porter.LibrarianPorterServiceClient
 }
 
@@ -60,7 +60,7 @@ func NewAngelaBase(
 	g bizgebura.GeburaRepo,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 ) (*AngelaBase, error) {
 	return &AngelaBase{
 		repo:     repo,

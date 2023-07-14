@@ -5,21 +5,18 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
-	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/wire"
@@ -41,8 +38,7 @@ type ChesedRepo interface {
 
 type Chesed struct {
 	repo        ChesedRepo
-	mapper      mapper.LibrarianMapperServiceClient
-	searcher    searcher.LibrarianSearcherServiceClient
+	searcher    *client.Searcher
 	porter      porter.LibrarianPorterServiceClient
 	miner       miner.LibrarianMinerServiceClient
 	upload      *modelbinah.UploadCallBack
@@ -54,16 +50,14 @@ type Chesed struct {
 func NewChesed(
 	repo ChesedRepo,
 	cron *libcron.Cron,
-	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 	miClient miner.LibrarianMinerServiceClient,
 	block *modelbinah.ControlBlock,
 	imageCache *libcache.Map[model.InternalID, modelchesed.Image],
 ) (*Chesed, error) {
 	c := &Chesed{
 		repo:        repo,
-		mapper:      mClient,
 		porter:      pClient,
 		searcher:    sClient,
 		miner:       miClient,
@@ -109,12 +103,12 @@ func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 	if err := metadata.Check(); err != nil {
 		return "", pb.ErrorErrorReasonBadRequest("invalid file metadata: %s", err.Error())
 	}
-	resp, err := c.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := c.searcher.NewID(ctx)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	image.ID = converter.ToBizInternalID(resp.Id)
-	metadata.ID = converter.ToBizInternalID(resp.Id)
+	image.ID = id
+	metadata.ID = id
 	err = c.imageCache.Set(ctx, image.ID, &image)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -169,25 +163,18 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 			return
 		}
 		var desReq string
-		var desReqStr []byte
 		for _, r := range results.GetResults() {
 			desReq += r.Text + " "
 		}
-		desReqStr, err = libcodec.Marshal(libcodec.JSON, desReq)
-		if err != nil {
+		if err = c.searcher.DescribeID(ctx,
+			image.ID,
+			desReq,
+			searcherpb.DescribeIDRequest_DESCRIBE_MODE_APPEND,
+			searcherpb.Index_INDEX_CHESED_IMAGE,
+		); err != nil {
 			return
 		}
-		_, err = c.searcher.DescribeID(ctx, &searcher.DescribeIDRequest{
-			Id:          converter.ToPBInternalID(image.ID),
-			Description: string(desReqStr),
-			Mode:        searcher.DescribeIDRequest_DESCRIBE_MODE_APPEND,
-			Index:       searcher.Index_INDEX_CHESED_IMAGE,
-		})
-		if err != nil {
-			return
-		}
-		err = c.repo.SetImageStatus(ctx, image.ID, modelchesed.ImageStatusScanned)
-		if err != nil {
+		if err = c.repo.SetImageStatus(ctx, image.ID, modelchesed.ImageStatusScanned); err != nil {
 			return
 		}
 	}
@@ -217,24 +204,15 @@ func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	resp, err := c.searcher.SearchID(ctx,
-		&searcher.SearchIDRequest{
-			Paging: &librarian.PagingRequest{
-				PageNum:  int32(paging.PageNum),
-				PageSize: int32(paging.PageSize),
-			},
-			Keyword: keywords,
-			Index:   searcher.Index_INDEX_CHESED_IMAGE,
-		},
+	ids, err := c.searcher.SearchID(ctx,
+		paging,
+		keywords,
+		searcherpb.Index_INDEX_CHESED_IMAGE,
 	)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res := make([]model.InternalID, 0, len(resp.GetResult()))
-	for _, r := range resp.GetResult() {
-		res = append(res, converter.ToBizInternalID(r.Id))
-	}
-	return res, nil
+	return ids, nil
 }
 
 func (c *Chesed) DownloadImage(ctx context.Context, id model.InternalID) (string, *errors.Error) {

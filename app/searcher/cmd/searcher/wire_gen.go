@@ -20,7 +20,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
-	index, err := data.NewBleve(searcher_Data, settings)
+	v, err := data.NewBleve(searcher_Data, settings)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -29,7 +29,7 @@ func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher
 		return nil, nil, err
 	}
 	sonyflake := data.NewSnowFlake()
-	searcherRepo, err := data.NewSearcherRepo(index, client, sonyflake)
+	searcherRepo, err := data.NewSearcherRepo(v, client, sonyflake)
 	if err != nil {
 		return nil, nil, err
 	}

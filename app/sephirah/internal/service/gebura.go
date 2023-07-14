@@ -47,10 +47,7 @@ func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.
 	*pb.ListAppsResponse, error,
 ) {
 	a, total, err := s.g.ListApps(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizAppSourceList(req.GetSourceFilter()),
 		converter.ToBizAppTypeList(req.GetTypeFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
@@ -88,10 +85,7 @@ func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *p
 	*pb.SearchAppsResponse, error,
 ) {
 	apps, total, err := s.g.SearchApps(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		req.GetKeywords(),
 	)
 	if err != nil {
@@ -166,10 +160,7 @@ func (s *LibrarianSephirahServiceService) ListAppPackages(
 	req *pb.ListAppPackagesRequest,
 ) (*pb.ListAppPackagesResponse, error) {
 	ap, total, err := s.g.ListAppPackages(ctx,
-		model.Paging{
-			PageSize: int(req.GetPaging().GetPageSize()),
-			PageNum:  int(req.GetPaging().GetPageNum()),
-		},
+		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizAppPackageSourceList(req.GetSourceFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 	)

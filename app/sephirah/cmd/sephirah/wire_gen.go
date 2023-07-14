@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	client2 "github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/client"
@@ -65,7 +66,8 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	searcher := client2.NewSearcher(librarianSearcherServiceClient)
+	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, searcher)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -95,24 +97,24 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic2)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, librarianMapperServiceClient, searcher, topic2)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, librarianMapperServiceClient, searcher)
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
 	cron := libcron.NewCron()
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, topic6)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic6)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	netzach := biznetzach.NewNetzach(netzachRepo, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, map2, libcacheMap, map3)
+	netzach := biznetzach.NewNetzach(netzachRepo, searcher, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
 	librarianMinerServiceClient, err := client.NewMinerClient()
 	if err != nil {
@@ -121,7 +123,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup2()
 		cleanup()

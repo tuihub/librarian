@@ -3,7 +3,7 @@ package biztiphereth
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -11,8 +11,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -35,8 +33,7 @@ type Tiphereth struct {
 	auth        *libauth.Auth
 	repo        TipherethRepo
 	mapper      mapper.LibrarianMapperServiceClient
-	searcher    searcher.LibrarianSearcherServiceClient
-	porter      porter.LibrarianPorterServiceClient
+	searcher    *client.Searcher
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo]
 }
 
@@ -44,15 +41,13 @@ func NewTiphereth(
 	repo TipherethRepo,
 	auth *libauth.Auth,
 	mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 ) (*Tiphereth, error) {
 	return &Tiphereth{
 		auth:        auth,
 		repo:        repo,
 		mapper:      mClient,
-		porter:      pClient,
 		searcher:    sClient,
 		pullAccount: pullAccount,
 	}, nil
@@ -129,12 +124,11 @@ func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *modeltiphereth
 		return
 	}
 	user.PassWord = password
-	resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := t.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
 		return
 	}
-	user.ID = converter.ToBizInternalID(resp.Id)
+	user.ID = id
 	user.Status = modeltiphereth.UserStatusActive
 	user.Type = libauth.UserTypeAdmin
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
@@ -171,12 +165,11 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 		return nil, pb.ErrorErrorReasonBadRequest("invalid password")
 	}
 	user.PassWord = password
-	resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := t.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	user.ID = converter.ToBizInternalID(resp.Id)
+	user.ID = id
 	user.Status = modeltiphereth.UserStatusActive
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
@@ -303,13 +296,12 @@ func (t *Tiphereth) LinkAccount(
 	if !exist {
 		return nil, pb.ErrorErrorReasonUnauthorized("invalid token")
 	}
-	if resp, err := t.searcher.NewID(ctx, &searcher.NewIDRequest{}); err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	} else {
-		a.ID = converter.ToBizInternalID(resp.Id)
+	id, err := t.searcher.NewID(ctx)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	if _, err := t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+	a.ID = id
+	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
 			Vid:  int64(a.ID),
 			Type: mapper.VertexType_VERTEX_TYPE_ENTITY,
@@ -318,7 +310,7 @@ func (t *Tiphereth) LinkAccount(
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if _, err := t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
+	if _, err = t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
 		{
 			SrcVid: int64(claims.InternalID),
 			DstVid: int64(a.ID),
@@ -328,10 +320,10 @@ func (t *Tiphereth) LinkAccount(
 	}}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.repo.LinkAccount(ctx, a, claims.InternalID); err != nil {
+	if err = t.repo.LinkAccount(ctx, a, claims.InternalID); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err := t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{
+	if err = t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{
 		ID:                a.ID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,

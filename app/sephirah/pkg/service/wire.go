@@ -6,6 +6,7 @@ package service
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz"
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -40,6 +41,7 @@ func NewSephirahService(
 	panic(wire.Build(
 		data.ProviderSet,
 		biz.ProviderSet,
+		client.ProviderSet,
 		service.ProviderSet,
 		server.ProviderSet,
 	))

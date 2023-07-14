@@ -3,13 +3,10 @@ package bizgebura
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -23,12 +20,11 @@ func (g *Gebura) CreateAppPackage(
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	resp, err := g.searcher.NewID(ctx, &searcher.NewIDRequest{})
+	id, err := g.searcher.NewID(ctx)
 	if err != nil {
-		logger.Infof("NewID failed: %s", err.Error())
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	a.ID = converter.ToBizInternalID(resp.Id)
+	a.ID = id
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
@@ -133,17 +129,16 @@ type reportAppPackageHandler struct {
 func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelgebura.AppPackageBinary) *errors.Error {
 	var vl []*mapper.Vertex
 	packages := make([]*modelgebura.AppPackage, 0, len(binaries))
+	ids, err := r.g.searcher.NewBatchIDs(ctx, len(binaries))
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
 	for i := range binaries {
 		packages = append(packages, new(modelgebura.AppPackage))
 		if !slices.Contains(r.sha256, string(binaries[i].Sha256)) {
-			resp, err := r.g.searcher.NewID(ctx, &searcher.NewIDRequest{})
-			if err != nil {
-				logger.Infof("NewID failed: %s", err.Error())
-				return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-			}
-			packages[i].ID = converter.ToBizInternalID(resp.Id)
+			packages[i].ID = ids[i]
 			vl = append(vl, &mapper.Vertex{
-				Vid:  int64(converter.ToBizInternalID(resp.Id)),
+				Vid:  int64(ids[i]),
 				Type: mapper.VertexType_VERTEX_TYPE_OBJECT,
 				Prop: nil,
 			})
@@ -152,10 +147,10 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelg
 		packages[i].SourceID = r.sourceID
 	}
 	if len(vl) > 0 {
-		if _, err := r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
+		if _, err = r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		if err := r.g.repo.UpsertAppPackages(ctx, r.sourceID, packages); err != nil {
+		if err = r.g.repo.UpsertAppPackages(ctx, r.sourceID, packages); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
 	}

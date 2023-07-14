@@ -3,12 +3,11 @@ package bizgebura
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -43,16 +42,14 @@ type Gebura struct {
 	auth     *libauth.Auth
 	repo     GeburaRepo
 	mapper   mapper.LibrarianMapperServiceClient
-	porter   porter.LibrarianPorterServiceClient
-	searcher searcher.LibrarianSearcherServiceClient
+	searcher *client.Searcher
 }
 
 func NewGebura(
 	repo GeburaRepo,
 	auth *libauth.Auth,
 	mClient mapper.LibrarianMapperServiceClient,
-	pClient porter.LibrarianPorterServiceClient,
-	sClient searcher.LibrarianSearcherServiceClient,
+	sClient *client.Searcher,
 ) *Gebura {
-	return &Gebura{auth: auth, repo: repo, mapper: mClient, porter: pClient, searcher: sClient}
+	return &Gebura{auth: auth, repo: repo, mapper: mClient, searcher: sClient}
 }

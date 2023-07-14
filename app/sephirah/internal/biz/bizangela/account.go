@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
@@ -90,12 +89,10 @@ func NewPullSteamAccountAppRelationTopic(
 			}
 			steamApps := make([]*modelgebura.App, 0, appNum)
 			var steamAppIDs []model.InternalID
-			if resp, err := a.searcher.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{
-				Num: int32(appNum),
-			}); err != nil {
+			if id, err := a.searcher.NewBatchIDs(ctx, appNum); err != nil {
 				return err
 			} else {
-				steamAppIDs = converter.ToBizInternalIDList(resp.GetIds())
+				steamAppIDs = id
 			}
 			for i, app := range appList {
 				steamApps = append(steamApps, converter.ToBizApp(app))
