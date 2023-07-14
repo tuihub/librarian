@@ -9,12 +9,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPullSteamAppTopic(
 	a *AngelaBase,
+	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
 ) *libmq.Topic[modelangela.PullSteamApp] {
 	return libmq.NewTopic[modelangela.PullSteamApp](
 		"PullSteamApp",
@@ -42,6 +44,7 @@ func NewPullSteamAppTopic(
 			if err != nil {
 				return err
 			}
+			_ = updateAppIndex.Publish(ctx, modelangela.UpdateAppIndex{IDs: []model.InternalID{id}})
 			return nil
 		},
 	)

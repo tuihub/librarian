@@ -174,31 +174,7 @@ func (g geburaRepo) MergeApps(ctx context.Context, base modelgebura.App, merged 
 	return err
 }
 
-func (g geburaRepo) SearchApps(ctx context.Context, paging model.Paging, keyword string) (
-	[]*modelgebura.App, int, error) {
-	q := g.data.db.App.Query().
-		Where(
-			app.Or(
-				app.NameContains(keyword),
-				app.ShortDescriptionContains(keyword),
-				app.DescriptionContains(keyword),
-			),
-		)
-	total, err := q.Count(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	apps, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	return converter.ToBizAppList(apps), total, nil
-}
-
-func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
+func (g geburaRepo) GetBoundApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
 	a, err := g.data.db.App.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -212,6 +188,32 @@ func (g geburaRepo) GetBindApps(ctx context.Context, id model.InternalID) ([]*mo
 		return nil, err
 	}
 	return converter.ToBizAppList(append(externalApps, internalApp)), nil
+}
+
+func (g geburaRepo) GetBatchBoundApps(ctx context.Context, ids []model.InternalID) ([]*modelgebura.BoundApps, error) {
+	apps, err := g.data.db.App.Query().
+		Where(
+			app.IDIn(ids...),
+			app.SourceEQ(app.SourceInternal),
+		).
+		WithBindExternal().
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*modelgebura.BoundApps, 0, len(apps))
+	for i := range apps {
+		res = append(res, new(modelgebura.BoundApps))
+		res[i].Internal = converter.ToBizApp(apps[i])
+		if externals, e := apps[i].Edges.BindExternalOrErr(); e == nil {
+			for _, external := range externals {
+				if external.Source == app.SourceSteam {
+					res[i].Steam = converter.ToBizApp(external)
+				}
+			}
+		}
+	}
+	return res, nil
 }
 
 func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, appID model.InternalID) error {

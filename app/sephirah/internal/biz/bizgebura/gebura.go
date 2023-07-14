@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 
@@ -22,8 +24,8 @@ type GeburaRepo interface {
 	ListApps(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
 		[]model.InternalID, bool) ([]*modelgebura.App, int64, error)
 	MergeApps(context.Context, modelgebura.App, model.InternalID) error
-	SearchApps(context.Context, model.Paging, string) ([]*modelgebura.App, int, error)
-	GetBindApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
+	GetBoundApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
+	GetBatchBoundApps(context.Context, []model.InternalID) ([]*modelgebura.BoundApps, error)
 	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
 	GetPurchasedApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 
@@ -39,10 +41,11 @@ type GeburaRepo interface {
 }
 
 type Gebura struct {
-	auth     *libauth.Auth
-	repo     GeburaRepo
-	mapper   mapper.LibrarianMapperServiceClient
-	searcher *client.Searcher
+	auth           *libauth.Auth
+	repo           GeburaRepo
+	mapper         mapper.LibrarianMapperServiceClient
+	searcher       *client.Searcher
+	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex]
 }
 
 func NewGebura(
@@ -50,6 +53,13 @@ func NewGebura(
 	auth *libauth.Auth,
 	mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
+	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
 ) *Gebura {
-	return &Gebura{auth: auth, repo: repo, mapper: mClient, searcher: sClient}
+	return &Gebura{
+		auth:           auth,
+		repo:           repo,
+		mapper:         mClient,
+		searcher:       sClient,
+		updateAppIndex: updateAppIndex,
+	}
 }

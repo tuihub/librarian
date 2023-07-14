@@ -31,6 +31,7 @@ var ProviderSet = wire.NewSet(
 	NewNotifyFlowCache,
 	NewNotifyTargetCache,
 	NewParseFeedItemDigestTopic,
+	NewUpdateAppIndexTopic,
 )
 
 type Angela struct {
@@ -80,6 +81,7 @@ func NewAngela(
 	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
 	notifyPush *libmq.Topic[modelangela.NotifyPush],
 	parseFeedItem *libmq.Topic[modelangela.ParseFeedItemDigest],
+	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccount); err != nil {
 		return nil, err
@@ -100,6 +102,9 @@ func NewAngela(
 		return nil, err
 	}
 	if err := mq.RegisterTopic(parseFeedItem); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(updateAppIndex); err != nil {
 		return nil, err
 	}
 	return &Angela{

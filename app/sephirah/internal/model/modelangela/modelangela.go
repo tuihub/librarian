@@ -31,3 +31,7 @@ type NotifyPush struct {
 type ParseFeedItemDigest struct {
 	ID model.InternalID
 }
+
+type UpdateAppIndex struct {
+	IDs []model.InternalID
+}

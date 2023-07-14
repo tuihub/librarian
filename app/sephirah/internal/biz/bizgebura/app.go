@@ -4,10 +4,12 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
+	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -37,6 +39,7 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 	if err = g.repo.CreateApp(ctx, app); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
+	_ = g.updateAppIndex.Publish(ctx, modelangela.UpdateAppIndex{IDs: []model.InternalID{app.ID}})
 	return app, nil
 }
 
@@ -49,6 +52,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Er
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
+	_ = g.updateAppIndex.Publish(ctx, modelangela.UpdateAppIndex{IDs: []model.InternalID{app.ID}})
 	return nil
 }
 
@@ -80,6 +84,7 @@ func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged mod
 	if err := g.repo.MergeApps(ctx, base, merged); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
+	_ = g.updateAppIndex.Publish(ctx, modelangela.UpdateAppIndex{IDs: []model.InternalID{base.ID}})
 	return nil
 }
 
@@ -88,70 +93,46 @@ func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword st
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	apps, total, err := g.repo.SearchApps(ctx, paging, keyword)
+	ids, err := g.searcher.SearchID(ctx, paging, keyword, searcherpb.Index_INDEX_GEBURA_APP)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	return apps, total, nil
+	apps, err := g.repo.GetBatchBoundApps(ctx, ids)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err)
+	}
+	res := make([]*modelgebura.App, 0, len(apps))
+	for _, a := range apps {
+		res = append(res, a.Flatten())
+	}
+	return res, 0, nil
 }
 
 func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.App, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	apps, err := g.repo.GetBindApps(ctx, id)
+	apps, err := g.repo.GetBoundApps(ctx, id)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	var internalApp *modelgebura.App
-	var steamApp *modelgebura.App
+	var res modelgebura.BoundApps
 	for _, app := range apps {
 		if app.Source == modelgebura.AppSourceInternal {
-			internalApp = app
+			res.Internal = app
 		}
 		if app.Source == modelgebura.AppSourceSteam {
-			steamApp = app
+			res.Steam = app
 		}
 	}
-	if len(internalApp.Name) == 0 {
-		internalApp.Name = steamApp.Name
-	}
-	if len(internalApp.ShortDescription) == 0 {
-		internalApp.ShortDescription = steamApp.ShortDescription
-	}
-	if len(internalApp.IconImageURL) == 0 {
-		internalApp.IconImageURL = steamApp.IconImageURL
-	}
-	if len(internalApp.HeroImageURL) == 0 {
-		internalApp.HeroImageURL = steamApp.HeroImageURL
-	}
-	if internalApp.Details == nil { //nolint:nestif //TODO
-		internalApp.Details = steamApp.Details
-	} else if steamApp.Details != nil {
-		if len(internalApp.Details.Description) == 0 {
-			internalApp.Details.Description = steamApp.Details.Description
-		}
-		if len(internalApp.Details.ReleaseDate) == 0 {
-			internalApp.Details.ReleaseDate = steamApp.Details.ReleaseDate
-		}
-		if len(internalApp.Details.Developer) == 0 {
-			internalApp.Details.Developer = steamApp.Details.Developer
-		}
-		if len(internalApp.Details.Publisher) == 0 {
-			internalApp.Details.Publisher = steamApp.Details.Publisher
-		}
-		if len(internalApp.Details.Version) == 0 {
-			internalApp.Details.Version = steamApp.Details.Version
-		}
-	}
-	return internalApp, nil
+	return res.Flatten(), nil
 }
 
 func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
-	apps, err := g.repo.GetBindApps(ctx, id)
+	apps, err := g.repo.GetBoundApps(ctx, id)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

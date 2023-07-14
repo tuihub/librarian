@@ -47,33 +47,34 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	topic := bizangela.NewPullSteamAppTopic(angelaBase)
-	libmqTopic := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, topic)
-	topic2 := bizangela.NewPullAccountTopic(angelaBase, libmqTopic)
+	topic := bizangela.NewUpdateAppIndexTopic(angelaBase)
+	libmqTopic := bizangela.NewPullSteamAppTopic(angelaBase, topic)
+	topic2 := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, libmqTopic)
+	topic3 := bizangela.NewPullAccountTopic(angelaBase, topic2)
 	netzachRepo := data.NewNetzachRepo(dataData)
 	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)
 	map2 := bizangela.NewFeedToNotifyFlowMap(netzachRepo, store)
 	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
-	topic3 := bizangela.NewNotifyPushTopic(angelaBase, map3)
-	topic4 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic3)
-	topic5 := bizangela.NewParseFeedItemDigestTopic(angelaBase)
-	topic6 := bizangela.NewPullFeedTopic(angelaBase, topic4, topic5)
-	angela, err := bizangela.NewAngela(mq, topic2, libmqTopic, topic, topic6, topic4, topic3, topic5)
+	topic4 := bizangela.NewNotifyPushTopic(angelaBase, map3)
+	topic5 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic4)
+	topic6 := bizangela.NewParseFeedItemDigestTopic(angelaBase)
+	topic7 := bizangela.NewPullFeedTopic(angelaBase, topic5, topic6)
+	angela, err := bizangela.NewAngela(mq, topic3, topic2, libmqTopic, topic7, topic5, topic4, topic6, topic)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, searcher, topic2)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, searcher, topic3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher)
+	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher, topic)
 	controlBlock := bizbinah.NewControlBlock(auth)
 	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic6)
+	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic7)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
