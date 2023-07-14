@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -76,6 +77,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // n
 	} else {
 		appID2 = resp.Id
 	}
+	time.Sleep(time.Second)
 	if resp, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
 		Paging:   defaultPaging,
 		Keywords: "2",

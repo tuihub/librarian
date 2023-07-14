@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc/metadata"
@@ -41,6 +42,11 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 }
 
 func (c *Client) TestTiphereth(ctx context.Context) {
+	c.testUser(ctx)
+	c.testAccount(ctx)
+}
+
+func (c *Client) testUser(ctx context.Context) {
 	user1 := &pb.User{
 		Id:       nil,
 		Username: "user1",
@@ -70,19 +76,19 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 	user1.Password = ""
 	user2.Password = ""
 
-	c.AssertListUser(
+	c.assertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, nil,
 		func(resp *pb.ListUsersResponse) bool {
 			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
 				!cmp.Equal(resp.GetUsers()[0], user2)
 		})
-	c.AssertListUser(
+	c.assertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
 		func(resp *pb.ListUsersResponse) bool {
 			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
 				!cmp.Equal(resp.GetUsers()[0], user2)
 		})
-	c.AssertListUser(
+	c.assertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
 		func(resp *pb.ListUsersResponse) bool {
 			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
@@ -101,12 +107,12 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 		panic(err)
 	}
 
-	c.AssertListUser(
+	c.assertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, nil,
 		func(resp *pb.ListUsersResponse) bool {
 			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
 		})
-	c.AssertListUser(
+	c.assertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
 		func(resp *pb.ListUsersResponse) bool {
 			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 1) ||
@@ -135,7 +141,64 @@ func (c *Client) TestTiphereth(ctx context.Context) {
 	}
 }
 
-func (c *Client) AssertListUser(
+func (c *Client) testAccount(ctx context.Context) {
+	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
+		AccountId: &librarian.AccountID{
+			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			PlatformAccountId: "0",
+		},
+	}); err != nil {
+		panic(err)
+	}
+	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
+		AccountId: &librarian.AccountID{
+			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			PlatformAccountId: "1",
+		},
+	}); err == nil {
+		panic("err expected")
+	}
+	if resp, err := c.cli.ListLinkAccounts(ctx, &pb.ListLinkAccountsRequest{
+		UserId: nil,
+	}); err != nil {
+		panic(err)
+	} else if len(resp.GetAccounts()) != 1 || resp.GetAccounts()[0].GetPlatformAccountId() != "0" {
+		panic(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
+	}
+	if _, err := c.cli.UnLinkAccount(ctx, &pb.UnLinkAccountRequest{
+		AccountId: &librarian.AccountID{
+			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			PlatformAccountId: "0",
+		},
+	}); err != nil {
+		panic(err)
+	}
+	if resp, err := c.cli.ListLinkAccounts(ctx, &pb.ListLinkAccountsRequest{
+		UserId: nil,
+	}); err != nil {
+		panic(err)
+	} else if len(resp.GetAccounts()) != 0 {
+		panic(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
+	}
+	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
+		AccountId: &librarian.AccountID{
+			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			PlatformAccountId: "1",
+		},
+	}); err != nil {
+		panic(err)
+	}
+	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
+		AccountId: &librarian.AccountID{
+			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			PlatformAccountId: "0",
+		},
+	}); err == nil {
+		panic("err expected")
+	}
+}
+
+func (c *Client) assertListUser(
 	ctx context.Context, types []pb.UserType, statuses []pb.UserStatus, assertFunc func(*pb.ListUsersResponse) bool,
 ) {
 	resp, err := c.cli.ListUsers(ctx, &pb.ListUsersRequest{

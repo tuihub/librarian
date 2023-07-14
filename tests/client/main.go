@@ -59,13 +59,13 @@ func NewSephirahClient() pb.LibrarianSephirahServiceClient {
 
 func (c *Client) WaitServerOnline(ctx context.Context) {
 	const maxRetry = 30
-	_, err := c.cli.GetToken(ctx, new(pb.GetTokenRequest))
+	_, err := c.cli.GetServerInformation(ctx, new(pb.GetServerInformationRequest))
 	i := 1
 	for errors.IsServiceUnavailable(err) && i < maxRetry {
 		time.Sleep(time.Second)
 		i += 1
 		log.Infof("[Client] Waiting server online %s", err.Error())
-		_, err = c.cli.GetToken(ctx, new(pb.GetTokenRequest))
+		_, err = c.cli.GetServerInformation(ctx, new(pb.GetServerInformationRequest))
 	}
 	if i == maxRetry {
 		panic("Server unavailable")
