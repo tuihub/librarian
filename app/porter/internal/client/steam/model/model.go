@@ -132,9 +132,9 @@ type OwnedGames struct {
 }
 
 type GetAppDetailsRequest struct {
-	AppIDs      []int           `url:"appids"`
-	CountryCode ProductCC       `url:"cc,omitempty"`
-	Language    LanguageCodeWeb `url:"language,omitempty"`
+	AppIDs      []int        `url:"appids"`
+	CountryCode ProductCC    `url:"cc,omitempty"`
+	Language    LanguageCode `url:"l,omitempty"`
 }
 
 type AppDetailsBase struct {

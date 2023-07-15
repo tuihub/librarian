@@ -56,7 +56,7 @@ func TestStoreAPI_GetAppDetails(t *testing.T) {
 	res, err := r.GetAppDetails(context.Background(), model.GetAppDetailsRequest{
 		AppIDs:      []int{getAppID()},
 		CountryCode: model.ProductCCUS,
-		Language:    model.LanguageWebEN,
+		Language:    model.LanguageEnglish,
 	})
 	logger.Infof("res %+v, err: %+v", res, err)
 }

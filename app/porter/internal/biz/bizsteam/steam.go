@@ -8,6 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -57,18 +58,35 @@ const (
 )
 
 type SteamUseCase struct {
-	c *steam.Steam
+	c      *steam.Steam
+	locale libapp.Locale
 }
 
 func NewSteamUseCase(client *steam.Steam) *SteamUseCase {
 	if !client.FeatureEnabled() {
 		return new(SteamUseCase)
 	}
-	return &SteamUseCase{c: client}
+	return &SteamUseCase{
+		c:      client,
+		locale: libapp.GetLocale(),
+	}
 }
 
 func (s *SteamUseCase) FeatureEnabled() bool {
 	return s.c != nil
+}
+
+func (s *SteamUseCase) language() model.LanguageCode {
+	switch s.locale {
+	case libapp.LocaleEn:
+		return model.LanguageEnglish
+	case libapp.LocaleChs:
+		return model.LanguageChineseSimplified
+	case libapp.LocaleCht:
+		return model.LanguageChineseTraditional
+	default:
+		return model.LanguageEnglish
+	}
 }
 
 func (s *SteamUseCase) GetUser(ctx context.Context, steamID string) (*User, error) {
@@ -136,7 +154,7 @@ func (s *SteamUseCase) GetAppDetails(ctx context.Context, appID int) (*App, erro
 	resp, err := s.c.GetAppDetails(ctx, model.GetAppDetailsRequest{
 		AppIDs:      []int{appID},
 		CountryCode: "",
-		Language:    "",
+		Language:    s.language(),
 	})
 	if err != nil {
 		return nil, err
