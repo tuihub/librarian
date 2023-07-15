@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.8](https://github.com/TuiHub/Librarian/compare/v0.1.7...v0.1.8) (2023-07-15)
+
+
+### Features
+
+* add zh locale support ([0e74203](https://github.com/TuiHub/Librarian/commit/0e74203649174bf1b2041a116fae7bbaf54aed9e))
+
+
+### Bug Fixes
+
+* **gebura:** correct search & flatten logic ([840b234](https://github.com/TuiHub/Librarian/commit/840b234b8dcae0291994ff311605013709619d5e))
+
 ## [0.1.7](https://github.com/TuiHub/Librarian/compare/v0.1.6...v0.1.7) (2023-07-14)
 
 
