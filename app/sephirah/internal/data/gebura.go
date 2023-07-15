@@ -228,16 +228,29 @@ func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, ap
 	return err
 }
 
-func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {
+func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]*modelgebura.BoundApps, error) {
 	apps, err := g.data.db.App.Query().
 		Where(
 			app.HasPurchasedByUserWith(user.IDEQ(id)),
 		).
+		WithBindExternal().
 		All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizAppList(apps), nil
+	res := make([]*modelgebura.BoundApps, 0, len(apps))
+	for i := range apps {
+		res = append(res, new(modelgebura.BoundApps))
+		res[i].Internal = converter.ToBizApp(apps[i])
+		if externals, e := apps[i].Edges.BindExternalOrErr(); e == nil {
+			for _, external := range externals {
+				if external.Source == app.SourceSteam {
+					res[i].Steam = converter.ToBizApp(external)
+				}
+			}
+		}
+	}
+	return res, nil
 }
 
 func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPackage) error {

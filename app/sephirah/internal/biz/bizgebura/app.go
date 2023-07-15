@@ -165,6 +165,10 @@ func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.App, *err
 		if err != nil {
 			return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 		}
-		return apps, nil
+		res := make([]*modelgebura.App, 0, len(apps))
+		for _, a := range apps {
+			res = append(res, a.Flatten())
+		}
+		return res, nil
 	}
 }

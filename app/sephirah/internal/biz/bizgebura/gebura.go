@@ -27,7 +27,7 @@ type GeburaRepo interface {
 	GetBoundApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 	GetBatchBoundApps(context.Context, []model.InternalID) ([]*modelgebura.BoundApps, error)
 	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
-	GetPurchasedApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
+	GetPurchasedApps(context.Context, model.InternalID) ([]*modelgebura.BoundApps, error)
 
 	CreateAppPackage(context.Context, *modelgebura.AppPackage) error
 	UpdateAppPackage(context.Context, *modelgebura.AppPackage) error
