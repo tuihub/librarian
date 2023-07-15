@@ -40,6 +40,7 @@ func NewPullSteamAppTopic(
 			internalApp.ID = id
 			internalApp.Source = modelgebura.AppSourceInternal
 			internalApp.SourceAppID = strconv.FormatInt(int64(internalApp.ID), 10)
+			internalApp.BoundInternal = id
 			err = a.repo.UpdateApp(ctx, app, internalApp)
 			if err != nil {
 				return err

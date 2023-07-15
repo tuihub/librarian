@@ -91,6 +91,9 @@ func mergeApp(base *App, merged *App) *App {
 	if len(base.Name) == 0 {
 		base.Name = merged.Name
 	}
+	if base.Type == AppTypeUnspecified {
+		base.Type = merged.Type
+	}
 	if len(base.ShortDescription) == 0 {
 		base.ShortDescription = merged.ShortDescription
 	}

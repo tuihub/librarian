@@ -103,6 +103,7 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 				SetSourceAppID(internal.SourceAppID).
 				SetName(internal.Name).
 				SetType(converter.ToEntAppType(internal.Type)).
+				SetBindInternalID(internal.BoundInternal).
 				Exec(ctx)
 			if err != nil {
 				return err
