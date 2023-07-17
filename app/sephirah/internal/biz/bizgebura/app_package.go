@@ -20,6 +20,10 @@ func (g *Gebura) CreateAppPackage(
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return nil, pb.ErrorErrorReasonUnauthorized("empty token")
+	}
 	id, err := g.searcher.NewID(ctx)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
@@ -27,6 +31,9 @@ func (g *Gebura) CreateAppPackage(
 	a.ID = id
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
+	if a.Binary == nil {
+		a.Binary = new(modelgebura.AppPackageBinary)
+	}
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
 			Vid:  int64(a.ID),
@@ -35,7 +42,7 @@ func (g *Gebura) CreateAppPackage(
 	}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err = g.repo.CreateAppPackage(ctx, a); err != nil {
+	if err = g.repo.CreateAppPackage(ctx, claims.InternalID, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return a, nil
@@ -45,8 +52,15 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return pb.ErrorErrorReasonForbidden("no permission")
 	}
+	claims, exist := libauth.FromContext(ctx)
+	if !exist {
+		return pb.ErrorErrorReasonUnauthorized("empty token")
+	}
 	a.Source = modelgebura.AppPackageSourceManual
-	err := g.repo.UpdateAppPackage(ctx, a)
+	if a.Binary == nil {
+		a.Binary = new(modelgebura.AppPackageBinary)
+	}
+	err := g.repo.UpdateAppPackage(ctx, claims.InternalID, a)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

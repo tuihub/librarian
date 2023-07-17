@@ -253,28 +253,36 @@ func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) (
 	return res, nil
 }
 
-func (g geburaRepo) CreateAppPackage(ctx context.Context, ap *modelgebura.AppPackage) error {
+func (g geburaRepo) CreateAppPackage(ctx context.Context, userID model.InternalID, ap *modelgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Create().
+		SetOwnerID(userID).
 		SetID(ap.ID).
 		SetSource(converter.ToEntAppPackageSource(ap.Source)).
 		SetSourceID(ap.SourceID).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
+		SetPublic(ap.Public).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeBytes(ap.Binary.SizeBytes)
+		SetBinarySizeBytes(ap.Binary.SizeBytes).
+		SetBinaryPublicURL(ap.Binary.PublicURL).
+		SetBinarySha256(ap.Binary.Sha256)
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpdateAppPackage(ctx context.Context, ap *modelgebura.AppPackage) error {
+func (g geburaRepo) UpdateAppPackage(ctx context.Context, ownerID model.InternalID, ap *modelgebura.AppPackage) error {
 	q := g.data.db.AppPackage.Update().
 		Where(
 			apppackage.IDEQ(ap.ID),
 			apppackage.SourceEQ(converter.ToEntAppPackageSource(ap.Source)),
+			apppackage.HasOwnerWith(user.IDEQ(ownerID)),
 		).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
+		SetPublic(ap.Public).
 		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeBytes(ap.Binary.SizeBytes)
+		SetBinarySizeBytes(ap.Binary.SizeBytes).
+		SetBinaryPublicURL(ap.Binary.PublicURL).
+		SetBinarySha256(ap.Binary.Sha256)
 	return q.Exec(ctx)
 }
 
@@ -295,7 +303,8 @@ func (g geburaRepo) UpsertAppPackages(
 			SetPublic(ap.Public).
 			SetBinaryName(ap.Binary.Name).
 			SetBinarySizeBytes(ap.Binary.SizeBytes).
-			SetBinaryPublicURL(ap.Binary.PublicURL)
+			SetBinaryPublicURL(ap.Binary.PublicURL).
+			SetBinarySha256(ap.Binary.Sha256)
 	}
 	return g.data.db.AppPackage.
 		CreateBulk(appPackages...).
