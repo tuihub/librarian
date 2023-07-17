@@ -24,10 +24,15 @@ func NewGRPCServer(
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
 	app *libapp.Settings,
-) *grpc.Server {
+) (*grpc.Server, error) {
+	validator, err := libapp.NewValidator()
+	if err != nil {
+		return nil, err
+	}
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 		ratelimit.Server(),
+		validator,
 		selector.Server(
 			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeAccessToken),
@@ -74,7 +79,7 @@ func NewGRPCServer(
 	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianSephirahServiceServer(srv, greeter)
-	return srv
+	return srv, nil
 }
 
 func NewWhiteListMatcher() selector.MatchFunc {
