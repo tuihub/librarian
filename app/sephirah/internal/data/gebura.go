@@ -261,11 +261,14 @@ func (g geburaRepo) CreateAppPackage(ctx context.Context, userID model.InternalI
 		SetSourceID(ap.SourceID).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
-		SetPublic(ap.Public).
-		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeBytes(ap.Binary.SizeBytes).
-		SetBinaryPublicURL(ap.Binary.PublicURL).
-		SetBinarySha256(ap.Binary.Sha256)
+		SetPublic(ap.Public)
+	if ap.Binary != nil {
+		q.
+			SetBinaryName(ap.Binary.Name).
+			SetBinarySizeBytes(ap.Binary.SizeBytes).
+			SetBinaryPublicURL(ap.Binary.PublicURL).
+			SetBinarySha256(ap.Binary.Sha256)
+	}
 	return q.Exec(ctx)
 }
 
@@ -278,11 +281,14 @@ func (g geburaRepo) UpdateAppPackage(ctx context.Context, ownerID model.Internal
 		).
 		SetName(ap.Name).
 		SetDescription(ap.Description).
-		SetPublic(ap.Public).
-		SetBinaryName(ap.Binary.Name).
-		SetBinarySizeBytes(ap.Binary.SizeBytes).
-		SetBinaryPublicURL(ap.Binary.PublicURL).
-		SetBinarySha256(ap.Binary.Sha256)
+		SetPublic(ap.Public)
+	if ap.Binary != nil {
+		q.
+			SetBinaryName(ap.Binary.Name).
+			SetBinarySizeBytes(ap.Binary.SizeBytes).
+			SetBinaryPublicURL(ap.Binary.PublicURL).
+			SetBinarySha256(ap.Binary.Sha256)
+	}
 	return q.Exec(ctx)
 }
 
@@ -300,11 +306,14 @@ func (g geburaRepo) UpsertAppPackages(
 			SetSourceID(ap.SourceID).
 			SetName(ap.Name).
 			SetDescription(ap.Description).
-			SetPublic(ap.Public).
-			SetBinaryName(ap.Binary.Name).
-			SetBinarySizeBytes(ap.Binary.SizeBytes).
-			SetBinaryPublicURL(ap.Binary.PublicURL).
-			SetBinarySha256(ap.Binary.Sha256)
+			SetPublic(ap.Public)
+		if ap.Binary != nil {
+			appPackages[i].
+				SetBinaryName(ap.Binary.Name).
+				SetBinarySizeBytes(ap.Binary.SizeBytes).
+				SetBinaryPublicURL(ap.Binary.PublicURL).
+				SetBinarySha256(ap.Binary.Sha256)
+		}
 	}
 	return g.data.db.AppPackage.
 		CreateBulk(appPackages...).

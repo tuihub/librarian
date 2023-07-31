@@ -251,11 +251,8 @@ func (t *Tiphereth) ListUsers(
 	var creator *model.InternalID
 	if c, ok := libauth.FromContext(ctx); !ok {
 		return nil, 0, pb.ErrorErrorReasonBadRequest("token required")
-	} else {
-		if c.UserType != libauth.UserTypeAdmin {
-			creator = &c.InternalID
-		}
-		exclude = append(exclude, c.InternalID)
+	} else if c.UserType != libauth.UserTypeAdmin {
+		creator = &c.InternalID
 	}
 	users, total, err := t.repo.ListUsers(ctx, paging, nil, types, statuses, exclude, creator)
 	if err != nil {

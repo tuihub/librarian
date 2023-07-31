@@ -2886,9 +2886,22 @@ func (m *AppPackageMutation) OldBinaryName(ctx context.Context) (v string, err e
 	return oldValue.BinaryName, nil
 }
 
+// ClearBinaryName clears the value of the "binary_name" field.
+func (m *AppPackageMutation) ClearBinaryName() {
+	m.binary_name = nil
+	m.clearedFields[apppackage.FieldBinaryName] = struct{}{}
+}
+
+// BinaryNameCleared returns if the "binary_name" field was cleared in this mutation.
+func (m *AppPackageMutation) BinaryNameCleared() bool {
+	_, ok := m.clearedFields[apppackage.FieldBinaryName]
+	return ok
+}
+
 // ResetBinaryName resets all changes to the "binary_name" field.
 func (m *AppPackageMutation) ResetBinaryName() {
 	m.binary_name = nil
+	delete(m.clearedFields, apppackage.FieldBinaryName)
 }
 
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
@@ -2941,10 +2954,24 @@ func (m *AppPackageMutation) AddedBinarySizeBytes() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (m *AppPackageMutation) ClearBinarySizeBytes() {
+	m.binary_size_bytes = nil
+	m.addbinary_size_bytes = nil
+	m.clearedFields[apppackage.FieldBinarySizeBytes] = struct{}{}
+}
+
+// BinarySizeBytesCleared returns if the "binary_size_bytes" field was cleared in this mutation.
+func (m *AppPackageMutation) BinarySizeBytesCleared() bool {
+	_, ok := m.clearedFields[apppackage.FieldBinarySizeBytes]
+	return ok
+}
+
 // ResetBinarySizeBytes resets all changes to the "binary_size_bytes" field.
 func (m *AppPackageMutation) ResetBinarySizeBytes() {
 	m.binary_size_bytes = nil
 	m.addbinary_size_bytes = nil
+	delete(m.clearedFields, apppackage.FieldBinarySizeBytes)
 }
 
 // SetBinaryPublicURL sets the "binary_public_url" field.
@@ -2978,9 +3005,22 @@ func (m *AppPackageMutation) OldBinaryPublicURL(ctx context.Context) (v string, 
 	return oldValue.BinaryPublicURL, nil
 }
 
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (m *AppPackageMutation) ClearBinaryPublicURL() {
+	m.binary_public_url = nil
+	m.clearedFields[apppackage.FieldBinaryPublicURL] = struct{}{}
+}
+
+// BinaryPublicURLCleared returns if the "binary_public_url" field was cleared in this mutation.
+func (m *AppPackageMutation) BinaryPublicURLCleared() bool {
+	_, ok := m.clearedFields[apppackage.FieldBinaryPublicURL]
+	return ok
+}
+
 // ResetBinaryPublicURL resets all changes to the "binary_public_url" field.
 func (m *AppPackageMutation) ResetBinaryPublicURL() {
 	m.binary_public_url = nil
+	delete(m.clearedFields, apppackage.FieldBinaryPublicURL)
 }
 
 // SetBinarySha256 sets the "binary_sha256" field.
@@ -3014,9 +3054,22 @@ func (m *AppPackageMutation) OldBinarySha256(ctx context.Context) (v []byte, err
 	return oldValue.BinarySha256, nil
 }
 
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (m *AppPackageMutation) ClearBinarySha256() {
+	m.binary_sha256 = nil
+	m.clearedFields[apppackage.FieldBinarySha256] = struct{}{}
+}
+
+// BinarySha256Cleared returns if the "binary_sha256" field was cleared in this mutation.
+func (m *AppPackageMutation) BinarySha256Cleared() bool {
+	_, ok := m.clearedFields[apppackage.FieldBinarySha256]
+	return ok
+}
+
 // ResetBinarySha256 resets all changes to the "binary_sha256" field.
 func (m *AppPackageMutation) ResetBinarySha256() {
 	m.binary_sha256 = nil
+	delete(m.clearedFields, apppackage.FieldBinarySha256)
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -3440,7 +3493,20 @@ func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *AppPackageMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(apppackage.FieldBinaryName) {
+		fields = append(fields, apppackage.FieldBinaryName)
+	}
+	if m.FieldCleared(apppackage.FieldBinarySizeBytes) {
+		fields = append(fields, apppackage.FieldBinarySizeBytes)
+	}
+	if m.FieldCleared(apppackage.FieldBinaryPublicURL) {
+		fields = append(fields, apppackage.FieldBinaryPublicURL)
+	}
+	if m.FieldCleared(apppackage.FieldBinarySha256) {
+		fields = append(fields, apppackage.FieldBinarySha256)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -3453,6 +3519,20 @@ func (m *AppPackageMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *AppPackageMutation) ClearField(name string) error {
+	switch name {
+	case apppackage.FieldBinaryName:
+		m.ClearBinaryName()
+		return nil
+	case apppackage.FieldBinarySizeBytes:
+		m.ClearBinarySizeBytes()
+		return nil
+	case apppackage.FieldBinaryPublicURL:
+		m.ClearBinaryPublicURL()
+		return nil
+	case apppackage.FieldBinarySha256:
+		m.ClearBinarySha256()
+		return nil
+	}
 	return fmt.Errorf("unknown AppPackage nullable field %s", name)
 }
 

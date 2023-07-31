@@ -376,6 +376,16 @@ func BinaryNameHasSuffix(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldHasSuffix(FieldBinaryName, v))
 }
 
+// BinaryNameIsNil applies the IsNil predicate on the "binary_name" field.
+func BinaryNameIsNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIsNull(FieldBinaryName))
+}
+
+// BinaryNameNotNil applies the NotNil predicate on the "binary_name" field.
+func BinaryNameNotNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotNull(FieldBinaryName))
+}
+
 // BinaryNameEqualFold applies the EqualFold predicate on the "binary_name" field.
 func BinaryNameEqualFold(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEqualFold(FieldBinaryName, v))
@@ -424,6 +434,16 @@ func BinarySizeBytesLT(v int64) predicate.AppPackage {
 // BinarySizeBytesLTE applies the LTE predicate on the "binary_size_bytes" field.
 func BinarySizeBytesLTE(v int64) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldBinarySizeBytes, v))
+}
+
+// BinarySizeBytesIsNil applies the IsNil predicate on the "binary_size_bytes" field.
+func BinarySizeBytesIsNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIsNull(FieldBinarySizeBytes))
+}
+
+// BinarySizeBytesNotNil applies the NotNil predicate on the "binary_size_bytes" field.
+func BinarySizeBytesNotNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotNull(FieldBinarySizeBytes))
 }
 
 // BinaryPublicURLEQ applies the EQ predicate on the "binary_public_url" field.
@@ -481,6 +501,16 @@ func BinaryPublicURLHasSuffix(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldHasSuffix(FieldBinaryPublicURL, v))
 }
 
+// BinaryPublicURLIsNil applies the IsNil predicate on the "binary_public_url" field.
+func BinaryPublicURLIsNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIsNull(FieldBinaryPublicURL))
+}
+
+// BinaryPublicURLNotNil applies the NotNil predicate on the "binary_public_url" field.
+func BinaryPublicURLNotNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotNull(FieldBinaryPublicURL))
+}
+
 // BinaryPublicURLEqualFold applies the EqualFold predicate on the "binary_public_url" field.
 func BinaryPublicURLEqualFold(v string) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEqualFold(FieldBinaryPublicURL, v))
@@ -529,6 +559,16 @@ func BinarySha256LT(v []byte) predicate.AppPackage {
 // BinarySha256LTE applies the LTE predicate on the "binary_sha256" field.
 func BinarySha256LTE(v []byte) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldLTE(FieldBinarySha256, v))
+}
+
+// BinarySha256IsNil applies the IsNil predicate on the "binary_sha256" field.
+func BinarySha256IsNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldIsNull(FieldBinarySha256))
+}
+
+// BinarySha256NotNil applies the NotNil predicate on the "binary_sha256" field.
+func BinarySha256NotNil() predicate.AppPackage {
+	return predicate.AppPackage(sql.FieldNotNull(FieldBinarySha256))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

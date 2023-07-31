@@ -150,7 +150,7 @@ func (s *LibrarianSephirahServiceService) UpdateAppPackage(
 	req *pb.UpdateAppPackageRequest,
 ) (*pb.UpdateAppPackageResponse, error) {
 	err := s.g.UpdateAppPackage(ctx, converter.ToBizAppPackage(req.GetAppPackage()))
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 	return &pb.UpdateAppPackageResponse{}, nil

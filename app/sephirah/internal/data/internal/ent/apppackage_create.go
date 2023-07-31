@@ -61,15 +61,39 @@ func (apc *AppPackageCreate) SetBinaryName(s string) *AppPackageCreate {
 	return apc
 }
 
+// SetNillableBinaryName sets the "binary_name" field if the given value is not nil.
+func (apc *AppPackageCreate) SetNillableBinaryName(s *string) *AppPackageCreate {
+	if s != nil {
+		apc.SetBinaryName(*s)
+	}
+	return apc
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (apc *AppPackageCreate) SetBinarySizeBytes(i int64) *AppPackageCreate {
 	apc.mutation.SetBinarySizeBytes(i)
 	return apc
 }
 
+// SetNillableBinarySizeBytes sets the "binary_size_bytes" field if the given value is not nil.
+func (apc *AppPackageCreate) SetNillableBinarySizeBytes(i *int64) *AppPackageCreate {
+	if i != nil {
+		apc.SetBinarySizeBytes(*i)
+	}
+	return apc
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apc *AppPackageCreate) SetBinaryPublicURL(s string) *AppPackageCreate {
 	apc.mutation.SetBinaryPublicURL(s)
+	return apc
+}
+
+// SetNillableBinaryPublicURL sets the "binary_public_url" field if the given value is not nil.
+func (apc *AppPackageCreate) SetNillableBinaryPublicURL(s *string) *AppPackageCreate {
+	if s != nil {
+		apc.SetBinaryPublicURL(*s)
+	}
 	return apc
 }
 
@@ -209,18 +233,6 @@ func (apc *AppPackageCreate) check() error {
 	}
 	if _, ok := apc.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "AppPackage.public"`)}
-	}
-	if _, ok := apc.mutation.BinaryName(); !ok {
-		return &ValidationError{Name: "binary_name", err: errors.New(`ent: missing required field "AppPackage.binary_name"`)}
-	}
-	if _, ok := apc.mutation.BinarySizeBytes(); !ok {
-		return &ValidationError{Name: "binary_size_bytes", err: errors.New(`ent: missing required field "AppPackage.binary_size_bytes"`)}
-	}
-	if _, ok := apc.mutation.BinaryPublicURL(); !ok {
-		return &ValidationError{Name: "binary_public_url", err: errors.New(`ent: missing required field "AppPackage.binary_public_url"`)}
-	}
-	if _, ok := apc.mutation.BinarySha256(); !ok {
-		return &ValidationError{Name: "binary_sha256", err: errors.New(`ent: missing required field "AppPackage.binary_sha256"`)}
 	}
 	if _, ok := apc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppPackage.updated_at"`)}
@@ -472,6 +484,12 @@ func (u *AppPackageUpsert) UpdateBinaryName() *AppPackageUpsert {
 	return u
 }
 
+// ClearBinaryName clears the value of the "binary_name" field.
+func (u *AppPackageUpsert) ClearBinaryName() *AppPackageUpsert {
+	u.SetNull(apppackage.FieldBinaryName)
+	return u
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (u *AppPackageUpsert) SetBinarySizeBytes(v int64) *AppPackageUpsert {
 	u.Set(apppackage.FieldBinarySizeBytes, v)
@@ -490,6 +508,12 @@ func (u *AppPackageUpsert) AddBinarySizeBytes(v int64) *AppPackageUpsert {
 	return u
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (u *AppPackageUpsert) ClearBinarySizeBytes() *AppPackageUpsert {
+	u.SetNull(apppackage.FieldBinarySizeBytes)
+	return u
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (u *AppPackageUpsert) SetBinaryPublicURL(v string) *AppPackageUpsert {
 	u.Set(apppackage.FieldBinaryPublicURL, v)
@@ -502,6 +526,12 @@ func (u *AppPackageUpsert) UpdateBinaryPublicURL() *AppPackageUpsert {
 	return u
 }
 
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (u *AppPackageUpsert) ClearBinaryPublicURL() *AppPackageUpsert {
+	u.SetNull(apppackage.FieldBinaryPublicURL)
+	return u
+}
+
 // SetBinarySha256 sets the "binary_sha256" field.
 func (u *AppPackageUpsert) SetBinarySha256(v []byte) *AppPackageUpsert {
 	u.Set(apppackage.FieldBinarySha256, v)
@@ -511,6 +541,12 @@ func (u *AppPackageUpsert) SetBinarySha256(v []byte) *AppPackageUpsert {
 // UpdateBinarySha256 sets the "binary_sha256" field to the value that was provided on create.
 func (u *AppPackageUpsert) UpdateBinarySha256() *AppPackageUpsert {
 	u.SetExcluded(apppackage.FieldBinarySha256)
+	return u
+}
+
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (u *AppPackageUpsert) ClearBinarySha256() *AppPackageUpsert {
+	u.SetNull(apppackage.FieldBinarySha256)
 	return u
 }
 
@@ -677,6 +713,13 @@ func (u *AppPackageUpsertOne) UpdateBinaryName() *AppPackageUpsertOne {
 	})
 }
 
+// ClearBinaryName clears the value of the "binary_name" field.
+func (u *AppPackageUpsertOne) ClearBinaryName() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinaryName()
+	})
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (u *AppPackageUpsertOne) SetBinarySizeBytes(v int64) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -698,6 +741,13 @@ func (u *AppPackageUpsertOne) UpdateBinarySizeBytes() *AppPackageUpsertOne {
 	})
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (u *AppPackageUpsertOne) ClearBinarySizeBytes() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinarySizeBytes()
+	})
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (u *AppPackageUpsertOne) SetBinaryPublicURL(v string) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -712,6 +762,13 @@ func (u *AppPackageUpsertOne) UpdateBinaryPublicURL() *AppPackageUpsertOne {
 	})
 }
 
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (u *AppPackageUpsertOne) ClearBinaryPublicURL() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinaryPublicURL()
+	})
+}
+
 // SetBinarySha256 sets the "binary_sha256" field.
 func (u *AppPackageUpsertOne) SetBinarySha256(v []byte) *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -723,6 +780,13 @@ func (u *AppPackageUpsertOne) SetBinarySha256(v []byte) *AppPackageUpsertOne {
 func (u *AppPackageUpsertOne) UpdateBinarySha256() *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.UpdateBinarySha256()
+	})
+}
+
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (u *AppPackageUpsertOne) ClearBinarySha256() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinarySha256()
 	})
 }
 
@@ -1055,6 +1119,13 @@ func (u *AppPackageUpsertBulk) UpdateBinaryName() *AppPackageUpsertBulk {
 	})
 }
 
+// ClearBinaryName clears the value of the "binary_name" field.
+func (u *AppPackageUpsertBulk) ClearBinaryName() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinaryName()
+	})
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (u *AppPackageUpsertBulk) SetBinarySizeBytes(v int64) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -1076,6 +1147,13 @@ func (u *AppPackageUpsertBulk) UpdateBinarySizeBytes() *AppPackageUpsertBulk {
 	})
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (u *AppPackageUpsertBulk) ClearBinarySizeBytes() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinarySizeBytes()
+	})
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (u *AppPackageUpsertBulk) SetBinaryPublicURL(v string) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -1090,6 +1168,13 @@ func (u *AppPackageUpsertBulk) UpdateBinaryPublicURL() *AppPackageUpsertBulk {
 	})
 }
 
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (u *AppPackageUpsertBulk) ClearBinaryPublicURL() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinaryPublicURL()
+	})
+}
+
 // SetBinarySha256 sets the "binary_sha256" field.
 func (u *AppPackageUpsertBulk) SetBinarySha256(v []byte) *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
@@ -1101,6 +1186,13 @@ func (u *AppPackageUpsertBulk) SetBinarySha256(v []byte) *AppPackageUpsertBulk {
 func (u *AppPackageUpsertBulk) UpdateBinarySha256() *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.UpdateBinarySha256()
+	})
+}
+
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (u *AppPackageUpsertBulk) ClearBinarySha256() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.ClearBinarySha256()
 	})
 }
 

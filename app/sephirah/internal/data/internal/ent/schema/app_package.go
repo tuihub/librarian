@@ -27,10 +27,10 @@ func (AppPackage) Fields() []ent.Field {
 		field.String("name"),
 		field.Text("description"),
 		field.Bool("public"),
-		field.String("binary_name"),
-		field.Int64("binary_size_bytes"),
-		field.String("binary_public_url"),
-		field.Bytes("binary_sha256"),
+		field.String("binary_name").Optional(),
+		field.Int64("binary_size_bytes").Optional(),
+		field.String("binary_public_url").Optional(),
+		field.Bytes("binary_sha256").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

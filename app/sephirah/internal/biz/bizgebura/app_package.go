@@ -31,9 +31,6 @@ func (g *Gebura) CreateAppPackage(
 	a.ID = id
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
-	if a.Binary == nil {
-		a.Binary = new(modelgebura.AppPackageBinary)
-	}
 	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 		VertexList: []*mapper.Vertex{{
 			Vid:  int64(a.ID),
@@ -57,9 +54,6 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage
 		return pb.ErrorErrorReasonUnauthorized("empty token")
 	}
 	a.Source = modelgebura.AppPackageSourceManual
-	if a.Binary == nil {
-		a.Binary = new(modelgebura.AppPackageBinary)
-	}
 	err := g.repo.UpdateAppPackage(ctx, claims.InternalID, a)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())

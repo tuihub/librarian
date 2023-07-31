@@ -74,10 +74,32 @@ func (apu *AppPackageUpdate) SetBinaryName(s string) *AppPackageUpdate {
 	return apu
 }
 
+// SetNillableBinaryName sets the "binary_name" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableBinaryName(s *string) *AppPackageUpdate {
+	if s != nil {
+		apu.SetBinaryName(*s)
+	}
+	return apu
+}
+
+// ClearBinaryName clears the value of the "binary_name" field.
+func (apu *AppPackageUpdate) ClearBinaryName() *AppPackageUpdate {
+	apu.mutation.ClearBinaryName()
+	return apu
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (apu *AppPackageUpdate) SetBinarySizeBytes(i int64) *AppPackageUpdate {
 	apu.mutation.ResetBinarySizeBytes()
 	apu.mutation.SetBinarySizeBytes(i)
+	return apu
+}
+
+// SetNillableBinarySizeBytes sets the "binary_size_bytes" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableBinarySizeBytes(i *int64) *AppPackageUpdate {
+	if i != nil {
+		apu.SetBinarySizeBytes(*i)
+	}
 	return apu
 }
 
@@ -87,15 +109,41 @@ func (apu *AppPackageUpdate) AddBinarySizeBytes(i int64) *AppPackageUpdate {
 	return apu
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (apu *AppPackageUpdate) ClearBinarySizeBytes() *AppPackageUpdate {
+	apu.mutation.ClearBinarySizeBytes()
+	return apu
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apu *AppPackageUpdate) SetBinaryPublicURL(s string) *AppPackageUpdate {
 	apu.mutation.SetBinaryPublicURL(s)
 	return apu
 }
 
+// SetNillableBinaryPublicURL sets the "binary_public_url" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableBinaryPublicURL(s *string) *AppPackageUpdate {
+	if s != nil {
+		apu.SetBinaryPublicURL(*s)
+	}
+	return apu
+}
+
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (apu *AppPackageUpdate) ClearBinaryPublicURL() *AppPackageUpdate {
+	apu.mutation.ClearBinaryPublicURL()
+	return apu
+}
+
 // SetBinarySha256 sets the "binary_sha256" field.
 func (apu *AppPackageUpdate) SetBinarySha256(b []byte) *AppPackageUpdate {
 	apu.mutation.SetBinarySha256(b)
+	return apu
+}
+
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (apu *AppPackageUpdate) ClearBinarySha256() *AppPackageUpdate {
+	apu.mutation.ClearBinarySha256()
 	return apu
 }
 
@@ -248,17 +296,29 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := apu.mutation.BinaryName(); ok {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
+	if apu.mutation.BinaryNameCleared() {
+		_spec.ClearField(apppackage.FieldBinaryName, field.TypeString)
+	}
 	if value, ok := apu.mutation.BinarySizeBytes(); ok {
 		_spec.SetField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
 	if value, ok := apu.mutation.AddedBinarySizeBytes(); ok {
 		_spec.AddField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
+	if apu.mutation.BinarySizeBytesCleared() {
+		_spec.ClearField(apppackage.FieldBinarySizeBytes, field.TypeInt64)
+	}
 	if value, ok := apu.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
 	}
+	if apu.mutation.BinaryPublicURLCleared() {
+		_spec.ClearField(apppackage.FieldBinaryPublicURL, field.TypeString)
+	}
 	if value, ok := apu.mutation.BinarySha256(); ok {
 		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
+	}
+	if apu.mutation.BinarySha256Cleared() {
+		_spec.ClearField(apppackage.FieldBinarySha256, field.TypeBytes)
 	}
 	if value, ok := apu.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -387,10 +447,32 @@ func (apuo *AppPackageUpdateOne) SetBinaryName(s string) *AppPackageUpdateOne {
 	return apuo
 }
 
+// SetNillableBinaryName sets the "binary_name" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableBinaryName(s *string) *AppPackageUpdateOne {
+	if s != nil {
+		apuo.SetBinaryName(*s)
+	}
+	return apuo
+}
+
+// ClearBinaryName clears the value of the "binary_name" field.
+func (apuo *AppPackageUpdateOne) ClearBinaryName() *AppPackageUpdateOne {
+	apuo.mutation.ClearBinaryName()
+	return apuo
+}
+
 // SetBinarySizeBytes sets the "binary_size_bytes" field.
 func (apuo *AppPackageUpdateOne) SetBinarySizeBytes(i int64) *AppPackageUpdateOne {
 	apuo.mutation.ResetBinarySizeBytes()
 	apuo.mutation.SetBinarySizeBytes(i)
+	return apuo
+}
+
+// SetNillableBinarySizeBytes sets the "binary_size_bytes" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableBinarySizeBytes(i *int64) *AppPackageUpdateOne {
+	if i != nil {
+		apuo.SetBinarySizeBytes(*i)
+	}
 	return apuo
 }
 
@@ -400,15 +482,41 @@ func (apuo *AppPackageUpdateOne) AddBinarySizeBytes(i int64) *AppPackageUpdateOn
 	return apuo
 }
 
+// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
+func (apuo *AppPackageUpdateOne) ClearBinarySizeBytes() *AppPackageUpdateOne {
+	apuo.mutation.ClearBinarySizeBytes()
+	return apuo
+}
+
 // SetBinaryPublicURL sets the "binary_public_url" field.
 func (apuo *AppPackageUpdateOne) SetBinaryPublicURL(s string) *AppPackageUpdateOne {
 	apuo.mutation.SetBinaryPublicURL(s)
 	return apuo
 }
 
+// SetNillableBinaryPublicURL sets the "binary_public_url" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableBinaryPublicURL(s *string) *AppPackageUpdateOne {
+	if s != nil {
+		apuo.SetBinaryPublicURL(*s)
+	}
+	return apuo
+}
+
+// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
+func (apuo *AppPackageUpdateOne) ClearBinaryPublicURL() *AppPackageUpdateOne {
+	apuo.mutation.ClearBinaryPublicURL()
+	return apuo
+}
+
 // SetBinarySha256 sets the "binary_sha256" field.
 func (apuo *AppPackageUpdateOne) SetBinarySha256(b []byte) *AppPackageUpdateOne {
 	apuo.mutation.SetBinarySha256(b)
+	return apuo
+}
+
+// ClearBinarySha256 clears the value of the "binary_sha256" field.
+func (apuo *AppPackageUpdateOne) ClearBinarySha256() *AppPackageUpdateOne {
+	apuo.mutation.ClearBinarySha256()
 	return apuo
 }
 
@@ -591,17 +699,29 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	if value, ok := apuo.mutation.BinaryName(); ok {
 		_spec.SetField(apppackage.FieldBinaryName, field.TypeString, value)
 	}
+	if apuo.mutation.BinaryNameCleared() {
+		_spec.ClearField(apppackage.FieldBinaryName, field.TypeString)
+	}
 	if value, ok := apuo.mutation.BinarySizeBytes(); ok {
 		_spec.SetField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
 	if value, ok := apuo.mutation.AddedBinarySizeBytes(); ok {
 		_spec.AddField(apppackage.FieldBinarySizeBytes, field.TypeInt64, value)
 	}
+	if apuo.mutation.BinarySizeBytesCleared() {
+		_spec.ClearField(apppackage.FieldBinarySizeBytes, field.TypeInt64)
+	}
 	if value, ok := apuo.mutation.BinaryPublicURL(); ok {
 		_spec.SetField(apppackage.FieldBinaryPublicURL, field.TypeString, value)
 	}
+	if apuo.mutation.BinaryPublicURLCleared() {
+		_spec.ClearField(apppackage.FieldBinaryPublicURL, field.TypeString)
+	}
 	if value, ok := apuo.mutation.BinarySha256(); ok {
 		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
+	}
+	if apuo.mutation.BinarySha256Cleared() {
+		_spec.ClearField(apppackage.FieldBinarySha256, field.TypeBytes)
 	}
 	if value, ok := apuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
