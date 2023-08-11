@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.9](https://github.com/TuiHub/Librarian/compare/v0.1.8...v0.1.9) (2023-08-11)
+
+
+### Features
+
+* add validator middleware ([5f0a1ab](https://github.com/TuiHub/Librarian/commit/5f0a1ab7f5e3400917297b12b4e809236fc11faf))
+* Update go to 1.20 ([ab0e1fe](https://github.com/TuiHub/Librarian/commit/ab0e1fe8432ae785a8c80641bac47e3b009f0b9f))
+
+
+### Bug Fixes
+
+* **gebura:** flatten app info in GetPurchasedApps ([8e7396a](https://github.com/TuiHub/Librarian/commit/8e7396adba4bc2251bbca36dfa267ed32d1c977b))
+* **gebura:** update appPackage logic ([426686e](https://github.com/TuiHub/Librarian/commit/426686ef47a74c83ae6d057f962154e8e25b75e6))
+* several fix ([2756e3b](https://github.com/TuiHub/Librarian/commit/2756e3b957098e6a0f6a92ad85279df9cdb91d8f))
+
 ## [0.1.8](https://github.com/TuiHub/Librarian/compare/v0.1.7...v0.1.8) (2023-07-15)
 
 
