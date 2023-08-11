@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.11](https://github.com/TuiHub/Librarian/compare/v0.1.10...v0.1.11) (2023-08-11)
+
+
+### Bug Fixes
+
+* try fix release ci ([eacf514](https://github.com/TuiHub/Librarian/commit/eacf514d54e148114f21390a5f0fcbb780b9c30b))
+
 ## [0.1.10](https://github.com/TuiHub/Librarian/compare/v0.1.9...v0.1.10) (2023-08-11)
 
 
