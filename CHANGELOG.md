@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/TuiHub/Librarian/compare/v0.1.9...v0.1.10) (2023-08-11)
+
+
+### Bug Fixes
+
+* fix lint ([6d33128](https://github.com/TuiHub/Librarian/commit/6d33128e662a5cd014f0e2f6db86738d6e02a0d5))
+
 ## [0.1.9](https://github.com/TuiHub/Librarian/compare/v0.1.8...v0.1.9) (2023-08-11)
 
 
