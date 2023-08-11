@@ -82,7 +82,9 @@ func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, pagin
 	}
 	result := struct {
 		Hits []document
-	}{}
+	}{
+		Hits: []document{},
+	}
 	err = libcodec.Unmarshal(libcodec.JSON, resultStr, &result)
 	if err != nil {
 		return nil, err

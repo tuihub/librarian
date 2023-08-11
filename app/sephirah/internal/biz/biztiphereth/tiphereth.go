@@ -188,7 +188,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 	return &res, nil
 }
 
-func (t *Tiphereth) UpdateUser( //nolint:gocognit // TODO
+func (t *Tiphereth) UpdateUser(
 	ctx context.Context, user *modeltiphereth.User, originPassword string,
 ) *errors.Error {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {

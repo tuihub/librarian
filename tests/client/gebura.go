@@ -7,7 +7,7 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-func (c *Client) TestGebura(ctx context.Context) { //nolint:gocognit,funlen // no need
+func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
 	var appID, appID2 *librarian.InternalID
 	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,

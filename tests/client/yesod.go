@@ -13,7 +13,7 @@ import (
 
 const feedURL = "https://github.com/TuiHub/Librarian/releases.atom"
 
-func (c *Client) TestYesod(ctx context.Context) { //nolint:gocognit // no need
+func (c *Client) TestYesod(ctx context.Context) {
 	var feedConfigID, feedItemID int64
 	if resp, err := c.cli.CreateFeedConfig(ctx, &pb.CreateFeedConfigRequest{
 		Config: &pb.FeedConfig{
