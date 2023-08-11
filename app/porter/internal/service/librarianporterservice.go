@@ -117,10 +117,18 @@ func (s *LibrarianPorterServiceService) PullApp(
 			return nil, err
 		}
 		return &pb.PullAppResponse{App: &librarian.App{
-			Id:               nil,
-			Source:           req.GetAppId().GetSource(),
-			SourceAppId:      req.GetAppId().GetSourceAppId(),
-			SourceUrl:        &a.StoreURL,
+			Id:          nil,
+			Source:      req.GetAppId().GetSource(),
+			SourceAppId: req.GetAppId().GetSourceAppId(),
+			SourceUrl:   &a.StoreURL,
+			Details: &librarian.AppDetails{ // TODO
+				Description: a.Description,
+				ReleaseDate: a.ReleaseDate,
+				Developer:   a.Developer,
+				Publisher:   a.Publisher,
+				Version:     "",
+				ImageUrls:   nil,
+			},
 			Name:             a.Name,
 			Type:             ToPBAppType(a.Type),
 			ShortDescription: a.ShortDescription,
@@ -128,14 +136,12 @@ func (s *LibrarianPorterServiceService) PullApp(
 			HeroImageUrl:     a.HeroImageURL,
 			Tags:             nil,
 			AppCategoryIds:   nil,
-			Details: &librarian.AppDetails{ // TODO
-				Description: a.Description,
-				ReleaseDate: a.ReleaseDate,
-				Developer:   a.Developer,
-				Publisher:   a.Publisher,
-				Version:     "",
-			},
+			AltNames:         nil,
 		}}, nil
+	case librarian.AppSource_APP_SOURCE_VNDB:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
+	case librarian.AppSource_APP_SOURCE_BANGUMI:
+		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	default:
 		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 	}
@@ -159,6 +165,7 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 				Source:           librarian.AppSource_APP_SOURCE_STEAM,
 				SourceAppId:      strconv.Itoa(int(a.AppID)),
 				SourceUrl:        nil,
+				Details:          nil,
 				Name:             a.Name,
 				Type:             0,
 				ShortDescription: "",
@@ -166,7 +173,7 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 				HeroImageUrl:     a.HeroImageURL,
 				Tags:             nil,
 				AppCategoryIds:   nil,
-				Details:          nil,
+				AltNames:         nil,
 			}
 		}
 		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil

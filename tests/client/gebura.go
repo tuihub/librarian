@@ -22,6 +22,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
 		HeroImageUrl:     "",
 		Tags:             nil,
 		AppCategoryIds:   nil,
+		AltNames:         nil,
 	}}); err != nil {
 		panic(err)
 	} else {
@@ -55,6 +56,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
 		HeroImageUrl:     "",
 		Tags:             nil,
 		AppCategoryIds:   nil,
+		AltNames:         nil,
 	}}); err != nil {
 		panic(err)
 	}
@@ -71,6 +73,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
 		HeroImageUrl:     "",
 		Tags:             nil,
 		AppCategoryIds:   nil,
+		AltNames:         nil,
 	}}); err != nil {
 		panic(err)
 	} else {
@@ -107,6 +110,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
 			HeroImageUrl:     "",
 			Tags:             nil,
 			AppCategoryIds:   nil,
+			AltNames:         nil,
 		},
 		Merged: appID2,
 	}); err != nil {

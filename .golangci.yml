@@ -37,6 +37,10 @@ linters-settings:
     check:
       - switch
       - map
+    # Presence of "default" case in switch statements satisfies exhaustiveness,
+    # even if all enum members are not listed.
+    # Default: false
+    default-signifies-exhaustive: true
 
   exhaustruct:
     # List of regular expressions to exclude struct packages and names from check.

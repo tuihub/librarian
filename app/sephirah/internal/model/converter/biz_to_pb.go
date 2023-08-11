@@ -43,8 +43,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:map Source | ToPBAppSource
 	// goverter:map Type | ToPBAppType
 	// goverter:ignore AppCategoryIds
+	// goverter:ignore AltNames
 	ToPBApp(*modelgebura.App) *librarian.App
 	// goverter:matchIgnoreCase
+	// goverter:ignore ImageUrls
 	ToPBAppDetail(*modelgebura.AppDetails) *librarian.AppDetails
 	ToPBAppList([]*modelgebura.App) []*librarian.App
 

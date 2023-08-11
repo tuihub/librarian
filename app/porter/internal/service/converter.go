@@ -9,7 +9,7 @@ import (
 )
 
 func ToPBAppType(t bizsteam.AppType) librarian.AppType {
-	switch t { //nolint:exhaustive //TODO
+	switch t {
 	case bizsteam.AppTypeGame:
 		return librarian.AppType_APP_TYPE_GAME
 	default:
