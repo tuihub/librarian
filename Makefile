@@ -74,7 +74,7 @@ test-all: test-unit test-goc test-postprocess
 .PHONY: run
 # run server
 run:
-	kratos run
+	CGO_ENABLED=1 kratos run
 
 .PHONY: build
 # build server in debug mode

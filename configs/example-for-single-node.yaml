@@ -43,8 +43,8 @@ porter:
   data:
     s3:
       end_point: 127.0.0.1:9000
-      access_key: test
-      secret_key: testtest
+      access_key: librarian
+      secret_key: librarian
       use_ssl: false
     steam:
       api_key:

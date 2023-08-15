@@ -1,0 +1,51 @@
+# Docker Compose file for running dependencies in development.
+#
+# Not safe for production environment.
+#
+# Install Docker on your system to run and test.
+#
+#      Start: docker-compose up -d
+#       Stop: docker-compose down
+#
+version: '3'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    hostname: "postgres"
+    environment:
+      PGDATA: /var/lib/postgresql/data/data
+      POSTGRES_USER: librarian
+      POSTGRES_PASSWORD: librarian
+      POSTGRES_DB: librarian
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - ./data/pg_data:/var/lib/postgresql/data/data
+    restart: unless-stopped
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.3
+    hostname: "meilisearch"
+    environment:
+      MEILI_DB_PATH: /meili_data
+    ports:
+      - "127.0.0.1:7700:7700"
+    volumes:
+      - ./data/meili_data:/meili_data
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio
+    hostname: "minio"
+    environment:
+      MINIO_ACCESS_KEY: librarian
+      MINIO_SECRET_KEY: librarian
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - ./data/minio/data:/data
+      - ./data/minio/config:/root/.minio/
+    command: server --console-address ':9001' /data
+    restart: unless-stopped
