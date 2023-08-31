@@ -5,17 +5,17 @@ go 1.20
 require (
 	entgo.io/ent v0.12.3
 	github.com/PuerkitoBio/goquery v1.8.1
-	github.com/ThreeDotsLabs/watermill v1.3.2
+	github.com/ThreeDotsLabs/watermill v1.3.3
 	github.com/ThreeDotsLabs/watermill-sql v1.4.0
 	github.com/Xuanwo/go-locale v1.1.0
 	github.com/blevesearch/bleve/v2 v2.3.9
-	github.com/bufbuild/protovalidate-go v0.2.1
+	github.com/bufbuild/protovalidate-go v0.3.1
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.5
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron v1.31.0
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230808051727-7888107c4b4f
+	github.com/go-co-op/gocron v1.32.1
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20230830131453-6c026bce56a9
 	github.com/go-kratos/kratos/v2 v2.7.0
 	github.com/gocolly/colly/v2 v2.1.1-0.20230620150846-a6e3d81fe6b7
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -28,23 +28,23 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.17
 	github.com/meilisearch/meilisearch-go v0.25.0
-	github.com/minio/minio-go/v7 v7.0.61
+	github.com/minio/minio-go/v7 v7.0.63
 	github.com/mmcdole/gofeed v1.2.1
 	github.com/nikoksr/notify v0.41.0
-	github.com/redis/go-redis/v9 v9.0.5
-	github.com/sony/sonyflake v1.1.0
+	github.com/redis/go-redis/v9 v9.1.0
+	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tuihub/protos v0.2.39
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.12.0
-	golang.org/x/exp v0.0.0-20230810033253-352e893a4cad
+	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 	google.golang.org/grpc v1.57.0
 	google.golang.org/protobuf v1.31.0
 )
 
 require (
 	ariga.io/atlas v0.10.2-0.20230427182402-87a07dfb83bf // indirect
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.31.0-20230721003620-2341cbb21958.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.31.0-20230824200731-b9b8148056b9.1 // indirect
 	github.com/RoaringBitmap/roaring v1.2.3 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
@@ -93,7 +93,7 @@ require (
 	github.com/golang/glog v1.1.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/snappy v0.0.1 // indirect
-	github.com/google/cel-go v0.17.1 // indirect
+	github.com/google/cel-go v0.17.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -143,6 +143,7 @@ require (
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
+	github.com/sony/gobreaker v0.5.0 // indirect
 	github.com/spf13/cobra v1.7.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
@@ -158,9 +159,9 @@ require (
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
 	go.opentelemetry.io/otel/metric v1.16.0 // indirect
-	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/mod v0.12.0 // indirect
 	golang.org/x/term v0.11.0 // indirect
-	golang.org/x/tools v0.8.1-0.20230428195545-5283a0178901 // indirect
+	golang.org/x/tools v0.12.1-0.20230815132531-74c255bcf846 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230629202037-9506855d4529 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230629202037-9506855d4529 // indirect
@@ -172,12 +173,12 @@ require (
 require (
 	github.com/facebook/fbthrift v0.31.1-0.20211129061412-801ed7f9f295 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230808051727-7888107c4b4f
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20230830131453-6c026bce56a9
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/form/v4 v4.2.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
-	github.com/google/uuid v1.3.0
+	github.com/google/uuid v1.3.1
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
@@ -185,7 +186,7 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.25.0
-	golang.org/x/net v0.13.0 // indirect
+	golang.org/x/net v0.14.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
