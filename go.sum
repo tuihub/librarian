@@ -67,6 +67,7 @@ github.com/ThreeDotsLabs/watermill v1.3.3 h1:ulVgkk7n/hhWmqKKJrquWJWwIDGr9LXJ8W5
 github.com/ThreeDotsLabs/watermill v1.3.3/go.mod h1:FUH1a4BEmr5UCmCtg7CIYvEL11mdeVBDp1404+eLP+c=
 github.com/ThreeDotsLabs/watermill-sql v1.4.0 h1:ygnlWswoCBPVkHlSnuZtbdILCAJyMcOZTYuTzMUf6ns=
 github.com/ThreeDotsLabs/watermill-sql v1.4.0/go.mod h1:EPnUyXBlN8MLB5UyNNdL+qqekywc5MklA7Kgo8ehSqE=
+github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0/go.mod h1:83l/4sKaLHwoHJlrAsDLaXcHN+QOHHntAAyabNmiuO4=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/Xuanwo/go-locale v1.1.0 h1:51gUxhxl66oXAjI9uPGb2O0qwPECpriKQb2hl35mQkg=
 github.com/Xuanwo/go-locale v1.1.0/go.mod h1:UKrHoZB3FPIk9wIG2/tVSobnHgNnceGSH3Y8DY5cASs=
