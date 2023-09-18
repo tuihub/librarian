@@ -7,7 +7,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/ThreeDotsLabs/watermill v1.3.3
 	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
-	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
 	github.com/Xuanwo/go-locale v1.1.0
 	github.com/blevesearch/bleve/v2 v2.3.9
 	github.com/bufbuild/protovalidate-go v0.3.1
