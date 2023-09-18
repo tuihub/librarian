@@ -8,7 +8,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
-	"github.com/ThreeDotsLabs/watermill-sql/pkg/sql"
+	"github.com/ThreeDotsLabs/watermill-sql/v2/pkg/sql"
 
 	_ "github.com/mattn/go-sqlite3" // required
 )
