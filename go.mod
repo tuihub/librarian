@@ -30,6 +30,7 @@ require (
 	github.com/meilisearch/meilisearch-go v0.25.1
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/mmcdole/gofeed v1.2.1
+	github.com/muzhou233/go-favicon v0.1.1
 	github.com/nikoksr/notify v0.41.0
 	github.com/redis/go-redis/v9 v9.2.1
 	github.com/sony/sonyflake v1.2.0
@@ -130,6 +131,7 @@ require (
 	github.com/mschoch/smat v0.2.0 // indirect
 	github.com/nlnwa/whatwg-url v0.1.2 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
+	github.com/pingcap/errors v0.11.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect

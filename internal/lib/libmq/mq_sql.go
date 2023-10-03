@@ -32,7 +32,7 @@ func newSQLAdapter(c *conf.Database, loggerAdapter *mqLogger) (*pubSub, error) {
 		}
 		sa = sql.DefaultPostgreSQLSchema{
 			GenerateMessagesTableName: nil,
-			SubscribeBatchSize:        0, //nolint:gomnd // use default value
+			SubscribeBatchSize:        0,
 		}
 		oa = sql.DefaultPostgreSQLOffsetsAdapter{
 			GenerateMessagesOffsetsTableName: nil,
