@@ -245,9 +245,13 @@ func (a *angelaRepo) UpsertFeedItems(
 	err = a.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
 			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
-			resolveWithIgnores([]string{
-				feeditem.FieldID,
-			}),
+			//
+			// Update feed item every time result in large disk writes
+			//
+			// resolveWithIgnores([]string{
+			//	feeditem.FieldID,
+			//}),
+			sql.DoNothing(),
 		).Exec(ctx)
 	if err != nil {
 		return nil, err
