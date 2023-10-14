@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.1.12](https://github.com/tuihub/librarian/compare/v0.1.11...v0.1.12) (2023-10-14)
+
+
+### Bug Fixes
+
+* add go-favicon ([94cb00f](https://github.com/tuihub/librarian/commit/94cb00f31b60bab771a245fbaa77c04040bd5300))
+* reduce disk writes ([2c28a36](https://github.com/tuihub/librarian/commit/2c28a361f30c5152dc56db2f67440196d5c13c71))
+* reduce disk writes ([1552716](https://github.com/tuihub/librarian/commit/15527166bfce6e0705757f0ce32a9e7c9663d60d))
+* several fixes ([ee4c0cc](https://github.com/tuihub/librarian/commit/ee4c0cc4f03a9f091728bfda653fbfa4a243f935))
+
 ## [0.1.11](https://github.com/TuiHub/Librarian/compare/v0.1.10...v0.1.11) (2023-08-11)
 
 
