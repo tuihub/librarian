@@ -170,7 +170,6 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	user.ID = id
-	user.Status = modeltiphereth.UserStatusActive
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
 			Vid:  int64(user.ID),
