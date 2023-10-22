@@ -188,11 +188,7 @@ func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 			SetImage(f.Image).
 			OnConflict(
 				sql.ConflictColumns(feed.FieldID),
-				//
-				// Update feed every time result in large disk writes
-				//
-				// sql.ResolveWithNewValues(),
-				sql.DoNothing(),
+				sql.ResolveWithNewValues(),
 			).
 			Exec(ctx)
 		if err != nil {
@@ -254,7 +250,7 @@ func (a *angelaRepo) UpsertFeedItems(
 			//
 			// resolveWithIgnores([]string{
 			//	feeditem.FieldID,
-			// }),
+			//}),
 			sql.DoNothing(),
 		).Exec(ctx)
 	if err != nil {
