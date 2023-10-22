@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.13](https://github.com/tuihub/librarian/compare/v0.1.12...v0.1.13) (2023-10-22)
+
+
+### Bug Fixes
+
+* revert "fix: reduce disk writes" ([fb2084f](https://github.com/tuihub/librarian/commit/fb2084f4eb9498f789f7b291394bb6679a8ec98d))
+
 ## [0.1.12](https://github.com/tuihub/librarian/compare/v0.1.11...v0.1.12) (2023-10-14)
 
 
