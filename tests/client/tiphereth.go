@@ -7,6 +7,7 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc/metadata"
 )
@@ -22,7 +23,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 		Username: adminUsername,
 		Password: adminPassword,
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else {
 		refreshToken = resp.RefreshToken
 	}
@@ -31,7 +32,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", refreshToken)),
 	)
 	if resp, err := c.cli.RefreshToken(ctxForRefresh, &pb.RefreshTokenRequest{}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else {
 		accessToken = resp.AccessToken
 	}
@@ -64,12 +65,12 @@ func (c *Client) testUser(ctx context.Context) {
 	}
 	user2Password := "user2"
 	if user1ID, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{User: user1}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else {
 		user1.Id = user1ID.GetId()
 	}
 	if user2ID, err := c.cli.CreateUser(ctx, &pb.CreateUserRequest{User: user2}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else {
 		user2.Id = user2ID.GetId()
 	}
@@ -98,13 +99,13 @@ func (c *Client) testUser(ctx context.Context) {
 	user1.Type = pb.UserType_USER_TYPE_NORMAL
 	user1.Status = pb.UserStatus_USER_STATUS_ACTIVE
 	if _, err := c.cli.UpdateUser(ctx, &pb.UpdateUserRequest{User: user1, Password: nil}); err == nil {
-		panic("err expected")
+		log.Fatal("err expected")
 	}
 	if _, err := c.cli.UpdateUser(ctx, &pb.UpdateUserRequest{User: user1, Password: &user1Password}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if _, err := c.cli.UpdateUser(ctx, &pb.UpdateUserRequest{User: user2, Password: nil}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	c.assertListUser(
@@ -124,20 +125,20 @@ func (c *Client) testUser(ctx context.Context) {
 		Username: user1.Username,
 		Password: user1.Password,
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
 		Username: user2.Username,
 		Password: user2.Password,
 	}); err == nil {
-		panic("err expected")
+		log.Fatal("err expected")
 	}
 	user2.Password = user2Password
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
 		Username: user2.Username,
 		Password: user2.Password,
 	}); err == nil {
-		panic("err expected")
+		log.Fatal("err expected")
 	}
 }
 
@@ -148,7 +149,7 @@ func (c *Client) testAccount(ctx context.Context) {
 			PlatformAccountId: "0",
 		},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
@@ -156,14 +157,14 @@ func (c *Client) testAccount(ctx context.Context) {
 			PlatformAccountId: "1",
 		},
 	}); err == nil {
-		panic("err expected")
+		log.Fatal("err expected")
 	}
 	if resp, err := c.cli.ListLinkAccounts(ctx, &pb.ListLinkAccountsRequest{
 		UserId: nil,
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else if len(resp.GetAccounts()) != 1 || resp.GetAccounts()[0].GetPlatformAccountId() != "0" {
-		panic(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
+		log.Fatal(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
 	}
 	if _, err := c.cli.UnLinkAccount(ctx, &pb.UnLinkAccountRequest{
 		AccountId: &librarian.AccountID{
@@ -171,14 +172,14 @@ func (c *Client) testAccount(ctx context.Context) {
 			PlatformAccountId: "0",
 		},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if resp, err := c.cli.ListLinkAccounts(ctx, &pb.ListLinkAccountsRequest{
 		UserId: nil,
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else if len(resp.GetAccounts()) != 0 {
-		panic(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
+		log.Fatal(fmt.Sprintf("unexpected ListLinkAccounts response, %+v", resp))
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
@@ -186,7 +187,7 @@ func (c *Client) testAccount(ctx context.Context) {
 			PlatformAccountId: "1",
 		},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
@@ -194,7 +195,7 @@ func (c *Client) testAccount(ctx context.Context) {
 			PlatformAccountId: "0",
 		},
 	}); err == nil {
-		panic("err expected")
+		log.Fatal("err expected")
 	}
 }
 
@@ -207,9 +208,9 @@ func (c *Client) assertListUser(
 		StatusFilter: statuses,
 	})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	if !assertFunc(resp) {
-		panic(fmt.Sprintf("unexpected ListUser response, %+v", resp))
+		log.Fatal(fmt.Sprintf("unexpected ListUser response, %+v", resp))
 	}
 }

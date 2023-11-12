@@ -68,7 +68,7 @@ func (c *Client) WaitServerOnline(ctx context.Context) {
 		_, err = c.cli.GetServerInformation(ctx, new(pb.GetServerInformationRequest))
 	}
 	if i == maxRetry {
-		panic("Server unavailable")
+		log.Fatal("Server unavailable")
 	}
 }
 

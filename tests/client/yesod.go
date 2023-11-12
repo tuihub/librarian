@@ -8,6 +8,7 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 
@@ -28,7 +29,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			LatestUpdateTime: nil,
 		},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else {
 		feedConfigID = resp.GetId().GetId()
 	}
@@ -47,7 +48,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			LatestUpdateTime: nil,
 		},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	time.Sleep(time.Minute * 2) //nolint:gomnd // waiting
 	if resp, err := c.cli.ListFeedConfigs(ctx, &pb.ListFeedConfigsRequest{
@@ -63,7 +64,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 		len(resp.GetFeedsWithConfig()) != 1 ||
 		resp.GetFeedsWithConfig()[0].GetConfig().GetId().GetId() != feedConfigID ||
 		resp.GetFeedsWithConfig()[0].GetFeed().GetId().GetId() != feedConfigID {
-		panic(fmt.Sprintf("unexpected ListFeeds response, %+v", resp))
+		log.Fatal(fmt.Sprintf("unexpected ListFeeds response, %+v", resp))
 	}
 	if resp, err := c.cli.ListFeedItems(ctx, &pb.ListFeedItemsRequest{
 		Paging:                defaultPaging,
@@ -73,19 +74,19 @@ func (c *Client) TestYesod(ctx context.Context) {
 		PublishTimeRange:      nil,
 		CategoryFilter:        nil,
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else if resp.GetPaging().GetTotalSize() < 1 ||
 		len(resp.GetItems()) < 1 ||
 		resp.GetItems()[0].GetFeedId().GetId() != feedConfigID {
-		panic(fmt.Sprintf("unexpected ListFeedItems response, %+v, %v", resp, feedConfigID))
+		log.Fatal(fmt.Sprintf("unexpected ListFeedItems response, %+v, %v", resp, feedConfigID))
 	} else {
 		feedItemID = resp.GetItems()[0].GetItemId().GetId()
 	}
 	if resp, err := c.cli.GetFeedItem(ctx, &pb.GetFeedItemRequest{
 		Id: &librarian.InternalID{Id: feedItemID},
 	}); err != nil {
-		panic(err)
+		log.Fatal(err)
 	} else if resp.GetItem().GetId().GetId() != feedItemID {
-		panic(fmt.Sprintf("unexpected GetFeedItem response, %+v", resp))
+		log.Fatal(fmt.Sprintf("unexpected GetFeedItem response, %+v", resp))
 	}
 }

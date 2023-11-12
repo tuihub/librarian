@@ -3,7 +3,7 @@ VERSION=$(shell git describe --tags --always)
 all: build test
 
 init:
-	curl -L https://github.com/qiniu/goc/releases/download/v1.4.4/goc-v1.4.4-linux-amd64.tar.gz | tar -zx && chmod +x goc && mv goc /usr/local/bin
+	curl -L https://github.com/qiniu/goc/releases/download/v1.4.5/goc-v1.4.5-linux-amd64.tar.gz | tar -zx && chmod +x goc && mv goc /usr/local/bin
 
 build:
 	mkdir -p bin/ && cd ../cmd/librarian && goc build --buildflags="-ldflags '-X main.Version=$(VERSION)'" -o ../../tests/bin/ .
