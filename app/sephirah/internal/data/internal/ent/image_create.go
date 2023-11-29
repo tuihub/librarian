@@ -530,12 +530,16 @@ func (u *ImageUpsertOne) IDX(ctx context.Context) model.InternalID {
 // ImageCreateBulk is the builder for creating many Image entities in bulk.
 type ImageCreateBulk struct {
 	config
+	err      error
 	builders []*ImageCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the Image entities in the database.
 func (icb *ImageCreateBulk) Save(ctx context.Context) ([]*Image, error) {
+	if icb.err != nil {
+		return nil, icb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(icb.builders))
 	nodes := make([]*Image, len(icb.builders))
 	mutators := make([]Mutator, len(icb.builders))
@@ -776,6 +780,9 @@ func (u *ImageUpsertBulk) UpdateCreatedAt() *ImageUpsertBulk {
 
 // Exec executes the query.
 func (u *ImageUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ImageCreateBulk instead", i)

@@ -8,7 +8,7 @@ import (
 	"github.com/mmcdole/gofeed"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter --packagePath github.com/tuihub/librarian/app/porter/internal/client/feed/converter --packageName converter --output ./generated.go ./
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g "output:package github.com/tuihub/librarian/app/porter/internal/client/feed/converter:converter" -g "output:file generated.go" .
 
 // goverter:converter
 type Converter interface {

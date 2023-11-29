@@ -45,6 +45,18 @@ func (f AppPackageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPackageMutation", m)
 }
 
+// The AppPackageRunTimeFunc type is an adapter to allow the use of ordinary
+// function as AppPackageRunTime mutator.
+type AppPackageRunTimeFunc func(context.Context, *ent.AppPackageRunTimeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppPackageRunTimeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppPackageRunTimeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPackageRunTimeMutation", m)
+}
+
 // The FeedFunc type is an adapter to allow the use of ordinary
 // function as Feed mutator.
 type FeedFunc func(context.Context, *ent.FeedMutation) (ent.Value, error)

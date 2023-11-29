@@ -593,12 +593,16 @@ func (u *NotifyFlowUpsertOne) IDX(ctx context.Context) model.InternalID {
 // NotifyFlowCreateBulk is the builder for creating many NotifyFlow entities in bulk.
 type NotifyFlowCreateBulk struct {
 	config
+	err      error
 	builders []*NotifyFlowCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the NotifyFlow entities in the database.
 func (nfcb *NotifyFlowCreateBulk) Save(ctx context.Context) ([]*NotifyFlow, error) {
+	if nfcb.err != nil {
+		return nil, nfcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(nfcb.builders))
 	nodes := make([]*NotifyFlow, len(nfcb.builders))
 	mutators := make([]Mutator, len(nfcb.builders))
@@ -839,6 +843,9 @@ func (u *NotifyFlowUpsertBulk) UpdateCreatedAt() *NotifyFlowUpsertBulk {
 
 // Exec executes the query.
 func (u *NotifyFlowUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the NotifyFlowCreateBulk instead", i)

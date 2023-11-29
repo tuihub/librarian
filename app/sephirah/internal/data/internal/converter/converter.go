@@ -18,7 +18,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter --ignoreUnexportedFields --packagePath github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter --packageName converter --output ./generated.go ./
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter:converter" -g "output:file generated.go" .
 
 var toEnt = &toEntConverterImpl{} //nolint:gochecknoglobals // checked
 var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked

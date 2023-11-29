@@ -297,25 +297,25 @@ func (t *Tiphereth) LinkAccount(
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	a.ID = id
-	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
-		{
-			Vid:  int64(a.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_ENTITY,
-			Prop: nil,
-		},
-	}}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	if _, err = t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
-		{
-			SrcVid: int64(claims.InternalID),
-			DstVid: int64(a.ID),
-			Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
-			Prop:   nil,
-		},
-	}}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
+	// if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+	//	{
+	//		Vid:  int64(a.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_ENTITY,
+	//		Prop: nil,
+	//	},
+	// }}); err != nil {
+	//	return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
+	//if _, err = t.mapper.InsertEdge(ctx, &mapper.InsertEdgeRequest{EdgeList: []*mapper.Edge{
+	//	{
+	//		SrcVid: int64(claims.InternalID),
+	//		DstVid: int64(a.ID),
+	//		Type:   mapper.EdgeType_EDGE_TYPE_EQUAL,
+	//		Prop:   nil,
+	//	},
+	//}}); err != nil {
+	//	return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
 	if err = t.repo.LinkAccount(ctx, a, claims.InternalID); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

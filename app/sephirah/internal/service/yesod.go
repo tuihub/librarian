@@ -92,11 +92,11 @@ func (s *LibrarianSephirahServiceService) GroupFeedItems(
 	req *pb.GroupFeedItemsRequest,
 ) (*pb.GroupFeedItemsResponse, error) {
 	itemMap, err := s.y.GroupFeedItems(ctx,
-		converter.ToBizGroupFeedItemsBy(req.GetGroupBy()),
+		converter.ToBizGroupFeedItemsBy(req.GetPublishTimeAggregation().GetAggregationType()),
 		converter.ToBizInternalIDList(req.GetFeedIdFilter()),
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
 		req.GetPublishPlatformFilter(),
-		converter.ToBizTimeRange(req.GetPublishTimeRange()),
+		converter.ToBizTimeRange(req.GetPublishTimeAggregation().GetTimeRange()),
 		int(req.GetGroupSize()),
 		req.GetCategoryFilter(),
 	)

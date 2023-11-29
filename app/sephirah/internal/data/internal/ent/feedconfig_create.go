@@ -885,12 +885,16 @@ func (u *FeedConfigUpsertOne) IDX(ctx context.Context) model.InternalID {
 // FeedConfigCreateBulk is the builder for creating many FeedConfig entities in bulk.
 type FeedConfigCreateBulk struct {
 	config
+	err      error
 	builders []*FeedConfigCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the FeedConfig entities in the database.
 func (fccb *FeedConfigCreateBulk) Save(ctx context.Context) ([]*FeedConfig, error) {
+	if fccb.err != nil {
+		return nil, fccb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(fccb.builders))
 	nodes := make([]*FeedConfig, len(fccb.builders))
 	mutators := make([]Mutator, len(fccb.builders))
@@ -1243,6 +1247,9 @@ func (u *FeedConfigUpsertBulk) UpdateCreatedAt() *FeedConfigUpsertBulk {
 
 // Exec executes the query.
 func (u *FeedConfigUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FeedConfigCreateBulk instead", i)

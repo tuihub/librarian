@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"reflect"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/model"
@@ -18,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -40,6 +42,8 @@ type Client struct {
 	App *AppClient
 	// AppPackage is the client for interacting with the AppPackage builders.
 	AppPackage *AppPackageClient
+	// AppPackageRunTime is the client for interacting with the AppPackageRunTime builders.
+	AppPackageRunTime *AppPackageRunTimeClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
@@ -74,6 +78,7 @@ func (c *Client) init() {
 	c.Account = NewAccountClient(c.config)
 	c.App = NewAppClient(c.config)
 	c.AppPackage = NewAppPackageClient(c.config)
+	c.AppPackageRunTime = NewAppPackageRunTimeClient(c.config)
 	c.Feed = NewFeedClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
@@ -150,11 +155,14 @@ func Open(driverName, dataSourceName string, options ...Option) (*Client, error)
 	}
 }
 
+// ErrTxStarted is returned when trying to start a new transaction from a transactional client.
+var ErrTxStarted = errors.New("ent: cannot start a transaction within a transaction")
+
 // Tx returns a new transactional client. The provided context
 // is used until the transaction is committed or rolled back.
 func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	if _, ok := c.driver.(*txDriver); ok {
-		return nil, errors.New("ent: cannot start a transaction within a transaction")
+		return nil, ErrTxStarted
 	}
 	tx, err := newTx(ctx, c.driver)
 	if err != nil {
@@ -163,20 +171,21 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		Account:          NewAccountClient(cfg),
-		App:              NewAppClient(cfg),
-		AppPackage:       NewAppPackageClient(cfg),
-		Feed:             NewFeedClient(cfg),
-		FeedConfig:       NewFeedConfigClient(cfg),
-		FeedItem:         NewFeedItemClient(cfg),
-		File:             NewFileClient(cfg),
-		Image:            NewImageClient(cfg),
-		NotifyFlow:       NewNotifyFlowClient(cfg),
-		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
-		NotifyTarget:     NewNotifyTargetClient(cfg),
-		User:             NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		Account:           NewAccountClient(cfg),
+		App:               NewAppClient(cfg),
+		AppPackage:        NewAppPackageClient(cfg),
+		AppPackageRunTime: NewAppPackageRunTimeClient(cfg),
+		Feed:              NewFeedClient(cfg),
+		FeedConfig:        NewFeedConfigClient(cfg),
+		FeedItem:          NewFeedItemClient(cfg),
+		File:              NewFileClient(cfg),
+		Image:             NewImageClient(cfg),
+		NotifyFlow:        NewNotifyFlowClient(cfg),
+		NotifyFlowTarget:  NewNotifyFlowTargetClient(cfg),
+		NotifyTarget:      NewNotifyTargetClient(cfg),
+		User:              NewUserClient(cfg),
 	}, nil
 }
 
@@ -194,20 +203,21 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		Account:          NewAccountClient(cfg),
-		App:              NewAppClient(cfg),
-		AppPackage:       NewAppPackageClient(cfg),
-		Feed:             NewFeedClient(cfg),
-		FeedConfig:       NewFeedConfigClient(cfg),
-		FeedItem:         NewFeedItemClient(cfg),
-		File:             NewFileClient(cfg),
-		Image:            NewImageClient(cfg),
-		NotifyFlow:       NewNotifyFlowClient(cfg),
-		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
-		NotifyTarget:     NewNotifyTargetClient(cfg),
-		User:             NewUserClient(cfg),
+		ctx:               ctx,
+		config:            cfg,
+		Account:           NewAccountClient(cfg),
+		App:               NewAppClient(cfg),
+		AppPackage:        NewAppPackageClient(cfg),
+		AppPackageRunTime: NewAppPackageRunTimeClient(cfg),
+		Feed:              NewFeedClient(cfg),
+		FeedConfig:        NewFeedConfigClient(cfg),
+		FeedItem:          NewFeedItemClient(cfg),
+		File:              NewFileClient(cfg),
+		Image:             NewImageClient(cfg),
+		NotifyFlow:        NewNotifyFlowClient(cfg),
+		NotifyFlowTarget:  NewNotifyFlowTargetClient(cfg),
+		NotifyTarget:      NewNotifyTargetClient(cfg),
+		User:              NewUserClient(cfg),
 	}, nil
 }
 
@@ -237,8 +247,9 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.File,
-		c.Image, c.NotifyFlow, c.NotifyFlowTarget, c.NotifyTarget, c.User,
+		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.Feed, c.FeedConfig,
+		c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowTarget, c.NotifyTarget,
+		c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -248,8 +259,9 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Account, c.App, c.AppPackage, c.Feed, c.FeedConfig, c.FeedItem, c.File,
-		c.Image, c.NotifyFlow, c.NotifyFlowTarget, c.NotifyTarget, c.User,
+		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.Feed, c.FeedConfig,
+		c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowTarget, c.NotifyTarget,
+		c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -264,6 +276,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.App.mutate(ctx, m)
 	case *AppPackageMutation:
 		return c.AppPackage.mutate(ctx, m)
+	case *AppPackageRunTimeMutation:
+		return c.AppPackageRunTime.mutate(ctx, m)
 	case *FeedMutation:
 		return c.Feed.mutate(ctx, m)
 	case *FeedConfigMutation:
@@ -317,6 +331,21 @@ func (c *AccountClient) Create() *AccountCreate {
 
 // CreateBulk returns a builder for creating a bulk of Account entities.
 func (c *AccountClient) CreateBulk(builders ...*AccountCreate) *AccountCreateBulk {
+	return &AccountCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AccountClient) MapCreateBulk(slice any, setFunc func(*AccountCreate, int)) *AccountCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AccountCreateBulk{err: fmt.Errorf("calling to AccountClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AccountCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &AccountCreateBulk{config: c.config, builders: builders}
 }
 
@@ -467,6 +496,21 @@ func (c *AppClient) Create() *AppCreate {
 
 // CreateBulk returns a builder for creating a bulk of App entities.
 func (c *AppClient) CreateBulk(builders ...*AppCreate) *AppCreateBulk {
+	return &AppCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppClient) MapCreateBulk(slice any, setFunc func(*AppCreate, int)) *AppCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppCreateBulk{err: fmt.Errorf("calling to AppClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &AppCreateBulk{config: c.config, builders: builders}
 }
 
@@ -668,6 +712,21 @@ func (c *AppPackageClient) CreateBulk(builders ...*AppPackageCreate) *AppPackage
 	return &AppPackageCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppPackageClient) MapCreateBulk(slice any, setFunc func(*AppPackageCreate, int)) *AppPackageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppPackageCreateBulk{err: fmt.Errorf("calling to AppPackageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppPackageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppPackageCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for AppPackage.
 func (c *AppPackageClient) Update() *AppPackageUpdate {
 	mutation := newAppPackageMutation(c.config, OpUpdate)
@@ -785,6 +844,139 @@ func (c *AppPackageClient) mutate(ctx context.Context, m *AppPackageMutation) (V
 	}
 }
 
+// AppPackageRunTimeClient is a client for the AppPackageRunTime schema.
+type AppPackageRunTimeClient struct {
+	config
+}
+
+// NewAppPackageRunTimeClient returns a client for the AppPackageRunTime from the given config.
+func NewAppPackageRunTimeClient(c config) *AppPackageRunTimeClient {
+	return &AppPackageRunTimeClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `apppackageruntime.Hooks(f(g(h())))`.
+func (c *AppPackageRunTimeClient) Use(hooks ...Hook) {
+	c.hooks.AppPackageRunTime = append(c.hooks.AppPackageRunTime, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `apppackageruntime.Intercept(f(g(h())))`.
+func (c *AppPackageRunTimeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppPackageRunTime = append(c.inters.AppPackageRunTime, interceptors...)
+}
+
+// Create returns a builder for creating a AppPackageRunTime entity.
+func (c *AppPackageRunTimeClient) Create() *AppPackageRunTimeCreate {
+	mutation := newAppPackageRunTimeMutation(c.config, OpCreate)
+	return &AppPackageRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppPackageRunTime entities.
+func (c *AppPackageRunTimeClient) CreateBulk(builders ...*AppPackageRunTimeCreate) *AppPackageRunTimeCreateBulk {
+	return &AppPackageRunTimeCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppPackageRunTimeClient) MapCreateBulk(slice any, setFunc func(*AppPackageRunTimeCreate, int)) *AppPackageRunTimeCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppPackageRunTimeCreateBulk{err: fmt.Errorf("calling to AppPackageRunTimeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppPackageRunTimeCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppPackageRunTimeCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppPackageRunTime.
+func (c *AppPackageRunTimeClient) Update() *AppPackageRunTimeUpdate {
+	mutation := newAppPackageRunTimeMutation(c.config, OpUpdate)
+	return &AppPackageRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppPackageRunTimeClient) UpdateOne(aprt *AppPackageRunTime) *AppPackageRunTimeUpdateOne {
+	mutation := newAppPackageRunTimeMutation(c.config, OpUpdateOne, withAppPackageRunTime(aprt))
+	return &AppPackageRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppPackageRunTimeClient) UpdateOneID(id int) *AppPackageRunTimeUpdateOne {
+	mutation := newAppPackageRunTimeMutation(c.config, OpUpdateOne, withAppPackageRunTimeID(id))
+	return &AppPackageRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppPackageRunTime.
+func (c *AppPackageRunTimeClient) Delete() *AppPackageRunTimeDelete {
+	mutation := newAppPackageRunTimeMutation(c.config, OpDelete)
+	return &AppPackageRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppPackageRunTimeClient) DeleteOne(aprt *AppPackageRunTime) *AppPackageRunTimeDeleteOne {
+	return c.DeleteOneID(aprt.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppPackageRunTimeClient) DeleteOneID(id int) *AppPackageRunTimeDeleteOne {
+	builder := c.Delete().Where(apppackageruntime.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppPackageRunTimeDeleteOne{builder}
+}
+
+// Query returns a query builder for AppPackageRunTime.
+func (c *AppPackageRunTimeClient) Query() *AppPackageRunTimeQuery {
+	return &AppPackageRunTimeQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppPackageRunTime},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppPackageRunTime entity by its id.
+func (c *AppPackageRunTimeClient) Get(ctx context.Context, id int) (*AppPackageRunTime, error) {
+	return c.Query().Where(apppackageruntime.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppPackageRunTimeClient) GetX(ctx context.Context, id int) *AppPackageRunTime {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *AppPackageRunTimeClient) Hooks() []Hook {
+	return c.hooks.AppPackageRunTime
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppPackageRunTimeClient) Interceptors() []Interceptor {
+	return c.inters.AppPackageRunTime
+}
+
+func (c *AppPackageRunTimeClient) mutate(ctx context.Context, m *AppPackageRunTimeMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppPackageRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppPackageRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppPackageRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppPackageRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppPackageRunTime mutation op: %q", m.Op())
+	}
+}
+
 // FeedClient is a client for the Feed schema.
 type FeedClient struct {
 	config
@@ -815,6 +1007,21 @@ func (c *FeedClient) Create() *FeedCreate {
 
 // CreateBulk returns a builder for creating a bulk of Feed entities.
 func (c *FeedClient) CreateBulk(builders ...*FeedCreate) *FeedCreateBulk {
+	return &FeedCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedClient) MapCreateBulk(slice any, setFunc func(*FeedCreate, int)) *FeedCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedCreateBulk{err: fmt.Errorf("calling to FeedClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &FeedCreateBulk{config: c.config, builders: builders}
 }
 
@@ -965,6 +1172,21 @@ func (c *FeedConfigClient) Create() *FeedConfigCreate {
 
 // CreateBulk returns a builder for creating a bulk of FeedConfig entities.
 func (c *FeedConfigClient) CreateBulk(builders ...*FeedConfigCreate) *FeedConfigCreateBulk {
+	return &FeedConfigCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedConfigClient) MapCreateBulk(slice any, setFunc func(*FeedConfigCreate, int)) *FeedConfigCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedConfigCreateBulk{err: fmt.Errorf("calling to FeedConfigClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedConfigCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &FeedConfigCreateBulk{config: c.config, builders: builders}
 }
 
@@ -1134,6 +1356,21 @@ func (c *FeedItemClient) CreateBulk(builders ...*FeedItemCreate) *FeedItemCreate
 	return &FeedItemCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedItemClient) MapCreateBulk(slice any, setFunc func(*FeedItemCreate, int)) *FeedItemCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedItemCreateBulk{err: fmt.Errorf("calling to FeedItemClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedItemCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FeedItemCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for FeedItem.
 func (c *FeedItemClient) Update() *FeedItemUpdate {
 	mutation := newFeedItemMutation(c.config, OpUpdate)
@@ -1265,6 +1502,21 @@ func (c *FileClient) Create() *FileCreate {
 
 // CreateBulk returns a builder for creating a bulk of File entities.
 func (c *FileClient) CreateBulk(builders ...*FileCreate) *FileCreateBulk {
+	return &FileCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FileClient) MapCreateBulk(slice any, setFunc func(*FileCreate, int)) *FileCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FileCreateBulk{err: fmt.Errorf("calling to FileClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FileCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &FileCreateBulk{config: c.config, builders: builders}
 }
 
@@ -1418,6 +1670,21 @@ func (c *ImageClient) CreateBulk(builders ...*ImageCreate) *ImageCreateBulk {
 	return &ImageCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ImageClient) MapCreateBulk(slice any, setFunc func(*ImageCreate, int)) *ImageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ImageCreateBulk{err: fmt.Errorf("calling to ImageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ImageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ImageCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for Image.
 func (c *ImageClient) Update() *ImageUpdate {
 	mutation := newImageMutation(c.config, OpUpdate)
@@ -1565,6 +1832,21 @@ func (c *NotifyFlowClient) Create() *NotifyFlowCreate {
 
 // CreateBulk returns a builder for creating a bulk of NotifyFlow entities.
 func (c *NotifyFlowClient) CreateBulk(builders ...*NotifyFlowCreate) *NotifyFlowCreateBulk {
+	return &NotifyFlowCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotifyFlowClient) MapCreateBulk(slice any, setFunc func(*NotifyFlowCreate, int)) *NotifyFlowCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotifyFlowCreateBulk{err: fmt.Errorf("calling to NotifyFlowClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotifyFlowCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &NotifyFlowCreateBulk{config: c.config, builders: builders}
 }
 
@@ -1750,6 +2032,21 @@ func (c *NotifyFlowTargetClient) CreateBulk(builders ...*NotifyFlowTargetCreate)
 	return &NotifyFlowTargetCreateBulk{config: c.config, builders: builders}
 }
 
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotifyFlowTargetClient) MapCreateBulk(slice any, setFunc func(*NotifyFlowTargetCreate, int)) *NotifyFlowTargetCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotifyFlowTargetCreateBulk{err: fmt.Errorf("calling to NotifyFlowTargetClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotifyFlowTargetCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NotifyFlowTargetCreateBulk{config: c.config, builders: builders}
+}
+
 // Update returns an update builder for NotifyFlowTarget.
 func (c *NotifyFlowTargetClient) Update() *NotifyFlowTargetUpdate {
 	mutation := newNotifyFlowTargetMutation(c.config, OpUpdate)
@@ -1897,6 +2194,21 @@ func (c *NotifyTargetClient) Create() *NotifyTargetCreate {
 
 // CreateBulk returns a builder for creating a bulk of NotifyTarget entities.
 func (c *NotifyTargetClient) CreateBulk(builders ...*NotifyTargetCreate) *NotifyTargetCreateBulk {
+	return &NotifyTargetCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotifyTargetClient) MapCreateBulk(slice any, setFunc func(*NotifyTargetCreate, int)) *NotifyTargetCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotifyTargetCreateBulk{err: fmt.Errorf("calling to NotifyTargetClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotifyTargetCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &NotifyTargetCreateBulk{config: c.config, builders: builders}
 }
 
@@ -2063,6 +2375,21 @@ func (c *UserClient) Create() *UserCreate {
 
 // CreateBulk returns a builder for creating a bulk of User entities.
 func (c *UserClient) CreateBulk(builders ...*UserCreate) *UserCreateBulk {
+	return &UserCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserClient) MapCreateBulk(slice any, setFunc func(*UserCreate, int)) *UserCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserCreateBulk{err: fmt.Errorf("calling to UserClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
 	return &UserCreateBulk{config: c.config, builders: builders}
 }
 
@@ -2314,11 +2641,11 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Account, App, AppPackage, Feed, FeedConfig, FeedItem, File, Image, NotifyFlow,
-		NotifyFlowTarget, NotifyTarget, User []ent.Hook
+		Account, App, AppPackage, AppPackageRunTime, Feed, FeedConfig, FeedItem, File,
+		Image, NotifyFlow, NotifyFlowTarget, NotifyTarget, User []ent.Hook
 	}
 	inters struct {
-		Account, App, AppPackage, Feed, FeedConfig, FeedItem, File, Image, NotifyFlow,
-		NotifyFlowTarget, NotifyTarget, User []ent.Interceptor
+		Account, App, AppPackage, AppPackageRunTime, Feed, FeedConfig, FeedItem, File,
+		Image, NotifyFlow, NotifyFlowTarget, NotifyTarget, User []ent.Interceptor
 	}
 )

@@ -302,17 +302,13 @@ func (c *toBizConverterImpl) entAppPackageToPModelgeburaAppPackageBinary(source 
 	modelgeburaAppPackageBinary := c.ToBizAppPackageBinary(source)
 	return &modelgeburaAppPackageBinary
 }
-func (c *toBizConverterImpl) entAppToModelgeburaAppDetails(source ent.App) modelgebura.AppDetails {
+func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
 	var modelgeburaAppDetails modelgebura.AppDetails
 	modelgeburaAppDetails.Description = source.Description
 	modelgeburaAppDetails.ReleaseDate = source.ReleaseDate
 	modelgeburaAppDetails.Developer = source.Developer
 	modelgeburaAppDetails.Publisher = source.Publisher
 	modelgeburaAppDetails.Version = source.Version
-	return modelgeburaAppDetails
-}
-func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
-	modelgeburaAppDetails := c.entAppToModelgeburaAppDetails(source)
 	return &modelgeburaAppDetails
 }
 func (c *toBizConverterImpl) modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {

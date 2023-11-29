@@ -126,6 +126,29 @@ var (
 			},
 		},
 	}
+	// AppPackageRunTimesColumns holds the columns for the "app_package_run_times" table.
+	AppPackageRunTimesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "app_package_id", Type: field.TypeInt64},
+		{Name: "start_time", Type: field.TypeTime},
+		{Name: "run_duration", Type: field.TypeInt64},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// AppPackageRunTimesTable holds the schema information for the "app_package_run_times" table.
+	AppPackageRunTimesTable = &schema.Table{
+		Name:       "app_package_run_times",
+		Columns:    AppPackageRunTimesColumns,
+		PrimaryKey: []*schema.Column{AppPackageRunTimesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "apppackageruntime_user_id_app_package_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppPackageRunTimesColumns[1], AppPackageRunTimesColumns[2]},
+			},
+		},
+	}
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -480,6 +503,7 @@ var (
 		AccountsTable,
 		AppsTable,
 		AppPackagesTable,
+		AppPackageRunTimesTable,
 		FeedsTable,
 		FeedConfigsTable,
 		FeedItemsTable,

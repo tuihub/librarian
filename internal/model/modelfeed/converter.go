@@ -9,13 +9,13 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter --ignoreUnexportedFields --packagePath github.com/tuihub/librarian/internal/model/modelfeed --packageName modelfeed --output ./generated.go ./
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/internal/model/modelfeed:modelfeed" -g "output:file generated.go" .
 
 // goverter:converter
 // goverter:extend FromPBInternalID
 type Converter interface {
 	// goverter:matchIgnoreCase
-	// goverter:mapIdentity Id
+	// goverter:map . Id
 	ToPBFeed(*Feed) *librarian.Feed
 	// goverter:map ID Id
 	ToPBFeedInternalID(Feed) librarian.InternalID

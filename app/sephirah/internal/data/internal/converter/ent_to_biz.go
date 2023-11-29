@@ -49,7 +49,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Source | ToBizAppPackageSource
-	// goverter:mapIdentity Binary
+	// goverter:map . Binary
 	ToBizAppPackage(*ent.AppPackage) *modelgebura.AppPackage
 	// goverter:map BinaryName Name
 	// goverter:map BinarySizeBytes SizeBytes

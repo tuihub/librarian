@@ -713,32 +713,15 @@ func HasNotifyFlowWith(preds ...predicate.NotifyFlow) predicate.FeedConfig {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.FeedConfig) predicate.FeedConfig {
-	return predicate.FeedConfig(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.FeedConfig(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.FeedConfig) predicate.FeedConfig {
-	return predicate.FeedConfig(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.FeedConfig(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.FeedConfig) predicate.FeedConfig {
-	return predicate.FeedConfig(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.FeedConfig(sql.NotPredicates(p))
 }

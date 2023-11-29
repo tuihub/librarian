@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -60,6 +61,18 @@ func init() {
 	apppackageDescCreatedAt := apppackageFields[11].Descriptor()
 	// apppackage.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppackage.DefaultCreatedAt = apppackageDescCreatedAt.Default.(func() time.Time)
+	apppackageruntimeFields := schema.AppPackageRunTime{}.Fields()
+	_ = apppackageruntimeFields
+	// apppackageruntimeDescUpdatedAt is the schema descriptor for updated_at field.
+	apppackageruntimeDescUpdatedAt := apppackageruntimeFields[4].Descriptor()
+	// apppackageruntime.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	apppackageruntime.DefaultUpdatedAt = apppackageruntimeDescUpdatedAt.Default.(func() time.Time)
+	// apppackageruntime.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	apppackageruntime.UpdateDefaultUpdatedAt = apppackageruntimeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// apppackageruntimeDescCreatedAt is the schema descriptor for created_at field.
+	apppackageruntimeDescCreatedAt := apppackageruntimeFields[5].Descriptor()
+	// apppackageruntime.DefaultCreatedAt holds the default value on creation for the created_at field.
+	apppackageruntime.DefaultCreatedAt = apppackageruntimeDescCreatedAt.Default.(func() time.Time)
 	feedFields := schema.Feed{}.Fields()
 	_ = feedFields
 	// feedDescUpdatedAt is the schema descriptor for updated_at field.

@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -84,18 +85,19 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			account.Table:          account.ValidColumn,
-			app.Table:              app.ValidColumn,
-			apppackage.Table:       apppackage.ValidColumn,
-			feed.Table:             feed.ValidColumn,
-			feedconfig.Table:       feedconfig.ValidColumn,
-			feeditem.Table:         feeditem.ValidColumn,
-			file.Table:             file.ValidColumn,
-			image.Table:            image.ValidColumn,
-			notifyflow.Table:       notifyflow.ValidColumn,
-			notifyflowtarget.Table: notifyflowtarget.ValidColumn,
-			notifytarget.Table:     notifytarget.ValidColumn,
-			user.Table:             user.ValidColumn,
+			account.Table:           account.ValidColumn,
+			app.Table:               app.ValidColumn,
+			apppackage.Table:        apppackage.ValidColumn,
+			apppackageruntime.Table: apppackageruntime.ValidColumn,
+			feed.Table:              feed.ValidColumn,
+			feedconfig.Table:        feedconfig.ValidColumn,
+			feeditem.Table:          feeditem.ValidColumn,
+			file.Table:              file.ValidColumn,
+			image.Table:             image.ValidColumn,
+			notifyflow.Table:        notifyflow.ValidColumn,
+			notifyflowtarget.Table:  notifyflowtarget.ValidColumn,
+			notifytarget.Table:      notifytarget.ValidColumn,
+			user.Table:              user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

@@ -202,15 +202,15 @@ func ToBizFeedConfigStatus(s pb.FeedConfigStatus) modelyesod.FeedConfigStatus {
 	}
 }
 
-func ToBizGroupFeedItemsBy(by pb.GroupFeedItemsRequest_GroupBy) modelyesod.GroupFeedItemsBy {
+func ToBizGroupFeedItemsBy(by librarian.TimeAggregation_AggregationType) modelyesod.GroupFeedItemsBy {
 	switch by {
-	case pb.GroupFeedItemsRequest_GROUP_BY_UNSPECIFIED:
+	case librarian.TimeAggregation_AGGREGATION_TYPE_UNSPECIFIED:
 		return modelyesod.GroupFeedItemsByUnspecified
-	case pb.GroupFeedItemsRequest_GROUP_BY_YEAR:
+	case librarian.TimeAggregation_AGGREGATION_TYPE_YEAR:
 		return modelyesod.GroupFeedItemsByYear
-	case pb.GroupFeedItemsRequest_GROUP_BY_MONTH:
+	case librarian.TimeAggregation_AGGREGATION_TYPE_MONTH:
 		return modelyesod.GroupFeedItemsByMonth
-	case pb.GroupFeedItemsRequest_GROUP_BY_DAY:
+	case librarian.TimeAggregation_AGGREGATION_TYPE_DAY:
 		return modelyesod.GroupFeedItemsByDay
 	default:
 		return modelyesod.GroupFeedItemsByUnspecified

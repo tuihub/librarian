@@ -18,6 +18,8 @@ type Tx struct {
 	App *AppClient
 	// AppPackage is the client for interacting with the AppPackage builders.
 	AppPackage *AppPackageClient
+	// AppPackageRunTime is the client for interacting with the AppPackageRunTime builders.
+	AppPackageRunTime *AppPackageRunTimeClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
@@ -170,6 +172,7 @@ func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.App = NewAppClient(tx.config)
 	tx.AppPackage = NewAppPackageClient(tx.config)
+	tx.AppPackageRunTime = NewAppPackageRunTimeClient(tx.config)
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
 	tx.FeedItem = NewFeedItemClient(tx.config)

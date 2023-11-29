@@ -644,12 +644,16 @@ func (u *NotifyTargetUpsertOne) IDX(ctx context.Context) model.InternalID {
 // NotifyTargetCreateBulk is the builder for creating many NotifyTarget entities in bulk.
 type NotifyTargetCreateBulk struct {
 	config
+	err      error
 	builders []*NotifyTargetCreate
 	conflict []sql.ConflictOption
 }
 
 // Save creates the NotifyTarget entities in the database.
 func (ntcb *NotifyTargetCreateBulk) Save(ctx context.Context) ([]*NotifyTarget, error) {
+	if ntcb.err != nil {
+		return nil, ntcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(ntcb.builders))
 	nodes := make([]*NotifyTarget, len(ntcb.builders))
 	mutators := make([]Mutator, len(ntcb.builders))
@@ -918,6 +922,9 @@ func (u *NotifyTargetUpsertBulk) UpdateCreatedAt() *NotifyTargetUpsertBulk {
 
 // Exec executes the query.
 func (u *NotifyTargetUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
 			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the NotifyTargetCreateBulk instead", i)

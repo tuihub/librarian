@@ -2,6 +2,7 @@ package bizgebura
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
@@ -38,6 +39,8 @@ type GeburaRepo interface {
 	ListAppPackageBinaryChecksumOfOneSource(context.Context, modelgebura.AppPackageSource,
 		model.InternalID) ([]string, error)
 	UnAssignAppPackage(context.Context, model.InternalID, model.InternalID) error
+	AddAppPackageRunTime(context.Context, model.InternalID, model.InternalID, *model.TimeRange) error
+	SumAppPackageRunTime(context.Context, model.InternalID, model.InternalID, *model.TimeRange) (time.Duration, error)
 }
 
 type Gebura struct {

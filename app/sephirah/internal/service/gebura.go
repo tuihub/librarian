@@ -2,15 +2,12 @@ package service
 
 import (
 	"context"
-	"io"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
-	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -195,35 +192,39 @@ func (s *LibrarianSephirahServiceService) UnAssignAppPackage(
 	}
 	return &pb.UnAssignAppPackageResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ReportAppPackages(
-	conn pb.LibrarianSephirahService_ReportAppPackagesServer,
-) error {
-	ctx, err1 := s.authFunc(conn.Context())
-	if err1 != nil {
-		return err1
-	}
-	handler, err2 := s.g.NewReportAppPackageHandler(ctx)
-	if err2 != nil {
-		return err2
-	}
-	for {
-		var binaries []*modelgebura.AppPackageBinary
-		if req, err := conn.Recv(); err != nil {
-			if errors.Is(err, io.EOF) {
-				return nil
-			}
-			return err
-		} else {
-			binaries = converter.ToBizAppPackageBinaryList(req.GetAppPackageBinaries())
-		}
-		if err := handler.Handle(conn.Context(), binaries); err != nil {
-			return err
-		}
-		if err := conn.Send(&pb.ReportAppPackagesResponse{}); err != nil {
-			return err
-		}
-	}
-}
+
+// func (s *LibrarianSephirahServiceService) ReportAppPackages(
+//
+//	conn pb.LibrarianSephirahService_ReportAppPackagesServer,
+//
+//	) error {
+//		ctx, err1 := s.authFunc(conn.Context())
+//		if err1 != nil {
+//			return err1
+//		}
+//		handler, err2 := s.g.NewReportAppPackageHandler(ctx)
+//		if err2 != nil {
+//			return err2
+//		}
+//		for {
+//			var binaries []*modelgebura.AppPackageBinary
+//			if req, err := conn.Recv(); err != nil {
+//				if errors.Is(err, io.EOF) {
+//					return nil
+//				}
+//				return err
+//			} else {
+//				binaries = converter.ToBizAppPackageBinaryList(req.GetSentinelAppPackageBinaries())
+//			}
+//			if err := handler.Handle(conn.Context(), binaries); err != nil {
+//				return err
+//			}
+//			if err := conn.Send(&pb.ReportAppPackagesResponse{}); err != nil {
+//				return err
+//			}
+//		}
+//	}
+
 func (s *LibrarianSephirahServiceService) UploadGameSaveFile(
 	ctx context.Context,
 	req *pb.UploadGameSaveFileRequest,
@@ -241,4 +242,36 @@ func (s *LibrarianSephirahServiceService) ListGameSaveFiles(
 	req *pb.ListGameSaveFilesRequest,
 ) (*pb.ListGameSaveFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListGameSaveFile not implemented")
+}
+func (s *LibrarianSephirahServiceService) AddAppPackageRunTime(
+	ctx context.Context,
+	req *pb.AddAppPackageRunTimeRequest,
+) (*pb.AddAppPackageRunTimeResponse, error) {
+	err := s.g.AddAppPackageRunTime(ctx,
+		converter.ToBizInternalID(req.GetAppPackageId()),
+		converter.ToBizTimeRange(req.GetTimeRange()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AddAppPackageRunTimeResponse{}, nil
+}
+func (s *LibrarianSephirahServiceService) SumAppPackageRunTime(
+	ctx context.Context,
+	req *pb.SumAppPackageRunTimeRequest,
+) (*pb.SumAppPackageRunTimeResponse, error) {
+	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_UNSPECIFIED {
+		return nil, pb.ErrorErrorReasonBadRequest("unsupported aggregation type")
+	}
+	res, err := s.g.SumAppPackageRunTime(ctx,
+		converter.ToBizInternalID(req.GetAppPackageId()),
+		converter.ToBizTimeRange(req.GetTimeAggregation().GetTimeRange()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SumAppPackageRunTimeResponse{RunTimeGroups: []*pb.SumAppPackageRunTimeResponse_Group{{
+		TimeRange: req.GetTimeAggregation().GetTimeRange(),
+		Duration:  converter.ToPBDuration(res),
+	}}}, nil
 }

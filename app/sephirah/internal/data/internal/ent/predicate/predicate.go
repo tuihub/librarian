@@ -15,6 +15,9 @@ type App func(*sql.Selector)
 // AppPackage is the predicate function for apppackage builders.
 type AppPackage func(*sql.Selector)
 
+// AppPackageRunTime is the predicate function for apppackageruntime builders.
+type AppPackageRunTime func(*sql.Selector)
+
 // Feed is the predicate function for feed builders.
 type Feed func(*sql.Selector)
 

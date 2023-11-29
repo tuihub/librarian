@@ -3,6 +3,9 @@ package data
 import (
 	"context"
 	"errors"
+	"time"
+
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
@@ -398,4 +401,34 @@ func (g geburaRepo) ListAppPackageBinaryChecksumOfOneSource(
 		Unique(true).
 		Select(apppackage.FieldBinarySha256).
 		Strings(ctx)
+}
+
+func (g geburaRepo) AddAppPackageRunTime(
+	ctx context.Context,
+	userID model.InternalID,
+	packageID model.InternalID,
+	timeRange *model.TimeRange,
+) error {
+	return g.data.db.AppPackageRunTime.Create().
+		SetUserID(userID).
+		SetAppPackageID(packageID).
+		SetStartTime(timeRange.StartTime).
+		SetRunDuration(timeRange.Duration).Exec(ctx)
+}
+
+func (g geburaRepo) SumAppPackageRunTime(
+	ctx context.Context,
+	userID model.InternalID,
+	packageID model.InternalID,
+	timeRange *model.TimeRange,
+) (time.Duration, error) {
+	res, err := g.data.db.AppPackageRunTime.Query().Where(
+		apppackageruntime.UserIDEQ(userID),
+		apppackageruntime.AppPackageIDEQ(packageID),
+		apppackageruntime.StartTimeGTE(timeRange.StartTime),
+		apppackageruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+	).Aggregate(
+		ent.Sum(apppackageruntime.FieldRunDuration),
+	).Only(ctx)
+	return res.RunDuration, err
 }

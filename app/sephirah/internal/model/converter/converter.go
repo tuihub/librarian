@@ -17,7 +17,7 @@ import (
 	"google.golang.org/protobuf/types/known/durationpb"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter --ignoreUnexportedFields --packagePath github.com/tuihub/librarian/app/sephirah/internal/model/converter --packageName converter --output ./generated.go ./
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter:converter" -g "output:file generated.go" .
 
 var toPB = &toPBConverterImpl{}   //nolint:gochecknoglobals // checked
 var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked
