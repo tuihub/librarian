@@ -2,7 +2,7 @@ package bizangela
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -21,7 +21,7 @@ func NewUpdateAppIndexTopic(
 			for _, app := range apps {
 				err = a.searcher.DescribeID(ctx,
 					app.Internal.ID,
-					app,
+					fmt.Sprintf("%s %s", app.Internal.Name, app.Steam.Name),
 					searcher.DescribeIDRequest_DESCRIBE_MODE_OVERRIDE,
 					searcher.Index_INDEX_GEBURA_APP,
 				)

@@ -129,8 +129,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 			SetType(converter.ToEntAppType(ap.Type)).
 			SetShortDescription(ap.ShortDescription).
 			SetIconImageURL(ap.IconImageURL).
-			SetHeroImageURL(ap.HeroImageURL).
-			SetBindInternalID(ap.BoundInternal)
+			SetHeroImageURL(ap.HeroImageURL)
 		if ap.Details != nil {
 			apps[i].
 				SetDescription(ap.Details.Description).
@@ -250,7 +249,7 @@ func (a *angelaRepo) UpsertFeedItems(
 			//
 			// resolveWithIgnores([]string{
 			//	feeditem.FieldID,
-			//}),
+			// }),
 			sql.DoNothing(),
 		).Exec(ctx)
 	if err != nil {
