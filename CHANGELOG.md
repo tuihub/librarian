@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/tuihub/librarian/compare/v0.1.13...v0.1.14) (2023-11-30)
+
+
+### Bug Fixes
+
+* **gebura:** re-bind account error & only search app name ([bb53b96](https://github.com/tuihub/librarian/commit/bb53b965db9e1600f39e81d742cc63d8ed82cb44))
+
 ## [0.1.13](https://github.com/tuihub/librarian/compare/v0.1.12...v0.1.13) (2023-10-22)
 
 
