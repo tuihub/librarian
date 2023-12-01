@@ -1,13 +1,11 @@
 module github.com/tuihub/librarian
 
-go 1.21
-
-toolchain go1.21.4
+go 1.20
 
 require (
 	entgo.io/ent v0.12.5
 	github.com/PuerkitoBio/goquery v1.8.1
-	github.com/ThreeDotsLabs/watermill v1.3.5
+	github.com/ThreeDotsLabs/watermill v1.3.4
 	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
 	github.com/Xuanwo/go-locale v1.1.0
 	github.com/blevesearch/bleve/v2 v2.3.10
