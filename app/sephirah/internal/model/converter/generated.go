@@ -142,6 +142,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = DurationPBToDuration((*source).PullInterval)
+		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
@@ -196,6 +197,30 @@ func (c *toBizConverterImpl) ToBizInternalIDList(source []*v1.InternalID) []mode
 	}
 	return modelInternalIDList
 }
+func (c *toBizConverterImpl) ToBizNotifyFilter(source *v11.NotifyFilter) *modelnetzach.NotifyFilter {
+	var pModelnetzachNotifyFilter *modelnetzach.NotifyFilter
+	if source != nil {
+		var modelnetzachNotifyFilter modelnetzach.NotifyFilter
+		var stringList []string
+		if (*source).ExcludeKeywords != nil {
+			stringList = make([]string, len((*source).ExcludeKeywords))
+			for i := 0; i < len((*source).ExcludeKeywords); i++ {
+				stringList[i] = (*source).ExcludeKeywords[i]
+			}
+		}
+		modelnetzachNotifyFilter.ExcludeKeywords = stringList
+		var stringList2 []string
+		if (*source).IncludeKeywords != nil {
+			stringList2 = make([]string, len((*source).IncludeKeywords))
+			for j := 0; j < len((*source).IncludeKeywords); j++ {
+				stringList2[j] = (*source).IncludeKeywords[j]
+			}
+		}
+		modelnetzachNotifyFilter.IncludeKeywords = stringList2
+		pModelnetzachNotifyFilter = &modelnetzachNotifyFilter
+	}
+	return pModelnetzachNotifyFilter
+}
 func (c *toBizConverterImpl) ToBizNotifyFlow(source *v11.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
@@ -203,12 +228,19 @@ func (c *toBizConverterImpl) ToBizNotifyFlow(source *v11.NotifyFlow) *modelnetza
 		modelnetzachNotifyFlow.ID = ToBizInternalID((*source).Id)
 		modelnetzachNotifyFlow.Name = (*source).Name
 		modelnetzachNotifyFlow.Description = (*source).Description
-		modelnetzachNotifyFlow.Source = c.ToBizNotifyFlowSource((*source).Source)
+		var pModelnetzachNotifyFlowSourceList []*modelnetzach.NotifyFlowSource
+		if (*source).Sources != nil {
+			pModelnetzachNotifyFlowSourceList = make([]*modelnetzach.NotifyFlowSource, len((*source).Sources))
+			for i := 0; i < len((*source).Sources); i++ {
+				pModelnetzachNotifyFlowSourceList[i] = c.ToBizNotifyFlowSource((*source).Sources[i])
+			}
+		}
+		modelnetzachNotifyFlow.Sources = pModelnetzachNotifyFlowSourceList
 		var pModelnetzachNotifyFlowTargetList []*modelnetzach.NotifyFlowTarget
 		if (*source).Targets != nil {
 			pModelnetzachNotifyFlowTargetList = make([]*modelnetzach.NotifyFlowTarget, len((*source).Targets))
-			for i := 0; i < len((*source).Targets); i++ {
-				pModelnetzachNotifyFlowTargetList[i] = c.ToBizNotifyFlowTarget((*source).Targets[i])
+			for j := 0; j < len((*source).Targets); j++ {
+				pModelnetzachNotifyFlowTargetList[j] = c.ToBizNotifyFlowTarget((*source).Targets[j])
 			}
 		}
 		modelnetzachNotifyFlow.Targets = pModelnetzachNotifyFlowTargetList
@@ -221,7 +253,8 @@ func (c *toBizConverterImpl) ToBizNotifyFlowSource(source *v11.NotifyFlowSource)
 	var pModelnetzachNotifyFlowSource *modelnetzach.NotifyFlowSource
 	if source != nil {
 		var modelnetzachNotifyFlowSource modelnetzach.NotifyFlowSource
-		modelnetzachNotifyFlowSource.FeedIDFilter = c.ToBizInternalIDList((*source).FeedIdFilter)
+		modelnetzachNotifyFlowSource.SourceID = ToBizInternalID((*source).SourceId)
+		modelnetzachNotifyFlowSource.Filter = c.ToBizNotifyFilter((*source).Filter)
 		pModelnetzachNotifyFlowSource = &modelnetzachNotifyFlowSource
 	}
 	return pModelnetzachNotifyFlowSource
@@ -231,6 +264,7 @@ func (c *toBizConverterImpl) ToBizNotifyFlowTarget(source *v11.NotifyFlowTarget)
 	if source != nil {
 		var modelnetzachNotifyFlowTarget modelnetzach.NotifyFlowTarget
 		modelnetzachNotifyFlowTarget.TargetID = ToBizInternalID((*source).TargetId)
+		modelnetzachNotifyFlowTarget.Filter = c.ToBizNotifyFilter((*source).Filter)
 		modelnetzachNotifyFlowTarget.ChannelID = (*source).ChannelId
 		pModelnetzachNotifyFlowTarget = &modelnetzachNotifyFlowTarget
 	}
@@ -482,6 +516,7 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
 		v1FeedConfig.Category = (*source).Category
 		v1FeedConfig.LatestUpdateTime = ToPBTime((*source).LatestUpdateTime)
+		v1FeedConfig.HideItems = (*source).HideItems
 		pV1FeedConfig = &v1FeedConfig
 	}
 	return pV1FeedConfig
@@ -528,6 +563,7 @@ func (c *toPBConverterImpl) ToPBFeedItem(source *modelfeed.Item) *v1.FeedItem {
 		}
 		v1FeedItem.Enclosures = pV1FeedEnclosureList
 		v1FeedItem.PublishPlatform = (*source).PublishPlatform
+		v1FeedItem.ReadCount = (*source).ReadCount
 		pV1FeedItem = &v1FeedItem
 	}
 	return pV1FeedItem
@@ -615,12 +651,19 @@ func (c *toPBConverterImpl) ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *v11
 		v1NotifyFlow.Id = ToPBInternalID((*source).ID)
 		v1NotifyFlow.Name = (*source).Name
 		v1NotifyFlow.Description = (*source).Description
-		v1NotifyFlow.Source = c.ToPBNotifyFlowSource((*source).Source)
+		var pV1NotifyFlowSourceList []*v11.NotifyFlowSource
+		if (*source).Sources != nil {
+			pV1NotifyFlowSourceList = make([]*v11.NotifyFlowSource, len((*source).Sources))
+			for i := 0; i < len((*source).Sources); i++ {
+				pV1NotifyFlowSourceList[i] = c.ToPBNotifyFlowSource((*source).Sources[i])
+			}
+		}
+		v1NotifyFlow.Sources = pV1NotifyFlowSourceList
 		var pV1NotifyFlowTargetList []*v11.NotifyFlowTarget
 		if (*source).Targets != nil {
 			pV1NotifyFlowTargetList = make([]*v11.NotifyFlowTarget, len((*source).Targets))
-			for i := 0; i < len((*source).Targets); i++ {
-				pV1NotifyFlowTargetList[i] = c.ToPBNotifyFlowTarget((*source).Targets[i])
+			for j := 0; j < len((*source).Targets); j++ {
+				pV1NotifyFlowTargetList[j] = c.ToPBNotifyFlowTarget((*source).Targets[j])
 			}
 		}
 		v1NotifyFlow.Targets = pV1NotifyFlowTargetList
@@ -643,7 +686,8 @@ func (c *toPBConverterImpl) ToPBNotifyFlowSource(source *modelnetzach.NotifyFlow
 	var pV1NotifyFlowSource *v11.NotifyFlowSource
 	if source != nil {
 		var v1NotifyFlowSource v11.NotifyFlowSource
-		v1NotifyFlowSource.FeedIdFilter = c.ToPBInternalIDList((*source).FeedIDFilter)
+		v1NotifyFlowSource.Filter = c.pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
+		v1NotifyFlowSource.SourceId = ToPBInternalID((*source).SourceID)
 		pV1NotifyFlowSource = &v1NotifyFlowSource
 	}
 	return pV1NotifyFlowSource
@@ -652,6 +696,7 @@ func (c *toPBConverterImpl) ToPBNotifyFlowTarget(source *modelnetzach.NotifyFlow
 	var pV1NotifyFlowTarget *v11.NotifyFlowTarget
 	if source != nil {
 		var v1NotifyFlowTarget v11.NotifyFlowTarget
+		v1NotifyFlowTarget.Filter = c.pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
 		v1NotifyFlowTarget.TargetId = ToPBInternalID((*source).TargetID)
 		v1NotifyFlowTarget.ChannelId = (*source).ChannelID
 		pV1NotifyFlowTarget = &v1NotifyFlowTarget
@@ -723,4 +768,28 @@ func (c *toPBConverterImpl) pModelfeedPersonToPV1FeedPerson(source *modelfeed.Pe
 		pV1FeedPerson = &v1FeedPerson
 	}
 	return pV1FeedPerson
+}
+func (c *toPBConverterImpl) pModelnetzachNotifyFilterToPV1NotifyFilter(source *modelnetzach.NotifyFilter) *v11.NotifyFilter {
+	var pV1NotifyFilter *v11.NotifyFilter
+	if source != nil {
+		var v1NotifyFilter v11.NotifyFilter
+		var stringList []string
+		if (*source).ExcludeKeywords != nil {
+			stringList = make([]string, len((*source).ExcludeKeywords))
+			for i := 0; i < len((*source).ExcludeKeywords); i++ {
+				stringList[i] = (*source).ExcludeKeywords[i]
+			}
+		}
+		v1NotifyFilter.ExcludeKeywords = stringList
+		var stringList2 []string
+		if (*source).IncludeKeywords != nil {
+			stringList2 = make([]string, len((*source).IncludeKeywords))
+			for j := 0; j < len((*source).IncludeKeywords); j++ {
+				stringList2[j] = (*source).IncludeKeywords[j]
+			}
+		}
+		v1NotifyFilter.IncludeKeywords = stringList2
+		pV1NotifyFilter = &v1NotifyFilter
+	}
+	return pV1NotifyFilter
 }

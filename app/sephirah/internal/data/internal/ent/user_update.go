@@ -43,9 +43,25 @@ func (uu *UserUpdate) SetUsername(s string) *UserUpdate {
 	return uu
 }
 
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableUsername(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetUsername(*s)
+	}
+	return uu
+}
+
 // SetPassword sets the "password" field.
 func (uu *UserUpdate) SetPassword(s string) *UserUpdate {
 	uu.mutation.SetPassword(s)
+	return uu
+}
+
+// SetNillablePassword sets the "password" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePassword(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetPassword(*s)
+	}
 	return uu
 }
 
@@ -55,9 +71,25 @@ func (uu *UserUpdate) SetStatus(u user.Status) *UserUpdate {
 	return uu
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableStatus(u *user.Status) *UserUpdate {
+	if u != nil {
+		uu.SetStatus(*u)
+	}
+	return uu
+}
+
 // SetType sets the "type" field.
 func (uu *UserUpdate) SetType(u user.Type) *UserUpdate {
 	uu.mutation.SetType(u)
+	return uu
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableType(u *user.Type) *UserUpdate {
+	if u != nil {
+		uu.SetType(*u)
+	}
 	return uu
 }
 
@@ -971,9 +1003,25 @@ func (uuo *UserUpdateOne) SetUsername(s string) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableUsername sets the "username" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableUsername(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetUsername(*s)
+	}
+	return uuo
+}
+
 // SetPassword sets the "password" field.
 func (uuo *UserUpdateOne) SetPassword(s string) *UserUpdateOne {
 	uuo.mutation.SetPassword(s)
+	return uuo
+}
+
+// SetNillablePassword sets the "password" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePassword(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetPassword(*s)
+	}
 	return uuo
 }
 
@@ -983,9 +1031,25 @@ func (uuo *UserUpdateOne) SetStatus(u user.Status) *UserUpdateOne {
 	return uuo
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableStatus(u *user.Status) *UserUpdateOne {
+	if u != nil {
+		uuo.SetStatus(*u)
+	}
+	return uuo
+}
+
 // SetType sets the "type" field.
 func (uuo *UserUpdateOne) SetType(u user.Type) *UserUpdateOne {
 	uuo.mutation.SetType(u)
+	return uuo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableType(u *user.Type) *UserUpdateOne {
+	if u != nil {
+		uuo.SetType(*u)
+	}
 	return uuo
 }
 

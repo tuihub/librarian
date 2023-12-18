@@ -37,15 +37,39 @@ func (iu *ImageUpdate) SetName(s string) *ImageUpdate {
 	return iu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (iu *ImageUpdate) SetNillableName(s *string) *ImageUpdate {
+	if s != nil {
+		iu.SetName(*s)
+	}
+	return iu
+}
+
 // SetDescription sets the "description" field.
 func (iu *ImageUpdate) SetDescription(s string) *ImageUpdate {
 	iu.mutation.SetDescription(s)
 	return iu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (iu *ImageUpdate) SetNillableDescription(s *string) *ImageUpdate {
+	if s != nil {
+		iu.SetDescription(*s)
+	}
+	return iu
+}
+
 // SetStatus sets the "status" field.
 func (iu *ImageUpdate) SetStatus(i image.Status) *ImageUpdate {
 	iu.mutation.SetStatus(i)
+	return iu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (iu *ImageUpdate) SetNillableStatus(i *image.Status) *ImageUpdate {
+	if i != nil {
+		iu.SetStatus(*i)
+	}
 	return iu
 }
 
@@ -276,15 +300,39 @@ func (iuo *ImageUpdateOne) SetName(s string) *ImageUpdateOne {
 	return iuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (iuo *ImageUpdateOne) SetNillableName(s *string) *ImageUpdateOne {
+	if s != nil {
+		iuo.SetName(*s)
+	}
+	return iuo
+}
+
 // SetDescription sets the "description" field.
 func (iuo *ImageUpdateOne) SetDescription(s string) *ImageUpdateOne {
 	iuo.mutation.SetDescription(s)
 	return iuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (iuo *ImageUpdateOne) SetNillableDescription(s *string) *ImageUpdateOne {
+	if s != nil {
+		iuo.SetDescription(*s)
+	}
+	return iuo
+}
+
 // SetStatus sets the "status" field.
 func (iuo *ImageUpdateOne) SetStatus(i image.Status) *ImageUpdateOne {
 	iuo.mutation.SetStatus(i)
+	return iuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (iuo *ImageUpdateOne) SetNillableStatus(i *image.Status) *ImageUpdateOne {
+	if i != nil {
+		iuo.SetStatus(*i)
+	}
 	return iuo
 }
 

@@ -38,9 +38,25 @@ func (au *AppUpdate) SetSource(a app.Source) *AppUpdate {
 	return au
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (au *AppUpdate) SetNillableSource(a *app.Source) *AppUpdate {
+	if a != nil {
+		au.SetSource(*a)
+	}
+	return au
+}
+
 // SetSourceAppID sets the "source_app_id" field.
 func (au *AppUpdate) SetSourceAppID(s string) *AppUpdate {
 	au.mutation.SetSourceAppID(s)
+	return au
+}
+
+// SetNillableSourceAppID sets the "source_app_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableSourceAppID(s *string) *AppUpdate {
+	if s != nil {
+		au.SetSourceAppID(*s)
+	}
 	return au
 }
 
@@ -70,9 +86,25 @@ func (au *AppUpdate) SetName(s string) *AppUpdate {
 	return au
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (au *AppUpdate) SetNillableName(s *string) *AppUpdate {
+	if s != nil {
+		au.SetName(*s)
+	}
+	return au
+}
+
 // SetType sets the "type" field.
 func (au *AppUpdate) SetType(a app.Type) *AppUpdate {
 	au.mutation.SetType(a)
+	return au
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (au *AppUpdate) SetNillableType(a *app.Type) *AppUpdate {
+	if a != nil {
+		au.SetType(*a)
+	}
 	return au
 }
 
@@ -800,9 +832,25 @@ func (auo *AppUpdateOne) SetSource(a app.Source) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableSource(a *app.Source) *AppUpdateOne {
+	if a != nil {
+		auo.SetSource(*a)
+	}
+	return auo
+}
+
 // SetSourceAppID sets the "source_app_id" field.
 func (auo *AppUpdateOne) SetSourceAppID(s string) *AppUpdateOne {
 	auo.mutation.SetSourceAppID(s)
+	return auo
+}
+
+// SetNillableSourceAppID sets the "source_app_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableSourceAppID(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetSourceAppID(*s)
+	}
 	return auo
 }
 
@@ -832,9 +880,25 @@ func (auo *AppUpdateOne) SetName(s string) *AppUpdateOne {
 	return auo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableName(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetName(*s)
+	}
+	return auo
+}
+
 // SetType sets the "type" field.
 func (auo *AppUpdateOne) SetType(a app.Type) *AppUpdateOne {
 	auo.mutation.SetType(a)
+	return auo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableType(a *app.Type) *AppUpdateOne {
+	if a != nil {
+		auo.SetType(*a)
+	}
 	return auo
 }
 

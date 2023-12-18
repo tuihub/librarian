@@ -106,8 +106,11 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 		for _, config := range a.Edges.FeedConfig {
 			feedIDs = append(feedIDs, config.ID)
 		}
-		res.Source = &modelnetzach.NotifyFlowSource{
-			FeedIDFilter: feedIDs,
+		res.Sources = make([]*modelnetzach.NotifyFlowSource, 0, len(feedIDs))
+		for _, source := range feedIDs {
+			res.Sources = append(res.Sources, &modelnetzach.NotifyFlowSource{
+				SourceID: source,
+			})
 		}
 	}
 	if len(a.Edges.NotifyFlowTarget) > 0 {

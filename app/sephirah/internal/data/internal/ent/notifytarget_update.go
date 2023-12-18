@@ -38,9 +38,25 @@ func (ntu *NotifyTargetUpdate) SetToken(s string) *NotifyTargetUpdate {
 	return ntu
 }
 
+// SetNillableToken sets the "token" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableToken(s *string) *NotifyTargetUpdate {
+	if s != nil {
+		ntu.SetToken(*s)
+	}
+	return ntu
+}
+
 // SetName sets the "name" field.
 func (ntu *NotifyTargetUpdate) SetName(s string) *NotifyTargetUpdate {
 	ntu.mutation.SetName(s)
+	return ntu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableName(s *string) *NotifyTargetUpdate {
+	if s != nil {
+		ntu.SetName(*s)
+	}
 	return ntu
 }
 
@@ -50,15 +66,39 @@ func (ntu *NotifyTargetUpdate) SetDescription(s string) *NotifyTargetUpdate {
 	return ntu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUpdate {
+	if s != nil {
+		ntu.SetDescription(*s)
+	}
+	return ntu
+}
+
 // SetType sets the "type" field.
 func (ntu *NotifyTargetUpdate) SetType(n notifytarget.Type) *NotifyTargetUpdate {
 	ntu.mutation.SetType(n)
 	return ntu
 }
 
+// SetNillableType sets the "type" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableType(n *notifytarget.Type) *NotifyTargetUpdate {
+	if n != nil {
+		ntu.SetType(*n)
+	}
+	return ntu
+}
+
 // SetStatus sets the "status" field.
 func (ntu *NotifyTargetUpdate) SetStatus(n notifytarget.Status) *NotifyTargetUpdate {
 	ntu.mutation.SetStatus(n)
+	return ntu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableStatus(n *notifytarget.Status) *NotifyTargetUpdate {
+	if n != nil {
+		ntu.SetStatus(*n)
+	}
 	return ntu
 }
 
@@ -420,9 +460,25 @@ func (ntuo *NotifyTargetUpdateOne) SetToken(s string) *NotifyTargetUpdateOne {
 	return ntuo
 }
 
+// SetNillableToken sets the "token" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableToken(s *string) *NotifyTargetUpdateOne {
+	if s != nil {
+		ntuo.SetToken(*s)
+	}
+	return ntuo
+}
+
 // SetName sets the "name" field.
 func (ntuo *NotifyTargetUpdateOne) SetName(s string) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetName(s)
+	return ntuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableName(s *string) *NotifyTargetUpdateOne {
+	if s != nil {
+		ntuo.SetName(*s)
+	}
 	return ntuo
 }
 
@@ -432,15 +488,39 @@ func (ntuo *NotifyTargetUpdateOne) SetDescription(s string) *NotifyTargetUpdateO
 	return ntuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTargetUpdateOne {
+	if s != nil {
+		ntuo.SetDescription(*s)
+	}
+	return ntuo
+}
+
 // SetType sets the "type" field.
 func (ntuo *NotifyTargetUpdateOne) SetType(n notifytarget.Type) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetType(n)
 	return ntuo
 }
 
+// SetNillableType sets the "type" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableType(n *notifytarget.Type) *NotifyTargetUpdateOne {
+	if n != nil {
+		ntuo.SetType(*n)
+	}
+	return ntuo
+}
+
 // SetStatus sets the "status" field.
 func (ntuo *NotifyTargetUpdateOne) SetStatus(n notifytarget.Status) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetStatus(n)
+	return ntuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableStatus(n *notifytarget.Status) *NotifyTargetUpdateOne {
+	if n != nil {
+		ntuo.SetStatus(*n)
+	}
 	return ntuo
 }
 

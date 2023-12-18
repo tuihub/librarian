@@ -32,6 +32,8 @@ func (FeedConfig) Fields() []ent.Field {
 		field.String("category"),
 		field.Int64("pull_interval").
 			GoType(time.Duration(0)),
+		field.Bool("hide_items").
+			Default(false),
 		field.Time("latest_pull_at").
 			Default(time.UnixMicro(0)),
 		field.Time("next_pull_begin_at").

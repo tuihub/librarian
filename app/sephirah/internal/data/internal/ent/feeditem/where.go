@@ -112,6 +112,11 @@ func PublishPlatform(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldPublishPlatform, v))
 }
 
+// ReadCount applies equality check predicate on the "read_count" field. It's identical to ReadCountEQ.
+func ReadCount(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldReadCount, v))
+}
+
 // DigestDescription applies equality check predicate on the "digest_description" field. It's identical to DigestDescriptionEQ.
 func DigestDescription(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldEQ(FieldDigestDescription, v))
@@ -865,6 +870,46 @@ func PublishPlatformEqualFold(v string) predicate.FeedItem {
 // PublishPlatformContainsFold applies the ContainsFold predicate on the "publish_platform" field.
 func PublishPlatformContainsFold(v string) predicate.FeedItem {
 	return predicate.FeedItem(sql.FieldContainsFold(FieldPublishPlatform, v))
+}
+
+// ReadCountEQ applies the EQ predicate on the "read_count" field.
+func ReadCountEQ(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldEQ(FieldReadCount, v))
+}
+
+// ReadCountNEQ applies the NEQ predicate on the "read_count" field.
+func ReadCountNEQ(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNEQ(FieldReadCount, v))
+}
+
+// ReadCountIn applies the In predicate on the "read_count" field.
+func ReadCountIn(vs ...int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldIn(FieldReadCount, vs...))
+}
+
+// ReadCountNotIn applies the NotIn predicate on the "read_count" field.
+func ReadCountNotIn(vs ...int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldNotIn(FieldReadCount, vs...))
+}
+
+// ReadCountGT applies the GT predicate on the "read_count" field.
+func ReadCountGT(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGT(FieldReadCount, v))
+}
+
+// ReadCountGTE applies the GTE predicate on the "read_count" field.
+func ReadCountGTE(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldGTE(FieldReadCount, v))
+}
+
+// ReadCountLT applies the LT predicate on the "read_count" field.
+func ReadCountLT(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLT(FieldReadCount, v))
+}
+
+// ReadCountLTE applies the LTE predicate on the "read_count" field.
+func ReadCountLTE(v int64) predicate.FeedItem {
+	return predicate.FeedItem(sql.FieldLTE(FieldReadCount, v))
 }
 
 // DigestDescriptionEQ applies the EQ predicate on the "digest_description" field.

@@ -37,10 +37,26 @@ func (fu *FileUpdate) SetName(s string) *FileUpdate {
 	return fu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableName(s *string) *FileUpdate {
+	if s != nil {
+		fu.SetName(*s)
+	}
+	return fu
+}
+
 // SetSize sets the "size" field.
 func (fu *FileUpdate) SetSize(i int64) *FileUpdate {
 	fu.mutation.ResetSize()
 	fu.mutation.SetSize(i)
+	return fu
+}
+
+// SetNillableSize sets the "size" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableSize(i *int64) *FileUpdate {
+	if i != nil {
+		fu.SetSize(*i)
+	}
 	return fu
 }
 
@@ -53,6 +69,14 @@ func (fu *FileUpdate) AddSize(i int64) *FileUpdate {
 // SetType sets the "type" field.
 func (fu *FileUpdate) SetType(f file.Type) *FileUpdate {
 	fu.mutation.SetType(f)
+	return fu
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (fu *FileUpdate) SetNillableType(f *file.Type) *FileUpdate {
+	if f != nil {
+		fu.SetType(*f)
+	}
 	return fu
 }
 
@@ -300,10 +324,26 @@ func (fuo *FileUpdateOne) SetName(s string) *FileUpdateOne {
 	return fuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableName(s *string) *FileUpdateOne {
+	if s != nil {
+		fuo.SetName(*s)
+	}
+	return fuo
+}
+
 // SetSize sets the "size" field.
 func (fuo *FileUpdateOne) SetSize(i int64) *FileUpdateOne {
 	fuo.mutation.ResetSize()
 	fuo.mutation.SetSize(i)
+	return fuo
+}
+
+// SetNillableSize sets the "size" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableSize(i *int64) *FileUpdateOne {
+	if i != nil {
+		fuo.SetSize(*i)
+	}
 	return fuo
 }
 
@@ -316,6 +356,14 @@ func (fuo *FileUpdateOne) AddSize(i int64) *FileUpdateOne {
 // SetType sets the "type" field.
 func (fuo *FileUpdateOne) SetType(f file.Type) *FileUpdateOne {
 	fuo.mutation.SetType(f)
+	return fuo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (fuo *FileUpdateOne) SetNillableType(f *file.Type) *FileUpdateOne {
+	if f != nil {
+		fuo.SetType(*f)
+	}
 	return fuo
 }
 

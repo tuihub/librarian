@@ -37,15 +37,39 @@ func (nftu *NotifyFlowTargetUpdate) SetNotifyFlowID(mi model.InternalID) *Notify
 	return nftu
 }
 
+// SetNillableNotifyFlowID sets the "notify_flow_id" field if the given value is not nil.
+func (nftu *NotifyFlowTargetUpdate) SetNillableNotifyFlowID(mi *model.InternalID) *NotifyFlowTargetUpdate {
+	if mi != nil {
+		nftu.SetNotifyFlowID(*mi)
+	}
+	return nftu
+}
+
 // SetNotifyTargetID sets the "notify_target_id" field.
 func (nftu *NotifyFlowTargetUpdate) SetNotifyTargetID(mi model.InternalID) *NotifyFlowTargetUpdate {
 	nftu.mutation.SetNotifyTargetID(mi)
 	return nftu
 }
 
+// SetNillableNotifyTargetID sets the "notify_target_id" field if the given value is not nil.
+func (nftu *NotifyFlowTargetUpdate) SetNillableNotifyTargetID(mi *model.InternalID) *NotifyFlowTargetUpdate {
+	if mi != nil {
+		nftu.SetNotifyTargetID(*mi)
+	}
+	return nftu
+}
+
 // SetChannelID sets the "channel_id" field.
 func (nftu *NotifyFlowTargetUpdate) SetChannelID(s string) *NotifyFlowTargetUpdate {
 	nftu.mutation.SetChannelID(s)
+	return nftu
+}
+
+// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
+func (nftu *NotifyFlowTargetUpdate) SetNillableChannelID(s *string) *NotifyFlowTargetUpdate {
+	if s != nil {
+		nftu.SetChannelID(*s)
+	}
 	return nftu
 }
 
@@ -248,15 +272,39 @@ func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyFlowID(mi model.InternalID) *No
 	return nftuo
 }
 
+// SetNillableNotifyFlowID sets the "notify_flow_id" field if the given value is not nil.
+func (nftuo *NotifyFlowTargetUpdateOne) SetNillableNotifyFlowID(mi *model.InternalID) *NotifyFlowTargetUpdateOne {
+	if mi != nil {
+		nftuo.SetNotifyFlowID(*mi)
+	}
+	return nftuo
+}
+
 // SetNotifyTargetID sets the "notify_target_id" field.
 func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyTargetID(mi model.InternalID) *NotifyFlowTargetUpdateOne {
 	nftuo.mutation.SetNotifyTargetID(mi)
 	return nftuo
 }
 
+// SetNillableNotifyTargetID sets the "notify_target_id" field if the given value is not nil.
+func (nftuo *NotifyFlowTargetUpdateOne) SetNillableNotifyTargetID(mi *model.InternalID) *NotifyFlowTargetUpdateOne {
+	if mi != nil {
+		nftuo.SetNotifyTargetID(*mi)
+	}
+	return nftuo
+}
+
 // SetChannelID sets the "channel_id" field.
 func (nftuo *NotifyFlowTargetUpdateOne) SetChannelID(s string) *NotifyFlowTargetUpdateOne {
 	nftuo.mutation.SetChannelID(s)
+	return nftuo
+}
+
+// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
+func (nftuo *NotifyFlowTargetUpdateOne) SetNillableChannelID(s *string) *NotifyFlowTargetUpdateOne {
+	if s != nil {
+		nftuo.SetChannelID(*s)
+	}
 	return nftuo
 }
 

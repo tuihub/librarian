@@ -166,7 +166,7 @@ func (y *yesodRepo) ListFeedConfigs(
 	return res, total, nil
 }
 
-func (y *yesodRepo) ListFeedConfigCategories(ctx context.Context, id model.InternalID) ([]string, error) {
+func (y *yesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID) ([]string, error) {
 	res, err := y.data.db.FeedConfig.Query().
 		Where(
 			feedconfig.HasOwnerWith(user.IDEQ(id)),

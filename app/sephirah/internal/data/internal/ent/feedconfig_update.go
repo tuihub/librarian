@@ -38,9 +38,25 @@ func (fcu *FeedConfigUpdate) SetUserFeedConfig(mi model.InternalID) *FeedConfigU
 	return fcu
 }
 
+// SetNillableUserFeedConfig sets the "user_feed_config" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableUserFeedConfig(mi *model.InternalID) *FeedConfigUpdate {
+	if mi != nil {
+		fcu.SetUserFeedConfig(*mi)
+	}
+	return fcu
+}
+
 // SetName sets the "name" field.
 func (fcu *FeedConfigUpdate) SetName(s string) *FeedConfigUpdate {
 	fcu.mutation.SetName(s)
+	return fcu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableName(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetName(*s)
+	}
 	return fcu
 }
 
@@ -50,10 +66,26 @@ func (fcu *FeedConfigUpdate) SetFeedURL(s string) *FeedConfigUpdate {
 	return fcu
 }
 
+// SetNillableFeedURL sets the "feed_url" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableFeedURL(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetFeedURL(*s)
+	}
+	return fcu
+}
+
 // SetAuthorAccount sets the "author_account" field.
 func (fcu *FeedConfigUpdate) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdate {
 	fcu.mutation.ResetAuthorAccount()
 	fcu.mutation.SetAuthorAccount(mi)
+	return fcu
+}
+
+// SetNillableAuthorAccount sets the "author_account" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableAuthorAccount(mi *model.InternalID) *FeedConfigUpdate {
+	if mi != nil {
+		fcu.SetAuthorAccount(*mi)
+	}
 	return fcu
 }
 
@@ -69,15 +101,39 @@ func (fcu *FeedConfigUpdate) SetSource(f feedconfig.Source) *FeedConfigUpdate {
 	return fcu
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableSource(f *feedconfig.Source) *FeedConfigUpdate {
+	if f != nil {
+		fcu.SetSource(*f)
+	}
+	return fcu
+}
+
 // SetStatus sets the "status" field.
 func (fcu *FeedConfigUpdate) SetStatus(f feedconfig.Status) *FeedConfigUpdate {
 	fcu.mutation.SetStatus(f)
 	return fcu
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableStatus(f *feedconfig.Status) *FeedConfigUpdate {
+	if f != nil {
+		fcu.SetStatus(*f)
+	}
+	return fcu
+}
+
 // SetCategory sets the "category" field.
 func (fcu *FeedConfigUpdate) SetCategory(s string) *FeedConfigUpdate {
 	fcu.mutation.SetCategory(s)
+	return fcu
+}
+
+// SetNillableCategory sets the "category" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableCategory(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetCategory(*s)
+	}
 	return fcu
 }
 
@@ -88,9 +144,31 @@ func (fcu *FeedConfigUpdate) SetPullInterval(t time.Duration) *FeedConfigUpdate 
 	return fcu
 }
 
+// SetNillablePullInterval sets the "pull_interval" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillablePullInterval(t *time.Duration) *FeedConfigUpdate {
+	if t != nil {
+		fcu.SetPullInterval(*t)
+	}
+	return fcu
+}
+
 // AddPullInterval adds t to the "pull_interval" field.
 func (fcu *FeedConfigUpdate) AddPullInterval(t time.Duration) *FeedConfigUpdate {
 	fcu.mutation.AddPullInterval(t)
+	return fcu
+}
+
+// SetHideItems sets the "hide_items" field.
+func (fcu *FeedConfigUpdate) SetHideItems(b bool) *FeedConfigUpdate {
+	fcu.mutation.SetHideItems(b)
+	return fcu
+}
+
+// SetNillableHideItems sets the "hide_items" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableHideItems(b *bool) *FeedConfigUpdate {
+	if b != nil {
+		fcu.SetHideItems(*b)
+	}
 	return fcu
 }
 
@@ -318,6 +396,9 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 	}
+	if value, ok := fcu.mutation.HideItems(); ok {
+		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
+	}
 	if value, ok := fcu.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 	}
@@ -459,9 +540,25 @@ func (fcuo *FeedConfigUpdateOne) SetUserFeedConfig(mi model.InternalID) *FeedCon
 	return fcuo
 }
 
+// SetNillableUserFeedConfig sets the "user_feed_config" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableUserFeedConfig(mi *model.InternalID) *FeedConfigUpdateOne {
+	if mi != nil {
+		fcuo.SetUserFeedConfig(*mi)
+	}
+	return fcuo
+}
+
 // SetName sets the "name" field.
 func (fcuo *FeedConfigUpdateOne) SetName(s string) *FeedConfigUpdateOne {
 	fcuo.mutation.SetName(s)
+	return fcuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableName(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetName(*s)
+	}
 	return fcuo
 }
 
@@ -471,10 +568,26 @@ func (fcuo *FeedConfigUpdateOne) SetFeedURL(s string) *FeedConfigUpdateOne {
 	return fcuo
 }
 
+// SetNillableFeedURL sets the "feed_url" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableFeedURL(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetFeedURL(*s)
+	}
+	return fcuo
+}
+
 // SetAuthorAccount sets the "author_account" field.
 func (fcuo *FeedConfigUpdateOne) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdateOne {
 	fcuo.mutation.ResetAuthorAccount()
 	fcuo.mutation.SetAuthorAccount(mi)
+	return fcuo
+}
+
+// SetNillableAuthorAccount sets the "author_account" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableAuthorAccount(mi *model.InternalID) *FeedConfigUpdateOne {
+	if mi != nil {
+		fcuo.SetAuthorAccount(*mi)
+	}
 	return fcuo
 }
 
@@ -490,15 +603,39 @@ func (fcuo *FeedConfigUpdateOne) SetSource(f feedconfig.Source) *FeedConfigUpdat
 	return fcuo
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableSource(f *feedconfig.Source) *FeedConfigUpdateOne {
+	if f != nil {
+		fcuo.SetSource(*f)
+	}
+	return fcuo
+}
+
 // SetStatus sets the "status" field.
 func (fcuo *FeedConfigUpdateOne) SetStatus(f feedconfig.Status) *FeedConfigUpdateOne {
 	fcuo.mutation.SetStatus(f)
 	return fcuo
 }
 
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableStatus(f *feedconfig.Status) *FeedConfigUpdateOne {
+	if f != nil {
+		fcuo.SetStatus(*f)
+	}
+	return fcuo
+}
+
 // SetCategory sets the "category" field.
 func (fcuo *FeedConfigUpdateOne) SetCategory(s string) *FeedConfigUpdateOne {
 	fcuo.mutation.SetCategory(s)
+	return fcuo
+}
+
+// SetNillableCategory sets the "category" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableCategory(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetCategory(*s)
+	}
 	return fcuo
 }
 
@@ -509,9 +646,31 @@ func (fcuo *FeedConfigUpdateOne) SetPullInterval(t time.Duration) *FeedConfigUpd
 	return fcuo
 }
 
+// SetNillablePullInterval sets the "pull_interval" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillablePullInterval(t *time.Duration) *FeedConfigUpdateOne {
+	if t != nil {
+		fcuo.SetPullInterval(*t)
+	}
+	return fcuo
+}
+
 // AddPullInterval adds t to the "pull_interval" field.
 func (fcuo *FeedConfigUpdateOne) AddPullInterval(t time.Duration) *FeedConfigUpdateOne {
 	fcuo.mutation.AddPullInterval(t)
+	return fcuo
+}
+
+// SetHideItems sets the "hide_items" field.
+func (fcuo *FeedConfigUpdateOne) SetHideItems(b bool) *FeedConfigUpdateOne {
+	fcuo.mutation.SetHideItems(b)
+	return fcuo
+}
+
+// SetNillableHideItems sets the "hide_items" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableHideItems(b *bool) *FeedConfigUpdateOne {
+	if b != nil {
+		fcuo.SetHideItems(*b)
+	}
 	return fcuo
 }
 
@@ -768,6 +927,9 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.AddedPullInterval(); ok {
 		_spec.AddField(feedconfig.FieldPullInterval, field.TypeInt64, value)
+	}
+	if value, ok := fcuo.mutation.HideItems(); ok {
+		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
 	}
 	if value, ok := fcuo.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)

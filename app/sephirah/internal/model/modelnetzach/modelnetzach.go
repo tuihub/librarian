@@ -6,17 +6,19 @@ type NotifyFlow struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Source      *NotifyFlowSource
+	Sources     []*NotifyFlowSource
 	Targets     []*NotifyFlowTarget
 	Status      NotifyFlowStatus
 }
 
 type NotifyFlowSource struct {
-	FeedIDFilter []model.InternalID
+	SourceID model.InternalID
+	Filter   *NotifyFilter
 }
 
 type NotifyFlowTarget struct {
 	TargetID  model.InternalID
+	Filter    *NotifyFilter
 	ChannelID string
 }
 
@@ -51,3 +53,8 @@ const (
 	NotifyTargetStatusActive
 	NotifyTargetStatusSuspend
 )
+
+type NotifyFilter struct {
+	ExcludeKeywords []string
+	IncludeKeywords []string
+}

@@ -49,6 +49,8 @@ type FeedItem struct {
 	Enclosures []*modelfeed.Enclosure `json:"enclosures,omitempty"`
 	// PublishPlatform holds the value of the "publish_platform" field.
 	PublishPlatform string `json:"publish_platform,omitempty"`
+	// ReadCount holds the value of the "read_count" field.
+	ReadCount int64 `json:"read_count,omitempty"`
 	// DigestDescription holds the value of the "digest_description" field.
 	DigestDescription string `json:"digest_description,omitempty"`
 	// DigestImages holds the value of the "digest_images" field.
@@ -92,7 +94,7 @@ func (*FeedItem) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case feeditem.FieldAuthors, feeditem.FieldImage, feeditem.FieldEnclosures, feeditem.FieldDigestImages:
 			values[i] = new([]byte)
-		case feeditem.FieldID, feeditem.FieldFeedID:
+		case feeditem.FieldID, feeditem.FieldFeedID, feeditem.FieldReadCount:
 			values[i] = new(sql.NullInt64)
 		case feeditem.FieldTitle, feeditem.FieldDescription, feeditem.FieldContent, feeditem.FieldGUID, feeditem.FieldLink, feeditem.FieldPublished, feeditem.FieldUpdated, feeditem.FieldPublishPlatform, feeditem.FieldDigestDescription:
 			values[i] = new(sql.NullString)
@@ -210,6 +212,12 @@ func (fi *FeedItem) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fi.PublishPlatform = value.String
 			}
+		case feeditem.FieldReadCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field read_count", values[i])
+			} else if value.Valid {
+				fi.ReadCount = value.Int64
+			}
 		case feeditem.FieldDigestDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field digest_description", values[i])
@@ -320,6 +328,9 @@ func (fi *FeedItem) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("publish_platform=")
 	builder.WriteString(fi.PublishPlatform)
+	builder.WriteString(", ")
+	builder.WriteString("read_count=")
+	builder.WriteString(fmt.Sprintf("%v", fi.ReadCount))
 	builder.WriteString(", ")
 	builder.WriteString("digest_description=")
 	builder.WriteString(fi.DigestDescription)

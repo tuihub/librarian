@@ -42,6 +42,8 @@ const (
 	FieldEnclosures = "enclosures"
 	// FieldPublishPlatform holds the string denoting the publish_platform field in the database.
 	FieldPublishPlatform = "publish_platform"
+	// FieldReadCount holds the string denoting the read_count field in the database.
+	FieldReadCount = "read_count"
 	// FieldDigestDescription holds the string denoting the digest_description field in the database.
 	FieldDigestDescription = "digest_description"
 	// FieldDigestImages holds the string denoting the digest_images field in the database.
@@ -80,6 +82,7 @@ var Columns = []string{
 	FieldUpdatedParsed,
 	FieldEnclosures,
 	FieldPublishPlatform,
+	FieldReadCount,
 	FieldDigestDescription,
 	FieldDigestImages,
 	FieldUpdatedAt,
@@ -97,6 +100,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultReadCount holds the default value on creation for the "read_count" field.
+	DefaultReadCount int64
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
@@ -166,6 +171,11 @@ func ByUpdatedParsed(opts ...sql.OrderTermOption) OrderOption {
 // ByPublishPlatform orders the results by the publish_platform field.
 func ByPublishPlatform(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPublishPlatform, opts...).ToFunc()
+}
+
+// ByReadCount orders the results by the read_count field.
+func ByReadCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReadCount, opts...).ToFunc()
 }
 
 // ByDigestDescription orders the results by the digest_description field.

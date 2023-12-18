@@ -125,8 +125,12 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 			SetName(f.Name).
 			SetDescription(f.Description).
 			SetStatus(converter.ToEntNotifySourceSource(f.Status))
-		if len(f.Source.FeedIDFilter) > 0 {
-			q.AddFeedConfigIDs(f.Source.FeedIDFilter...)
+		if len(f.Sources) > 0 {
+			ids := make([]model.InternalID, len(f.Sources))
+			for i, source := range f.Sources {
+				ids[i] = source.SourceID
+			}
+			q.AddFeedConfigIDs(ids...)
 		}
 		return q.Exec(ctx)
 	})
@@ -147,8 +151,12 @@ func (n *netzachRepo) UpdateNotifyFlow(ctx context.Context, userID model.Interna
 	if len(f.Description) > 0 {
 		q.SetDescription(f.Description)
 	}
-	if f.Source.FeedIDFilter != nil {
-		q.ClearFeedConfig().AddFeedConfigIDs(f.Source.FeedIDFilter...)
+	if f.Sources != nil {
+		ids := make([]model.InternalID, len(f.Sources))
+		for i, source := range f.Sources {
+			ids[i] = source.SourceID
+		}
+		q.ClearFeedConfig().AddFeedConfigIDs(ids...)
 	}
 	if f.Status != modelnetzach.NotifyFlowStatusUnspecified {
 		q.SetStatus(converter.ToEntNotifySourceSource(f.Status))

@@ -23,7 +23,6 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		IconImageUrl:     "",
 		HeroImageUrl:     "",
 		Tags:             nil,
-		AppCategoryIds:   nil,
 		AltNames:         nil,
 	}}); err != nil {
 		log.Fatal(err)
@@ -57,7 +56,6 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		IconImageUrl:     "",
 		HeroImageUrl:     "",
 		Tags:             nil,
-		AppCategoryIds:   nil,
 		AltNames:         nil,
 	}}); err != nil {
 		log.Fatal(err)
@@ -74,7 +72,6 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		IconImageUrl:     "",
 		HeroImageUrl:     "",
 		Tags:             nil,
-		AppCategoryIds:   nil,
 		AltNames:         nil,
 	}}); err != nil {
 		log.Fatal(err)
@@ -111,7 +108,6 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			IconImageUrl:     "",
 			HeroImageUrl:     "",
 			Tags:             nil,
-			AppCategoryIds:   nil,
 			AltNames:         nil,
 		},
 		Merged: appID2,

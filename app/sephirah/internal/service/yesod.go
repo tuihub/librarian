@@ -54,15 +54,15 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		FeedsWithConfig: converter.ToPBFeedWithConfigList(feeds),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) ListFeedConfigCategories(
+func (s *LibrarianSephirahServiceService) ListFeedCategories(
 	ctx context.Context,
-	req *pb.ListFeedConfigCategoriesRequest,
-) (*pb.ListFeedConfigCategoriesResponse, error) {
-	res, err := s.y.ListFeedConfigCategories(ctx)
+	req *pb.ListFeedCategoriesRequest,
+) (*pb.ListFeedCategoriesResponse, error) {
+	res, err := s.y.ListFeedCategories(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListFeedConfigCategoriesResponse{Categories: res}, nil
+	return &pb.ListFeedCategoriesResponse{Categories: res}, nil
 }
 func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,

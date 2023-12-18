@@ -149,6 +149,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
 		modelyesodFeedConfig.LatestUpdateTime = TimeToTime((*source).LatestPullAt)
+		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
@@ -195,6 +196,7 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 		}
 		modelfeedItem.Enclosures = pModelfeedEnclosureList
 		modelfeedItem.PublishPlatform = (*source).PublishPlatform
+		modelfeedItem.ReadCount = (*source).ReadCount
 		modelfeedItem.DigestDescription = (*source).DigestDescription
 		var pModelfeedImageList []*modelfeed.Image
 		if (*source).DigestImages != nil {

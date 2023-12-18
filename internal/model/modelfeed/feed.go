@@ -34,6 +34,7 @@ type Item struct {
 	Image             *Image           `json:"image,omitempty"`
 	Enclosures        []*Enclosure     `json:"enclosures,omitempty"`
 	PublishPlatform   string           `json:"publish_platform,omitempty"`
+	ReadCount         int64            `json:"read_count,omitempty"`
 	DigestDescription string           `json:"digest_description,omitempty"`
 	DigestImages      []*Image         `json:"digest_images,omitempty"`
 }

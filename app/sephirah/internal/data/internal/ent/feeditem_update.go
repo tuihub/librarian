@@ -166,6 +166,14 @@ func (fiu *FeedItemUpdate) SetPublishedParsed(t time.Time) *FeedItemUpdate {
 	return fiu
 }
 
+// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdate {
+	if t != nil {
+		fiu.SetPublishedParsed(*t)
+	}
+	return fiu
+}
+
 // SetUpdated sets the "updated" field.
 func (fiu *FeedItemUpdate) SetUpdated(s string) *FeedItemUpdate {
 	fiu.mutation.SetUpdated(s)
@@ -241,6 +249,27 @@ func (fiu *FeedItemUpdate) SetNillablePublishPlatform(s *string) *FeedItemUpdate
 // ClearPublishPlatform clears the value of the "publish_platform" field.
 func (fiu *FeedItemUpdate) ClearPublishPlatform() *FeedItemUpdate {
 	fiu.mutation.ClearPublishPlatform()
+	return fiu
+}
+
+// SetReadCount sets the "read_count" field.
+func (fiu *FeedItemUpdate) SetReadCount(i int64) *FeedItemUpdate {
+	fiu.mutation.ResetReadCount()
+	fiu.mutation.SetReadCount(i)
+	return fiu
+}
+
+// SetNillableReadCount sets the "read_count" field if the given value is not nil.
+func (fiu *FeedItemUpdate) SetNillableReadCount(i *int64) *FeedItemUpdate {
+	if i != nil {
+		fiu.SetReadCount(*i)
+	}
+	return fiu
+}
+
+// AddReadCount adds i to the "read_count" field.
+func (fiu *FeedItemUpdate) AddReadCount(i int64) *FeedItemUpdate {
+	fiu.mutation.AddReadCount(i)
 	return fiu
 }
 
@@ -442,6 +471,12 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if fiu.mutation.PublishPlatformCleared() {
 		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
 	}
+	if value, ok := fiu.mutation.ReadCount(); ok {
+		_spec.SetField(feeditem.FieldReadCount, field.TypeInt64, value)
+	}
+	if value, ok := fiu.mutation.AddedReadCount(); ok {
+		_spec.AddField(feeditem.FieldReadCount, field.TypeInt64, value)
+	}
 	if value, ok := fiu.mutation.DigestDescription(); ok {
 		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
 	}
@@ -621,6 +656,14 @@ func (fiuo *FeedItemUpdateOne) SetPublishedParsed(t time.Time) *FeedItemUpdateOn
 	return fiuo
 }
 
+// SetNillablePublishedParsed sets the "published_parsed" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillablePublishedParsed(t *time.Time) *FeedItemUpdateOne {
+	if t != nil {
+		fiuo.SetPublishedParsed(*t)
+	}
+	return fiuo
+}
+
 // SetUpdated sets the "updated" field.
 func (fiuo *FeedItemUpdateOne) SetUpdated(s string) *FeedItemUpdateOne {
 	fiuo.mutation.SetUpdated(s)
@@ -696,6 +739,27 @@ func (fiuo *FeedItemUpdateOne) SetNillablePublishPlatform(s *string) *FeedItemUp
 // ClearPublishPlatform clears the value of the "publish_platform" field.
 func (fiuo *FeedItemUpdateOne) ClearPublishPlatform() *FeedItemUpdateOne {
 	fiuo.mutation.ClearPublishPlatform()
+	return fiuo
+}
+
+// SetReadCount sets the "read_count" field.
+func (fiuo *FeedItemUpdateOne) SetReadCount(i int64) *FeedItemUpdateOne {
+	fiuo.mutation.ResetReadCount()
+	fiuo.mutation.SetReadCount(i)
+	return fiuo
+}
+
+// SetNillableReadCount sets the "read_count" field if the given value is not nil.
+func (fiuo *FeedItemUpdateOne) SetNillableReadCount(i *int64) *FeedItemUpdateOne {
+	if i != nil {
+		fiuo.SetReadCount(*i)
+	}
+	return fiuo
+}
+
+// AddReadCount adds i to the "read_count" field.
+func (fiuo *FeedItemUpdateOne) AddReadCount(i int64) *FeedItemUpdateOne {
+	fiuo.mutation.AddReadCount(i)
 	return fiuo
 }
 
@@ -926,6 +990,12 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	}
 	if fiuo.mutation.PublishPlatformCleared() {
 		_spec.ClearField(feeditem.FieldPublishPlatform, field.TypeString)
+	}
+	if value, ok := fiuo.mutation.ReadCount(); ok {
+		_spec.SetField(feeditem.FieldReadCount, field.TypeInt64, value)
+	}
+	if value, ok := fiuo.mutation.AddedReadCount(); ok {
+		_spec.AddField(feeditem.FieldReadCount, field.TypeInt64, value)
 	}
 	if value, ok := fiuo.mutation.DigestDescription(); ok {
 		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)

@@ -36,6 +36,14 @@ func (aprtu *AppPackageRunTimeUpdate) SetUserID(mi model.InternalID) *AppPackage
 	return aprtu
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (aprtu *AppPackageRunTimeUpdate) SetNillableUserID(mi *model.InternalID) *AppPackageRunTimeUpdate {
+	if mi != nil {
+		aprtu.SetUserID(*mi)
+	}
+	return aprtu
+}
+
 // AddUserID adds mi to the "user_id" field.
 func (aprtu *AppPackageRunTimeUpdate) AddUserID(mi model.InternalID) *AppPackageRunTimeUpdate {
 	aprtu.mutation.AddUserID(mi)
@@ -46,6 +54,14 @@ func (aprtu *AppPackageRunTimeUpdate) AddUserID(mi model.InternalID) *AppPackage
 func (aprtu *AppPackageRunTimeUpdate) SetAppPackageID(mi model.InternalID) *AppPackageRunTimeUpdate {
 	aprtu.mutation.ResetAppPackageID()
 	aprtu.mutation.SetAppPackageID(mi)
+	return aprtu
+}
+
+// SetNillableAppPackageID sets the "app_package_id" field if the given value is not nil.
+func (aprtu *AppPackageRunTimeUpdate) SetNillableAppPackageID(mi *model.InternalID) *AppPackageRunTimeUpdate {
+	if mi != nil {
+		aprtu.SetAppPackageID(*mi)
+	}
 	return aprtu
 }
 
@@ -61,10 +77,26 @@ func (aprtu *AppPackageRunTimeUpdate) SetStartTime(t time.Time) *AppPackageRunTi
 	return aprtu
 }
 
+// SetNillableStartTime sets the "start_time" field if the given value is not nil.
+func (aprtu *AppPackageRunTimeUpdate) SetNillableStartTime(t *time.Time) *AppPackageRunTimeUpdate {
+	if t != nil {
+		aprtu.SetStartTime(*t)
+	}
+	return aprtu
+}
+
 // SetRunDuration sets the "run_duration" field.
 func (aprtu *AppPackageRunTimeUpdate) SetRunDuration(t time.Duration) *AppPackageRunTimeUpdate {
 	aprtu.mutation.ResetRunDuration()
 	aprtu.mutation.SetRunDuration(t)
+	return aprtu
+}
+
+// SetNillableRunDuration sets the "run_duration" field if the given value is not nil.
+func (aprtu *AppPackageRunTimeUpdate) SetNillableRunDuration(t *time.Duration) *AppPackageRunTimeUpdate {
+	if t != nil {
+		aprtu.SetRunDuration(*t)
+	}
 	return aprtu
 }
 
@@ -198,6 +230,14 @@ func (aprtuo *AppPackageRunTimeUpdateOne) SetUserID(mi model.InternalID) *AppPac
 	return aprtuo
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (aprtuo *AppPackageRunTimeUpdateOne) SetNillableUserID(mi *model.InternalID) *AppPackageRunTimeUpdateOne {
+	if mi != nil {
+		aprtuo.SetUserID(*mi)
+	}
+	return aprtuo
+}
+
 // AddUserID adds mi to the "user_id" field.
 func (aprtuo *AppPackageRunTimeUpdateOne) AddUserID(mi model.InternalID) *AppPackageRunTimeUpdateOne {
 	aprtuo.mutation.AddUserID(mi)
@@ -208,6 +248,14 @@ func (aprtuo *AppPackageRunTimeUpdateOne) AddUserID(mi model.InternalID) *AppPac
 func (aprtuo *AppPackageRunTimeUpdateOne) SetAppPackageID(mi model.InternalID) *AppPackageRunTimeUpdateOne {
 	aprtuo.mutation.ResetAppPackageID()
 	aprtuo.mutation.SetAppPackageID(mi)
+	return aprtuo
+}
+
+// SetNillableAppPackageID sets the "app_package_id" field if the given value is not nil.
+func (aprtuo *AppPackageRunTimeUpdateOne) SetNillableAppPackageID(mi *model.InternalID) *AppPackageRunTimeUpdateOne {
+	if mi != nil {
+		aprtuo.SetAppPackageID(*mi)
+	}
 	return aprtuo
 }
 
@@ -223,10 +271,26 @@ func (aprtuo *AppPackageRunTimeUpdateOne) SetStartTime(t time.Time) *AppPackageR
 	return aprtuo
 }
 
+// SetNillableStartTime sets the "start_time" field if the given value is not nil.
+func (aprtuo *AppPackageRunTimeUpdateOne) SetNillableStartTime(t *time.Time) *AppPackageRunTimeUpdateOne {
+	if t != nil {
+		aprtuo.SetStartTime(*t)
+	}
+	return aprtuo
+}
+
 // SetRunDuration sets the "run_duration" field.
 func (aprtuo *AppPackageRunTimeUpdateOne) SetRunDuration(t time.Duration) *AppPackageRunTimeUpdateOne {
 	aprtuo.mutation.ResetRunDuration()
 	aprtuo.mutation.SetRunDuration(t)
+	return aprtuo
+}
+
+// SetNillableRunDuration sets the "run_duration" field if the given value is not nil.
+func (aprtuo *AppPackageRunTimeUpdateOne) SetNillableRunDuration(t *time.Duration) *AppPackageRunTimeUpdateOne {
+	if t != nil {
+		aprtuo.SetRunDuration(*t)
+	}
 	return aprtuo
 }
 

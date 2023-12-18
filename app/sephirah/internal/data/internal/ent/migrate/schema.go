@@ -186,6 +186,7 @@ var (
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "category", Type: field.TypeString},
 		{Name: "pull_interval", Type: field.TypeInt64},
+		{Name: "hide_items", Type: field.TypeBool, Default: false},
 		{Name: "latest_pull_at", Type: field.TypeTime},
 		{Name: "next_pull_begin_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -200,7 +201,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[12]},
+				Columns:    []*schema.Column{FeedConfigsColumns[13]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -209,7 +210,7 @@ var (
 			{
 				Name:    "feedconfig_user_feed_config_feed_url",
 				Unique:  true,
-				Columns: []*schema.Column{FeedConfigsColumns[12], FeedConfigsColumns[2]},
+				Columns: []*schema.Column{FeedConfigsColumns[13], FeedConfigsColumns[2]},
 			},
 		},
 	}
@@ -229,6 +230,7 @@ var (
 		{Name: "updated_parsed", Type: field.TypeTime, Nullable: true},
 		{Name: "enclosures", Type: field.TypeJSON, Nullable: true},
 		{Name: "publish_platform", Type: field.TypeString, Nullable: true},
+		{Name: "read_count", Type: field.TypeInt64, Default: 0},
 		{Name: "digest_description", Type: field.TypeString, Nullable: true},
 		{Name: "digest_images", Type: field.TypeJSON, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -243,7 +245,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_items_feeds_item",
-				Columns:    []*schema.Column{FeedItemsColumns[18]},
+				Columns:    []*schema.Column{FeedItemsColumns[19]},
 				RefColumns: []*schema.Column{FeedsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -252,7 +254,7 @@ var (
 			{
 				Name:    "feeditem_feed_id_guid",
 				Unique:  true,
-				Columns: []*schema.Column{FeedItemsColumns[18], FeedItemsColumns[5]},
+				Columns: []*schema.Column{FeedItemsColumns[19], FeedItemsColumns[5]},
 			},
 		},
 	}

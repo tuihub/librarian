@@ -17,7 +17,7 @@ import (
 type YesodRepo interface {
 	CreateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
 	UpdateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
-	ListFeedConfigCategories(context.Context, model.InternalID) ([]string, error)
+	ListFeedCategories(context.Context, model.InternalID) ([]string, error)
 	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpdateFeedConfigAsInQueue(context.Context, model.InternalID) error

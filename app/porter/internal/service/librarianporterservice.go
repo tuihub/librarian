@@ -135,7 +135,6 @@ func (s *LibrarianPorterServiceService) PullApp(
 			IconImageUrl:     "",
 			HeroImageUrl:     a.HeroImageURL,
 			Tags:             nil,
-			AppCategoryIds:   nil,
 			AltNames:         nil,
 		}}, nil
 	case librarian.AppSource_APP_SOURCE_VNDB:
@@ -172,7 +171,6 @@ func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 				IconImageUrl:     a.IconImageURL,
 				HeroImageUrl:     a.HeroImageURL,
 				Tags:             nil,
-				AppCategoryIds:   nil,
 				AltNames:         nil,
 			}
 		}

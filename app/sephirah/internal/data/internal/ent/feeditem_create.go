@@ -173,6 +173,20 @@ func (fic *FeedItemCreate) SetNillablePublishPlatform(s *string) *FeedItemCreate
 	return fic
 }
 
+// SetReadCount sets the "read_count" field.
+func (fic *FeedItemCreate) SetReadCount(i int64) *FeedItemCreate {
+	fic.mutation.SetReadCount(i)
+	return fic
+}
+
+// SetNillableReadCount sets the "read_count" field if the given value is not nil.
+func (fic *FeedItemCreate) SetNillableReadCount(i *int64) *FeedItemCreate {
+	if i != nil {
+		fic.SetReadCount(*i)
+	}
+	return fic
+}
+
 // SetDigestDescription sets the "digest_description" field.
 func (fic *FeedItemCreate) SetDigestDescription(s string) *FeedItemCreate {
 	fic.mutation.SetDigestDescription(s)
@@ -267,6 +281,10 @@ func (fic *FeedItemCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fic *FeedItemCreate) defaults() {
+	if _, ok := fic.mutation.ReadCount(); !ok {
+		v := feeditem.DefaultReadCount
+		fic.mutation.SetReadCount(v)
+	}
 	if _, ok := fic.mutation.UpdatedAt(); !ok {
 		v := feeditem.DefaultUpdatedAt()
 		fic.mutation.SetUpdatedAt(v)
@@ -287,6 +305,9 @@ func (fic *FeedItemCreate) check() error {
 	}
 	if _, ok := fic.mutation.PublishedParsed(); !ok {
 		return &ValidationError{Name: "published_parsed", err: errors.New(`ent: missing required field "FeedItem.published_parsed"`)}
+	}
+	if _, ok := fic.mutation.ReadCount(); !ok {
+		return &ValidationError{Name: "read_count", err: errors.New(`ent: missing required field "FeedItem.read_count"`)}
 	}
 	if _, ok := fic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedItem.updated_at"`)}
@@ -381,6 +402,10 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 	if value, ok := fic.mutation.PublishPlatform(); ok {
 		_spec.SetField(feeditem.FieldPublishPlatform, field.TypeString, value)
 		_node.PublishPlatform = value
+	}
+	if value, ok := fic.mutation.ReadCount(); ok {
+		_spec.SetField(feeditem.FieldReadCount, field.TypeInt64, value)
+		_node.ReadCount = value
 	}
 	if value, ok := fic.mutation.DigestDescription(); ok {
 		_spec.SetField(feeditem.FieldDigestDescription, field.TypeString, value)
@@ -674,6 +699,24 @@ func (u *FeedItemUpsert) UpdatePublishPlatform() *FeedItemUpsert {
 // ClearPublishPlatform clears the value of the "publish_platform" field.
 func (u *FeedItemUpsert) ClearPublishPlatform() *FeedItemUpsert {
 	u.SetNull(feeditem.FieldPublishPlatform)
+	return u
+}
+
+// SetReadCount sets the "read_count" field.
+func (u *FeedItemUpsert) SetReadCount(v int64) *FeedItemUpsert {
+	u.Set(feeditem.FieldReadCount, v)
+	return u
+}
+
+// UpdateReadCount sets the "read_count" field to the value that was provided on create.
+func (u *FeedItemUpsert) UpdateReadCount() *FeedItemUpsert {
+	u.SetExcluded(feeditem.FieldReadCount)
+	return u
+}
+
+// AddReadCount adds v to the "read_count" field.
+func (u *FeedItemUpsert) AddReadCount(v int64) *FeedItemUpsert {
+	u.Add(feeditem.FieldReadCount, v)
 	return u
 }
 
@@ -1033,6 +1076,27 @@ func (u *FeedItemUpsertOne) UpdatePublishPlatform() *FeedItemUpsertOne {
 func (u *FeedItemUpsertOne) ClearPublishPlatform() *FeedItemUpsertOne {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.ClearPublishPlatform()
+	})
+}
+
+// SetReadCount sets the "read_count" field.
+func (u *FeedItemUpsertOne) SetReadCount(v int64) *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetReadCount(v)
+	})
+}
+
+// AddReadCount adds v to the "read_count" field.
+func (u *FeedItemUpsertOne) AddReadCount(v int64) *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.AddReadCount(v)
+	})
+}
+
+// UpdateReadCount sets the "read_count" field to the value that was provided on create.
+func (u *FeedItemUpsertOne) UpdateReadCount() *FeedItemUpsertOne {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateReadCount()
 	})
 }
 
@@ -1568,6 +1632,27 @@ func (u *FeedItemUpsertBulk) UpdatePublishPlatform() *FeedItemUpsertBulk {
 func (u *FeedItemUpsertBulk) ClearPublishPlatform() *FeedItemUpsertBulk {
 	return u.Update(func(s *FeedItemUpsert) {
 		s.ClearPublishPlatform()
+	})
+}
+
+// SetReadCount sets the "read_count" field.
+func (u *FeedItemUpsertBulk) SetReadCount(v int64) *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.SetReadCount(v)
+	})
+}
+
+// AddReadCount adds v to the "read_count" field.
+func (u *FeedItemUpsertBulk) AddReadCount(v int64) *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.AddReadCount(v)
+	})
+}
+
+// UpdateReadCount sets the "read_count" field to the value that was provided on create.
+func (u *FeedItemUpsertBulk) UpdateReadCount() *FeedItemUpsertBulk {
+	return u.Update(func(s *FeedItemUpsert) {
+		s.UpdateReadCount()
 	})
 }
 

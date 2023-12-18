@@ -79,7 +79,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map Status | ToBizNotifyTargetStatus
 	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
 	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget
-	// goverter:ignore Source
+	// goverter:ignore Sources
 	// goverter:ignore Targets
 	// goverter:map Status | ToBizNotifyFlowStatus
 	ToBizNotifyFlow(*ent.NotifyFlow) *modelnetzach.NotifyFlow

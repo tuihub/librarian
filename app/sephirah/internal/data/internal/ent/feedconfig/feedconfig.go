@@ -31,6 +31,8 @@ const (
 	FieldCategory = "category"
 	// FieldPullInterval holds the string denoting the pull_interval field in the database.
 	FieldPullInterval = "pull_interval"
+	// FieldHideItems holds the string denoting the hide_items field in the database.
+	FieldHideItems = "hide_items"
 	// FieldLatestPullAt holds the string denoting the latest_pull_at field in the database.
 	FieldLatestPullAt = "latest_pull_at"
 	// FieldNextPullBeginAt holds the string denoting the next_pull_begin_at field in the database.
@@ -79,6 +81,7 @@ var Columns = []string{
 	FieldStatus,
 	FieldCategory,
 	FieldPullInterval,
+	FieldHideItems,
 	FieldLatestPullAt,
 	FieldNextPullBeginAt,
 	FieldUpdatedAt,
@@ -102,6 +105,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultHideItems holds the default value on creation for the "hide_items" field.
+	DefaultHideItems bool
 	// DefaultLatestPullAt holds the default value on creation for the "latest_pull_at" field.
 	DefaultLatestPullAt time.Time
 	// DefaultNextPullBeginAt holds the default value on creation for the "next_pull_begin_at" field.
@@ -205,6 +210,11 @@ func ByCategory(opts ...sql.OrderTermOption) OrderOption {
 // ByPullInterval orders the results by the pull_interval field.
 func ByPullInterval(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPullInterval, opts...).ToFunc()
+}
+
+// ByHideItems orders the results by the hide_items field.
+func ByHideItems(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHideItems, opts...).ToFunc()
 }
 
 // ByLatestPullAt orders the results by the latest_pull_at field.

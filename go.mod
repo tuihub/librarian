@@ -35,7 +35,7 @@ require (
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tuihub/protos v0.2.43
+	github.com/tuihub/protos v0.2.46
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.16.0
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e
@@ -56,7 +56,7 @@ require (
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/aws/aws-sdk-go v1.44.256 // indirect
+	github.com/aws/aws-sdk-go v1.49.5 // indirect
 	github.com/bits-and-blooms/bitset v1.5.0 // indirect
 	github.com/blevesearch/bleve_index_api v1.0.6 // indirect
 	github.com/blevesearch/geo v0.1.18 // indirect

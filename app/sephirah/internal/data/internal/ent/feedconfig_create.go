@@ -74,6 +74,20 @@ func (fcc *FeedConfigCreate) SetPullInterval(t time.Duration) *FeedConfigCreate 
 	return fcc
 }
 
+// SetHideItems sets the "hide_items" field.
+func (fcc *FeedConfigCreate) SetHideItems(b bool) *FeedConfigCreate {
+	fcc.mutation.SetHideItems(b)
+	return fcc
+}
+
+// SetNillableHideItems sets the "hide_items" field if the given value is not nil.
+func (fcc *FeedConfigCreate) SetNillableHideItems(b *bool) *FeedConfigCreate {
+	if b != nil {
+		fcc.SetHideItems(*b)
+	}
+	return fcc
+}
+
 // SetLatestPullAt sets the "latest_pull_at" field.
 func (fcc *FeedConfigCreate) SetLatestPullAt(t time.Time) *FeedConfigCreate {
 	fcc.mutation.SetLatestPullAt(t)
@@ -216,6 +230,10 @@ func (fcc *FeedConfigCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (fcc *FeedConfigCreate) defaults() {
+	if _, ok := fcc.mutation.HideItems(); !ok {
+		v := feedconfig.DefaultHideItems
+		fcc.mutation.SetHideItems(v)
+	}
 	if _, ok := fcc.mutation.LatestPullAt(); !ok {
 		v := feedconfig.DefaultLatestPullAt
 		fcc.mutation.SetLatestPullAt(v)
@@ -269,6 +287,9 @@ func (fcc *FeedConfigCreate) check() error {
 	}
 	if _, ok := fcc.mutation.PullInterval(); !ok {
 		return &ValidationError{Name: "pull_interval", err: errors.New(`ent: missing required field "FeedConfig.pull_interval"`)}
+	}
+	if _, ok := fcc.mutation.HideItems(); !ok {
+		return &ValidationError{Name: "hide_items", err: errors.New(`ent: missing required field "FeedConfig.hide_items"`)}
 	}
 	if _, ok := fcc.mutation.LatestPullAt(); !ok {
 		return &ValidationError{Name: "latest_pull_at", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_at"`)}
@@ -345,6 +366,10 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.PullInterval(); ok {
 		_spec.SetField(feedconfig.FieldPullInterval, field.TypeInt64, value)
 		_node.PullInterval = value
+	}
+	if value, ok := fcc.mutation.HideItems(); ok {
+		_spec.SetField(feedconfig.FieldHideItems, field.TypeBool, value)
+		_node.HideItems = value
 	}
 	if value, ok := fcc.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
@@ -571,6 +596,18 @@ func (u *FeedConfigUpsert) AddPullInterval(v time.Duration) *FeedConfigUpsert {
 	return u
 }
 
+// SetHideItems sets the "hide_items" field.
+func (u *FeedConfigUpsert) SetHideItems(v bool) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldHideItems, v)
+	return u
+}
+
+// UpdateHideItems sets the "hide_items" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateHideItems() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldHideItems)
+	return u
+}
+
 // SetLatestPullAt sets the "latest_pull_at" field.
 func (u *FeedConfigUpsert) SetLatestPullAt(v time.Time) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldLatestPullAt, v)
@@ -790,6 +827,20 @@ func (u *FeedConfigUpsertOne) AddPullInterval(v time.Duration) *FeedConfigUpsert
 func (u *FeedConfigUpsertOne) UpdatePullInterval() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdatePullInterval()
+	})
+}
+
+// SetHideItems sets the "hide_items" field.
+func (u *FeedConfigUpsertOne) SetHideItems(v bool) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetHideItems(v)
+	})
+}
+
+// UpdateHideItems sets the "hide_items" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateHideItems() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateHideItems()
 	})
 }
 
@@ -1186,6 +1237,20 @@ func (u *FeedConfigUpsertBulk) AddPullInterval(v time.Duration) *FeedConfigUpser
 func (u *FeedConfigUpsertBulk) UpdatePullInterval() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdatePullInterval()
+	})
+}
+
+// SetHideItems sets the "hide_items" field.
+func (u *FeedConfigUpsertBulk) SetHideItems(v bool) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetHideItems(v)
+	})
+}
+
+// UpdateHideItems sets the "hide_items" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateHideItems() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateHideItems()
 	})
 }
 

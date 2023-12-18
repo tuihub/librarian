@@ -82,6 +82,7 @@ func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
 		}
 		modelfeedItem.Enclosures = pModelfeedEnclosureList
 		modelfeedItem.PublishPlatform = (*source).PublishPlatform
+		modelfeedItem.ReadCount = (*source).ReadCount
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem
@@ -183,6 +184,7 @@ func (c *ConverterImpl) ToPBFeedItem(source *Item) *v1.FeedItem {
 		}
 		v1FeedItem.Enclosures = pV1FeedEnclosureList
 		v1FeedItem.PublishPlatform = (*source).PublishPlatform
+		v1FeedItem.ReadCount = (*source).ReadCount
 		pV1FeedItem = &v1FeedItem
 	}
 	return pV1FeedItem

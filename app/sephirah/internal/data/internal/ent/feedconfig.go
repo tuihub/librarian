@@ -36,6 +36,8 @@ type FeedConfig struct {
 	Category string `json:"category,omitempty"`
 	// PullInterval holds the value of the "pull_interval" field.
 	PullInterval time.Duration `json:"pull_interval,omitempty"`
+	// HideItems holds the value of the "hide_items" field.
+	HideItems bool `json:"hide_items,omitempty"`
 	// LatestPullAt holds the value of the "latest_pull_at" field.
 	LatestPullAt time.Time `json:"latest_pull_at,omitempty"`
 	// NextPullBeginAt holds the value of the "next_pull_begin_at" field.
@@ -103,6 +105,8 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case feedconfig.FieldHideItems:
+			values[i] = new(sql.NullBool)
 		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
 		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus, feedconfig.FieldCategory:
@@ -177,6 +181,12 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pull_interval", values[i])
 			} else if value.Valid {
 				fc.PullInterval = time.Duration(value.Int64)
+			}
+		case feedconfig.FieldHideItems:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field hide_items", values[i])
+			} else if value.Valid {
+				fc.HideItems = value.Bool
 			}
 		case feedconfig.FieldLatestPullAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -276,6 +286,9 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pull_interval=")
 	builder.WriteString(fmt.Sprintf("%v", fc.PullInterval))
+	builder.WriteString(", ")
+	builder.WriteString("hide_items=")
+	builder.WriteString(fmt.Sprintf("%v", fc.HideItems))
 	builder.WriteString(", ")
 	builder.WriteString("latest_pull_at=")
 	builder.WriteString(fc.LatestPullAt.Format(time.ANSIC))

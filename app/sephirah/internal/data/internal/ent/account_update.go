@@ -37,9 +37,25 @@ func (au *AccountUpdate) SetPlatform(a account.Platform) *AccountUpdate {
 	return au
 }
 
+// SetNillablePlatform sets the "platform" field if the given value is not nil.
+func (au *AccountUpdate) SetNillablePlatform(a *account.Platform) *AccountUpdate {
+	if a != nil {
+		au.SetPlatform(*a)
+	}
+	return au
+}
+
 // SetPlatformAccountID sets the "platform_account_id" field.
 func (au *AccountUpdate) SetPlatformAccountID(s string) *AccountUpdate {
 	au.mutation.SetPlatformAccountID(s)
+	return au
+}
+
+// SetNillablePlatformAccountID sets the "platform_account_id" field if the given value is not nil.
+func (au *AccountUpdate) SetNillablePlatformAccountID(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetPlatformAccountID(*s)
+	}
 	return au
 }
 
@@ -49,15 +65,39 @@ func (au *AccountUpdate) SetName(s string) *AccountUpdate {
 	return au
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableName(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetName(*s)
+	}
+	return au
+}
+
 // SetProfileURL sets the "profile_url" field.
 func (au *AccountUpdate) SetProfileURL(s string) *AccountUpdate {
 	au.mutation.SetProfileURL(s)
 	return au
 }
 
+// SetNillableProfileURL sets the "profile_url" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableProfileURL(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetProfileURL(*s)
+	}
+	return au
+}
+
 // SetAvatarURL sets the "avatar_url" field.
 func (au *AccountUpdate) SetAvatarURL(s string) *AccountUpdate {
 	au.mutation.SetAvatarURL(s)
+	return au
+}
+
+// SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableAvatarURL(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetAvatarURL(*s)
+	}
 	return au
 }
 
@@ -326,9 +366,25 @@ func (auo *AccountUpdateOne) SetPlatform(a account.Platform) *AccountUpdateOne {
 	return auo
 }
 
+// SetNillablePlatform sets the "platform" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillablePlatform(a *account.Platform) *AccountUpdateOne {
+	if a != nil {
+		auo.SetPlatform(*a)
+	}
+	return auo
+}
+
 // SetPlatformAccountID sets the "platform_account_id" field.
 func (auo *AccountUpdateOne) SetPlatformAccountID(s string) *AccountUpdateOne {
 	auo.mutation.SetPlatformAccountID(s)
+	return auo
+}
+
+// SetNillablePlatformAccountID sets the "platform_account_id" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillablePlatformAccountID(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetPlatformAccountID(*s)
+	}
 	return auo
 }
 
@@ -338,15 +394,39 @@ func (auo *AccountUpdateOne) SetName(s string) *AccountUpdateOne {
 	return auo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableName(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetName(*s)
+	}
+	return auo
+}
+
 // SetProfileURL sets the "profile_url" field.
 func (auo *AccountUpdateOne) SetProfileURL(s string) *AccountUpdateOne {
 	auo.mutation.SetProfileURL(s)
 	return auo
 }
 
+// SetNillableProfileURL sets the "profile_url" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableProfileURL(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetProfileURL(*s)
+	}
+	return auo
+}
+
 // SetAvatarURL sets the "avatar_url" field.
 func (auo *AccountUpdateOne) SetAvatarURL(s string) *AccountUpdateOne {
 	auo.mutation.SetAvatarURL(s)
+	return auo
+}
+
+// SetNillableAvatarURL sets the "avatar_url" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableAvatarURL(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetAvatarURL(*s)
+	}
 	return auo
 }
 

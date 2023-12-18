@@ -37,10 +37,26 @@ func (apu *AppPackageUpdate) SetSource(a apppackage.Source) *AppPackageUpdate {
 	return apu
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableSource(a *apppackage.Source) *AppPackageUpdate {
+	if a != nil {
+		apu.SetSource(*a)
+	}
+	return apu
+}
+
 // SetSourceID sets the "source_id" field.
 func (apu *AppPackageUpdate) SetSourceID(mi model.InternalID) *AppPackageUpdate {
 	apu.mutation.ResetSourceID()
 	apu.mutation.SetSourceID(mi)
+	return apu
+}
+
+// SetNillableSourceID sets the "source_id" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableSourceID(mi *model.InternalID) *AppPackageUpdate {
+	if mi != nil {
+		apu.SetSourceID(*mi)
+	}
 	return apu
 }
 
@@ -56,15 +72,39 @@ func (apu *AppPackageUpdate) SetName(s string) *AppPackageUpdate {
 	return apu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableName(s *string) *AppPackageUpdate {
+	if s != nil {
+		apu.SetName(*s)
+	}
+	return apu
+}
+
 // SetDescription sets the "description" field.
 func (apu *AppPackageUpdate) SetDescription(s string) *AppPackageUpdate {
 	apu.mutation.SetDescription(s)
 	return apu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableDescription(s *string) *AppPackageUpdate {
+	if s != nil {
+		apu.SetDescription(*s)
+	}
+	return apu
+}
+
 // SetPublic sets the "public" field.
 func (apu *AppPackageUpdate) SetPublic(b bool) *AppPackageUpdate {
 	apu.mutation.SetPublic(b)
+	return apu
+}
+
+// SetNillablePublic sets the "public" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillablePublic(b *bool) *AppPackageUpdate {
+	if b != nil {
+		apu.SetPublic(*b)
+	}
 	return apu
 }
 
@@ -410,10 +450,26 @@ func (apuo *AppPackageUpdateOne) SetSource(a apppackage.Source) *AppPackageUpdat
 	return apuo
 }
 
+// SetNillableSource sets the "source" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableSource(a *apppackage.Source) *AppPackageUpdateOne {
+	if a != nil {
+		apuo.SetSource(*a)
+	}
+	return apuo
+}
+
 // SetSourceID sets the "source_id" field.
 func (apuo *AppPackageUpdateOne) SetSourceID(mi model.InternalID) *AppPackageUpdateOne {
 	apuo.mutation.ResetSourceID()
 	apuo.mutation.SetSourceID(mi)
+	return apuo
+}
+
+// SetNillableSourceID sets the "source_id" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableSourceID(mi *model.InternalID) *AppPackageUpdateOne {
+	if mi != nil {
+		apuo.SetSourceID(*mi)
+	}
 	return apuo
 }
 
@@ -429,15 +485,39 @@ func (apuo *AppPackageUpdateOne) SetName(s string) *AppPackageUpdateOne {
 	return apuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableName(s *string) *AppPackageUpdateOne {
+	if s != nil {
+		apuo.SetName(*s)
+	}
+	return apuo
+}
+
 // SetDescription sets the "description" field.
 func (apuo *AppPackageUpdateOne) SetDescription(s string) *AppPackageUpdateOne {
 	apuo.mutation.SetDescription(s)
 	return apuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableDescription(s *string) *AppPackageUpdateOne {
+	if s != nil {
+		apuo.SetDescription(*s)
+	}
+	return apuo
+}
+
 // SetPublic sets the "public" field.
 func (apuo *AppPackageUpdateOne) SetPublic(b bool) *AppPackageUpdateOne {
 	apuo.mutation.SetPublic(b)
+	return apuo
+}
+
+// SetNillablePublic sets the "public" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillablePublic(b *bool) *AppPackageUpdateOne {
+	if b != nil {
+		apuo.SetPublic(*b)
+	}
 	return apuo
 }
 

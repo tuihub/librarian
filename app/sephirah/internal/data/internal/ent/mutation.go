@@ -5380,6 +5380,7 @@ type FeedConfigMutation struct {
 	category           *string
 	pull_interval      *time.Duration
 	addpull_interval   *time.Duration
+	hide_items         *bool
 	latest_pull_at     *time.Time
 	next_pull_begin_at *time.Time
 	updated_at         *time.Time
@@ -5829,6 +5830,42 @@ func (m *FeedConfigMutation) ResetPullInterval() {
 	m.addpull_interval = nil
 }
 
+// SetHideItems sets the "hide_items" field.
+func (m *FeedConfigMutation) SetHideItems(b bool) {
+	m.hide_items = &b
+}
+
+// HideItems returns the value of the "hide_items" field in the mutation.
+func (m *FeedConfigMutation) HideItems() (r bool, exists bool) {
+	v := m.hide_items
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHideItems returns the old "hide_items" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldHideItems(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHideItems is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHideItems requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHideItems: %w", err)
+	}
+	return oldValue.HideItems, nil
+}
+
+// ResetHideItems resets all changes to the "hide_items" field.
+func (m *FeedConfigMutation) ResetHideItems() {
+	m.hide_items = nil
+}
+
 // SetLatestPullAt sets the "latest_pull_at" field.
 func (m *FeedConfigMutation) SetLatestPullAt(t time.Time) {
 	m.latest_pull_at = &t
@@ -6140,7 +6177,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.owner != nil {
 		fields = append(fields, feedconfig.FieldUserFeedConfig)
 	}
@@ -6164,6 +6201,9 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.pull_interval != nil {
 		fields = append(fields, feedconfig.FieldPullInterval)
+	}
+	if m.hide_items != nil {
+		fields = append(fields, feedconfig.FieldHideItems)
 	}
 	if m.latest_pull_at != nil {
 		fields = append(fields, feedconfig.FieldLatestPullAt)
@@ -6201,6 +6241,8 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.Category()
 	case feedconfig.FieldPullInterval:
 		return m.PullInterval()
+	case feedconfig.FieldHideItems:
+		return m.HideItems()
 	case feedconfig.FieldLatestPullAt:
 		return m.LatestPullAt()
 	case feedconfig.FieldNextPullBeginAt:
@@ -6234,6 +6276,8 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldCategory(ctx)
 	case feedconfig.FieldPullInterval:
 		return m.OldPullInterval(ctx)
+	case feedconfig.FieldHideItems:
+		return m.OldHideItems(ctx)
 	case feedconfig.FieldLatestPullAt:
 		return m.OldLatestPullAt(ctx)
 	case feedconfig.FieldNextPullBeginAt:
@@ -6306,6 +6350,13 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPullInterval(v)
+		return nil
+	case feedconfig.FieldHideItems:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHideItems(v)
 		return nil
 	case feedconfig.FieldLatestPullAt:
 		v, ok := value.(time.Time)
@@ -6434,6 +6485,9 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldPullInterval:
 		m.ResetPullInterval()
+		return nil
+	case feedconfig.FieldHideItems:
+		m.ResetHideItems()
 		return nil
 	case feedconfig.FieldLatestPullAt:
 		m.ResetLatestPullAt()
@@ -6592,6 +6646,8 @@ type FeedItemMutation struct {
 	enclosures          *[]*modelfeed.Enclosure
 	appendenclosures    []*modelfeed.Enclosure
 	publish_platform    *string
+	read_count          *int64
+	addread_count       *int64
 	digest_description  *string
 	digest_images       *[]*modelfeed.Image
 	appenddigest_images []*modelfeed.Image
@@ -7388,6 +7444,62 @@ func (m *FeedItemMutation) ResetPublishPlatform() {
 	delete(m.clearedFields, feeditem.FieldPublishPlatform)
 }
 
+// SetReadCount sets the "read_count" field.
+func (m *FeedItemMutation) SetReadCount(i int64) {
+	m.read_count = &i
+	m.addread_count = nil
+}
+
+// ReadCount returns the value of the "read_count" field in the mutation.
+func (m *FeedItemMutation) ReadCount() (r int64, exists bool) {
+	v := m.read_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReadCount returns the old "read_count" field's value of the FeedItem entity.
+// If the FeedItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemMutation) OldReadCount(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReadCount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReadCount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReadCount: %w", err)
+	}
+	return oldValue.ReadCount, nil
+}
+
+// AddReadCount adds i to the "read_count" field.
+func (m *FeedItemMutation) AddReadCount(i int64) {
+	if m.addread_count != nil {
+		*m.addread_count += i
+	} else {
+		m.addread_count = &i
+	}
+}
+
+// AddedReadCount returns the value that was added to the "read_count" field in this mutation.
+func (m *FeedItemMutation) AddedReadCount() (r int64, exists bool) {
+	v := m.addread_count
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetReadCount resets all changes to the "read_count" field.
+func (m *FeedItemMutation) ResetReadCount() {
+	m.read_count = nil
+	m.addread_count = nil
+}
+
 // SetDigestDescription sets the "digest_description" field.
 func (m *FeedItemMutation) SetDigestDescription(s string) {
 	m.digest_description = &s
@@ -7635,7 +7747,7 @@ func (m *FeedItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedItemMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.feed != nil {
 		fields = append(fields, feeditem.FieldFeedID)
 	}
@@ -7677,6 +7789,9 @@ func (m *FeedItemMutation) Fields() []string {
 	}
 	if m.publish_platform != nil {
 		fields = append(fields, feeditem.FieldPublishPlatform)
+	}
+	if m.read_count != nil {
+		fields = append(fields, feeditem.FieldReadCount)
 	}
 	if m.digest_description != nil {
 		fields = append(fields, feeditem.FieldDigestDescription)
@@ -7726,6 +7841,8 @@ func (m *FeedItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Enclosures()
 	case feeditem.FieldPublishPlatform:
 		return m.PublishPlatform()
+	case feeditem.FieldReadCount:
+		return m.ReadCount()
 	case feeditem.FieldDigestDescription:
 		return m.DigestDescription()
 	case feeditem.FieldDigestImages:
@@ -7771,6 +7888,8 @@ func (m *FeedItemMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldEnclosures(ctx)
 	case feeditem.FieldPublishPlatform:
 		return m.OldPublishPlatform(ctx)
+	case feeditem.FieldReadCount:
+		return m.OldReadCount(ctx)
 	case feeditem.FieldDigestDescription:
 		return m.OldDigestDescription(ctx)
 	case feeditem.FieldDigestImages:
@@ -7886,6 +8005,13 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPublishPlatform(v)
 		return nil
+	case feeditem.FieldReadCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReadCount(v)
+		return nil
 	case feeditem.FieldDigestDescription:
 		v, ok := value.(string)
 		if !ok {
@@ -7922,6 +8048,9 @@ func (m *FeedItemMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *FeedItemMutation) AddedFields() []string {
 	var fields []string
+	if m.addread_count != nil {
+		fields = append(fields, feeditem.FieldReadCount)
+	}
 	return fields
 }
 
@@ -7930,6 +8059,8 @@ func (m *FeedItemMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *FeedItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case feeditem.FieldReadCount:
+		return m.AddedReadCount()
 	}
 	return nil, false
 }
@@ -7939,6 +8070,13 @@ func (m *FeedItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case feeditem.FieldReadCount:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddReadCount(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FeedItem numeric field %s", name)
 }
@@ -8088,6 +8226,9 @@ func (m *FeedItemMutation) ResetField(name string) error {
 		return nil
 	case feeditem.FieldPublishPlatform:
 		m.ResetPublishPlatform()
+		return nil
+	case feeditem.FieldReadCount:
+		m.ResetReadCount()
 		return nil
 	case feeditem.FieldDigestDescription:
 		m.ResetDigestDescription()

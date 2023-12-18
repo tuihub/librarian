@@ -55,7 +55,7 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	return nil
 }
 
-func (y *Yesod) ListFeedConfigCategories(ctx context.Context) ([]string, *errors.Error) {
+func (y *Yesod) ListFeedCategories(ctx context.Context) ([]string, *errors.Error) {
 	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
 		return nil, pb.ErrorErrorReasonForbidden("no permission")
 	}
@@ -63,7 +63,7 @@ func (y *Yesod) ListFeedConfigCategories(ctx context.Context) ([]string, *errors
 	if !exist {
 		return nil, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
-	res, err := y.repo.ListFeedConfigCategories(ctx, claims.InternalID)
+	res, err := y.repo.ListFeedCategories(ctx, claims.InternalID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

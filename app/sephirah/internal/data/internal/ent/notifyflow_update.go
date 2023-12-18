@@ -39,15 +39,39 @@ func (nfu *NotifyFlowUpdate) SetName(s string) *NotifyFlowUpdate {
 	return nfu
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (nfu *NotifyFlowUpdate) SetNillableName(s *string) *NotifyFlowUpdate {
+	if s != nil {
+		nfu.SetName(*s)
+	}
+	return nfu
+}
+
 // SetDescription sets the "description" field.
 func (nfu *NotifyFlowUpdate) SetDescription(s string) *NotifyFlowUpdate {
 	nfu.mutation.SetDescription(s)
 	return nfu
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (nfu *NotifyFlowUpdate) SetNillableDescription(s *string) *NotifyFlowUpdate {
+	if s != nil {
+		nfu.SetDescription(*s)
+	}
+	return nfu
+}
+
 // SetStatus sets the "status" field.
 func (nfu *NotifyFlowUpdate) SetStatus(n notifyflow.Status) *NotifyFlowUpdate {
 	nfu.mutation.SetStatus(n)
+	return nfu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (nfu *NotifyFlowUpdate) SetNillableStatus(n *notifyflow.Status) *NotifyFlowUpdate {
+	if n != nil {
+		nfu.SetStatus(*n)
+	}
 	return nfu
 }
 
@@ -479,15 +503,39 @@ func (nfuo *NotifyFlowUpdateOne) SetName(s string) *NotifyFlowUpdateOne {
 	return nfuo
 }
 
+// SetNillableName sets the "name" field if the given value is not nil.
+func (nfuo *NotifyFlowUpdateOne) SetNillableName(s *string) *NotifyFlowUpdateOne {
+	if s != nil {
+		nfuo.SetName(*s)
+	}
+	return nfuo
+}
+
 // SetDescription sets the "description" field.
 func (nfuo *NotifyFlowUpdateOne) SetDescription(s string) *NotifyFlowUpdateOne {
 	nfuo.mutation.SetDescription(s)
 	return nfuo
 }
 
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (nfuo *NotifyFlowUpdateOne) SetNillableDescription(s *string) *NotifyFlowUpdateOne {
+	if s != nil {
+		nfuo.SetDescription(*s)
+	}
+	return nfuo
+}
+
 // SetStatus sets the "status" field.
 func (nfuo *NotifyFlowUpdateOne) SetStatus(n notifyflow.Status) *NotifyFlowUpdateOne {
 	nfuo.mutation.SetStatus(n)
+	return nfuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (nfuo *NotifyFlowUpdateOne) SetNillableStatus(n *notifyflow.Status) *NotifyFlowUpdateOne {
+	if n != nil {
+		nfuo.SetStatus(*n)
+	}
 	return nfuo
 }
 

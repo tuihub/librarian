@@ -89,6 +89,11 @@ func PullInterval(v time.Duration) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldPullInterval, vc))
 }
 
+// HideItems applies equality check predicate on the "hide_items" field. It's identical to HideItemsEQ.
+func HideItems(v bool) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldHideItems, v))
+}
+
 // LatestPullAt applies equality check predicate on the "latest_pull_at" field. It's identical to LatestPullAtEQ.
 func LatestPullAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullAt, v))
@@ -480,6 +485,16 @@ func PullIntervalLT(v time.Duration) predicate.FeedConfig {
 func PullIntervalLTE(v time.Duration) predicate.FeedConfig {
 	vc := int64(v)
 	return predicate.FeedConfig(sql.FieldLTE(FieldPullInterval, vc))
+}
+
+// HideItemsEQ applies the EQ predicate on the "hide_items" field.
+func HideItemsEQ(v bool) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldHideItems, v))
+}
+
+// HideItemsNEQ applies the NEQ predicate on the "hide_items" field.
+func HideItemsNEQ(v bool) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldHideItems, v))
 }
 
 // LatestPullAtEQ applies the EQ predicate on the "latest_pull_at" field.

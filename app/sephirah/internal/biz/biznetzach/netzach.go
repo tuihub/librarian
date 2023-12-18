@@ -155,9 +155,9 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if flow.Source != nil && len(flow.Source.FeedIDFilter) > 0 {
-		for _, id := range flow.Source.FeedIDFilter {
-			err = n.feedToNotifyFlowCache.Delete(ctx, id)
+	if flow.Sources != nil && len(flow.Sources) > 0 {
+		for _, source := range flow.Sources {
+			err = n.feedToNotifyFlowCache.Delete(ctx, source.SourceID)
 			if err != nil {
 				logger.Errorf("failed to delete cache %s", err.Error())
 			}

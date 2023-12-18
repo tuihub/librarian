@@ -74,6 +74,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget
+	// goverter:matchIgnoreCase
+	ToBizNotifyFilter(*pb.NotifyFilter) *modelnetzach.NotifyFilter
 
 	// goverter:matchIgnoreCase
 	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
@@ -212,6 +214,8 @@ func ToBizGroupFeedItemsBy(by librarian.TimeAggregation_AggregationType) modelye
 		return modelyesod.GroupFeedItemsByMonth
 	case librarian.TimeAggregation_AGGREGATION_TYPE_DAY:
 		return modelyesod.GroupFeedItemsByDay
+	case librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL:
+		return modelyesod.GroupFeedItemsByOverall
 	default:
 		return modelyesod.GroupFeedItemsByUnspecified
 	}

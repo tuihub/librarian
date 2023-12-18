@@ -36,6 +36,7 @@ type FeedConfig struct {
 	Status           FeedConfigStatus
 	PullInterval     time.Duration
 	LatestUpdateTime time.Time
+	HideItems        bool
 }
 
 type FeedConfigSource int
@@ -73,4 +74,5 @@ const (
 	GroupFeedItemsByYear
 	GroupFeedItemsByMonth
 	GroupFeedItemsByDay
+	GroupFeedItemsByOverall
 )
