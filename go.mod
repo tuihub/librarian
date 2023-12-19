@@ -37,7 +37,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/tuihub/protos v0.2.46
 	github.com/zhihu/norm v0.1.11
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
