@@ -129,6 +129,18 @@ func (f NotifyFlowFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyFlowMutation", m)
 }
 
+// The NotifyFlowSourceFunc type is an adapter to allow the use of ordinary
+// function as NotifyFlowSource mutator.
+type NotifyFlowSourceFunc func(context.Context, *ent.NotifyFlowSourceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotifyFlowSourceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotifyFlowSourceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyFlowSourceMutation", m)
+}
+
 // The NotifyFlowTargetFunc type is an adapter to allow the use of ordinary
 // function as NotifyFlowTarget mutator.
 type NotifyFlowTargetFunc func(context.Context, *ent.NotifyFlowTargetMutation) (ent.Value, error)

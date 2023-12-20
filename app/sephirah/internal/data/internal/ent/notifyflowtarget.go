@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -26,6 +27,10 @@ type NotifyFlowTarget struct {
 	NotifyTargetID model.InternalID `json:"notify_target_id,omitempty"`
 	// ChannelID holds the value of the "channel_id" field.
 	ChannelID string `json:"channel_id,omitempty"`
+	// FilterIncludeKeywords holds the value of the "filter_include_keywords" field.
+	FilterIncludeKeywords []string `json:"filter_include_keywords,omitempty"`
+	// FilterExcludeKeywords holds the value of the "filter_exclude_keywords" field.
+	FilterExcludeKeywords []string `json:"filter_exclude_keywords,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -78,6 +83,8 @@ func (*NotifyFlowTarget) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case notifyflowtarget.FieldFilterIncludeKeywords, notifyflowtarget.FieldFilterExcludeKeywords:
+			values[i] = new([]byte)
 		case notifyflowtarget.FieldID, notifyflowtarget.FieldNotifyFlowID, notifyflowtarget.FieldNotifyTargetID:
 			values[i] = new(sql.NullInt64)
 		case notifyflowtarget.FieldChannelID:
@@ -122,6 +129,22 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 				return fmt.Errorf("unexpected type %T for field channel_id", values[i])
 			} else if value.Valid {
 				nft.ChannelID = value.String
+			}
+		case notifyflowtarget.FieldFilterIncludeKeywords:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field filter_include_keywords", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &nft.FilterIncludeKeywords); err != nil {
+					return fmt.Errorf("unmarshal field filter_include_keywords: %w", err)
+				}
+			}
+		case notifyflowtarget.FieldFilterExcludeKeywords:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field filter_exclude_keywords", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &nft.FilterExcludeKeywords); err != nil {
+					return fmt.Errorf("unmarshal field filter_exclude_keywords: %w", err)
+				}
 			}
 		case notifyflowtarget.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -189,6 +212,12 @@ func (nft *NotifyFlowTarget) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("channel_id=")
 	builder.WriteString(nft.ChannelID)
+	builder.WriteString(", ")
+	builder.WriteString("filter_include_keywords=")
+	builder.WriteString(fmt.Sprintf("%v", nft.FilterIncludeKeywords))
+	builder.WriteString(", ")
+	builder.WriteString("filter_exclude_keywords=")
+	builder.WriteString(fmt.Sprintf("%v", nft.FilterExcludeKeywords))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(nft.UpdatedAt.Format(time.ANSIC))

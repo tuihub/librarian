@@ -36,6 +36,9 @@ type Image func(*sql.Selector)
 // NotifyFlow is the predicate function for notifyflow builders.
 type NotifyFlow func(*sql.Selector)
 
+// NotifyFlowSource is the predicate function for notifyflowsource builders.
+type NotifyFlowSource func(*sql.Selector)
+
 // NotifyFlowTarget is the predicate function for notifyflowtarget builders.
 type NotifyFlowTarget func(*sql.Selector)
 

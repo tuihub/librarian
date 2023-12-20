@@ -32,6 +32,8 @@ type Tx struct {
 	Image *ImageClient
 	// NotifyFlow is the client for interacting with the NotifyFlow builders.
 	NotifyFlow *NotifyFlowClient
+	// NotifyFlowSource is the client for interacting with the NotifyFlowSource builders.
+	NotifyFlowSource *NotifyFlowSourceClient
 	// NotifyFlowTarget is the client for interacting with the NotifyFlowTarget builders.
 	NotifyFlowTarget *NotifyFlowTargetClient
 	// NotifyTarget is the client for interacting with the NotifyTarget builders.
@@ -179,6 +181,7 @@ func (tx *Tx) init() {
 	tx.File = NewFileClient(tx.config)
 	tx.Image = NewImageClient(tx.config)
 	tx.NotifyFlow = NewNotifyFlowClient(tx.config)
+	tx.NotifyFlowSource = NewNotifyFlowSourceClient(tx.config)
 	tx.NotifyFlowTarget = NewNotifyFlowTargetClient(tx.config)
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.User = NewUserClient(tx.config)

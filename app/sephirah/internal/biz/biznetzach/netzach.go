@@ -31,24 +31,24 @@ type NetzachRepo interface {
 }
 
 type Netzach struct {
-	repo                  NetzachRepo
-	searcher              *client.Searcher
-	feedToNotifyFlowCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
-	notifyFlowCache       *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
-	notifyTargetCache     *libcache.Map[model.InternalID, modelnetzach.NotifyTarget]
+	repo              NetzachRepo
+	searcher          *client.Searcher
+	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
+	notifyFlowCache   *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
+	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget]
 }
 
 func NewNetzach(
 	repo NetzachRepo,
 	sClient *client.Searcher,
-	feedToNotifyFlowCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
+	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
 ) *Netzach {
 	y := &Netzach{
 		repo,
 		sClient,
-		feedToNotifyFlowCache,
+		notifySourceCache,
 		notifyFlowCache,
 		notifyTargetCache,
 	}
@@ -157,7 +157,7 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	}
 	if flow.Sources != nil && len(flow.Sources) > 0 {
 		for _, source := range flow.Sources {
-			err = n.feedToNotifyFlowCache.Delete(ctx, source.SourceID)
+			err = n.notifySourceCache.Delete(ctx, source.SourceID)
 			if err != nil {
 				logger.Errorf("failed to delete cache %s", err.Error())
 			}

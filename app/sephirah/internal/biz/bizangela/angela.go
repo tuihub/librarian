@@ -27,7 +27,7 @@ var ProviderSet = wire.NewSet(
 	NewPullFeedTopic,
 	NewNotifyRouterTopic,
 	NewNotifyPushTopic,
-	NewFeedToNotifyFlowMap,
+	NewFeedToNotifyFlowCache,
 	NewNotifyFlowCache,
 	NewNotifyTargetCache,
 	NewParseFeedItemDigestTopic,

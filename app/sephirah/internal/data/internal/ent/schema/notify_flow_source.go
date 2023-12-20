@@ -10,17 +10,16 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// NotifyFlowTarget holds the schema definition for the NotifyFlowTarget entity.
-type NotifyFlowTarget struct {
+// NotifyFlowSource holds the schema definition for the NotifyFlowSource entity.
+type NotifyFlowSource struct {
 	ent.Schema
 }
 
-// Fields of the NotifyFlowTarget.
-func (NotifyFlowTarget) Fields() []ent.Field {
+// Fields of the NotifyFlowSource.
+func (NotifyFlowSource) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("notify_flow_id").GoType(model.InternalID(0)),
-		field.Int64("notify_target_id").GoType(model.InternalID(0)),
-		field.String("channel_id"),
+		field.Int64("notify_source_id").GoType(model.InternalID(0)),
 		field.JSON("filter_include_keywords", []string{}),
 		field.JSON("filter_exclude_keywords", []string{}),
 		field.Time("updated_at").
@@ -30,16 +29,16 @@ func (NotifyFlowTarget) Fields() []ent.Field {
 	}
 }
 
-// Edges of the NotifyFlowTarget.
-func (NotifyFlowTarget) Edges() []ent.Edge {
+// Edges of the NotifyFlowSource.
+func (NotifyFlowSource) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("notify_flow", NotifyFlow.Type).
 			Unique().
 			Required().
 			Field("notify_flow_id"),
-		edge.To("notify_target", NotifyTarget.Type).
+		edge.To("notify_source", FeedConfig.Type).
 			Unique().
 			Required().
-			Field("notify_target_id"),
+			Field("notify_source_id"),
 	}
 }

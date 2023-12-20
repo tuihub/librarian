@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
@@ -31,6 +32,7 @@ type NotifyFlowQuery struct {
 	withNotifyTarget     *NotifyTargetQuery
 	withFeedConfig       *FeedConfigQuery
 	withNotifyFlowTarget *NotifyFlowTargetQuery
+	withNotifyFlowSource *NotifyFlowSourceQuery
 	withFKs              bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -149,6 +151,28 @@ func (nfq *NotifyFlowQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
 			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, selector),
 			sqlgraph.To(notifyflowtarget.Table, notifyflowtarget.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, true, notifyflow.NotifyFlowTargetTable, notifyflow.NotifyFlowTargetColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(nfq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryNotifyFlowSource chains the current query on the "notify_flow_source" edge.
+func (nfq *NotifyFlowQuery) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
+	query := (&NotifyFlowSourceClient{config: nfq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := nfq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := nfq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, selector),
+			sqlgraph.To(notifyflowsource.Table, notifyflowsource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, notifyflow.NotifyFlowSourceTable, notifyflow.NotifyFlowSourceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(nfq.driver.Dialect(), step)
 		return fromU, nil
@@ -352,6 +376,7 @@ func (nfq *NotifyFlowQuery) Clone() *NotifyFlowQuery {
 		withNotifyTarget:     nfq.withNotifyTarget.Clone(),
 		withFeedConfig:       nfq.withFeedConfig.Clone(),
 		withNotifyFlowTarget: nfq.withNotifyFlowTarget.Clone(),
+		withNotifyFlowSource: nfq.withNotifyFlowSource.Clone(),
 		// clone intermediate query.
 		sql:  nfq.sql.Clone(),
 		path: nfq.path,
@@ -399,6 +424,17 @@ func (nfq *NotifyFlowQuery) WithNotifyFlowTarget(opts ...func(*NotifyFlowTargetQ
 		opt(query)
 	}
 	nfq.withNotifyFlowTarget = query
+	return nfq
+}
+
+// WithNotifyFlowSource tells the query-builder to eager-load the nodes that are connected to
+// the "notify_flow_source" edge. The optional arguments are used to configure the query builder of the edge.
+func (nfq *NotifyFlowQuery) WithNotifyFlowSource(opts ...func(*NotifyFlowSourceQuery)) *NotifyFlowQuery {
+	query := (&NotifyFlowSourceClient{config: nfq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	nfq.withNotifyFlowSource = query
 	return nfq
 }
 
@@ -481,11 +517,12 @@ func (nfq *NotifyFlowQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		nodes       = []*NotifyFlow{}
 		withFKs     = nfq.withFKs
 		_spec       = nfq.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [5]bool{
 			nfq.withOwner != nil,
 			nfq.withNotifyTarget != nil,
 			nfq.withFeedConfig != nil,
 			nfq.withNotifyFlowTarget != nil,
+			nfq.withNotifyFlowSource != nil,
 		}
 	)
 	if nfq.withOwner != nil {
@@ -537,6 +574,15 @@ func (nfq *NotifyFlowQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			func(n *NotifyFlow) { n.Edges.NotifyFlowTarget = []*NotifyFlowTarget{} },
 			func(n *NotifyFlow, e *NotifyFlowTarget) {
 				n.Edges.NotifyFlowTarget = append(n.Edges.NotifyFlowTarget, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := nfq.withNotifyFlowSource; query != nil {
+		if err := nfq.loadNotifyFlowSource(ctx, query, nodes,
+			func(n *NotifyFlow) { n.Edges.NotifyFlowSource = []*NotifyFlowSource{} },
+			func(n *NotifyFlow, e *NotifyFlowSource) {
+				n.Edges.NotifyFlowSource = append(n.Edges.NotifyFlowSource, e)
 			}); err != nil {
 			return nil, err
 		}
@@ -713,6 +759,36 @@ func (nfq *NotifyFlowQuery) loadNotifyFlowTarget(ctx context.Context, query *Not
 	}
 	query.Where(predicate.NotifyFlowTarget(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(notifyflow.NotifyFlowTargetColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.NotifyFlowID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "notify_flow_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (nfq *NotifyFlowQuery) loadNotifyFlowSource(ctx context.Context, query *NotifyFlowSourceQuery, nodes []*NotifyFlow, init func(*NotifyFlow), assign func(*NotifyFlow, *NotifyFlowSource)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*NotifyFlow)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(notifyflowsource.FieldNotifyFlowID)
+	}
+	query.Where(predicate.NotifyFlowSource(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(notifyflow.NotifyFlowSourceColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

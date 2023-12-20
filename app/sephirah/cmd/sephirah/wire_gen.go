@@ -85,7 +85,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)
-	map2 := bizangela.NewFeedToNotifyFlowMap(netzachRepo, store)
+	map2 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
 	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
 	topic4 := bizangela.NewNotifyPushTopic(angelaBase, map3)
 	topic5 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic4)

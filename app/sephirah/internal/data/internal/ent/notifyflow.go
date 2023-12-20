@@ -46,9 +46,11 @@ type NotifyFlowEdges struct {
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
 	// NotifyFlowTarget holds the value of the notify_flow_target edge.
 	NotifyFlowTarget []*NotifyFlowTarget `json:"notify_flow_target,omitempty"`
+	// NotifyFlowSource holds the value of the notify_flow_source edge.
+	NotifyFlowSource []*NotifyFlowSource `json:"notify_flow_source,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [5]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -89,6 +91,15 @@ func (e NotifyFlowEdges) NotifyFlowTargetOrErr() ([]*NotifyFlowTarget, error) {
 		return e.NotifyFlowTarget, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_flow_target"}
+}
+
+// NotifyFlowSourceOrErr returns the NotifyFlowSource value or an error if the edge
+// was not loaded in eager-loading.
+func (e NotifyFlowEdges) NotifyFlowSourceOrErr() ([]*NotifyFlowSource, error) {
+	if e.loadedTypes[4] {
+		return e.NotifyFlowSource, nil
+	}
+	return nil, &NotLoadedError{edge: "notify_flow_source"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -193,6 +204,11 @@ func (nf *NotifyFlow) QueryFeedConfig() *FeedConfigQuery {
 // QueryNotifyFlowTarget queries the "notify_flow_target" edge of the NotifyFlow entity.
 func (nf *NotifyFlow) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
 	return NewNotifyFlowClient(nf.config).QueryNotifyFlowTarget(nf)
+}
+
+// QueryNotifyFlowSource queries the "notify_flow_source" edge of the NotifyFlow entity.
+func (nf *NotifyFlow) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
+	return NewNotifyFlowClient(nf.config).QueryNotifyFlowSource(nf)
 }
 
 // Update returns a builder for updating this NotifyFlow.

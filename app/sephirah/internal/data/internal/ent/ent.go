@@ -22,6 +22,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -95,6 +96,7 @@ func checkColumn(table, column string) error {
 			file.Table:              file.ValidColumn,
 			image.Table:             image.ValidColumn,
 			notifyflow.Table:        notifyflow.ValidColumn,
+			notifyflowsource.Table:  notifyflowsource.ValidColumn,
 			notifyflowtarget.Table:  notifyflowtarget.ValidColumn,
 			notifytarget.Table:      notifytarget.ValidColumn,
 			user.Table:              user.ValidColumn,

@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -193,6 +194,21 @@ func (fcc *FeedConfigCreate) AddNotifyFlow(n ...*NotifyFlow) *FeedConfigCreate {
 		ids[i] = n[i].ID
 	}
 	return fcc.AddNotifyFlowIDs(ids...)
+}
+
+// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
+func (fcc *FeedConfigCreate) AddNotifyFlowSourceIDs(ids ...int) *FeedConfigCreate {
+	fcc.mutation.AddNotifyFlowSourceIDs(ids...)
+	return fcc
+}
+
+// AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
+func (fcc *FeedConfigCreate) AddNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigCreate {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return fcc.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -429,6 +445,26 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &NotifyFlowSourceCreate{config: fcc.config, mutation: newNotifyFlowSourceMutation(fcc.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fcc.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.NotifyFlowSourceTable,
+			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -43,6 +43,18 @@ func (nftc *NotifyFlowTargetCreate) SetChannelID(s string) *NotifyFlowTargetCrea
 	return nftc
 }
 
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (nftc *NotifyFlowTargetCreate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetCreate {
+	nftc.mutation.SetFilterIncludeKeywords(s)
+	return nftc
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (nftc *NotifyFlowTargetCreate) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetCreate {
+	nftc.mutation.SetFilterExcludeKeywords(s)
+	return nftc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (nftc *NotifyFlowTargetCreate) SetUpdatedAt(t time.Time) *NotifyFlowTargetCreate {
 	nftc.mutation.SetUpdatedAt(t)
@@ -137,6 +149,12 @@ func (nftc *NotifyFlowTargetCreate) check() error {
 	if _, ok := nftc.mutation.ChannelID(); !ok {
 		return &ValidationError{Name: "channel_id", err: errors.New(`ent: missing required field "NotifyFlowTarget.channel_id"`)}
 	}
+	if _, ok := nftc.mutation.FilterIncludeKeywords(); !ok {
+		return &ValidationError{Name: "filter_include_keywords", err: errors.New(`ent: missing required field "NotifyFlowTarget.filter_include_keywords"`)}
+	}
+	if _, ok := nftc.mutation.FilterExcludeKeywords(); !ok {
+		return &ValidationError{Name: "filter_exclude_keywords", err: errors.New(`ent: missing required field "NotifyFlowTarget.filter_exclude_keywords"`)}
+	}
 	if _, ok := nftc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "NotifyFlowTarget.updated_at"`)}
 	}
@@ -179,6 +197,14 @@ func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.C
 	if value, ok := nftc.mutation.ChannelID(); ok {
 		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
 		_node.ChannelID = value
+	}
+	if value, ok := nftc.mutation.FilterIncludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
+		_node.FilterIncludeKeywords = value
+	}
+	if value, ok := nftc.mutation.FilterExcludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
+		_node.FilterExcludeKeywords = value
 	}
 	if value, ok := nftc.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)
@@ -310,6 +336,30 @@ func (u *NotifyFlowTargetUpsert) UpdateChannelID() *NotifyFlowTargetUpsert {
 	return u
 }
 
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (u *NotifyFlowTargetUpsert) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpsert {
+	u.Set(notifyflowtarget.FieldFilterIncludeKeywords, v)
+	return u
+}
+
+// UpdateFilterIncludeKeywords sets the "filter_include_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsert) UpdateFilterIncludeKeywords() *NotifyFlowTargetUpsert {
+	u.SetExcluded(notifyflowtarget.FieldFilterIncludeKeywords)
+	return u
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (u *NotifyFlowTargetUpsert) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetUpsert {
+	u.Set(notifyflowtarget.FieldFilterExcludeKeywords, v)
+	return u
+}
+
+// UpdateFilterExcludeKeywords sets the "filter_exclude_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsert) UpdateFilterExcludeKeywords() *NotifyFlowTargetUpsert {
+	u.SetExcluded(notifyflowtarget.FieldFilterExcludeKeywords)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *NotifyFlowTargetUpsert) SetUpdatedAt(v time.Time) *NotifyFlowTargetUpsert {
 	u.Set(notifyflowtarget.FieldUpdatedAt, v)
@@ -413,6 +463,34 @@ func (u *NotifyFlowTargetUpsertOne) SetChannelID(v string) *NotifyFlowTargetUpse
 func (u *NotifyFlowTargetUpsertOne) UpdateChannelID() *NotifyFlowTargetUpsertOne {
 	return u.Update(func(s *NotifyFlowTargetUpsert) {
 		s.UpdateChannelID()
+	})
+}
+
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (u *NotifyFlowTargetUpsertOne) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpsertOne {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.SetFilterIncludeKeywords(v)
+	})
+}
+
+// UpdateFilterIncludeKeywords sets the "filter_include_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsertOne) UpdateFilterIncludeKeywords() *NotifyFlowTargetUpsertOne {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.UpdateFilterIncludeKeywords()
+	})
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (u *NotifyFlowTargetUpsertOne) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetUpsertOne {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.SetFilterExcludeKeywords(v)
+	})
+}
+
+// UpdateFilterExcludeKeywords sets the "filter_exclude_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsertOne) UpdateFilterExcludeKeywords() *NotifyFlowTargetUpsertOne {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.UpdateFilterExcludeKeywords()
 	})
 }
 
@@ -687,6 +765,34 @@ func (u *NotifyFlowTargetUpsertBulk) SetChannelID(v string) *NotifyFlowTargetUps
 func (u *NotifyFlowTargetUpsertBulk) UpdateChannelID() *NotifyFlowTargetUpsertBulk {
 	return u.Update(func(s *NotifyFlowTargetUpsert) {
 		s.UpdateChannelID()
+	})
+}
+
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (u *NotifyFlowTargetUpsertBulk) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpsertBulk {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.SetFilterIncludeKeywords(v)
+	})
+}
+
+// UpdateFilterIncludeKeywords sets the "filter_include_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsertBulk) UpdateFilterIncludeKeywords() *NotifyFlowTargetUpsertBulk {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.UpdateFilterIncludeKeywords()
+	})
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (u *NotifyFlowTargetUpsertBulk) SetFilterExcludeKeywords(v []string) *NotifyFlowTargetUpsertBulk {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.SetFilterExcludeKeywords(v)
+	})
+}
+
+// UpdateFilterExcludeKeywords sets the "filter_exclude_keywords" field to the value that was provided on create.
+func (u *NotifyFlowTargetUpsertBulk) UpdateFilterExcludeKeywords() *NotifyFlowTargetUpsertBulk {
+	return u.Update(func(s *NotifyFlowTargetUpsert) {
+		s.UpdateFilterExcludeKeywords()
 	})
 }
 

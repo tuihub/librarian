@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -133,6 +134,21 @@ func (nfc *NotifyFlowCreate) AddNotifyFlowTarget(n ...*NotifyFlowTarget) *Notify
 		ids[i] = n[i].ID
 	}
 	return nfc.AddNotifyFlowTargetIDs(ids...)
+}
+
+// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
+func (nfc *NotifyFlowCreate) AddNotifyFlowSourceIDs(ids ...int) *NotifyFlowCreate {
+	nfc.mutation.AddNotifyFlowSourceIDs(ids...)
+	return nfc
+}
+
+// AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
+func (nfc *NotifyFlowCreate) AddNotifyFlowSource(n ...*NotifyFlowSource) *NotifyFlowCreate {
+	ids := make([]int, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return nfc.AddNotifyFlowSourceIDs(ids...)
 }
 
 // Mutation returns the NotifyFlowMutation object of the builder.
@@ -309,6 +325,10 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		createE := &NotifyFlowSourceCreate{config: nfc.config, mutation: newNotifyFlowSourceMutation(nfc.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := nfc.mutation.NotifyFlowTargetIDs(); len(nodes) > 0 {
@@ -320,6 +340,22 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := nfc.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   notifyflow.NotifyFlowSourceTable,
+			Columns: []string{notifyflow.NotifyFlowSourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

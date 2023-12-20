@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
@@ -70,6 +71,30 @@ func (nftu *NotifyFlowTargetUpdate) SetNillableChannelID(s *string) *NotifyFlowT
 	if s != nil {
 		nftu.SetChannelID(*s)
 	}
+	return nftu
+}
+
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (nftu *NotifyFlowTargetUpdate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdate {
+	nftu.mutation.SetFilterIncludeKeywords(s)
+	return nftu
+}
+
+// AppendFilterIncludeKeywords appends s to the "filter_include_keywords" field.
+func (nftu *NotifyFlowTargetUpdate) AppendFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdate {
+	nftu.mutation.AppendFilterIncludeKeywords(s)
+	return nftu
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (nftu *NotifyFlowTargetUpdate) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdate {
+	nftu.mutation.SetFilterExcludeKeywords(s)
+	return nftu
+}
+
+// AppendFilterExcludeKeywords appends s to the "filter_exclude_keywords" field.
+func (nftu *NotifyFlowTargetUpdate) AppendFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdate {
+	nftu.mutation.AppendFilterExcludeKeywords(s)
 	return nftu
 }
 
@@ -181,6 +206,22 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 	}
 	if value, ok := nftu.mutation.ChannelID(); ok {
 		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
+	}
+	if value, ok := nftu.mutation.FilterIncludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
+	}
+	if value, ok := nftu.mutation.AppendedFilterIncludeKeywords(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, notifyflowtarget.FieldFilterIncludeKeywords, value)
+		})
+	}
+	if value, ok := nftu.mutation.FilterExcludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
+	}
+	if value, ok := nftu.mutation.AppendedFilterExcludeKeywords(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, notifyflowtarget.FieldFilterExcludeKeywords, value)
+		})
 	}
 	if value, ok := nftu.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)
@@ -305,6 +346,30 @@ func (nftuo *NotifyFlowTargetUpdateOne) SetNillableChannelID(s *string) *NotifyF
 	if s != nil {
 		nftuo.SetChannelID(*s)
 	}
+	return nftuo
+}
+
+// SetFilterIncludeKeywords sets the "filter_include_keywords" field.
+func (nftuo *NotifyFlowTargetUpdateOne) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
+	nftuo.mutation.SetFilterIncludeKeywords(s)
+	return nftuo
+}
+
+// AppendFilterIncludeKeywords appends s to the "filter_include_keywords" field.
+func (nftuo *NotifyFlowTargetUpdateOne) AppendFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
+	nftuo.mutation.AppendFilterIncludeKeywords(s)
+	return nftuo
+}
+
+// SetFilterExcludeKeywords sets the "filter_exclude_keywords" field.
+func (nftuo *NotifyFlowTargetUpdateOne) SetFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
+	nftuo.mutation.SetFilterExcludeKeywords(s)
+	return nftuo
+}
+
+// AppendFilterExcludeKeywords appends s to the "filter_exclude_keywords" field.
+func (nftuo *NotifyFlowTargetUpdateOne) AppendFilterExcludeKeywords(s []string) *NotifyFlowTargetUpdateOne {
+	nftuo.mutation.AppendFilterExcludeKeywords(s)
 	return nftuo
 }
 
@@ -446,6 +511,22 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 	}
 	if value, ok := nftuo.mutation.ChannelID(); ok {
 		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
+	}
+	if value, ok := nftuo.mutation.FilterIncludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
+	}
+	if value, ok := nftuo.mutation.AppendedFilterIncludeKeywords(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, notifyflowtarget.FieldFilterIncludeKeywords, value)
+		})
+	}
+	if value, ok := nftuo.mutation.FilterExcludeKeywords(); ok {
+		_spec.SetField(notifyflowtarget.FieldFilterExcludeKeywords, field.TypeJSON, value)
+	}
+	if value, ok := nftuo.mutation.AppendedFilterExcludeKeywords(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, notifyflowtarget.FieldFilterExcludeKeywords, value)
+		})
 	}
 	if value, ok := nftuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(notifyflowtarget.FieldUpdatedAt, field.TypeTime, value)

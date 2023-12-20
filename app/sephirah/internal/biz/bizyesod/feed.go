@@ -116,6 +116,8 @@ func (y *Yesod) GroupFeedItems(
 			nextTime = currentTime.AddDate(0, -1, 0)
 		case modelyesod.GroupFeedItemsByDay:
 			nextTime = currentTime.AddDate(0, 0, -1)
+		default:
+			return nil, pb.ErrorErrorReasonBadRequest("invalid group_by")
 		}
 		groups = append(groups, model.TimeRange{
 			StartTime: currentTime,

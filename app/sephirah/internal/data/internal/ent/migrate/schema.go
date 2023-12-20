@@ -338,10 +338,49 @@ var (
 			},
 		},
 	}
+	// NotifyFlowSourcesColumns holds the columns for the "notify_flow_sources" table.
+	NotifyFlowSourcesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "filter_include_keywords", Type: field.TypeJSON},
+		{Name: "filter_exclude_keywords", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "notify_flow_id", Type: field.TypeInt64},
+		{Name: "notify_source_id", Type: field.TypeInt64},
+	}
+	// NotifyFlowSourcesTable holds the schema information for the "notify_flow_sources" table.
+	NotifyFlowSourcesTable = &schema.Table{
+		Name:       "notify_flow_sources",
+		Columns:    NotifyFlowSourcesColumns,
+		PrimaryKey: []*schema.Column{NotifyFlowSourcesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "notify_flow_sources_notify_flows_notify_flow",
+				Columns:    []*schema.Column{NotifyFlowSourcesColumns[5]},
+				RefColumns: []*schema.Column{NotifyFlowsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "notify_flow_sources_feed_configs_notify_source",
+				Columns:    []*schema.Column{NotifyFlowSourcesColumns[6]},
+				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "notifyflowsource_notify_source_id_notify_flow_id",
+				Unique:  true,
+				Columns: []*schema.Column{NotifyFlowSourcesColumns[6], NotifyFlowSourcesColumns[5]},
+			},
+		},
+	}
 	// NotifyFlowTargetsColumns holds the columns for the "notify_flow_targets" table.
 	NotifyFlowTargetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "channel_id", Type: field.TypeString},
+		{Name: "filter_include_keywords", Type: field.TypeJSON},
+		{Name: "filter_exclude_keywords", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "notify_flow_id", Type: field.TypeInt64},
@@ -355,13 +394,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "notify_flow_targets_notify_flows_notify_flow",
-				Columns:    []*schema.Column{NotifyFlowTargetsColumns[4]},
+				Columns:    []*schema.Column{NotifyFlowTargetsColumns[6]},
 				RefColumns: []*schema.Column{NotifyFlowsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "notify_flow_targets_notify_targets_notify_target",
-				Columns:    []*schema.Column{NotifyFlowTargetsColumns[5]},
+				Columns:    []*schema.Column{NotifyFlowTargetsColumns[7]},
 				RefColumns: []*schema.Column{NotifyTargetsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -370,7 +409,7 @@ var (
 			{
 				Name:    "notifyflowtarget_notify_flow_id_notify_target_id",
 				Unique:  true,
-				Columns: []*schema.Column{NotifyFlowTargetsColumns[4], NotifyFlowTargetsColumns[5]},
+				Columns: []*schema.Column{NotifyFlowTargetsColumns[6], NotifyFlowTargetsColumns[7]},
 			},
 		},
 	}
@@ -450,31 +489,6 @@ var (
 			},
 		},
 	}
-	// FeedConfigNotifyFlowColumns holds the columns for the "feed_config_notify_flow" table.
-	FeedConfigNotifyFlowColumns = []*schema.Column{
-		{Name: "feed_config_id", Type: field.TypeInt64},
-		{Name: "notify_flow_id", Type: field.TypeInt64},
-	}
-	// FeedConfigNotifyFlowTable holds the schema information for the "feed_config_notify_flow" table.
-	FeedConfigNotifyFlowTable = &schema.Table{
-		Name:       "feed_config_notify_flow",
-		Columns:    FeedConfigNotifyFlowColumns,
-		PrimaryKey: []*schema.Column{FeedConfigNotifyFlowColumns[0], FeedConfigNotifyFlowColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "feed_config_notify_flow_feed_config_id",
-				Columns:    []*schema.Column{FeedConfigNotifyFlowColumns[0]},
-				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "feed_config_notify_flow_notify_flow_id",
-				Columns:    []*schema.Column{FeedConfigNotifyFlowColumns[1]},
-				RefColumns: []*schema.Column{NotifyFlowsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// UserPurchasedAppColumns holds the columns for the "user_purchased_app" table.
 	UserPurchasedAppColumns = []*schema.Column{
 		{Name: "user_id", Type: field.TypeInt64},
@@ -512,11 +526,11 @@ var (
 		FilesTable,
 		ImagesTable,
 		NotifyFlowsTable,
+		NotifyFlowSourcesTable,
 		NotifyFlowTargetsTable,
 		NotifyTargetsTable,
 		UsersTable,
 		AccountPurchasedAppTable,
-		FeedConfigNotifyFlowTable,
 		UserPurchasedAppTable,
 	}
 )
@@ -533,14 +547,14 @@ func init() {
 	ImagesTable.ForeignKeys[0].RefTable = FilesTable
 	ImagesTable.ForeignKeys[1].RefTable = UsersTable
 	NotifyFlowsTable.ForeignKeys[0].RefTable = UsersTable
+	NotifyFlowSourcesTable.ForeignKeys[0].RefTable = NotifyFlowsTable
+	NotifyFlowSourcesTable.ForeignKeys[1].RefTable = FeedConfigsTable
 	NotifyFlowTargetsTable.ForeignKeys[0].RefTable = NotifyFlowsTable
 	NotifyFlowTargetsTable.ForeignKeys[1].RefTable = NotifyTargetsTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
 	AccountPurchasedAppTable.ForeignKeys[0].RefTable = AccountsTable
 	AccountPurchasedAppTable.ForeignKeys[1].RefTable = AppsTable
-	FeedConfigNotifyFlowTable.ForeignKeys[0].RefTable = FeedConfigsTable
-	FeedConfigNotifyFlowTable.ForeignKeys[1].RefTable = NotifyFlowsTable
 	UserPurchasedAppTable.ForeignKeys[0].RefTable = UsersTable
 	UserPurchasedAppTable.ForeignKeys[1].RefTable = AppsTable
 }

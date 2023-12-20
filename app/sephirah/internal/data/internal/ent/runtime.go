@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
@@ -161,16 +162,28 @@ func init() {
 	notifyflowDescCreatedAt := notifyflowFields[5].Descriptor()
 	// notifyflow.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifyflow.DefaultCreatedAt = notifyflowDescCreatedAt.Default.(func() time.Time)
+	notifyflowsourceFields := schema.NotifyFlowSource{}.Fields()
+	_ = notifyflowsourceFields
+	// notifyflowsourceDescUpdatedAt is the schema descriptor for updated_at field.
+	notifyflowsourceDescUpdatedAt := notifyflowsourceFields[4].Descriptor()
+	// notifyflowsource.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	notifyflowsource.DefaultUpdatedAt = notifyflowsourceDescUpdatedAt.Default.(func() time.Time)
+	// notifyflowsource.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	notifyflowsource.UpdateDefaultUpdatedAt = notifyflowsourceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// notifyflowsourceDescCreatedAt is the schema descriptor for created_at field.
+	notifyflowsourceDescCreatedAt := notifyflowsourceFields[5].Descriptor()
+	// notifyflowsource.DefaultCreatedAt holds the default value on creation for the created_at field.
+	notifyflowsource.DefaultCreatedAt = notifyflowsourceDescCreatedAt.Default.(func() time.Time)
 	notifyflowtargetFields := schema.NotifyFlowTarget{}.Fields()
 	_ = notifyflowtargetFields
 	// notifyflowtargetDescUpdatedAt is the schema descriptor for updated_at field.
-	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[3].Descriptor()
+	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[5].Descriptor()
 	// notifyflowtarget.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	notifyflowtarget.DefaultUpdatedAt = notifyflowtargetDescUpdatedAt.Default.(func() time.Time)
 	// notifyflowtarget.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	notifyflowtarget.UpdateDefaultUpdatedAt = notifyflowtargetDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// notifyflowtargetDescCreatedAt is the schema descriptor for created_at field.
-	notifyflowtargetDescCreatedAt := notifyflowtargetFields[4].Descriptor()
+	notifyflowtargetDescCreatedAt := notifyflowtargetFields[6].Descriptor()
 	// notifyflowtarget.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifyflowtarget.DefaultCreatedAt = notifyflowtargetDescCreatedAt.Default.(func() time.Time)
 	notifytargetFields := schema.NotifyTarget{}.Fields()

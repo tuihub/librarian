@@ -726,6 +726,29 @@ func HasNotifyFlowWith(preds ...predicate.NotifyFlow) predicate.FeedConfig {
 	})
 }
 
+// HasNotifyFlowSource applies the HasEdge predicate on the "notify_flow_source" edge.
+func HasNotifyFlowSource() predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, NotifyFlowSourceTable, NotifyFlowSourceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasNotifyFlowSourceWith applies the HasEdge predicate on the "notify_flow_source" edge with a given conditions (other predicates).
+func HasNotifyFlowSourceWith(preds ...predicate.NotifyFlowSource) predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := newNotifyFlowSourceStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.FeedConfig) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.AndPredicates(predicates...))

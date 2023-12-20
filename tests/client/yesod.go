@@ -27,6 +27,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			PullInterval:     durationpb.New(time.Hour),
 			Category:         "",
 			LatestUpdateTime: nil,
+			HideItems:        false,
 		},
 	}); err != nil {
 		log.Fatal(err)
@@ -46,6 +47,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			PullInterval:     durationpb.New(time.Hour),
 			Category:         "",
 			LatestUpdateTime: nil,
+			HideItems:        false,
 		},
 	}); err != nil {
 		log.Fatal(err)

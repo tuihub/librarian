@@ -14,7 +14,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -101,15 +100,15 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 	if res == nil {
 		return res
 	}
-	if len(a.Edges.FeedConfig) > 0 {
-		feedIDs := make([]model.InternalID, 0, len(a.Edges.FeedConfig))
-		for _, config := range a.Edges.FeedConfig {
-			feedIDs = append(feedIDs, config.ID)
-		}
-		res.Sources = make([]*modelnetzach.NotifyFlowSource, 0, len(feedIDs))
-		for _, source := range feedIDs {
+	if len(a.Edges.NotifyFlowSource) > 0 {
+		res.Sources = make([]*modelnetzach.NotifyFlowSource, 0, len(a.Edges.NotifyFlowSource))
+		for _, source := range a.Edges.NotifyFlowSource {
 			res.Sources = append(res.Sources, &modelnetzach.NotifyFlowSource{
-				SourceID: source,
+				SourceID: source.NotifySourceID,
+				Filter: &modelnetzach.NotifyFilter{
+					ExcludeKeywords: source.FilterExcludeKeywords,
+					IncludeKeywords: source.FilterIncludeKeywords,
+				},
 			})
 		}
 	}
@@ -117,7 +116,11 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 		targets := make([]*modelnetzach.NotifyFlowTarget, 0, len(a.Edges.NotifyFlowTarget))
 		for _, target := range a.Edges.NotifyFlowTarget {
 			targets = append(targets, &modelnetzach.NotifyFlowTarget{
-				TargetID:  target.NotifyTargetID,
+				TargetID: target.NotifyTargetID,
+				Filter: &modelnetzach.NotifyFilter{
+					ExcludeKeywords: target.FilterExcludeKeywords,
+					IncludeKeywords: target.FilterIncludeKeywords,
+				},
 				ChannelID: target.ChannelID,
 			})
 		}
