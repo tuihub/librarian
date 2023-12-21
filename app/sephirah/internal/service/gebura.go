@@ -260,7 +260,7 @@ func (s *LibrarianSephirahServiceService) SumAppPackageRunTime(
 	ctx context.Context,
 	req *pb.SumAppPackageRunTimeRequest,
 ) (*pb.SumAppPackageRunTimeResponse, error) {
-	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_UNSPECIFIED {
+	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL {
 		return nil, pb.ErrorErrorReasonBadRequest("unsupported aggregation type")
 	}
 	res, err := s.g.SumAppPackageRunTime(ctx,

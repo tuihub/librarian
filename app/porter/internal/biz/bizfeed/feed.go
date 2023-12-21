@@ -46,9 +46,14 @@ func (f *FeedUseCase) GetFeed(ctx context.Context, url string) (*modelfeed.Feed,
 	}
 	if len(feed.Link) > 0 {
 		if icons, err1 := f.favicon.Find(feed.Link); err1 == nil && len(icons) > 0 {
-			feed.Image = &modelfeed.Image{
-				URL:   icons[0].URL,
-				Title: "",
+			for _, icon := range icons {
+				if icon.Height > 0 && icon.Width > 0 {
+					feed.Image = &modelfeed.Image{
+						URL:   icons[0].URL,
+						Title: "",
+					}
+					break
+				}
 			}
 		}
 	}
