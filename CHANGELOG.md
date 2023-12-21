@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.15](https://github.com/tuihub/librarian/compare/v0.1.14...v0.1.15) (2023-12-21)
+
+
+### Features
+
+* bump protos version to v0.2.46 ([fce6e58](https://github.com/tuihub/librarian/commit/fce6e58364b874f669527e1fa319a306058d78a5))
+* **yesod:** impl ListFeedPlatforms & ReadFeedItem ([508dd87](https://github.com/tuihub/librarian/commit/508dd87b50157ccc480ccf97afebb15f792f4cf3))
+
+
+### Bug Fixes
+
+* feed icon & SumAppPackageRunTime ([91ac63d](https://github.com/tuihub/librarian/commit/91ac63d558c143c7dda022f5b9ad9d6c897f66c4))
+* **netzach:** tested with client ([0303138](https://github.com/tuihub/librarian/commit/0303138358201337c5d78bdfb7d55419e85cd417))
+* **netzach:** update sql structure ([edb2fa6](https://github.com/tuihub/librarian/commit/edb2fa6c0fc9a39107168cbd5e5a7a8ef7a6f995))
+
 ## [0.1.14](https://github.com/tuihub/librarian/compare/v0.1.13...v0.1.14) (2023-11-30)
 
 
