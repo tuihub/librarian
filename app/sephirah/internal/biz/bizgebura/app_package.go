@@ -3,6 +3,7 @@ package bizgebura
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -17,12 +18,9 @@ func (g *Gebura) CreateAppPackage(
 	ctx context.Context,
 	a *modelgebura.AppPackage,
 ) (*modelgebura.AppPackage, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return nil, pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	id, err := g.searcher.NewID(ctx)
 	if err != nil {
@@ -46,12 +44,9 @@ func (g *Gebura) CreateAppPackage(
 }
 
 func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
 	a.Source = modelgebura.AppPackageSourceManual
 	err := g.repo.UpdateAppPackage(ctx, claims.InternalID, a)
@@ -67,8 +62,8 @@ func (g *Gebura) ListAppPackages(
 	sources []modelgebura.AppPackageSource,
 	ids []model.InternalID,
 ) ([]*modelgebura.AppPackage, int, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	res, total, err := g.repo.ListAppPackages(ctx, paging, sources, ids)
 	if err != nil {
@@ -82,26 +77,21 @@ func (g *Gebura) AssignAppPackage(
 	appID model.InternalID,
 	appPackageID model.InternalID,
 ) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
-	if claims, ok := libauth.FromContext(ctx); !ok {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	} else {
-		err := g.repo.AssignAppPackage(ctx, claims.InternalID, appID, appPackageID)
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err)
-		}
+	err := g.repo.AssignAppPackage(ctx, claims.InternalID, appID, appPackageID)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	return nil
 }
 
 func (g *Gebura) UnAssignAppPackage(ctx context.Context, appPackageID model.InternalID) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	if claims, ok := libauth.FromContext(ctx); !ok {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	} else {
 		err := g.repo.UnAssignAppPackage(ctx, claims.InternalID, appPackageID)
 		if err != nil {
@@ -112,9 +102,9 @@ func (g *Gebura) UnAssignAppPackage(ctx context.Context, appPackageID model.Inte
 }
 
 func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPackageHandler, *errors.Error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist || claims == nil {
-		return nil, pb.ErrorErrorReasonUnauthorized("token required")
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	checksums, err := g.repo.ListAppPackageBinaryChecksumOfOneSource(ctx,
 		modelgebura.AppPackageSourceSentinel, claims.InternalID)

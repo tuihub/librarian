@@ -75,12 +75,9 @@ func (t tipherethRepo) ListUsers(
 	types []libauth.UserType,
 	statuses []modeltiphereth.UserStatus,
 	exclude []model.InternalID,
-	creator *model.InternalID,
+	creator model.InternalID,
 ) ([]*modeltiphereth.User, int64, error) {
-	q := t.data.db.User.Query()
-	if creator != nil {
-		q = t.data.db.User.Query().Where(user.IDEQ(*creator)).QueryCreatedUser()
-	}
+	q := t.data.db.User.Query().Where(user.IDEQ(creator)).QueryCreatedUser()
 	if len(ids) > 0 {
 		q.Where(user.IDIn(ids...))
 	}

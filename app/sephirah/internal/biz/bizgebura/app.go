@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -16,8 +17,8 @@ import (
 )
 
 func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgebura.App, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	id, err := g.searcher.NewID(ctx)
 	if err != nil {
@@ -44,8 +45,8 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 }
 
 func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+		return bizutils.NoPermissionError()
 	}
 	app.Source = modelgebura.AppSourceInternal
 	err := g.repo.UpdateApp(ctx, app)
@@ -64,8 +65,8 @@ func (g *Gebura) ListApps(
 	ids []model.InternalID,
 	containDetails bool,
 ) ([]*modelgebura.App, int64, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	apps, total, err := g.repo.ListApps(ctx, paging, sources, types, ids, containDetails)
 	if err != nil {
@@ -75,8 +76,8 @@ func (g *Gebura) ListApps(
 }
 
 func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged model.InternalID) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+		return bizutils.NoPermissionError()
 	}
 	if base.Source != modelgebura.AppSourceInternal {
 		return pb.ErrorErrorReasonBadRequest("source must be INTERNAL")
@@ -90,8 +91,8 @@ func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged mod
 
 func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword string) (
 	[]*modelgebura.App, int, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	ids, err := g.searcher.SearchID(ctx, paging, keyword, searcherpb.Index_INDEX_GEBURA_APP)
 	if err != nil {
@@ -109,8 +110,8 @@ func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword st
 }
 
 func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.App, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	apps, err := g.repo.GetBoundApps(ctx, id)
 	if err != nil {
@@ -129,8 +130,8 @@ func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.
 }
 
 func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	apps, err := g.repo.GetBoundApps(ctx, id)
 	if err != nil {
@@ -140,11 +141,9 @@ func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*model
 }
 
 func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	if claims, ok := libauth.FromContext(ctx); !ok {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	} else {
 		err := g.repo.PurchaseApp(ctx, claims.InternalID, id)
 		if err != nil {
@@ -155,11 +154,9 @@ func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.E
 }
 
 func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.App, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	if claims, ok := libauth.FromContext(ctx); !ok {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
 	} else {
 		apps, err := g.repo.GetPurchasedApps(ctx, claims.InternalID)
 		if err != nil {

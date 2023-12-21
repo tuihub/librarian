@@ -20,8 +20,8 @@ type DownloadCallBack struct {
 
 func (u *UploadCallBack) GenerateUploadToken(ctx context.Context, meta FileMetadata,
 	expire time.Duration) (string, error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
 		return "", errors.New("token required")
 	}
 	return u.controlBlock.a.GenerateToken(
@@ -38,8 +38,8 @@ func (u *UploadCallBack) GenerateUploadToken(ctx context.Context, meta FileMetad
 
 func (u *DownloadCallBack) GenerateDownloadToken(ctx context.Context, meta FileMetadata,
 	expire time.Duration) (string, error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
 		return "", errors.New("token required")
 	}
 	return u.controlBlock.a.GenerateToken(

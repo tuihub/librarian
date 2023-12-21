@@ -119,8 +119,8 @@ type downloadTokenPayload struct {
 }
 
 func (c *ControlBlock) getUploadPayload(ctx context.Context) (*uploadTokenPayload, error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
 		return nil, errors.New("token required")
 	}
 	if claims.TransferMetadata == nil {
@@ -139,8 +139,8 @@ func (c *ControlBlock) getUploadPayload(ctx context.Context) (*uploadTokenPayloa
 }
 
 func (c *ControlBlock) getDownloadPayload(ctx context.Context) (*downloadTokenPayload, error) {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
 		return nil, errors.New("token required")
 	}
 	if claims.TransferMetadata == nil {

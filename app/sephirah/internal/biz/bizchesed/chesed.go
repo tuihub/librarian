@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
@@ -97,8 +98,8 @@ func NewImageCache(
 
 func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 	metadata modelbinah.FileMetadata) (string, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return "", pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return "", bizutils.NoPermissionError()
 	}
 	if err := metadata.Check(); err != nil {
 		return "", pb.ErrorErrorReasonBadRequest("invalid file metadata: %s", err.Error())
@@ -121,9 +122,9 @@ func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 }
 
 func (c *Chesed) UploadImageCallback(ctx context.Context, id model.InternalID) error {
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContext(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
 	image, err := c.imageCache.Get(ctx, id)
 	if err != nil {
@@ -181,12 +182,9 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 }
 
 func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.InternalID, int64, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	images, total, err := c.repo.ListImages(ctx, claims.InternalID, paging)
 	if err != nil {
@@ -201,8 +199,8 @@ func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.I
 
 func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords string) (
 	[]model.InternalID, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	ids, err := c.searcher.SearchID(ctx,
 		paging,
@@ -216,12 +214,9 @@ func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords
 }
 
 func (c *Chesed) DownloadImage(ctx context.Context, id model.InternalID) (string, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return "", pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return "", pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return "", pb.ErrorErrorReasonUnauthorized("no permission")
 	}
 	image, err := c.repo.GetImage(ctx, claims.InternalID, id)
 	if err != nil {

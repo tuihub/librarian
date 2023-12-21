@@ -3,6 +3,7 @@ package biznetzach
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
@@ -57,15 +58,12 @@ func NewNetzach(
 
 func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.NotifyTarget) (
 	model.InternalID, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return 0, pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return 0, bizutils.NoPermissionError()
 	}
 	if target == nil {
 		return 0, pb.ErrorErrorReasonBadRequest("notify target required")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
 	id, err := n.searcher.NewID(ctx)
 	if err != nil {
@@ -80,12 +78,9 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 }
 
 func (n *Netzach) UpdateNotifyTarget(ctx context.Context, target *modelnetzach.NotifyTarget) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
 	err := n.repo.UpdateNotifyTarget(ctx, claims.InternalID, target)
 	if err != nil {
@@ -105,12 +100,9 @@ func (n *Netzach) ListNotifyTargets(
 	types []modelnetzach.NotifyTargetType,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return nil, 0, pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.InternalID, ids, types, statuses)
 	if err != nil {
@@ -121,15 +113,12 @@ func (n *Netzach) ListNotifyTargets(
 
 func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.NotifyFlow) (
 	model.InternalID, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return 0, pb.ErrorErrorReasonForbidden("no permission")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return 0, bizutils.NoPermissionError()
 	}
 	if flow == nil {
 		return 0, pb.ErrorErrorReasonBadRequest("notify target required")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
 	}
 	id, err := n.searcher.NewID(ctx)
 	if err != nil {
@@ -144,12 +133,9 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 }
 
 func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.NotifyFlow) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
 	err := n.repo.UpdateNotifyFlow(ctx, claims.InternalID, flow)
 	if err != nil {
@@ -175,12 +161,9 @@ func (n *Netzach) ListNotifyFlows(
 	paging model.Paging,
 	ids []model.InternalID,
 ) ([]*modelnetzach.NotifyFlow, int64, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, 0, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return nil, 0, pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
 	}
 	res, total, err := n.repo.ListNotifyFlows(ctx, paging, claims.InternalID, ids)
 	if err != nil {

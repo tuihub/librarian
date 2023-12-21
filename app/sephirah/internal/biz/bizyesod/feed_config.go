@@ -3,6 +3,7 @@ package bizyesod
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -13,12 +14,9 @@ import (
 )
 
 func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) (model.InternalID, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return 0, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return 0, pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return 0, bizutils.NoPermissionError()
 	}
 	id, err := y.searcher.NewID(ctx)
 	if err != nil {
@@ -41,12 +39,9 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 }
 
 func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedConfig) *errors.Error {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
 	}
 	err := y.repo.UpdateFeedConfig(ctx, claims.InternalID, config)
 	if err != nil {
@@ -56,12 +51,9 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 }
 
 func (y *Yesod) ListFeedCategories(ctx context.Context) ([]string, *errors.Error) {
-	if !libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin, libauth.UserTypeNormal) {
-		return nil, pb.ErrorErrorReasonForbidden("no permission")
-	}
-	claims, exist := libauth.FromContext(ctx)
-	if !exist {
-		return nil, pb.ErrorErrorReasonUnauthorized("empty token")
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
 	}
 	res, err := y.repo.ListFeedCategories(ctx, claims.InternalID)
 	if err != nil {

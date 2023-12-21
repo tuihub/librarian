@@ -48,24 +48,26 @@ func NewClaims() jwtv4.Claims {
 	return new(Claims)
 }
 
-func FromContext(ctx context.Context) (*Claims, bool) {
+func FromContext(ctx context.Context) *Claims {
 	if token, ok := jwt.FromContext(ctx); ok {
 		if claims, met := token.(*Claims); met {
-			return claims, true
+			return claims
 		}
 	}
-	return nil, false
+	return nil
 }
 
-func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) bool {
-	if c, ok := FromContext(ctx); ok {
-		for _, ut := range userTypes {
-			if c.UserType == ut {
-				return true
-			}
+func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) *Claims {
+	if userTypes == nil {
+		userTypes = []UserType{UserTypeAdmin, UserTypeNormal}
+	}
+	c := FromContext(ctx)
+	for _, ut := range userTypes {
+		if c.UserType == ut {
+			return c
 		}
 	}
-	return false
+	return nil
 }
 
 func (a *Auth) generateSecret(t ClaimsType) interface{} {
