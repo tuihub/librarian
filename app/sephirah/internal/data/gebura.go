@@ -214,6 +214,12 @@ func (g geburaRepo) GetBatchBoundApps(ctx context.Context, ids []model.InternalI
 				}
 			}
 		}
+		if res[i].Internal == nil {
+			res[i].Internal = new(modelgebura.App)
+		}
+		if res[i].Steam == nil {
+			res[i].Steam = new(modelgebura.App)
+		}
 	}
 	return res, nil
 }
