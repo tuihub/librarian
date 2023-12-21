@@ -24,7 +24,7 @@ type RSSRepo interface {
 func NewFeed(rss RSSRepo) *FeedUseCase {
 	return &FeedUseCase{
 		rss,
-		favicon.New(),
+		favicon.New(favicon.IgnoreManifest),
 	}
 }
 

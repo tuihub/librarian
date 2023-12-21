@@ -109,6 +109,16 @@ func (n *netzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) 
 
 func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
 	err := n.data.WithTx(ctx, func(tx *ent.Tx) error {
+		err := tx.NotifyFlow.Create().
+			SetID(f.ID).
+			SetOwnerID(userID).
+			SetName(f.Name).
+			SetDescription(f.Description).
+			SetStatus(converter.ToEntNotifySourceSource(f.Status)).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
 		flowSources := make([]*ent.NotifyFlowSourceCreate, len(f.Sources))
 		for i, source := range f.Sources {
 			flowSources[i] = tx.NotifyFlowSource.Create().
@@ -117,7 +127,7 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 				SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
 				SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
 		}
-		source, err := tx.NotifyFlowSource.CreateBulk(flowSources...).Save(ctx)
+		err = tx.NotifyFlowSource.CreateBulk(flowSources...).Exec(ctx)
 		if err != nil {
 			return err
 		}
@@ -130,19 +140,11 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 				SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
 				SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
 		}
-		target, err := tx.NotifyFlowTarget.CreateBulk(flowTargets...).Save(ctx)
+		err = tx.NotifyFlowTarget.CreateBulk(flowTargets...).Exec(ctx)
 		if err != nil {
 			return err
 		}
-		q := n.data.db.NotifyFlow.Create().
-			SetID(f.ID).
-			SetOwnerID(userID).
-			SetName(f.Name).
-			SetDescription(f.Description).
-			SetStatus(converter.ToEntNotifySourceSource(f.Status)).
-			AddNotifyFlowSource(source...).
-			AddNotifyFlowTarget(target...)
-		return q.Exec(ctx)
+		return nil
 	})
 	if err != nil {
 		return err
@@ -183,11 +185,10 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 					SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
 					SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
 			}
-			source, err := tx.NotifyFlowSource.CreateBulk(flowSources...).Save(ctx)
+			err = tx.NotifyFlowSource.CreateBulk(flowSources...).Exec(ctx)
 			if err != nil {
 				return err
 			}
-			q.ClearFeedConfig().AddNotifyFlowSource(source...)
 		}
 		if f.Targets != nil {
 			_, err := tx.NotifyFlowTarget.Delete().Where(
@@ -207,11 +208,10 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 					SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
 					SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
 			}
-			targets, err := tx.NotifyFlowTarget.CreateBulk(flowTargets...).Save(ctx)
+			err = tx.NotifyFlowTarget.CreateBulk(flowTargets...).Exec(ctx)
 			if err != nil {
 				return err
 			}
-			q.ClearNotifyTarget().AddNotifyFlowTarget(targets...)
 		}
 		if f.Status != modelnetzach.NotifyFlowStatusUnspecified {
 			q.SetStatus(converter.ToEntNotifySourceSource(f.Status))
@@ -259,7 +259,7 @@ func (n *netzachRepo) ListNotifyFlows(
 func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyFlow, error) {
 	res, err := n.data.db.NotifyFlow.Query().
 		Where(notifyflow.IDEQ(id)).
-		WithFeedConfig().
+		WithNotifyFlowSource().
 		WithNotifyFlowTarget().
 		Only(ctx)
 	if err != nil {

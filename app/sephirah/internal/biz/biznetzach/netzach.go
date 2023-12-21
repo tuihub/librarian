@@ -125,6 +125,16 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	flow.ID = id
+	for _, source := range flow.Sources {
+		if source.Filter == nil {
+			source.Filter = &modelnetzach.NotifyFilter{}
+		}
+	}
+	for _, target := range flow.Targets {
+		if target.Filter == nil {
+			target.Filter = &modelnetzach.NotifyFilter{}
+		}
+	}
 	err = n.repo.CreateNotifyFlow(ctx, claims.InternalID, flow)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -136,6 +146,16 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
+	}
+	for _, source := range flow.Sources {
+		if source.Filter == nil {
+			source.Filter = &modelnetzach.NotifyFilter{}
+		}
+	}
+	for _, target := range flow.Targets {
+		if target.Filter == nil {
+			target.Filter = &modelnetzach.NotifyFilter{}
+		}
 	}
 	err := n.repo.UpdateNotifyFlow(ctx, claims.InternalID, flow)
 	if err != nil {

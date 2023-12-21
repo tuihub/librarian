@@ -40,6 +40,9 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 				if err != nil {
 					return err
 				}
+				if flow.Status != modelnetzach.NotifyFlowStatusActive {
+					continue
+				}
 				var messages []*modelfeed.Item
 				for _, source := range flow.Sources {
 					if source.SourceID == r.FeedID {
@@ -77,6 +80,9 @@ func NewNotifyPushTopic(
 			target, err := targetMap.GetWithFallBack(ctx, p.Target.TargetID, nil)
 			if err != nil {
 				return err
+			}
+			if target.Status != modelnetzach.NotifyTargetStatusActive {
+				return nil
 			}
 			_, err = a.porter.PushFeedItems(ctx, &porter.PushFeedItemsRequest{
 				Destination: converter.ToPBFeedDestination(target.Type),

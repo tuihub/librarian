@@ -68,7 +68,7 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 		q.SetStatus(converter.ToEntFeedConfigStatus(c.Status))
 	}
 	if c.PullInterval > 0 {
-		q.SetPullInterval(c.PullInterval)
+		q.SetPullInterval(c.PullInterval).SetNextPullBeginAt(time.Now())
 	}
 	q.SetHideItems(c.HideItems)
 	return q.Exec(ctx)
@@ -214,7 +214,7 @@ func (y *yesodRepo) ListFeedItems(
 			return err
 		}
 		fq := tx.User.QueryFeedConfig(u).Where(
-			feedconfig.HideItemsEQ(true),
+			feedconfig.HideItemsEQ(false),
 		).QueryFeed()
 		if len(feedIDs) > 0 {
 			fq.Where(feed.IDIn(feedIDs...))
@@ -278,7 +278,7 @@ func (y *yesodRepo) GroupFeedItems( //nolint:gocognit //TODO
 		}
 		for _, timeRange := range groups {
 			fq := tx.User.QueryFeedConfig(u).Where(
-				feedconfig.HideItemsEQ(true),
+				feedconfig.HideItemsEQ(false),
 			).QueryFeed()
 			if len(feedIDs) > 0 {
 				fq.Where(feed.IDIn(feedIDs...))
