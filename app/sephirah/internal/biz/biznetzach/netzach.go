@@ -127,12 +127,12 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	flow.ID = id
 	for _, source := range flow.Sources {
 		if source.Filter == nil {
-			source.Filter = &modelnetzach.NotifyFilter{}
+			source.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
 	for _, target := range flow.Targets {
 		if target.Filter == nil {
-			target.Filter = &modelnetzach.NotifyFilter{}
+			target.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
 	err = n.repo.CreateNotifyFlow(ctx, claims.InternalID, flow)
@@ -149,12 +149,12 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	}
 	for _, source := range flow.Sources {
 		if source.Filter == nil {
-			source.Filter = &modelnetzach.NotifyFilter{}
+			source.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
 	for _, target := range flow.Targets {
 		if target.Filter == nil {
-			target.Filter = &modelnetzach.NotifyFilter{}
+			target.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
 	err := n.repo.UpdateNotifyFlow(ctx, claims.InternalID, flow)
