@@ -46,6 +46,7 @@ generate-code:
 # lint files
 lint:
 	golangci-lint run --fix
+	golangci-lint run # re-run to make sure fixes are valid, useful in some condition
 
 .PHONY: test-unit
 # run go test

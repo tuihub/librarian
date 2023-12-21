@@ -212,6 +212,11 @@ var (
 				Unique:  true,
 				Columns: []*schema.Column{FeedConfigsColumns[13], FeedConfigsColumns[2]},
 			},
+			{
+				Name:    "feedconfig_category",
+				Unique:  false,
+				Columns: []*schema.Column{FeedConfigsColumns[6]},
+			},
 		},
 	}
 	// FeedItemsColumns holds the columns for the "feed_items" table.
@@ -255,6 +260,11 @@ var (
 				Name:    "feeditem_feed_id_guid",
 				Unique:  true,
 				Columns: []*schema.Column{FeedItemsColumns[19], FeedItemsColumns[5]},
+			},
+			{
+				Name:    "feeditem_publish_platform",
+				Unique:  false,
+				Columns: []*schema.Column{FeedItemsColumns[13]},
 			},
 		},
 	}
@@ -369,9 +379,9 @@ var (
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "notifyflowsource_notify_source_id_notify_flow_id",
+				Name:    "notifyflowsource_notify_flow_id_notify_source_id",
 				Unique:  true,
-				Columns: []*schema.Column{NotifyFlowSourcesColumns[6], NotifyFlowSourcesColumns[5]},
+				Columns: []*schema.Column{NotifyFlowSourcesColumns[5], NotifyFlowSourcesColumns[6]},
 			},
 		},
 	}

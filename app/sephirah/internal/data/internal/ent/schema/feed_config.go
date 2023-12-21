@@ -49,6 +49,7 @@ func (FeedConfig) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("user_feed_config", "feed_url").
 			Unique(),
+		index.Fields("category"),
 	}
 }
 

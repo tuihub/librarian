@@ -18,6 +18,7 @@ type YesodRepo interface {
 	CreateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
 	UpdateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
 	ListFeedCategories(context.Context, model.InternalID) ([]string, error)
+	ListFeedPlatforms(context.Context, model.InternalID) ([]string, error)
 	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpdateFeedConfigAsInQueue(context.Context, model.InternalID) error
@@ -29,6 +30,7 @@ type YesodRepo interface {
 		[]model.InternalID, []string, int, []string) (
 		map[model.TimeRange][]*modelyesod.FeedItemDigest, error)
 	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
+	ReadFeedItem(context.Context, model.InternalID, model.InternalID) error
 }
 
 type Yesod struct {

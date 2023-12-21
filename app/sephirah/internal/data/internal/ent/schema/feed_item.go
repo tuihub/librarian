@@ -51,6 +51,7 @@ func (FeedItem) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("feed_id", "guid").
 			Unique(),
+		index.Fields("publish_platform"),
 	}
 }
 

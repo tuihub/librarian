@@ -38,7 +38,8 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 		SetAuthorAccount(c.AuthorAccount).
 		SetSource(converter.ToEntFeedConfigSource(c.Source)).
 		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
-		SetPullInterval(c.PullInterval)
+		SetPullInterval(c.PullInterval).
+		SetHideItems(c.HideItems)
 	return q.Exec(ctx)
 }
 
@@ -69,6 +70,7 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 	if c.PullInterval > 0 {
 		q.SetPullInterval(c.PullInterval)
 	}
+	q.SetHideItems(c.HideItems)
 	return q.Exec(ctx)
 }
 
@@ -119,11 +121,11 @@ func (y *yesodRepo) ListFeedConfigs(
 	var res []*modelyesod.FeedWithConfig
 	var total int
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		user, err := tx.User.Get(ctx, userID)
+		u, err := tx.User.Get(ctx, userID)
 		if err != nil {
 			return err
 		}
-		q := tx.User.QueryFeedConfig(user)
+		q := tx.User.QueryFeedConfig(u)
 		if len(ids) > 0 {
 			q.Where(feedconfig.IDIn(ids...))
 		}
@@ -180,6 +182,20 @@ func (y *yesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID)
 	return res, nil
 }
 
+func (y *yesodRepo) ListFeedPlatforms(ctx context.Context, id model.InternalID) ([]string, error) {
+	res, err := y.data.db.FeedItem.Query().
+		Where(
+			feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(id)))),
+		).
+		Select(feeditem.FieldPublishPlatform).
+		GroupBy(feeditem.FieldPublishPlatform).
+		Strings(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 func (y *yesodRepo) ListFeedItems(
 	ctx context.Context,
 	userID model.InternalID,
@@ -197,7 +213,9 @@ func (y *yesodRepo) ListFeedItems(
 		if err != nil {
 			return err
 		}
-		fq := tx.User.QueryFeedConfig(u).QueryFeed()
+		fq := tx.User.QueryFeedConfig(u).Where(
+			feedconfig.HideItemsEQ(true),
+		).QueryFeed()
 		if len(feedIDs) > 0 {
 			fq.Where(feed.IDIn(feedIDs...))
 		}
@@ -259,7 +277,9 @@ func (y *yesodRepo) GroupFeedItems( //nolint:gocognit //TODO
 			return err
 		}
 		for _, timeRange := range groups {
-			fq := tx.User.QueryFeedConfig(u).QueryFeed()
+			fq := tx.User.QueryFeedConfig(u).Where(
+				feedconfig.HideItemsEQ(true),
+			).QueryFeed()
 			if len(feedIDs) > 0 {
 				fq.Where(feed.IDIn(feedIDs...))
 			}
@@ -309,12 +329,12 @@ func (y *yesodRepo) GetFeedItems(
 ) ([]*modelfeed.Item, error) {
 	var res []*modelfeed.Item
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
-		user, err := tx.User.Get(ctx, userID)
+		u, err := tx.User.Get(ctx, userID)
 		if err != nil {
 			return err
 		}
 		items, err := tx.User.
-			QueryFeedConfig(user).
+			QueryFeedConfig(u).
 			QueryFeed().
 			QueryItem().
 			Where(feeditem.IDIn(ids...)).
@@ -329,4 +349,10 @@ func (y *yesodRepo) GetFeedItems(
 		return nil, err
 	}
 	return res, nil
+}
+
+func (y *yesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, id model.InternalID) error {
+	return y.data.db.FeedItem.UpdateOneID(id).Where(
+		feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(userID)))),
+	).AddReadCount(1).Exec(ctx)
 }

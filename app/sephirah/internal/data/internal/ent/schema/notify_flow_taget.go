@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/index"
 )
 
 // NotifyFlowTarget holds the schema definition for the NotifyFlowTarget entity.
@@ -27,6 +28,13 @@ func (NotifyFlowTarget) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
+	}
+}
+
+func (NotifyFlowTarget) Indexes() []ent.Index {
+	return []ent.Index{
+		index.Fields("notify_flow_id", "notify_target_id").
+			Unique(),
 	}
 }
 

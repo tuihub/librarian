@@ -155,3 +155,14 @@ func (y *Yesod) GetFeedItems(ctx context.Context, ids []model.InternalID) ([]*mo
 	}
 	return items, nil
 }
+
+func (y *Yesod) ReadFeedItem(ctx context.Context, id model.InternalID) *errors.Error {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
+	}
+	if err := y.repo.ReadFeedItem(ctx, claims.InternalID, id); err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return nil
+}

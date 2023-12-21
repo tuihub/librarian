@@ -64,6 +64,17 @@ func (s *LibrarianSephirahServiceService) ListFeedCategories(
 	}
 	return &pb.ListFeedCategoriesResponse{Categories: res}, nil
 }
+func (s *LibrarianSephirahServiceService) ListFeedPlatforms(
+	ctx context.Context,
+	req *pb.ListFeedPlatformsRequest,
+) (*pb.ListFeedPlatformsResponse, error) {
+	res, err := s.y.ListFeedPlatforms(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedPlatformsResponse{Platforms: res}, nil
+}
+
 func (s *LibrarianSephirahServiceService) ListFeedItems(
 	ctx context.Context,
 	req *pb.ListFeedItemsRequest,
@@ -136,4 +147,15 @@ func (s *LibrarianSephirahServiceService) GetBatchFeedItems(
 	return &pb.GetBatchFeedItemsResponse{
 		Items: converter.ToPBFeedItemList(items),
 	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ReadFeedItem(
+	ctx context.Context,
+	req *pb.ReadFeedItemRequest,
+) (*pb.ReadFeedItemResponse, error) {
+	err := s.y.ReadFeedItem(ctx, converter.ToBizInternalID(req.GetId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ReadFeedItemResponse{}, nil
 }

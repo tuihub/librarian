@@ -61,3 +61,15 @@ func (y *Yesod) ListFeedCategories(ctx context.Context) ([]string, *errors.Error
 	}
 	return res, nil
 }
+
+func (y *Yesod) ListFeedPlatforms(ctx context.Context) ([]string, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
+	}
+	res, err := y.repo.ListFeedPlatforms(ctx, claims.InternalID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res, nil
+}
