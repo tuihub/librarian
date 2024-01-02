@@ -35,7 +35,7 @@ require (
 	github.com/redis/go-redis/v9 v9.3.0
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tuihub/protos v0.2.46
+	github.com/tuihub/protos v0.2.47
 	github.com/zhihu/norm v0.1.11
 	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e

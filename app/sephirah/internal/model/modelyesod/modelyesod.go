@@ -19,6 +19,7 @@ type FeedItemDigest struct {
 	PublishPlatform     string
 	FeedConfigName      string
 	FeedAvatarURL       string
+	ReadCount           int64
 }
 
 type FeedWithConfig struct {

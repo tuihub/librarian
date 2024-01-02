@@ -590,6 +590,7 @@ func (c *toPBConverterImpl) ToPBFeedItemDigest(source *modelyesod.FeedItemDigest
 		v1FeedItemDigest.PublishPlatform = (*source).PublishPlatform
 		v1FeedItemDigest.FeedConfigName = (*source).FeedConfigName
 		v1FeedItemDigest.FeedAvatarUrl = (*source).FeedAvatarURL
+		v1FeedItemDigest.ReadCount = (*source).ReadCount
 		pV1FeedItemDigest = &v1FeedItemDigest
 	}
 	return pV1FeedItemDigest

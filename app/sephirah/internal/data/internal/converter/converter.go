@@ -139,6 +139,7 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	digest.Title = a.Title
 	digest.PublishPlatform = a.PublishPlatform
 	digest.ShortDescription = a.DigestDescription
+	digest.ReadCount = a.ReadCount
 	if a.Image != nil {
 		digest.AvatarURL = a.Image.URL
 	}
