@@ -156,7 +156,16 @@ func initLogger(id, name, version, dataPath string, logLevel libzap.Level) {
 func GetLogger() log.Logger {
 	fuzzyStr := "***"
 	return log.NewFilter(log.GetLogger(),
-		log.FilterKey("password"),
+		log.FilterFunc(
+			func(level log.Level, keyvals ...interface{}) bool {
+				for i := 0; i < len(keyvals); i += 2 {
+					if keyvals[i] == "reason" && keyvals[i+1] == "UNAUTHORISED" {
+						return true
+					}
+				}
+				return false
+			},
+		),
 		log.FilterFunc(
 			func(level log.Level, keyvals ...interface{}) bool {
 				for i := 0; i < len(keyvals); i++ {
