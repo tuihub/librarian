@@ -15,7 +15,7 @@ var ProviderSet = wire.NewSet(NewStore)
 func NewStore(conf *conf.Cache) (Store, error) {
 	var res Store
 	var err error
-	switch conf.Driver {
+	switch conf.GetDriver() {
 	case "memory":
 		res, err = newRistrettoCache()
 	case "redis":

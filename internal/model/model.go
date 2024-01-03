@@ -29,8 +29,8 @@ func ToBizPaging(paging *librarian.PagingRequest) Paging {
 		}
 	}
 	return Paging{
-		PageSize: paging.PageSize,
-		PageNum:  paging.PageNum,
+		PageSize: paging.GetPageSize(),
+		PageNum:  paging.GetPageNum(),
 	}
 }
 

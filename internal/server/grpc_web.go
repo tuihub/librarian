@@ -49,14 +49,14 @@ func NewGrpcWebServer(
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),
 	}
-	if c.GrpcWeb.Network != "" {
-		opts = append(opts, http.Network(c.GrpcWeb.Network))
+	if c.GetGrpcWeb().GetNetwork() != "" {
+		opts = append(opts, http.Network(c.GetGrpcWeb().GetNetwork()))
 	}
-	if c.GrpcWeb.Addr != "" {
-		opts = append(opts, http.Address(c.GrpcWeb.Addr))
+	if c.GetGrpcWeb().GetAddr() != "" {
+		opts = append(opts, http.Address(c.GetGrpcWeb().GetAddr()))
 	}
-	if c.GrpcWeb.Timeout != nil {
-		opts = append(opts, http.Timeout(c.GrpcWeb.Timeout.AsDuration()))
+	if c.GetGrpcWeb().GetTimeout() != nil {
+		opts = append(opts, http.Timeout(c.GetGrpcWeb().GetTimeout().AsDuration()))
 	}
 	srv := http.NewServer(opts...)
 	wrappedGrpc := grpcweb.WrapServer(s.Server)

@@ -71,5 +71,5 @@ func FromPBInternalID(id *librarian.InternalID) model.InternalID {
 	if id == nil {
 		return 0
 	}
-	return model.InternalID(id.Id)
+	return model.InternalID(id.GetId())
 }

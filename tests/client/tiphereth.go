@@ -25,7 +25,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	}); err != nil {
 		log.Fatal(err)
 	} else {
-		refreshToken = resp.RefreshToken
+		refreshToken = resp.GetRefreshToken()
 	}
 	ctxForRefresh := metadata.NewOutgoingContext(
 		ctx,
@@ -34,7 +34,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	if resp, err := c.cli.RefreshToken(ctxForRefresh, &pb.RefreshTokenRequest{}); err != nil {
 		log.Fatal(err)
 	} else {
-		accessToken = resp.AccessToken
+		accessToken = resp.GetAccessToken()
 	}
 	return metadata.NewOutgoingContext(
 		ctx,
@@ -122,21 +122,21 @@ func (c *Client) testUser(ctx context.Context) {
 
 	user2.Password = user2Password
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
-		Username: user1.Username,
-		Password: user1.Password,
+		Username: user1.GetUsername(),
+		Password: user1.GetPassword(),
 	}); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
-		Username: user2.Username,
-		Password: user2.Password,
+		Username: user2.GetUsername(),
+		Password: user2.GetPassword(),
 	}); err == nil {
 		log.Fatal("err expected")
 	}
 	user2.Password = user2Password
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
-		Username: user2.Username,
-		Password: user2.Password,
+		Username: user2.GetUsername(),
+		Password: user2.GetPassword(),
 	}); err == nil {
 		log.Fatal("err expected")
 	}

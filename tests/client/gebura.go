@@ -27,7 +27,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}}); err != nil {
 		log.Fatal(err)
 	} else {
-		appID = resp.Id
+		appID = resp.GetId()
 	}
 	if resp, err := c.cli.ListApps(ctx, &pb.ListAppsRequest{
 		Paging: &librarian.PagingRequest{
@@ -76,7 +76,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}}); err != nil {
 		log.Fatal(err)
 	} else {
-		appID2 = resp.Id
+		appID2 = resp.GetId()
 	}
 	if _, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
 		Paging:   defaultPaging,
@@ -92,7 +92,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
 		log.Fatal(err)
-	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].Id.GetId() != appID2.GetId() {
+	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID2.GetId() {
 		log.Fatal("unexpected search result")
 	}
 	if _, err := c.cli.MergeApps(ctx, &pb.MergeAppsRequest{
@@ -116,7 +116,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
 		log.Fatal(err)
-	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].Id.GetId() != appID.GetId() {
+	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID.GetId() {
 		log.Fatal("unexpected search result")
 	}
 	if resp, err := c.cli.ListAppPackages(ctx, &pb.ListAppPackagesRequest{
@@ -147,7 +147,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	if err != nil {
 		log.Fatal(err)
 	}
-	appPackageID := resp.Id
+	appPackageID := resp.GetId()
 	if resp2, err2 := c.cli.ListAppPackages(ctx, &pb.ListAppPackagesRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,

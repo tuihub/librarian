@@ -20,12 +20,12 @@ type s3Repo struct {
 }
 
 func NewS3Repo(c *conf.Porter_Data) (bizs3.S3Repo, error) {
-	if c == nil || c.S3 == nil {
+	if c == nil || c.GetS3() == nil {
 		return new(s3Repo), nil
 	}
-	minioClient, err := minio.New(c.S3.GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
-		Creds:  credentials.NewStaticV4(c.S3.GetAccessKey(), c.S3.GetSecretKey(), ""),
-		Secure: c.S3.GetUseSsl(),
+	minioClient, err := minio.New(c.GetS3().GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
+		Creds:  credentials.NewStaticV4(c.GetS3().GetAccessKey(), c.GetS3().GetSecretKey(), ""),
+		Secure: c.GetS3().GetUseSsl(),
 	})
 	if err != nil {
 		return nil, err

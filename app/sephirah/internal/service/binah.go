@@ -36,7 +36,7 @@ func (s *LibrarianSephirahServiceService) SimpleUploadFile(
 				return file.Finish(ctx)
 			}
 			return err
-		} else if _, err = file.Writer.Write(req.Data); err != nil {
+		} else if _, err = file.Writer.Write(req.GetData()); err != nil {
 			return err
 		}
 		if err = conn.Send(&pb.SimpleUploadFileResponse{

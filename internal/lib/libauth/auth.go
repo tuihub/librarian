@@ -19,8 +19,8 @@ func NewAuth(config *conf.Auth) (*Auth, error) {
 		return nil, errors.New("")
 	}
 	return &Auth{config: conf.Auth{
-		Salt:      config.Salt,
-		Issuer:    config.Issuer,
-		JwtSecret: config.JwtSecret,
+		Salt:      config.GetSalt(),
+		Issuer:    config.GetIssuer(),
+		JwtSecret: config.GetJwtSecret(),
 	}}, nil
 }

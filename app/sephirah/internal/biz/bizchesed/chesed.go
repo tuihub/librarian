@@ -165,7 +165,7 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 		}
 		var desReq string
 		for _, r := range results.GetResults() {
-			desReq += r.Text + " "
+			desReq += r.GetText() + " "
 		}
 		if err = c.searcher.DescribeID(ctx,
 			image.ID,

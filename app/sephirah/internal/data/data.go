@@ -44,19 +44,19 @@ func NewData(db *ent.Client) *Data {
 
 func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 	var driverName, dataSourceName string
-	driverName = c.Database.Driver
+	driverName = c.GetDatabase().GetDriver()
 	switch driverName {
 	case "sqlite3":
 		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
 	case "postgres":
 		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
-			c.Database.Host,
-			c.Database.Port,
-			c.Database.User,
-			c.Database.Dbname,
-			c.Database.Password,
+			c.GetDatabase().GetHost(),
+			c.GetDatabase().GetPort(),
+			c.GetDatabase().GetUser(),
+			c.GetDatabase().GetDbname(),
+			c.GetDatabase().GetPassword(),
 		)
-		if c.Database.NoSsl {
+		if c.GetDatabase().GetNoSsl() {
 			dataSourceName += " sslmode=disable"
 		}
 	default:

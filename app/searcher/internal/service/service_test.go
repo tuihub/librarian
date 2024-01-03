@@ -12,6 +12,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 type mockedSearcherRepo struct {
@@ -49,9 +50,9 @@ func TestLibrarianSearcherServiceService_NewID(t *testing.T) {
 	mc := m.On("NewID", context.Background()).Return((int64)(123), nil)
 	id, err := s.NewID(context.Background(), &searcher.NewIDRequest{})
 	m.AssertExpectations(t)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	if assert.NotNil(t, id) {
-		assert.Equal(t, (int64)(123), id.Id.Id)
+		assert.Equal(t, (int64)(123), id.GetId().GetId())
 	}
 	mc.Unset()
 

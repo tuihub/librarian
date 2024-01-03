@@ -32,12 +32,12 @@ type pubSub struct {
 func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
-	switch c.Driver {
+	switch c.GetDriver() {
 	case "memory":
 		ps = newGoChannelAdapter(loggerAdapter)
 	case "sql":
 		var err error
-		ps, err = newSQLAdapter(c.Database, loggerAdapter)
+		ps, err = newSQLAdapter(c.GetDatabase(), loggerAdapter)
 		if err != nil {
 			return nil, func() {}, err
 		}

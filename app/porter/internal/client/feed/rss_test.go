@@ -7,7 +7,7 @@ import (
 	"github.com/tuihub/librarian/app/porter/internal/client/feed"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func getURL() string {
@@ -17,8 +17,8 @@ func getURL() string {
 func TestRSS(t *testing.T) {
 	r, _ := feed.NewRSSRepo(client.NewColly())
 	data, err := r.Get(getURL())
-	assert.Nil(t, err)
+	require.NoError(t, err)
 	res, err := r.Parse(data)
 	logger.Infof("res: %+v", res)
-	assert.Nil(t, err)
+	require.NoError(t, err)
 }

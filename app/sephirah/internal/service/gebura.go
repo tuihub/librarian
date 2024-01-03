@@ -65,7 +65,7 @@ func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
 	*pb.MergeAppsResponse, error,
 ) {
-	app := converter.ToBizApp(req.Base)
+	app := converter.ToBizApp(req.GetBase())
 	if app == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("base required")
 	}

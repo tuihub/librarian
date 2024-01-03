@@ -63,21 +63,21 @@ func main() {
 	var bc conf.Librarian
 	appSettings.LoadConfig(&bc)
 
-	if bc.EnableServiceDiscovery == nil {
+	if bc.GetEnableServiceDiscovery() == nil {
 		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
 	}
 
 	app, cleanup, err := wireApp(
-		bc.EnableServiceDiscovery,
-		bc.Sephirah.Server,
-		bc.Sephirah.Data,
-		bc.Mapper.Data,
-		bc.Searcher.Data,
-		bc.Porter.Data,
-		bc.Miner.Data,
-		bc.Sephirah.Auth,
-		bc.Sephirah.Mq,
-		bc.Sephirah.Cache,
+		bc.GetEnableServiceDiscovery(),
+		bc.GetSephirah().GetServer(),
+		bc.GetSephirah().GetData(),
+		bc.GetMapper().GetData(),
+		bc.GetSearcher().GetData(),
+		bc.GetPorter().GetData(),
+		bc.GetMiner().GetData(),
+		bc.GetSephirah().GetAuth(),
+		bc.GetSephirah().GetMq(),
+		bc.GetSephirah().GetCache(),
 		appSettings,
 	)
 	if err != nil {
@@ -95,7 +95,7 @@ func mapperClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
 ) (mapper.LibrarianMapperServiceClient, error) {
-	if conf.Mapper {
+	if conf.GetMapper() {
 		return client.NewMapperClient()
 	}
 	return inproc.Mapper, nil
@@ -105,7 +105,7 @@ func searcherClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
 ) (searcher.LibrarianSearcherServiceClient, error) {
-	if conf.Searcher {
+	if conf.GetSearcher() {
 		return client.NewSearcherClient()
 	}
 	return inproc.Searcher, nil
@@ -115,7 +115,7 @@ func porterClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
 ) (porter.LibrarianPorterServiceClient, error) {
-	if conf.Porter {
+	if conf.GetPorter() {
 		return client.NewPorterClient()
 	}
 	return inproc.Porter, nil
@@ -125,7 +125,7 @@ func minerClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	inproc *inprocgrpc.InprocClients,
 ) (miner.LibrarianMinerServiceClient, error) {
-	if conf.Miner {
+	if conf.GetMiner() {
 		return client.NewMinerClient()
 	}
 	return inproc.Miner, nil

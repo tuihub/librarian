@@ -15,19 +15,19 @@ import (
 
 func newSQLAdapter(c *conf.Database, loggerAdapter *mqLogger) (*pubSub, error) {
 	var driverName, dataSourceName string
-	driverName = c.Driver
+	driverName = c.GetDriver()
 	var sa sql.SchemaAdapter
 	var oa sql.OffsetsAdapter
 	switch driverName {
 	case "postgres":
 		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
-			c.Host,
-			c.Port,
-			c.User,
-			c.Dbname,
-			c.Password,
+			c.GetHost(),
+			c.GetPort(),
+			c.GetUser(),
+			c.GetDbname(),
+			c.GetPassword(),
 		)
-		if c.NoSsl {
+		if c.GetNoSsl() {
 			dataSourceName += " sslmode=disable"
 		}
 		sa = sql.DefaultPostgreSQLSchema{

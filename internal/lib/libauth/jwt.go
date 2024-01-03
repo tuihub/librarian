@@ -71,7 +71,7 @@ func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) *Clai
 }
 
 func (a *Auth) generateSecret(t ClaimsType) interface{} {
-	return []byte(fmt.Sprintf("%s%d", a.config.JwtSecret, t))
+	return []byte(fmt.Sprintf("%s%d", a.config.GetJwtSecret(), t))
 }
 
 func (a *Auth) GenerateToken(id model.InternalID, claimsType ClaimsType, userType UserType,
@@ -85,7 +85,7 @@ func (a *Auth) GenerateToken(id model.InternalID, claimsType ClaimsType, userTyp
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
 		RegisteredClaims: jwtv4.RegisteredClaims{
-			Issuer:    a.config.Issuer,
+			Issuer:    a.config.GetIssuer(),
 			Subject:   "",
 			Audience:  nil,
 			ExpiresAt: jwtv4.NewNumericDate(expireTime),

@@ -15,14 +15,14 @@ type Steam struct {
 }
 
 func NewSteam(c *colly.Collector, config *conf.Porter_Data) (*Steam, error) {
-	if c == nil || config == nil || config.Steam == nil {
+	if c == nil || config == nil || config.GetSteam() == nil {
 		return new(Steam), nil
 	}
 	s, err := NewStoreAPI(c)
 	if err != nil {
 		return nil, err
 	}
-	w, err := NewWebAPI(c, config.Steam)
+	w, err := NewWebAPI(c, config.GetSteam())
 	if err != nil {
 		return nil, err
 	}

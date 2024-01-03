@@ -73,7 +73,7 @@ func (s *Searcher) SearchID(
 	}
 	res := make([]model.InternalID, 0, len(resp.GetResult()))
 	for _, r := range resp.GetResult() {
-		res = append(res, converter.ToBizInternalID(r.Id))
+		res = append(res, converter.ToBizInternalID(r.GetId()))
 	}
 	return res, nil
 }

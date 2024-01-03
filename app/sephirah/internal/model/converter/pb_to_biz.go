@@ -85,14 +85,14 @@ func ToBizInternalID(id *librarian.InternalID) model.InternalID {
 	if id == nil {
 		return 0
 	}
-	return model.InternalID(id.Id)
+	return model.InternalID(id.GetId())
 }
 
 func ToBizInternalIDPtr(id *librarian.InternalID) *model.InternalID {
 	if id == nil {
 		return nil
 	}
-	i := model.InternalID(id.Id)
+	i := model.InternalID(id.GetId())
 	return &i
 }
 
