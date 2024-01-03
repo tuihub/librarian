@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.16](https://github.com/tuihub/librarian/compare/v0.1.15...v0.1.16) (2024-01-03)
+
+
+### Features
+
+* remove unauthorised error from log ([ddfcd4a](https://github.com/tuihub/librarian/commit/ddfcd4a5530024b836be90fdf9c9d89973744abc))
+* upgrade proto version ([ec8f436](https://github.com/tuihub/librarian/commit/ec8f43644485dae408a09a21a4dfabec8a4b5688))
+
 ## [0.1.15](https://github.com/tuihub/librarian/compare/v0.1.14...v0.1.15) (2023-12-21)
 
 
