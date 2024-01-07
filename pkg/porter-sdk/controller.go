@@ -2,19 +2,21 @@ package portersdk
 
 import (
 	"context"
+
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	capi "github.com/hashicorp/consul/api"
-	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	"google.golang.org/grpc/metadata"
 )
 
 type controller struct {
 	handler Handler
-	config  *PorterConfig
+	config  PorterConfig
 	logger  log.Logger
 	token   *tokenInfo
 	client  sephirah.LibrarianSephirahServiceClient
@@ -26,7 +28,8 @@ type tokenInfo struct {
 	refreshToken string
 }
 
-func (s *controller) GetPorterInformation(ctx context.Context, req *pb.GetPorterInformationRequest) (*pb.GetPorterInformationResponse, error) {
+func (s *controller) GetPorterInformation(ctx context.Context, req *pb.GetPorterInformationRequest) (
+	*pb.GetPorterInformationResponse, error) {
 	return &pb.GetPorterInformationResponse{
 		Name:           s.config.Name,
 		Version:        s.config.Version,
@@ -34,16 +37,17 @@ func (s *controller) GetPorterInformation(ctx context.Context, req *pb.GetPorter
 		FeatureSummary: s.config.FeatureSummary,
 	}, nil
 }
-func (s *controller) EnablePorter(ctx context.Context, req *pb.EnablePorterRequest) (*pb.EnablePorterResponse, error) {
-	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+req.RefreshToken)
+func (s *controller) EnablePorter(ctx context.Context, req *pb.EnablePorterRequest) (
+	*pb.EnablePorterResponse, error) {
+	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+req.GetRefreshToken())
 	resp, err := s.client.RefreshToken(ctx, &sephirah.RefreshTokenRequest{})
 	if err != nil {
 		return nil, err
 	}
 	s.token = &tokenInfo{
-		enabler:      req.SephirahId,
-		accessToken:  resp.AccessToken,
-		refreshToken: resp.RefreshToken,
+		enabler:      req.GetSephirahId(),
+		accessToken:  resp.GetAccessToken(),
+		refreshToken: resp.GetRefreshToken(),
 	}
 	return &pb.EnablePorterResponse{}, nil
 }
@@ -53,9 +57,6 @@ func (s *controller) Enabled() bool {
 
 func newSephirahClient() (sephirah.LibrarianSephirahServiceClient, error) {
 	client, err := capi.NewClient(capi.DefaultConfig())
-	if err != nil {
-		return nil, err
-	}
 	if err != nil {
 		return nil, err
 	}

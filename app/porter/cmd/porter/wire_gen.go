@@ -10,10 +10,8 @@ import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/client/feed"
-	"github.com/tuihub/librarian/app/porter/internal/client/steam"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/server"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -31,23 +29,18 @@ func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data, s
 		return nil, nil, err
 	}
 	feedUseCase := bizfeed.NewFeed(rssRepo)
-	steamSteam, err := steam.NewSteam(collector, porter_Data)
-	if err != nil {
-		return nil, nil, err
-	}
-	steamUseCase := bizsteam.NewSteamUseCase(steamSteam)
 	s3Repo, err := data.NewS3Repo(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	s3 := bizs3.NewS3(s3Repo)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, steamUseCase, s3)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, s3)
 	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer, settings)
 	registrar, err := libapp.NewRegistrar()
 	if err != nil {
 		return nil, nil, err
 	}
-	mainMetadata := newMetadata(steamUseCase, s3)
+	mainMetadata := newMetadata(s3)
 	app := newApp(grpcServer, registrar, mainMetadata)
 	return app, func() {
 	}, nil

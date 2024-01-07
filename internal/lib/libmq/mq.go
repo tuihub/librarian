@@ -8,7 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/ThreeDotsLabs/watermill/message"

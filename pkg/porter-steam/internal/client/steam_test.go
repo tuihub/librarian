@@ -1,4 +1,4 @@
-package steam_test
+package client_test
 
 import (
 	"context"
@@ -6,11 +6,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/tuihub/librarian/app/porter/internal/client"
-	"github.com/tuihub/librarian/app/porter/internal/client/steam"
-	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
-	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/client"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/model"
 )
 
 func getAPIKey() string {
@@ -32,13 +30,13 @@ func getAppID() int {
 }
 
 func TestWebAPI_GetPlayerSummary(t *testing.T) {
-	r, _ := steam.NewWebAPI(client.NewColly(), &conf.Porter_Data_Steam{ApiKey: getAPIKey()})
+	r, _ := client.NewWebAPI(client.NewColly(), getAPIKey())
 	res, err := r.GetPlayerSummary(context.Background(), model.GetPlayerSummariesRequest{SteamID: getSteamID()})
 	logger.Infof("res %+v, err: %+v", res, err)
 }
 
 func TestWebAPI_GetOwnedGames(t *testing.T) {
-	r, _ := steam.NewWebAPI(client.NewColly(), &conf.Porter_Data_Steam{ApiKey: getAPIKey()})
+	r, _ := client.NewWebAPI(client.NewColly(), getAPIKey())
 	res, err := r.GetOwnedGames(context.Background(), model.GetOwnedGamesRequest{
 		SteamID:                getSteamID(),
 		IncludeAppInfo:         false,
@@ -52,7 +50,7 @@ func TestWebAPI_GetOwnedGames(t *testing.T) {
 }
 
 func TestStoreAPI_GetAppDetails(t *testing.T) {
-	r, _ := steam.NewStoreAPI(client.NewColly())
+	r, _ := client.NewStoreAPI(client.NewColly())
 	res, err := r.GetAppDetails(context.Background(), model.GetAppDetailsRequest{
 		AppIDs:      []int{getAppID()},
 		CountryCode: model.ProductCCUS,

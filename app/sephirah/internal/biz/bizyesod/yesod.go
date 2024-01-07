@@ -8,9 +8,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/logger"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 

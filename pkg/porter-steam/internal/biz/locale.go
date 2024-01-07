@@ -1,4 +1,4 @@
-package libapp
+package biz
 
 import "github.com/Xuanwo/go-locale"
 

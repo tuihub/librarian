@@ -44,9 +44,16 @@ generate-code:
 
 .PHONY: lint
 # lint files
-lint:
+lint: lint-porter-sdk lint-porter-steam
 	golangci-lint run --fix
 	golangci-lint run # re-run to make sure fixes are valid, useful in some condition
+
+lint-porter-sdk:
+	cd pkg/porter-sdk && golangci-lint run -c ../../.golangci.yml --fix
+	cd pkg/porter-sdk && golangci-lint run -c ../../.golangci.yml
+lint-porter-steam:
+	cd pkg/porter-steam && golangci-lint run -c ../../.golangci.yml --fix
+	cd pkg/porter-steam && golangci-lint run -c ../../.golangci.yml
 
 .PHONY: test-unit
 # run go test

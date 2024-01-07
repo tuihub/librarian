@@ -1,16 +1,15 @@
-package steam
+package client
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
-	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/model"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/google/go-querystring/query"
@@ -21,7 +20,7 @@ type WebAPI struct {
 	c   *colly.Collector
 }
 
-func NewWebAPI(c *colly.Collector, config *conf.Porter_Data_Steam) (*WebAPI, error) {
+func NewWebAPI(c *colly.Collector, apiKey string) (*WebAPI, error) {
 	err := c.Limit(&colly.LimitRule{
 		DomainRegexp: "",
 		DomainGlob:   "*api.steampowered.com*",
@@ -33,7 +32,7 @@ func NewWebAPI(c *colly.Collector, config *conf.Porter_Data_Steam) (*WebAPI, err
 		return nil, err
 	}
 	return &WebAPI{
-		key: config.GetApiKey(),
+		key: apiKey,
 		c:   c,
 	}, nil
 }
@@ -82,7 +81,7 @@ func (s *WebAPI) Get(ctx context.Context, path string, query url.Values, data in
 		if response.StatusCode != http.StatusOK {
 			err = fmt.Errorf("request %s failed with code %d", path, response.StatusCode)
 		}
-		err = libcodec.Unmarshal(libcodec.JSON, response.Body, data)
+		err = json.Unmarshal(response.Body, data)
 	})
 	if err2 := c.Visit(u); err2 != nil {
 		return err2

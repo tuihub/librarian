@@ -5,8 +5,8 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/logger"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 

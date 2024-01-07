@@ -7,7 +7,6 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/ThreeDotsLabs/watermill v1.3.4
 	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
-	github.com/Xuanwo/go-locale v1.1.0
 	github.com/blevesearch/bleve/v2 v2.3.10
 	github.com/bufbuild/protovalidate-go v0.4.3
 	github.com/cayleygraph/cayley v0.7.7
@@ -20,7 +19,6 @@ require (
 	github.com/gocolly/colly/v2 v2.1.1-0.20231020184023-3c987f1982ed
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/go-cmp v0.6.0
-	github.com/google/go-querystring v1.1.0
 	github.com/google/wire v0.5.0
 	github.com/hashicorp/consul/api v1.26.1
 	github.com/improbable-eng/grpc-web v0.15.0

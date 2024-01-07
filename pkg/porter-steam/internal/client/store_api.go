@@ -1,14 +1,14 @@
-package steam
+package client
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
-	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/model"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/google/go-querystring/query"
@@ -59,7 +59,7 @@ func (s *StoreAPI) Get(ctx context.Context, path string, query url.Values, data 
 		if response.StatusCode != http.StatusOK {
 			err = fmt.Errorf("request %s failed with code %d", path, response.StatusCode)
 		}
-		err = libcodec.Unmarshal(libcodec.JSON, response.Body, data)
+		err = json.Unmarshal(response.Body, data)
 	})
 	if err2 := c.Visit(u); err2 != nil {
 		return err2

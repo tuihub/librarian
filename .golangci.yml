@@ -205,10 +205,15 @@ linters-settings:
     custom-order: true
 
   gomoddirectives:
+    # Allow local `replace` directives.
+    # Default: false
+    replace-local: true
     # List of allowed `replace` directives.
     # Default: []
     replace-allow-list:
       - github.com/cayleygraph/cayley
+      - github.com/tuihub/librarian/pkg/porter-sdk
+      - github.com/tuihub/librarian
 
   revive:
     # Sets the default severity.

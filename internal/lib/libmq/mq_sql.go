@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
 
 	"github.com/ThreeDotsLabs/watermill-sql/v2/pkg/sql"
 

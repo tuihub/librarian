@@ -4,7 +4,6 @@ import (
 	"os"
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -64,12 +63,9 @@ func main() {
 
 type metadata map[string]string
 
-func newMetadata(steam *bizsteam.SteamUseCase, s3 *bizs3.S3) metadata {
+func newMetadata(s3 *bizs3.S3) metadata {
 	v := "enable"
 	res := metadata{}
-	if steam.FeatureEnabled() {
-		res[pb.FeatureFlag_name[int32(pb.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM)]] = v
-	}
 	if s3.FeatureEnabled() {
 		res[pb.FeatureFlag_name[int32(pb.FeatureFlag_FEATURE_FLAG_DEFAULT_DATA_STORAGE)]] = v
 	}

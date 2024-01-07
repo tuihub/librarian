@@ -3,14 +3,11 @@ package service
 import (
 	"context"
 	"io"
-	"strconv"
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizsteam"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"google.golang.org/grpc/codes"
@@ -20,21 +17,18 @@ import (
 type LibrarianPorterServiceService struct {
 	pb.UnimplementedLibrarianPorterServiceServer
 
-	feed  *bizfeed.FeedUseCase
-	steam *bizsteam.SteamUseCase
-	s3    *bizs3.S3
+	feed *bizfeed.FeedUseCase
+	s3   *bizs3.S3
 }
 
 func NewLibrarianPorterServiceService(
 	feed *bizfeed.FeedUseCase,
-	steam *bizsteam.SteamUseCase,
 	s3 *bizs3.S3,
 ) pb.LibrarianPorterServiceServer {
 	return &LibrarianPorterServiceService{
 		UnimplementedLibrarianPorterServiceServer: pb.UnimplementedLibrarianPorterServiceServer{},
-		feed:  feed,
-		steam: steam,
-		s3:    s3,
+		feed: feed,
+		s3:   s3,
 	}
 }
 
@@ -77,107 +71,19 @@ func (s *LibrarianPorterServiceService) PullAccount(
 	ctx context.Context,
 	req *pb.PullAccountRequest,
 ) (*pb.PullAccountResponse, error) {
-	switch req.GetAccountId().GetPlatform() {
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED:
-		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
-		u, err := s.steam.GetUser(ctx, req.GetAccountId().GetPlatformAccountId())
-		if err != nil {
-			return nil, err
-		}
-		return &pb.PullAccountResponse{Account: &librarian.Account{
-			Id:                nil,
-			Platform:          req.GetAccountId().GetPlatform(),
-			PlatformAccountId: req.GetAccountId().GetPlatformAccountId(),
-			Name:              u.Name,
-			ProfileUrl:        u.ProfileURL,
-			AvatarUrl:         u.AvatarURL,
-			LatestUpdateTime:  nil,
-		}}, nil
-	default:
-		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
-	}
+	return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
 }
 func (s *LibrarianPorterServiceService) PullApp(
 	ctx context.Context,
 	req *pb.PullAppRequest,
 ) (*pb.PullAppResponse, error) {
-	switch req.GetAppId().GetSource() {
-	case librarian.AppSource_APP_SOURCE_UNSPECIFIED:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	case librarian.AppSource_APP_SOURCE_INTERNAL:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	case librarian.AppSource_APP_SOURCE_STEAM:
-		appID, err := strconv.Atoi(req.GetAppId().GetSourceAppId())
-		if err != nil {
-			return nil, err
-		}
-		a, err := s.steam.GetAppDetails(ctx, appID)
-		if err != nil {
-			return nil, err
-		}
-		return &pb.PullAppResponse{App: &librarian.App{
-			Id:          nil,
-			Source:      req.GetAppId().GetSource(),
-			SourceAppId: req.GetAppId().GetSourceAppId(),
-			SourceUrl:   &a.StoreURL,
-			Details: &librarian.AppDetails{ // TODO
-				Description: a.Description,
-				ReleaseDate: a.ReleaseDate,
-				Developer:   a.Developer,
-				Publisher:   a.Publisher,
-				Version:     "",
-				ImageUrls:   nil,
-			},
-			Name:             a.Name,
-			Type:             ToPBAppType(a.Type),
-			ShortDescription: a.ShortDescription,
-			IconImageUrl:     "",
-			HeroImageUrl:     a.HeroImageURL,
-			Tags:             nil,
-			AltNames:         nil,
-		}}, nil
-	case librarian.AppSource_APP_SOURCE_VNDB:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	case librarian.AppSource_APP_SOURCE_BANGUMI:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	default:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	}
+	return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 }
 func (s *LibrarianPorterServiceService) PullAccountAppRelation(
 	ctx context.Context,
 	req *pb.PullAccountAppRelationRequest,
 ) (*pb.PullAccountAppRelationResponse, error) {
-	switch req.GetAccountId().GetPlatform() {
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED:
-		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
-		al, err := s.steam.GetOwnedGames(ctx, req.GetAccountId().GetPlatformAccountId())
-		if err != nil {
-			return nil, err
-		}
-		appList := make([]*librarian.App, len(al))
-		for i, a := range al {
-			appList[i] = &librarian.App{ // TODO
-				Id:               nil,
-				Source:           librarian.AppSource_APP_SOURCE_STEAM,
-				SourceAppId:      strconv.Itoa(int(a.AppID)),
-				SourceUrl:        nil,
-				Details:          nil,
-				Name:             a.Name,
-				Type:             0,
-				ShortDescription: "",
-				IconImageUrl:     a.IconImageURL,
-				HeroImageUrl:     a.HeroImageURL,
-				Tags:             nil,
-				AltNames:         nil,
-			}
-		}
-		return &pb.PullAccountAppRelationResponse{AppList: appList}, nil
-	default:
-		return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
-	}
+	return nil, status.Errorf(codes.InvalidArgument, "platform unexpected")
 }
 func (s *LibrarianPorterServiceService) PushData(conn pb.LibrarianPorterService_PushDataServer) error {
 	var file *bizs3.PutObject

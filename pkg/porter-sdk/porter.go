@@ -2,12 +2,17 @@ package portersdk
 
 import (
 	"fmt"
+	"os"
+	"time"
+
+	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	librarian "github.com/tuihub/protos/pkg/librarian/v1"
+
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
-	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	"os"
-	"time"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
 type Porter struct {
@@ -47,10 +52,7 @@ func (p *Porter) Stop() error {
 	return p.app.Stop()
 }
 
-func New(config *PorterConfig, handler Handler, options ...Option) (*Porter, error) {
-	if config == nil {
-		return nil, fmt.Errorf("config is nil")
-	}
+func New(config PorterConfig, handler Handler, options ...Option) (*Porter, error) {
 	if handler == nil {
 		return nil, fmt.Errorf("handler is nil")
 	}
@@ -66,6 +68,7 @@ func New(config *PorterConfig, handler Handler, options ...Option) (*Porter, err
 		handler: handler,
 		config:  config,
 		logger:  p.logger,
+		token:   nil,
 		client:  client,
 	}
 	p.controller = c
@@ -87,4 +90,18 @@ func New(config *PorterConfig, handler Handler, options ...Option) (*Porter, err
 	)
 	p.app = app
 	return p, nil
+}
+
+func WellKnownToString(e protoreflect.Enum) string {
+	return fmt.Sprint(proto.GetExtension(
+		e.
+			Descriptor().
+			Values().
+			ByNumber(
+				e.
+					Number(),
+			).
+			Options(),
+		librarian.E_ToString,
+	))
 }

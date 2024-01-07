@@ -6,8 +6,8 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/logger"
 )
 
 type ControlBlock struct {

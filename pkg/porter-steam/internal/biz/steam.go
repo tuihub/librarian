@@ -1,4 +1,4 @@
-package bizsteam
+package biz
 
 import (
 	"context"
@@ -6,9 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tuihub/librarian/app/porter/internal/client/steam"
-	"github.com/tuihub/librarian/app/porter/internal/client/steam/model"
-	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/client"
+	"github.com/tuihub/librarian/pkg/porter-steam/internal/model"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -58,17 +57,18 @@ const (
 )
 
 type SteamUseCase struct {
-	c      *steam.Steam
-	locale libapp.Locale
+	c      *client.Steam
+	locale Locale
 }
 
-func NewSteamUseCase(client *steam.Steam) *SteamUseCase {
-	if !client.FeatureEnabled() {
-		return new(SteamUseCase)
+func NewSteamUseCase(apiKey string) *SteamUseCase {
+	cli, err := client.NewSteam(apiKey)
+	if err != nil {
+		panic(err)
 	}
 	return &SteamUseCase{
-		c:      client,
-		locale: libapp.GetLocale(),
+		c:      cli,
+		locale: GetLocale(),
 	}
 }
 
@@ -78,11 +78,11 @@ func (s *SteamUseCase) FeatureEnabled() bool {
 
 func (s *SteamUseCase) language() model.LanguageCode {
 	switch s.locale {
-	case libapp.LocaleEn:
+	case LocaleEn:
 		return model.LanguageEnglish
-	case libapp.LocaleChs:
+	case LocaleChs:
 		return model.LanguageChineseSimplified
-	case libapp.LocaleCht:
+	case LocaleCht:
 		return model.LanguageChineseTraditional
 	default:
 		return model.LanguageEnglish

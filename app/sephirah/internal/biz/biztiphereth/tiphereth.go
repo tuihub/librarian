@@ -9,8 +9,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/logger"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 

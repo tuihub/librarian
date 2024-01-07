@@ -3,7 +3,7 @@ package logger_test
 import (
 	"testing"
 
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
 )
 
 func TestLogger(t *testing.T) {

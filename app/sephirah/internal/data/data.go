@@ -8,7 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/wire"

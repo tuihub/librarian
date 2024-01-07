@@ -5,7 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/client/feed"
-	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/logger"
 
 	"github.com/stretchr/testify/require"
 )
