@@ -5,11 +5,9 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
-	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 func (b *Binah) PresignedUploadFile(ctx context.Context) (string, *errors.Error) {
@@ -17,15 +15,11 @@ func (b *Binah) PresignedUploadFile(ctx context.Context) (string, *errors.Error)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res, err := b.porter.PresignedPushData(ctx, &porter.PresignedPushDataRequest{
-		Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-		ContentId:  strconv.FormatInt(int64(metadata.ID), 10),
-		ExpireTime: durationpb.New(libtime.Day),
-	})
+	res, err := b.repo.PresignedPutObject(ctx, BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return res.GetPushUrl(), nil
+	return res, nil
 }
 
 func (b *Binah) PresignedUploadFileComplete(ctx context.Context) *errors.Error {
@@ -49,13 +43,9 @@ func (b *Binah) PresignedDownloadFile(ctx context.Context) (string, *errors.Erro
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res, err := b.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
-		Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-		ContentId:  strconv.FormatInt(int64(metadata.ID), 10),
-		ExpireTime: durationpb.New(libtime.Day),
-	})
+	res, err := b.repo.PresignedGetObject(ctx, BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return res.GetPullUrl(), nil
+	return res, nil
 }

@@ -26,6 +26,10 @@ func NewSupervisor(porter *client.Porter) *Supervisor {
 	}
 }
 
+func (s *Supervisor) GetFeatureSummary() *modelsupervisor.ServerFeatureSummary {
+	return s.featureSummary
+}
+
 func (s *Supervisor) RefreshPorterInstances(ctx context.Context) error {
 	addresses, err := s.porter.GetServiceAddresses(ctx)
 	if err != nil {

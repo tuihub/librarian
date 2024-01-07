@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
@@ -21,7 +22,6 @@ import (
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/google/wire"
-	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 var ProviderSet = wire.NewSet(
@@ -39,6 +39,7 @@ type ChesedRepo interface {
 
 type Chesed struct {
 	repo        ChesedRepo
+	b           bizbinah.BinahRepo
 	searcher    *client.Searcher
 	porter      porter.LibrarianPorterServiceClient
 	miner       miner.LibrarianMinerServiceClient
@@ -50,6 +51,7 @@ type Chesed struct {
 
 func NewChesed(
 	repo ChesedRepo,
+	b bizbinah.BinahRepo,
 	cron *libcron.Cron,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient *client.Searcher,
@@ -59,6 +61,7 @@ func NewChesed(
 ) (*Chesed, error) {
 	c := &Chesed{
 		repo:        repo,
+		b:           b,
 		porter:      pClient,
 		searcher:    sClient,
 		miner:       miClient,
@@ -151,15 +154,11 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 		return
 	}
 	for _, image := range images {
-		data, err := c.porter.PresignedPullData(ctx, &porter.PresignedPullDataRequest{
-			Source:     porter.DataSource_DATA_SOURCE_INTERNAL_DEFAULT,
-			ContentId:  strconv.FormatInt(int64(image.ID), 10),
-			ExpireTime: durationpb.New(libtime.Day),
-		})
+		data, err := c.b.PresignedGetObject(ctx, bizbinah.BucketDefault, strconv.FormatInt(int64(image.ID), 10), libtime.Day)
 		if err != nil {
 			return
 		}
-		results, err := c.miner.RecognizeImageURL(ctx, &miner.RecognizeImageURLRequest{Url: data.GetPullUrl()})
+		results, err := c.miner.RecognizeImageURL(ctx, &miner.RecognizeImageURLRequest{Url: data})
 		if err != nil {
 			return
 		}

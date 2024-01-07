@@ -807,6 +807,46 @@ func (c *toPBConverterImpl) ToPBNotifyTargetList(source []*modelnetzach.NotifyTa
 	}
 	return pV1NotifyTargetList
 }
+func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v11.ServerFeatureSummary {
+	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
+	if source != nil {
+		var v1ServerFeatureSummary v11.ServerFeatureSummary
+		var stringList []string
+		if (*source).SupportedAccountPlatforms != nil {
+			stringList = make([]string, len((*source).SupportedAccountPlatforms))
+			for i := 0; i < len((*source).SupportedAccountPlatforms); i++ {
+				stringList[i] = (*source).SupportedAccountPlatforms[i]
+			}
+		}
+		v1ServerFeatureSummary.SupportedAccountPlatforms = stringList
+		var stringList2 []string
+		if (*source).SupportedAppSources != nil {
+			stringList2 = make([]string, len((*source).SupportedAppSources))
+			for j := 0; j < len((*source).SupportedAppSources); j++ {
+				stringList2[j] = (*source).SupportedAppSources[j]
+			}
+		}
+		v1ServerFeatureSummary.SupportedAppSources = stringList2
+		var stringList3 []string
+		if (*source).SupportedFeedSources != nil {
+			stringList3 = make([]string, len((*source).SupportedFeedSources))
+			for k := 0; k < len((*source).SupportedFeedSources); k++ {
+				stringList3[k] = (*source).SupportedFeedSources[k]
+			}
+		}
+		v1ServerFeatureSummary.SupportedFeedSources = stringList3
+		var stringList4 []string
+		if (*source).SupportedNotifyDestinations != nil {
+			stringList4 = make([]string, len((*source).SupportedNotifyDestinations))
+			for l := 0; l < len((*source).SupportedNotifyDestinations); l++ {
+				stringList4[l] = (*source).SupportedNotifyDestinations[l]
+			}
+		}
+		v1ServerFeatureSummary.SupportedNotifyDestinations = stringList4
+		pV1ServerFeatureSummary = &v1ServerFeatureSummary
+	}
+	return pV1ServerFeatureSummary
+}
 func (c *toPBConverterImpl) ToPBTimeRange(source *model.TimeRange) *v1.TimeRange {
 	var pV1TimeRange *v1.TimeRange
 	if source != nil {

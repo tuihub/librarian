@@ -13,7 +13,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	var appID, appID2 *librarian.InternalID
 	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,
-		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+		Internal:         true,
+		Source:           "",
 		SourceAppId:      "",
 		SourceUrl:        nil,
 		Details:          nil,
@@ -46,7 +47,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &librarian.App{
 		Id:               appID,
-		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+		Internal:         true,
+		Source:           "",
 		SourceAppId:      "",
 		SourceUrl:        nil,
 		Details:          nil,
@@ -62,7 +64,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
 		Id:               nil,
-		Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+		Internal:         true,
+		Source:           "",
 		SourceAppId:      "",
 		SourceUrl:        nil,
 		Details:          nil,
@@ -84,13 +87,13 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := c.cli.GetBindApps(ctx, &pb.GetBindAppsRequest{AppId: appID2}); err != nil {
+	if _, err := c.cli.GetBoundApps(ctx, &pb.GetBoundAppsRequest{AppId: appID2}); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{AppId: appID2}); err != nil {
 		log.Fatal(err)
 	}
-	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
+	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{Source: nil}); err != nil {
 		log.Fatal(err)
 	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID2.GetId() {
 		log.Fatal("unexpected search result")
@@ -98,7 +101,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	if _, err := c.cli.MergeApps(ctx, &pb.MergeAppsRequest{
 		Base: &librarian.App{
 			Id:               appID,
-			Source:           librarian.AppSource_APP_SOURCE_INTERNAL,
+			Internal:         true,
+			Source:           "",
 			SourceAppId:      "",
 			SourceUrl:        nil,
 			Details:          nil,
@@ -114,7 +118,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{}); err != nil {
+	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{Source: nil}); err != nil {
 		log.Fatal(err)
 	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID.GetId() {
 		log.Fatal("unexpected search result")

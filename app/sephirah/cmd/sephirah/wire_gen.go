@@ -113,15 +113,14 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, librarianMapperServiceClient, searcher, topic)
-	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binahRepo, err := data.NewBinahRepo(sephirah_Data)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	s3 := bizbinah.NewS3(binahRepo)
-	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, s3)
+	controlBlock := bizbinah.NewControlBlock(libauthAuth)
+	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
 	cron := libcron.NewCron()
 	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, librarianMapperServiceClient, searcher, topic7)
@@ -139,14 +138,14 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v)
 	grpcServer, err := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
 	if err != nil {
 		cleanup2()

@@ -11,7 +11,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -28,6 +30,7 @@ type LibrarianSephirahServiceService struct {
 	y        *bizyesod.Yesod
 	n        *biznetzach.Netzach
 	c        *bizchesed.Chesed
+	s        *supervisor.Supervisor
 	app      *libapp.Settings
 	auth     *libauth.Auth
 	authFunc func(context.Context) (context.Context, error)
@@ -41,6 +44,7 @@ func NewLibrarianSephirahServiceService(
 	y *bizyesod.Yesod,
 	n *biznetzach.Netzach,
 	c *bizchesed.Chesed,
+	s *supervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
 	authFunc func(context.Context) (context.Context, error),
@@ -62,6 +66,7 @@ func NewLibrarianSephirahServiceService(
 		y:        y,
 		n:        n,
 		c:        c,
+		s:        s,
 		app:      app,
 		auth:     auth,
 		authFunc: authFunc,
@@ -79,6 +84,7 @@ func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context
 		ProtocolSummary: &pb.ServerProtocolSummary{
 			Version: s.app.ProtoVersion,
 		},
-		CurrentTime: timestamppb.New(time.Now()),
+		CurrentTime:    timestamppb.New(time.Now()),
+		FeatureSummary: converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
 	}, nil
 }

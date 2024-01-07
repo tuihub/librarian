@@ -145,7 +145,7 @@ func (c *Client) testUser(ctx context.Context) {
 func (c *Client) testAccount(ctx context.Context) {
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
-			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			Platform:          "steam",
 			PlatformAccountId: "0",
 		},
 	}); err != nil {
@@ -153,7 +153,7 @@ func (c *Client) testAccount(ctx context.Context) {
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
-			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			Platform:          "steam",
 			PlatformAccountId: "1",
 		},
 	}); err == nil {
@@ -168,7 +168,7 @@ func (c *Client) testAccount(ctx context.Context) {
 	}
 	if _, err := c.cli.UnLinkAccount(ctx, &pb.UnLinkAccountRequest{
 		AccountId: &librarian.AccountID{
-			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			Platform:          "steam",
 			PlatformAccountId: "0",
 		},
 	}); err != nil {
@@ -183,7 +183,7 @@ func (c *Client) testAccount(ctx context.Context) {
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
-			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			Platform:          "steam",
 			PlatformAccountId: "1",
 		},
 	}); err != nil {
@@ -191,7 +191,7 @@ func (c *Client) testAccount(ctx context.Context) {
 	}
 	if _, err := c.cli.LinkAccount(ctx, &pb.LinkAccountRequest{
 		AccountId: &librarian.AccountID{
-			Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
+			Platform:          "steam",
 			PlatformAccountId: "0",
 		},
 	}); err == nil {

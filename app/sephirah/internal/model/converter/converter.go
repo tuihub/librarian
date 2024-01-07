@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -36,6 +37,9 @@ func DurationPBToDuration(t *durationpb.Duration) time.Duration {
 	return t.AsDuration()
 }
 
+func ToPBServerFeatureSummary(a *modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary {
+	return toPB.ToPBServerFeatureSummary(a)
+}
 func ToPBUser(a *modeltiphereth.User) *pb.User {
 	return toPB.ToPBUser(a)
 }

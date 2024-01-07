@@ -36,15 +36,14 @@ import (
 // goverter:extend ToBizAccountAppRelationType
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
+	// goverter:matchIgnoreCase
+	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
 
 	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
 	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
 	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
-
-	// goverter:matchIgnoreCase
-	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal

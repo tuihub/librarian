@@ -82,14 +82,13 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher, topic)
-	controlBlock := bizbinah.NewControlBlock(auth)
 	binahRepo, err := data.NewBinahRepo(sephirah_Data)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	s3 := bizbinah.NewS3(binahRepo)
-	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, s3)
+	controlBlock := bizbinah.NewControlBlock(auth)
+	binah := bizbinah.NewBinah(binahRepo, controlBlock, auth, librarianMapperServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
 	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, librarianMapperServiceClient, searcher, topic7)
 	if err != nil {
@@ -99,13 +98,13 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	netzach := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
 	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(auth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, settings, auth, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, auth, v)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil
