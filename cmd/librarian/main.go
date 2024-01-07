@@ -73,7 +73,6 @@ func main() {
 		bc.GetSephirah().GetData(),
 		bc.GetMapper().GetData(),
 		bc.GetSearcher().GetData(),
-		bc.GetPorter().GetData(),
 		bc.GetMiner().GetData(),
 		bc.GetSephirah().GetAuth(),
 		bc.GetSephirah().GetMq(),
@@ -111,14 +110,8 @@ func searcherClientSelector(
 	return inproc.Searcher, nil
 }
 
-func porterClientSelector(
-	conf *conf.Librarian_EnableServiceDiscovery,
-	inproc *inprocgrpc.InprocClients,
-) (porter.LibrarianPorterServiceClient, error) {
-	if conf.GetPorter() {
-		return client.NewPorterClient()
-	}
-	return inproc.Porter, nil
+func porterClientSelector() (porter.LibrarianPorterServiceClient, error) {
+	return client.NewPorterClient()
 }
 
 func minerClientSelector(

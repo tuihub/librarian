@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/logger"
 
@@ -14,14 +14,14 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type s3Repo struct {
+type binahRepo struct {
 	mc      *minio.Client
-	buckets map[bizs3.Bucket]string
+	buckets map[bizbinah.Bucket]string
 }
 
-func NewS3Repo(c *conf.Porter_Data) (bizs3.S3Repo, error) {
+func NewBinahRepo(c *conf.Sephirah_Data) (bizbinah.BinahRepo, error) {
 	if c == nil || c.GetS3() == nil {
-		return new(s3Repo), nil
+		return new(binahRepo), nil
 	}
 	minioClient, err := minio.New(c.GetS3().GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
 		Creds:  credentials.NewStaticV4(c.GetS3().GetAccessKey(), c.GetS3().GetSecretKey(), ""),
@@ -34,7 +34,7 @@ func NewS3Repo(c *conf.Porter_Data) (bizs3.S3Repo, error) {
 	bucketName := defaultBucketName()
 	location := "us-east-1"
 	for i, v := range bucketName {
-		if i == bizs3.BucketUnspecified {
+		if i == bizbinah.BucketUnspecified {
 			continue
 		}
 		if err = initBucket(minioClient, v, location); err != nil {
@@ -42,7 +42,7 @@ func NewS3Repo(c *conf.Porter_Data) (bizs3.S3Repo, error) {
 		}
 	}
 
-	return &s3Repo{
+	return &binahRepo{
 		mc:      minioClient,
 		buckets: bucketName,
 	}, nil
@@ -72,18 +72,18 @@ func initBucket(mc *minio.Client, bucketName, location string) error {
 	return nil
 }
 
-func defaultBucketName() map[bizs3.Bucket]string {
-	return map[bizs3.Bucket]string{
-		bizs3.BucketUnspecified: "",
-		bizs3.BucketDefault:     "default",
+func defaultBucketName() map[bizbinah.Bucket]string {
+	return map[bizbinah.Bucket]string{
+		bizbinah.BucketUnspecified: "",
+		bizbinah.BucketDefault:     "default",
 	}
 }
 
-func (s *s3Repo) FeatureEnabled() bool {
+func (s *binahRepo) FeatureEnabled() bool {
 	return s.mc != nil
 }
 
-func (s *s3Repo) PutObject(ctx context.Context, r io.Reader, bucket bizs3.Bucket, objectName string) error {
+func (s *binahRepo) PutObject(ctx context.Context, r io.Reader, bucket bizbinah.Bucket, objectName string) error {
 	_, err := s.mc.PutObject(
 		ctx,
 		s.buckets[bucket],
@@ -95,9 +95,9 @@ func (s *s3Repo) PutObject(ctx context.Context, r io.Reader, bucket bizs3.Bucket
 	return err
 }
 
-func (s *s3Repo) PresignedPutObject(
+func (s *binahRepo) PresignedPutObject(
 	ctx context.Context,
-	bucket bizs3.Bucket,
+	bucket bizbinah.Bucket,
 	objectName string,
 	expires time.Duration,
 ) (string, error) {
@@ -108,9 +108,9 @@ func (s *s3Repo) PresignedPutObject(
 	return res.String(), nil
 }
 
-func (s *s3Repo) PresignedGetObject(
+func (s *binahRepo) PresignedGetObject(
 	ctx context.Context,
-	bucket bizs3.Bucket,
+	bucket bizbinah.Bucket,
 	objectName string,
 	expires time.Duration,
 ) (string, error) {

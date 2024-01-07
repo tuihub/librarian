@@ -8,15 +8,13 @@ import (
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
-type BinahRepo interface {
-}
-
 type Binah struct {
 	callback *modelbinah.ControlBlock
 	auth     *libauth.Auth
 	mapper   mapper.LibrarianMapperServiceClient
 	porter   porter.LibrarianPorterServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
+	s3       *S3
 }
 
 func NewBinah(
@@ -25,6 +23,7 @@ func NewBinah(
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
+	s3 *S3,
 ) *Binah {
 	return &Binah{
 		callback: callback,
@@ -32,6 +31,7 @@ func NewBinah(
 		mapper:   mClient,
 		porter:   pClient,
 		searcher: sClient,
+		s3:       s3,
 	}
 }
 

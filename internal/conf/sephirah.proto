@@ -12,7 +12,14 @@ message Sephirah {
   }
 
   message Data {
+    message S3 {
+      string end_point = 1;
+      string access_key = 2;
+      string secret_key = 3;
+      bool use_ssl = 4;
+    }
     Database database = 1;
+    S3 s3 = 2;
   }
 
   Server server = 1;

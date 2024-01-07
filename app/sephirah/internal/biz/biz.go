@@ -19,6 +19,7 @@ var ProviderSet = wire.NewSet(
 	bizgebura.NewGebura,
 	bizbinah.NewBinah,
 	bizbinah.NewControlBlock,
+	bizbinah.NewS3,
 	bizyesod.NewYesod,
 	biznetzach.NewNetzach,
 	bizchesed.ProviderSet,

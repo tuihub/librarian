@@ -15,6 +15,11 @@ sephirah:
       user: librarian
       password: librarian
       no_ssl: true
+    s3:
+      end_point: 127.0.0.1:9000
+      access_key: librarian
+      secret_key: librarian
+      use_ssl: false
   auth:
     salt: test
     issuer: test
@@ -39,14 +44,5 @@ searcher:
   data:
     meilisearch:
       addr: "http://localhost:7700"
-porter:
-  data:
-    s3:
-      end_point: 127.0.0.1:9000
-      access_key: librarian
-      secret_key: librarian
-      use_ssl: false
-    steam:
-      api_key:
 miner:
   data:

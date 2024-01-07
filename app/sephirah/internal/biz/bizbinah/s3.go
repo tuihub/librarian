@@ -1,4 +1,4 @@
-package bizs3
+package bizbinah
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func (p *PutObject) Write(b []byte) (int, error) {
 	return p.writer.Write(b)
 }
 
-type S3Repo interface {
+type BinahRepo interface {
 	FeatureEnabled() bool
 	PutObject(context.Context, io.Reader, Bucket, string) error
 	PresignedGetObject(context.Context, Bucket, string, time.Duration) (string, error)
@@ -33,7 +33,7 @@ type S3Repo interface {
 }
 
 type S3 struct {
-	repo S3Repo
+	repo BinahRepo
 }
 
 type Bucket int
@@ -43,7 +43,7 @@ const (
 	BucketDefault
 )
 
-func NewS3(repo S3Repo) *S3 {
+func NewS3(repo BinahRepo) *S3 {
 	if !repo.FeatureEnabled() {
 		return new(S3)
 	}

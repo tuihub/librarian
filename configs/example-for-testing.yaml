@@ -9,6 +9,7 @@ sephirah:
   data:
     database:
       driver: sqlite3
+    s3:
   auth:
     salt: test
     issuer: test
@@ -25,7 +26,5 @@ searcher:
   data:
     bleve:
       enable:
-porter:
-  data:
 miner:
   data:

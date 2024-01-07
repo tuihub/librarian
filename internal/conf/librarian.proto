@@ -6,7 +6,6 @@ option go_package = "Librarian/internal/conf;conf";
 import "conf/sephirah.proto";
 import "conf/mapper.proto";
 import "conf/searcher.proto";
-import "conf/porter.proto";
 import "conf/miner.proto";
 
 message Librarian {
@@ -20,7 +19,6 @@ message Librarian {
   Sephirah sephirah = 2;
   Mapper mapper = 3;
   Searcher searcher = 4;
-  Porter porter = 5;
-  Miner miner = 6;
+  Miner miner = 5;
 }
 

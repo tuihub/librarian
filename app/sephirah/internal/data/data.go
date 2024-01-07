@@ -28,6 +28,7 @@ var ProviderSet = wire.NewSet(
 	NewNetzachRepo,
 	NewChesedRepo,
 	NewAngelaRepo,
+	NewBinahRepo,
 )
 
 // Data .

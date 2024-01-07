@@ -106,7 +106,14 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, librarianMapperServiceClient, searcher, topic)
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
-	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	binahRepo, err := data.NewBinahRepo(sephirah_Data)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	s3 := bizbinah.NewS3(binahRepo)
+	binah := bizbinah.NewBinah(controlBlock, libauthAuth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, s3)
 	yesodRepo := data.NewYesodRepo(dataData)
 	cron := libcron.NewCron()
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic7)

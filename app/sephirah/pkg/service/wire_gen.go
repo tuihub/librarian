@@ -72,7 +72,13 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher, topic)
 	controlBlock := bizbinah.NewControlBlock(auth)
-	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient)
+	binahRepo, err := data.NewBinahRepo(sephirah_Data)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	s3 := bizbinah.NewS3(binahRepo)
+	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, s3)
 	yesodRepo := data.NewYesodRepo(dataData)
 	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic7)
 	if err != nil {
