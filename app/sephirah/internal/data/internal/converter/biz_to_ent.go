@@ -2,7 +2,6 @@ package converter
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -22,11 +21,8 @@ import (
 // goverter:extend ToEntUserType
 // goverter:extend ToEntUserStatus
 // goverter:extend ToEntAppType
-// goverter:extend ToEntAppSource
 // goverter:extend ToEntAppPackageSource
-// goverter:extend ToEntFeedConfigSource
 // goverter:extend ToEntFeedConfigStatus
-// goverter:extend ToEntNotifyTargetType
 // goverter:extend ToEntNotifyTargetStatus
 type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
@@ -81,17 +77,6 @@ func ToEntAppType(t modelgebura.AppType) app.Type {
 		return app.TypeGame
 	default:
 		return app.TypeUnknown
-	}
-}
-
-func ToEntAccountPlatform(t modeltiphereth.AccountPlatform) account.Platform {
-	switch t {
-	case modeltiphereth.AccountPlatformUnspecified:
-		return ""
-	case modeltiphereth.AccountPlatformSteam:
-		return account.PlatformSteam
-	default:
-		return ""
 	}
 }
 

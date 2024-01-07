@@ -15,6 +15,8 @@ const (
 	Label = "app"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldInternal holds the string denoting the internal field in the database.
+	FieldInternal = "internal"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldSourceAppID holds the string denoting the source_app_id field in the database.
@@ -87,6 +89,7 @@ const (
 // Columns holds all SQL columns for app fields.
 var Columns = []string{
 	FieldID,
+	FieldInternal,
 	FieldSource,
 	FieldSourceAppID,
 	FieldSourceURL,
@@ -143,29 +146,6 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
-// Source defines the type for the "source" enum field.
-type Source string
-
-// Source values.
-const (
-	SourceInternal Source = "internal"
-	SourceSteam    Source = "steam"
-)
-
-func (s Source) String() string {
-	return string(s)
-}
-
-// SourceValidator is a validator for the "source" field enum values. It is called by the builders before save.
-func SourceValidator(s Source) error {
-	switch s {
-	case SourceInternal, SourceSteam:
-		return nil
-	default:
-		return fmt.Errorf("app: invalid enum value for source field: %q", s)
-	}
-}
-
 // Type defines the type for the "type" enum field.
 type Type string
 
@@ -195,6 +175,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByInternal orders the results by the internal field.
+func ByInternal(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInternal, opts...).ToFunc()
 }
 
 // BySource orders the results by the source field.

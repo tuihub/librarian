@@ -61,7 +61,7 @@ type AccountMutation struct {
 	op                   Op
 	typ                  string
 	id                   *model.InternalID
-	platform             *account.Platform
+	platform             *string
 	platform_account_id  *string
 	name                 *string
 	profile_url          *string
@@ -184,12 +184,12 @@ func (m *AccountMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 }
 
 // SetPlatform sets the "platform" field.
-func (m *AccountMutation) SetPlatform(a account.Platform) {
-	m.platform = &a
+func (m *AccountMutation) SetPlatform(s string) {
+	m.platform = &s
 }
 
 // Platform returns the value of the "platform" field in the mutation.
-func (m *AccountMutation) Platform() (r account.Platform, exists bool) {
+func (m *AccountMutation) Platform() (r string, exists bool) {
 	v := m.platform
 	if v == nil {
 		return
@@ -200,7 +200,7 @@ func (m *AccountMutation) Platform() (r account.Platform, exists bool) {
 // OldPlatform returns the old "platform" field's value of the Account entity.
 // If the Account object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AccountMutation) OldPlatform(ctx context.Context) (v account.Platform, err error) {
+func (m *AccountMutation) OldPlatform(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPlatform is only allowed on UpdateOne operations")
 	}
@@ -639,7 +639,7 @@ func (m *AccountMutation) OldField(ctx context.Context, name string) (ent.Value,
 func (m *AccountMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case account.FieldPlatform:
-		v, ok := value.(account.Platform)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -869,7 +869,8 @@ type AppMutation struct {
 	op                          Op
 	typ                         string
 	id                          *model.InternalID
-	source                      *app.Source
+	internal                    *bool
+	source                      *string
 	source_app_id               *string
 	source_url                  *string
 	name                        *string
@@ -1008,13 +1009,49 @@ func (m *AppMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 	}
 }
 
+// SetInternal sets the "internal" field.
+func (m *AppMutation) SetInternal(b bool) {
+	m.internal = &b
+}
+
+// Internal returns the value of the "internal" field in the mutation.
+func (m *AppMutation) Internal() (r bool, exists bool) {
+	v := m.internal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInternal returns the old "internal" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldInternal(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInternal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInternal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInternal: %w", err)
+	}
+	return oldValue.Internal, nil
+}
+
+// ResetInternal resets all changes to the "internal" field.
+func (m *AppMutation) ResetInternal() {
+	m.internal = nil
+}
+
 // SetSource sets the "source" field.
-func (m *AppMutation) SetSource(a app.Source) {
-	m.source = &a
+func (m *AppMutation) SetSource(s string) {
+	m.source = &s
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *AppMutation) Source() (r app.Source, exists bool) {
+func (m *AppMutation) Source() (r string, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -1025,7 +1062,7 @@ func (m *AppMutation) Source() (r app.Source, exists bool) {
 // OldSource returns the old "source" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldSource(ctx context.Context) (v app.Source, err error) {
+func (m *AppMutation) OldSource(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -1954,7 +1991,10 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
+	if m.internal != nil {
+		fields = append(fields, app.FieldInternal)
+	}
 	if m.source != nil {
 		fields = append(fields, app.FieldSource)
 	}
@@ -2008,6 +2048,8 @@ func (m *AppMutation) Fields() []string {
 // schema.
 func (m *AppMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case app.FieldInternal:
+		return m.Internal()
 	case app.FieldSource:
 		return m.Source()
 	case app.FieldSourceAppID:
@@ -2047,6 +2089,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case app.FieldInternal:
+		return m.OldInternal(ctx)
 	case app.FieldSource:
 		return m.OldSource(ctx)
 	case app.FieldSourceAppID:
@@ -2086,8 +2130,15 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 // type.
 func (m *AppMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case app.FieldInternal:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInternal(v)
+		return nil
 	case app.FieldSource:
-		v, ok := value.(app.Source)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2297,6 +2348,9 @@ func (m *AppMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AppMutation) ResetField(name string) error {
 	switch name {
+	case app.FieldInternal:
+		m.ResetInternal()
+		return nil
 	case app.FieldSource:
 		m.ResetSource()
 		return nil
@@ -5377,7 +5431,7 @@ type FeedConfigMutation struct {
 	feed_url                  *string
 	author_account            *model.InternalID
 	addauthor_account         *model.InternalID
-	source                    *feedconfig.Source
+	source                    *string
 	status                    *feedconfig.Status
 	category                  *string
 	pull_interval             *time.Duration
@@ -5672,12 +5726,12 @@ func (m *FeedConfigMutation) ResetAuthorAccount() {
 }
 
 // SetSource sets the "source" field.
-func (m *FeedConfigMutation) SetSource(f feedconfig.Source) {
-	m.source = &f
+func (m *FeedConfigMutation) SetSource(s string) {
+	m.source = &s
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *FeedConfigMutation) Source() (r feedconfig.Source, exists bool) {
+func (m *FeedConfigMutation) Source() (r string, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -5688,7 +5742,7 @@ func (m *FeedConfigMutation) Source() (r feedconfig.Source, exists bool) {
 // OldSource returns the old "source" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldSource(ctx context.Context) (v feedconfig.Source, err error) {
+func (m *FeedConfigMutation) OldSource(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -6383,7 +6437,7 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		m.SetAuthorAccount(v)
 		return nil
 	case feedconfig.FieldSource:
-		v, ok := value.(feedconfig.Source)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -12317,7 +12371,7 @@ type NotifyTargetMutation struct {
 	token                     *string
 	name                      *string
 	description               *string
-	_type                     *notifytarget.Type
+	destination               *string
 	status                    *notifytarget.Status
 	updated_at                *time.Time
 	created_at                *time.Time
@@ -12547,40 +12601,40 @@ func (m *NotifyTargetMutation) ResetDescription() {
 	m.description = nil
 }
 
-// SetType sets the "type" field.
-func (m *NotifyTargetMutation) SetType(n notifytarget.Type) {
-	m._type = &n
+// SetDestination sets the "destination" field.
+func (m *NotifyTargetMutation) SetDestination(s string) {
+	m.destination = &s
 }
 
-// GetType returns the value of the "type" field in the mutation.
-func (m *NotifyTargetMutation) GetType() (r notifytarget.Type, exists bool) {
-	v := m._type
+// Destination returns the value of the "destination" field in the mutation.
+func (m *NotifyTargetMutation) Destination() (r string, exists bool) {
+	v := m.destination
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldType returns the old "type" field's value of the NotifyTarget entity.
+// OldDestination returns the old "destination" field's value of the NotifyTarget entity.
 // If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyTargetMutation) OldType(ctx context.Context) (v notifytarget.Type, err error) {
+func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldType is only allowed on UpdateOne operations")
+		return v, errors.New("OldDestination is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an ID field in the mutation")
+		return v, errors.New("OldDestination requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldType: %w", err)
+		return v, fmt.Errorf("querying old value for OldDestination: %w", err)
 	}
-	return oldValue.Type, nil
+	return oldValue.Destination, nil
 }
 
-// ResetType resets all changes to the "type" field.
-func (m *NotifyTargetMutation) ResetType() {
-	m._type = nil
+// ResetDestination resets all changes to the "destination" field.
+func (m *NotifyTargetMutation) ResetDestination() {
+	m.destination = nil
 }
 
 // SetStatus sets the "status" field.
@@ -12882,8 +12936,8 @@ func (m *NotifyTargetMutation) Fields() []string {
 	if m.description != nil {
 		fields = append(fields, notifytarget.FieldDescription)
 	}
-	if m._type != nil {
-		fields = append(fields, notifytarget.FieldType)
+	if m.destination != nil {
+		fields = append(fields, notifytarget.FieldDestination)
 	}
 	if m.status != nil {
 		fields = append(fields, notifytarget.FieldStatus)
@@ -12908,8 +12962,8 @@ func (m *NotifyTargetMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case notifytarget.FieldDescription:
 		return m.Description()
-	case notifytarget.FieldType:
-		return m.GetType()
+	case notifytarget.FieldDestination:
+		return m.Destination()
 	case notifytarget.FieldStatus:
 		return m.Status()
 	case notifytarget.FieldUpdatedAt:
@@ -12931,8 +12985,8 @@ func (m *NotifyTargetMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldName(ctx)
 	case notifytarget.FieldDescription:
 		return m.OldDescription(ctx)
-	case notifytarget.FieldType:
-		return m.OldType(ctx)
+	case notifytarget.FieldDestination:
+		return m.OldDestination(ctx)
 	case notifytarget.FieldStatus:
 		return m.OldStatus(ctx)
 	case notifytarget.FieldUpdatedAt:
@@ -12969,12 +13023,12 @@ func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case notifytarget.FieldType:
-		v, ok := value.(notifytarget.Type)
+	case notifytarget.FieldDestination:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetType(v)
+		m.SetDestination(v)
 		return nil
 	case notifytarget.FieldStatus:
 		v, ok := value.(notifytarget.Status)
@@ -13055,8 +13109,8 @@ func (m *NotifyTargetMutation) ResetField(name string) error {
 	case notifytarget.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case notifytarget.FieldType:
-		m.ResetType()
+	case notifytarget.FieldDestination:
+		m.ResetDestination()
 		return nil
 	case notifytarget.FieldStatus:
 		m.ResetStatus()

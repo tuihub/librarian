@@ -75,14 +75,6 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianPorterServiceClient, err := porterClientSelector()
-	if err != nil {
-		cleanup4()
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, inprocClients)
 	if err != nil {
 		cleanup4()
@@ -91,7 +83,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianPorterServiceClient, librarianMinerServiceClient)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient)
 	if err != nil {
 		cleanup4()
 		cleanup3()

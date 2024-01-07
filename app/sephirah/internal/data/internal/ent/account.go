@@ -20,7 +20,7 @@ type Account struct {
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
 	// Platform holds the value of the "platform" field.
-	Platform account.Platform `json:"platform,omitempty"`
+	Platform string `json:"platform,omitempty"`
 	// PlatformAccountID holds the value of the "platform_account_id" field.
 	PlatformAccountID string `json:"platform_account_id,omitempty"`
 	// Name holds the value of the "name" field.
@@ -111,7 +111,7 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field platform", values[i])
 			} else if value.Valid {
-				a.Platform = account.Platform(value.String)
+				a.Platform = value.String
 			}
 		case account.FieldPlatformAccountID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -203,7 +203,7 @@ func (a *Account) String() string {
 	builder.WriteString("Account(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
 	builder.WriteString("platform=")
-	builder.WriteString(fmt.Sprintf("%v", a.Platform))
+	builder.WriteString(a.Platform)
 	builder.WriteString(", ")
 	builder.WriteString("platform_account_id=")
 	builder.WriteString(a.PlatformAccountID)

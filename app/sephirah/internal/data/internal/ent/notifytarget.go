@@ -25,8 +25,8 @@ type NotifyTarget struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
-	// Type holds the value of the "type" field.
-	Type notifytarget.Type `json:"type,omitempty"`
+	// Destination holds the value of the "destination" field.
+	Destination string `json:"destination,omitempty"`
 	// Status holds the value of the "status" field.
 	Status notifytarget.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -91,7 +91,7 @@ func (*NotifyTarget) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case notifytarget.FieldID:
 			values[i] = new(sql.NullInt64)
-		case notifytarget.FieldToken, notifytarget.FieldName, notifytarget.FieldDescription, notifytarget.FieldType, notifytarget.FieldStatus:
+		case notifytarget.FieldToken, notifytarget.FieldName, notifytarget.FieldDescription, notifytarget.FieldDestination, notifytarget.FieldStatus:
 			values[i] = new(sql.NullString)
 		case notifytarget.FieldUpdatedAt, notifytarget.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -136,11 +136,11 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				nt.Description = value.String
 			}
-		case notifytarget.FieldType:
+		case notifytarget.FieldDestination:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field type", values[i])
+				return fmt.Errorf("unexpected type %T for field destination", values[i])
 			} else if value.Valid {
-				nt.Type = notifytarget.Type(value.String)
+				nt.Destination = value.String
 			}
 		case notifytarget.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -227,8 +227,8 @@ func (nt *NotifyTarget) String() string {
 	builder.WriteString("description=")
 	builder.WriteString(nt.Description)
 	builder.WriteString(", ")
-	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", nt.Type))
+	builder.WriteString("destination=")
+	builder.WriteString(nt.Destination)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", nt.Status))

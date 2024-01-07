@@ -18,8 +18,10 @@ type App struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
+	// Internal holds the value of the "internal" field.
+	Internal bool `json:"internal,omitempty"`
 	// Source holds the value of the "source" field.
-	Source app.Source `json:"source,omitempty"`
+	Source string `json:"source,omitempty"`
 	// SourceAppID holds the value of the "source_app_id" field.
 	SourceAppID string `json:"source_app_id,omitempty"`
 	// SourceURL holds the value of the "source_url" field.
@@ -126,6 +128,8 @@ func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case app.FieldInternal:
+			values[i] = new(sql.NullBool)
 		case app.FieldID:
 			values[i] = new(sql.NullInt64)
 		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldHeroImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
@@ -155,11 +159,17 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.ID = model.InternalID(value.Int64)
 			}
+		case app.FieldInternal:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field internal", values[i])
+			} else if value.Valid {
+				a.Internal = value.Bool
+			}
 		case app.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				a.Source = app.Source(value.String)
+				a.Source = value.String
 			}
 		case app.FieldSourceAppID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -313,8 +323,11 @@ func (a *App) String() string {
 	var builder strings.Builder
 	builder.WriteString("App(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString("internal=")
+	builder.WriteString(fmt.Sprintf("%v", a.Internal))
+	builder.WriteString(", ")
 	builder.WriteString("source=")
-	builder.WriteString(fmt.Sprintf("%v", a.Source))
+	builder.WriteString(a.Source)
 	builder.WriteString(", ")
 	builder.WriteString("source_app_id=")
 	builder.WriteString(a.SourceAppID)

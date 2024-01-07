@@ -97,15 +97,15 @@ func (fcu *FeedConfigUpdate) AddAuthorAccount(mi model.InternalID) *FeedConfigUp
 }
 
 // SetSource sets the "source" field.
-func (fcu *FeedConfigUpdate) SetSource(f feedconfig.Source) *FeedConfigUpdate {
-	fcu.mutation.SetSource(f)
+func (fcu *FeedConfigUpdate) SetSource(s string) *FeedConfigUpdate {
+	fcu.mutation.SetSource(s)
 	return fcu
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableSource(f *feedconfig.Source) *FeedConfigUpdate {
-	if f != nil {
-		fcu.SetSource(*f)
+func (fcu *FeedConfigUpdate) SetNillableSource(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetSource(*s)
 	}
 	return fcu
 }
@@ -378,11 +378,6 @@ func (fcu *FeedConfigUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcu *FeedConfigUpdate) check() error {
-	if v, ok := fcu.mutation.Source(); ok {
-		if err := feedconfig.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
-		}
-	}
 	if v, ok := fcu.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
@@ -419,7 +414,7 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
 	}
 	if value, ok := fcu.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
 	}
 	if value, ok := fcu.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
@@ -692,15 +687,15 @@ func (fcuo *FeedConfigUpdateOne) AddAuthorAccount(mi model.InternalID) *FeedConf
 }
 
 // SetSource sets the "source" field.
-func (fcuo *FeedConfigUpdateOne) SetSource(f feedconfig.Source) *FeedConfigUpdateOne {
-	fcuo.mutation.SetSource(f)
+func (fcuo *FeedConfigUpdateOne) SetSource(s string) *FeedConfigUpdateOne {
+	fcuo.mutation.SetSource(s)
 	return fcuo
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableSource(f *feedconfig.Source) *FeedConfigUpdateOne {
-	if f != nil {
-		fcuo.SetSource(*f)
+func (fcuo *FeedConfigUpdateOne) SetNillableSource(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetSource(*s)
 	}
 	return fcuo
 }
@@ -986,11 +981,6 @@ func (fcuo *FeedConfigUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcuo *FeedConfigUpdateOne) check() error {
-	if v, ok := fcuo.mutation.Source(); ok {
-		if err := feedconfig.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
-		}
-	}
 	if v, ok := fcuo.mutation.Status(); ok {
 		if err := feedconfig.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
@@ -1044,7 +1034,7 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
 	}
 	if value, ok := fcuo.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
 	}
 	if value, ok := fcuo.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)

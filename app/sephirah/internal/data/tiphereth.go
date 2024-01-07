@@ -119,7 +119,7 @@ func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account
 			return err
 		}
 		exist, err := u.QueryBindAccount().Where(
-			account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
+			account.PlatformEQ(a.Platform),
 		).Exist(ctx)
 		if err != nil {
 			return err
@@ -128,14 +128,14 @@ func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account
 			return errors.New("an account already bound to user")
 		}
 		acc, err := tx.Account.Query().Where(
-			account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
+			account.PlatformEQ(a.Platform),
 			account.PlatformAccountIDEQ(a.PlatformAccountID),
 		).Only(ctx)
 		if ent.IsNotFound(err) {
 			return tx.Account.Create().
 				SetBindUserID(userID).
 				SetID(a.ID).
-				SetPlatform(converter.ToEntAccountPlatform(a.Platform)).
+				SetPlatform(a.Platform).
 				SetPlatformAccountID(a.PlatformAccountID).
 				SetName(a.Name).
 				SetAvatarURL(a.AvatarURL).
@@ -160,7 +160,7 @@ func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account
 
 func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
-		account.PlatformEQ(converter.ToEntAccountPlatform(a.Platform)),
+		account.PlatformEQ(a.Platform),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
 		account.HasBindUserWith(user.IDEQ(u)),
 	).

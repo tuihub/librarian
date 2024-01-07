@@ -27,7 +27,7 @@ func NewPullAccountTopic(
 			resp, err := a.porter.PullAccount(
 				a.supv.CallAccountPlatform(ctx, info.Platform),
 				&porter.PullAccountRequest{AccountId: &librarian.AccountID{
-					Platform:          converter.ToPBAccountPlatform(info.Platform),
+					Platform:          info.Platform,
 					PlatformAccountId: info.PlatformAccountID,
 				}},
 			)
@@ -105,8 +105,9 @@ func NewPullAccountAppRelationTopic(
 			}
 			for _, app := range apps {
 				_ = sa.Publish(ctx, modelangela.PullApp{
-					ID:    app.ID,
-					AppID: app.SourceAppID,
+					ID:     app.ID,
+					Source: r.Platform,
+					AppID:  app.SourceAppID,
 				})
 			}
 			return nil

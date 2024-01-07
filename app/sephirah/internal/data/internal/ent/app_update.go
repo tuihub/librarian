@@ -32,16 +32,30 @@ func (au *AppUpdate) Where(ps ...predicate.App) *AppUpdate {
 	return au
 }
 
+// SetInternal sets the "internal" field.
+func (au *AppUpdate) SetInternal(b bool) *AppUpdate {
+	au.mutation.SetInternal(b)
+	return au
+}
+
+// SetNillableInternal sets the "internal" field if the given value is not nil.
+func (au *AppUpdate) SetNillableInternal(b *bool) *AppUpdate {
+	if b != nil {
+		au.SetInternal(*b)
+	}
+	return au
+}
+
 // SetSource sets the "source" field.
-func (au *AppUpdate) SetSource(a app.Source) *AppUpdate {
-	au.mutation.SetSource(a)
+func (au *AppUpdate) SetSource(s string) *AppUpdate {
+	au.mutation.SetSource(s)
 	return au
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (au *AppUpdate) SetNillableSource(a *app.Source) *AppUpdate {
-	if a != nil {
-		au.SetSource(*a)
+func (au *AppUpdate) SetNillableSource(s *string) *AppUpdate {
+	if s != nil {
+		au.SetSource(*s)
 	}
 	return au
 }
@@ -500,11 +514,6 @@ func (au *AppUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (au *AppUpdate) check() error {
-	if v, ok := au.mutation.Source(); ok {
-		if err := app.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "App.source": %w`, err)}
-		}
-	}
 	if v, ok := au.mutation.GetType(); ok {
 		if err := app.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
@@ -525,8 +534,11 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := au.mutation.Internal(); ok {
+		_spec.SetField(app.FieldInternal, field.TypeBool, value)
+	}
 	if value, ok := au.mutation.Source(); ok {
-		_spec.SetField(app.FieldSource, field.TypeEnum, value)
+		_spec.SetField(app.FieldSource, field.TypeString, value)
 	}
 	if value, ok := au.mutation.SourceAppID(); ok {
 		_spec.SetField(app.FieldSourceAppID, field.TypeString, value)
@@ -826,16 +838,30 @@ type AppUpdateOne struct {
 	mutation *AppMutation
 }
 
+// SetInternal sets the "internal" field.
+func (auo *AppUpdateOne) SetInternal(b bool) *AppUpdateOne {
+	auo.mutation.SetInternal(b)
+	return auo
+}
+
+// SetNillableInternal sets the "internal" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableInternal(b *bool) *AppUpdateOne {
+	if b != nil {
+		auo.SetInternal(*b)
+	}
+	return auo
+}
+
 // SetSource sets the "source" field.
-func (auo *AppUpdateOne) SetSource(a app.Source) *AppUpdateOne {
-	auo.mutation.SetSource(a)
+func (auo *AppUpdateOne) SetSource(s string) *AppUpdateOne {
+	auo.mutation.SetSource(s)
 	return auo
 }
 
 // SetNillableSource sets the "source" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableSource(a *app.Source) *AppUpdateOne {
-	if a != nil {
-		auo.SetSource(*a)
+func (auo *AppUpdateOne) SetNillableSource(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetSource(*s)
 	}
 	return auo
 }
@@ -1307,11 +1333,6 @@ func (auo *AppUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (auo *AppUpdateOne) check() error {
-	if v, ok := auo.mutation.Source(); ok {
-		if err := app.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "App.source": %w`, err)}
-		}
-	}
 	if v, ok := auo.mutation.GetType(); ok {
 		if err := app.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
@@ -1349,8 +1370,11 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			}
 		}
 	}
+	if value, ok := auo.mutation.Internal(); ok {
+		_spec.SetField(app.FieldInternal, field.TypeBool, value)
+	}
 	if value, ok := auo.mutation.Source(); ok {
-		_spec.SetField(app.FieldSource, field.TypeEnum, value)
+		_spec.SetField(app.FieldSource, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.SourceAppID(); ok {
 		_spec.SetField(app.FieldSourceAppID, field.TypeString, value)

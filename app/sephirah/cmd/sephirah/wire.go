@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	globalclient "github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -37,6 +38,7 @@ func wireApp(
 		data.ProviderSet,
 		biz.ProviderSet,
 		client.ProviderSet,
+		supervisor.ProviderSet,
 		service.ProviderSet,
 		libauth.ProviderSet,
 		libmq.ProviderSet,

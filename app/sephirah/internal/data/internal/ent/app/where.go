@@ -56,6 +56,16 @@ func IDLTE(id model.InternalID) predicate.App {
 	return predicate.App(sql.FieldLTE(FieldID, id))
 }
 
+// Internal applies equality check predicate on the "internal" field. It's identical to InternalEQ.
+func Internal(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldInternal, v))
+}
+
+// Source applies equality check predicate on the "source" field. It's identical to SourceEQ.
+func Source(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldSource, v))
+}
+
 // SourceAppID applies equality check predicate on the "source_app_id" field. It's identical to SourceAppIDEQ.
 func SourceAppID(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldSourceAppID, v))
@@ -121,24 +131,79 @@ func CreatedAt(v time.Time) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldCreatedAt, v))
 }
 
+// InternalEQ applies the EQ predicate on the "internal" field.
+func InternalEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldInternal, v))
+}
+
+// InternalNEQ applies the NEQ predicate on the "internal" field.
+func InternalNEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldInternal, v))
+}
+
 // SourceEQ applies the EQ predicate on the "source" field.
-func SourceEQ(v Source) predicate.App {
+func SourceEQ(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldSource, v))
 }
 
 // SourceNEQ applies the NEQ predicate on the "source" field.
-func SourceNEQ(v Source) predicate.App {
+func SourceNEQ(v string) predicate.App {
 	return predicate.App(sql.FieldNEQ(FieldSource, v))
 }
 
 // SourceIn applies the In predicate on the "source" field.
-func SourceIn(vs ...Source) predicate.App {
+func SourceIn(vs ...string) predicate.App {
 	return predicate.App(sql.FieldIn(FieldSource, vs...))
 }
 
 // SourceNotIn applies the NotIn predicate on the "source" field.
-func SourceNotIn(vs ...Source) predicate.App {
+func SourceNotIn(vs ...string) predicate.App {
 	return predicate.App(sql.FieldNotIn(FieldSource, vs...))
+}
+
+// SourceGT applies the GT predicate on the "source" field.
+func SourceGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldSource, v))
+}
+
+// SourceGTE applies the GTE predicate on the "source" field.
+func SourceGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldSource, v))
+}
+
+// SourceLT applies the LT predicate on the "source" field.
+func SourceLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldSource, v))
+}
+
+// SourceLTE applies the LTE predicate on the "source" field.
+func SourceLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldSource, v))
+}
+
+// SourceContains applies the Contains predicate on the "source" field.
+func SourceContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldSource, v))
+}
+
+// SourceHasPrefix applies the HasPrefix predicate on the "source" field.
+func SourceHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldSource, v))
+}
+
+// SourceHasSuffix applies the HasSuffix predicate on the "source" field.
+func SourceHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldSource, v))
+}
+
+// SourceEqualFold applies the EqualFold predicate on the "source" field.
+func SourceEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldSource, v))
+}
+
+// SourceContainsFold applies the ContainsFold predicate on the "source" field.
+func SourceContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldSource, v))
 }
 
 // SourceAppIDEQ applies the EQ predicate on the "source_app_id" field.

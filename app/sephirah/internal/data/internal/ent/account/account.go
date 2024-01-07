@@ -3,7 +3,6 @@
 package account
 
 import (
-	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -96,28 +95,6 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
-
-// Platform defines the type for the "platform" enum field.
-type Platform string
-
-// Platform values.
-const (
-	PlatformSteam Platform = "steam"
-)
-
-func (pl Platform) String() string {
-	return string(pl)
-}
-
-// PlatformValidator is a validator for the "platform" field enum values. It is called by the builders before save.
-func PlatformValidator(pl Platform) error {
-	switch pl {
-	case PlatformSteam:
-		return nil
-	default:
-		return fmt.Errorf("account: invalid enum value for platform field: %q", pl)
-	}
-}
 
 // OrderOption defines the ordering options for the Account queries.
 type OrderOption func(*sql.Selector)

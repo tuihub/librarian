@@ -26,9 +26,15 @@ type AppCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetInternal sets the "internal" field.
+func (ac *AppCreate) SetInternal(b bool) *AppCreate {
+	ac.mutation.SetInternal(b)
+	return ac
+}
+
 // SetSource sets the "source" field.
-func (ac *AppCreate) SetSource(a app.Source) *AppCreate {
-	ac.mutation.SetSource(a)
+func (ac *AppCreate) SetSource(s string) *AppCreate {
+	ac.mutation.SetSource(s)
 	return ac
 }
 
@@ -336,13 +342,11 @@ func (ac *AppCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ac *AppCreate) check() error {
+	if _, ok := ac.mutation.Internal(); !ok {
+		return &ValidationError{Name: "internal", err: errors.New(`ent: missing required field "App.internal"`)}
+	}
 	if _, ok := ac.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "App.source"`)}
-	}
-	if v, ok := ac.mutation.Source(); ok {
-		if err := app.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "App.source": %w`, err)}
-		}
 	}
 	if _, ok := ac.mutation.SourceAppID(); !ok {
 		return &ValidationError{Name: "source_app_id", err: errors.New(`ent: missing required field "App.source_app_id"`)}
@@ -397,8 +401,12 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := ac.mutation.Internal(); ok {
+		_spec.SetField(app.FieldInternal, field.TypeBool, value)
+		_node.Internal = value
+	}
 	if value, ok := ac.mutation.Source(); ok {
-		_spec.SetField(app.FieldSource, field.TypeEnum, value)
+		_spec.SetField(app.FieldSource, field.TypeString, value)
 		_node.Source = value
 	}
 	if value, ok := ac.mutation.SourceAppID(); ok {
@@ -545,7 +553,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.App.Create().
-//		SetSource(v).
+//		SetInternal(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -554,7 +562,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetSource(v+v).
+//			SetInternal(v+v).
 //		}).
 //		Exec(ctx)
 func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
@@ -590,8 +598,20 @@ type (
 	}
 )
 
+// SetInternal sets the "internal" field.
+func (u *AppUpsert) SetInternal(v bool) *AppUpsert {
+	u.Set(app.FieldInternal, v)
+	return u
+}
+
+// UpdateInternal sets the "internal" field to the value that was provided on create.
+func (u *AppUpsert) UpdateInternal() *AppUpsert {
+	u.SetExcluded(app.FieldInternal)
+	return u
+}
+
 // SetSource sets the "source" field.
-func (u *AppUpsert) SetSource(v app.Source) *AppUpsert {
+func (u *AppUpsert) SetSource(v string) *AppUpsert {
 	u.Set(app.FieldSource, v)
 	return u
 }
@@ -872,8 +892,22 @@ func (u *AppUpsertOne) Update(set func(*AppUpsert)) *AppUpsertOne {
 	return u
 }
 
+// SetInternal sets the "internal" field.
+func (u *AppUpsertOne) SetInternal(v bool) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetInternal(v)
+	})
+}
+
+// UpdateInternal sets the "internal" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateInternal() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateInternal()
+	})
+}
+
 // SetSource sets the "source" field.
-func (u *AppUpsertOne) SetSource(v app.Source) *AppUpsertOne {
+func (u *AppUpsertOne) SetSource(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.SetSource(v)
 	})
@@ -1280,7 +1314,7 @@ func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetSource(v+v).
+//			SetInternal(v+v).
 //		}).
 //		Exec(ctx)
 func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
@@ -1359,8 +1393,22 @@ func (u *AppUpsertBulk) Update(set func(*AppUpsert)) *AppUpsertBulk {
 	return u
 }
 
+// SetInternal sets the "internal" field.
+func (u *AppUpsertBulk) SetInternal(v bool) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetInternal(v)
+	})
+}
+
+// UpdateInternal sets the "internal" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateInternal() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateInternal()
+	})
+}
+
 // SetSource sets the "source" field.
-func (u *AppUpsertBulk) SetSource(v app.Source) *AppUpsertBulk {
+func (u *AppUpsertBulk) SetSource(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.SetSource(v)
 	})

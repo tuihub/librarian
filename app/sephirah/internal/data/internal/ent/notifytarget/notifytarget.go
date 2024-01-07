@@ -21,8 +21,8 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// FieldType holds the string denoting the type field in the database.
-	FieldType = "type"
+	// FieldDestination holds the string denoting the destination field in the database.
+	FieldDestination = "destination"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -64,7 +64,7 @@ var Columns = []string{
 	FieldToken,
 	FieldName,
 	FieldDescription,
-	FieldType,
+	FieldDestination,
 	FieldStatus,
 	FieldUpdatedAt,
 	FieldCreatedAt,
@@ -105,28 +105,6 @@ var (
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 )
-
-// Type defines the type for the "type" enum field.
-type Type string
-
-// Type values.
-const (
-	TypeTelegram Type = "telegram"
-)
-
-func (_type Type) String() string {
-	return string(_type)
-}
-
-// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
-func TypeValidator(_type Type) error {
-	switch _type {
-	case TypeTelegram:
-		return nil
-	default:
-		return fmt.Errorf("notifytarget: invalid enum value for type field: %q", _type)
-	}
-}
 
 // Status defines the type for the "status" enum field.
 type Status string
@@ -174,9 +152,9 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByType orders the results by the type field.
-func ByType(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldType, opts...).ToFunc()
+// ByDestination orders the results by the destination field.
+func ByDestination(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDestination, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

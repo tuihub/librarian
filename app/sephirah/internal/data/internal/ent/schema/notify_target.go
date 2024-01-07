@@ -20,7 +20,7 @@ func (NotifyTarget) Fields() []ent.Field {
 		field.String("token"),
 		field.String("name"),
 		field.String("description"),
-		field.Enum("type").Values("telegram"),
+		field.String("destination"),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.Time("updated_at").

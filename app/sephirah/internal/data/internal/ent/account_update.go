@@ -32,15 +32,15 @@ func (au *AccountUpdate) Where(ps ...predicate.Account) *AccountUpdate {
 }
 
 // SetPlatform sets the "platform" field.
-func (au *AccountUpdate) SetPlatform(a account.Platform) *AccountUpdate {
-	au.mutation.SetPlatform(a)
+func (au *AccountUpdate) SetPlatform(s string) *AccountUpdate {
+	au.mutation.SetPlatform(s)
 	return au
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (au *AccountUpdate) SetNillablePlatform(a *account.Platform) *AccountUpdate {
-	if a != nil {
-		au.SetPlatform(*a)
+func (au *AccountUpdate) SetNillablePlatform(s *string) *AccountUpdate {
+	if s != nil {
+		au.SetPlatform(*s)
 	}
 	return au
 }
@@ -223,20 +223,7 @@ func (au *AccountUpdate) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (au *AccountUpdate) check() error {
-	if v, ok := au.mutation.Platform(); ok {
-		if err := account.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Account.platform": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := au.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	if ps := au.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -246,7 +233,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := au.mutation.Platform(); ok {
-		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
+		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 	}
 	if value, ok := au.mutation.PlatformAccountID(); ok {
 		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)
@@ -361,15 +348,15 @@ type AccountUpdateOne struct {
 }
 
 // SetPlatform sets the "platform" field.
-func (auo *AccountUpdateOne) SetPlatform(a account.Platform) *AccountUpdateOne {
-	auo.mutation.SetPlatform(a)
+func (auo *AccountUpdateOne) SetPlatform(s string) *AccountUpdateOne {
+	auo.mutation.SetPlatform(s)
 	return auo
 }
 
 // SetNillablePlatform sets the "platform" field if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillablePlatform(a *account.Platform) *AccountUpdateOne {
-	if a != nil {
-		auo.SetPlatform(*a)
+func (auo *AccountUpdateOne) SetNillablePlatform(s *string) *AccountUpdateOne {
+	if s != nil {
+		auo.SetPlatform(*s)
 	}
 	return auo
 }
@@ -565,20 +552,7 @@ func (auo *AccountUpdateOne) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (auo *AccountUpdateOne) check() error {
-	if v, ok := auo.mutation.Platform(); ok {
-		if err := account.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Account.platform": %w`, err)}
-		}
-	}
-	return nil
-}
-
 func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err error) {
-	if err := auo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(account.Table, account.Columns, sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64))
 	id, ok := auo.mutation.ID()
 	if !ok {
@@ -605,7 +579,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 	}
 	if value, ok := auo.mutation.Platform(); ok {
-		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
+		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 	}
 	if value, ok := auo.mutation.PlatformAccountID(); ok {
 		_spec.SetField(account.FieldPlatformAccountID, field.TypeString, value)

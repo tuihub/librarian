@@ -44,9 +44,12 @@ generate-code:
 
 .PHONY: lint
 # lint files
-lint: lint-pkgs
-	golangci-lint run --fix
-	golangci-lint run # re-run to make sure fixes are valid, useful in some condition
+lint: lint-pkgs lint-root
+
+lint-root:
+	@echo "linting root package"
+	@golangci-lint run --fix
+	@golangci-lint run # re-run to make sure fixes are valid, useful in some condition
 
 lint-pkgs:
 	@for d in pkg/*; do \

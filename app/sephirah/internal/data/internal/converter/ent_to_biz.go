@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -26,21 +25,19 @@ import (
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
-	// goverter:map Destination | ToLibAuthUserType
+	// goverter:map Type | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *modeltiphereth.User
 	ToBizUserList([]*ent.User) []*modeltiphereth.User
 
 	// goverter:matchIgnoreCase
-	// goverter:map Platform | ToBizAccountPlatform
 	// goverter:map UpdatedAt LatestUpdateTime
 	ToBizAccount(*ent.Account) *modeltiphereth.Account
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:map Destination | ToBizAppType
-	// goverter:map Source | ToBizAppSource
+	// goverter:map Type | ToBizAppType
 	// goverter:map . Details
 	// goverter:ignore BoundInternal
 	// goverter:ignore Tags
@@ -59,10 +56,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppPackageList([]*ent.AppPackage) []*modelgebura.AppPackage
 
 	// goverter:matchIgnoreCase
-	// goverter:map Source | ToBizFeedConfigSource
 	// goverter:map Status | ToBizFeedConfigStatus
 	// goverter:map LatestPullAt LatestUpdateTime
-	// goverter:ignore Tags
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
 
@@ -75,7 +70,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
 	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
 
-	// goverter:map Destination | ToBizNotifyTargetType
 	// goverter:map Status | ToBizNotifyTargetStatus
 	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
 	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget
@@ -151,15 +145,6 @@ func ToBizFeedConfigStatus(s feedconfig.Status) modelyesod.FeedConfigStatus {
 		return modelyesod.FeedConfigStatusSuspend
 	default:
 		return modelyesod.FeedConfigStatusUnspecified
-	}
-}
-
-func ToBizAccountPlatform(p account.Platform) modeltiphereth.AccountPlatform {
-	switch p {
-	case account.PlatformSteam:
-		return modeltiphereth.AccountPlatformSteam
-	default:
-		return modeltiphereth.AccountPlatformUnspecified
 	}
 }
 

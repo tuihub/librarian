@@ -336,7 +336,7 @@ func (aq *AccountQuery) WithBindUser(opts ...func(*UserQuery)) *AccountQuery {
 // Example:
 //
 //	var v []struct {
-//		Platform account.Platform `json:"platform,omitempty"`
+//		Platform string `json:"platform,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -359,7 +359,7 @@ func (aq *AccountQuery) GroupBy(field string, fields ...string) *AccountGroupBy 
 // Example:
 //
 //	var v []struct {
-//		Platform account.Platform `json:"platform,omitempty"`
+//		Platform string `json:"platform,omitempty"`
 //	}
 //
 //	client.Account.Query().

@@ -74,16 +74,16 @@ func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUp
 	return ntu
 }
 
-// SetType sets the "type" field.
-func (ntu *NotifyTargetUpdate) SetType(n notifytarget.Type) *NotifyTargetUpdate {
-	ntu.mutation.SetType(n)
+// SetDestination sets the "destination" field.
+func (ntu *NotifyTargetUpdate) SetDestination(s string) *NotifyTargetUpdate {
+	ntu.mutation.SetDestination(s)
 	return ntu
 }
 
-// SetNillableType sets the "type" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableType(n *notifytarget.Type) *NotifyTargetUpdate {
-	if n != nil {
-		ntu.SetType(*n)
+// SetNillableDestination sets the "destination" field if the given value is not nil.
+func (ntu *NotifyTargetUpdate) SetNillableDestination(s *string) *NotifyTargetUpdate {
+	if s != nil {
+		ntu.SetDestination(*s)
 	}
 	return ntu
 }
@@ -254,11 +254,6 @@ func (ntu *NotifyTargetUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ntu *NotifyTargetUpdate) check() error {
-	if v, ok := ntu.mutation.GetType(); ok {
-		if err := notifytarget.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.type": %w`, err)}
-		}
-	}
 	if v, ok := ntu.mutation.Status(); ok {
 		if err := notifytarget.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
@@ -291,8 +286,8 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := ntu.mutation.Description(); ok {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ntu.mutation.GetType(); ok {
-		_spec.SetField(notifytarget.FieldType, field.TypeEnum, value)
+	if value, ok := ntu.mutation.Destination(); ok {
+		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
 	}
 	if value, ok := ntu.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
@@ -496,16 +491,16 @@ func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTarg
 	return ntuo
 }
 
-// SetType sets the "type" field.
-func (ntuo *NotifyTargetUpdateOne) SetType(n notifytarget.Type) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetType(n)
+// SetDestination sets the "destination" field.
+func (ntuo *NotifyTargetUpdateOne) SetDestination(s string) *NotifyTargetUpdateOne {
+	ntuo.mutation.SetDestination(s)
 	return ntuo
 }
 
-// SetNillableType sets the "type" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableType(n *notifytarget.Type) *NotifyTargetUpdateOne {
-	if n != nil {
-		ntuo.SetType(*n)
+// SetNillableDestination sets the "destination" field if the given value is not nil.
+func (ntuo *NotifyTargetUpdateOne) SetNillableDestination(s *string) *NotifyTargetUpdateOne {
+	if s != nil {
+		ntuo.SetDestination(*s)
 	}
 	return ntuo
 }
@@ -689,11 +684,6 @@ func (ntuo *NotifyTargetUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ntuo *NotifyTargetUpdateOne) check() error {
-	if v, ok := ntuo.mutation.GetType(); ok {
-		if err := notifytarget.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.type": %w`, err)}
-		}
-	}
 	if v, ok := ntuo.mutation.Status(); ok {
 		if err := notifytarget.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
@@ -743,8 +733,8 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 	if value, ok := ntuo.mutation.Description(); ok {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := ntuo.mutation.GetType(); ok {
-		_spec.SetField(notifytarget.FieldType, field.TypeEnum, value)
+	if value, ok := ntuo.mutation.Destination(); ok {
+		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
 	}
 	if value, ok := ntuo.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)

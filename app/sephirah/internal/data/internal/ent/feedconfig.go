@@ -29,7 +29,7 @@ type FeedConfig struct {
 	// AuthorAccount holds the value of the "author_account" field.
 	AuthorAccount model.InternalID `json:"author_account,omitempty"`
 	// Source holds the value of the "source" field.
-	Source feedconfig.Source `json:"source,omitempty"`
+	Source string `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// Category holds the value of the "category" field.
@@ -173,7 +173,7 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
 			} else if value.Valid {
-				fc.Source = feedconfig.Source(value.String)
+				fc.Source = value.String
 			}
 		case feedconfig.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -292,7 +292,7 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(fmt.Sprintf("%v", fc.AuthorAccount))
 	builder.WriteString(", ")
 	builder.WriteString("source=")
-	builder.WriteString(fmt.Sprintf("%v", fc.Source))
+	builder.WriteString(fc.Source)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", fc.Status))

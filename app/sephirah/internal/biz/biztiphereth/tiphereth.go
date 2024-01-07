@@ -2,11 +2,11 @@ package biztiphereth
 
 import (
 	"context"
-	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
@@ -276,7 +276,7 @@ func (t *Tiphereth) LinkAccount(
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	if t.supv.CheckAccountPlatform(a.Platform) == false {
+	if !t.supv.CheckAccountPlatform(a.Platform) {
 		return nil, bizutils.UnsupportedFeatureError()
 	}
 	id, err := t.searcher.NewID(ctx)
@@ -302,7 +302,7 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if t.supv.CheckAccountPlatform(a.Platform) == false {
+	if !t.supv.CheckAccountPlatform(a.Platform) {
 		return bizutils.UnsupportedFeatureError()
 	}
 	if err := t.repo.UnLinkAccount(ctx, a, claims.InternalID); err != nil {

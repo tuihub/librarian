@@ -26,7 +26,7 @@ func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *modeltiphereth.A
 	if source != nil {
 		var modeltipherethAccount modeltiphereth.Account
 		modeltipherethAccount.ID = model.InternalID((*source).ID)
-		modeltipherethAccount.Platform = ToBizAccountPlatform((*source).Platform)
+		modeltipherethAccount.Platform = (*source).Platform
 		modeltipherethAccount.PlatformAccountID = (*source).PlatformAccountID
 		modeltipherethAccount.Name = (*source).Name
 		modeltipherethAccount.ProfileURL = (*source).ProfileURL
@@ -51,7 +51,8 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 	if source != nil {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaApp.Source = ToBizAppSource((*source).Source)
+		modelgeburaApp.Internal = (*source).Internal
+		modelgeburaApp.Source = (*source).Source
 		modelgeburaApp.SourceAppID = (*source).SourceAppID
 		modelgeburaApp.SourceURL = (*source).SourceURL
 		modelgeburaApp.Name = (*source).Name
@@ -145,7 +146,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		modelyesodFeedConfig.FeedURL = (*source).FeedURL
 		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.AuthorAccount = c.modelInternalIDToModelInternalID((*source).AuthorAccount)
-		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
+		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
 		modelyesodFeedConfig.LatestUpdateTime = TimeToTime((*source).LatestPullAt)
@@ -261,7 +262,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Destination = (*source).Destination
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
@@ -357,7 +358,8 @@ type toEntConverterImpl struct{}
 func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	var entApp ent.App
 	entApp.ID = model.InternalID(source.ID)
-	entApp.Source = ToEntAppSource(source.Source)
+	entApp.Internal = source.Internal
+	entApp.Source = source.Source
 	entApp.SourceAppID = source.SourceAppID
 	entApp.SourceURL = source.SourceURL
 	entApp.Name = source.Name
@@ -441,16 +443,6 @@ func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.N
 		}
 	}
 	return notifytargetStatusList
-}
-func (c *toEntConverterImpl) ToEntNotifyTargetTypeList(source []modelnetzach.NotifyTargetType) []notifytarget.Type {
-	var notifytargetTypeList []notifytarget.Type
-	if source != nil {
-		notifytargetTypeList = make([]notifytarget.Type, len(source))
-		for i := 0; i < len(source); i++ {
-			notifytargetTypeList[i] = ToEntNotifyTargetType(source[i])
-		}
-	}
-	return notifytargetTypeList
 }
 func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
 	var userStatusList []user.Status

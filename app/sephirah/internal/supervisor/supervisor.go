@@ -2,10 +2,12 @@ package supervisor
 
 import (
 	"context"
-	"github.com/google/wire"
+
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
+
+	"github.com/google/wire"
 )
 
 var ProviderSet = wire.NewSet(NewSupervisor)
@@ -18,7 +20,9 @@ type Supervisor struct {
 
 func NewSupervisor(porter *client.Porter) *Supervisor {
 	return &Supervisor{
-		porter: porter,
+		porter:         porter,
+		instances:      nil,
+		featureSummary: nil,
 	}
 }
 
@@ -41,9 +45,9 @@ func (s *Supervisor) RefreshPorterInstances(ctx context.Context) error {
 		feature := new(modelsupervisor.PorterFeatureSummary)
 		instances = append(instances, &modelsupervisor.PorterInstance{
 			ID:             0,
-			Name:           info.Name,
-			Version:        info.Version,
-			GlobalName:     info.GlobalName,
+			Name:           info.GetName(),
+			Version:        info.GetVersion(),
+			GlobalName:     info.GetGlobalName(),
 			Address:        address,
 			FeatureSummary: feature,
 		})

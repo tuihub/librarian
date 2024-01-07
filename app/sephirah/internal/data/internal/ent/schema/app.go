@@ -18,8 +18,8 @@ type App struct {
 func (App) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.Enum("source").
-			Values("internal", "steam"),
+		field.Bool("internal"),
+		field.String("source"),
 		field.String("source_app_id"),
 		field.String("source_url").Optional(),
 		field.String("name"),

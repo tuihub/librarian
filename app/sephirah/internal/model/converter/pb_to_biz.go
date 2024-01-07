@@ -1,17 +1,17 @@
 package converter
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/model"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -29,10 +29,8 @@ import (
 // goverter:extend PtrToString
 // goverter:extend ToBizAppPackageSource
 // goverter:extend DurationPBToDuration
-// goverter:extend ToBizFeedConfigSource
 // goverter:extend ToBizFeedConfigStatus
 // goverter:extend ToBizNotifyTargetStatus
-// goverter:extend ToBizNotifyTargetType
 // goverter:extend ToBizNotifyFlowStatus
 // goverter:extend ToBizFileType
 // goverter:extend ToBizAccountAppRelationType

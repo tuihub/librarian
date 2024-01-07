@@ -33,7 +33,7 @@ func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalI
 		SetName(t.Name).
 		SetDescription(t.Description).
 		SetToken(t.Token).
-		SetType(t.Destination).
+		SetDestination(t.Destination).
 		SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
 	return q.Exec(ctx)
 }
@@ -57,7 +57,7 @@ func (n *netzachRepo) UpdateNotifyTarget(
 		q.SetToken(t.Token)
 	}
 	if len(t.Destination) > 0 {
-		q.SetType(t.Destination)
+		q.SetDestination(t.Destination)
 	}
 	if t.Status != modelnetzach.NotifyTargetStatusUnspecified {
 		q.SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
@@ -80,7 +80,7 @@ func (n *netzachRepo) ListNotifyTargets(
 		q.Where(notifytarget.IDIn(ids...))
 	}
 	if len(destinations) > 0 {
-		q.Where(notifytarget.TypeIn(destinations...))
+		q.Where(notifytarget.DestinationIn(destinations...))
 	}
 	if len(statuses) > 0 {
 		q.Where(notifytarget.StatusIn(converter.ToEntNotifyTargetStatusList(statuses)...))

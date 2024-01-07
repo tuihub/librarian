@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -17,7 +18,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -35,13 +35,13 @@ func NewSephirahService(
 	*libapp.Settings,
 	mapper.LibrarianMapperServiceClient,
 	searcher.LibrarianSearcherServiceClient,
-	porter.LibrarianPorterServiceClient,
 	miner.LibrarianMinerServiceClient,
 ) (pb.LibrarianSephirahServiceServer, func(), error) {
 	panic(wire.Build(
 		data.ProviderSet,
 		biz.ProviderSet,
 		client.ProviderSet,
+		supervisor.ProviderSet,
 		service.ProviderSet,
 		server.ProviderSet,
 	))

@@ -35,6 +35,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 	}
 	q := g.data.db.App.Create().
 		SetID(a.ID).
+		SetInternal(a.Internal).
 		SetSource(a.Source).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
@@ -56,7 +57,7 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 	q := g.data.db.App.Update().
 		Where(
 			app.IDEQ(a.ID),
-			app.SourceEQ(converter.ToEntAppSource(a.Source)),
+			app.SourceEQ(a.Source),
 			app.SourceAppIDEQ(a.SourceAppID),
 		).
 		SetSourceURL(a.SourceURL).
@@ -88,11 +89,7 @@ func (g geburaRepo) ListApps(
 	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.App.Query()
 		if len(sources) > 0 {
-			sourceFilter := make([]app.Source, len(sources))
-			for i, appSource := range sources {
-				sourceFilter[i] = appSource
-			}
-			q.Where(app.SourceIn(sourceFilter...))
+			q.Where(app.SourceIn(sources...))
 		}
 		if len(types) > 0 {
 			typeFilter := make([]app.Type, len(types))
@@ -142,7 +139,7 @@ func (g geburaRepo) MergeApps(ctx context.Context, base modelgebura.App, merged 
 		if err != nil {
 			return err
 		}
-		if baseApp.Source != app.SourceInternal || mergedApp.Source != app.SourceInternal {
+		if !baseApp.Internal || !mergedApp.Internal {
 			return errors.New("source must be internal")
 		}
 		err = tx.User.Update().
@@ -196,7 +193,7 @@ func (g geburaRepo) GetBatchBoundApps(ctx context.Context, ids []model.InternalI
 	apps, err := g.data.db.App.Query().
 		Where(
 			app.IDIn(ids...),
-			app.SourceEQ(app.SourceInternal),
+			app.InternalEQ(true),
 		).
 		WithBindExternal().
 		All(ctx)
@@ -209,16 +206,11 @@ func (g geburaRepo) GetBatchBoundApps(ctx context.Context, ids []model.InternalI
 		res[i].Internal = converter.ToBizApp(apps[i])
 		if externals, e := apps[i].Edges.BindExternalOrErr(); e == nil {
 			for _, external := range externals {
-				if external.Source == app.SourceSteam {
-					res[i].Steam = converter.ToBizApp(external)
-				}
+				res[i].Others = append(res[i].Others, converter.ToBizApp(external))
 			}
 		}
 		if res[i].Internal == nil {
 			res[i].Internal = new(modelgebura.App)
-		}
-		if res[i].Steam == nil {
-			res[i].Steam = new(modelgebura.App)
 		}
 	}
 	return res, nil
@@ -252,9 +244,7 @@ func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) (
 		res[i].Internal = converter.ToBizApp(apps[i])
 		if externals, e := apps[i].Edges.BindExternalOrErr(); e == nil {
 			for _, external := range externals {
-				if external.Source == app.SourceSteam {
-					res[i].Steam = converter.ToBizApp(external)
-				}
+				res[i].Others = append(res[i].Others, converter.ToBizApp(external))
 			}
 		}
 	}

@@ -88,7 +88,7 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
 	q := y.data.db.FeedConfig.Query()
 	if len(sources) > 0 {
-		q.Where(feedconfig.SourceIn(converter.ToEntFeedConfigSourceList(sources)...))
+		q.Where(feedconfig.SourceIn(sources...))
 	}
 	if len(statuses) > 0 {
 		q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))

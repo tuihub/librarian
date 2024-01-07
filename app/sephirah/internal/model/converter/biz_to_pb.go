@@ -27,30 +27,32 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 
 	// goverter:matchIgnoreCase
-	// goverter:map Destination | ToPBUserType
+	// goverter:map Type | ToPBUserType
 	// goverter:map Status | ToPBUserStatus
 	// goverter:ignore Password
 	ToPBUser(*modeltiphereth.User) *pb.User
 	ToPBUserList([]*modeltiphereth.User) []*pb.User
 
 	// goverter:matchIgnoreCase
-	// goverter:map Platform | ToPBAccountPlatform
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
 	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:map Source | ToPBAppSource
-	// goverter:map Destination | ToPBAppType
+	// goverter:map Type | ToPBAppType
 	// goverter:ignore AltNames
 	ToPBApp(*modelgebura.App) *librarian.App
 	// goverter:matchIgnoreCase
 	// goverter:ignore ImageUrls
 	ToPBAppDetail(*modelgebura.AppDetails) *librarian.AppDetails
 	ToPBAppList([]*modelgebura.App) []*librarian.App
+	// goverter:matchIgnoreCase
+	// goverter:map Type | ToPBAppType
+	// goverter:ignore AltNames
+	ToPBAppMixed(*modelgebura.AppMixed) *librarian.AppMixed
+	ToPBAppMixedList([]*modelgebura.AppMixed) []*librarian.AppMixed
 
 	// goverter:matchIgnoreCase
 	// goverter:map Source | ToPBAppPackageSource
-	// goverter:ignore SourceBindApp
 	ToPBAppPackage(*modelgebura.AppPackage) *librarian.AppPackage
 	// goverter:matchIgnoreCase
 	ToPBAppPackageBinary(*modelgebura.AppPackageBinary) *librarian.AppPackageBinary
@@ -67,7 +69,6 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBEnclosure(*modelfeed.Enclosure) *librarian.FeedEnclosure
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBFeedConfigStatus
-	// goverter:map Source | ToPBFeedConfigSource
 	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
 	// goverter:matchIgnoreCase
 	// goverter:map FeedConfig Config
@@ -78,7 +79,6 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
 	// goverter:matchIgnoreCase
-	// goverter:map Destination | ToPBNotifyTargetType
 	// goverter:map Status | ToPBNotifyTargetStatus
 	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
 	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
@@ -161,17 +161,6 @@ func ToPBAppPackageSource(a modelgebura.AppPackageSource) librarian.AppPackageSo
 		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL
 	default:
 		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED
-	}
-}
-
-func ToPBAccountPlatform(p modeltiphereth.AccountPlatform) librarian.AccountPlatform {
-	switch p {
-	case modeltiphereth.AccountPlatformUnspecified:
-		return librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED
-	case modeltiphereth.AccountPlatformSteam:
-		return librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM
-	default:
-		return librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED
 	}
 }
 

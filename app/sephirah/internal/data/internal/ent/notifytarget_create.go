@@ -44,9 +44,9 @@ func (ntc *NotifyTargetCreate) SetDescription(s string) *NotifyTargetCreate {
 	return ntc
 }
 
-// SetType sets the "type" field.
-func (ntc *NotifyTargetCreate) SetType(n notifytarget.Type) *NotifyTargetCreate {
-	ntc.mutation.SetType(n)
+// SetDestination sets the "destination" field.
+func (ntc *NotifyTargetCreate) SetDestination(s string) *NotifyTargetCreate {
+	ntc.mutation.SetDestination(s)
 	return ntc
 }
 
@@ -187,13 +187,8 @@ func (ntc *NotifyTargetCreate) check() error {
 	if _, ok := ntc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "NotifyTarget.description"`)}
 	}
-	if _, ok := ntc.mutation.GetType(); !ok {
-		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "NotifyTarget.type"`)}
-	}
-	if v, ok := ntc.mutation.GetType(); ok {
-		if err := notifytarget.TypeValidator(v); err != nil {
-			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.type": %w`, err)}
-		}
+	if _, ok := ntc.mutation.Destination(); !ok {
+		return &ValidationError{Name: "destination", err: errors.New(`ent: missing required field "NotifyTarget.destination"`)}
 	}
 	if _, ok := ntc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "NotifyTarget.status"`)}
@@ -257,9 +252,9 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ntc.mutation.GetType(); ok {
-		_spec.SetField(notifytarget.FieldType, field.TypeEnum, value)
-		_node.Type = value
+	if value, ok := ntc.mutation.Destination(); ok {
+		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
+		_node.Destination = value
 	}
 	if value, ok := ntc.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
@@ -414,15 +409,15 @@ func (u *NotifyTargetUpsert) UpdateDescription() *NotifyTargetUpsert {
 	return u
 }
 
-// SetType sets the "type" field.
-func (u *NotifyTargetUpsert) SetType(v notifytarget.Type) *NotifyTargetUpsert {
-	u.Set(notifytarget.FieldType, v)
+// SetDestination sets the "destination" field.
+func (u *NotifyTargetUpsert) SetDestination(v string) *NotifyTargetUpsert {
+	u.Set(notifytarget.FieldDestination, v)
 	return u
 }
 
-// UpdateType sets the "type" field to the value that was provided on create.
-func (u *NotifyTargetUpsert) UpdateType() *NotifyTargetUpsert {
-	u.SetExcluded(notifytarget.FieldType)
+// UpdateDestination sets the "destination" field to the value that was provided on create.
+func (u *NotifyTargetUpsert) UpdateDestination() *NotifyTargetUpsert {
+	u.SetExcluded(notifytarget.FieldDestination)
 	return u
 }
 
@@ -552,17 +547,17 @@ func (u *NotifyTargetUpsertOne) UpdateDescription() *NotifyTargetUpsertOne {
 	})
 }
 
-// SetType sets the "type" field.
-func (u *NotifyTargetUpsertOne) SetType(v notifytarget.Type) *NotifyTargetUpsertOne {
+// SetDestination sets the "destination" field.
+func (u *NotifyTargetUpsertOne) SetDestination(v string) *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
-		s.SetType(v)
+		s.SetDestination(v)
 	})
 }
 
-// UpdateType sets the "type" field to the value that was provided on create.
-func (u *NotifyTargetUpsertOne) UpdateType() *NotifyTargetUpsertOne {
+// UpdateDestination sets the "destination" field to the value that was provided on create.
+func (u *NotifyTargetUpsertOne) UpdateDestination() *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
-		s.UpdateType()
+		s.UpdateDestination()
 	})
 }
 
@@ -864,17 +859,17 @@ func (u *NotifyTargetUpsertBulk) UpdateDescription() *NotifyTargetUpsertBulk {
 	})
 }
 
-// SetType sets the "type" field.
-func (u *NotifyTargetUpsertBulk) SetType(v notifytarget.Type) *NotifyTargetUpsertBulk {
+// SetDestination sets the "destination" field.
+func (u *NotifyTargetUpsertBulk) SetDestination(v string) *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
-		s.SetType(v)
+		s.SetDestination(v)
 	})
 }
 
-// UpdateType sets the "type" field to the value that was provided on create.
-func (u *NotifyTargetUpsertBulk) UpdateType() *NotifyTargetUpsertBulk {
+// UpdateDestination sets the "destination" field to the value that was provided on create.
+func (u *NotifyTargetUpsertBulk) UpdateDestination() *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
-		s.UpdateType()
+		s.UpdateDestination()
 	})
 }
 

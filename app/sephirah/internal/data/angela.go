@@ -50,7 +50,7 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 		q := tx.App.Update().
 			Where(
 				app.IDEQ(ap.ID),
-				app.SourceEQ(converter.ToEntAppSource(ap.Source)),
+				app.SourceEQ(ap.Source),
 				app.SourceAppIDEQ(ap.SourceAppID),
 			)
 		if len(ap.SourceURL) > 0 {
@@ -89,7 +89,7 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 			}
 		}
 		count, err := tx.App.Query().Where(
-			app.SourceEQ(converter.ToEntAppSource(ap.Source)),
+			app.SourceEQ(ap.Source),
 			app.SourceAppIDEQ(ap.SourceAppID),
 			app.HasBindInternalWith(app.IDNEQ(0)),
 		).Count(ctx)
@@ -99,7 +99,7 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 		if count == 0 {
 			err = tx.App.Create().
 				SetID(internal.ID).
-				SetSource(converter.ToEntAppSource(internal.Source)).
+				SetSource(internal.Source).
 				SetSourceAppID(internal.SourceAppID).
 				SetName(internal.Name).
 				SetType(converter.ToEntAppType(internal.Type)).
@@ -122,7 +122,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 		}
 		apps[i] = a.data.db.App.Create().
 			SetID(ap.ID).
-			SetSource(converter.ToEntAppSource(ap.Source)).
+			SetSource(ap.Source).
 			SetSourceAppID(ap.SourceAppID).
 			SetSourceURL(ap.SourceURL).
 			SetName(ap.Name).

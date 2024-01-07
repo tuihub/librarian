@@ -18,8 +18,7 @@ type Account struct {
 func (Account) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.Enum("platform").
-			Values("steam"),
+		field.String("platform"),
 		field.String("platform_account_id"),
 		field.String("name"),
 		field.String("profile_url"),

@@ -71,6 +71,11 @@ func Description(v string) predicate.NotifyTarget {
 	return predicate.NotifyTarget(sql.FieldEQ(FieldDescription, v))
 }
 
+// Destination applies equality check predicate on the "destination" field. It's identical to DestinationEQ.
+func Destination(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldEQ(FieldDestination, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.NotifyTarget {
 	return predicate.NotifyTarget(sql.FieldEQ(FieldUpdatedAt, v))
@@ -276,24 +281,69 @@ func DescriptionContainsFold(v string) predicate.NotifyTarget {
 	return predicate.NotifyTarget(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// TypeEQ applies the EQ predicate on the "type" field.
-func TypeEQ(v Type) predicate.NotifyTarget {
-	return predicate.NotifyTarget(sql.FieldEQ(FieldType, v))
+// DestinationEQ applies the EQ predicate on the "destination" field.
+func DestinationEQ(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldEQ(FieldDestination, v))
 }
 
-// TypeNEQ applies the NEQ predicate on the "type" field.
-func TypeNEQ(v Type) predicate.NotifyTarget {
-	return predicate.NotifyTarget(sql.FieldNEQ(FieldType, v))
+// DestinationNEQ applies the NEQ predicate on the "destination" field.
+func DestinationNEQ(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldNEQ(FieldDestination, v))
 }
 
-// TypeIn applies the In predicate on the "type" field.
-func TypeIn(vs ...Type) predicate.NotifyTarget {
-	return predicate.NotifyTarget(sql.FieldIn(FieldType, vs...))
+// DestinationIn applies the In predicate on the "destination" field.
+func DestinationIn(vs ...string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldIn(FieldDestination, vs...))
 }
 
-// TypeNotIn applies the NotIn predicate on the "type" field.
-func TypeNotIn(vs ...Type) predicate.NotifyTarget {
-	return predicate.NotifyTarget(sql.FieldNotIn(FieldType, vs...))
+// DestinationNotIn applies the NotIn predicate on the "destination" field.
+func DestinationNotIn(vs ...string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldNotIn(FieldDestination, vs...))
+}
+
+// DestinationGT applies the GT predicate on the "destination" field.
+func DestinationGT(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldGT(FieldDestination, v))
+}
+
+// DestinationGTE applies the GTE predicate on the "destination" field.
+func DestinationGTE(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldGTE(FieldDestination, v))
+}
+
+// DestinationLT applies the LT predicate on the "destination" field.
+func DestinationLT(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldLT(FieldDestination, v))
+}
+
+// DestinationLTE applies the LTE predicate on the "destination" field.
+func DestinationLTE(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldLTE(FieldDestination, v))
+}
+
+// DestinationContains applies the Contains predicate on the "destination" field.
+func DestinationContains(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldContains(FieldDestination, v))
+}
+
+// DestinationHasPrefix applies the HasPrefix predicate on the "destination" field.
+func DestinationHasPrefix(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldHasPrefix(FieldDestination, v))
+}
+
+// DestinationHasSuffix applies the HasSuffix predicate on the "destination" field.
+func DestinationHasSuffix(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldHasSuffix(FieldDestination, v))
+}
+
+// DestinationEqualFold applies the EqualFold predicate on the "destination" field.
+func DestinationEqualFold(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldEqualFold(FieldDestination, v))
+}
+
+// DestinationContainsFold applies the ContainsFold predicate on the "destination" field.
+func DestinationContainsFold(v string) predicate.NotifyTarget {
+	return predicate.NotifyTarget(sql.FieldContainsFold(FieldDestination, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

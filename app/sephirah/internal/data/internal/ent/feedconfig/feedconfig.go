@@ -128,28 +128,6 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
-// Source defines the type for the "source" enum field.
-type Source string
-
-// Source values.
-const (
-	SourceCommon Source = "common"
-)
-
-func (s Source) String() string {
-	return string(s)
-}
-
-// SourceValidator is a validator for the "source" field enum values. It is called by the builders before save.
-func SourceValidator(s Source) error {
-	switch s {
-	case SourceCommon:
-		return nil
-	default:
-		return fmt.Errorf("feedconfig: invalid enum value for source field: %q", s)
-	}
-}
-
 // Status defines the type for the "status" enum field.
 type Status string
 

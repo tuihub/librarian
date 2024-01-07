@@ -442,12 +442,12 @@ func (aq *AppQuery) WithBindExternal(opts ...func(*AppQuery)) *AppQuery {
 // Example:
 //
 //	var v []struct {
-//		Source app.Source `json:"source,omitempty"`
+//		Internal bool `json:"internal,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.App.Query().
-//		GroupBy(app.FieldSource).
+//		GroupBy(app.FieldInternal).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
@@ -465,11 +465,11 @@ func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Source app.Source `json:"source,omitempty"`
+//		Internal bool `json:"internal,omitempty"`
 //	}
 //
 //	client.App.Query().
-//		Select(app.FieldSource).
+//		Select(app.FieldInternal).
 //		Scan(ctx, &v)
 func (aq *AppQuery) Select(fields ...string) *AppSelect {
 	aq.ctx.Fields = append(aq.ctx.Fields, fields...)

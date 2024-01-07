@@ -6,11 +6,13 @@ import (
 	modelbinah "github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	modelsupervisor "github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
 	model "github.com/tuihub/librarian/model"
 	modelfeed "github.com/tuihub/librarian/model/modelfeed"
+	v12 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -22,7 +24,8 @@ func (c *toBizConverterImpl) ToBizApp(source *v1.App) *modelgebura.App {
 	if source != nil {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = ToBizInternalID((*source).Id)
-		modelgeburaApp.Source = ToBizAppSource((*source).Source)
+		modelgeburaApp.Internal = (*source).Internal
+		modelgeburaApp.Source = (*source).Source
 		modelgeburaApp.SourceAppID = (*source).SourceAppId
 		modelgeburaApp.SourceURL = PtrToString((*source).SourceUrl)
 		modelgeburaApp.Name = (*source).Name
@@ -110,16 +113,6 @@ func (c *toBizConverterImpl) ToBizAppPackageSourceList(source []v1.AppPackageSou
 	}
 	return modelgeburaAppPackageSourceList
 }
-func (c *toBizConverterImpl) ToBizAppSourceList(source []v1.AppSource) []modelgebura.AppSource {
-	var modelgeburaAppSourceList []modelgebura.AppSource
-	if source != nil {
-		modelgeburaAppSourceList = make([]modelgebura.AppSource, len(source))
-		for i := 0; i < len(source); i++ {
-			modelgeburaAppSourceList[i] = ToBizAppSource(source[i])
-		}
-	}
-	return modelgeburaAppSourceList
-}
 func (c *toBizConverterImpl) ToBizAppTypeList(source []v1.AppType) []modelgebura.AppType {
 	var modelgeburaAppTypeList []modelgebura.AppType
 	if source != nil {
@@ -139,23 +132,13 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		modelyesodFeedConfig.FeedURL = (*source).FeedUrl
 		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
-		modelyesodFeedConfig.Source = ToBizFeedConfigSource((*source).Source)
+		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = DurationPBToDuration((*source).PullInterval)
 		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
-}
-func (c *toBizConverterImpl) ToBizFeedConfigSourceList(source []v11.FeedConfigSource) []modelyesod.FeedConfigSource {
-	var modelyesodFeedConfigSourceList []modelyesod.FeedConfigSource
-	if source != nil {
-		modelyesodFeedConfigSourceList = make([]modelyesod.FeedConfigSource, len(source))
-		for i := 0; i < len(source); i++ {
-			modelyesodFeedConfigSourceList[i] = ToBizFeedConfigSource(source[i])
-		}
-	}
-	return modelyesodFeedConfigSourceList
 }
 func (c *toBizConverterImpl) ToBizFeedConfigStatusList(source []v11.FeedConfigStatus) []modelyesod.FeedConfigStatus {
 	var modelyesodFeedConfigStatusList []modelyesod.FeedConfigStatus
@@ -277,7 +260,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *v11.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = ToBizInternalID((*source).Id)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Destination = (*source).Destination
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
@@ -293,6 +276,52 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTarg
 		}
 	}
 	return modelnetzachNotifyTargetStatusList
+}
+func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
+	if source != nil {
+		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
+		var pUnnamedList []*struct {
+			Platform         string
+			AppRelationTypes []model.AccountAppRelationType
+		}
+		if (*source).SupportedAccounts != nil {
+			pUnnamedList = make([]*struct {
+				Platform         string
+				AppRelationTypes []model.AccountAppRelationType
+			}, len((*source).SupportedAccounts))
+			for i := 0; i < len((*source).SupportedAccounts); i++ {
+				pUnnamedList[i] = c.pV1PorterFeatureSummary_AccountToPUnnamed((*source).SupportedAccounts[i])
+			}
+		}
+		modelsupervisorPorterFeatureSummary.SupportedAccounts = pUnnamedList
+		var stringList []string
+		if (*source).SupportedAppSources != nil {
+			stringList = make([]string, len((*source).SupportedAppSources))
+			for j := 0; j < len((*source).SupportedAppSources); j++ {
+				stringList[j] = (*source).SupportedAppSources[j]
+			}
+		}
+		modelsupervisorPorterFeatureSummary.SupportedAppSources = stringList
+		var stringList2 []string
+		if (*source).SupportedFeedSources != nil {
+			stringList2 = make([]string, len((*source).SupportedFeedSources))
+			for k := 0; k < len((*source).SupportedFeedSources); k++ {
+				stringList2[k] = (*source).SupportedFeedSources[k]
+			}
+		}
+		modelsupervisorPorterFeatureSummary.SupportedFeedSources = stringList2
+		var stringList3 []string
+		if (*source).SupportedNotifyDestinations != nil {
+			stringList3 = make([]string, len((*source).SupportedNotifyDestinations))
+			for l := 0; l < len((*source).SupportedNotifyDestinations); l++ {
+				stringList3[l] = (*source).SupportedNotifyDestinations[l]
+			}
+		}
+		modelsupervisorPorterFeatureSummary.SupportedNotifyDestinations = stringList3
+		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
+	}
+	return pModelsupervisorPorterFeatureSummary
 }
 func (c *toBizConverterImpl) ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	var pModelTimeRange *model.TimeRange
@@ -337,6 +366,32 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 	}
 	return libauthUserTypeList
 }
+func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPUnnamed(source *v12.PorterFeatureSummary_Account) *struct {
+	Platform         string
+	AppRelationTypes []model.AccountAppRelationType
+} {
+	var pUnnamed *struct {
+		Platform         string
+		AppRelationTypes []model.AccountAppRelationType
+	}
+	if source != nil {
+		var unnamed struct {
+			Platform         string
+			AppRelationTypes []model.AccountAppRelationType
+		}
+		unnamed.Platform = (*source).Platform
+		var modelAccountAppRelationTypeList []model.AccountAppRelationType
+		if (*source).AppRelationTypes != nil {
+			modelAccountAppRelationTypeList = make([]model.AccountAppRelationType, len((*source).AppRelationTypes))
+			for i := 0; i < len((*source).AppRelationTypes); i++ {
+				modelAccountAppRelationTypeList[i] = ToBizAccountAppRelationType((*source).AppRelationTypes[i])
+			}
+		}
+		unnamed.AppRelationTypes = modelAccountAppRelationTypeList
+		pUnnamed = &unnamed
+	}
+	return pUnnamed
+}
 
 type toPBConverterImpl struct{}
 
@@ -345,7 +400,7 @@ func (c *toPBConverterImpl) ToPBAccount(source *modeltiphereth.Account) *v1.Acco
 	if source != nil {
 		var v1Account v1.Account
 		v1Account.Id = ToPBInternalID((*source).ID)
-		v1Account.Platform = ToPBAccountPlatform((*source).Platform)
+		v1Account.Platform = (*source).Platform
 		v1Account.PlatformAccountId = (*source).PlatformAccountID
 		v1Account.Name = (*source).Name
 		v1Account.ProfileUrl = (*source).ProfileURL
@@ -370,7 +425,8 @@ func (c *toPBConverterImpl) ToPBApp(source *modelgebura.App) *v1.App {
 	if source != nil {
 		var v1App v1.App
 		v1App.Id = ToPBInternalID((*source).ID)
-		v1App.Source = ToPBAppSource((*source).Source)
+		v1App.Internal = (*source).Internal
+		v1App.Source = (*source).Source
 		v1App.SourceAppId = (*source).SourceAppID
 		pString := (*source).SourceURL
 		v1App.SourceUrl = &pString
@@ -414,6 +470,39 @@ func (c *toPBConverterImpl) ToPBAppList(source []*modelgebura.App) []*v1.App {
 		}
 	}
 	return pV1AppList
+}
+func (c *toPBConverterImpl) ToPBAppMixed(source *modelgebura.AppMixed) *v1.AppMixed {
+	var pV1AppMixed *v1.AppMixed
+	if source != nil {
+		var v1AppMixed v1.AppMixed
+		v1AppMixed.Id = ToPBInternalID((*source).ID)
+		v1AppMixed.Details = c.ToPBAppDetail((*source).Details)
+		v1AppMixed.Name = (*source).Name
+		v1AppMixed.Type = ToPBAppType((*source).Type)
+		v1AppMixed.ShortDescription = (*source).ShortDescription
+		v1AppMixed.IconImageUrl = (*source).IconImageURL
+		v1AppMixed.HeroImageUrl = (*source).HeroImageURL
+		var stringList []string
+		if (*source).Tags != nil {
+			stringList = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				stringList[i] = (*source).Tags[i]
+			}
+		}
+		v1AppMixed.Tags = stringList
+		pV1AppMixed = &v1AppMixed
+	}
+	return pV1AppMixed
+}
+func (c *toPBConverterImpl) ToPBAppMixedList(source []*modelgebura.AppMixed) []*v1.AppMixed {
+	var pV1AppMixedList []*v1.AppMixed
+	if source != nil {
+		pV1AppMixedList = make([]*v1.AppMixed, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1AppMixedList[i] = c.ToPBAppMixed(source[i])
+		}
+	}
+	return pV1AppMixedList
 }
 func (c *toPBConverterImpl) ToPBAppPackage(source *modelgebura.AppPackage) *v1.AppPackage {
 	var pV1AppPackage *v1.AppPackage
@@ -501,7 +590,7 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		v1FeedConfig.Name = (*source).Name
 		v1FeedConfig.FeedUrl = (*source).FeedURL
 		v1FeedConfig.AuthorAccount = ToPBInternalID((*source).AuthorAccount)
-		v1FeedConfig.Source = ToPBFeedConfigSource((*source).Source)
+		v1FeedConfig.Source = (*source).Source
 		v1FeedConfig.Status = ToPBFeedConfigStatus((*source).Status)
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
 		v1FeedConfig.Category = (*source).Category
@@ -701,7 +790,7 @@ func (c *toPBConverterImpl) ToPBNotifyTarget(source *modelnetzach.NotifyTarget) 
 		v1NotifyTarget.Id = ToPBInternalID((*source).ID)
 		v1NotifyTarget.Name = (*source).Name
 		v1NotifyTarget.Description = (*source).Description
-		v1NotifyTarget.Type = ToPBNotifyTargetType((*source).Destination)
+		v1NotifyTarget.Destination = (*source).Destination
 		v1NotifyTarget.Status = ToPBNotifyTargetStatus((*source).Status)
 		v1NotifyTarget.Token = (*source).Token
 		pV1NotifyTarget = &v1NotifyTarget

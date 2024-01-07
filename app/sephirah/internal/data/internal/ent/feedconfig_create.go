@@ -52,8 +52,8 @@ func (fcc *FeedConfigCreate) SetAuthorAccount(mi model.InternalID) *FeedConfigCr
 }
 
 // SetSource sets the "source" field.
-func (fcc *FeedConfigCreate) SetSource(f feedconfig.Source) *FeedConfigCreate {
-	fcc.mutation.SetSource(f)
+func (fcc *FeedConfigCreate) SetSource(s string) *FeedConfigCreate {
+	fcc.mutation.SetSource(s)
 	return fcc
 }
 
@@ -285,11 +285,6 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "FeedConfig.source"`)}
 	}
-	if v, ok := fcc.mutation.Source(); ok {
-		if err := feedconfig.SourceValidator(v); err != nil {
-			return &ValidationError{Name: "source", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.source": %w`, err)}
-		}
-	}
 	if _, ok := fcc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "FeedConfig.status"`)}
 	}
@@ -368,7 +363,7 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_node.AuthorAccount = value
 	}
 	if value, ok := fcc.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeEnum, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
 		_node.Source = value
 	}
 	if value, ok := fcc.mutation.Status(); ok {
@@ -579,7 +574,7 @@ func (u *FeedConfigUpsert) AddAuthorAccount(v model.InternalID) *FeedConfigUpser
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsert) SetSource(v feedconfig.Source) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetSource(v string) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldSource, v)
 	return u
 }
@@ -804,7 +799,7 @@ func (u *FeedConfigUpsertOne) UpdateAuthorAccount() *FeedConfigUpsertOne {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertOne) SetSource(v feedconfig.Source) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetSource(v string) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})
@@ -1214,7 +1209,7 @@ func (u *FeedConfigUpsertBulk) UpdateAuthorAccount() *FeedConfigUpsertBulk {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertBulk) SetSource(v feedconfig.Source) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetSource(v string) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})

@@ -12,7 +12,7 @@ type PorterInstance struct {
 }
 
 type PorterFeatureSummary struct {
-	SupportedAccounts []struct {
+	SupportedAccounts []*struct {
 		Platform         string
 		AppRelationTypes []model.AccountAppRelationType
 	}

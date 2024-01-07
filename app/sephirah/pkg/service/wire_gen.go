@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/app/sephirah/internal/service"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -25,24 +26,34 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/protos/pkg/librarian/mapper/v1"
-	v1_4 "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	v1_3 "github.com/tuihub/protos/pkg/librarian/porter/v1"
+	v1_3 "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	v1_2 "github.com/tuihub/protos/pkg/librarian/searcher/v1"
-	v1_5 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	v1_4 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianPorterServiceClient v1_3.LibrarianPorterServiceClient, librarianMinerServiceClient v1_4.LibrarianMinerServiceClient) (v1_5.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_3.LibrarianMinerServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
+	librarianPorterServiceClient, err := client.NewPorterClient()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	porter, err := client.NewPorter(librarianPorterServiceClient)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	supervisorSupervisor := supervisor.NewSupervisor(porter)
 	geburaRepo := data.NewGeburaRepo(dataData)
 	searcher := client.NewSearcher(librarianSearcherServiceClient)
-	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, searcher)
+	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, searcher)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -65,7 +76,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		return nil, nil, err
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, librarianMapperServiceClient, searcher, topic3)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -80,12 +91,12 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	s3 := bizbinah.NewS3(binahRepo)
 	binah := bizbinah.NewBinah(controlBlock, auth, librarianMapperServiceClient, librarianPorterServiceClient, librarianSearcherServiceClient, s3)
 	yesodRepo := data.NewYesodRepo(dataData)
-	yesod, err := bizyesod.NewYesod(yesodRepo, cron, librarianMapperServiceClient, searcher, topic7)
+	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, librarianMapperServiceClient, searcher, topic7)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	netzach := biznetzach.NewNetzach(netzachRepo, searcher, map2, libcacheMap, map3)
+	netzach := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, map2, libcacheMap, map3)
 	chesedRepo := data.NewChesedRepo(dataData)
 	map4 := bizchesed.NewImageCache(store)
 	chesed, err := bizchesed.NewChesed(chesedRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)

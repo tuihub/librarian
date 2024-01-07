@@ -11,7 +11,7 @@ var (
 	// AccountsColumns holds the columns for the "accounts" table.
 	AccountsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "platform", Type: field.TypeEnum, Enums: []string{"steam"}},
+		{Name: "platform", Type: field.TypeString},
 		{Name: "platform_account_id", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "profile_url", Type: field.TypeString},
@@ -44,7 +44,8 @@ var (
 	// AppsColumns holds the columns for the "apps" table.
 	AppsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "source", Type: field.TypeEnum, Enums: []string{"internal", "steam"}},
+		{Name: "internal", Type: field.TypeBool},
+		{Name: "source", Type: field.TypeString},
 		{Name: "source_app_id", Type: field.TypeString},
 		{Name: "source_url", Type: field.TypeString, Nullable: true},
 		{Name: "name", Type: field.TypeString},
@@ -69,7 +70,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "apps_apps_bind_external",
-				Columns:    []*schema.Column{AppsColumns[16]},
+				Columns:    []*schema.Column{AppsColumns[17]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -78,7 +79,7 @@ var (
 			{
 				Name:    "app_source_source_app_id",
 				Unique:  true,
-				Columns: []*schema.Column{AppsColumns[1], AppsColumns[2]},
+				Columns: []*schema.Column{AppsColumns[2], AppsColumns[3]},
 			},
 		},
 	}
@@ -182,7 +183,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "feed_url", Type: field.TypeString},
 		{Name: "author_account", Type: field.TypeInt64},
-		{Name: "source", Type: field.TypeEnum, Enums: []string{"common"}},
+		{Name: "source", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "category", Type: field.TypeString},
 		{Name: "pull_interval", Type: field.TypeInt64},
@@ -429,7 +430,7 @@ var (
 		{Name: "token", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"telegram"}},
+		{Name: "destination", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},

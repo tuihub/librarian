@@ -26,8 +26,8 @@ type AccountCreate struct {
 }
 
 // SetPlatform sets the "platform" field.
-func (ac *AccountCreate) SetPlatform(a account.Platform) *AccountCreate {
-	ac.mutation.SetPlatform(a)
+func (ac *AccountCreate) SetPlatform(s string) *AccountCreate {
+	ac.mutation.SetPlatform(s)
 	return ac
 }
 
@@ -173,11 +173,6 @@ func (ac *AccountCreate) check() error {
 	if _, ok := ac.mutation.Platform(); !ok {
 		return &ValidationError{Name: "platform", err: errors.New(`ent: missing required field "Account.platform"`)}
 	}
-	if v, ok := ac.mutation.Platform(); ok {
-		if err := account.PlatformValidator(v); err != nil {
-			return &ValidationError{Name: "platform", err: fmt.Errorf(`ent: validator failed for field "Account.platform": %w`, err)}
-		}
-	}
 	if _, ok := ac.mutation.PlatformAccountID(); !ok {
 		return &ValidationError{Name: "platform_account_id", err: errors.New(`ent: missing required field "Account.platform_account_id"`)}
 	}
@@ -230,7 +225,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := ac.mutation.Platform(); ok {
-		_spec.SetField(account.FieldPlatform, field.TypeEnum, value)
+		_spec.SetField(account.FieldPlatform, field.TypeString, value)
 		_node.Platform = value
 	}
 	if value, ok := ac.mutation.PlatformAccountID(); ok {
@@ -343,7 +338,7 @@ type (
 )
 
 // SetPlatform sets the "platform" field.
-func (u *AccountUpsert) SetPlatform(v account.Platform) *AccountUpsert {
+func (u *AccountUpsert) SetPlatform(v string) *AccountUpsert {
 	u.Set(account.FieldPlatform, v)
 	return u
 }
@@ -475,7 +470,7 @@ func (u *AccountUpsertOne) Update(set func(*AccountUpsert)) *AccountUpsertOne {
 }
 
 // SetPlatform sets the "platform" field.
-func (u *AccountUpsertOne) SetPlatform(v account.Platform) *AccountUpsertOne {
+func (u *AccountUpsertOne) SetPlatform(v string) *AccountUpsertOne {
 	return u.Update(func(s *AccountUpsert) {
 		s.SetPlatform(v)
 	})
@@ -787,7 +782,7 @@ func (u *AccountUpsertBulk) Update(set func(*AccountUpsert)) *AccountUpsertBulk 
 }
 
 // SetPlatform sets the "platform" field.
-func (u *AccountUpsertBulk) SetPlatform(v account.Platform) *AccountUpsertBulk {
+func (u *AccountUpsertBulk) SetPlatform(v string) *AccountUpsertBulk {
 	return u.Update(func(s *AccountUpsert) {
 		s.SetPlatform(v)
 	})

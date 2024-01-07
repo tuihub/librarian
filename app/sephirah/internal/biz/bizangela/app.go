@@ -30,6 +30,7 @@ func NewPullSteamAppTopic(
 			resp, err := a.porter.PullApp(
 				a.supv.CallAppSource(ctx, r.Source),
 				&porter.PullAppRequest{AppId: &librarian.AppID{
+					Internal:    false,
 					Source:      r.Source,
 					SourceAppId: r.AppID,
 				}},

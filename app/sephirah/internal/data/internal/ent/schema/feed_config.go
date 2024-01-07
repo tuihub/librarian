@@ -26,7 +26,7 @@ func (FeedConfig) Fields() []ent.Field {
 		field.String("feed_url"),
 		field.Int64("author_account").
 			GoType(model.InternalID(0)),
-		field.Enum("source").Values("common"),
+		field.String("source"),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.String("category"),
