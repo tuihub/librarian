@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -17,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/model"
 )
 
 // NotifyFlowTargetUpdate is the builder for updating NotifyFlowTarget entities.

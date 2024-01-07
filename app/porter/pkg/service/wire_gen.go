@@ -7,10 +7,7 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/app/porter/internal/client"
-	"github.com/tuihub/librarian/app/porter/internal/client/feed"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -21,18 +18,12 @@ import (
 // Injectors from wire.go:
 
 func NewPorterService(porter_Data *conf.Porter_Data, settings *libapp.Settings) (v1.LibrarianPorterServiceServer, func(), error) {
-	collector := client.NewColly()
-	rssRepo, err := feed.NewRSSRepo(collector)
-	if err != nil {
-		return nil, nil, err
-	}
-	feedUseCase := bizfeed.NewFeed(rssRepo)
 	s3Repo, err := data.NewS3Repo(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	s3 := bizs3.NewS3(s3Repo)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, s3)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(s3)
 	return librarianPorterServiceServer, func() {
 	}, nil
 }

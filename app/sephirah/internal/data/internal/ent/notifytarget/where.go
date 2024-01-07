@@ -3,12 +3,12 @@
 package notifytarget
 
 import (
-	"github.com/tuihub/librarian/model"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/model"
 )
 
 // ID filters vertices based on their ID field.

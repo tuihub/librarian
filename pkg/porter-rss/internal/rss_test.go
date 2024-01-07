@@ -1,11 +1,10 @@
-package feed_test
+package internal_test
 
 import (
 	"testing"
 
-	"github.com/tuihub/librarian/app/porter/internal/client"
-	"github.com/tuihub/librarian/app/porter/internal/client/feed"
 	"github.com/tuihub/librarian/logger"
+	"github.com/tuihub/librarian/pkg/porter-rss/internal"
 
 	"github.com/stretchr/testify/require"
 )
@@ -15,7 +14,7 @@ func getURL() string {
 }
 
 func TestRSS(t *testing.T) {
-	r, _ := feed.NewRSSRepo(client.NewColly())
+	r := internal.NewRSS()
 	data, err := r.Get(getURL())
 	require.NoError(t, err)
 	res, err := r.Parse(data)

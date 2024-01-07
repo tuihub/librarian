@@ -5,7 +5,6 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"strings"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/model"
 )
 
 // NotifyFlowSource is the model entity for the NotifyFlowSource schema.

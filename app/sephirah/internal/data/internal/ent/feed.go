@@ -5,8 +5,6 @@ package ent
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/tuihub/librarian/model"
-	"github.com/tuihub/librarian/model/modelfeed"
 	"strings"
 	"time"
 
@@ -14,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/model/modelfeed"
 )
 
 // Feed is the model entity for the Feed schema.

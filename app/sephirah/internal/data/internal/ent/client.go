@@ -6,9 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"log"
 	"reflect"
+
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
+	"github.com/tuihub/librarian/model"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -23,7 +25,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"

@@ -5,7 +5,6 @@ package ent
 import (
 	"context"
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
@@ -15,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/model"
 )
 
 // ImageQuery is the builder for querying Image entities.

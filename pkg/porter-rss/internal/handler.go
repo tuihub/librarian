@@ -2,19 +2,24 @@ package internal
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/tuihub/librarian/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/muzhou233/go-favicon"
 )
 
 type Handler struct {
+	rss     RSS
+	favicon *favicon.Finder
 }
 
 func NewHandler() *Handler {
-	return &Handler{}
+	return &Handler{
+		NewRSS(),
+		favicon.New(favicon.IgnoreManifest),
+	}
 }
 
 func (h Handler) PullAccount(ctx context.Context, req *porter.PullAccountRequest) (
@@ -34,22 +39,32 @@ func (h Handler) PullAccountAppRelation(ctx context.Context, req *porter.PullAcc
 
 func (h Handler) PullFeed(ctx context.Context, req *porter.PullFeedRequest) (
 	*porter.PullFeedResponse, error) {
-	return nil, errors.BadRequest("not supported", "")
+	data, err := h.rss.Get(req.GetChannelId())
+	if err != nil {
+		return nil, err
+	}
+	feed, err := h.rss.Parse(data)
+	if err != nil {
+		return nil, err
+	}
+	if len(feed.Link) > 0 {
+		if icons, err1 := h.favicon.Find(feed.Link); err1 == nil && len(icons) > 0 {
+			for _, icon := range icons {
+				if icon.Height > 0 && icon.Width > 0 {
+					feed.Image = &modelfeed.Image{
+						URL:   icons[0].URL,
+						Title: "",
+					}
+					break
+				}
+			}
+		}
+	}
+	res := modelfeed.NewConverter().ToPBFeed(feed)
+	return &porter.PullFeedResponse{Data: res}, nil
 }
 
 func (h Handler) PushFeedItems(ctx context.Context, req *porter.PushFeedItemsRequest) (
 	*porter.PushFeedItemsResponse, error) {
-	messages := make(map[string]string)
-	for _, item := range modelfeed.NewConverter().FromPBFeedItemList(req.GetItems()) {
-		messages[item.Title] = item.Link
-	}
-	channelIDInt64, err := strconv.ParseInt(req.GetChannelId(), 10, 64)
-	if err != nil {
-		return nil, errors.BadRequest("invalid channel_id", "")
-	}
-	err = SendBatch(ctx, req.GetToken(), channelIDInt64, messages)
-	if err != nil {
-		return nil, err
-	}
-	return &porter.PushFeedItemsResponse{}, nil
+	return nil, errors.BadRequest("not supported", "")
 }

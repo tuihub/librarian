@@ -1,32 +1,42 @@
-package feed
+package internal
 
 import (
 	"errors"
 	"fmt"
 	"net/http"
 
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
-	"github.com/tuihub/librarian/app/porter/internal/client/feed/converter"
+	"github.com/tuihub/librarian/logger"
 	"github.com/tuihub/librarian/model/modelfeed"
+	"github.com/tuihub/librarian/pkg/porter-rss/internal/converter"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/gocolly/colly/v2"
-	"github.com/google/wire"
+	"github.com/gocolly/colly/v2/debug"
 	"github.com/mmcdole/gofeed"
 )
 
-var ProviderSet = wire.NewSet(NewRSSRepo)
-
-type rssRepo struct {
+type RSS struct {
 	c *colly.Collector
 }
 
-func NewRSSRepo(c *colly.Collector) (bizfeed.RSSRepo, error) {
-	return &rssRepo{
-		c: c,
-	}, nil
+func NewRSS() RSS {
+	return RSS{
+		c: newColly(),
+	}
 }
 
-func (s *rssRepo) Parse(data string) (*modelfeed.Feed, error) {
+func newColly() *colly.Collector {
+	return colly.NewCollector(
+		colly.Debugger(&debug.LogDebugger{
+			Output: logger.NewWriter(log.LevelDebug),
+			Prefix: "[colly]",
+			Flag:   0,
+		}),
+		colly.AllowURLRevisit(),
+	)
+}
+
+func (s *RSS) Parse(data string) (*modelfeed.Feed, error) {
 	fp := gofeed.NewParser()
 	feed, err := fp.ParseString(data)
 	if err != nil {
@@ -36,7 +46,7 @@ func (s *rssRepo) Parse(data string) (*modelfeed.Feed, error) {
 	return res, nil
 }
 
-func (s *rssRepo) Get(url string) (string, error) {
+func (s *RSS) Get(url string) (string, error) {
 	c := s.c.Clone()
 	var err error
 	var data string

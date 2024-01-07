@@ -6,7 +6,6 @@ package main
 
 import (
 	"github.com/tuihub/librarian/app/porter/internal/biz"
-	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/server"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -23,7 +22,6 @@ func wireApp(*conf.Porter_Server, *conf.Porter_Data, *libapp.Settings) (*kratos.
 		server.ProviderSet,
 		data.ProviderSet,
 		biz.ProviderSet,
-		client.ProviderSet,
 		service.ProviderSet,
 		libapp.ProviderSet,
 		newMetadata,

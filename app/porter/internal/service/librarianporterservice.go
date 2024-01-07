@@ -4,9 +4,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/model/modelfeed"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -16,19 +14,15 @@ import (
 
 type LibrarianPorterServiceService struct {
 	pb.UnimplementedLibrarianPorterServiceServer
-
-	feed *bizfeed.FeedUseCase
-	s3   *bizs3.S3
+	s3 *bizs3.S3
 }
 
 func NewLibrarianPorterServiceService(
-	feed *bizfeed.FeedUseCase,
 	s3 *bizs3.S3,
 ) pb.LibrarianPorterServiceServer {
 	return &LibrarianPorterServiceService{
 		UnimplementedLibrarianPorterServiceServer: pb.UnimplementedLibrarianPorterServiceServer{},
-		feed: feed,
-		s3:   s3,
+		s3: s3,
 	}
 }
 
@@ -36,21 +30,7 @@ func (s *LibrarianPorterServiceService) PullFeed(
 	ctx context.Context,
 	req *pb.PullFeedRequest,
 ) (*pb.PullFeedResponse, error) {
-	switch req.GetSource() {
-	case pb.FeedSource_FEED_SOURCE_UNSPECIFIED:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	case pb.FeedSource_FEED_SOURCE_COMMON:
-		{
-			feed, err := s.feed.GetFeed(ctx, req.GetChannelId())
-			if err != nil {
-				return nil, err
-			}
-			res := modelfeed.NewConverter().ToPBFeed(feed)
-			return &pb.PullFeedResponse{Data: res}, nil
-		}
-	default:
-		return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
-	}
+	return nil, status.Errorf(codes.InvalidArgument, "source unexpected")
 }
 
 func (s *LibrarianPorterServiceService) PushFeedItems(ctx context.Context, req *pb.PushFeedItemsRequest) (

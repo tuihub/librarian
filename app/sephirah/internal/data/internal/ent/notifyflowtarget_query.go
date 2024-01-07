@@ -5,7 +5,6 @@ package ent
 import (
 	"context"
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"math"
 
 	"entgo.io/ent/dialect/sql"
@@ -15,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/model"
 )
 
 // NotifyFlowTargetQuery is the builder for querying NotifyFlowTarget entities.

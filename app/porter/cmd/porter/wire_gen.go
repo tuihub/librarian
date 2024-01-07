@@ -8,10 +8,7 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/app/porter/internal/client"
-	"github.com/tuihub/librarian/app/porter/internal/client/feed"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/server"
 	"github.com/tuihub/librarian/app/porter/internal/service"
@@ -23,18 +20,12 @@ import (
 
 // wireApp init kratos application.
 func wireApp(porter_Server *conf.Porter_Server, porter_Data *conf.Porter_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
-	collector := client.NewColly()
-	rssRepo, err := feed.NewRSSRepo(collector)
-	if err != nil {
-		return nil, nil, err
-	}
-	feedUseCase := bizfeed.NewFeed(rssRepo)
 	s3Repo, err := data.NewS3Repo(porter_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	s3 := bizs3.NewS3(s3Repo)
-	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(feedUseCase, s3)
+	librarianPorterServiceServer := service.NewLibrarianPorterServiceService(s3)
 	grpcServer := server.NewGRPCServer(porter_Server, librarianPorterServiceServer, settings)
 	registrar, err := libapp.NewRegistrar()
 	if err != nil {

@@ -4,7 +4,6 @@ package ent
 
 import (
 	"fmt"
-	"github.com/tuihub/librarian/model"
 	"strings"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/model"
 )
 
 // NotifyTarget is the model entity for the NotifyTarget schema.

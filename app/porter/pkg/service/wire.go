@@ -6,7 +6,6 @@ package service
 
 import (
 	"github.com/tuihub/librarian/app/porter/internal/biz"
-	"github.com/tuihub/librarian/app/porter/internal/client"
 	"github.com/tuihub/librarian/app/porter/internal/data"
 	"github.com/tuihub/librarian/app/porter/internal/service"
 	"github.com/tuihub/librarian/internal/conf"
@@ -20,7 +19,6 @@ func NewPorterService(*conf.Porter_Data, *libapp.Settings) (pb.LibrarianPorterSe
 	panic(wire.Build(
 		data.ProviderSet,
 		biz.ProviderSet,
-		client.ProviderSet,
 		service.ProviderSet,
 	))
 }
