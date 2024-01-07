@@ -36,7 +36,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 		SetFeedURL(c.FeedURL).
 		SetCategory(c.Category).
 		SetAuthorAccount(c.AuthorAccount).
-		SetSource(converter.ToEntFeedConfigSource(c.Source)).
+		SetSource(c.Source).
 		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
 		SetPullInterval(c.PullInterval).
 		SetHideItems(c.HideItems)
@@ -61,8 +61,8 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 	if c.AuthorAccount > 0 {
 		q.SetAuthorAccount(c.AuthorAccount)
 	}
-	if c.Source != modelyesod.FeedConfigSourceUnspecified {
-		q.SetSource(converter.ToEntFeedConfigSource(c.Source))
+	if len(c.Source) > 0 {
+		q.SetSource(c.Source)
 	}
 	if c.Status != modelyesod.FeedConfigStatusUnspecified {
 		q.SetStatus(converter.ToEntFeedConfigStatus(c.Status))
@@ -83,7 +83,7 @@ func (y *yesodRepo) UpdateFeedConfigAsInQueue(ctx context.Context, id model.Inte
 	return q.Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []modelyesod.FeedConfigSource,
+func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string,
 	statuses []modelyesod.FeedConfigStatus, order modelyesod.ListFeedOrder,
 	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
 	q := y.data.db.FeedConfig.Query()
@@ -114,7 +114,7 @@ func (y *yesodRepo) ListFeedConfigs(
 	paging model.Paging,
 	ids []model.InternalID,
 	authorIDs []model.InternalID,
-	sources []modelyesod.FeedConfigSource,
+	sources []string,
 	statuses []modelyesod.FeedConfigStatus,
 	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, error) {
@@ -133,7 +133,7 @@ func (y *yesodRepo) ListFeedConfigs(
 			q.Where(feedconfig.AuthorAccountIn(authorIDs...))
 		}
 		if len(sources) > 0 {
-			q.Where(feedconfig.SourceIn(converter.ToEntFeedConfigSourceList(sources)...))
+			q.Where(feedconfig.SourceIn(sources...))
 		}
 		if len(statuses) > 0 {
 			q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))

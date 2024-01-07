@@ -49,7 +49,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 	}
 	topic := bizangela.NewUpdateAppIndexTopic(angelaBase)
 	libmqTopic := bizangela.NewPullSteamAppTopic(angelaBase, topic)
-	topic2 := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, libmqTopic)
+	topic2 := bizangela.NewPullAccountAppRelationTopic(angelaBase, libmqTopic)
 	topic3 := bizangela.NewPullAccountTopic(angelaBase, topic2)
 	netzachRepo := data.NewNetzachRepo(dataData)
 	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)

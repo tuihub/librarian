@@ -277,7 +277,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *v11.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = ToBizInternalID((*source).Id)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Type = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Destination = ToBizNotifyTargetType((*source).Type)
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
@@ -293,16 +293,6 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTarg
 		}
 	}
 	return modelnetzachNotifyTargetStatusList
-}
-func (c *toBizConverterImpl) ToBizNotifyTargetTypeList(source []v11.NotifyTargetType) []modelnetzach.NotifyTargetType {
-	var modelnetzachNotifyTargetTypeList []modelnetzach.NotifyTargetType
-	if source != nil {
-		modelnetzachNotifyTargetTypeList = make([]modelnetzach.NotifyTargetType, len(source))
-		for i := 0; i < len(source); i++ {
-			modelnetzachNotifyTargetTypeList[i] = ToBizNotifyTargetType(source[i])
-		}
-	}
-	return modelnetzachNotifyTargetTypeList
 }
 func (c *toBizConverterImpl) ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	var pModelTimeRange *model.TimeRange
@@ -711,7 +701,7 @@ func (c *toPBConverterImpl) ToPBNotifyTarget(source *modelnetzach.NotifyTarget) 
 		v1NotifyTarget.Id = ToPBInternalID((*source).ID)
 		v1NotifyTarget.Name = (*source).Name
 		v1NotifyTarget.Description = (*source).Description
-		v1NotifyTarget.Type = ToPBNotifyTargetType((*source).Type)
+		v1NotifyTarget.Type = ToPBNotifyTargetType((*source).Destination)
 		v1NotifyTarget.Status = ToPBNotifyTargetStatus((*source).Status)
 		v1NotifyTarget.Token = (*source).Token
 		pV1NotifyTarget = &v1NotifyTarget

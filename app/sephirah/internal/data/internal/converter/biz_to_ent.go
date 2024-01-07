@@ -40,10 +40,8 @@ type toEntConverter interface { //nolint:unused // used by generator
 	ToEntApp(modelgebura.App) ent.App
 	ToEntAppPackageSourceList([]modelgebura.AppPackageSource) []apppackage.Source
 
-	ToEntFeedConfigSourceList([]modelyesod.FeedConfigSource) []feedconfig.Source
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
 
-	ToEntNotifyTargetTypeList([]modelnetzach.NotifyTargetType) []notifytarget.Type
 	ToEntNotifyTargetStatusList([]modelnetzach.NotifyTargetStatus) []notifytarget.Status
 }
 
@@ -86,19 +84,6 @@ func ToEntAppType(t modelgebura.AppType) app.Type {
 	}
 }
 
-func ToEntAppSource(s modelgebura.AppSource) app.Source {
-	switch s {
-	case modelgebura.AppSourceUnspecified:
-		return ""
-	case modelgebura.AppSourceInternal:
-		return app.SourceInternal
-	case modelgebura.AppSourceSteam:
-		return app.SourceSteam
-	default:
-		return ""
-	}
-}
-
 func ToEntAccountPlatform(t modeltiphereth.AccountPlatform) account.Platform {
 	switch t {
 	case modeltiphereth.AccountPlatformUnspecified:
@@ -131,28 +116,6 @@ func ToEntFeedConfigStatus(s modelyesod.FeedConfigStatus) feedconfig.Status {
 		return feedconfig.StatusActive
 	case modelyesod.FeedConfigStatusSuspend:
 		return feedconfig.StatusSuspend
-	default:
-		return ""
-	}
-}
-
-func ToEntFeedConfigSource(s modelyesod.FeedConfigSource) feedconfig.Source {
-	switch s {
-	case modelyesod.FeedConfigSourceUnspecified:
-		return ""
-	case modelyesod.FeedConfigSourceCommon:
-		return feedconfig.SourceCommon
-	default:
-		return ""
-	}
-}
-
-func ToEntNotifyTargetType(t modelnetzach.NotifyTargetType) notifytarget.Type {
-	switch t {
-	case modelnetzach.NotifyTargetTypeUnspecified:
-		return ""
-	case modelnetzach.NotifyTargetTypeTelegram:
-		return notifytarget.TypeTelegram
 	default:
 		return ""
 	}

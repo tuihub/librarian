@@ -6,14 +6,16 @@ import (
 	"github.com/tuihub/librarian/model/modelfeed"
 )
 
-type PullSteamAccountAppRelation struct {
-	ID      model.InternalID
-	SteamID string
+type PullAccountAppRelation struct {
+	ID                model.InternalID
+	Platform          string
+	PlatformAccountID string
 }
 
-type PullSteamApp struct {
-	ID    model.InternalID
-	AppID string
+type PullApp struct {
+	ID     model.InternalID
+	Source string
+	AppID  string
 }
 
 type NotifyRouter struct {

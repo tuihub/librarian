@@ -1,6 +1,8 @@
 package converter
 
 import (
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
@@ -24,7 +26,6 @@ import (
 // goverter:extend ToLibAuthUserType
 // goverter:extend ToBizUserStatus
 // goverter:extend ToBizAppType
-// goverter:extend ToBizAppSource
 // goverter:extend PtrToString
 // goverter:extend ToBizAppPackageSource
 // goverter:extend DurationPBToDuration
@@ -34,6 +35,7 @@ import (
 // goverter:extend ToBizNotifyTargetType
 // goverter:extend ToBizNotifyFlowStatus
 // goverter:extend ToBizFileType
+// goverter:extend ToBizAccountAppRelationType
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 
@@ -44,12 +46,14 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
 
 	// goverter:matchIgnoreCase
+	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
+
+	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
 	ToBizApp(*librarian.App) *modelgebura.App
 	// goverter:matchIgnoreCase
 	ToBizAppDetail(*librarian.AppDetails) *modelgebura.AppDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
-	ToBizAppSourceList([]librarian.AppSource) []modelgebura.AppSource
 
 	// goverter:matchIgnoreCase
 	ToBizAppPackage(*librarian.AppPackage) *modelgebura.AppPackage
@@ -61,12 +65,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:ignore LatestUpdateTime
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
-	ToBizFeedConfigSourceList([]pb.FeedConfigSource) []modelyesod.FeedConfigSource
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
 	// goverter:matchIgnoreCase
 	ToBizNotifyTarget(*pb.NotifyTarget) *modelnetzach.NotifyTarget
-	ToBizNotifyTargetTypeList([]pb.NotifyTargetType) []modelnetzach.NotifyTargetType
 	ToBizNotifyTargetStatusList([]pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
@@ -143,19 +145,6 @@ func ToBizAppType(t librarian.AppType) modelgebura.AppType {
 	}
 }
 
-func ToBizAppSource(s librarian.AppSource) modelgebura.AppSource {
-	switch s {
-	case librarian.AppSource_APP_SOURCE_UNSPECIFIED:
-		return modelgebura.AppSourceUnspecified
-	case librarian.AppSource_APP_SOURCE_INTERNAL:
-		return modelgebura.AppSourceInternal
-	case librarian.AppSource_APP_SOURCE_STEAM:
-		return modelgebura.AppSourceSteam
-	default:
-		return modelgebura.AppSourceUnspecified
-	}
-}
-
 func ToBizAppPackageSource(a librarian.AppPackageSource) modelgebura.AppPackageSource {
 	switch a {
 	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED:
@@ -166,28 +155,6 @@ func ToBizAppPackageSource(a librarian.AppPackageSource) modelgebura.AppPackageS
 		return modelgebura.AppPackageSourceSentinel
 	default:
 		return modelgebura.AppPackageSourceUnspecified
-	}
-}
-
-func ToBizAccountPlatform(p librarian.AccountPlatform) modeltiphereth.AccountPlatform {
-	switch p {
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_UNSPECIFIED:
-		return modeltiphereth.AccountPlatformUnspecified
-	case librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM:
-		return modeltiphereth.AccountPlatformSteam
-	default:
-		return modeltiphereth.AccountPlatformUnspecified
-	}
-}
-
-func ToBizFeedConfigSource(s pb.FeedConfigSource) modelyesod.FeedConfigSource {
-	switch s {
-	case pb.FeedConfigSource_FEED_CONFIG_SOURCE_UNSPECIFIED:
-		return modelyesod.FeedConfigSourceUnspecified
-	case pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON:
-		return modelyesod.FeedConfigSourceCommon
-	default:
-		return modelyesod.FeedConfigSourceUnspecified
 	}
 }
 
@@ -234,17 +201,6 @@ func ToBizNotifyTargetStatus(s pb.NotifyTargetStatus) modelnetzach.NotifyTargetS
 	}
 }
 
-func ToBizNotifyTargetType(t pb.NotifyTargetType) modelnetzach.NotifyTargetType {
-	switch t {
-	case pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED:
-		return modelnetzach.NotifyTargetTypeUnspecified
-	case pb.NotifyTargetType_NOTIFY_TARGET_TYPE_TELEGRAM:
-		return modelnetzach.NotifyTargetTypeTelegram
-	default:
-		return modelnetzach.NotifyTargetTypeUnspecified
-	}
-}
-
 func ToBizNotifyFlowStatus(s pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus {
 	switch s {
 	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED:
@@ -268,5 +224,16 @@ func ToBizFileType(t pb.FileType) modelbinah.FileType {
 		return modelbinah.FileTypeChesedImage
 	default:
 		return modelbinah.FileTypeUnspecified
+	}
+}
+
+func ToBizAccountAppRelationType(t librarian.AccountAppRelationType) model.AccountAppRelationType {
+	switch t {
+	case librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED:
+		return model.AccountAppRelationTypeUnspecified
+	case librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN:
+		return model.AccountAppRelationTypeOwner
+	default:
+		return model.AccountAppRelationTypeUnspecified
 	}
 }

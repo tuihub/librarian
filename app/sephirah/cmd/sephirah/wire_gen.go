@@ -75,7 +75,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	topic := bizangela.NewUpdateAppIndexTopic(angelaBase)
 	libmqTopic := bizangela.NewPullSteamAppTopic(angelaBase, topic)
-	topic2 := bizangela.NewPullSteamAccountAppRelationTopic(angelaBase, libmqTopic)
+	topic2 := bizangela.NewPullAccountAppRelationTopic(angelaBase, libmqTopic)
 	topic3 := bizangela.NewPullAccountTopic(angelaBase, topic2)
 	netzachRepo := data.NewNetzachRepo(dataData)
 	store, err := libcache.NewStore(cache)

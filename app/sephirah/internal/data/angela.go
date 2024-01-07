@@ -34,7 +34,7 @@ func NewAngelaRepo(data *Data) bizangela.AngelaRepo {
 func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Account) error {
 	return a.data.db.Account.Update().Where(
 		account.IDEQ(acc.ID),
-		account.PlatformEQ(converter.ToEntAccountPlatform(acc.Platform)),
+		account.PlatformEQ(acc.Platform),
 		account.PlatformAccountIDEQ(acc.PlatformAccountID),
 	).
 		SetName(acc.Name).

@@ -36,6 +36,7 @@ const (
 	UserTypeAdmin
 	UserTypeNormal
 	UserTypeSentinel
+	UserTypePorter
 )
 
 func (a *Auth) KeyFunc(t ClaimsType) jwtv4.Keyfunc {

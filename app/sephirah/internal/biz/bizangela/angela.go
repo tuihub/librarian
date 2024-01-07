@@ -2,6 +2,7 @@ package bizangela
 
 import (
 	"context"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
@@ -22,7 +23,7 @@ var ProviderSet = wire.NewSet(
 	NewAngela,
 	NewAngelaBase,
 	NewPullAccountTopic,
-	NewPullSteamAccountAppRelationTopic,
+	NewPullAccountAppRelationTopic,
 	NewPullSteamAppTopic,
 	NewPullFeedTopic,
 	NewNotifyRouterTopic,
@@ -39,6 +40,7 @@ type Angela struct {
 }
 type AngelaBase struct {
 	repo     AngelaRepo
+	supv     *supervisor.Supervisor
 	g        bizgebura.GeburaRepo
 	mapper   mapper.LibrarianMapperServiceClient
 	searcher *client.Searcher
@@ -58,6 +60,7 @@ type AngelaRepo interface {
 
 func NewAngelaBase(
 	repo AngelaRepo,
+	supv *supervisor.Supervisor,
 	g bizgebura.GeburaRepo,
 	mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
@@ -65,6 +68,7 @@ func NewAngelaBase(
 ) (*AngelaBase, error) {
 	return &AngelaBase{
 		repo:     repo,
+		supv:     supv,
 		g:        g,
 		mapper:   mClient,
 		porter:   pClient,
@@ -75,8 +79,8 @@ func NewAngelaBase(
 func NewAngela(
 	mq *libmq.MQ,
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
-	pullSteamAccountAppRelation *libmq.Topic[modelangela.PullSteamAccountAppRelation],
-	pullSteamApp *libmq.Topic[modelangela.PullSteamApp],
+	pullSteamAccountAppRelation *libmq.Topic[modelangela.PullAccountAppRelation],
+	pullSteamApp *libmq.Topic[modelangela.PullApp],
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
 	notifyPush *libmq.Topic[modelangela.NotifyPush],

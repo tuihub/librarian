@@ -6,7 +6,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -20,7 +19,7 @@ func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///mapper"),
+		grpc.WithEndpoint(libapp.DiscoveryAddress+":///mapper"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
@@ -38,7 +37,7 @@ func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///searcher"),
+		grpc.WithEndpoint(libapp.DiscoveryAddress+":///searcher"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
@@ -49,24 +48,6 @@ func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 	return cli, err
 }
 
-func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
-	r, err := libapp.NewDiscovery()
-	if err != nil {
-		return nil, err
-	}
-	conn, err := grpc.DialInsecure(
-		context.Background(),
-		grpc.WithEndpoint("discovery:///porter"),
-		grpc.WithDiscovery(r),
-		grpc.WithNodeFilter(libapp.NewNodeFilter()),
-		grpc.WithMiddleware(
-			recovery.Recovery(),
-		),
-	)
-	cli := porter.NewLibrarianPorterServiceClient(conn)
-	return cli, err
-}
-
 func NewMinerClient() (miner.LibrarianMinerServiceClient, error) {
 	r, err := libapp.NewDiscovery()
 	if err != nil {
@@ -74,7 +55,7 @@ func NewMinerClient() (miner.LibrarianMinerServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///porter"),
+		grpc.WithEndpoint(libapp.DiscoveryAddress+":///porter"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(

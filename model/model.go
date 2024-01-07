@@ -7,8 +7,8 @@ import (
 )
 
 type Paging struct {
-	PageSize int32
-	PageNum  int32
+	PageSize int64
+	PageNum  int64
 }
 
 func (p *Paging) ToLimit() int {
@@ -47,3 +47,10 @@ type TimeRange struct {
 	StartTime time.Time
 	Duration  time.Duration
 }
+
+type AccountAppRelationType int
+
+const (
+	AccountAppRelationTypeUnspecified AccountAppRelationType = iota
+	AccountAppRelationTypeOwner
+)

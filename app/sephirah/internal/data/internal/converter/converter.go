@@ -34,14 +34,8 @@ func ToEntApp(a modelgebura.App) ent.App {
 func ToEntAppPackageSourceList(a []modelgebura.AppPackageSource) []apppackage.Source {
 	return toEnt.ToEntAppPackageSourceList(a)
 }
-func ToEntFeedConfigSourceList(a []modelyesod.FeedConfigSource) []feedconfig.Source {
-	return toEnt.ToEntFeedConfigSourceList(a)
-}
 func ToEntFeedConfigStatusList(a []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	return toEnt.ToEntFeedConfigStatusList(a)
-}
-func ToEntNotifyTargetTypeList(a []modelnetzach.NotifyTargetType) []notifytarget.Type {
-	return toEnt.ToEntNotifyTargetTypeList(a)
 }
 func ToEntNotifyTargetStatusList(a []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
 	return toEnt.ToEntNotifyTargetStatusList(a)

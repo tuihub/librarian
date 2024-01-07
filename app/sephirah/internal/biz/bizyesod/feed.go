@@ -19,7 +19,7 @@ func (y *Yesod) ListFeeds(
 	paging model.Paging,
 	ids []model.InternalID,
 	authorIDs []model.InternalID,
-	sources []modelyesod.FeedConfigSource,
+	sources []string,
 	statuses []modelyesod.FeedConfigStatus,
 	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, *errors.Error) {

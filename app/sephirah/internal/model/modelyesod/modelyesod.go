@@ -33,19 +33,12 @@ type FeedConfig struct {
 	FeedURL          string
 	Category         string
 	AuthorAccount    model.InternalID
-	Source           FeedConfigSource
+	Source           string
 	Status           FeedConfigStatus
 	PullInterval     time.Duration
 	LatestUpdateTime time.Time
 	HideItems        bool
 }
-
-type FeedConfigSource int
-
-const (
-	FeedConfigSourceUnspecified FeedConfigSource = iota
-	FeedConfigSourceCommon
-)
 
 type FeedConfigStatus int
 
@@ -65,7 +58,7 @@ const (
 type PullFeed struct {
 	InternalID model.InternalID
 	URL        string
-	Source     FeedConfigSource
+	Source     string
 }
 
 type GroupFeedItemsBy int

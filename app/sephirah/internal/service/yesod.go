@@ -42,7 +42,7 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
-		converter.ToBizFeedConfigSourceList(req.GetSourceFilter()),
+		req.GetSourceFilter(),
 		converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
 		req.GetCategoryFilter(),
 	)

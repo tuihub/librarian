@@ -28,7 +28,7 @@ type RefreshToken string
 
 type Account struct {
 	ID                model.InternalID
-	Platform          AccountPlatform
+	Platform          string
 	PlatformAccountID string
 	Name              string
 	ProfileURL        string
@@ -36,15 +36,8 @@ type Account struct {
 	LatestUpdateTime  time.Time
 }
 
-type AccountPlatform int
-
-const (
-	AccountPlatformUnspecified AccountPlatform = iota
-	AccountPlatformSteam
-)
-
 type PullAccountInfo struct {
 	ID                model.InternalID
-	Platform          AccountPlatform
+	Platform          string
 	PlatformAccountID string
 }

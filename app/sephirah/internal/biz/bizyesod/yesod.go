@@ -2,6 +2,7 @@ package bizyesod
 
 import (
 	"context"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
@@ -19,11 +20,11 @@ type YesodRepo interface {
 	UpdateFeedConfig(context.Context, model.InternalID, *modelyesod.FeedConfig) error
 	ListFeedCategories(context.Context, model.InternalID) ([]string, error)
 	ListFeedPlatforms(context.Context, model.InternalID) ([]string, error)
-	ListFeedConfigNeedPull(context.Context, []modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus,
+	ListFeedConfigNeedPull(context.Context, []string, []modelyesod.FeedConfigStatus,
 		modelyesod.ListFeedOrder, time.Time, int) ([]*modelyesod.FeedConfig, error)
 	UpdateFeedConfigAsInQueue(context.Context, model.InternalID) error
 	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
-		[]modelyesod.FeedConfigSource, []modelyesod.FeedConfigStatus, []string) ([]*modelyesod.FeedWithConfig, int, error)
+		[]string, []modelyesod.FeedConfigStatus, []string) ([]*modelyesod.FeedWithConfig, int, error)
 	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,
 		[]model.InternalID, []string, *model.TimeRange, []string) ([]*modelyesod.FeedItemDigest, int, error)
 	GroupFeedItems(context.Context, model.InternalID, []model.TimeRange, []model.InternalID,
@@ -35,6 +36,7 @@ type YesodRepo interface {
 
 type Yesod struct {
 	repo     YesodRepo
+	supv     *supervisor.Supervisor
 	mapper   mapper.LibrarianMapperServiceClient
 	searcher *client.Searcher
 	pullFeed *libmq.Topic[modelyesod.PullFeed]
@@ -42,6 +44,7 @@ type Yesod struct {
 
 func NewYesod(
 	repo YesodRepo,
+	supv *supervisor.Supervisor,
 	cron *libcron.Cron,
 	mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
@@ -49,6 +52,7 @@ func NewYesod(
 ) (*Yesod, error) {
 	y := &Yesod{
 		repo:     repo,
+		supv:     supv,
 		mapper:   mClient,
 		searcher: sClient,
 		pullFeed: pullFeed,

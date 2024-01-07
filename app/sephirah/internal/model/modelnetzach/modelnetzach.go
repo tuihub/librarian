@@ -36,17 +36,10 @@ type NotifyTarget struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Type        NotifyTargetType
+	Destination string
 	Status      NotifyTargetStatus
 	Token       string
 }
-
-type NotifyTargetType int
-
-const (
-	NotifyTargetTypeUnspecified NotifyTargetType = iota
-	NotifyTargetTypeTelegram
-)
 
 type NotifyTargetStatus int
 

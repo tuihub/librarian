@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -17,68 +16,67 @@ import (
 
 func NewPullAccountTopic(
 	a *AngelaBase,
-	sr *libmq.Topic[modelangela.PullSteamAccountAppRelation],
+	sr *libmq.Topic[modelangela.PullAccountAppRelation],
 ) *libmq.Topic[modeltiphereth.PullAccountInfo] {
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
-			switch info.Platform {
-			case modeltiphereth.AccountPlatformUnspecified:
-			case modeltiphereth.AccountPlatformSteam:
-				ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
-			default:
+			if !a.supv.CheckAccountPlatform(info.Platform) {
+				return nil
 			}
-			resp, err := a.porter.PullAccount(ctx, &porter.PullAccountRequest{AccountId: &librarian.AccountID{
-				Platform:          converter.ToPBAccountPlatform(info.Platform),
-				PlatformAccountId: info.PlatformAccountID,
-			}})
+			resp, err := a.porter.PullAccount(
+				a.supv.CallAccountPlatform(ctx, info.Platform),
+				&porter.PullAccountRequest{AccountId: &librarian.AccountID{
+					Platform:          converter.ToPBAccountPlatform(info.Platform),
+					PlatformAccountId: info.PlatformAccountID,
+				}},
+			)
 			if err != nil {
 				return err
 			}
-			switch info.Platform {
-			case modeltiphereth.AccountPlatformUnspecified:
-				return nil
-			case modeltiphereth.AccountPlatformSteam:
-				err = a.repo.UpdateAccount(ctx, modeltiphereth.Account{
+			err = a.repo.UpdateAccount(ctx, modeltiphereth.Account{
+				ID:                info.ID,
+				Platform:          info.Platform,
+				PlatformAccountID: info.PlatformAccountID,
+				Name:              resp.GetAccount().GetName(),
+				ProfileURL:        resp.GetAccount().GetProfileUrl(),
+				AvatarURL:         resp.GetAccount().GetAvatarUrl(),
+				LatestUpdateTime:  time.Time{},
+			})
+			if err != nil {
+				return err
+			}
+			return sr.
+				Publish(ctx, modelangela.PullAccountAppRelation{
 					ID:                info.ID,
 					Platform:          info.Platform,
 					PlatformAccountID: info.PlatformAccountID,
-					Name:              resp.GetAccount().GetName(),
-					ProfileURL:        resp.GetAccount().GetProfileUrl(),
-					AvatarURL:         resp.GetAccount().GetAvatarUrl(),
-					LatestUpdateTime:  time.Time{},
 				})
-				if err != nil {
-					return err
-				}
-				return sr.
-					Publish(ctx, modelangela.PullSteamAccountAppRelation{
-						ID:      info.ID,
-						SteamID: info.PlatformAccountID,
-					})
-			default:
-				return nil
-			}
 		},
 	)
 }
 
-func NewPullSteamAccountAppRelationTopic(
+func NewPullAccountAppRelationTopic(
 	a *AngelaBase,
-	sa *libmq.Topic[modelangela.PullSteamApp],
-) *libmq.Topic[modelangela.PullSteamAccountAppRelation] {
-	return libmq.NewTopic[modelangela.PullSteamAccountAppRelation](
-		"PullSteamAccountAppRelation",
-		func(ctx context.Context, r *modelangela.PullSteamAccountAppRelation) error {
-			ctx = libapp.NewContext(ctx, string(porter.FeatureFlag_FEATURE_FLAG_SOURCE_STEAM))
+	sa *libmq.Topic[modelangela.PullApp],
+) *libmq.Topic[modelangela.PullAccountAppRelation] {
+	return libmq.NewTopic[modelangela.PullAccountAppRelation](
+		"PullAccountAppRelation",
+		func(ctx context.Context, r *modelangela.PullAccountAppRelation) error {
+			if !a.supv.CheckAccountPlatform(r.Platform) {
+				return nil
+			}
 			var appList []*librarian.App
-			if resp, err := a.porter.PullAccountAppRelation(ctx, &porter.PullAccountAppRelationRequest{
-				RelationType: porter.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
-				AccountId: &librarian.AccountID{
-					Platform:          librarian.AccountPlatform_ACCOUNT_PLATFORM_STEAM,
-					PlatformAccountId: r.SteamID,
+			if resp, err := a.porter.PullAccountAppRelation(
+				a.supv.CallAccountPlatform(ctx, r.Platform),
+				&porter.PullAccountAppRelationRequest{
+					RelationType: librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
+					AccountId: &librarian.AccountID{
+						Platform:          r.Platform,
+						PlatformAccountId: r.PlatformAccountID,
+					},
 				},
-			}); err != nil {
+			); err != nil {
 				return err
 			} else {
 				appList = resp.GetAppList()
@@ -87,26 +85,26 @@ func NewPullSteamAccountAppRelationTopic(
 			if appNum <= 0 {
 				return nil
 			}
-			steamApps := make([]*modelgebura.App, 0, appNum)
-			var steamAppIDs []model.InternalID
+			apps := make([]*modelgebura.App, 0, appNum)
+			var appIDs []model.InternalID
 			if id, err := a.searcher.NewBatchIDs(ctx, appNum); err != nil {
 				return err
 			} else {
-				steamAppIDs = id
+				appIDs = id
 			}
 			for i, app := range appList {
-				steamApps = append(steamApps, converter.ToBizApp(app))
-				steamApps[i].ID = steamAppIDs[i]
-				steamApps[i].Source = modelgebura.AppSourceSteam
+				apps = append(apps, converter.ToBizApp(app))
+				apps[i].ID = appIDs[i]
+				apps[i].Source = r.Platform
 			}
-			if err := a.repo.UpsertApps(ctx, steamApps); err != nil {
+			if err := a.repo.UpsertApps(ctx, apps); err != nil {
 				return err
 			}
-			if err := a.repo.AccountPurchaseApps(ctx, r.ID, steamAppIDs); err != nil {
+			if err := a.repo.AccountPurchaseApps(ctx, r.ID, appIDs); err != nil {
 				return err
 			}
-			for _, app := range steamApps {
-				_ = sa.Publish(ctx, modelangela.PullSteamApp{
+			for _, app := range apps {
+				_ = sa.Publish(ctx, modelangela.PullApp{
 					ID:    app.ID,
 					AppID: app.SourceAppID,
 				})

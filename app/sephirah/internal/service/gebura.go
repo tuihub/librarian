@@ -45,7 +45,7 @@ func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.
 ) {
 	a, total, err := s.g.ListApps(ctx,
 		model.ToBizPaging(req.GetPaging()),
-		converter.ToBizAppSourceList(req.GetSourceFilter()),
+		req.GetSourceFilter(),
 		converter.ToBizAppTypeList(req.GetTypeFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 		req.GetContainDetails())
@@ -56,11 +56,6 @@ func (s *LibrarianSephirahServiceService) ListApps(ctx context.Context, req *pb.
 		Paging: &librarian.PagingResponse{TotalSize: total},
 		Apps:   converter.ToPBAppList(a),
 	}, nil
-}
-func (s *LibrarianSephirahServiceService) RefreshApp(ctx context.Context, req *pb.RefreshAppRequest) (
-	*pb.RefreshAppResponse, error,
-) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
 }
 func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb.MergeAppsRequest) (
 	*pb.MergeAppsResponse, error,
@@ -90,7 +85,7 @@ func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *p
 	}
 	return &pb.SearchAppsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
-		Apps:   converter.ToPBAppList(apps),
+		Apps:   converter.ToPBAppMixedList(apps),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetApp(ctx context.Context, req *pb.GetAppRequest) (
@@ -102,14 +97,14 @@ func (s *LibrarianSephirahServiceService) GetApp(ctx context.Context, req *pb.Ge
 	}
 	return &pb.GetAppResponse{App: converter.ToPBApp(res)}, nil
 }
-func (s *LibrarianSephirahServiceService) GetBindApps(ctx context.Context, req *pb.GetBindAppsRequest) (
-	*pb.GetBindAppsResponse, error,
+func (s *LibrarianSephirahServiceService) GetBoundApps(ctx context.Context, req *pb.GetBoundAppsRequest) (
+	*pb.GetBoundAppsResponse, error,
 ) {
-	al, err := s.g.GetBindApps(ctx, converter.ToBizInternalID(req.GetAppId()))
+	al, err := s.g.GetBoundApps(ctx, converter.ToBizInternalID(req.GetAppId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetBindAppsResponse{Apps: converter.ToPBAppList(al)}, nil
+	return &pb.GetBoundAppsResponse{Apps: converter.ToPBAppList(al)}, nil
 }
 func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *pb.PurchaseAppRequest) (
 	*pb.PurchaseAppResponse, error,
@@ -128,7 +123,7 @@ func (s *LibrarianSephirahServiceService) GetPurchasedApps(ctx context.Context, 
 		return nil, err
 	}
 	return &pb.GetPurchasedAppsResponse{
-		Apps: converter.ToPBAppList(apps),
+		Apps: converter.ToPBAppMixedList(apps),
 	}, nil
 }
 

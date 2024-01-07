@@ -6,7 +6,8 @@ import (
 
 type App struct {
 	ID               model.InternalID
-	Source           AppSource
+	Internal         bool
+	Source           string
 	SourceAppID      string
 	SourceURL        string
 	Name             string
@@ -18,6 +19,17 @@ type App struct {
 	Details          *AppDetails
 	// the bound Internal app id if self is external
 	BoundInternal model.InternalID
+}
+
+type AppMixed struct {
+	ID               model.InternalID
+	Name             string
+	Type             AppType
+	ShortDescription string
+	IconImageURL     string
+	HeroImageURL     string
+	Tags             []string
+	Details          *AppDetails
 }
 
 type AppDetails struct {
@@ -70,16 +82,27 @@ const (
 
 type BoundApps struct {
 	Internal *App
-	Steam    *App
+	Others   []*App
 }
 
-func (b *BoundApps) Flatten() *App {
+func (b *BoundApps) Flatten() *AppMixed {
 	if b == nil {
 		return nil
 	}
 	res := b.Internal
-	res = mergeApp(res, b.Steam)
-	return res
+	for _, a := range b.Others {
+		res = mergeApp(res, a)
+	}
+	return &AppMixed{
+		ID:               res.ID,
+		Name:             res.Name,
+		Type:             res.Type,
+		ShortDescription: res.ShortDescription,
+		IconImageURL:     res.IconImageURL,
+		HeroImageURL:     res.HeroImageURL,
+		Tags:             res.Tags,
+		Details:          res.Details,
+	}
 }
 
 func mergeApp(base *App, merged *App) *App {

@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/model"
 	"github.com/tuihub/librarian/model/modelfeed"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -28,7 +27,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToPBUserType
+	// goverter:map Destination | ToPBUserType
 	// goverter:map Status | ToPBUserStatus
 	// goverter:ignore Password
 	ToPBUser(*modeltiphereth.User) *pb.User
@@ -41,7 +40,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Source | ToPBAppSource
-	// goverter:map Type | ToPBAppType
+	// goverter:map Destination | ToPBAppType
 	// goverter:ignore AltNames
 	ToPBApp(*modelgebura.App) *librarian.App
 	// goverter:matchIgnoreCase
@@ -79,7 +78,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToPBNotifyTargetType
+	// goverter:map Destination | ToPBNotifyTargetType
 	// goverter:map Status | ToPBNotifyTargetStatus
 	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
 	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
@@ -152,19 +151,6 @@ func ToPBAppType(t modelgebura.AppType) librarian.AppType {
 	}
 }
 
-func ToPBAppSource(s modelgebura.AppSource) librarian.AppSource {
-	switch s {
-	case modelgebura.AppSourceUnspecified:
-		return librarian.AppSource_APP_SOURCE_UNSPECIFIED
-	case modelgebura.AppSourceInternal:
-		return librarian.AppSource_APP_SOURCE_INTERNAL
-	case modelgebura.AppSourceSteam:
-		return librarian.AppSource_APP_SOURCE_STEAM
-	default:
-		return librarian.AppSource_APP_SOURCE_UNSPECIFIED
-	}
-}
-
 func ToPBAppPackageSource(a modelgebura.AppPackageSource) librarian.AppPackageSource {
 	switch a {
 	case modelgebura.AppPackageSourceUnspecified:
@@ -202,17 +188,6 @@ func ToPBFeedConfigStatus(s modelyesod.FeedConfigStatus) pb.FeedConfigStatus {
 	}
 }
 
-func ToPBFeedConfigSource(s modelyesod.FeedConfigSource) pb.FeedConfigSource {
-	switch s {
-	case modelyesod.FeedConfigSourceUnspecified:
-		return pb.FeedConfigSource_FEED_CONFIG_SOURCE_UNSPECIFIED
-	case modelyesod.FeedConfigSourceCommon:
-		return pb.FeedConfigSource_FEED_CONFIG_SOURCE_COMMON
-	default:
-		return pb.FeedConfigSource_FEED_CONFIG_SOURCE_UNSPECIFIED
-	}
-}
-
 func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus {
 	switch s {
 	case modelnetzach.NotifyTargetStatusUnspecified:
@@ -226,17 +201,6 @@ func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.NotifyTargetSt
 	}
 }
 
-func ToPBNotifyTargetType(t modelnetzach.NotifyTargetType) pb.NotifyTargetType {
-	switch t {
-	case modelnetzach.NotifyTargetTypeUnspecified:
-		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED
-	case modelnetzach.NotifyTargetTypeTelegram:
-		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_TELEGRAM
-	default:
-		return pb.NotifyTargetType_NOTIFY_TARGET_TYPE_UNSPECIFIED
-	}
-}
-
 func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus {
 	switch s {
 	case modelnetzach.NotifyFlowStatusUnspecified:
@@ -247,16 +211,5 @@ func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus {
 		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	default:
 		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
-	}
-}
-
-func ToPBFeedDestination(t modelnetzach.NotifyTargetType) porter.FeedDestination {
-	switch t {
-	case modelnetzach.NotifyTargetTypeUnspecified:
-		return porter.FeedDestination_FEED_DESTINATION_UNSPECIFIED
-	case modelnetzach.NotifyTargetTypeTelegram:
-		return porter.FeedDestination_FEED_DESTINATION_TELEGRAM
-	default:
-		return porter.FeedDestination_FEED_DESTINATION_UNSPECIFIED
 	}
 }

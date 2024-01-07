@@ -2,6 +2,7 @@ package biznetzach
 
 import (
 	"context"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
@@ -20,7 +21,7 @@ type NetzachRepo interface {
 	CreateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
 	UpdateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
 	ListNotifyTargets(context.Context, model.Paging, model.InternalID, []model.InternalID,
-		[]modelnetzach.NotifyTargetType, []modelnetzach.NotifyTargetStatus) (
+		[]string, []modelnetzach.NotifyTargetStatus) (
 		[]*modelnetzach.NotifyTarget, int64, error)
 	GetNotifyTarget(context.Context, model.InternalID) (*modelnetzach.NotifyTarget, error)
 	CreateNotifyFlow(context.Context, model.InternalID, *modelnetzach.NotifyFlow) error
@@ -33,6 +34,7 @@ type NetzachRepo interface {
 
 type Netzach struct {
 	repo              NetzachRepo
+	supv              *supervisor.Supervisor
 	searcher          *client.Searcher
 	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
 	notifyFlowCache   *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
@@ -41,6 +43,7 @@ type Netzach struct {
 
 func NewNetzach(
 	repo NetzachRepo,
+	supv *supervisor.Supervisor,
 	sClient *client.Searcher,
 	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
@@ -48,6 +51,7 @@ func NewNetzach(
 ) *Netzach {
 	y := &Netzach{
 		repo,
+		supv,
 		sClient,
 		notifySourceCache,
 		notifyFlowCache,
@@ -61,6 +65,9 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
+	}
+	if !n.supv.CheckNotifyDestination(target.Destination) {
+		return 0, bizutils.UnsupportedFeatureError()
 	}
 	if target == nil {
 		return 0, pb.ErrorErrorReasonBadRequest("notify target required")
@@ -82,6 +89,9 @@ func (n *Netzach) UpdateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
+	if !n.supv.CheckNotifyDestination(target.Destination) {
+		return bizutils.UnsupportedFeatureError()
+	}
 	err := n.repo.UpdateNotifyTarget(ctx, claims.InternalID, target)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -97,14 +107,14 @@ func (n *Netzach) ListNotifyTargets(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
-	types []modelnetzach.NotifyTargetType,
+	destinations []string,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.InternalID, ids, types, statuses)
+	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.InternalID, ids, destinations, statuses)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

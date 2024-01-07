@@ -22,7 +22,7 @@ type ReportAppPackageHandler interface {
 type GeburaRepo interface {
 	CreateApp(context.Context, *modelgebura.App) error
 	UpdateApp(context.Context, *modelgebura.App) error
-	ListApps(context.Context, model.Paging, []modelgebura.AppSource, []modelgebura.AppType,
+	ListApps(context.Context, model.Paging, []string, []modelgebura.AppType,
 		[]model.InternalID, bool) ([]*modelgebura.App, int64, error)
 	MergeApps(context.Context, modelgebura.App, model.InternalID) error
 	GetBoundApps(context.Context, model.InternalID) ([]*modelgebura.App, error)

@@ -261,7 +261,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Type = ToBizNotifyTargetType((*source).Type)
+		modelnetzachNotifyTarget.Destination = ToBizNotifyTargetType((*source).Type)
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
@@ -421,16 +421,6 @@ func (c *toEntConverterImpl) ToEntAppPackageSourceList(source []modelgebura.AppP
 		}
 	}
 	return apppackageSourceList
-}
-func (c *toEntConverterImpl) ToEntFeedConfigSourceList(source []modelyesod.FeedConfigSource) []feedconfig.Source {
-	var feedconfigSourceList []feedconfig.Source
-	if source != nil {
-		feedconfigSourceList = make([]feedconfig.Source, len(source))
-		for i := 0; i < len(source); i++ {
-			feedconfigSourceList[i] = ToEntFeedConfigSource(source[i])
-		}
-	}
-	return feedconfigSourceList
 }
 func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	var feedconfigStatusList []feedconfig.Status

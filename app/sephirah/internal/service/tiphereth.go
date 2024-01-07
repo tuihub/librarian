@@ -44,11 +44,6 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 		RefreshToken: string(refreshToken),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) GenerateToken(ctx context.Context, req *pb.GenerateTokenRequest) (
-	*pb.GenerateTokenResponse, error,
-) {
-	return nil, pb.ErrorErrorReasonNotImplemented("impl in next version")
-}
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error,
 ) {
@@ -111,7 +106,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 	}
 	a, err := s.t.LinkAccount(ctx, modeltiphereth.Account{
 		ID:                0,
-		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		Platform:          req.GetAccountId().GetPlatform(),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 		Name:              "",
 		ProfileURL:        "",
@@ -131,7 +126,7 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 	}
 	if err := s.t.UnLinkAccount(ctx, modeltiphereth.Account{
 		ID:                0,
-		Platform:          converter.ToBizAccountPlatform(req.GetAccountId().GetPlatform()),
+		Platform:          req.GetAccountId().GetPlatform(),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
 		Name:              "",
 		ProfileURL:        "",

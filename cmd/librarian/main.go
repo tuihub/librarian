@@ -11,7 +11,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2"
@@ -40,7 +39,6 @@ var ProviderSet = wire.NewSet(
 	newApp,
 	mapperClientSelector,
 	searcherClientSelector,
-	porterClientSelector,
 	minerClientSelector,
 )
 
@@ -108,10 +106,6 @@ func searcherClientSelector(
 		return client.NewSearcherClient()
 	}
 	return inproc.Searcher, nil
-}
-
-func porterClientSelector() (porter.LibrarianPorterServiceClient, error) {
-	return client.NewPorterClient()
 }
 
 func minerClientSelector(

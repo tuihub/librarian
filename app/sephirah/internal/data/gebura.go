@@ -35,7 +35,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 	}
 	q := g.data.db.App.Create().
 		SetID(a.ID).
-		SetSource(converter.ToEntAppSource(a.Source)).
+		SetSource(a.Source).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
 		SetName(a.Name).
@@ -79,7 +79,7 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 func (g geburaRepo) ListApps(
 	ctx context.Context,
 	paging model.Paging,
-	sources []modelgebura.AppSource,
+	sources []string,
 	types []modelgebura.AppType,
 	ids []model.InternalID,
 	containDetails bool) ([]*modelgebura.App, int64, error) {
@@ -90,7 +90,7 @@ func (g geburaRepo) ListApps(
 		if len(sources) > 0 {
 			sourceFilter := make([]app.Source, len(sources))
 			for i, appSource := range sources {
-				sourceFilter[i] = converter.ToEntAppSource(appSource)
+				sourceFilter[i] = appSource
 			}
 			q.Where(app.SourceIn(sourceFilter...))
 		}
@@ -229,7 +229,7 @@ func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, ap
 	if err != nil {
 		return err
 	}
-	if a.Source != app.SourceInternal {
+	if !a.Internal {
 		return errors.New("illegal app source")
 	}
 	err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(appID).Exec(ctx)

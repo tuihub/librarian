@@ -18,6 +18,9 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
+	if !y.supv.CheckFeedSource(config.Source) {
+		return 0, bizutils.UnsupportedFeatureError()
+	}
 	id, err := y.searcher.NewID(ctx)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -42,6 +45,9 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
+	}
+	if !y.supv.CheckFeedSource(config.Source) {
+		return bizutils.UnsupportedFeatureError()
 	}
 	err := y.repo.UpdateFeedConfig(ctx, claims.InternalID, config)
 	if err != nil {

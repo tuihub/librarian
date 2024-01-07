@@ -25,7 +25,7 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	app.ID = id
-	app.Source = modelgebura.AppSourceInternal
+	app.Internal = true
 	app.SourceAppID = strconv.FormatInt(int64(app.ID), 10)
 	app.SourceURL = ""
 	app.BoundInternal = app.ID
@@ -48,7 +48,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Er
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
-	app.Source = modelgebura.AppSourceInternal
+	app.Internal = true
 	err := g.repo.UpdateApp(ctx, app)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -60,7 +60,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, app *modelgebura.App) *errors.Er
 func (g *Gebura) ListApps(
 	ctx context.Context,
 	paging model.Paging,
-	sources []modelgebura.AppSource,
+	sources []string,
 	types []modelgebura.AppType,
 	ids []model.InternalID,
 	containDetails bool,
@@ -79,7 +79,7 @@ func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged mod
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
-	if base.Source != modelgebura.AppSourceInternal {
+	if !base.Internal {
 		return pb.ErrorErrorReasonBadRequest("source must be INTERNAL")
 	}
 	if err := g.repo.MergeApps(ctx, base, merged); err != nil {
@@ -90,7 +90,7 @@ func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged mod
 }
 
 func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword string) (
-	[]*modelgebura.App, int, *errors.Error) {
+	[]*modelgebura.AppMixed, int, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
@@ -102,7 +102,7 @@ func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword st
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	res := make([]*modelgebura.App, 0, len(apps))
+	res := make([]*modelgebura.AppMixed, 0, len(apps))
 	for _, a := range apps {
 		res = append(res, a.Flatten())
 	}
@@ -117,19 +117,15 @@ func (g *Gebura) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	var res modelgebura.BoundApps
 	for _, app := range apps {
-		if app.Source == modelgebura.AppSourceInternal {
-			res.Internal = app
-		}
-		if app.Source == modelgebura.AppSourceSteam {
-			res.Steam = app
+		if app.ID == id {
+			return app, nil
 		}
 	}
-	return res.Flatten(), nil
+	return nil, pb.ErrorErrorReasonNotFound("app not found")
 }
 
-func (g *Gebura) GetBindApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
+func (g *Gebura) GetBoundApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
@@ -153,7 +149,7 @@ func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.E
 	return nil
 }
 
-func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.App, *errors.Error) {
+func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.AppMixed, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -162,7 +158,7 @@ func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.App, *err
 		if err != nil {
 			return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 		}
-		res := make([]*modelgebura.App, 0, len(apps))
+		res := make([]*modelgebura.AppMixed, 0, len(apps))
 		for _, a := range apps {
 			res = append(res, a.Flatten())
 		}

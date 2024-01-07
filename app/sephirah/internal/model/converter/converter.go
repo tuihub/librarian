@@ -54,6 +54,12 @@ func ToPBApp(a *modelgebura.App) *librarian.App {
 func ToPBAppList(a []*modelgebura.App) []*librarian.App {
 	return toPB.ToPBAppList(a)
 }
+func ToPBAppMixed(a *modelgebura.AppMixed) *librarian.AppMixed {
+	return toPB.ToPBAppMixed(a)
+}
+func ToPBAppMixedList(a []*modelgebura.AppMixed) []*librarian.AppMixed {
+	return toPB.ToPBAppMixedList(a)
+}
 func ToPBAppPackage(a *modelgebura.AppPackage) *librarian.AppPackage {
 	return toPB.ToPBAppPackage(a)
 }
@@ -129,9 +135,6 @@ func ToBizApp(a *librarian.App) *modelgebura.App {
 func ToBizAppTypeList(a []librarian.AppType) []modelgebura.AppType {
 	return toBiz.ToBizAppTypeList(a)
 }
-func ToBizAppSourceList(a []librarian.AppSource) []modelgebura.AppSource {
-	return toBiz.ToBizAppSourceList(a)
-}
 func ToBizAppPackage(a *librarian.AppPackage) *modelgebura.AppPackage {
 	return toBiz.ToBizAppPackage(a)
 }
@@ -144,9 +147,6 @@ func ToBizAppPackageSourceList(a []librarian.AppPackageSource) []modelgebura.App
 func ToBizFeedConfig(a *pb.FeedConfig) *modelyesod.FeedConfig {
 	return toBiz.ToBizFeedConfig(a)
 }
-func ToBizFeedConfigSourceList(a []pb.FeedConfigSource) []modelyesod.FeedConfigSource {
-	return toBiz.ToBizFeedConfigSourceList(a)
-}
 func ToBizFeedConfigStatusList(a []pb.FeedConfigStatus) []modelyesod.FeedConfigStatus {
 	return toBiz.ToBizFeedConfigStatusList(a)
 }
@@ -155,9 +155,6 @@ func ToBizTimeRange(a *librarian.TimeRange) *model.TimeRange {
 }
 func ToBizNotifyTarget(a *pb.NotifyTarget) *modelnetzach.NotifyTarget {
 	return toBiz.ToBizNotifyTarget(a)
-}
-func ToBizNotifyTargetTypeList(a []pb.NotifyTargetType) []modelnetzach.NotifyTargetType {
-	return toBiz.ToBizNotifyTargetTypeList(a)
 }
 func ToBizNotifyTargetStatusList(a []pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus {
 	return toBiz.ToBizNotifyTargetStatusList(a)

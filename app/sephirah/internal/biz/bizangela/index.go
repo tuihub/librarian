@@ -20,9 +20,13 @@ func NewUpdateAppIndexTopic(
 				return err
 			}
 			for _, app := range apps {
+				desc := app.Internal.Name
+				for _, other := range app.Others {
+					desc += fmt.Sprintf(" %s", other.Name)
+				}
 				err = a.searcher.DescribeID(ctx,
 					app.Internal.ID,
-					fmt.Sprintf("%s %s", app.Internal.Name, app.Steam.Name),
+					desc,
 					searcher.DescribeIDRequest_DESCRIBE_MODE_OVERRIDE,
 					searcher.Index_INDEX_GEBURA_APP,
 				)

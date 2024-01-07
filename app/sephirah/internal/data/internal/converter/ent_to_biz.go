@@ -26,7 +26,7 @@ import (
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToLibAuthUserType
+	// goverter:map Destination | ToLibAuthUserType
 	// goverter:map Status | ToBizUserStatus
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *modeltiphereth.User
@@ -39,7 +39,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToBizAppType
+	// goverter:map Destination | ToBizAppType
 	// goverter:map Source | ToBizAppSource
 	// goverter:map . Details
 	// goverter:ignore BoundInternal
@@ -75,7 +75,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
 	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
 
-	// goverter:map Type | ToBizNotifyTargetType
+	// goverter:map Destination | ToBizNotifyTargetType
 	// goverter:map Status | ToBizNotifyTargetStatus
 	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
 	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget
@@ -132,17 +132,6 @@ func ToBizAppType(t app.Type) modelgebura.AppType {
 	}
 }
 
-func ToBizAppSource(s app.Source) modelgebura.AppSource {
-	switch s {
-	case app.SourceInternal:
-		return modelgebura.AppSourceInternal
-	case app.SourceSteam:
-		return modelgebura.AppSourceSteam
-	default:
-		return modelgebura.AppSourceUnspecified
-	}
-}
-
 func ToBizAppPackageSource(a apppackage.Source) modelgebura.AppPackageSource {
 	switch a {
 	case apppackage.SourceManual:
@@ -151,15 +140,6 @@ func ToBizAppPackageSource(a apppackage.Source) modelgebura.AppPackageSource {
 		return modelgebura.AppPackageSourceSentinel
 	default:
 		return modelgebura.AppPackageSourceUnspecified
-	}
-}
-
-func ToBizFeedConfigSource(s feedconfig.Source) modelyesod.FeedConfigSource {
-	switch s {
-	case feedconfig.SourceCommon:
-		return modelyesod.FeedConfigSourceCommon
-	default:
-		return modelyesod.FeedConfigSourceUnspecified
 	}
 }
 
@@ -180,15 +160,6 @@ func ToBizAccountPlatform(p account.Platform) modeltiphereth.AccountPlatform {
 		return modeltiphereth.AccountPlatformSteam
 	default:
 		return modeltiphereth.AccountPlatformUnspecified
-	}
-}
-
-func ToBizNotifyTargetType(t notifytarget.Type) modelnetzach.NotifyTargetType {
-	switch t {
-	case notifytarget.TypeTelegram:
-		return modelnetzach.NotifyTargetTypeTelegram
-	default:
-		return modelnetzach.NotifyTargetTypeUnspecified
 	}
 }
 

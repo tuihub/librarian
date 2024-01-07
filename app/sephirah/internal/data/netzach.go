@@ -33,7 +33,7 @@ func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalI
 		SetName(t.Name).
 		SetDescription(t.Description).
 		SetToken(t.Token).
-		SetType(converter.ToEntNotifyTargetType(t.Type)).
+		SetType(t.Destination).
 		SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
 	return q.Exec(ctx)
 }
@@ -56,8 +56,8 @@ func (n *netzachRepo) UpdateNotifyTarget(
 	if len(t.Token) > 0 {
 		q.SetToken(t.Token)
 	}
-	if t.Type != modelnetzach.NotifyTargetTypeUnspecified {
-		q.SetType(converter.ToEntNotifyTargetType(t.Type))
+	if len(t.Destination) > 0 {
+		q.SetType(t.Destination)
 	}
 	if t.Status != modelnetzach.NotifyTargetStatusUnspecified {
 		q.SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
@@ -70,7 +70,7 @@ func (n *netzachRepo) ListNotifyTargets(
 	paging model.Paging,
 	userID model.InternalID,
 	ids []model.InternalID,
-	types []modelnetzach.NotifyTargetType,
+	destinations []string,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, error) {
 	q := n.data.db.NotifyTarget.Query().Where(
@@ -79,8 +79,8 @@ func (n *netzachRepo) ListNotifyTargets(
 	if len(ids) > 0 {
 		q.Where(notifytarget.IDIn(ids...))
 	}
-	if len(types) > 0 {
-		q.Where(notifytarget.TypeIn(converter.ToEntNotifyTargetTypeList(types)...))
+	if len(destinations) > 0 {
+		q.Where(notifytarget.TypeIn(destinations...))
 	}
 	if len(statuses) > 0 {
 		q.Where(notifytarget.StatusIn(converter.ToEntNotifyTargetStatusList(statuses)...))
