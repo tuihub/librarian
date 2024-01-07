@@ -3,7 +3,7 @@ package converter
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 
 	"github.com/mmcdole/gofeed"
 )

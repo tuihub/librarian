@@ -4,13 +4,13 @@ package ent
 
 import (
 	"fmt"
+	"github.com/tuihub/librarian/model"
 	"strings"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackageRunTime is the model entity for the AppPackageRunTime schema.

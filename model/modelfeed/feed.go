@@ -3,7 +3,7 @@ package modelfeed
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 )
 
 type Feed struct {

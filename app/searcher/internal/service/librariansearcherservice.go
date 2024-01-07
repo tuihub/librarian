@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 	pb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )

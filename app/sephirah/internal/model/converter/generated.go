@@ -9,8 +9,8 @@ import (
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
-	model "github.com/tuihub/librarian/internal/model"
-	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/model/modelfeed"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 )

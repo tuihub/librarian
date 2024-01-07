@@ -1,6 +1,8 @@
 package modelchesed
 
-import "github.com/tuihub/librarian/internal/model"
+import (
+	"github.com/tuihub/librarian/model"
+)
 
 type Image struct {
 	ID          model.InternalID

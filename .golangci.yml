@@ -369,4 +369,4 @@ issues:
         - noctx
         - wrapcheck
     - source: "ProviderSet"
-      linters: [gochecknoglobals]
+      linters: [ gochecknoglobals ]

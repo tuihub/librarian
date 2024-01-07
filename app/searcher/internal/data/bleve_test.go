@@ -8,7 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	"github.com/tuihub/librarian/app/searcher/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 
 	"github.com/blevesearch/bleve/v2"
 )

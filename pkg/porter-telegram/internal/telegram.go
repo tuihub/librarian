@@ -1,4 +1,4 @@
-package telegram
+package internal
 
 import (
 	"context"

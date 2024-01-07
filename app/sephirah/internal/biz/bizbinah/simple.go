@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 

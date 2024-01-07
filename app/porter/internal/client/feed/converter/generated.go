@@ -4,7 +4,7 @@ package converter
 
 import (
 	gofeed "github.com/mmcdole/gofeed"
-	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 )
 
 type ConverterImpl struct{}

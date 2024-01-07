@@ -3,7 +3,7 @@ package modelbinah
 import (
 	"errors"
 
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 )
 
 type FileMetadata struct {

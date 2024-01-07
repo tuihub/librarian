@@ -4,6 +4,7 @@ package ent
 
 import (
 	"fmt"
+	"github.com/tuihub/librarian/model"
 	"strings"
 	"time"
 
@@ -12,7 +13,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackage is the model entity for the AppPackage schema.

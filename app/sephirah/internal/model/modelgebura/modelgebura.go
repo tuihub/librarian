@@ -1,6 +1,8 @@
 package modelgebura
 
-import "github.com/tuihub/librarian/internal/model"
+import (
+	"github.com/tuihub/librarian/model"
+)
 
 type App struct {
 	ID               model.InternalID

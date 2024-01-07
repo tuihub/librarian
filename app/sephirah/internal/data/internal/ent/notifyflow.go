@@ -4,6 +4,7 @@ package ent
 
 import (
 	"fmt"
+	"github.com/tuihub/librarian/model"
 	"strings"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // NotifyFlow is the model entity for the NotifyFlow schema.

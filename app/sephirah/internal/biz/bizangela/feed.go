@@ -10,7 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	modelfeed2 "github.com/tuihub/librarian/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/PuerkitoBio/goquery"
@@ -32,7 +32,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			if err != nil {
 				return err
 			}
-			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
+			feed := modelfeed2.NewConverter().FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
 			ids, err := a.searcher.NewBatchIDs(ctx, len(feed.Items))
 			if err != nil {
@@ -62,7 +62,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			if err != nil {
 				return err
 			}
-			newItems := make([]*modelfeed.Item, 0, len(newItemGUIDs))
+			newItems := make([]*modelfeed2.Item, 0, len(newItemGUIDs))
 			for _, item := range feed.Items {
 				if slices.Contains(newItemGUIDs, item.GUID) {
 					newItems = append(newItems, item)
@@ -114,7 +114,7 @@ func NewParseFeedItemDigestTopic( //nolint:gocognit // TODO
 				if i == maxImgNum {
 					break
 				}
-				image := new(modelfeed.Image)
+				image := new(modelfeed2.Image)
 				for _, attr := range n.Attr {
 					if attr.Key == "src" {
 						image.URL = attr.Val

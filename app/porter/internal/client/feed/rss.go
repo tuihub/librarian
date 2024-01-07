@@ -7,7 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/client/feed/converter"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 
 	"github.com/gocolly/colly/v2"
 	"github.com/google/wire"

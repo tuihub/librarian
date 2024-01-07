@@ -44,16 +44,21 @@ generate-code:
 
 .PHONY: lint
 # lint files
-lint: lint-porter-sdk lint-porter-steam
+lint: lint-pkgs
 	golangci-lint run --fix
 	golangci-lint run # re-run to make sure fixes are valid, useful in some condition
 
-lint-porter-sdk:
-	cd pkg/porter-sdk && golangci-lint run -c ../../.golangci.yml --fix
-	cd pkg/porter-sdk && golangci-lint run -c ../../.golangci.yml
-lint-porter-steam:
-	cd pkg/porter-steam && golangci-lint run -c ../../.golangci.yml --fix
-	cd pkg/porter-steam && golangci-lint run -c ../../.golangci.yml
+lint-pkgs:
+	@for d in pkg/*; do \
+		if [ -d "$$d" ]; then \
+			cd $$d; \
+			echo "linting $$d"; \
+			go mod tidy; \
+			golangci-lint run -c ../../.golangci.yml --fix; \
+			golangci-lint run -c ../../.golangci.yml; \
+			cd ../../; \
+		fi \
+	done
 
 .PHONY: test-unit
 # run go test

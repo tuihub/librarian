@@ -2,11 +2,8 @@ package bizfeed
 
 import (
 	"context"
-	"errors"
-	"strconv"
 
-	"github.com/tuihub/librarian/app/porter/internal/client/telegram"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 
 	"github.com/muzhou233/go-favicon"
 )
@@ -58,28 +55,4 @@ func (f *FeedUseCase) GetFeed(ctx context.Context, url string) (*modelfeed.Feed,
 		}
 	}
 	return feed, nil
-}
-
-func (f *FeedUseCase) PushFeedItems(ctx context.Context, dest FeedDestination, items []*modelfeed.Item,
-	channelID, token string) error {
-	switch dest {
-	case FeedDestinationUnspecified:
-		return errors.New("invalid destination")
-	case FeedDestinationTelegram:
-		messages := make(map[string]string)
-		for _, item := range items {
-			messages[item.Title] = item.Link
-		}
-		channelIDInt64, err := strconv.ParseInt(channelID, 10, 64)
-		if err != nil {
-			return errors.New("invalid channel_id")
-		}
-		err = telegram.SendBatch(ctx, token, channelIDInt64, messages)
-		if err != nil {
-			return err
-		}
-	default:
-		return errors.New("unsupported destination")
-	}
-	return nil
 }

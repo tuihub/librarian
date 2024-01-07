@@ -14,7 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 )
 
 //go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter:converter" -g "output:file generated.go" .

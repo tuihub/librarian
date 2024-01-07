@@ -13,8 +13,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 

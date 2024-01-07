@@ -6,7 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 

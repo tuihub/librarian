@@ -6,7 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizfeed"
 	"github.com/tuihub/librarian/app/porter/internal/biz/bizs3"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/model/modelfeed"
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -55,16 +55,7 @@ func (s *LibrarianPorterServiceService) PullFeed(
 
 func (s *LibrarianPorterServiceService) PushFeedItems(ctx context.Context, req *pb.PushFeedItemsRequest) (
 	*pb.PushFeedItemsResponse, error) {
-	err := s.feed.PushFeedItems(ctx,
-		ToBizFeedDestination(req.GetDestination()),
-		modelfeed.NewConverter().FromPBFeedItemList(req.GetItems()),
-		req.GetChannelId(),
-		req.GetToken(),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.PushFeedItemsResponse{}, nil
+	return nil, status.Errorf(codes.InvalidArgument, "unsupported")
 }
 
 func (s *LibrarianPorterServiceService) PullAccount(

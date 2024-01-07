@@ -1,6 +1,8 @@
 package modelnetzach
 
-import "github.com/tuihub/librarian/internal/model"
+import (
+	"github.com/tuihub/librarian/model"
+)
 
 type NotifyFlow struct {
 	ID          model.InternalID

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 )
 
 type User struct {

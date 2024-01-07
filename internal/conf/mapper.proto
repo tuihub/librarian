@@ -12,8 +12,8 @@ message Mapper {
 
   message Data {
     message NebulaGraph {
-      repeated string address  = 1;
-      string space    = 2;
+      repeated string address = 1;
+      string space = 2;
       string username = 3;
       string password = 4;
     }

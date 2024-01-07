@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/tuihub/librarian/model/modelfeed"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -14,7 +15,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedItemUpdate is the builder for updating FeedItem entities.

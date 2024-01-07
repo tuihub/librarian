@@ -3,7 +3,7 @@ package modelfeed
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/model"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"

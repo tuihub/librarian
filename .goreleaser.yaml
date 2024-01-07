@@ -56,8 +56,8 @@ archives:
       {{- if .Amd64 }}_{{ .Amd64 }}{{ end }}
     # use zip for windows archives
     format_overrides:
-    - goos: windows
-      format: zip
+      - goos: windows
+        format: zip
     # Additional files/template/globs you want to add to the archive.
     # Defaults are any files matching `LICENSE*`, `README*`, `CHANGELOG*`,
     #  `license*`, `readme*` and `changelog*`.
