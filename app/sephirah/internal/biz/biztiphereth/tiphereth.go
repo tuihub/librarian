@@ -100,7 +100,7 @@ func (t *Tiphereth) RefreshToken(
 	ctx context.Context,
 ) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx,
-		libauth.UserTypeAdmin, libauth.UserTypeNormal, libauth.UserTypeSentinel)
+		libauth.UserTypeAdmin, libauth.UserTypeNormal, libauth.UserTypeSentinel, libauth.UserTypePorter)
 	if claims == nil {
 		return "", "", bizutils.NoPermissionError()
 	}

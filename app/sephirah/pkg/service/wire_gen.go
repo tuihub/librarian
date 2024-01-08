@@ -50,7 +50,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, porter, cron)
+	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, auth, porter, cron)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

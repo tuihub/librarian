@@ -2,6 +2,7 @@ package portersdk
 
 import (
 	"context"
+	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -28,6 +29,8 @@ func newServer(c *ServerConfig, service pb.LibrarianPorterServiceServer, logger 
 	}
 	if c.Timeout != nil {
 		opts = append(opts, grpc.Timeout(*c.Timeout))
+	} else {
+		opts = append(opts, grpc.Timeout(time.Minute))
 	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianPorterServiceServer(srv, service)

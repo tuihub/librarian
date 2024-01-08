@@ -12,6 +12,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/model"
 	"github.com/tuihub/librarian/model/modelfeed"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -120,6 +121,9 @@ func ToPBNotifyFlow(a *modelnetzach.NotifyFlow) *pb.NotifyFlow {
 }
 func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
 	return toPB.ToPBNotifyFlowList(a)
+}
+func ToBizPorterFeatureSummary(a *porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+	return toBiz.ToBizPorterFeatureSummary(a)
 }
 func ToBizInternalIDList(a []*librarian.InternalID) []model.InternalID {
 	return toBiz.ToBizInternalIDList(a)

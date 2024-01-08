@@ -4,8 +4,10 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/logger"
@@ -18,6 +20,7 @@ var ProviderSet = wire.NewSet(NewSupervisor)
 
 type Supervisor struct {
 	porter           *client.Porter
+	auth             *libauth.Auth
 	instances        []*modelsupervisor.PorterInstance
 	featureSummary   *modelsupervisor.ServerFeatureSummary
 	trustedAddresses []string
@@ -25,6 +28,7 @@ type Supervisor struct {
 
 func NewSupervisor(
 	c *conf.Sephirah_Porter,
+	auth *libauth.Auth,
 	porter *client.Porter,
 	cron *libcron.Cron,
 ) (*Supervisor, error) {
@@ -33,6 +37,7 @@ func NewSupervisor(
 	}
 	supv := &Supervisor{
 		porter:           porter,
+		auth:             auth,
 		instances:        nil,
 		featureSummary:   nil,
 		trustedAddresses: c.GetTrustedAddress(),
@@ -49,8 +54,6 @@ func (s *Supervisor) GetFeatureSummary() *modelsupervisor.ServerFeatureSummary {
 }
 
 func (s *Supervisor) RefreshPorterInstances(ctx context.Context) error {
-	ctx, cancel := context.WithTimeout(ctx, libtime.Minute)
-	defer cancel()
 	addresses, err := s.porter.GetServiceAddresses(ctx)
 	if err != nil {
 		logger.Errorf("%s", err.Error())
@@ -68,7 +71,17 @@ func (s *Supervisor) RefreshPorterInstances(ctx context.Context) error {
 			logger.Infof("%s", err.Error())
 			continue
 		}
-		feature := new(modelsupervisor.PorterFeatureSummary)
+		var refreshToken string
+		refreshToken, err = s.auth.GenerateToken(0, libauth.ClaimsTypeRefreshToken, libauth.UserTypePorter, nil, libtime.Hour)
+		if err != nil {
+			logger.Errorf("%s", err.Error())
+			continue
+		}
+		_, _ = s.porter.EnablePorter(client.WithPorterAddress(ctx, address), &porter.EnablePorterRequest{
+			SephirahId:   0,
+			RefreshToken: refreshToken,
+		})
+		feature := converter.ToBizPorterFeatureSummary(info.GetFeatureSummary())
 		instances = append(instances, &modelsupervisor.PorterInstance{
 			ID:             0,
 			Name:           info.GetName(),

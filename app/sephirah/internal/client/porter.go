@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -59,6 +60,7 @@ func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
 		grpc.WithMiddleware(
 			recovery.Recovery(),
 		),
+		grpc.WithTimeout(libtime.Minute),
 	)
 	cli := porter.NewLibrarianPorterServiceClient(conn)
 	return cli, err

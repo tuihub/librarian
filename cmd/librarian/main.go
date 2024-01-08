@@ -14,6 +14,7 @@ import (
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
@@ -22,7 +23,7 @@ import (
 // go build -ldflags "-X main.version=x.y.z".
 var (
 	// name is the name of the compiled software.
-	name string //nolint:gochecknoglobals //TODO
+	name = "sephirah" //nolint:gochecknoglobals //TODO
 	// version is the version of the compiled software.
 	version string
 
@@ -42,13 +43,14 @@ var ProviderSet = wire.NewSet(
 	minerClientSelector,
 )
 
-func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron) *kratos.App {
+func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron, r registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id+name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs, hs, mq, cron),
+		kratos.Registrar(r),
 	)
 }
 

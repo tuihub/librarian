@@ -19,7 +19,7 @@ func (s *Supervisor) CallAccountPlatform(ctx context.Context, platform string) c
 	for _, i := range s.instances {
 		for _, a := range i.FeatureSummary.SupportedAccounts {
 			if a.Platform == platform {
-				return client.WithPorterName(ctx, i.Name)
+				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
 	}
@@ -39,7 +39,7 @@ func (s *Supervisor) CallAppSource(ctx context.Context, source string) context.C
 	for _, i := range s.instances {
 		for _, a := range i.FeatureSummary.SupportedAppSources {
 			if a == source {
-				return client.WithPorterName(ctx, i.Name)
+				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
 	}
@@ -59,7 +59,7 @@ func (s *Supervisor) CallFeedSource(ctx context.Context, source string) context.
 	for _, i := range s.instances {
 		for _, a := range i.FeatureSummary.SupportedFeedSources {
 			if a == source {
-				return client.WithPorterName(ctx, i.Name)
+				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
 	}
@@ -79,7 +79,7 @@ func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination stri
 	for _, i := range s.instances {
 		for _, a := range i.FeatureSummary.SupportedNotifyDestinations {
 			if a == destination {
-				return client.WithPorterName(ctx, i.Name)
+				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
 	}

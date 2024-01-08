@@ -61,7 +61,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	cron := libcron.NewCron()
-	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, porter, cron)
+	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, libauthAuth, porter, cron)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -158,7 +158,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
-	app := newApp(grpcServer, httpServer, libmqMQ, cron)
+	registrar, err := libapp.NewRegistrar()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	app := newApp(grpcServer, httpServer, libmqMQ, cron, registrar)
 	return app, func() {
 		cleanup2()
 		cleanup()

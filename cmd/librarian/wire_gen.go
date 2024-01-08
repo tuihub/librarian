@@ -101,7 +101,16 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
-	app := newApp(grpcServer, httpServer, libmqMQ, cron)
+	registrar, err := libapp.NewRegistrar()
+	if err != nil {
+		cleanup5()
+		cleanup4()
+		cleanup3()
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	app := newApp(grpcServer, httpServer, libmqMQ, cron, registrar)
 	return app, func() {
 		cleanup5()
 		cleanup4()

@@ -45,6 +45,7 @@ func wireApp(
 		libmq.ProviderSet,
 		libcron.ProviderSet,
 		libcache.ProviderSet,
+		libapp.ProviderSet,
 		newApp,
 	))
 }

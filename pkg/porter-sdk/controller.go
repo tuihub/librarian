@@ -2,6 +2,7 @@ package portersdk
 
 import (
 	"context"
+	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -75,6 +76,7 @@ func newSephirahClient() (sephirah.LibrarianSephirahServiceClient, error) {
 		grpc.WithMiddleware(
 			recovery.Recovery(),
 		),
+		grpc.WithTimeout(time.Minute),
 	)
 	cli := sephirah.NewLibrarianSephirahServiceClient(conn)
 	return cli, err
