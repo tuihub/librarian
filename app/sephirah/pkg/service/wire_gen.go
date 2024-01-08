@@ -33,7 +33,7 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_3.LibrarianMinerServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_3.LibrarianMinerServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
@@ -50,7 +50,11 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, auth *libauth.Auth, m
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor := supervisor.NewSupervisor(porter)
+	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, porter, cron)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	geburaRepo := data.NewGeburaRepo(dataData)
 	searcher := client.NewSearcher(librarianSearcherServiceClient)
 	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianMapperServiceClient, librarianPorterServiceClient, searcher)

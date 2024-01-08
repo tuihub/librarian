@@ -28,6 +28,7 @@ import (
 
 func NewSephirahService(
 	*conf.Sephirah_Data,
+	*conf.Sephirah_Porter,
 	*libauth.Auth,
 	*libmq.MQ,
 	*libcron.Cron,

@@ -57,10 +57,15 @@ func New(config PorterConfig, handler Handler, options ...Option) (*Porter, erro
 		return nil, fmt.Errorf("handler is nil")
 	}
 	p := new(Porter)
+	p.logger = log.DefaultLogger
 	for _, o := range options {
 		o(p)
 	}
 	client, err := newSephirahClient()
+	if err != nil {
+		return nil, err
+	}
+	r, err := newRegistry()
 	if err != nil {
 		return nil, err
 	}
@@ -87,6 +92,7 @@ func New(config PorterConfig, handler Handler, options ...Option) (*Porter, erro
 			"PorterName": p.controller.config.GlobalName,
 		}),
 		kratos.Server(p.server),
+		kratos.Registrar(r),
 	)
 	p.app = app
 	return p, nil

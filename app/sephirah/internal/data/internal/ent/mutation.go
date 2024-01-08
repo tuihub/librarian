@@ -24,8 +24,10 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/model"
 	"github.com/tuihub/librarian/model/modelfeed"
 )
@@ -52,6 +54,7 @@ const (
 	TypeNotifyFlowSource  = "NotifyFlowSource"
 	TypeNotifyFlowTarget  = "NotifyFlowTarget"
 	TypeNotifyTarget      = "NotifyTarget"
+	TypePorterInstance    = "PorterInstance"
 	TypeUser              = "User"
 )
 
@@ -13251,6 +13254,716 @@ func (m *NotifyTargetMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown NotifyTarget edge %s", name)
+}
+
+// PorterInstanceMutation represents an operation that mutates the PorterInstance nodes in the graph.
+type PorterInstanceMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *model.InternalID
+	name            *string
+	version         *string
+	global_name     *string
+	address         *string
+	feature_summary **modelsupervisor.PorterFeatureSummary
+	status          *porterinstance.Status
+	updated_at      *time.Time
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*PorterInstance, error)
+	predicates      []predicate.PorterInstance
+}
+
+var _ ent.Mutation = (*PorterInstanceMutation)(nil)
+
+// porterinstanceOption allows management of the mutation configuration using functional options.
+type porterinstanceOption func(*PorterInstanceMutation)
+
+// newPorterInstanceMutation creates new mutation for the PorterInstance entity.
+func newPorterInstanceMutation(c config, op Op, opts ...porterinstanceOption) *PorterInstanceMutation {
+	m := &PorterInstanceMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePorterInstance,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPorterInstanceID sets the ID field of the mutation.
+func withPorterInstanceID(id model.InternalID) porterinstanceOption {
+	return func(m *PorterInstanceMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PorterInstance
+		)
+		m.oldValue = func(ctx context.Context) (*PorterInstance, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PorterInstance.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPorterInstance sets the old PorterInstance of the mutation.
+func withPorterInstance(node *PorterInstance) porterinstanceOption {
+	return func(m *PorterInstanceMutation) {
+		m.oldValue = func(context.Context) (*PorterInstance, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PorterInstanceMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PorterInstanceMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PorterInstance entities.
+func (m *PorterInstanceMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PorterInstanceMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PorterInstanceMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PorterInstance.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *PorterInstanceMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *PorterInstanceMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *PorterInstanceMutation) ResetName() {
+	m.name = nil
+}
+
+// SetVersion sets the "version" field.
+func (m *PorterInstanceMutation) SetVersion(s string) {
+	m.version = &s
+}
+
+// Version returns the value of the "version" field in the mutation.
+func (m *PorterInstanceMutation) Version() (r string, exists bool) {
+	v := m.version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersion returns the old "version" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
+	}
+	return oldValue.Version, nil
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *PorterInstanceMutation) ResetVersion() {
+	m.version = nil
+}
+
+// SetGlobalName sets the "global_name" field.
+func (m *PorterInstanceMutation) SetGlobalName(s string) {
+	m.global_name = &s
+}
+
+// GlobalName returns the value of the "global_name" field in the mutation.
+func (m *PorterInstanceMutation) GlobalName() (r string, exists bool) {
+	v := m.global_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGlobalName returns the old "global_name" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldGlobalName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGlobalName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGlobalName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGlobalName: %w", err)
+	}
+	return oldValue.GlobalName, nil
+}
+
+// ResetGlobalName resets all changes to the "global_name" field.
+func (m *PorterInstanceMutation) ResetGlobalName() {
+	m.global_name = nil
+}
+
+// SetAddress sets the "address" field.
+func (m *PorterInstanceMutation) SetAddress(s string) {
+	m.address = &s
+}
+
+// Address returns the value of the "address" field in the mutation.
+func (m *PorterInstanceMutation) Address() (r string, exists bool) {
+	v := m.address
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAddress returns the old "address" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldAddress(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAddress is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAddress requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAddress: %w", err)
+	}
+	return oldValue.Address, nil
+}
+
+// ResetAddress resets all changes to the "address" field.
+func (m *PorterInstanceMutation) ResetAddress() {
+	m.address = nil
+}
+
+// SetFeatureSummary sets the "feature_summary" field.
+func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) {
+	m.feature_summary = &mfs
+}
+
+// FeatureSummary returns the value of the "feature_summary" field in the mutation.
+func (m *PorterInstanceMutation) FeatureSummary() (r *modelsupervisor.PorterFeatureSummary, exists bool) {
+	v := m.feature_summary
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFeatureSummary returns the old "feature_summary" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *modelsupervisor.PorterFeatureSummary, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFeatureSummary is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFeatureSummary requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFeatureSummary: %w", err)
+	}
+	return oldValue.FeatureSummary, nil
+}
+
+// ResetFeatureSummary resets all changes to the "feature_summary" field.
+func (m *PorterInstanceMutation) ResetFeatureSummary() {
+	m.feature_summary = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *PorterInstanceMutation) SetStatus(po porterinstance.Status) {
+	m.status = &po
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *PorterInstanceMutation) Status() (r porterinstance.Status, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldStatus(ctx context.Context) (v porterinstance.Status, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *PorterInstanceMutation) ResetStatus() {
+	m.status = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *PorterInstanceMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *PorterInstanceMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *PorterInstanceMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *PorterInstanceMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *PorterInstanceMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *PorterInstanceMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the PorterInstanceMutation builder.
+func (m *PorterInstanceMutation) Where(ps ...predicate.PorterInstance) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PorterInstanceMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PorterInstanceMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PorterInstance, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PorterInstanceMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PorterInstanceMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PorterInstance).
+func (m *PorterInstanceMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PorterInstanceMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.name != nil {
+		fields = append(fields, porterinstance.FieldName)
+	}
+	if m.version != nil {
+		fields = append(fields, porterinstance.FieldVersion)
+	}
+	if m.global_name != nil {
+		fields = append(fields, porterinstance.FieldGlobalName)
+	}
+	if m.address != nil {
+		fields = append(fields, porterinstance.FieldAddress)
+	}
+	if m.feature_summary != nil {
+		fields = append(fields, porterinstance.FieldFeatureSummary)
+	}
+	if m.status != nil {
+		fields = append(fields, porterinstance.FieldStatus)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, porterinstance.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, porterinstance.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PorterInstanceMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case porterinstance.FieldName:
+		return m.Name()
+	case porterinstance.FieldVersion:
+		return m.Version()
+	case porterinstance.FieldGlobalName:
+		return m.GlobalName()
+	case porterinstance.FieldAddress:
+		return m.Address()
+	case porterinstance.FieldFeatureSummary:
+		return m.FeatureSummary()
+	case porterinstance.FieldStatus:
+		return m.Status()
+	case porterinstance.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case porterinstance.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PorterInstanceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case porterinstance.FieldName:
+		return m.OldName(ctx)
+	case porterinstance.FieldVersion:
+		return m.OldVersion(ctx)
+	case porterinstance.FieldGlobalName:
+		return m.OldGlobalName(ctx)
+	case porterinstance.FieldAddress:
+		return m.OldAddress(ctx)
+	case porterinstance.FieldFeatureSummary:
+		return m.OldFeatureSummary(ctx)
+	case porterinstance.FieldStatus:
+		return m.OldStatus(ctx)
+	case porterinstance.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case porterinstance.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown PorterInstance field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case porterinstance.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case porterinstance.FieldVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersion(v)
+		return nil
+	case porterinstance.FieldGlobalName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGlobalName(v)
+		return nil
+	case porterinstance.FieldAddress:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAddress(v)
+		return nil
+	case porterinstance.FieldFeatureSummary:
+		v, ok := value.(*modelsupervisor.PorterFeatureSummary)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFeatureSummary(v)
+		return nil
+	case porterinstance.FieldStatus:
+		v, ok := value.(porterinstance.Status)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case porterinstance.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case porterinstance.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PorterInstance field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PorterInstanceMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PorterInstanceMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterInstanceMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown PorterInstance numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PorterInstanceMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PorterInstanceMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PorterInstanceMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown PorterInstance nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PorterInstanceMutation) ResetField(name string) error {
+	switch name {
+	case porterinstance.FieldName:
+		m.ResetName()
+		return nil
+	case porterinstance.FieldVersion:
+		m.ResetVersion()
+		return nil
+	case porterinstance.FieldGlobalName:
+		m.ResetGlobalName()
+		return nil
+	case porterinstance.FieldAddress:
+		m.ResetAddress()
+		return nil
+	case porterinstance.FieldFeatureSummary:
+		m.ResetFeatureSummary()
+		return nil
+	case porterinstance.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case porterinstance.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case porterinstance.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown PorterInstance field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PorterInstanceMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PorterInstanceMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PorterInstanceMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PorterInstanceMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PorterInstanceMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PorterInstanceMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PorterInstanceMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown PorterInstance unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PorterInstanceMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown PorterInstance edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.

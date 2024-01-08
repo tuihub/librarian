@@ -22,9 +22,14 @@ message Sephirah {
     S3 s3 = 2;
   }
 
+  message Porter {
+    repeated string trusted_address = 1;
+  }
+
   Server server = 1;
   Data data = 2;
   Auth auth = 3;
   MQ mq = 4;
   Cache cache = 5;
+  Porter porter = 6;
 }

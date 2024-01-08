@@ -19,7 +19,7 @@ func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint(libapp.DiscoveryAddress+":///mapper"),
+		grpc.WithEndpoint("discovery:///mapper"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
@@ -37,7 +37,7 @@ func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint(libapp.DiscoveryAddress+":///searcher"),
+		grpc.WithEndpoint("discovery:///searcher"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(
@@ -55,7 +55,7 @@ func NewMinerClient() (miner.LibrarianMinerServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint(libapp.DiscoveryAddress+":///porter"),
+		grpc.WithEndpoint("discovery:///porter"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
 		grpc.WithMiddleware(

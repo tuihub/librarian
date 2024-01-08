@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -36,7 +37,7 @@ func (p *Porter) GetServiceAddresses(ctx context.Context) ([]string, error) {
 	}
 	res := make([]string, 0, len(instances))
 	for _, instance := range instances {
-		res = append(res, instance.Service.Address)
+		res = append(res, fmt.Sprintf("%s:%d", instance.Service.Address, instance.Service.Port))
 	}
 	return res, nil
 }
@@ -48,7 +49,7 @@ func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint(libapp.DiscoveryAddress+":///porter"),
+		grpc.WithEndpoint("discovery:///porter"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(
 			newPorterNameFilter(),

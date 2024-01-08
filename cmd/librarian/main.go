@@ -69,6 +69,7 @@ func main() {
 		bc.GetEnableServiceDiscovery(),
 		bc.GetSephirah().GetServer(),
 		bc.GetSephirah().GetData(),
+		bc.GetSephirah().GetPorter(),
 		bc.GetMapper().GetData(),
 		bc.GetSearcher().GetData(),
 		bc.GetMiner().GetData(),

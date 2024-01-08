@@ -9,12 +9,14 @@ import (
 	capi "github.com/hashicorp/consul/api"
 )
 
-const DiscoveryAddress = "discovery"
+const DiscoveryAddress = "localhost:8500"
 
 type requiredFeatureKey struct{}
 
 func NewDiscovery() (registry.Discovery, error) {
-	client, err := capi.NewClient(capi.DefaultConfig())
+	config := capi.DefaultConfig()
+	config.Address = DiscoveryAddress
+	client, err := capi.NewClient(config)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +24,9 @@ func NewDiscovery() (registry.Discovery, error) {
 }
 
 func NewRegistrar() (registry.Registrar, error) {
-	client, err := capi.NewClient(capi.DefaultConfig())
+	config := capi.DefaultConfig()
+	config.Address = DiscoveryAddress
+	client, err := capi.NewClient(config)
 	if err != nil {
 		return nil, err
 	}

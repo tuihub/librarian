@@ -450,6 +450,31 @@ var (
 			},
 		},
 	}
+	// PorterInstancesColumns holds the columns for the "porter_instances" table.
+	PorterInstancesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "version", Type: field.TypeString},
+		{Name: "global_name", Type: field.TypeString},
+		{Name: "address", Type: field.TypeString},
+		{Name: "feature_summary", Type: field.TypeJSON},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// PorterInstancesTable holds the schema information for the "porter_instances" table.
+	PorterInstancesTable = &schema.Table{
+		Name:       "porter_instances",
+		Columns:    PorterInstancesColumns,
+		PrimaryKey: []*schema.Column{PorterInstancesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "porterinstance_address",
+				Unique:  true,
+				Columns: []*schema.Column{PorterInstancesColumns[4]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -540,6 +565,7 @@ var (
 		NotifyFlowSourcesTable,
 		NotifyFlowTargetsTable,
 		NotifyTargetsTable,
+		PorterInstancesTable,
 		UsersTable,
 		AccountPurchasedAppTable,
 		UserPurchasedAppTable,

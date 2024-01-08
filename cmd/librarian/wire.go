@@ -27,6 +27,7 @@ func wireApp(
 	*conf.Librarian_EnableServiceDiscovery,
 	*conf.Sephirah_Server,
 	*conf.Sephirah_Data,
+	*conf.Sephirah_Porter,
 	*conf.Mapper_Data,
 	*conf.Searcher_Data,
 	*conf.Miner_Data,

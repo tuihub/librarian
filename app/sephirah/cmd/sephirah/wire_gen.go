@@ -32,7 +32,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -60,7 +60,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor := supervisor.NewSupervisor(porter)
+	cron := libcron.NewCron()
+	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, porter, cron)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	geburaRepo := data.NewGeburaRepo(dataData)
 	librarianMapperServiceClient, err := client2.NewMapperClient()
 	if err != nil {
@@ -122,7 +128,6 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth, librarianMapperServiceClient, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
-	cron := libcron.NewCron()
 	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, librarianMapperServiceClient, searcher, topic7)
 	if err != nil {
 		cleanup2()

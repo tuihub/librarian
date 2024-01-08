@@ -25,6 +25,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 )
 
@@ -99,6 +100,7 @@ func checkColumn(table, column string) error {
 			notifyflowsource.Table:  notifyflowsource.ValidColumn,
 			notifyflowtarget.Table:  notifyflowtarget.ValidColumn,
 			notifytarget.Table:      notifytarget.ValidColumn,
+			porterinstance.Table:    porterinstance.ValidColumn,
 			user.Table:              user.ValidColumn,
 		})
 	})

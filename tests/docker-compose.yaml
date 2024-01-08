@@ -49,3 +49,13 @@ services:
       - ./data/minio/config:/root/.minio/
     command: server --console-address ':9001' /data
     restart: unless-stopped
+
+  consul:
+    image: consul:1.15
+    hostname: "discovery"
+    ports:
+      - "127.0.0.1:8500:8500"
+    volumes:
+      - ./data/consul/data:/consul/data
+      - ./data/consul/config:/consul/config
+    command: "agent -dev -server -client=0.0.0.0 -ui"

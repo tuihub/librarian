@@ -281,20 +281,14 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
 	if source != nil {
 		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
-		var pUnnamedList []*struct {
-			Platform         string
-			AppRelationTypes []model.AccountAppRelationType
-		}
+		var pModelsupervisorSupportedAccountList []*modelsupervisor.SupportedAccount
 		if (*source).SupportedAccounts != nil {
-			pUnnamedList = make([]*struct {
-				Platform         string
-				AppRelationTypes []model.AccountAppRelationType
-			}, len((*source).SupportedAccounts))
+			pModelsupervisorSupportedAccountList = make([]*modelsupervisor.SupportedAccount, len((*source).SupportedAccounts))
 			for i := 0; i < len((*source).SupportedAccounts); i++ {
-				pUnnamedList[i] = c.pV1PorterFeatureSummary_AccountToPUnnamed((*source).SupportedAccounts[i])
+				pModelsupervisorSupportedAccountList[i] = c.pV1PorterFeatureSummary_AccountToPModelsupervisorSupportedAccount((*source).SupportedAccounts[i])
 			}
 		}
-		modelsupervisorPorterFeatureSummary.SupportedAccounts = pUnnamedList
+		modelsupervisorPorterFeatureSummary.SupportedAccounts = pModelsupervisorSupportedAccountList
 		var stringList []string
 		if (*source).SupportedAppSources != nil {
 			stringList = make([]string, len((*source).SupportedAppSources))
@@ -366,20 +360,11 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 	}
 	return libauthUserTypeList
 }
-func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPUnnamed(source *v12.PorterFeatureSummary_Account) *struct {
-	Platform         string
-	AppRelationTypes []model.AccountAppRelationType
-} {
-	var pUnnamed *struct {
-		Platform         string
-		AppRelationTypes []model.AccountAppRelationType
-	}
+func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPModelsupervisorSupportedAccount(source *v12.PorterFeatureSummary_Account) *modelsupervisor.SupportedAccount {
+	var pModelsupervisorSupportedAccount *modelsupervisor.SupportedAccount
 	if source != nil {
-		var unnamed struct {
-			Platform         string
-			AppRelationTypes []model.AccountAppRelationType
-		}
-		unnamed.Platform = (*source).Platform
+		var modelsupervisorSupportedAccount modelsupervisor.SupportedAccount
+		modelsupervisorSupportedAccount.Platform = (*source).Platform
 		var modelAccountAppRelationTypeList []model.AccountAppRelationType
 		if (*source).AppRelationTypes != nil {
 			modelAccountAppRelationTypeList = make([]model.AccountAppRelationType, len((*source).AppRelationTypes))
@@ -387,10 +372,10 @@ func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPUnnamed(source *v
 				modelAccountAppRelationTypeList[i] = ToBizAccountAppRelationType((*source).AppRelationTypes[i])
 			}
 		}
-		unnamed.AppRelationTypes = modelAccountAppRelationTypeList
-		pUnnamed = &unnamed
+		modelsupervisorSupportedAccount.AppRelationTypes = modelAccountAppRelationTypeList
+		pModelsupervisorSupportedAccount = &modelsupervisorSupportedAccount
 	}
-	return pUnnamed
+	return pModelsupervisorSupportedAccount
 }
 
 type toPBConverterImpl struct{}

@@ -45,5 +45,8 @@ type NotifyFlowTarget func(*sql.Selector)
 // NotifyTarget is the predicate function for notifytarget builders.
 type NotifyTarget func(*sql.Selector)
 
+// PorterInstance is the predicate function for porterinstance builders.
+type PorterInstance func(*sql.Selector)
+
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

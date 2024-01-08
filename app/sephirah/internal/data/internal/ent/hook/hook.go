@@ -165,6 +165,18 @@ func (f NotifyTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyTargetMutation", m)
 }
 
+// The PorterInstanceFunc type is an adapter to allow the use of ordinary
+// function as PorterInstance mutator.
+type PorterInstanceFunc func(context.Context, *ent.PorterInstanceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PorterInstanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PorterInstanceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterInstanceMutation", m)
+}
+
 // The UserFunc type is an adapter to allow the use of ordinary
 // function as User mutator.
 type UserFunc func(context.Context, *ent.UserMutation) (ent.Value, error)

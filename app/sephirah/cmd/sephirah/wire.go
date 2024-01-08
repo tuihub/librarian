@@ -27,6 +27,7 @@ import (
 func wireApp(
 	*conf.Sephirah_Server,
 	*conf.Sephirah_Data,
+	*conf.Sephirah_Porter,
 	*conf.Auth,
 	*conf.MQ,
 	*conf.Cache,

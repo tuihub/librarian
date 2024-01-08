@@ -55,15 +55,23 @@ func (s *controller) Enabled() bool {
 	return s.token != nil
 }
 
-func newSephirahClient() (sephirah.LibrarianSephirahServiceClient, error) {
+func newRegistry() (*consul.Registry, error) {
 	client, err := capi.NewClient(capi.DefaultConfig())
+	if err != nil {
+		return nil, err
+	}
+	return consul.New(client), nil
+}
+
+func newSephirahClient() (sephirah.LibrarianSephirahServiceClient, error) {
+	r, err := newRegistry()
 	if err != nil {
 		return nil, err
 	}
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///searcher"),
-		grpc.WithDiscovery(consul.New(client)),
+		grpc.WithEndpoint("discovery:///sephirah"),
+		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
 		),
