@@ -25,7 +25,8 @@ func (u *UploadCallBack) GenerateUploadToken(ctx context.Context, meta FileMetad
 		return "", errors.New("token required")
 	}
 	return u.controlBlock.a.GenerateToken(
-		claims.InternalID,
+		claims.UserID,
+		claims.PorterID,
 		libauth.ClaimsTypeUploadToken,
 		claims.UserType,
 		&uploadTokenPayload{
@@ -43,7 +44,8 @@ func (u *DownloadCallBack) GenerateDownloadToken(ctx context.Context, meta FileM
 		return "", errors.New("token required")
 	}
 	return u.controlBlock.a.GenerateToken(
-		claims.InternalID,
+		claims.UserID,
+		claims.PorterID,
 		libauth.ClaimsTypeDownloadToken,
 		claims.UserType,
 		&downloadTokenPayload{

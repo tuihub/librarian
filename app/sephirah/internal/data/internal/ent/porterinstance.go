@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/model"
 )
 
@@ -29,7 +29,7 @@ type PorterInstance struct {
 	// Address holds the value of the "address" field.
 	Address string `json:"address,omitempty"`
 	// FeatureSummary holds the value of the "feature_summary" field.
-	FeatureSummary *modelsupervisor.PorterFeatureSummary `json:"feature_summary,omitempty"`
+	FeatureSummary *modeltiphereth.PorterFeatureSummary `json:"feature_summary,omitempty"`
 	// Status holds the value of the "status" field.
 	Status porterinstance.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.

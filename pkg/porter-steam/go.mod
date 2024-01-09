@@ -9,7 +9,7 @@ require (
 	github.com/google/go-querystring v1.1.0
 	github.com/tuihub/librarian v0.1.16
 	github.com/tuihub/librarian/pkg/porter-sdk v0.0.0
-	github.com/tuihub/protos v0.2.49-0.20240107184041-32547b23ff24
+	github.com/tuihub/protos v0.2.49-0.20240109174449-0f73b60ffbbb
 )
 
 require (

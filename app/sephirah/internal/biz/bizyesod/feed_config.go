@@ -34,7 +34,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	}); err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	err = y.repo.CreateFeedConfig(ctx, claims.InternalID, config)
+	err = y.repo.CreateFeedConfig(ctx, claims.UserID, config)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -49,7 +49,7 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if !y.supv.CheckFeedSource(config.Source) {
 		return bizutils.UnsupportedFeatureError()
 	}
-	err := y.repo.UpdateFeedConfig(ctx, claims.InternalID, config)
+	err := y.repo.UpdateFeedConfig(ctx, claims.UserID, config)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -61,7 +61,7 @@ func (y *Yesod) ListFeedCategories(ctx context.Context) ([]string, *errors.Error
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	res, err := y.repo.ListFeedCategories(ctx, claims.InternalID)
+	res, err := y.repo.ListFeedCategories(ctx, claims.UserID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -73,7 +73,7 @@ func (y *Yesod) ListFeedPlatforms(ctx context.Context) ([]string, *errors.Error)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	res, err := y.repo.ListFeedPlatforms(ctx, claims.InternalID)
+	res, err := y.repo.ListFeedPlatforms(ctx, claims.UserID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

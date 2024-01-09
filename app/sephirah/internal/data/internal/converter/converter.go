@@ -53,6 +53,9 @@ func ToBizAccount(a *ent.Account) *modeltiphereth.Account {
 func ToBizAccountList(a []*ent.Account) []*modeltiphereth.Account {
 	return toBiz.ToBizAccountList(a)
 }
+func ToBizPorterList(a []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
+	return toBiz.ToBizPorterList(a)
+}
 func ToBizApp(a *ent.App) *modelgebura.App {
 	return toBiz.ToBizApp(a)
 }

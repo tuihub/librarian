@@ -6,7 +6,6 @@ import (
 	modelbinah "github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	modelsupervisor "github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
@@ -277,18 +276,18 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTarg
 	}
 	return modelnetzachNotifyTargetStatusList
 }
-func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
-	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
+func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
+	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
 	if source != nil {
-		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
-		var pModelsupervisorSupportedAccountList []*modelsupervisor.SupportedAccount
+		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
+		var pModeltipherethSupportedAccountList []*modeltiphereth.SupportedAccount
 		if (*source).SupportedAccounts != nil {
-			pModelsupervisorSupportedAccountList = make([]*modelsupervisor.SupportedAccount, len((*source).SupportedAccounts))
+			pModeltipherethSupportedAccountList = make([]*modeltiphereth.SupportedAccount, len((*source).SupportedAccounts))
 			for i := 0; i < len((*source).SupportedAccounts); i++ {
-				pModelsupervisorSupportedAccountList[i] = c.pV1PorterFeatureSummary_AccountToPModelsupervisorSupportedAccount((*source).SupportedAccounts[i])
+				pModeltipherethSupportedAccountList[i] = c.pV1PorterFeatureSummary_AccountToPModeltipherethSupportedAccount((*source).SupportedAccounts[i])
 			}
 		}
-		modelsupervisorPorterFeatureSummary.SupportedAccounts = pModelsupervisorSupportedAccountList
+		modeltipherethPorterFeatureSummary.SupportedAccounts = pModeltipherethSupportedAccountList
 		var stringList []string
 		if (*source).SupportedAppSources != nil {
 			stringList = make([]string, len((*source).SupportedAppSources))
@@ -296,7 +295,7 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 				stringList[j] = (*source).SupportedAppSources[j]
 			}
 		}
-		modelsupervisorPorterFeatureSummary.SupportedAppSources = stringList
+		modeltipherethPorterFeatureSummary.SupportedAppSources = stringList
 		var stringList2 []string
 		if (*source).SupportedFeedSources != nil {
 			stringList2 = make([]string, len((*source).SupportedFeedSources))
@@ -304,7 +303,7 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 				stringList2[k] = (*source).SupportedFeedSources[k]
 			}
 		}
-		modelsupervisorPorterFeatureSummary.SupportedFeedSources = stringList2
+		modeltipherethPorterFeatureSummary.SupportedFeedSources = stringList2
 		var stringList3 []string
 		if (*source).SupportedNotifyDestinations != nil {
 			stringList3 = make([]string, len((*source).SupportedNotifyDestinations))
@@ -312,10 +311,19 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 				stringList3[l] = (*source).SupportedNotifyDestinations[l]
 			}
 		}
-		modelsupervisorPorterFeatureSummary.SupportedNotifyDestinations = stringList3
-		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
+		modeltipherethPorterFeatureSummary.SupportedNotifyDestinations = stringList3
+		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
 	}
-	return pModelsupervisorPorterFeatureSummary
+	return pModeltipherethPorterFeatureSummary
+}
+func (c *toBizConverterImpl) ToBizPorterPrivilege(source *v11.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege {
+	var pModeltipherethPorterInstancePrivilege *modeltiphereth.PorterInstancePrivilege
+	if source != nil {
+		var modeltipherethPorterInstancePrivilege modeltiphereth.PorterInstancePrivilege
+		modeltipherethPorterInstancePrivilege.All = (*source).All
+		pModeltipherethPorterInstancePrivilege = &modeltipherethPorterInstancePrivilege
+	}
+	return pModeltipherethPorterInstancePrivilege
 }
 func (c *toBizConverterImpl) ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	var pModelTimeRange *model.TimeRange
@@ -360,11 +368,11 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 	}
 	return libauthUserTypeList
 }
-func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPModelsupervisorSupportedAccount(source *v12.PorterFeatureSummary_Account) *modelsupervisor.SupportedAccount {
-	var pModelsupervisorSupportedAccount *modelsupervisor.SupportedAccount
+func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPModeltipherethSupportedAccount(source *v12.PorterFeatureSummary_Account) *modeltiphereth.SupportedAccount {
+	var pModeltipherethSupportedAccount *modeltiphereth.SupportedAccount
 	if source != nil {
-		var modelsupervisorSupportedAccount modelsupervisor.SupportedAccount
-		modelsupervisorSupportedAccount.Platform = (*source).Platform
+		var modeltipherethSupportedAccount modeltiphereth.SupportedAccount
+		modeltipherethSupportedAccount.Platform = (*source).Platform
 		var modelAccountAppRelationTypeList []model.AccountAppRelationType
 		if (*source).AppRelationTypes != nil {
 			modelAccountAppRelationTypeList = make([]model.AccountAppRelationType, len((*source).AppRelationTypes))
@@ -372,10 +380,10 @@ func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPModelsupervisorSu
 				modelAccountAppRelationTypeList[i] = ToBizAccountAppRelationType((*source).AppRelationTypes[i])
 			}
 		}
-		modelsupervisorSupportedAccount.AppRelationTypes = modelAccountAppRelationTypeList
-		pModelsupervisorSupportedAccount = &modelsupervisorSupportedAccount
+		modeltipherethSupportedAccount.AppRelationTypes = modelAccountAppRelationTypeList
+		pModeltipherethSupportedAccount = &modeltipherethSupportedAccount
 	}
-	return pModelsupervisorSupportedAccount
+	return pModeltipherethSupportedAccount
 }
 
 type toPBConverterImpl struct{}
@@ -792,7 +800,30 @@ func (c *toPBConverterImpl) ToPBNotifyTargetList(source []*modelnetzach.NotifyTa
 	}
 	return pV1NotifyTargetList
 }
-func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v11.ServerFeatureSummary {
+func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstance) *v11.Porter {
+	var pV1Porter *v11.Porter
+	if source != nil {
+		var v1Porter v11.Porter
+		v1Porter.Id = ToPBInternalID((*source).ID)
+		v1Porter.Name = (*source).Name
+		v1Porter.Version = (*source).Version
+		v1Porter.GlobalName = (*source).GlobalName
+		v1Porter.Status = ToPBPorterStatus((*source).Status)
+		pV1Porter = &v1Porter
+	}
+	return pV1Porter
+}
+func (c *toPBConverterImpl) ToPBPorterList(source []*modeltiphereth.PorterInstance) []*v11.Porter {
+	var pV1PorterList []*v11.Porter
+	if source != nil {
+		pV1PorterList = make([]*v11.Porter, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1PorterList[i] = c.ToPBPorter(source[i])
+		}
+	}
+	return pV1PorterList
+}
+func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modeltiphereth.ServerFeatureSummary) *v11.ServerFeatureSummary {
 	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
 	if source != nil {
 		var v1ServerFeatureSummary v11.ServerFeatureSummary

@@ -8,10 +8,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/model"
+
+	"entgo.io/ent/dialect/sql"
 )
 
 type tipherethRepo struct {
@@ -181,4 +185,79 @@ func (t tipherethRepo) ListLinkAccounts(
 		return nil, err
 	}
 	return converter.ToBizAccountList(a), nil
+}
+
+func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modeltiphereth.PorterInstance) error {
+	instances := make([]*ent.PorterInstanceCreate, len(il))
+	for i, instance := range il {
+		instances[i] = t.data.db.PorterInstance.Create().
+			SetID(instance.ID).
+			SetName(instance.Name).
+			SetVersion(instance.Version).
+			SetGlobalName(instance.GlobalName).
+			SetAddress(instance.Address).
+			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
+			SetFeatureSummary(instance.FeatureSummary)
+	}
+	return t.data.db.PorterInstance.
+		CreateBulk(instances...).
+		OnConflict(
+			sql.ConflictColumns(porterinstance.FieldAddress),
+			resolveWithIgnores([]string{
+				porterinstance.FieldID,
+				porterinstance.FieldStatus,
+			}),
+		).
+		Exec(ctx)
+}
+
+func (t tipherethRepo) ListPorters(
+	ctx context.Context,
+	paging model.Paging,
+) ([]*modeltiphereth.PorterInstance, int64, error) {
+	q := t.data.db.PorterInstance.Query()
+	count, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	p, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizPorterList(p), int64(count), nil
+}
+
+func (t tipherethRepo) UpdatePorterStatus(
+	ctx context.Context,
+	id model.InternalID,
+	status modeltiphereth.PorterInstanceStatus,
+) error {
+	return t.data.db.PorterInstance.UpdateOneID(id).
+		SetStatus(converter.ToEntPorterInstanceStatus(status)).
+		Exec(ctx)
+}
+
+func (t tipherethRepo) UpdatePorterPrivilege(
+	ctx context.Context,
+	userID model.InternalID,
+	porterID model.InternalID,
+	privilege *modeltiphereth.PorterInstancePrivilege,
+) error {
+	return t.data.db.PorterPrivilege.Update().Where(
+		porterprivilege.PorterIDEQ(porterID),
+		porterprivilege.UserID(userID),
+	).
+		SetPrivilege(privilege).
+		Exec(ctx)
+}
+func (t tipherethRepo) FetchPorterPrivilege(
+	ctx context.Context,
+	id model.InternalID,
+	id2 model.InternalID,
+) (*modeltiphereth.PorterInstancePrivilege, error) {
+	// TODO implement me
+	panic("implement me")
 }

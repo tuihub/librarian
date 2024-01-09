@@ -5,7 +5,6 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -26,7 +25,7 @@ import (
 type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
-	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary
+	ToPBServerFeatureSummary(*modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary
 
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBUserType
@@ -38,6 +37,12 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
 	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
+
+	// goverter:matchIgnoreCase
+	// goverter:map Status | ToPBPorterStatus
+	// goverter:ignore FeatureSummary
+	ToPBPorter(*modeltiphereth.PorterInstance) *pb.Porter
+	ToPBPorterList([]*modeltiphereth.PorterInstance) []*pb.Porter
 
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBAppType
@@ -136,6 +141,19 @@ func ToPBUserStatus(s modeltiphereth.UserStatus) pb.UserStatus {
 	case modeltiphereth.UserStatusActive:
 		return pb.UserStatus_USER_STATUS_ACTIVE
 	case modeltiphereth.UserStatusBlocked:
+		return pb.UserStatus_USER_STATUS_BLOCKED
+	default:
+		return pb.UserStatus_USER_STATUS_UNSPECIFIED
+	}
+}
+
+func ToPBPorterStatus(s modeltiphereth.PorterInstanceStatus) pb.UserStatus {
+	switch s {
+	case modeltiphereth.PorterInstanceStatusUnspecified:
+		return pb.UserStatus_USER_STATUS_UNSPECIFIED
+	case modeltiphereth.PorterInstanceStatusActive:
+		return pb.UserStatus_USER_STATUS_ACTIVE
+	case modeltiphereth.PorterInstanceStatusBlocked:
 		return pb.UserStatus_USER_STATUS_BLOCKED
 	default:
 		return pb.UserStatus_USER_STATUS_UNSPECIFIED

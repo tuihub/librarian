@@ -12,7 +12,8 @@ import (
 )
 
 type Claims struct {
-	InternalID       model.InternalID `json:"iid,string"`
+	UserID           model.InternalID `json:"uid,string"`
+	PorterID         model.InternalID `json:"pid,string,omitempty"`
 	Type             ClaimsType       `json:"ct"`
 	UserType         UserType         `json:"ut"`
 	TransferMetadata any              `json:"tm,omitempty"`
@@ -75,13 +76,20 @@ func (a *Auth) generateSecret(t ClaimsType) interface{} {
 	return []byte(fmt.Sprintf("%s%d", a.config.GetJwtSecret(), t))
 }
 
-func (a *Auth) GenerateToken(id model.InternalID, claimsType ClaimsType, userType UserType,
-	transferMetadata any, expire time.Duration) (string, error) {
+func (a *Auth) GenerateToken(
+	uid model.InternalID,
+	pid model.InternalID,
+	claimsType ClaimsType,
+	userType UserType,
+	transferMetadata any,
+	expire time.Duration,
+) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
 
 	claims := Claims{
-		InternalID:       id,
+		UserID:           uid,
+		PorterID:         pid,
 		Type:             claimsType,
 		UserType:         userType,
 		TransferMetadata: transferMetadata,

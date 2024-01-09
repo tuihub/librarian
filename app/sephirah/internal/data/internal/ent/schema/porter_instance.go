@@ -3,7 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
@@ -21,7 +21,7 @@ func (PorterInstance) Fields() []ent.Field {
 		field.String("version"),
 		field.String("global_name"),
 		field.String("address"),
-		field.JSON("feature_summary", new(modelsupervisor.PorterFeatureSummary)),
+		field.JSON("feature_summary", new(modeltiphereth.PorterFeatureSummary)),
 		field.Enum("status").
 			Values("active", "blocked"),
 		field.Time("updated_at").

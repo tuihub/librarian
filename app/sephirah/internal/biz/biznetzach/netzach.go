@@ -77,7 +77,7 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	target.ID = id
-	err = n.repo.CreateNotifyTarget(ctx, claims.InternalID, target)
+	err = n.repo.CreateNotifyTarget(ctx, claims.UserID, target)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -92,7 +92,7 @@ func (n *Netzach) UpdateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if !n.supv.CheckNotifyDestination(target.Destination) {
 		return bizutils.UnsupportedFeatureError()
 	}
-	err := n.repo.UpdateNotifyTarget(ctx, claims.InternalID, target)
+	err := n.repo.UpdateNotifyTarget(ctx, claims.UserID, target)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -114,7 +114,7 @@ func (n *Netzach) ListNotifyTargets(
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.InternalID, ids, destinations, statuses)
+	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.UserID, ids, destinations, statuses)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -145,7 +145,7 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 			target.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
-	err = n.repo.CreateNotifyFlow(ctx, claims.InternalID, flow)
+	err = n.repo.CreateNotifyFlow(ctx, claims.UserID, flow)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -167,7 +167,7 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 			target.Filter = new(modelnetzach.NotifyFilter)
 		}
 	}
-	err := n.repo.UpdateNotifyFlow(ctx, claims.InternalID, flow)
+	err := n.repo.UpdateNotifyFlow(ctx, claims.UserID, flow)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -195,7 +195,7 @@ func (n *Netzach) ListNotifyFlows(
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	res, total, err := n.repo.ListNotifyFlows(ctx, paging, claims.InternalID, ids)
+	res, total, err := n.repo.ListNotifyFlows(ctx, paging, claims.UserID, ids)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

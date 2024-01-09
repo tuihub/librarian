@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -64,6 +65,19 @@ func ToEntUserStatus(s modeltiphereth.UserStatus) user.Status {
 		return user.StatusActive
 	case modeltiphereth.UserStatusBlocked:
 		return user.StatusBlocked
+	default:
+		return ""
+	}
+}
+
+func ToEntPorterInstanceStatus(s modeltiphereth.PorterInstanceStatus) porterinstance.Status {
+	switch s {
+	case modeltiphereth.PorterInstanceStatusUnspecified:
+		return ""
+	case modeltiphereth.PorterInstanceStatusActive:
+		return porterinstance.StatusActive
+	case modeltiphereth.PorterInstanceStatusBlocked:
+		return porterinstance.StatusBlocked
 	default:
 		return ""
 	}

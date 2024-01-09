@@ -24,7 +24,7 @@ func (g *Gebura) AddAppPackageRunTime(
 	if timeRange == nil {
 		return pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	err := g.repo.AddAppPackageRunTime(ctx, claims.InternalID, packageID, timeRange)
+	err := g.repo.AddAppPackageRunTime(ctx, claims.UserID, packageID, timeRange)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -43,7 +43,7 @@ func (g *Gebura) SumAppPackageRunTime(
 	if timeRange == nil {
 		return time.Duration(0), pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	res, err := g.repo.SumAppPackageRunTime(ctx, claims.InternalID, packageID, timeRange)
+	res, err := g.repo.SumAppPackageRunTime(ctx, claims.UserID, packageID, timeRange)
 	if err != nil {
 		return time.Duration(0), pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

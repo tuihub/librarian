@@ -25,9 +25,10 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/model"
 	"github.com/tuihub/librarian/model/modelfeed"
 )
@@ -55,6 +56,7 @@ const (
 	TypeNotifyFlowTarget  = "NotifyFlowTarget"
 	TypeNotifyTarget      = "NotifyTarget"
 	TypePorterInstance    = "PorterInstance"
+	TypePorterPrivilege   = "PorterPrivilege"
 	TypeUser              = "User"
 )
 
@@ -13266,7 +13268,7 @@ type PorterInstanceMutation struct {
 	version         *string
 	global_name     *string
 	address         *string
-	feature_summary **modelsupervisor.PorterFeatureSummary
+	feature_summary **modeltiphereth.PorterFeatureSummary
 	status          *porterinstance.Status
 	updated_at      *time.Time
 	created_at      *time.Time
@@ -13525,12 +13527,12 @@ func (m *PorterInstanceMutation) ResetAddress() {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) {
+func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) {
 	m.feature_summary = &mfs
 }
 
 // FeatureSummary returns the value of the "feature_summary" field in the mutation.
-func (m *PorterInstanceMutation) FeatureSummary() (r *modelsupervisor.PorterFeatureSummary, exists bool) {
+func (m *PorterInstanceMutation) FeatureSummary() (r *modeltiphereth.PorterFeatureSummary, exists bool) {
 	v := m.feature_summary
 	if v == nil {
 		return
@@ -13541,7 +13543,7 @@ func (m *PorterInstanceMutation) FeatureSummary() (r *modelsupervisor.PorterFeat
 // OldFeatureSummary returns the old "feature_summary" field's value of the PorterInstance entity.
 // If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *modelsupervisor.PorterFeatureSummary, err error) {
+func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *modeltiphereth.PorterFeatureSummary, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeatureSummary is only allowed on UpdateOne operations")
 	}
@@ -13814,7 +13816,7 @@ func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
 		m.SetAddress(v)
 		return nil
 	case porterinstance.FieldFeatureSummary:
-		v, ok := value.(*modelsupervisor.PorterFeatureSummary)
+		v, ok := value.(*modeltiphereth.PorterFeatureSummary)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -13964,6 +13966,617 @@ func (m *PorterInstanceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PorterInstanceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown PorterInstance edge %s", name)
+}
+
+// PorterPrivilegeMutation represents an operation that mutates the PorterPrivilege nodes in the graph.
+type PorterPrivilegeMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int
+	user_id       *model.InternalID
+	adduser_id    *model.InternalID
+	porter_id     *model.InternalID
+	addporter_id  *model.InternalID
+	privilege     **modeltiphereth.PorterInstancePrivilege
+	updated_at    *time.Time
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*PorterPrivilege, error)
+	predicates    []predicate.PorterPrivilege
+}
+
+var _ ent.Mutation = (*PorterPrivilegeMutation)(nil)
+
+// porterprivilegeOption allows management of the mutation configuration using functional options.
+type porterprivilegeOption func(*PorterPrivilegeMutation)
+
+// newPorterPrivilegeMutation creates new mutation for the PorterPrivilege entity.
+func newPorterPrivilegeMutation(c config, op Op, opts ...porterprivilegeOption) *PorterPrivilegeMutation {
+	m := &PorterPrivilegeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePorterPrivilege,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPorterPrivilegeID sets the ID field of the mutation.
+func withPorterPrivilegeID(id int) porterprivilegeOption {
+	return func(m *PorterPrivilegeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PorterPrivilege
+		)
+		m.oldValue = func(ctx context.Context) (*PorterPrivilege, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PorterPrivilege.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPorterPrivilege sets the old PorterPrivilege of the mutation.
+func withPorterPrivilege(node *PorterPrivilege) porterprivilegeOption {
+	return func(m *PorterPrivilegeMutation) {
+		m.oldValue = func(context.Context) (*PorterPrivilege, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PorterPrivilegeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PorterPrivilegeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PorterPrivilegeMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PorterPrivilegeMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PorterPrivilege.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *PorterPrivilegeMutation) SetUserID(mi model.InternalID) {
+	m.user_id = &mi
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *PorterPrivilegeMutation) UserID() (r model.InternalID, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the PorterPrivilege entity.
+// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterPrivilegeMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds mi to the "user_id" field.
+func (m *PorterPrivilegeMutation) AddUserID(mi model.InternalID) {
+	if m.adduser_id != nil {
+		*m.adduser_id += mi
+	} else {
+		m.adduser_id = &mi
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *PorterPrivilegeMutation) AddedUserID() (r model.InternalID, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *PorterPrivilegeMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+}
+
+// SetPorterID sets the "porter_id" field.
+func (m *PorterPrivilegeMutation) SetPorterID(mi model.InternalID) {
+	m.porter_id = &mi
+	m.addporter_id = nil
+}
+
+// PorterID returns the value of the "porter_id" field in the mutation.
+func (m *PorterPrivilegeMutation) PorterID() (r model.InternalID, exists bool) {
+	v := m.porter_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPorterID returns the old "porter_id" field's value of the PorterPrivilege entity.
+// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterPrivilegeMutation) OldPorterID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPorterID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPorterID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPorterID: %w", err)
+	}
+	return oldValue.PorterID, nil
+}
+
+// AddPorterID adds mi to the "porter_id" field.
+func (m *PorterPrivilegeMutation) AddPorterID(mi model.InternalID) {
+	if m.addporter_id != nil {
+		*m.addporter_id += mi
+	} else {
+		m.addporter_id = &mi
+	}
+}
+
+// AddedPorterID returns the value that was added to the "porter_id" field in this mutation.
+func (m *PorterPrivilegeMutation) AddedPorterID() (r model.InternalID, exists bool) {
+	v := m.addporter_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPorterID resets all changes to the "porter_id" field.
+func (m *PorterPrivilegeMutation) ResetPorterID() {
+	m.porter_id = nil
+	m.addporter_id = nil
+}
+
+// SetPrivilege sets the "privilege" field.
+func (m *PorterPrivilegeMutation) SetPrivilege(mip *modeltiphereth.PorterInstancePrivilege) {
+	m.privilege = &mip
+}
+
+// Privilege returns the value of the "privilege" field in the mutation.
+func (m *PorterPrivilegeMutation) Privilege() (r *modeltiphereth.PorterInstancePrivilege, exists bool) {
+	v := m.privilege
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrivilege returns the old "privilege" field's value of the PorterPrivilege entity.
+// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterPrivilegeMutation) OldPrivilege(ctx context.Context) (v *modeltiphereth.PorterInstancePrivilege, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrivilege is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrivilege requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrivilege: %w", err)
+	}
+	return oldValue.Privilege, nil
+}
+
+// ResetPrivilege resets all changes to the "privilege" field.
+func (m *PorterPrivilegeMutation) ResetPrivilege() {
+	m.privilege = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *PorterPrivilegeMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *PorterPrivilegeMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the PorterPrivilege entity.
+// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterPrivilegeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *PorterPrivilegeMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *PorterPrivilegeMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *PorterPrivilegeMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the PorterPrivilege entity.
+// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterPrivilegeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *PorterPrivilegeMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the PorterPrivilegeMutation builder.
+func (m *PorterPrivilegeMutation) Where(ps ...predicate.PorterPrivilege) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PorterPrivilegeMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PorterPrivilegeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PorterPrivilege, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PorterPrivilegeMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PorterPrivilegeMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PorterPrivilege).
+func (m *PorterPrivilegeMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PorterPrivilegeMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.user_id != nil {
+		fields = append(fields, porterprivilege.FieldUserID)
+	}
+	if m.porter_id != nil {
+		fields = append(fields, porterprivilege.FieldPorterID)
+	}
+	if m.privilege != nil {
+		fields = append(fields, porterprivilege.FieldPrivilege)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, porterprivilege.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, porterprivilege.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PorterPrivilegeMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case porterprivilege.FieldUserID:
+		return m.UserID()
+	case porterprivilege.FieldPorterID:
+		return m.PorterID()
+	case porterprivilege.FieldPrivilege:
+		return m.Privilege()
+	case porterprivilege.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case porterprivilege.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PorterPrivilegeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case porterprivilege.FieldUserID:
+		return m.OldUserID(ctx)
+	case porterprivilege.FieldPorterID:
+		return m.OldPorterID(ctx)
+	case porterprivilege.FieldPrivilege:
+		return m.OldPrivilege(ctx)
+	case porterprivilege.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case porterprivilege.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown PorterPrivilege field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterPrivilegeMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case porterprivilege.FieldUserID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case porterprivilege.FieldPorterID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPorterID(v)
+		return nil
+	case porterprivilege.FieldPrivilege:
+		v, ok := value.(*modeltiphereth.PorterInstancePrivilege)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrivilege(v)
+		return nil
+	case porterprivilege.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case porterprivilege.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PorterPrivilege field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PorterPrivilegeMutation) AddedFields() []string {
+	var fields []string
+	if m.adduser_id != nil {
+		fields = append(fields, porterprivilege.FieldUserID)
+	}
+	if m.addporter_id != nil {
+		fields = append(fields, porterprivilege.FieldPorterID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PorterPrivilegeMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case porterprivilege.FieldUserID:
+		return m.AddedUserID()
+	case porterprivilege.FieldPorterID:
+		return m.AddedPorterID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterPrivilegeMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case porterprivilege.FieldUserID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
+	case porterprivilege.FieldPorterID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPorterID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PorterPrivilege numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PorterPrivilegeMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PorterPrivilegeMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PorterPrivilegeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown PorterPrivilege nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PorterPrivilegeMutation) ResetField(name string) error {
+	switch name {
+	case porterprivilege.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case porterprivilege.FieldPorterID:
+		m.ResetPorterID()
+		return nil
+	case porterprivilege.FieldPrivilege:
+		m.ResetPrivilege()
+		return nil
+	case porterprivilege.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case porterprivilege.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown PorterPrivilege field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PorterPrivilegeMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PorterPrivilegeMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PorterPrivilegeMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PorterPrivilegeMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PorterPrivilegeMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PorterPrivilegeMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PorterPrivilegeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown PorterPrivilege unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PorterPrivilegeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown PorterPrivilege edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.

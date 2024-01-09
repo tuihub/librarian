@@ -6,7 +6,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -38,7 +37,7 @@ func DurationPBToDuration(t *durationpb.Duration) time.Duration {
 	return t.AsDuration()
 }
 
-func ToPBServerFeatureSummary(a *modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary {
+func ToPBServerFeatureSummary(a *modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary {
 	return toPB.ToPBServerFeatureSummary(a)
 }
 func ToPBUser(a *modeltiphereth.User) *pb.User {
@@ -52,6 +51,9 @@ func ToPBAccount(a *modeltiphereth.Account) *librarian.Account {
 }
 func ToPBAccountList(a []*modeltiphereth.Account) []*librarian.Account {
 	return toPB.ToPBAccountList(a)
+}
+func ToPBPorterList(a []*modeltiphereth.PorterInstance) []*pb.Porter {
+	return toPB.ToPBPorterList(a)
 }
 func ToPBApp(a *modelgebura.App) *librarian.App {
 	return toPB.ToPBApp(a)
@@ -122,7 +124,7 @@ func ToPBNotifyFlow(a *modelnetzach.NotifyFlow) *pb.NotifyFlow {
 func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
 	return toPB.ToPBNotifyFlowList(a)
 }
-func ToBizPorterFeatureSummary(a *porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+func ToBizPorterFeatureSummary(a *porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	return toBiz.ToBizPorterFeatureSummary(a)
 }
 func ToBizInternalIDList(a []*librarian.InternalID) []model.InternalID {
@@ -136,6 +138,9 @@ func ToLibAuthUserTypeList(a []pb.UserType) []libauth.UserType {
 }
 func ToBizUserStatusList(a []pb.UserStatus) []modeltiphereth.UserStatus {
 	return toBiz.ToBizUserStatusList(a)
+}
+func ToBizPorterPrivilege(a *pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege {
+	return toBiz.ToBizPorterPrivilege(a)
 }
 func ToBizApp(a *librarian.App) *modelgebura.App {
 	return toBiz.ToBizApp(a)

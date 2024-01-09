@@ -475,6 +475,28 @@ var (
 			},
 		},
 	}
+	// PorterPrivilegesColumns holds the columns for the "porter_privileges" table.
+	PorterPrivilegesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "porter_id", Type: field.TypeInt64},
+		{Name: "privilege", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// PorterPrivilegesTable holds the schema information for the "porter_privileges" table.
+	PorterPrivilegesTable = &schema.Table{
+		Name:       "porter_privileges",
+		Columns:    PorterPrivilegesColumns,
+		PrimaryKey: []*schema.Column{PorterPrivilegesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "porterprivilege_user_id_porter_id",
+				Unique:  true,
+				Columns: []*schema.Column{PorterPrivilegesColumns[1], PorterPrivilegesColumns[2]},
+			},
+		},
+	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -566,6 +588,7 @@ var (
 		NotifyFlowTargetsTable,
 		NotifyTargetsTable,
 		PorterInstancesTable,
+		PorterPrivilegesTable,
 		UsersTable,
 		AccountPurchasedAppTable,
 		UserPurchasedAppTable,

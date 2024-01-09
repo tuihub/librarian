@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 )
 
 // PorterInstanceUpdate is the builder for updating PorterInstance entities.
@@ -86,7 +86,7 @@ func (piu *PorterInstanceUpdate) SetNillableAddress(s *string) *PorterInstanceUp
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdate {
+func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdate {
 	piu.mutation.SetFeatureSummary(mfs)
 	return piu
 }
@@ -289,7 +289,7 @@ func (piuo *PorterInstanceUpdateOne) SetNillableAddress(s *string) *PorterInstan
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdateOne {
+func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdateOne {
 	piuo.mutation.SetFeatureSummary(mfs)
 	return piuo
 }

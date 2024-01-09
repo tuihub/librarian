@@ -27,7 +27,7 @@ func (y *Yesod) ListFeeds(
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	feeds, i, err := y.repo.ListFeedConfigs(ctx, claims.InternalID, paging, ids, authorIDs, sources, statuses, categories)
+	feeds, i, err := y.repo.ListFeedConfigs(ctx, claims.UserID, paging, ids, authorIDs, sources, statuses, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -47,7 +47,7 @@ func (y *Yesod) ListFeedItems(
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	items, i, err := y.repo.ListFeedItems(ctx,
-		claims.InternalID, paging, feedIDs, authorIDs, platforms, timeRange, categories)
+		claims.UserID, paging, feedIDs, authorIDs, platforms, timeRange, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -121,7 +121,7 @@ func (y *Yesod) GroupFeedItems(
 	if groupSize <= 0 || groupSize > 100 {
 		groupSize = 100
 	}
-	items, err := y.repo.GroupFeedItems(ctx, claims.InternalID, groups, feedIDs, authorIDs,
+	items, err := y.repo.GroupFeedItems(ctx, claims.UserID, groups, feedIDs, authorIDs,
 		platforms, groupSize, categories)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -134,7 +134,7 @@ func (y *Yesod) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfee
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	items, err := y.repo.GetFeedItems(ctx, claims.InternalID, []model.InternalID{id})
+	items, err := y.repo.GetFeedItems(ctx, claims.UserID, []model.InternalID{id})
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -149,7 +149,7 @@ func (y *Yesod) GetFeedItems(ctx context.Context, ids []model.InternalID) ([]*mo
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	items, err := y.repo.GetFeedItems(ctx, claims.InternalID, ids)
+	items, err := y.repo.GetFeedItems(ctx, claims.UserID, ids)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -161,7 +161,7 @@ func (y *Yesod) ReadFeedItem(ctx context.Context, id model.InternalID) *errors.E
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if err := y.repo.ReadFeedItem(ctx, claims.InternalID, id); err != nil {
+	if err := y.repo.ReadFeedItem(ctx, claims.UserID, id); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil

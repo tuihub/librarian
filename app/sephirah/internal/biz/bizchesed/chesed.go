@@ -133,7 +133,7 @@ func (c *Chesed) UploadImageCallback(ctx context.Context, id model.InternalID) e
 	if err != nil {
 		return err
 	}
-	err = c.repo.CreateImage(ctx, claims.InternalID, image)
+	err = c.repo.CreateImage(ctx, claims.UserID, image)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.I
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	images, total, err := c.repo.ListImages(ctx, claims.InternalID, paging)
+	images, total, err := c.repo.ListImages(ctx, claims.UserID, paging)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -217,7 +217,7 @@ func (c *Chesed) DownloadImage(ctx context.Context, id model.InternalID) (string
 	if claims == nil {
 		return "", pb.ErrorErrorReasonUnauthorized("no permission")
 	}
-	image, err := c.repo.GetImage(ctx, claims.InternalID, id)
+	image, err := c.repo.GetImage(ctx, claims.UserID, id)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

@@ -6,7 +6,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -37,13 +36,16 @@ import (
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	// goverter:matchIgnoreCase
-	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
+	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
 
 	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
 	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
 	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
+
+	// goverter:matchIgnoreCase
+	ToBizPorterPrivilege(*pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
@@ -128,6 +130,19 @@ func ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus {
 		return modeltiphereth.UserStatusBlocked
 	default:
 		return modeltiphereth.UserStatusUnspecified
+	}
+}
+
+func ToBizPorterStatus(s pb.UserStatus) modeltiphereth.PorterInstanceStatus {
+	switch s {
+	case pb.UserStatus_USER_STATUS_UNSPECIFIED:
+		return modeltiphereth.PorterInstanceStatusUnspecified
+	case pb.UserStatus_USER_STATUS_ACTIVE:
+		return modeltiphereth.PorterInstanceStatusActive
+	case pb.UserStatus_USER_STATUS_BLOCKED:
+		return modeltiphereth.PorterInstanceStatusBlocked
+	default:
+		return modeltiphereth.PorterInstanceStatusUnspecified
 	}
 }
 

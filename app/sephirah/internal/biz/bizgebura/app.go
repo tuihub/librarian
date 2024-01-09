@@ -141,7 +141,7 @@ func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.E
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	} else {
-		err := g.repo.PurchaseApp(ctx, claims.InternalID, id)
+		err := g.repo.PurchaseApp(ctx, claims.UserID, id)
 		if err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err)
 		}
@@ -154,7 +154,7 @@ func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.AppMixed,
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	} else {
-		apps, err := g.repo.GetPurchasedApps(ctx, claims.InternalID)
+		apps, err := g.repo.GetPurchasedApps(ctx, claims.UserID)
 		if err != nil {
 			return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 		}

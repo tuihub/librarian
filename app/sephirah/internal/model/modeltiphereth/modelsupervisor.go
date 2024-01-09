@@ -1,4 +1,4 @@
-package modelsupervisor
+package modeltiphereth
 
 import "github.com/tuihub/librarian/model"
 
@@ -23,6 +23,10 @@ type SupportedAccount struct {
 	AppRelationTypes []model.AccountAppRelationType `json:"app_relation_types"`
 }
 
+type PorterInstancePrivilege struct {
+	All bool `json:"all"`
+}
+
 type PorterInstanceStatus int
 
 const (
@@ -36,23 +40,4 @@ type ServerFeatureSummary struct {
 	SupportedAppSources         []string
 	SupportedFeedSources        []string
 	SupportedNotifyDestinations []string
-}
-
-func Summarize(sums []*PorterFeatureSummary) *ServerFeatureSummary {
-	if len(sums) == 0 {
-		return nil
-	}
-	res := new(ServerFeatureSummary)
-	for _, sum := range sums {
-		if sum == nil {
-			continue
-		}
-		for _, platform := range sum.SupportedAccounts {
-			res.SupportedAccountPlatforms = append(res.SupportedAccountPlatforms, platform.Platform)
-		}
-		res.SupportedAppSources = append(res.SupportedAppSources, sum.SupportedAppSources...)
-		res.SupportedFeedSources = append(res.SupportedFeedSources, sum.SupportedFeedSources...)
-		res.SupportedNotifyDestinations = append(res.SupportedNotifyDestinations, sum.SupportedNotifyDestinations...)
-	}
-	return res
 }

@@ -44,6 +44,20 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 		RefreshToken: string(refreshToken),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) GainUserPrivilege(ctx context.Context, req *pb.GainUserPrivilegeRequest) (
+	*pb.GainUserPrivilegeResponse, error,
+) {
+	if req.GetUserId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	token, err := s.t.GainUserPrivilege(ctx, converter.ToBizInternalID(req.GetUserId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.GainUserPrivilegeResponse{
+		AccessToken: string(token),
+	}, nil
+}
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error,
 ) {
@@ -149,4 +163,53 @@ func (s *LibrarianSephirahServiceService) ListLinkAccounts(ctx context.Context, 
 	return &pb.ListLinkAccountsResponse{
 		Accounts: converter.ToPBAccountList(res),
 	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *pb.ListPortersRequest) (
+	*pb.ListPortersResponse, error,
+) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	res, total, err := s.t.ListPorters(ctx,
+		model.ToBizPaging(req.GetPaging()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListPortersResponse{
+		Paging:  &librarian.PagingResponse{TotalSize: total},
+		Porters: converter.ToPBPorterList(res),
+	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) UpdatePorterStatus(ctx context.Context, req *pb.UpdatePorterStatusRequest) (
+	*pb.UpdatePorterStatusResponse, error,
+) {
+	if req.GetPorterId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	if err := s.t.UpdatePorterStatus(ctx,
+		converter.ToBizInternalID(req.GetPorterId()),
+		converter.ToBizPorterStatus(req.GetStatus()),
+	); err != nil {
+		return nil, err
+	}
+	return &pb.UpdatePorterStatusResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) UpdatePorterPrivilege(
+	ctx context.Context,
+	req *pb.UpdatePorterPrivilegeRequest,
+) (*pb.UpdatePorterPrivilegeResponse, error) {
+	if req.GetPorterId() == nil || req.GetPrivilege() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	if err := s.t.UpdatePorterPrivilege(ctx,
+		converter.ToBizInternalID(req.GetPorterId()),
+		converter.ToBizPorterPrivilege(req.GetPrivilege()),
+	); err != nil {
+		return nil, err
+	}
+	return &pb.UpdatePorterPrivilegeResponse{}, nil
 }

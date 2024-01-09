@@ -249,8 +249,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/temoto/robotstxt v1.1.1/go.mod h1:+1AmkuG3IYkh1kv0d2qEB9Le88ehNO0zwOr3ujewlOo=
 github.com/temoto/robotstxt v1.1.2 h1:W2pOjSJ6SWvldyEuiFXNxz3xZ8aiWX5LbfDiOFd7Fxg=
 github.com/temoto/robotstxt v1.1.2/go.mod h1:+1AmkuG3IYkh1kv0d2qEB9Le88ehNO0zwOr3ujewlOo=
-github.com/tuihub/protos v0.2.49-0.20240107184041-32547b23ff24 h1:7CCtNwJkRJ75eK+97MR5elI5YPQhtgm26C8/JgsiAVI=
-github.com/tuihub/protos v0.2.49-0.20240107184041-32547b23ff24/go.mod h1:oEU+QANr6l/E9StiEBW0W0vrnfGSjsQAVQGbFHPZOPc=
+github.com/tuihub/protos v0.2.49-0.20240109174449-0f73b60ffbbb h1:fcHH16pGkKgiDSR7/TH9rQaUdFeB5g8P526IojWkX00=
+github.com/tuihub/protos v0.2.49-0.20240109174449-0f73b60ffbbb/go.mod h1:oEU+QANr6l/E9StiEBW0W0vrnfGSjsQAVQGbFHPZOPc=
 github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926/go.mod h1:9ESjWnEqriFuLhtthL60Sar/7RFoluCcXsuvEwTV5KM=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=

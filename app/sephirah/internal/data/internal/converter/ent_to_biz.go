@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -35,6 +36,11 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map UpdatedAt LatestUpdateTime
 	ToBizAccount(*ent.Account) *modeltiphereth.Account
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
+
+	// goverter:matchIgnoreCase
+	// goverter:map Status | ToBizPorterStatus
+	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
+	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
 
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToBizAppType
@@ -112,6 +118,17 @@ func ToBizUserStatus(s user.Status) modeltiphereth.UserStatus {
 		return modeltiphereth.UserStatusBlocked
 	default:
 		return modeltiphereth.UserStatusUnspecified
+	}
+}
+
+func ToBizPorterStatus(s porterinstance.Status) modeltiphereth.PorterInstanceStatus {
+	switch s {
+	case porterinstance.StatusActive:
+		return modeltiphereth.PorterInstanceStatusActive
+	case porterinstance.StatusBlocked:
+		return modeltiphereth.PorterInstanceStatusBlocked
+	default:
+		return modeltiphereth.PorterInstanceStatusUnspecified
 	}
 }
 

@@ -19,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 )
@@ -211,6 +212,18 @@ func init() {
 	porterinstanceDescCreatedAt := porterinstanceFields[8].Descriptor()
 	// porterinstance.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterinstance.DefaultCreatedAt = porterinstanceDescCreatedAt.Default.(func() time.Time)
+	porterprivilegeFields := schema.PorterPrivilege{}.Fields()
+	_ = porterprivilegeFields
+	// porterprivilegeDescUpdatedAt is the schema descriptor for updated_at field.
+	porterprivilegeDescUpdatedAt := porterprivilegeFields[3].Descriptor()
+	// porterprivilege.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	porterprivilege.DefaultUpdatedAt = porterprivilegeDescUpdatedAt.Default.(func() time.Time)
+	// porterprivilege.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	porterprivilege.UpdateDefaultUpdatedAt = porterprivilegeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// porterprivilegeDescCreatedAt is the schema descriptor for created_at field.
+	porterprivilegeDescCreatedAt := porterprivilegeFields[4].Descriptor()
+	// porterprivilege.DefaultCreatedAt holds the default value on creation for the created_at field.
+	porterprivilege.DefaultCreatedAt = porterprivilegeDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescUpdatedAt is the schema descriptor for updated_at field.

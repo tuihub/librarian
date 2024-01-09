@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/model"
 )
 
@@ -49,7 +49,7 @@ func (pic *PorterInstanceCreate) SetAddress(s string) *PorterInstanceCreate {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceCreate {
+func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceCreate {
 	pic.mutation.SetFeatureSummary(mfs)
 	return pic
 }
@@ -336,7 +336,7 @@ func (u *PorterInstanceUpsert) UpdateAddress() *PorterInstanceUpsert {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsert) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsert {
+func (u *PorterInstanceUpsert) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsert {
 	u.Set(porterinstance.FieldFeatureSummary, v)
 	return u
 }
@@ -488,7 +488,7 @@ func (u *PorterInstanceUpsertOne) UpdateAddress() *PorterInstanceUpsertOne {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsertOne {
+func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.SetFeatureSummary(v)
 	})
@@ -814,7 +814,7 @@ func (u *PorterInstanceUpsertBulk) UpdateAddress() *PorterInstanceUpsertBulk {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsertBulk {
+func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.SetFeatureSummary(v)
 	})

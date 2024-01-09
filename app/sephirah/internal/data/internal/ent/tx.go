@@ -40,6 +40,8 @@ type Tx struct {
 	NotifyTarget *NotifyTargetClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
+	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
+	PorterPrivilege *PorterPrivilegeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -187,6 +189,7 @@ func (tx *Tx) init() {
 	tx.NotifyFlowTarget = NewNotifyFlowTargetClient(tx.config)
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
+	tx.PorterPrivilege = NewPorterPrivilegeClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

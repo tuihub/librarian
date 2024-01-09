@@ -50,7 +50,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, auth, porter, cron)
+	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, auth, porter)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -80,7 +80,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		return nil, nil, err
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3)
+	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3, cron)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

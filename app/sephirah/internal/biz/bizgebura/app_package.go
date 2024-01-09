@@ -37,7 +37,7 @@ func (g *Gebura) CreateAppPackage(
 	}); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if err = g.repo.CreateAppPackage(ctx, claims.InternalID, a); err != nil {
+	if err = g.repo.CreateAppPackage(ctx, claims.UserID, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return a, nil
@@ -49,7 +49,7 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage
 		return bizutils.NoPermissionError()
 	}
 	a.Source = modelgebura.AppPackageSourceManual
-	err := g.repo.UpdateAppPackage(ctx, claims.InternalID, a)
+	err := g.repo.UpdateAppPackage(ctx, claims.UserID, a)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -81,7 +81,7 @@ func (g *Gebura) AssignAppPackage(
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	err := g.repo.AssignAppPackage(ctx, claims.InternalID, appID, appPackageID)
+	err := g.repo.AssignAppPackage(ctx, claims.UserID, appID, appPackageID)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
@@ -93,7 +93,7 @@ func (g *Gebura) UnAssignAppPackage(ctx context.Context, appPackageID model.Inte
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	} else {
-		err := g.repo.UnAssignAppPackage(ctx, claims.InternalID, appPackageID)
+		err := g.repo.UnAssignAppPackage(ctx, claims.UserID, appPackageID)
 		if err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err)
 		}
@@ -107,13 +107,13 @@ func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPacka
 		return nil, bizutils.NoPermissionError()
 	}
 	checksums, err := g.repo.ListAppPackageBinaryChecksumOfOneSource(ctx,
-		modelgebura.AppPackageSourceSentinel, claims.InternalID)
+		modelgebura.AppPackageSourceSentinel, claims.UserID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &reportAppPackageHandler{
 		g:        g,
-		sourceID: claims.InternalID,
+		sourceID: claims.UserID,
 		sha256:   checksums,
 	}, nil
 }
