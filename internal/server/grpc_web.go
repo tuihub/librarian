@@ -8,14 +8,11 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 
 	"github.com/go-kratos/kratos/v2/middleware"
-	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	jwtv4 "github.com/golang-jwt/jwt/v4"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 )
 
@@ -24,25 +21,17 @@ func NewGrpcWebServer(
 	c *conf.Sephirah_Server,
 	auth *libauth.Auth,
 	app *libapp.Settings,
-) *http.Server {
+) (*http.Server, error) {
+	validator, err := libapp.NewValidator()
+	if err != nil {
+		return nil, err
+	}
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 		ratelimit.Server(),
-		selector.Server(
-			jwt.Server(
-				auth.KeyFunc(libauth.ClaimsTypeAccessToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-				jwt.WithClaims(libauth.NewClaims),
-			),
-		).Match(NewWhiteListMatcher()).Build(),
-		selector.Server(
-			jwt.Server(
-				auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
-				jwt.WithClaims(libauth.NewClaims),
-			),
-		).Match(NewRefreshTokenMatcher()).Build(),
+		validator,
 	}
+	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
@@ -67,5 +56,5 @@ func NewGrpcWebServer(
 			wrappedGrpc.ServeHTTP(resp, req)
 		}
 	}))
-	return srv
+	return srv, nil
 }

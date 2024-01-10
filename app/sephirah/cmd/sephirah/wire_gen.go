@@ -157,7 +157,12 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	registrar, err := libapp.NewRegistrar()
 	if err != nil {
 		cleanup2()

@@ -31,6 +31,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/tuihub/protos v0.3.0
 	github.com/zhihu/norm v0.1.11
+	go.uber.org/ratelimit v0.3.0
 	golang.org/x/crypto v0.17.0
 	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b
 	google.golang.org/grpc v1.60.1
@@ -48,6 +49,7 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/aws/aws-sdk-go v1.49.5 // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/bits-and-blooms/bitset v1.5.0 // indirect
 	github.com/blevesearch/bleve_index_api v1.0.6 // indirect
 	github.com/blevesearch/geo v0.1.18 // indirect
