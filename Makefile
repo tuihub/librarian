@@ -18,10 +18,12 @@ endif
 
 .PHONY: init
 # init env
-init:
+init: init-lint
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
+
+init-lint:
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2
 
 init-test:
@@ -48,8 +50,8 @@ lint: lint-pkgs lint-root
 
 lint-root:
 	@echo "linting root package"
-	@golangci-lint run --fix
-	@golangci-lint run # re-run to make sure fixes are valid, useful in some condition
+	@golangci-lint run --fix --timeout 5m
+	@golangci-lint run --timeout 5m # re-run to make sure fixes are valid, useful in some condition
 
 lint-pkgs:
 	@for d in pkg/*; do \
@@ -57,8 +59,8 @@ lint-pkgs:
 			cd $$d; \
 			echo "linting $$d"; \
 			go mod tidy; \
-			golangci-lint run -c ../../.golangci.yml --fix; \
-			golangci-lint run -c ../../.golangci.yml; \
+			golangci-lint run -c ../../.golangci.yml --fix --timeout 5m; \
+			golangci-lint run -c ../../.golangci.yml --timeout 5m; \
 			cd ../../; \
 		fi \
 	done
