@@ -14,8 +14,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
-	"github.com/tuihub/librarian/model"
-	"github.com/tuihub/librarian/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 // FeedCreate is the builder for creating a Feed entity.

@@ -14,7 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"

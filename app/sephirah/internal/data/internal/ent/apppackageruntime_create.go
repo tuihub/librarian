@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppPackageRunTimeCreate is the builder for creating a AppPackageRunTime entity.

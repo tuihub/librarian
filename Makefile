@@ -46,24 +46,9 @@ generate-code:
 
 .PHONY: lint
 # lint files
-lint: lint-pkgs lint-root
-
-lint-root:
-	@echo "linting root package"
-	@golangci-lint run --fix --timeout 5m
-	@golangci-lint run --timeout 5m # re-run to make sure fixes are valid, useful in some condition
-
-lint-pkgs:
-	@for d in pkg/*; do \
-		if [ -d "$$d" ]; then \
-			cd $$d; \
-			echo "linting $$d"; \
-			go mod tidy; \
-			golangci-lint run -c ../../.golangci.yml --fix --timeout 5m; \
-			golangci-lint run -c ../../.golangci.yml --timeout 5m; \
-			cd ../../; \
-		fi \
-	done
+lint:
+	golangci-lint run --fix --timeout 5m
+	golangci-lint run --timeout 5m # re-run to make sure fixes are valid, useful in some condition
 
 .PHONY: test-unit
 # run go test

@@ -29,8 +29,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/model"
-	"github.com/tuihub/librarian/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
 const (

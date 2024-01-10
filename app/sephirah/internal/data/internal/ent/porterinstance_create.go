@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // PorterInstanceCreate is the builder for creating a PorterInstance entity.

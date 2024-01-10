@@ -3,13 +3,13 @@ package modelfeed
 import (
 	"time"
 
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/model/modelfeed:modelfeed" -g "output:file generated.go" .
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/internal/model/modelfeed:modelfeed" -g "output:file generated.go" .
 
 // goverter:converter
 // goverter:extend FromPBInternalID

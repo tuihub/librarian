@@ -1,7 +1,7 @@
 package schema
 
 import (
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"

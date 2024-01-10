@@ -10,7 +10,7 @@ import (
 	"reflect"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"

@@ -3,7 +3,7 @@ package libmq
 import (
 	"fmt"
 
-	"github.com/tuihub/librarian/logger"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/ThreeDotsLabs/watermill"
 	"github.com/go-kratos/kratos/v2/log"

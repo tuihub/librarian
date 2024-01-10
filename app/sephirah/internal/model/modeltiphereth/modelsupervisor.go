@@ -1,6 +1,8 @@
 package modeltiphereth
 
-import "github.com/tuihub/librarian/model"
+import (
+	"github.com/tuihub/librarian/internal/model"
+)
 
 type PorterInstance struct {
 	ID             model.InternalID

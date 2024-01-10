@@ -1,7 +1,7 @@
 package modelgebura
 
 import (
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 type App struct {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/logger"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"

@@ -11,7 +11,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/blevesearch/bleve/v2"
 	"github.com/sony/sonyflake"

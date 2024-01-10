@@ -12,7 +12,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/logger"
+	"github.com/tuihub/librarian/internal/lib/logger"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/wire"

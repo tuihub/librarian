@@ -7,7 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	"github.com/tuihub/librarian/app/searcher/internal/service"
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/stretchr/testify/assert"

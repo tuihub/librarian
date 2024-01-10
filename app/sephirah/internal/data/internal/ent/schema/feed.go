@@ -3,7 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"

@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	"github.com/tuihub/librarian/model"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 type SearcherRepo interface {
