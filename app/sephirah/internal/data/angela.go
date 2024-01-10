@@ -122,6 +122,7 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 		}
 		apps[i] = a.data.db.App.Create().
 			SetID(ap.ID).
+			SetInternal(ap.Internal).
 			SetSource(ap.Source).
 			SetSourceAppID(ap.SourceAppID).
 			SetSourceURL(ap.SourceURL).

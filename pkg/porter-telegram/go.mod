@@ -7,7 +7,7 @@ require (
 	github.com/nikoksr/notify v0.41.0
 	github.com/tuihub/librarian v0.1.16
 	github.com/tuihub/librarian/pkg/porter-sdk v0.0.0
-	github.com/tuihub/protos v0.2.49-0.20240109174449-0f73b60ffbbb
+	github.com/tuihub/protos v0.3.0
 )
 
 require (

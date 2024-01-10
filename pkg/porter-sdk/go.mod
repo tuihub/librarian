@@ -6,7 +6,7 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20231219111544-85740b179b09
 	github.com/go-kratos/kratos/v2 v2.7.2
 	github.com/hashicorp/consul/api v1.26.1
-	github.com/tuihub/protos v0.2.49-0.20240106200526-5da10f1cc619
+	github.com/tuihub/protos v0.3.0
 	google.golang.org/grpc v1.60.1
 	google.golang.org/protobuf v1.32.0
 )

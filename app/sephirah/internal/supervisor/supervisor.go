@@ -21,13 +21,14 @@ import (
 var ProviderSet = wire.NewSet(NewSupervisor)
 
 type Supervisor struct {
-	porter           *client.Porter
-	auth             *libauth.Auth
-	aliveInstances   map[string]*modeltiphereth.PorterInstance
-	knownInstances   map[string]*modeltiphereth.PorterInstance
-	featureSummary   *modeltiphereth.ServerFeatureSummary
-	muFeatureSummary sync.RWMutex
-	trustedAddresses []string
+	porter                 *client.Porter
+	auth                   *libauth.Auth
+	aliveInstances         map[string]*modeltiphereth.PorterInstance
+	knownInstances         map[string]*modeltiphereth.PorterInstance
+	knownInstancesOutdated bool
+	featureSummary         *modeltiphereth.ServerFeatureSummary
+	muFeatureSummary       sync.RWMutex
+	trustedAddresses       []string
 }
 
 func NewSupervisor(
@@ -39,17 +40,29 @@ func NewSupervisor(
 		c = new(conf.Sephirah_Porter)
 	}
 	return &Supervisor{
-		porter:           porter,
-		auth:             auth,
-		aliveInstances:   map[string]*modeltiphereth.PorterInstance{},
-		knownInstances:   nil, // init in UpdateKnownInstances
-		featureSummary:   new(modeltiphereth.ServerFeatureSummary),
-		muFeatureSummary: sync.RWMutex{},
-		trustedAddresses: c.GetTrustedAddress(),
+		porter:                 porter,
+		auth:                   auth,
+		aliveInstances:         map[string]*modeltiphereth.PorterInstance{},
+		knownInstances:         nil, // init in UpdateKnownInstances
+		knownInstancesOutdated: true,
+		featureSummary:         new(modeltiphereth.ServerFeatureSummary),
+		muFeatureSummary:       sync.RWMutex{},
+		trustedAddresses:       c.GetTrustedAddress(),
 	}, nil
 }
 
+func (s *Supervisor) KnownInstancesOutdated() {
+	s.knownInstancesOutdated = true
+}
+
+func (s *Supervisor) KnownInstancesRequireUpdate() bool {
+	return s.knownInstances == nil || s.knownInstancesOutdated
+}
+
 func (s *Supervisor) UpdateKnownInstances(instances []*modeltiphereth.PorterInstance) {
+	if s.knownInstances == nil {
+		s.knownInstances = map[string]*modeltiphereth.PorterInstance{}
+	}
 	for _, instance := range instances {
 		s.knownInstances[instance.Address] = instance
 	}
@@ -91,6 +104,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 		feature := converter.ToBizPorterFeatureSummary(info.GetFeatureSummary())
 		var ins *modeltiphereth.PorterInstance
 		if s.knownInstances[address] != nil { //nolint:nestif // TODO
+			// known instance
 			if s.knownInstances[address].GlobalName != info.GetGlobalName() {
 				// bad instance, global name changed
 				continue
@@ -111,7 +125,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 			}
 			ins.FeatureSummary = feature
 		} else {
-			// unknown instance
+			// new instance
 			ins = &modeltiphereth.PorterInstance{
 				ID:             0,
 				Name:           info.GetName(),

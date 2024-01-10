@@ -60,7 +60,7 @@ func NewTiphereth(
 		searcher:    sClient,
 		pullAccount: pullAccount,
 	}
-	err := cron.BySeconds(300, t.updatePorters, context.Background()) //nolint:gomnd // hard code min interval
+	err := cron.BySeconds(60, t.updatePorters, context.Background()) //nolint:gomnd // hard code min interval
 	if err != nil {
 		return nil, err
 	}

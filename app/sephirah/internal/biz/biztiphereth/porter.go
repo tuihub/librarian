@@ -14,6 +14,17 @@ import (
 )
 
 func (t *Tiphereth) updatePorters(ctx context.Context) {
+	if t.supv.KnownInstancesRequireUpdate() {
+		porters, _, err := t.repo.ListPorters(ctx, model.Paging{
+			PageSize: 1000, //nolint:gomnd // TODO
+			PageNum:  1,
+		})
+		if err != nil {
+			logger.Errorf("list porters failed: %s", err.Error())
+			return
+		}
+		t.supv.UpdateKnownInstances(porters)
+	}
 	newPorters, err := t.supv.RefreshAliveInstances(ctx)
 	if err != nil {
 		logger.Errorf("refresh alive instances failed: %s", err.Error())
@@ -29,6 +40,7 @@ func (t *Tiphereth) updatePorters(ctx context.Context) {
 	}
 	for i, porter := range newPorters {
 		porter.ID = ids[i]
+		porter.Status = modeltiphereth.PorterInstanceStatusBlocked
 	}
 	err = t.repo.UpsertPorters(ctx, newPorters)
 	if err != nil {
@@ -63,6 +75,7 @@ func (t *Tiphereth) UpdatePorterStatus(
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
+	t.supv.KnownInstancesOutdated()
 	return nil
 }
 

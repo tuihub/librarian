@@ -2,6 +2,7 @@ package portersdk
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -40,6 +41,13 @@ func (s *controller) GetPorterInformation(ctx context.Context, req *pb.GetPorter
 }
 func (s *controller) EnablePorter(ctx context.Context, req *pb.EnablePorterRequest) (
 	*pb.EnablePorterResponse, error) {
+	if s.token != nil {
+		if s.token.enabler == req.GetSephirahId() {
+			return &pb.EnablePorterResponse{}, nil
+		} else {
+			return nil, fmt.Errorf("porter already enabled by %d", s.token.enabler)
+		}
+	}
 	ctx = metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+req.GetRefreshToken())
 	resp, err := s.client.RefreshToken(ctx, &sephirah.RefreshTokenRequest{})
 	if err != nil {
