@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.2.0](https://github.com/tuihub/librarian/compare/v0.1.16...v0.2.0) (2024-01-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* porter has compeletly redesigned, see documents for details
+
+### Features
+
+* add porter-sdk ([a157826](https://github.com/tuihub/librarian/commit/a157826488f3c2f5731437874e79fc57bbcbeefa))
+* impl Porter manage and activate ([8eeca27](https://github.com/tuihub/librarian/commit/8eeca274d726a5c8ac0a1dd617e4b57acabaaf8e))
+* move rss logic to porter-rss ([1913a82](https://github.com/tuihub/librarian/commit/1913a825a1a6af395dce80c4e1841da3720dfe7a))
+* move s3 logic to sephirah ([5998be1](https://github.com/tuihub/librarian/commit/5998be15062cf8d99c8988178ca31acb30364ff8))
+* move steam logic to porter-steam ([e5803ab](https://github.com/tuihub/librarian/commit/e5803abf70e02ab492d9f884c790dfe620756430))
+* move telegram logic to porter-telegram ([442b108](https://github.com/tuihub/librarian/commit/442b1084d54d2bde816a6a49702f49c29128df40))
+* porter has compeletly redesigned, see documents for details ([db830e6](https://github.com/tuihub/librarian/commit/db830e61b6f70729cb25e7509e2de79ff4ff658c))
+* WIP ([6a4f4b0](https://github.com/tuihub/librarian/commit/6a4f4b0b068eff3c3c9dff0b6b5e168b1203086a))
+* WIP ([9d3b9e0](https://github.com/tuihub/librarian/commit/9d3b9e0a5e661d30f60d9fad0711ce6991c8e25b))
+* WIP ([b63eac4](https://github.com/tuihub/librarian/commit/b63eac46467c13491aace4887a1136527316ecbd))
+
+
+### Bug Fixes
+
+* test porter connection with consul ([a4e62f7](https://github.com/tuihub/librarian/commit/a4e62f702bce2a97d52c76f780d7c5e34a27621a))
+* tested porter-rss ([9b718ad](https://github.com/tuihub/librarian/commit/9b718ad37f42bc35fd20f1526ba77e419596c2b1))
+* tested with waiter ([9116b6b](https://github.com/tuihub/librarian/commit/9116b6b5560540331c0b2504a81a5bc7d7d289b6))
+
 ## [0.1.16](https://github.com/tuihub/librarian/compare/v0.1.15...v0.1.16) (2024-01-03)
 
 
