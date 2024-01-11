@@ -19,6 +19,8 @@ import (
 )
 
 // goverter:converter
+// goverter:output:file ./generated.go
+// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
 // goverter:extend ToBizInternalID
 // goverter:extend ToBizTime
 // goverter:extend ToBizDuration
@@ -39,6 +41,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
 
 	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
+
+	// goverter:matchIgnoreCase
+	// goverter:map DeviceId ID
+	ToBizDeviceInfo(*pb.DeviceInfo) *modeltiphereth.DeviceInfo
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
 	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
@@ -80,6 +86,13 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
+}
+
+func PtrToString(u *string) string {
+	if u == nil {
+		return ""
+	}
+	return *u
 }
 
 func ToBizInternalID(id *librarian.InternalID) model.InternalID {

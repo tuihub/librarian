@@ -510,6 +510,29 @@ func HasFileWith(preds ...predicate.File) predicate.User {
 	})
 }
 
+// HasDeviceInfo applies the HasEdge predicate on the "device_info" edge.
+func HasDeviceInfo() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, DeviceInfoTable, DeviceInfoColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasDeviceInfoWith applies the HasEdge predicate on the "device_info" edge with a given conditions (other predicates).
+func HasDeviceInfoWith(preds ...predicate.DeviceInfo) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newDeviceInfoStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasCreator applies the HasEdge predicate on the "creator" edge.
 func HasCreator() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

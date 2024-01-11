@@ -18,6 +18,9 @@ type AppPackage func(*sql.Selector)
 // AppPackageRunTime is the predicate function for apppackageruntime builders.
 type AppPackageRunTime func(*sql.Selector)
 
+// DeviceInfo is the predicate function for deviceinfo builders.
+type DeviceInfo func(*sql.Selector)
+
 // Feed is the predicate function for feed builders.
 type Feed func(*sql.Selector)
 
@@ -53,3 +56,6 @@ type PorterPrivilege func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
+
+// UserSession is the predicate function for usersession builders.
+type UserSession func(*sql.Selector)

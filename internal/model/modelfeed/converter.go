@@ -9,9 +9,9 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/internal/model/modelfeed:modelfeed" -g "output:file generated.go" .
-
 // goverter:converter
+// goverter:output:file ./generated.go
+// goverter:output:package github.com/tuihub/librarian/internal/model/modelfeed
 // goverter:extend FromPBInternalID
 type Converter interface {
 	// goverter:matchIgnoreCase
@@ -46,10 +46,6 @@ type Converter interface {
 	FromPBFeedImage(*librarian.FeedImage) *Image
 	// goverter:matchIgnoreCase
 	FromPBFeedEnclosure(*librarian.FeedEnclosure) *Enclosure
-}
-
-func NewConverter() Converter {
-	return &ConverterImpl{}
 }
 
 func ToPBTime(t *time.Time) *timestamppb.Timestamp {

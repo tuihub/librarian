@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -28,6 +29,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -92,6 +94,7 @@ func checkColumn(table, column string) error {
 			app.Table:               app.ValidColumn,
 			apppackage.Table:        apppackage.ValidColumn,
 			apppackageruntime.Table: apppackageruntime.ValidColumn,
+			deviceinfo.Table:        deviceinfo.ValidColumn,
 			feed.Table:              feed.ValidColumn,
 			feedconfig.Table:        feedconfig.ValidColumn,
 			feeditem.Table:          feeditem.ValidColumn,
@@ -104,6 +107,7 @@ func checkColumn(table, column string) error {
 			porterinstance.Table:    porterinstance.ValidColumn,
 			porterprivilege.Table:   porterprivilege.ValidColumn,
 			user.Table:              user.ValidColumn,
+			usersession.Table:       usersession.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

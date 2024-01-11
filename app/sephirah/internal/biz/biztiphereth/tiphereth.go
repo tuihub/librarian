@@ -15,7 +15,7 @@ import (
 )
 
 type TipherethRepo interface {
-	FetchUserByPassword(context.Context, *modeltiphereth.User) (*modeltiphereth.User, error)
+	FetchUserByPassword(context.Context, string, string) (*modeltiphereth.User, error)
 	CreateUser(context.Context, *modeltiphereth.User, model.InternalID) error
 	UpdateUser(context.Context, *modeltiphereth.User, string) error
 	ListUsers(context.Context, model.Paging, []model.InternalID,
@@ -32,6 +32,13 @@ type TipherethRepo interface {
 		*modeltiphereth.PorterInstancePrivilege) error
 	FetchPorterPrivilege(context.Context, model.InternalID, model.InternalID) (
 		*modeltiphereth.PorterInstancePrivilege, error)
+	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
+	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
+	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error
+	FetchDeviceInfo(context.Context, model.InternalID) (*modeltiphereth.DeviceInfo, error)
+	CreateUserSession(context.Context, *modeltiphereth.UserSession) error
+	FetchUserSession(context.Context, model.InternalID, string) (*modeltiphereth.UserSession, error)
+	UpdateUserSession(context.Context, *modeltiphereth.UserSession) error
 }
 
 type Tiphereth struct {

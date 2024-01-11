@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -39,6 +40,7 @@ type UserQuery struct {
 	withNotifyFlow   *NotifyFlowQuery
 	withImage        *ImageQuery
 	withFile         *FileQuery
+	withDeviceInfo   *DeviceInfoQuery
 	withCreator      *UserQuery
 	withCreatedUser  *UserQuery
 	withFKs          bool
@@ -247,6 +249,28 @@ func (uq *UserQuery) QueryFile() *FileQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(file.Table, file.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.FileTable, user.FileColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryDeviceInfo chains the current query on the "device_info" edge.
+func (uq *UserQuery) QueryDeviceInfo() *DeviceInfoQuery {
+	query := (&DeviceInfoClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.DeviceInfoTable, user.DeviceInfoColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -498,6 +522,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withNotifyFlow:   uq.withNotifyFlow.Clone(),
 		withImage:        uq.withImage.Clone(),
 		withFile:         uq.withFile.Clone(),
+		withDeviceInfo:   uq.withDeviceInfo.Clone(),
 		withCreator:      uq.withCreator.Clone(),
 		withCreatedUser:  uq.withCreatedUser.Clone(),
 		// clone intermediate query.
@@ -591,6 +616,17 @@ func (uq *UserQuery) WithFile(opts ...func(*FileQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withFile = query
+	return uq
+}
+
+// WithDeviceInfo tells the query-builder to eager-load the nodes that are connected to
+// the "device_info" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithDeviceInfo(opts ...func(*DeviceInfoQuery)) *UserQuery {
+	query := (&DeviceInfoClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withDeviceInfo = query
 	return uq
 }
 
@@ -695,7 +731,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [10]bool{
+		loadedTypes = [11]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withAppPackage != nil,
@@ -704,6 +740,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withNotifyFlow != nil,
 			uq.withImage != nil,
 			uq.withFile != nil,
+			uq.withDeviceInfo != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
 		}
@@ -785,6 +822,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadFile(ctx, query, nodes,
 			func(n *User) { n.Edges.File = []*File{} },
 			func(n *User, e *File) { n.Edges.File = append(n.Edges.File, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withDeviceInfo; query != nil {
+		if err := uq.loadDeviceInfo(ctx, query, nodes,
+			func(n *User) { n.Edges.DeviceInfo = []*DeviceInfo{} },
+			func(n *User, e *DeviceInfo) { n.Edges.DeviceInfo = append(n.Edges.DeviceInfo, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1076,6 +1120,37 @@ func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Us
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_file" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadDeviceInfo(ctx context.Context, query *DeviceInfoQuery, nodes []*User, init func(*User), assign func(*User, *DeviceInfo)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.DeviceInfo(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.DeviceInfoColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_device_info
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_device_info" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_device_info" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

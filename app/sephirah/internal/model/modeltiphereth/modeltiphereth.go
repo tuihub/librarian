@@ -41,3 +41,21 @@ type PullAccountInfo struct {
 	Platform          string
 	PlatformAccountID string
 }
+
+type UserSession struct {
+	ID           model.InternalID
+	UserID       model.InternalID
+	RefreshToken string
+	DeviceInfo   *DeviceInfo
+	CreateAt     time.Time
+	ExpireAt     time.Time
+}
+
+type DeviceInfo struct {
+	ID                      model.InternalID
+	DeviceModel             string
+	SystemVersion           string
+	ClientName              string
+	ClientSourceCodeAddress string
+	ClientVersion           string
+}

@@ -3,11 +3,13 @@ package libauth
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
+	"github.com/go-kratos/kratos/v2/transport"
 	jwtv4 "github.com/golang-jwt/jwt/v4"
 )
 
@@ -57,6 +59,17 @@ func FromContext(ctx context.Context) *Claims {
 		}
 	}
 	return nil
+}
+
+func RawFromContext(ctx context.Context) string {
+	if header, ok := transport.FromServerContext(ctx); ok {
+		auths := strings.SplitN(header.RequestHeader().Get("Authorization"), " ", 2) //nolint:gomnd // exactly 2
+		if len(auths) != 2 || !strings.EqualFold(auths[0], "Bearer") {
+			return ""
+		}
+		return auths[1]
+	}
+	return ""
 }
 
 func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) *Claims {

@@ -20,6 +20,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -32,6 +33,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 )
 
 // Client is the client that holds all ent builders.
@@ -47,6 +49,8 @@ type Client struct {
 	AppPackage *AppPackageClient
 	// AppPackageRunTime is the client for interacting with the AppPackageRunTime builders.
 	AppPackageRunTime *AppPackageRunTimeClient
+	// DeviceInfo is the client for interacting with the DeviceInfo builders.
+	DeviceInfo *DeviceInfoClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
@@ -71,6 +75,8 @@ type Client struct {
 	PorterPrivilege *PorterPrivilegeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserSession is the client for interacting with the UserSession builders.
+	UserSession *UserSessionClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -86,6 +92,7 @@ func (c *Client) init() {
 	c.App = NewAppClient(c.config)
 	c.AppPackage = NewAppPackageClient(c.config)
 	c.AppPackageRunTime = NewAppPackageRunTimeClient(c.config)
+	c.DeviceInfo = NewDeviceInfoClient(c.config)
 	c.Feed = NewFeedClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
@@ -98,6 +105,7 @@ func (c *Client) init() {
 	c.PorterInstance = NewPorterInstanceClient(c.config)
 	c.PorterPrivilege = NewPorterPrivilegeClient(c.config)
 	c.User = NewUserClient(c.config)
+	c.UserSession = NewUserSessionClient(c.config)
 }
 
 type (
@@ -194,6 +202,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		App:               NewAppClient(cfg),
 		AppPackage:        NewAppPackageClient(cfg),
 		AppPackageRunTime: NewAppPackageRunTimeClient(cfg),
+		DeviceInfo:        NewDeviceInfoClient(cfg),
 		Feed:              NewFeedClient(cfg),
 		FeedConfig:        NewFeedConfigClient(cfg),
 		FeedItem:          NewFeedItemClient(cfg),
@@ -206,6 +215,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		PorterInstance:    NewPorterInstanceClient(cfg),
 		PorterPrivilege:   NewPorterPrivilegeClient(cfg),
 		User:              NewUserClient(cfg),
+		UserSession:       NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -229,6 +239,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		App:               NewAppClient(cfg),
 		AppPackage:        NewAppPackageClient(cfg),
 		AppPackageRunTime: NewAppPackageRunTimeClient(cfg),
+		DeviceInfo:        NewDeviceInfoClient(cfg),
 		Feed:              NewFeedClient(cfg),
 		FeedConfig:        NewFeedConfigClient(cfg),
 		FeedItem:          NewFeedItemClient(cfg),
@@ -241,6 +252,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		PorterInstance:    NewPorterInstanceClient(cfg),
 		PorterPrivilege:   NewPorterPrivilegeClient(cfg),
 		User:              NewUserClient(cfg),
+		UserSession:       NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -270,10 +282,10 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.Feed, c.FeedConfig,
-		c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
+		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.DeviceInfo, c.Feed,
+		c.FeedConfig, c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
 		c.NotifyFlowTarget, c.NotifyTarget, c.PorterInstance, c.PorterPrivilege,
-		c.User,
+		c.User, c.UserSession,
 	} {
 		n.Use(hooks...)
 	}
@@ -283,10 +295,10 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.Feed, c.FeedConfig,
-		c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
+		c.Account, c.App, c.AppPackage, c.AppPackageRunTime, c.DeviceInfo, c.Feed,
+		c.FeedConfig, c.FeedItem, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
 		c.NotifyFlowTarget, c.NotifyTarget, c.PorterInstance, c.PorterPrivilege,
-		c.User,
+		c.User, c.UserSession,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -303,6 +315,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.AppPackage.mutate(ctx, m)
 	case *AppPackageRunTimeMutation:
 		return c.AppPackageRunTime.mutate(ctx, m)
+	case *DeviceInfoMutation:
+		return c.DeviceInfo.mutate(ctx, m)
 	case *FeedMutation:
 		return c.Feed.mutate(ctx, m)
 	case *FeedConfigMutation:
@@ -327,6 +341,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PorterPrivilege.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
+	case *UserSessionMutation:
+		return c.UserSession.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -1005,6 +1021,155 @@ func (c *AppPackageRunTimeClient) mutate(ctx context.Context, m *AppPackageRunTi
 		return (&AppPackageRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown AppPackageRunTime mutation op: %q", m.Op())
+	}
+}
+
+// DeviceInfoClient is a client for the DeviceInfo schema.
+type DeviceInfoClient struct {
+	config
+}
+
+// NewDeviceInfoClient returns a client for the DeviceInfo from the given config.
+func NewDeviceInfoClient(c config) *DeviceInfoClient {
+	return &DeviceInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `deviceinfo.Hooks(f(g(h())))`.
+func (c *DeviceInfoClient) Use(hooks ...Hook) {
+	c.hooks.DeviceInfo = append(c.hooks.DeviceInfo, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `deviceinfo.Intercept(f(g(h())))`.
+func (c *DeviceInfoClient) Intercept(interceptors ...Interceptor) {
+	c.inters.DeviceInfo = append(c.inters.DeviceInfo, interceptors...)
+}
+
+// Create returns a builder for creating a DeviceInfo entity.
+func (c *DeviceInfoClient) Create() *DeviceInfoCreate {
+	mutation := newDeviceInfoMutation(c.config, OpCreate)
+	return &DeviceInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of DeviceInfo entities.
+func (c *DeviceInfoClient) CreateBulk(builders ...*DeviceInfoCreate) *DeviceInfoCreateBulk {
+	return &DeviceInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *DeviceInfoClient) MapCreateBulk(slice any, setFunc func(*DeviceInfoCreate, int)) *DeviceInfoCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &DeviceInfoCreateBulk{err: fmt.Errorf("calling to DeviceInfoClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*DeviceInfoCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &DeviceInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for DeviceInfo.
+func (c *DeviceInfoClient) Update() *DeviceInfoUpdate {
+	mutation := newDeviceInfoMutation(c.config, OpUpdate)
+	return &DeviceInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *DeviceInfoClient) UpdateOne(di *DeviceInfo) *DeviceInfoUpdateOne {
+	mutation := newDeviceInfoMutation(c.config, OpUpdateOne, withDeviceInfo(di))
+	return &DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *DeviceInfoClient) UpdateOneID(id model.InternalID) *DeviceInfoUpdateOne {
+	mutation := newDeviceInfoMutation(c.config, OpUpdateOne, withDeviceInfoID(id))
+	return &DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for DeviceInfo.
+func (c *DeviceInfoClient) Delete() *DeviceInfoDelete {
+	mutation := newDeviceInfoMutation(c.config, OpDelete)
+	return &DeviceInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *DeviceInfoClient) DeleteOne(di *DeviceInfo) *DeviceInfoDeleteOne {
+	return c.DeleteOneID(di.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *DeviceInfoClient) DeleteOneID(id model.InternalID) *DeviceInfoDeleteOne {
+	builder := c.Delete().Where(deviceinfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &DeviceInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for DeviceInfo.
+func (c *DeviceInfoClient) Query() *DeviceInfoQuery {
+	return &DeviceInfoQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeDeviceInfo},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a DeviceInfo entity by its id.
+func (c *DeviceInfoClient) Get(ctx context.Context, id model.InternalID) (*DeviceInfo, error) {
+	return c.Query().Where(deviceinfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *DeviceInfoClient) GetX(ctx context.Context, id model.InternalID) *DeviceInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUserSession queries the user_session edge of a DeviceInfo.
+func (c *DeviceInfoClient) QueryUserSession(di *DeviceInfo) *UserSessionQuery {
+	query := (&UserSessionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := di.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, id),
+			sqlgraph.To(usersession.Table, usersession.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, deviceinfo.UserSessionTable, deviceinfo.UserSessionColumn),
+		)
+		fromV = sqlgraph.Neighbors(di.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *DeviceInfoClient) Hooks() []Hook {
+	return c.hooks.DeviceInfo
+}
+
+// Interceptors returns the client interceptors.
+func (c *DeviceInfoClient) Interceptors() []Interceptor {
+	return c.inters.DeviceInfo
+}
+
+func (c *DeviceInfoClient) mutate(ctx context.Context, m *DeviceInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&DeviceInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&DeviceInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&DeviceInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown DeviceInfo mutation op: %q", m.Op())
 	}
 }
 
@@ -3075,6 +3240,22 @@ func (c *UserClient) QueryFile(u *User) *FileQuery {
 	return query
 }
 
+// QueryDeviceInfo queries the device_info edge of a User.
+func (c *UserClient) QueryDeviceInfo(u *User) *DeviceInfoQuery {
+	query := (&DeviceInfoClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.DeviceInfoTable, user.DeviceInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryCreator queries the creator edge of a User.
 func (c *UserClient) QueryCreator(u *User) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
@@ -3132,16 +3313,166 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 	}
 }
 
+// UserSessionClient is a client for the UserSession schema.
+type UserSessionClient struct {
+	config
+}
+
+// NewUserSessionClient returns a client for the UserSession from the given config.
+func NewUserSessionClient(c config) *UserSessionClient {
+	return &UserSessionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `usersession.Hooks(f(g(h())))`.
+func (c *UserSessionClient) Use(hooks ...Hook) {
+	c.hooks.UserSession = append(c.hooks.UserSession, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `usersession.Intercept(f(g(h())))`.
+func (c *UserSessionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.UserSession = append(c.inters.UserSession, interceptors...)
+}
+
+// Create returns a builder for creating a UserSession entity.
+func (c *UserSessionClient) Create() *UserSessionCreate {
+	mutation := newUserSessionMutation(c.config, OpCreate)
+	return &UserSessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of UserSession entities.
+func (c *UserSessionClient) CreateBulk(builders ...*UserSessionCreate) *UserSessionCreateBulk {
+	return &UserSessionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *UserSessionClient) MapCreateBulk(slice any, setFunc func(*UserSessionCreate, int)) *UserSessionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &UserSessionCreateBulk{err: fmt.Errorf("calling to UserSessionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*UserSessionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &UserSessionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for UserSession.
+func (c *UserSessionClient) Update() *UserSessionUpdate {
+	mutation := newUserSessionMutation(c.config, OpUpdate)
+	return &UserSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *UserSessionClient) UpdateOne(us *UserSession) *UserSessionUpdateOne {
+	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSession(us))
+	return &UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *UserSessionClient) UpdateOneID(id model.InternalID) *UserSessionUpdateOne {
+	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSessionID(id))
+	return &UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for UserSession.
+func (c *UserSessionClient) Delete() *UserSessionDelete {
+	mutation := newUserSessionMutation(c.config, OpDelete)
+	return &UserSessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *UserSessionClient) DeleteOne(us *UserSession) *UserSessionDeleteOne {
+	return c.DeleteOneID(us.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *UserSessionClient) DeleteOneID(id model.InternalID) *UserSessionDeleteOne {
+	builder := c.Delete().Where(usersession.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &UserSessionDeleteOne{builder}
+}
+
+// Query returns a query builder for UserSession.
+func (c *UserSessionClient) Query() *UserSessionQuery {
+	return &UserSessionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeUserSession},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a UserSession entity by its id.
+func (c *UserSessionClient) Get(ctx context.Context, id model.InternalID) (*UserSession, error) {
+	return c.Query().Where(usersession.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *UserSessionClient) GetX(ctx context.Context, id model.InternalID) *UserSession {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryDeviceInfo queries the device_info edge of a UserSession.
+func (c *UserSessionClient) QueryDeviceInfo(us *UserSession) *DeviceInfoQuery {
+	query := (&DeviceInfoClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := us.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(usersession.Table, usersession.FieldID, id),
+			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, usersession.DeviceInfoTable, usersession.DeviceInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(us.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *UserSessionClient) Hooks() []Hook {
+	return c.hooks.UserSession
+}
+
+// Interceptors returns the client interceptors.
+func (c *UserSessionClient) Interceptors() []Interceptor {
+	return c.inters.UserSession
+}
+
+func (c *UserSessionClient) mutate(ctx context.Context, m *UserSessionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&UserSessionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&UserSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&UserSessionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown UserSession mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Account, App, AppPackage, AppPackageRunTime, Feed, FeedConfig, FeedItem, File,
-		Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifyTarget,
-		PorterInstance, PorterPrivilege, User []ent.Hook
+		Account, App, AppPackage, AppPackageRunTime, DeviceInfo, Feed, FeedConfig,
+		FeedItem, File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget,
+		NotifyTarget, PorterInstance, PorterPrivilege, User, UserSession []ent.Hook
 	}
 	inters struct {
-		Account, App, AppPackage, AppPackageRunTime, Feed, FeedConfig, FeedItem, File,
-		Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifyTarget,
-		PorterInstance, PorterPrivilege, User []ent.Interceptor
+		Account, App, AppPackage, AppPackageRunTime, DeviceInfo, Feed, FeedConfig,
+		FeedItem, File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget,
+		NotifyTarget, PorterInstance, PorterPrivilege, User,
+		UserSession []ent.Interceptor
 	}
 )

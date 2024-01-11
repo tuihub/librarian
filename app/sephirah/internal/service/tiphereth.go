@@ -15,13 +15,11 @@ import (
 func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.GetTokenRequest) (
 	*pb.GetTokenResponse, error,
 ) {
-	accessToken, refreshToken, err := s.t.GetToken(ctx, &modeltiphereth.User{
-		ID:       0,
-		UserName: req.GetUsername(),
-		PassWord: req.GetPassword(),
-		Type:     0,
-		Status:   0,
-	})
+	accessToken, refreshToken, err := s.t.GetToken(ctx,
+		req.GetUsername(),
+		req.GetPassword(),
+		converter.ToBizInternalIDPtr(req.GetDeviceId()),
+	)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
 		return nil, err
@@ -57,6 +55,43 @@ func (s *LibrarianSephirahServiceService) GainUserPrivilege(ctx context.Context,
 	return &pb.GainUserPrivilegeResponse{
 		AccessToken: string(token),
 	}, nil
+}
+func (s *LibrarianSephirahServiceService) RegisterDevice(ctx context.Context, req *pb.RegisterDeviceRequest) (
+	*pb.RegisterDeviceResponse, error,
+) {
+	if req.GetDeviceInfo() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	id, err := s.t.RegisterDevice(ctx, converter.ToBizDeviceInfo(req.GetDeviceInfo()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RegisterDeviceResponse{
+		DeviceId: converter.ToPBInternalID(id),
+	}, nil
+}
+func (s *LibrarianSephirahServiceService) ListUserSessions(ctx context.Context, req *pb.ListUserSessionsRequest) (
+	*pb.ListUserSessionsResponse, error,
+) {
+	sessions, err := s.t.ListUserSessions(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListUserSessionsResponse{
+		Sessions: converter.ToPBUserSessionList(sessions),
+	}, nil
+}
+func (s *LibrarianSephirahServiceService) DeleteUserSession(ctx context.Context, req *pb.DeleteUserSessionRequest) (
+	*pb.DeleteUserSessionResponse, error,
+) {
+	if req.GetSessionId() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	err := s.t.DeleteUserSession(ctx, converter.ToBizInternalID(req.GetSessionId()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteUserSessionResponse{}, nil
 }
 func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (
 	*pb.CreateUserResponse, error,

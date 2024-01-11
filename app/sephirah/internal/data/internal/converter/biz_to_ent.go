@@ -19,6 +19,8 @@ import (
 )
 
 // goverter:converter
+// goverter:output:file ./generated.go
+// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
 // goverter:extend ToEntUserType
 // goverter:extend ToEntUserStatus
 // goverter:extend ToEntAppType

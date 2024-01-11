@@ -18,6 +18,8 @@ import (
 )
 
 // goverter:converter
+// goverter:output:file ./generated.go
+// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
 // goverter:extend ToPBInternalID
 // goverter:extend ToPBTime
 // goverter:extend ToPBTimePtr
@@ -26,6 +28,17 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 	ToPBServerFeatureSummary(*modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary
+
+	// goverter:matchIgnoreCase
+	// goverter:map ID DeviceId
+	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
+	ToPBDeviceInfoList([]*modeltiphereth.DeviceInfo) []*pb.DeviceInfo
+
+	// goverter:matchIgnoreCase
+	// goverter:map CreateAt CreateTime
+	// goverter:map ExpireAt ExpireTime
+	ToPBUserSession(*modeltiphereth.UserSession) *pb.UserSession
+	ToPBUserSessionList([]*modeltiphereth.UserSession) []*pb.UserSession
 
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBUserType
@@ -98,6 +111,13 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
 	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
+}
+
+func DurationPBToDuration(t *durationpb.Duration) time.Duration {
+	if t == nil {
+		return time.Duration(0)
+	}
+	return t.AsDuration()
 }
 
 func ToPBInternalID(id model.InternalID) *librarian.InternalID {

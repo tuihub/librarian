@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -233,6 +234,21 @@ func (uu *UserUpdate) AddFile(f ...*File) *UserUpdate {
 	return uu.AddFileIDs(ids...)
 }
 
+// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
+func (uu *UserUpdate) AddDeviceInfoIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddDeviceInfoIDs(ids...)
+	return uu
+}
+
+// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
+func (uu *UserUpdate) AddDeviceInfo(d ...*DeviceInfo) *UserUpdate {
+	ids := make([]model.InternalID, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return uu.AddDeviceInfoIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uu *UserUpdate) SetCreatorID(id model.InternalID) *UserUpdate {
 	uu.mutation.SetCreatorID(id)
@@ -430,6 +446,27 @@ func (uu *UserUpdate) RemoveFile(f ...*File) *UserUpdate {
 		ids[i] = f[i].ID
 	}
 	return uu.RemoveFileIDs(ids...)
+}
+
+// ClearDeviceInfo clears all "device_info" edges to the DeviceInfo entity.
+func (uu *UserUpdate) ClearDeviceInfo() *UserUpdate {
+	uu.mutation.ClearDeviceInfo()
+	return uu
+}
+
+// RemoveDeviceInfoIDs removes the "device_info" edge to DeviceInfo entities by IDs.
+func (uu *UserUpdate) RemoveDeviceInfoIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveDeviceInfoIDs(ids...)
+	return uu
+}
+
+// RemoveDeviceInfo removes "device_info" edges to DeviceInfo entities.
+func (uu *UserUpdate) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdate {
+	ids := make([]model.InternalID, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return uu.RemoveDeviceInfoIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -903,6 +940,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.DeviceInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedDeviceInfoIDs(); len(nodes) > 0 && !uu.mutation.DeviceInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.DeviceInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1193,6 +1275,21 @@ func (uuo *UserUpdateOne) AddFile(f ...*File) *UserUpdateOne {
 	return uuo.AddFileIDs(ids...)
 }
 
+// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
+func (uuo *UserUpdateOne) AddDeviceInfoIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddDeviceInfoIDs(ids...)
+	return uuo
+}
+
+// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
+func (uuo *UserUpdateOne) AddDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
+	ids := make([]model.InternalID, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return uuo.AddDeviceInfoIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
 	uuo.mutation.SetCreatorID(id)
@@ -1390,6 +1487,27 @@ func (uuo *UserUpdateOne) RemoveFile(f ...*File) *UserUpdateOne {
 		ids[i] = f[i].ID
 	}
 	return uuo.RemoveFileIDs(ids...)
+}
+
+// ClearDeviceInfo clears all "device_info" edges to the DeviceInfo entity.
+func (uuo *UserUpdateOne) ClearDeviceInfo() *UserUpdateOne {
+	uuo.mutation.ClearDeviceInfo()
+	return uuo
+}
+
+// RemoveDeviceInfoIDs removes the "device_info" edge to DeviceInfo entities by IDs.
+func (uuo *UserUpdateOne) RemoveDeviceInfoIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveDeviceInfoIDs(ids...)
+	return uuo
+}
+
+// RemoveDeviceInfo removes "device_info" edges to DeviceInfo entities.
+func (uuo *UserUpdateOne) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
+	ids := make([]model.InternalID, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return uuo.RemoveDeviceInfoIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -1886,6 +2004,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.DeviceInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedDeviceInfoIDs(); len(nodes) > 0 && !uuo.mutation.DeviceInfoCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.DeviceInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

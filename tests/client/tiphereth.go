@@ -22,6 +22,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	if resp, err := c.cli.GetToken(ctx, &pb.GetTokenRequest{
 		Username: adminUsername,
 		Password: adminPassword,
+		DeviceId: nil,
 	}); err != nil {
 		log.Fatal(err)
 	} else {
@@ -124,12 +125,14 @@ func (c *Client) testUser(ctx context.Context) {
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
 		Username: user1.GetUsername(),
 		Password: user1.GetPassword(),
+		DeviceId: nil,
 	}); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
 		Username: user2.GetUsername(),
 		Password: user2.GetPassword(),
+		DeviceId: nil,
 	}); err == nil {
 		log.Fatal("err expected")
 	}
@@ -137,6 +140,7 @@ func (c *Client) testUser(ctx context.Context) {
 	if _, err := NewSephirahClient().GetToken(ctx, &pb.GetTokenRequest{
 		Username: user2.GetUsername(),
 		Password: user2.GetPassword(),
+		DeviceId: nil,
 	}); err == nil {
 		log.Fatal("err expected")
 	}

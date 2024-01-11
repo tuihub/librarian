@@ -1,3 +1,5 @@
+//go:build !goverter
+
 package converter
 
 import (
@@ -17,7 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter:converter" -g "output:file generated.go" .
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter@v1.3.0 gen -g ignoreUnexported .
 
 var toEnt = &toEntConverterImpl{} //nolint:gochecknoglobals // checked
 var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked
@@ -46,6 +48,15 @@ func ToBizUser(a *ent.User) *modeltiphereth.User {
 }
 func ToBizUserList(a []*ent.User) []*modeltiphereth.User {
 	return toBiz.ToBizUserList(a)
+}
+func ToBizUserSession(a *ent.UserSession) *modeltiphereth.UserSession {
+	return toBiz.ToBizUserSession(a)
+}
+func ToBizUserSessionList(a []*ent.UserSession) []*modeltiphereth.UserSession {
+	return toBiz.ToBizUserSessionList(a)
+}
+func ToBizDeviceInfo(a *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
+	return toBiz.ToBizDeviceInfo(a)
 }
 func ToBizAccount(a *ent.Account) *modeltiphereth.Account {
 	return toBiz.ToBizAccount(a)

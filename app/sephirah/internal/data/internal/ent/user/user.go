@@ -43,6 +43,8 @@ const (
 	EdgeImage = "image"
 	// EdgeFile holds the string denoting the file edge name in mutations.
 	EdgeFile = "file"
+	// EdgeDeviceInfo holds the string denoting the device_info edge name in mutations.
+	EdgeDeviceInfo = "device_info"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
@@ -103,6 +105,13 @@ const (
 	FileInverseTable = "files"
 	// FileColumn is the table column denoting the file relation/edge.
 	FileColumn = "user_file"
+	// DeviceInfoTable is the table that holds the device_info relation/edge.
+	DeviceInfoTable = "device_infos"
+	// DeviceInfoInverseTable is the table name for the DeviceInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "deviceinfo" package.
+	DeviceInfoInverseTable = "device_infos"
+	// DeviceInfoColumn is the table column denoting the device_info relation/edge.
+	DeviceInfoColumn = "user_device_info"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.
@@ -357,6 +366,20 @@ func ByFile(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByDeviceInfoCount orders the results by device_info count.
+func ByDeviceInfoCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newDeviceInfoStep(), opts...)
+	}
+}
+
+// ByDeviceInfo orders the results by device_info terms.
+func ByDeviceInfo(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newDeviceInfoStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByCreatorField orders the results by creator field.
 func ByCreatorField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -431,6 +454,13 @@ func newFileStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FileInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FileTable, FileColumn),
+	)
+}
+func newDeviceInfoStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(DeviceInfoInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, DeviceInfoTable, DeviceInfoColumn),
 	)
 }
 func newCreatorStep() *sqlgraph.Step {

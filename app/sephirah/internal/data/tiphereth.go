@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -31,16 +32,111 @@ func NewTipherethRepo(data *Data) biztiphereth.TipherethRepo {
 
 func (t tipherethRepo) FetchUserByPassword(
 	ctx context.Context,
-	userData *modeltiphereth.User,
+	username, password string,
 ) (*modeltiphereth.User, error) {
 	u, err := t.data.db.User.Query().Where(
-		user.UsernameEQ(userData.UserName),
-		user.PasswordEQ(userData.PassWord),
+		user.UsernameEQ(username),
+		user.PasswordEQ(password),
 	).First(ctx)
 	if u == nil || err != nil {
 		return nil, errors.New("invalid user")
 	}
 	return converter.ToBizUser(u), nil
+}
+
+func (t tipherethRepo) CreateDevice(
+	ctx context.Context,
+	info *modeltiphereth.DeviceInfo,
+) error {
+	return t.data.db.DeviceInfo.Create().
+		SetID(info.ID).
+		SetDeviceModel(info.DeviceModel).
+		SetSystemVersion(info.SystemVersion).
+		SetClientName(info.ClientName).
+		SetClientSourceCodeAddress(info.ClientSourceCodeAddress).
+		SetClientVersion(info.ClientVersion).
+		Exec(ctx)
+}
+
+func (t tipherethRepo) FetchDeviceInfo(
+	ctx context.Context,
+	deviceID model.InternalID,
+) (*modeltiphereth.DeviceInfo, error) {
+	res, err := t.data.db.DeviceInfo.Get(ctx, deviceID)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizDeviceInfo(res), nil
+}
+
+func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
+	q := t.data.db.UserSession.Create().
+		SetID(session.ID).
+		SetUserID(session.UserID).
+		SetRefreshToken(session.RefreshToken).
+		SetCreatedAt(session.CreateAt).
+		SetExpireAt(session.ExpireAt)
+	if session.DeviceInfo != nil {
+		q.SetDeviceInfoID(session.DeviceInfo.ID)
+	}
+	return q.Exec(ctx)
+}
+
+func (t tipherethRepo) FetchUserSession(
+	ctx context.Context,
+	userID model.InternalID,
+	token string,
+) (*modeltiphereth.UserSession, error) {
+	session, err := t.data.db.UserSession.Query().Where(
+		usersession.UserIDEQ(userID),
+		usersession.RefreshTokenEQ(token),
+	).WithDeviceInfo().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := converter.ToBizUserSession(session)
+	if session.Edges.DeviceInfo != nil {
+		res.DeviceInfo = converter.ToBizDeviceInfo(session.Edges.DeviceInfo)
+	}
+	return res, nil
+}
+
+func (t tipherethRepo) ListUserSessions(
+	ctx context.Context,
+	id model.InternalID,
+) ([]*modeltiphereth.UserSession, error) {
+	session, err := t.data.db.UserSession.Query().Where(
+		usersession.UserIDEQ(id),
+	).WithDeviceInfo().All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res := make([]*modeltiphereth.UserSession, len(session))
+	for i, s := range session {
+		res[i] = converter.ToBizUserSession(s)
+		if s.Edges.DeviceInfo != nil {
+			res[i].DeviceInfo = converter.ToBizDeviceInfo(s.Edges.DeviceInfo)
+		}
+	}
+	return res, nil
+}
+
+func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
+	q := t.data.db.UserSession.UpdateOneID(session.ID).
+		SetRefreshToken(session.RefreshToken).
+		SetCreatedAt(session.CreateAt).
+		SetExpireAt(session.ExpireAt)
+	return q.Exec(ctx)
+}
+
+func (t tipherethRepo) DeleteUserSession(
+	ctx context.Context,
+	userID model.InternalID,
+	sessionID model.InternalID,
+) error {
+	return t.data.db.UserSession.DeleteOneID(sessionID).Where(
+		usersession.UserIDEQ(userID),
+	).Exec(ctx)
 }
 
 func (t tipherethRepo) CreateUser(ctx context.Context, u *modeltiphereth.User, c model.InternalID) error {

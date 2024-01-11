@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -22,6 +23,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -76,6 +78,18 @@ func init() {
 	apppackageruntimeDescCreatedAt := apppackageruntimeFields[5].Descriptor()
 	// apppackageruntime.DefaultCreatedAt holds the default value on creation for the created_at field.
 	apppackageruntime.DefaultCreatedAt = apppackageruntimeDescCreatedAt.Default.(func() time.Time)
+	deviceinfoFields := schema.DeviceInfo{}.Fields()
+	_ = deviceinfoFields
+	// deviceinfoDescUpdatedAt is the schema descriptor for updated_at field.
+	deviceinfoDescUpdatedAt := deviceinfoFields[6].Descriptor()
+	// deviceinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	deviceinfo.DefaultUpdatedAt = deviceinfoDescUpdatedAt.Default.(func() time.Time)
+	// deviceinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	deviceinfo.UpdateDefaultUpdatedAt = deviceinfoDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// deviceinfoDescCreatedAt is the schema descriptor for created_at field.
+	deviceinfoDescCreatedAt := deviceinfoFields[7].Descriptor()
+	// deviceinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	deviceinfo.DefaultCreatedAt = deviceinfoDescCreatedAt.Default.(func() time.Time)
 	feedFields := schema.Feed{}.Fields()
 	_ = feedFields
 	// feedDescUpdatedAt is the schema descriptor for updated_at field.
@@ -236,4 +250,16 @@ func init() {
 	userDescCreatedAt := userFields[6].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
+	usersessionFields := schema.UserSession{}.Fields()
+	_ = usersessionFields
+	// usersessionDescUpdatedAt is the schema descriptor for updated_at field.
+	usersessionDescUpdatedAt := usersessionFields[4].Descriptor()
+	// usersession.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	usersession.DefaultUpdatedAt = usersessionDescUpdatedAt.Default.(func() time.Time)
+	// usersession.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	usersession.UpdateDefaultUpdatedAt = usersessionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// usersessionDescCreatedAt is the schema descriptor for created_at field.
+	usersessionDescCreatedAt := usersessionFields[5].Descriptor()
+	// usersession.DefaultCreatedAt holds the default value on creation for the created_at field.
+	usersession.DefaultCreatedAt = usersessionDescCreatedAt.Default.(func() time.Time)
 }

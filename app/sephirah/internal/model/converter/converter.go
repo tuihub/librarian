@@ -1,8 +1,8 @@
+//go:build !goverter
+
 package converter
 
 import (
-	"time"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
@@ -14,31 +14,24 @@ import (
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
-
-	"google.golang.org/protobuf/types/known/durationpb"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen -g ignoreUnexported -g "output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter:converter" -g "output:file generated.go" .
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter@v1.3.0 gen -g ignoreUnexported .
 
 var toPB = &toPBConverterImpl{}   //nolint:gochecknoglobals // checked
 var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked
 
-func PtrToString(u *string) string {
-	if u == nil {
-		return ""
-	}
-	return *u
-}
-
-func DurationPBToDuration(t *durationpb.Duration) time.Duration {
-	if t == nil {
-		return time.Duration(0)
-	}
-	return t.AsDuration()
-}
-
 func ToPBServerFeatureSummary(a *modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary {
 	return toPB.ToPBServerFeatureSummary(a)
+}
+func ToPBDeviceInfo(a *modeltiphereth.DeviceInfo) *pb.DeviceInfo {
+	return toPB.ToPBDeviceInfo(a)
+}
+func ToPBDeviceInfoList(a []*modeltiphereth.DeviceInfo) []*pb.DeviceInfo {
+	return toPB.ToPBDeviceInfoList(a)
+}
+func ToPBUserSessionList(a []*modeltiphereth.UserSession) []*pb.UserSession {
+	return toPB.ToPBUserSessionList(a)
 }
 func ToPBUser(a *modeltiphereth.User) *pb.User {
 	return toPB.ToPBUser(a)
@@ -141,6 +134,9 @@ func ToBizUserStatusList(a []pb.UserStatus) []modeltiphereth.UserStatus {
 }
 func ToBizPorterPrivilege(a *pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege {
 	return toBiz.ToBizPorterPrivilege(a)
+}
+func ToBizDeviceInfo(a *pb.DeviceInfo) *modeltiphereth.DeviceInfo {
+	return toBiz.ToBizDeviceInfo(a)
 }
 func ToBizApp(a *librarian.App) *modelgebura.App {
 	return toBiz.ToBizApp(a)

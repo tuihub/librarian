@@ -22,6 +22,8 @@ import (
 )
 
 // goverter:converter
+// goverter:output:file ./generated.go
+// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
@@ -31,6 +33,15 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *modeltiphereth.User
 	ToBizUserList([]*ent.User) []*modeltiphereth.User
+
+	// goverter:matchIgnoreCase
+	// goverter:ignore DeviceInfo
+	// goverter:map CreatedAt CreateAt
+	ToBizUserSession(*ent.UserSession) *modeltiphereth.UserSession
+	ToBizUserSessionList([]*ent.UserSession) []*modeltiphereth.UserSession
+
+	// goverter:matchIgnoreCase
+	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
 
 	// goverter:matchIgnoreCase
 	// goverter:map UpdatedAt LatestUpdateTime

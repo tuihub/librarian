@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -207,6 +208,21 @@ func (uc *UserCreate) AddFile(f ...*File) *UserCreate {
 		ids[i] = f[i].ID
 	}
 	return uc.AddFileIDs(ids...)
+}
+
+// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
+func (uc *UserCreate) AddDeviceInfoIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddDeviceInfoIDs(ids...)
+	return uc
+}
+
+// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
+func (uc *UserCreate) AddDeviceInfo(d ...*DeviceInfo) *UserCreate {
+	ids := make([]model.InternalID, len(d))
+	for i := range d {
+		ids[i] = d[i].ID
+	}
+	return uc.AddDeviceInfoIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -491,6 +507,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(file.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.DeviceInfoIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.DeviceInfoTable,
+			Columns: []string{user.DeviceInfoColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

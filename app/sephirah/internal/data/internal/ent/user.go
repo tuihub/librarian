@@ -55,13 +55,15 @@ type UserEdges struct {
 	Image []*Image `json:"image,omitempty"`
 	// File holds the value of the file edge.
 	File []*File `json:"file,omitempty"`
+	// DeviceInfo holds the value of the device_info edge.
+	DeviceInfo []*DeviceInfo `json:"device_info,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
 	CreatedUser []*User `json:"created_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [10]bool
+	loadedTypes [11]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -136,10 +138,19 @@ func (e UserEdges) FileOrErr() ([]*File, error) {
 	return nil, &NotLoadedError{edge: "file"}
 }
 
+// DeviceInfoOrErr returns the DeviceInfo value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
+	if e.loadedTypes[8] {
+		return e.DeviceInfo, nil
+	}
+	return nil, &NotLoadedError{edge: "device_info"}
+}
+
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		if e.Creator == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
@@ -152,7 +163,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -286,6 +297,11 @@ func (u *User) QueryImage() *ImageQuery {
 // QueryFile queries the "file" edge of the User entity.
 func (u *User) QueryFile() *FileQuery {
 	return NewUserClient(u.config).QueryFile(u)
+}
+
+// QueryDeviceInfo queries the "device_info" edge of the User entity.
+func (u *User) QueryDeviceInfo() *DeviceInfoQuery {
+	return NewUserClient(u.config).QueryDeviceInfo(u)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.

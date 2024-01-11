@@ -35,10 +35,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
-		SourceFilter:   nil,
-		TypeFilter:     nil,
-		IdFilter:       nil,
-		ContainDetails: false,
+		ExcludeInternal: false,
+		SourceFilter:    nil,
+		TypeFilter:      nil,
+		IdFilter:        nil,
+		ContainDetails:  false,
 	}); err != nil {
 		log.Fatal(err)
 	} else if len(resp.GetApps()) != 1 ||

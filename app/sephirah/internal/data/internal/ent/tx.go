@@ -20,6 +20,8 @@ type Tx struct {
 	AppPackage *AppPackageClient
 	// AppPackageRunTime is the client for interacting with the AppPackageRunTime builders.
 	AppPackageRunTime *AppPackageRunTimeClient
+	// DeviceInfo is the client for interacting with the DeviceInfo builders.
+	DeviceInfo *DeviceInfoClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
@@ -44,6 +46,8 @@ type Tx struct {
 	PorterPrivilege *PorterPrivilegeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserSession is the client for interacting with the UserSession builders.
+	UserSession *UserSessionClient
 
 	// lazily loaded.
 	client     *Client
@@ -179,6 +183,7 @@ func (tx *Tx) init() {
 	tx.App = NewAppClient(tx.config)
 	tx.AppPackage = NewAppPackageClient(tx.config)
 	tx.AppPackageRunTime = NewAppPackageRunTimeClient(tx.config)
+	tx.DeviceInfo = NewDeviceInfoClient(tx.config)
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
 	tx.FeedItem = NewFeedItemClient(tx.config)
@@ -191,6 +196,7 @@ func (tx *Tx) init() {
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
 	tx.PorterPrivilege = NewPorterPrivilegeClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserSession = NewUserSessionClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
