@@ -99,6 +99,7 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 		if count == 0 {
 			err = tx.App.Create().
 				SetID(internal.ID).
+				SetInternal(true).
 				SetSource(internal.Source).
 				SetSourceAppID(internal.SourceAppID).
 				SetName(internal.Name).

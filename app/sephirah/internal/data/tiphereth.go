@@ -116,8 +116,13 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 	return converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account, userID model.InternalID) error {
-	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
+func (t tipherethRepo) LinkAccount(
+	ctx context.Context,
+	a modeltiphereth.Account,
+	userID model.InternalID,
+) (model.InternalID, error) {
+	accountID := a.ID
+	err := t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		u, err := tx.User.Get(ctx, userID)
 		if err != nil {
 			return err
@@ -156,10 +161,15 @@ func (t tipherethRepo) LinkAccount(ctx context.Context, a modeltiphereth.Account
 		if exist {
 			return errors.New("account already bound to an user")
 		}
+		accountID = acc.ID
 		return tx.Account.UpdateOneID(acc.ID).
 			SetBindUserID(userID).
 			Exec(ctx)
 	})
+	if err != nil {
+		return 0, err
+	}
+	return accountID, nil
 }
 
 func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
@@ -255,9 +265,15 @@ func (t tipherethRepo) UpdatePorterPrivilege(
 }
 func (t tipherethRepo) FetchPorterPrivilege(
 	ctx context.Context,
-	id model.InternalID,
-	id2 model.InternalID,
+	porterID model.InternalID,
+	userID model.InternalID,
 ) (*modeltiphereth.PorterInstancePrivilege, error) {
-	// TODO implement me
-	panic("implement me")
+	res, err := t.data.db.PorterPrivilege.Query().Where(
+		porterprivilege.PorterIDEQ(porterID),
+		porterprivilege.UserID(userID),
+	).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return res.Privilege, nil
 }

@@ -29,7 +29,8 @@ func (t *Tiphereth) LinkAccount(
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	a.ID = id
-	if err = t.repo.LinkAccount(ctx, a, claims.UserID); err != nil {
+	a.ID, err = t.repo.LinkAccount(ctx, a, claims.UserID)
+	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	if err = t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{

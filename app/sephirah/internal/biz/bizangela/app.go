@@ -40,6 +40,7 @@ func NewPullSteamAppTopic(
 			}
 			app := converter.ToBizApp(resp.GetApp())
 			app.ID = r.ID
+			app.Internal = false
 			app.Source = r.Source
 			internalApp := new(modelgebura.App)
 			internalApp.ID = id
