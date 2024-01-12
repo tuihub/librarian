@@ -32,7 +32,12 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error,
 ) {
-	accessToken, refreshToken, err := s.t.RefreshToken(ctx)
+	var deviceID *model.InternalID
+	if req.GetDeviceId() != nil {
+		id := converter.ToBizInternalID(req.GetDeviceId())
+		deviceID = &id
+	}
+	accessToken, refreshToken, err := s.t.RefreshToken(ctx, deviceID)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
 		return nil, err

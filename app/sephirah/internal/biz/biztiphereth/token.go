@@ -95,6 +95,7 @@ func (t *Tiphereth) GetToken(
 
 func (t *Tiphereth) RefreshToken(
 	ctx context.Context,
+	deviceID *model.InternalID,
 ) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx,
 		libauth.UserTypeAdmin, libauth.UserTypeNormal, libauth.UserTypeSentinel, libauth.UserTypePorter)
@@ -111,6 +112,15 @@ func (t *Tiphereth) RefreshToken(
 	}
 	if session.RefreshToken != oldRefreshToken {
 		return "", "", bizutils.NoPermissionError()
+	}
+	needUpdate := false
+	if session.DeviceInfo == nil && deviceID != nil {
+		session.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
+		if err != nil {
+			logger.Infof("FetchDeviceInfo failed: %s", err.Error())
+			return "", "", pb.ErrorErrorReasonUnauthorized("invalid device")
+		}
+		needUpdate = true
 	}
 	var accessToken, refreshToken string
 	accessToken, err = t.auth.GenerateToken(
@@ -143,6 +153,9 @@ func (t *Tiphereth) RefreshToken(
 		session.RefreshToken = refreshToken
 		session.CreateAt = time.Now()
 		session.ExpireAt = time.Now().Add(refreshTokenExpire)
+		needUpdate = true
+	}
+	if needUpdate {
 		err = t.repo.UpdateUserSession(ctx, session)
 		if err != nil {
 			logger.Infof("update user session failed: %s", err.Error())

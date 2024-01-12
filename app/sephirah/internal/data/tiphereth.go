@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -70,16 +71,23 @@ func (t tipherethRepo) FetchDeviceInfo(
 }
 
 func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
-	q := t.data.db.UserSession.Create().
-		SetID(session.ID).
-		SetUserID(session.UserID).
-		SetRefreshToken(session.RefreshToken).
-		SetCreatedAt(session.CreateAt).
-		SetExpireAt(session.ExpireAt)
-	if session.DeviceInfo != nil {
-		q.SetDeviceInfoID(session.DeviceInfo.ID)
-	}
-	return q.Exec(ctx)
+	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.UserSession.Create().
+			SetID(session.ID).
+			SetUserID(session.UserID).
+			SetRefreshToken(session.RefreshToken).
+			SetCreatedAt(session.CreateAt).
+			SetExpireAt(session.ExpireAt)
+		if session.DeviceInfo != nil {
+			_, _ = tx.UserSession.Delete().Where(
+				usersession.UserIDEQ(session.UserID),
+				usersession.HasDeviceInfoWith(
+					deviceinfo.IDEQ(session.DeviceInfo.ID),
+				)).Exec(ctx)
+			q.SetDeviceInfoID(session.DeviceInfo.ID)
+		}
+		return q.Exec(ctx)
+	})
 }
 
 func (t tipherethRepo) FetchUserSession(
@@ -126,6 +134,9 @@ func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *modeltiph
 		SetRefreshToken(session.RefreshToken).
 		SetCreatedAt(session.CreateAt).
 		SetExpireAt(session.ExpireAt)
+	if session.DeviceInfo != nil {
+		q.SetDeviceInfoID(session.DeviceInfo.ID)
+	}
 	return q.Exec(ctx)
 }
 

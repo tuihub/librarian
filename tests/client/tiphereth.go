@@ -32,7 +32,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 		ctx,
 		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", refreshToken)),
 	)
-	if resp, err := c.cli.RefreshToken(ctxForRefresh, &pb.RefreshTokenRequest{}); err != nil {
+	if resp, err := c.cli.RefreshToken(ctxForRefresh, new(pb.RefreshTokenRequest)); err != nil {
 		log.Fatal(err)
 	} else {
 		accessToken = resp.GetAccessToken()
