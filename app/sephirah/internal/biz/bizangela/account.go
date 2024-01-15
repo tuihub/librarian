@@ -105,9 +105,12 @@ func NewPullAccountAppRelationTopic(
 			}
 			for _, app := range apps {
 				_ = sa.Publish(ctx, modelangela.PullApp{
-					ID:     app.ID,
-					Source: r.Platform,
-					AppID:  app.SourceAppID,
+					ID: app.ID,
+					AppID: modelgebura.AppID{
+						Internal:    false,
+						Source:      r.Platform,
+						SourceAppID: app.SourceAppID,
+					},
 				})
 			}
 			return nil

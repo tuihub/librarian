@@ -56,6 +56,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToBizAppType
 	// goverter:map . Details
+	// goverter:map UpdatedAt LatestUpdateTime
 	// goverter:ignore BoundInternal
 	// goverter:ignore Tags
 	ToBizApp(*ent.App) *modelgebura.App

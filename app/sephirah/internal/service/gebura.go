@@ -73,6 +73,15 @@ func (s *LibrarianSephirahServiceService) MergeApps(ctx context.Context, req *pb
 	}
 	return &pb.MergeAppsResponse{}, nil
 }
+func (s *LibrarianSephirahServiceService) SyncApps(ctx context.Context, req *pb.SyncAppsRequest) (
+	*pb.SyncAppsResponse, error,
+) {
+	apps, err := s.g.SyncApps(ctx, converter.ToBizAppIDList(req.GetAppIds()), req.GetWaitData())
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SyncAppsResponse{Apps: converter.ToPBAppList(apps)}, nil
+}
 func (s *LibrarianSephirahServiceService) SearchApps(ctx context.Context, req *pb.SearchAppsRequest) (
 	*pb.SearchAppsResponse, error,
 ) {
@@ -118,7 +127,7 @@ func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *
 func (s *LibrarianSephirahServiceService) GetPurchasedApps(ctx context.Context, req *pb.GetPurchasedAppsRequest) (
 	*pb.GetPurchasedAppsResponse, error,
 ) {
-	apps, err := s.g.GetPurchasedApps(ctx)
+	apps, err := s.g.GetPurchasedApps(ctx, req.GetSource())
 	if err != nil {
 		return nil, err
 	}

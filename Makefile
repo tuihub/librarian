@@ -40,7 +40,7 @@ generate-config:
 
 generate-code:
 	go get github.com/google/wire/cmd/wire@latest
-	go get github.com/jmattheis/goverter@v1.2.0
+	go get github.com/jmattheis/goverter@v1.3.0
 	go generate ./...
 	go mod tidy
 

@@ -89,6 +89,47 @@ func (g *Gebura) MergeApps(ctx context.Context, base modelgebura.App, merged mod
 	return nil
 }
 
+func (g *Gebura) SyncApps(
+	ctx context.Context,
+	appIDs []*modelgebura.AppID,
+	wait bool,
+) ([]*modelgebura.App, *errors.Error) {
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, bizutils.NoPermissionError()
+	}
+	apps := make([]*modelgebura.App, 0, len(appIDs))
+	ids, err := g.searcher.NewBatchIDs(ctx, len(appIDs))
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
+	}
+	for i, appID := range appIDs {
+		if appID == nil {
+			continue
+		}
+		if wait {
+			err = g.pullApp.LocalCall(ctx, modelangela.PullApp{
+				ID:    ids[i],
+				AppID: *appID,
+			})
+			if err != nil {
+				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
+			}
+			var app *modelgebura.App
+			app, err = g.appCache.Get(ctx, *appID)
+			if err != nil {
+				continue
+			}
+			apps = append(apps, app)
+		} else {
+			_ = g.pullApp.Publish(ctx, modelangela.PullApp{
+				ID:    ids[i],
+				AppID: *appID,
+			})
+		}
+	}
+	return apps, nil
+}
+
 func (g *Gebura) SearchApps(ctx context.Context, paging model.Paging, keyword string) (
 	[]*modelgebura.AppMixed, int, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
@@ -149,19 +190,18 @@ func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.E
 	return nil
 }
 
-func (g *Gebura) GetPurchasedApps(ctx context.Context) ([]*modelgebura.AppMixed, *errors.Error) {
+func (g *Gebura) GetPurchasedApps(ctx context.Context, source string) ([]*modelgebura.AppMixed, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
-	} else {
-		apps, err := g.repo.GetPurchasedApps(ctx, claims.UserID)
-		if err != nil {
-			return nil, pb.ErrorErrorReasonUnspecified("%s", err)
-		}
-		res := make([]*modelgebura.AppMixed, 0, len(apps))
-		for _, a := range apps {
-			res = append(res, a.Flatten())
-		}
-		return res, nil
 	}
+	apps, err := g.repo.GetPurchasedApps(ctx, claims.UserID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
+	}
+	res := make([]*modelgebura.AppMixed, 0, len(apps))
+	for _, a := range apps {
+		res = append(res, a.Flatten())
+	}
+	return res, nil
 }

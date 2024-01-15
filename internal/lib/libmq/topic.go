@@ -49,6 +49,10 @@ func (t *Topic[T]) Publish(ctx context.Context, i T) error {
 	return t.mq.Publish(ctx, t.topicName, p)
 }
 
+func (t *Topic[T]) LocalCall(ctx context.Context, i T) error {
+	return t.consumerFunc(ctx, &i)
+}
+
 func (t *Topic[T]) Consume(ctx context.Context, i []byte) error {
 	p := new(T)
 	err := libcodec.Unmarshal(libcodec.JSON, i, p)

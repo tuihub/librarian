@@ -43,7 +43,8 @@ func (g geburaRepo) CreateApp(ctx context.Context, a *modelgebura.App) error {
 		SetType(converter.ToEntAppType(a.Type)).
 		SetShortDescription(a.ShortDescription).
 		SetIconImageURL(a.IconImageURL).
-		SetHeroImageURL(a.HeroImageURL).
+		SetBackgroundImageURL(a.BackgroundImageURL).
+		SetCoverImageURL(a.CoverImageURL).
 		SetDescription(a.Details.Description).
 		SetReleaseDate(a.Details.ReleaseDate).
 		SetDeveloper(a.Details.Developer).
@@ -65,7 +66,8 @@ func (g geburaRepo) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 		SetType(converter.ToEntAppType(a.Type)).
 		SetShortDescription(a.ShortDescription).
 		SetIconImageURL(a.IconImageURL).
-		SetHeroImageURL(a.HeroImageURL)
+		SetBackgroundImageURL(a.BackgroundImageURL).
+		SetCoverImageURL(a.CoverImageURL)
 	if a.Details != nil {
 		q.
 			SetDescription(a.Details.Description).
@@ -171,6 +173,20 @@ func (g geburaRepo) MergeApps(ctx context.Context, base modelgebura.App, merged 
 		return nil
 	})
 	return err
+}
+
+func (g geburaRepo) GetApp(ctx context.Context, id modelgebura.AppID) (*modelgebura.App, error) {
+	res, err := g.data.db.App.Query().
+		Where(
+			app.InternalEQ(id.Internal),
+			app.SourceEQ(id.Source),
+			app.SourceAppIDEQ(id.SourceAppID),
+		).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizApp(res), nil
 }
 
 func (g geburaRepo) GetBoundApps(ctx context.Context, id model.InternalID) ([]*modelgebura.App, error) {

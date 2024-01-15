@@ -1,6 +1,7 @@
 package modelangela
 
 import (
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -13,9 +14,8 @@ type PullAccountAppRelation struct {
 }
 
 type PullApp struct {
-	ID     model.InternalID
-	Source string
-	AppID  string
+	ID    model.InternalID
+	AppID modelgebura.AppID
 }
 
 type NotifyRouter struct {

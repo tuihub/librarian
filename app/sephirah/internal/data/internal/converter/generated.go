@@ -60,8 +60,10 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
 		modelgeburaApp.IconImageURL = (*source).IconImageURL
-		modelgeburaApp.HeroImageURL = (*source).HeroImageURL
+		modelgeburaApp.BackgroundImageURL = (*source).BackgroundImageURL
+		modelgeburaApp.CoverImageURL = (*source).CoverImageURL
 		modelgeburaApp.Details = c.entAppToPModelgeburaAppDetails((*source))
+		modelgeburaApp.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
@@ -495,7 +497,8 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	}
 	entApp.Description = xstring
 	entApp.IconImageURL = source.IconImageURL
-	entApp.HeroImageURL = source.HeroImageURL
+	entApp.BackgroundImageURL = source.BackgroundImageURL
+	entApp.CoverImageURL = source.CoverImageURL
 	var pString2 *string
 	if source.Details != nil {
 		pString2 = &source.Details.ReleaseDate

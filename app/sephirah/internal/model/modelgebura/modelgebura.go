@@ -1,24 +1,34 @@
 package modelgebura
 
 import (
+	"time"
+
 	"github.com/tuihub/librarian/internal/model"
 )
 
 type App struct {
-	ID               model.InternalID
-	Internal         bool
-	Source           string
-	SourceAppID      string
-	SourceURL        string
-	Name             string
-	Type             AppType
-	ShortDescription string
-	IconImageURL     string
-	HeroImageURL     string
-	Tags             []string
-	Details          *AppDetails
+	ID                 model.InternalID
+	Internal           bool
+	Source             string
+	SourceAppID        string
+	SourceURL          string
+	Name               string
+	Type               AppType
+	ShortDescription   string
+	IconImageURL       string
+	BackgroundImageURL string
+	CoverImageURL      string
+	Tags               []string
+	Details            *AppDetails
 	// the bound Internal app id if self is external
-	BoundInternal model.InternalID
+	BoundInternal    model.InternalID
+	LatestUpdateTime time.Time
+}
+
+type AppID struct {
+	Internal    bool
+	Source      string
+	SourceAppID string
 }
 
 type AppMixed struct {
@@ -99,7 +109,7 @@ func (b *BoundApps) Flatten() *AppMixed {
 		Type:             res.Type,
 		ShortDescription: res.ShortDescription,
 		IconImageURL:     res.IconImageURL,
-		HeroImageURL:     res.HeroImageURL,
+		HeroImageURL:     res.BackgroundImageURL,
 		Tags:             res.Tags,
 		Details:          res.Details,
 	}
@@ -125,8 +135,11 @@ func mergeApp(base *App, merged *App) *App {
 	if len(base.IconImageURL) == 0 {
 		base.IconImageURL = merged.IconImageURL
 	}
-	if len(base.HeroImageURL) == 0 {
-		base.HeroImageURL = merged.HeroImageURL
+	if len(base.BackgroundImageURL) == 0 {
+		base.BackgroundImageURL = merged.BackgroundImageURL
+	}
+	if len(base.CoverImageURL) == 0 {
+		base.CoverImageURL = merged.CoverImageURL
 	}
 	if base.Details == nil {
 		base.Details = merged.Details

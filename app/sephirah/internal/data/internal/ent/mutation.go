@@ -887,7 +887,8 @@ type AppMutation struct {
 	short_description           *string
 	description                 *string
 	icon_image_url              *string
-	hero_image_url              *string
+	background_image_url        *string
+	cover_image_url             *string
 	release_date                *string
 	developer                   *string
 	publisher                   *string
@@ -1394,53 +1395,102 @@ func (m *AppMutation) ResetIconImageURL() {
 	delete(m.clearedFields, app.FieldIconImageURL)
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (m *AppMutation) SetHeroImageURL(s string) {
-	m.hero_image_url = &s
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (m *AppMutation) SetBackgroundImageURL(s string) {
+	m.background_image_url = &s
 }
 
-// HeroImageURL returns the value of the "hero_image_url" field in the mutation.
-func (m *AppMutation) HeroImageURL() (r string, exists bool) {
-	v := m.hero_image_url
+// BackgroundImageURL returns the value of the "background_image_url" field in the mutation.
+func (m *AppMutation) BackgroundImageURL() (r string, exists bool) {
+	v := m.background_image_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldHeroImageURL returns the old "hero_image_url" field's value of the App entity.
+// OldBackgroundImageURL returns the old "background_image_url" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldHeroImageURL(ctx context.Context) (v string, err error) {
+func (m *AppMutation) OldBackgroundImageURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldHeroImageURL is only allowed on UpdateOne operations")
+		return v, errors.New("OldBackgroundImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldHeroImageURL requires an ID field in the mutation")
+		return v, errors.New("OldBackgroundImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldHeroImageURL: %w", err)
+		return v, fmt.Errorf("querying old value for OldBackgroundImageURL: %w", err)
 	}
-	return oldValue.HeroImageURL, nil
+	return oldValue.BackgroundImageURL, nil
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (m *AppMutation) ClearHeroImageURL() {
-	m.hero_image_url = nil
-	m.clearedFields[app.FieldHeroImageURL] = struct{}{}
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (m *AppMutation) ClearBackgroundImageURL() {
+	m.background_image_url = nil
+	m.clearedFields[app.FieldBackgroundImageURL] = struct{}{}
 }
 
-// HeroImageURLCleared returns if the "hero_image_url" field was cleared in this mutation.
-func (m *AppMutation) HeroImageURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldHeroImageURL]
+// BackgroundImageURLCleared returns if the "background_image_url" field was cleared in this mutation.
+func (m *AppMutation) BackgroundImageURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldBackgroundImageURL]
 	return ok
 }
 
-// ResetHeroImageURL resets all changes to the "hero_image_url" field.
-func (m *AppMutation) ResetHeroImageURL() {
-	m.hero_image_url = nil
-	delete(m.clearedFields, app.FieldHeroImageURL)
+// ResetBackgroundImageURL resets all changes to the "background_image_url" field.
+func (m *AppMutation) ResetBackgroundImageURL() {
+	m.background_image_url = nil
+	delete(m.clearedFields, app.FieldBackgroundImageURL)
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (m *AppMutation) SetCoverImageURL(s string) {
+	m.cover_image_url = &s
+}
+
+// CoverImageURL returns the value of the "cover_image_url" field in the mutation.
+func (m *AppMutation) CoverImageURL() (r string, exists bool) {
+	v := m.cover_image_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCoverImageURL returns the old "cover_image_url" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldCoverImageURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCoverImageURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCoverImageURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCoverImageURL: %w", err)
+	}
+	return oldValue.CoverImageURL, nil
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (m *AppMutation) ClearCoverImageURL() {
+	m.cover_image_url = nil
+	m.clearedFields[app.FieldCoverImageURL] = struct{}{}
+}
+
+// CoverImageURLCleared returns if the "cover_image_url" field was cleared in this mutation.
+func (m *AppMutation) CoverImageURLCleared() bool {
+	_, ok := m.clearedFields[app.FieldCoverImageURL]
+	return ok
+}
+
+// ResetCoverImageURL resets all changes to the "cover_image_url" field.
+func (m *AppMutation) ResetCoverImageURL() {
+	m.cover_image_url = nil
+	delete(m.clearedFields, app.FieldCoverImageURL)
 }
 
 // SetReleaseDate sets the "release_date" field.
@@ -2000,7 +2050,7 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.internal != nil {
 		fields = append(fields, app.FieldInternal)
 	}
@@ -2028,8 +2078,11 @@ func (m *AppMutation) Fields() []string {
 	if m.icon_image_url != nil {
 		fields = append(fields, app.FieldIconImageURL)
 	}
-	if m.hero_image_url != nil {
-		fields = append(fields, app.FieldHeroImageURL)
+	if m.background_image_url != nil {
+		fields = append(fields, app.FieldBackgroundImageURL)
+	}
+	if m.cover_image_url != nil {
+		fields = append(fields, app.FieldCoverImageURL)
 	}
 	if m.release_date != nil {
 		fields = append(fields, app.FieldReleaseDate)
@@ -2075,8 +2128,10 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case app.FieldIconImageURL:
 		return m.IconImageURL()
-	case app.FieldHeroImageURL:
-		return m.HeroImageURL()
+	case app.FieldBackgroundImageURL:
+		return m.BackgroundImageURL()
+	case app.FieldCoverImageURL:
+		return m.CoverImageURL()
 	case app.FieldReleaseDate:
 		return m.ReleaseDate()
 	case app.FieldDeveloper:
@@ -2116,8 +2171,10 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldDescription(ctx)
 	case app.FieldIconImageURL:
 		return m.OldIconImageURL(ctx)
-	case app.FieldHeroImageURL:
-		return m.OldHeroImageURL(ctx)
+	case app.FieldBackgroundImageURL:
+		return m.OldBackgroundImageURL(ctx)
+	case app.FieldCoverImageURL:
+		return m.OldCoverImageURL(ctx)
 	case app.FieldReleaseDate:
 		return m.OldReleaseDate(ctx)
 	case app.FieldDeveloper:
@@ -2202,12 +2259,19 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetIconImageURL(v)
 		return nil
-	case app.FieldHeroImageURL:
+	case app.FieldBackgroundImageURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetHeroImageURL(v)
+		m.SetBackgroundImageURL(v)
+		return nil
+	case app.FieldCoverImageURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCoverImageURL(v)
 		return nil
 	case app.FieldReleaseDate:
 		v, ok := value.(string)
@@ -2293,8 +2357,11 @@ func (m *AppMutation) ClearedFields() []string {
 	if m.FieldCleared(app.FieldIconImageURL) {
 		fields = append(fields, app.FieldIconImageURL)
 	}
-	if m.FieldCleared(app.FieldHeroImageURL) {
-		fields = append(fields, app.FieldHeroImageURL)
+	if m.FieldCleared(app.FieldBackgroundImageURL) {
+		fields = append(fields, app.FieldBackgroundImageURL)
+	}
+	if m.FieldCleared(app.FieldCoverImageURL) {
+		fields = append(fields, app.FieldCoverImageURL)
 	}
 	if m.FieldCleared(app.FieldReleaseDate) {
 		fields = append(fields, app.FieldReleaseDate)
@@ -2334,8 +2401,11 @@ func (m *AppMutation) ClearField(name string) error {
 	case app.FieldIconImageURL:
 		m.ClearIconImageURL()
 		return nil
-	case app.FieldHeroImageURL:
-		m.ClearHeroImageURL()
+	case app.FieldBackgroundImageURL:
+		m.ClearBackgroundImageURL()
+		return nil
+	case app.FieldCoverImageURL:
+		m.ClearCoverImageURL()
 		return nil
 	case app.FieldReleaseDate:
 		m.ClearReleaseDate()
@@ -2384,8 +2454,11 @@ func (m *AppMutation) ResetField(name string) error {
 	case app.FieldIconImageURL:
 		m.ResetIconImageURL()
 		return nil
-	case app.FieldHeroImageURL:
-		m.ResetHeroImageURL()
+	case app.FieldBackgroundImageURL:
+		m.ResetBackgroundImageURL()
+		return nil
+	case app.FieldCoverImageURL:
+		m.ResetCoverImageURL()
 		return nil
 	case app.FieldReleaseDate:
 		m.ResetReleaseDate()

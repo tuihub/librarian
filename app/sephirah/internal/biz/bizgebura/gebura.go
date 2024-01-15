@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
@@ -25,6 +26,7 @@ type GeburaRepo interface {
 	ListApps(context.Context, model.Paging, []string, []modelgebura.AppType,
 		[]model.InternalID, bool) ([]*modelgebura.App, int64, error)
 	MergeApps(context.Context, modelgebura.App, model.InternalID) error
+	GetApp(context.Context, modelgebura.AppID) (*modelgebura.App, error)
 	GetBoundApps(context.Context, model.InternalID) ([]*modelgebura.App, error)
 	GetBatchBoundApps(context.Context, []model.InternalID) ([]*modelgebura.BoundApps, error)
 	PurchaseApp(context.Context, model.InternalID, model.InternalID) error
@@ -49,6 +51,8 @@ type Gebura struct {
 	mapper         mapper.LibrarianMapperServiceClient
 	searcher       *client.Searcher
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex]
+	pullApp        *libmq.Topic[modelangela.PullApp]
+	appCache       *libcache.Map[modelgebura.AppID, modelgebura.App]
 }
 
 func NewGebura(
@@ -57,6 +61,8 @@ func NewGebura(
 	mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
+	pullApp *libmq.Topic[modelangela.PullApp],
+	appCache *libcache.Map[modelgebura.AppID, modelgebura.App],
 ) *Gebura {
 	return &Gebura{
 		auth:           auth,
@@ -64,5 +70,7 @@ func NewGebura(
 		mapper:         mClient,
 		searcher:       sClient,
 		updateAppIndex: updateAppIndex,
+		pullApp:        pullApp,
+		appCache:       appCache,
 	}
 }

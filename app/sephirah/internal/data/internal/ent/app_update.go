@@ -182,23 +182,43 @@ func (au *AppUpdate) ClearIconImageURL() *AppUpdate {
 	return au
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (au *AppUpdate) SetHeroImageURL(s string) *AppUpdate {
-	au.mutation.SetHeroImageURL(s)
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (au *AppUpdate) SetBackgroundImageURL(s string) *AppUpdate {
+	au.mutation.SetBackgroundImageURL(s)
 	return au
 }
 
-// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
-func (au *AppUpdate) SetNillableHeroImageURL(s *string) *AppUpdate {
+// SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableBackgroundImageURL(s *string) *AppUpdate {
 	if s != nil {
-		au.SetHeroImageURL(*s)
+		au.SetBackgroundImageURL(*s)
 	}
 	return au
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (au *AppUpdate) ClearHeroImageURL() *AppUpdate {
-	au.mutation.ClearHeroImageURL()
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (au *AppUpdate) ClearBackgroundImageURL() *AppUpdate {
+	au.mutation.ClearBackgroundImageURL()
+	return au
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (au *AppUpdate) SetCoverImageURL(s string) *AppUpdate {
+	au.mutation.SetCoverImageURL(s)
+	return au
+}
+
+// SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
+func (au *AppUpdate) SetNillableCoverImageURL(s *string) *AppUpdate {
+	if s != nil {
+		au.SetCoverImageURL(*s)
+	}
+	return au
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (au *AppUpdate) ClearCoverImageURL() *AppUpdate {
+	au.mutation.ClearCoverImageURL()
 	return au
 }
 
@@ -573,11 +593,17 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if au.mutation.IconImageURLCleared() {
 		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := au.mutation.HeroImageURL(); ok {
-		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	if value, ok := au.mutation.BackgroundImageURL(); ok {
+		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if au.mutation.HeroImageURLCleared() {
-		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
+	if au.mutation.BackgroundImageURLCleared() {
+		_spec.ClearField(app.FieldBackgroundImageURL, field.TypeString)
+	}
+	if value, ok := au.mutation.CoverImageURL(); ok {
+		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
+	}
+	if au.mutation.CoverImageURLCleared() {
+		_spec.ClearField(app.FieldCoverImageURL, field.TypeString)
 	}
 	if value, ok := au.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
@@ -988,23 +1014,43 @@ func (auo *AppUpdateOne) ClearIconImageURL() *AppUpdateOne {
 	return auo
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (auo *AppUpdateOne) SetHeroImageURL(s string) *AppUpdateOne {
-	auo.mutation.SetHeroImageURL(s)
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (auo *AppUpdateOne) SetBackgroundImageURL(s string) *AppUpdateOne {
+	auo.mutation.SetBackgroundImageURL(s)
 	return auo
 }
 
-// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
-func (auo *AppUpdateOne) SetNillableHeroImageURL(s *string) *AppUpdateOne {
+// SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableBackgroundImageURL(s *string) *AppUpdateOne {
 	if s != nil {
-		auo.SetHeroImageURL(*s)
+		auo.SetBackgroundImageURL(*s)
 	}
 	return auo
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (auo *AppUpdateOne) ClearHeroImageURL() *AppUpdateOne {
-	auo.mutation.ClearHeroImageURL()
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (auo *AppUpdateOne) ClearBackgroundImageURL() *AppUpdateOne {
+	auo.mutation.ClearBackgroundImageURL()
+	return auo
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (auo *AppUpdateOne) SetCoverImageURL(s string) *AppUpdateOne {
+	auo.mutation.SetCoverImageURL(s)
+	return auo
+}
+
+// SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableCoverImageURL(s *string) *AppUpdateOne {
+	if s != nil {
+		auo.SetCoverImageURL(*s)
+	}
+	return auo
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (auo *AppUpdateOne) ClearCoverImageURL() *AppUpdateOne {
+	auo.mutation.ClearCoverImageURL()
 	return auo
 }
 
@@ -1409,11 +1455,17 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	if auo.mutation.IconImageURLCleared() {
 		_spec.ClearField(app.FieldIconImageURL, field.TypeString)
 	}
-	if value, ok := auo.mutation.HeroImageURL(); ok {
-		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
+	if value, ok := auo.mutation.BackgroundImageURL(); ok {
+		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
 	}
-	if auo.mutation.HeroImageURLCleared() {
-		_spec.ClearField(app.FieldHeroImageURL, field.TypeString)
+	if auo.mutation.BackgroundImageURLCleared() {
+		_spec.ClearField(app.FieldBackgroundImageURL, field.TypeString)
+	}
+	if value, ok := auo.mutation.CoverImageURL(); ok {
+		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
+	}
+	if auo.mutation.CoverImageURLCleared() {
+		_spec.ClearField(app.FieldCoverImageURL, field.TypeString)
 	}
 	if value, ok := auo.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)

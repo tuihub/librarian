@@ -32,7 +32,8 @@ func (c *toBizConverterImpl) ToBizApp(source *v1.App) *modelgebura.App {
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
 		modelgeburaApp.IconImageURL = (*source).IconImageUrl
-		modelgeburaApp.HeroImageURL = (*source).HeroImageUrl
+		modelgeburaApp.BackgroundImageURL = (*source).BackgroundImageUrl
+		modelgeburaApp.CoverImageURL = (*source).CoverImageUrl
 		var stringList []string
 		if (*source).Tags != nil {
 			stringList = make([]string, len((*source).Tags))
@@ -58,6 +59,27 @@ func (c *toBizConverterImpl) ToBizAppDetail(source *v1.AppDetails) *modelgebura.
 		pModelgeburaAppDetails = &modelgeburaAppDetails
 	}
 	return pModelgeburaAppDetails
+}
+func (c *toBizConverterImpl) ToBizAppID(source *v1.AppID) *modelgebura.AppID {
+	var pModelgeburaAppID *modelgebura.AppID
+	if source != nil {
+		var modelgeburaAppID modelgebura.AppID
+		modelgeburaAppID.Internal = (*source).Internal
+		modelgeburaAppID.Source = (*source).Source
+		modelgeburaAppID.SourceAppID = (*source).SourceAppId
+		pModelgeburaAppID = &modelgeburaAppID
+	}
+	return pModelgeburaAppID
+}
+func (c *toBizConverterImpl) ToBizAppIDList(source []*v1.AppID) []*modelgebura.AppID {
+	var pModelgeburaAppIDList []*modelgebura.AppID
+	if source != nil {
+		pModelgeburaAppIDList = make([]*modelgebura.AppID, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppIDList[i] = c.ToBizAppID(source[i])
+		}
+	}
+	return pModelgeburaAppIDList
 }
 func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura.AppPackage {
 	var pModelgeburaAppPackage *modelgebura.AppPackage
@@ -443,7 +465,8 @@ func (c *toPBConverterImpl) ToPBApp(source *modelgebura.App) *v1.App {
 		v1App.Type = ToPBAppType((*source).Type)
 		v1App.ShortDescription = (*source).ShortDescription
 		v1App.IconImageUrl = (*source).IconImageURL
-		v1App.HeroImageUrl = (*source).HeroImageURL
+		v1App.BackgroundImageUrl = (*source).BackgroundImageURL
+		v1App.CoverImageUrl = (*source).CoverImageURL
 		var stringList []string
 		if (*source).Tags != nil {
 			stringList = make([]string, len((*source).Tags))

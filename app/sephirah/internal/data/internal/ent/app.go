@@ -36,8 +36,10 @@ type App struct {
 	Description string `json:"description,omitempty"`
 	// IconImageURL holds the value of the "icon_image_url" field.
 	IconImageURL string `json:"icon_image_url,omitempty"`
-	// HeroImageURL holds the value of the "hero_image_url" field.
-	HeroImageURL string `json:"hero_image_url,omitempty"`
+	// BackgroundImageURL holds the value of the "background_image_url" field.
+	BackgroundImageURL string `json:"background_image_url,omitempty"`
+	// CoverImageURL holds the value of the "cover_image_url" field.
+	CoverImageURL string `json:"cover_image_url,omitempty"`
 	// ReleaseDate holds the value of the "release_date" field.
 	ReleaseDate string `json:"release_date,omitempty"`
 	// Developer holds the value of the "developer" field.
@@ -132,7 +134,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case app.FieldID:
 			values[i] = new(sql.NullInt64)
-		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldHeroImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
+		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldBackgroundImageURL, app.FieldCoverImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
 			values[i] = new(sql.NullString)
 		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -213,11 +215,17 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.IconImageURL = value.String
 			}
-		case app.FieldHeroImageURL:
+		case app.FieldBackgroundImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field hero_image_url", values[i])
+				return fmt.Errorf("unexpected type %T for field background_image_url", values[i])
 			} else if value.Valid {
-				a.HeroImageURL = value.String
+				a.BackgroundImageURL = value.String
+			}
+		case app.FieldCoverImageURL:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field cover_image_url", values[i])
+			} else if value.Valid {
+				a.CoverImageURL = value.String
 			}
 		case app.FieldReleaseDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -350,8 +358,11 @@ func (a *App) String() string {
 	builder.WriteString("icon_image_url=")
 	builder.WriteString(a.IconImageURL)
 	builder.WriteString(", ")
-	builder.WriteString("hero_image_url=")
-	builder.WriteString(a.HeroImageURL)
+	builder.WriteString("background_image_url=")
+	builder.WriteString(a.BackgroundImageURL)
+	builder.WriteString(", ")
+	builder.WriteString("cover_image_url=")
+	builder.WriteString(a.CoverImageURL)
 	builder.WriteString(", ")
 	builder.WriteString("release_date=")
 	builder.WriteString(a.ReleaseDate)

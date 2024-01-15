@@ -33,8 +33,10 @@ const (
 	FieldDescription = "description"
 	// FieldIconImageURL holds the string denoting the icon_image_url field in the database.
 	FieldIconImageURL = "icon_image_url"
-	// FieldHeroImageURL holds the string denoting the hero_image_url field in the database.
-	FieldHeroImageURL = "hero_image_url"
+	// FieldBackgroundImageURL holds the string denoting the background_image_url field in the database.
+	FieldBackgroundImageURL = "background_image_url"
+	// FieldCoverImageURL holds the string denoting the cover_image_url field in the database.
+	FieldCoverImageURL = "cover_image_url"
 	// FieldReleaseDate holds the string denoting the release_date field in the database.
 	FieldReleaseDate = "release_date"
 	// FieldDeveloper holds the string denoting the developer field in the database.
@@ -98,7 +100,8 @@ var Columns = []string{
 	FieldShortDescription,
 	FieldDescription,
 	FieldIconImageURL,
-	FieldHeroImageURL,
+	FieldBackgroundImageURL,
+	FieldCoverImageURL,
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
@@ -222,9 +225,14 @@ func ByIconImageURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIconImageURL, opts...).ToFunc()
 }
 
-// ByHeroImageURL orders the results by the hero_image_url field.
-func ByHeroImageURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldHeroImageURL, opts...).ToFunc()
+// ByBackgroundImageURL orders the results by the background_image_url field.
+func ByBackgroundImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBackgroundImageURL, opts...).ToFunc()
+}
+
+// ByCoverImageURL orders the results by the cover_image_url field.
+func ByCoverImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCoverImageURL, opts...).ToFunc()
 }
 
 // ByReleaseDate orders the results by the release_date field.

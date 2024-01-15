@@ -62,16 +62,17 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
+	libcacheMap := bizangela.NewAppCache(geburaRepo, store)
 	topic := bizangela.NewUpdateAppIndexTopic(angelaBase)
-	libmqTopic := bizangela.NewPullSteamAppTopic(angelaBase, topic)
+	libmqTopic := bizangela.NewPullAppTopic(angelaBase, libcacheMap, topic)
 	topic2 := bizangela.NewPullAccountAppRelationTopic(angelaBase, libmqTopic)
 	topic3 := bizangela.NewPullAccountTopic(angelaBase, topic2)
 	netzachRepo := data.NewNetzachRepo(dataData)
-	libcacheMap := bizangela.NewNotifyFlowCache(netzachRepo, store)
-	map2 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
-	map3 := bizangela.NewNotifyTargetCache(netzachRepo, store)
-	topic4 := bizangela.NewNotifyPushTopic(angelaBase, map3)
-	topic5 := bizangela.NewNotifyRouterTopic(angelaBase, libcacheMap, map2, topic4)
+	map2 := bizangela.NewNotifyFlowCache(netzachRepo, store)
+	map3 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
+	map4 := bizangela.NewNotifyTargetCache(netzachRepo, store)
+	topic4 := bizangela.NewNotifyPushTopic(angelaBase, map4)
+	topic5 := bizangela.NewNotifyRouterTopic(angelaBase, map2, map3, topic4)
 	topic6 := bizangela.NewParseFeedItemDigestTopic(angelaBase)
 	topic7 := bizangela.NewPullFeedTopic(angelaBase, topic5, topic6)
 	angela, err := bizangela.NewAngela(mq, topic3, topic2, libmqTopic, topic7, topic5, topic4, topic6, topic)
@@ -85,7 +86,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher, topic)
+	gebura := bizgebura.NewGebura(geburaRepo, auth, librarianMapperServiceClient, searcher, topic, libmqTopic, libcacheMap)
 	binahRepo, err := data.NewBinahRepo(sephirah_Data)
 	if err != nil {
 		cleanup()
@@ -99,10 +100,10 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
-	netzach := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, map2, libcacheMap, map3)
+	netzach := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, map3, map2, map4)
 	chesedRepo := data.NewChesedRepo(dataData)
-	map4 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map4)
+	map5 := bizchesed.NewImageCache(store)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map5)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

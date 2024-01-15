@@ -112,16 +112,30 @@ func (ac *AppCreate) SetNillableIconImageURL(s *string) *AppCreate {
 	return ac
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (ac *AppCreate) SetHeroImageURL(s string) *AppCreate {
-	ac.mutation.SetHeroImageURL(s)
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (ac *AppCreate) SetBackgroundImageURL(s string) *AppCreate {
+	ac.mutation.SetBackgroundImageURL(s)
 	return ac
 }
 
-// SetNillableHeroImageURL sets the "hero_image_url" field if the given value is not nil.
-func (ac *AppCreate) SetNillableHeroImageURL(s *string) *AppCreate {
+// SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableBackgroundImageURL(s *string) *AppCreate {
 	if s != nil {
-		ac.SetHeroImageURL(*s)
+		ac.SetBackgroundImageURL(*s)
+	}
+	return ac
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (ac *AppCreate) SetCoverImageURL(s string) *AppCreate {
+	ac.mutation.SetCoverImageURL(s)
+	return ac
+}
+
+// SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableCoverImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetCoverImageURL(*s)
 	}
 	return ac
 }
@@ -437,9 +451,13 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
 		_node.IconImageURL = value
 	}
-	if value, ok := ac.mutation.HeroImageURL(); ok {
-		_spec.SetField(app.FieldHeroImageURL, field.TypeString, value)
-		_node.HeroImageURL = value
+	if value, ok := ac.mutation.BackgroundImageURL(); ok {
+		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
+		_node.BackgroundImageURL = value
+	}
+	if value, ok := ac.mutation.CoverImageURL(); ok {
+		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
+		_node.CoverImageURL = value
 	}
 	if value, ok := ac.mutation.ReleaseDate(); ok {
 		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
@@ -730,21 +748,39 @@ func (u *AppUpsert) ClearIconImageURL() *AppUpsert {
 	return u
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (u *AppUpsert) SetHeroImageURL(v string) *AppUpsert {
-	u.Set(app.FieldHeroImageURL, v)
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsert) SetBackgroundImageURL(v string) *AppUpsert {
+	u.Set(app.FieldBackgroundImageURL, v)
 	return u
 }
 
-// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
-func (u *AppUpsert) UpdateHeroImageURL() *AppUpsert {
-	u.SetExcluded(app.FieldHeroImageURL)
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateBackgroundImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldBackgroundImageURL)
 	return u
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (u *AppUpsert) ClearHeroImageURL() *AppUpsert {
-	u.SetNull(app.FieldHeroImageURL)
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsert) ClearBackgroundImageURL() *AppUpsert {
+	u.SetNull(app.FieldBackgroundImageURL)
+	return u
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsert) SetCoverImageURL(v string) *AppUpsert {
+	u.Set(app.FieldCoverImageURL, v)
+	return u
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateCoverImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldCoverImageURL)
+	return u
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsert) ClearCoverImageURL() *AppUpsert {
+	u.SetNull(app.FieldCoverImageURL)
 	return u
 }
 
@@ -1046,24 +1082,45 @@ func (u *AppUpsertOne) ClearIconImageURL() *AppUpsertOne {
 	})
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (u *AppUpsertOne) SetHeroImageURL(v string) *AppUpsertOne {
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsertOne) SetBackgroundImageURL(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetHeroImageURL(v)
+		s.SetBackgroundImageURL(v)
 	})
 }
 
-// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateHeroImageURL() *AppUpsertOne {
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateBackgroundImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateHeroImageURL()
+		s.UpdateBackgroundImageURL()
 	})
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (u *AppUpsertOne) ClearHeroImageURL() *AppUpsertOne {
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsertOne) ClearBackgroundImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearHeroImageURL()
+		s.ClearBackgroundImageURL()
+	})
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsertOne) SetCoverImageURL(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageURL(v)
+	})
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateCoverImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageURL()
+	})
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsertOne) ClearCoverImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearCoverImageURL()
 	})
 }
 
@@ -1547,24 +1604,45 @@ func (u *AppUpsertBulk) ClearIconImageURL() *AppUpsertBulk {
 	})
 }
 
-// SetHeroImageURL sets the "hero_image_url" field.
-func (u *AppUpsertBulk) SetHeroImageURL(v string) *AppUpsertBulk {
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsertBulk) SetBackgroundImageURL(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetHeroImageURL(v)
+		s.SetBackgroundImageURL(v)
 	})
 }
 
-// UpdateHeroImageURL sets the "hero_image_url" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateHeroImageURL() *AppUpsertBulk {
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateBackgroundImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateHeroImageURL()
+		s.UpdateBackgroundImageURL()
 	})
 }
 
-// ClearHeroImageURL clears the value of the "hero_image_url" field.
-func (u *AppUpsertBulk) ClearHeroImageURL() *AppUpsertBulk {
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsertBulk) ClearBackgroundImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.ClearHeroImageURL()
+		s.ClearBackgroundImageURL()
+	})
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsertBulk) SetCoverImageURL(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageURL(v)
+	})
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateCoverImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageURL()
+	})
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsertBulk) ClearCoverImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearCoverImageURL()
 	})
 }
 

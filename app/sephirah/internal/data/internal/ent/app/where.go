@@ -96,9 +96,14 @@ func IconImageURL(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldIconImageURL, v))
 }
 
-// HeroImageURL applies equality check predicate on the "hero_image_url" field. It's identical to HeroImageURLEQ.
-func HeroImageURL(v string) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldHeroImageURL, v))
+// BackgroundImageURL applies equality check predicate on the "background_image_url" field. It's identical to BackgroundImageURLEQ.
+func BackgroundImageURL(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageURL, v))
+}
+
+// CoverImageURL applies equality check predicate on the "cover_image_url" field. It's identical to CoverImageURLEQ.
+func CoverImageURL(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldCoverImageURL, v))
 }
 
 // ReleaseDate applies equality check predicate on the "release_date" field. It's identical to ReleaseDateEQ.
@@ -656,79 +661,154 @@ func IconImageURLContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldIconImageURL, v))
 }
 
-// HeroImageURLEQ applies the EQ predicate on the "hero_image_url" field.
-func HeroImageURLEQ(v string) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldHeroImageURL, v))
+// BackgroundImageURLEQ applies the EQ predicate on the "background_image_url" field.
+func BackgroundImageURLEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLNEQ applies the NEQ predicate on the "hero_image_url" field.
-func HeroImageURLNEQ(v string) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldHeroImageURL, v))
+// BackgroundImageURLNEQ applies the NEQ predicate on the "background_image_url" field.
+func BackgroundImageURLNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLIn applies the In predicate on the "hero_image_url" field.
-func HeroImageURLIn(vs ...string) predicate.App {
-	return predicate.App(sql.FieldIn(FieldHeroImageURL, vs...))
+// BackgroundImageURLIn applies the In predicate on the "background_image_url" field.
+func BackgroundImageURLIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldBackgroundImageURL, vs...))
 }
 
-// HeroImageURLNotIn applies the NotIn predicate on the "hero_image_url" field.
-func HeroImageURLNotIn(vs ...string) predicate.App {
-	return predicate.App(sql.FieldNotIn(FieldHeroImageURL, vs...))
+// BackgroundImageURLNotIn applies the NotIn predicate on the "background_image_url" field.
+func BackgroundImageURLNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldBackgroundImageURL, vs...))
 }
 
-// HeroImageURLGT applies the GT predicate on the "hero_image_url" field.
-func HeroImageURLGT(v string) predicate.App {
-	return predicate.App(sql.FieldGT(FieldHeroImageURL, v))
+// BackgroundImageURLGT applies the GT predicate on the "background_image_url" field.
+func BackgroundImageURLGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLGTE applies the GTE predicate on the "hero_image_url" field.
-func HeroImageURLGTE(v string) predicate.App {
-	return predicate.App(sql.FieldGTE(FieldHeroImageURL, v))
+// BackgroundImageURLGTE applies the GTE predicate on the "background_image_url" field.
+func BackgroundImageURLGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLLT applies the LT predicate on the "hero_image_url" field.
-func HeroImageURLLT(v string) predicate.App {
-	return predicate.App(sql.FieldLT(FieldHeroImageURL, v))
+// BackgroundImageURLLT applies the LT predicate on the "background_image_url" field.
+func BackgroundImageURLLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLLTE applies the LTE predicate on the "hero_image_url" field.
-func HeroImageURLLTE(v string) predicate.App {
-	return predicate.App(sql.FieldLTE(FieldHeroImageURL, v))
+// BackgroundImageURLLTE applies the LTE predicate on the "background_image_url" field.
+func BackgroundImageURLLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLContains applies the Contains predicate on the "hero_image_url" field.
-func HeroImageURLContains(v string) predicate.App {
-	return predicate.App(sql.FieldContains(FieldHeroImageURL, v))
+// BackgroundImageURLContains applies the Contains predicate on the "background_image_url" field.
+func BackgroundImageURLContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLHasPrefix applies the HasPrefix predicate on the "hero_image_url" field.
-func HeroImageURLHasPrefix(v string) predicate.App {
-	return predicate.App(sql.FieldHasPrefix(FieldHeroImageURL, v))
+// BackgroundImageURLHasPrefix applies the HasPrefix predicate on the "background_image_url" field.
+func BackgroundImageURLHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLHasSuffix applies the HasSuffix predicate on the "hero_image_url" field.
-func HeroImageURLHasSuffix(v string) predicate.App {
-	return predicate.App(sql.FieldHasSuffix(FieldHeroImageURL, v))
+// BackgroundImageURLHasSuffix applies the HasSuffix predicate on the "background_image_url" field.
+func BackgroundImageURLHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLIsNil applies the IsNil predicate on the "hero_image_url" field.
-func HeroImageURLIsNil() predicate.App {
-	return predicate.App(sql.FieldIsNull(FieldHeroImageURL))
+// BackgroundImageURLIsNil applies the IsNil predicate on the "background_image_url" field.
+func BackgroundImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldBackgroundImageURL))
 }
 
-// HeroImageURLNotNil applies the NotNil predicate on the "hero_image_url" field.
-func HeroImageURLNotNil() predicate.App {
-	return predicate.App(sql.FieldNotNull(FieldHeroImageURL))
+// BackgroundImageURLNotNil applies the NotNil predicate on the "background_image_url" field.
+func BackgroundImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldBackgroundImageURL))
 }
 
-// HeroImageURLEqualFold applies the EqualFold predicate on the "hero_image_url" field.
-func HeroImageURLEqualFold(v string) predicate.App {
-	return predicate.App(sql.FieldEqualFold(FieldHeroImageURL, v))
+// BackgroundImageURLEqualFold applies the EqualFold predicate on the "background_image_url" field.
+func BackgroundImageURLEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldBackgroundImageURL, v))
 }
 
-// HeroImageURLContainsFold applies the ContainsFold predicate on the "hero_image_url" field.
-func HeroImageURLContainsFold(v string) predicate.App {
-	return predicate.App(sql.FieldContainsFold(FieldHeroImageURL, v))
+// BackgroundImageURLContainsFold applies the ContainsFold predicate on the "background_image_url" field.
+func BackgroundImageURLContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldBackgroundImageURL, v))
+}
+
+// CoverImageURLEQ applies the EQ predicate on the "cover_image_url" field.
+func CoverImageURLEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldCoverImageURL, v))
+}
+
+// CoverImageURLNEQ applies the NEQ predicate on the "cover_image_url" field.
+func CoverImageURLNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldCoverImageURL, v))
+}
+
+// CoverImageURLIn applies the In predicate on the "cover_image_url" field.
+func CoverImageURLIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldCoverImageURL, vs...))
+}
+
+// CoverImageURLNotIn applies the NotIn predicate on the "cover_image_url" field.
+func CoverImageURLNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldCoverImageURL, vs...))
+}
+
+// CoverImageURLGT applies the GT predicate on the "cover_image_url" field.
+func CoverImageURLGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldCoverImageURL, v))
+}
+
+// CoverImageURLGTE applies the GTE predicate on the "cover_image_url" field.
+func CoverImageURLGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldCoverImageURL, v))
+}
+
+// CoverImageURLLT applies the LT predicate on the "cover_image_url" field.
+func CoverImageURLLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldCoverImageURL, v))
+}
+
+// CoverImageURLLTE applies the LTE predicate on the "cover_image_url" field.
+func CoverImageURLLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldCoverImageURL, v))
+}
+
+// CoverImageURLContains applies the Contains predicate on the "cover_image_url" field.
+func CoverImageURLContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldCoverImageURL, v))
+}
+
+// CoverImageURLHasPrefix applies the HasPrefix predicate on the "cover_image_url" field.
+func CoverImageURLHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldCoverImageURL, v))
+}
+
+// CoverImageURLHasSuffix applies the HasSuffix predicate on the "cover_image_url" field.
+func CoverImageURLHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldCoverImageURL, v))
+}
+
+// CoverImageURLIsNil applies the IsNil predicate on the "cover_image_url" field.
+func CoverImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldCoverImageURL))
+}
+
+// CoverImageURLNotNil applies the NotNil predicate on the "cover_image_url" field.
+func CoverImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldCoverImageURL))
+}
+
+// CoverImageURLEqualFold applies the EqualFold predicate on the "cover_image_url" field.
+func CoverImageURLEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldCoverImageURL, v))
+}
+
+// CoverImageURLContainsFold applies the ContainsFold predicate on the "cover_image_url" field.
+func CoverImageURLContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldCoverImageURL, v))
 }
 
 // ReleaseDateEQ applies the EQ predicate on the "release_date" field.

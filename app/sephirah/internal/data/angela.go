@@ -43,16 +43,15 @@ func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Accou
 		Exec(ctx)
 }
 
-func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
+func (a *angelaRepo) UpsertApp( //nolint:gocognit //TODO
 	ctx context.Context, ap *modelgebura.App, internal *modelgebura.App,
 ) error {
 	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.App.Update().
-			Where(
-				app.IDEQ(ap.ID),
-				app.SourceEQ(ap.Source),
-				app.SourceAppIDEQ(ap.SourceAppID),
-			)
+		q := tx.App.Create().
+			SetID(ap.ID).
+			SetInternal(ap.Internal).
+			SetSource(ap.Source).
+			SetSourceAppID(ap.SourceAppID)
 		if len(ap.SourceURL) > 0 {
 			q.SetSourceURL(ap.SourceURL)
 		}
@@ -68,8 +67,11 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 		if len(ap.IconImageURL) > 0 {
 			q.SetIconImageURL(ap.IconImageURL)
 		}
-		if len(ap.HeroImageURL) > 0 {
-			q.SetHeroImageURL(ap.HeroImageURL)
+		if len(ap.BackgroundImageURL) > 0 {
+			q.SetBackgroundImageURL(ap.BackgroundImageURL)
+		}
+		if len(ap.CoverImageURL) > 0 {
+			q.SetCoverImageURL(ap.CoverImageURL)
 		}
 		if ap.Details != nil { //nolint:nestif // TODO
 			if len(ap.Details.Description) > 0 {
@@ -88,6 +90,14 @@ func (a *angelaRepo) UpdateApp( //nolint:gocognit //TODO
 				q.SetVersion(ap.Details.Version)
 			}
 		}
+		q.OnConflict(
+			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
+			resolveWithIgnores([]string{
+				app.FieldID,
+				app.FieldSource,
+				app.FieldSourceAppID,
+			}),
+		)
 		count, err := tx.App.Query().Where(
 			app.SourceEQ(ap.Source),
 			app.SourceAppIDEQ(ap.SourceAppID),
@@ -131,7 +141,8 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 			SetType(converter.ToEntAppType(ap.Type)).
 			SetShortDescription(ap.ShortDescription).
 			SetIconImageURL(ap.IconImageURL).
-			SetHeroImageURL(ap.HeroImageURL)
+			SetBackgroundImageURL(ap.BackgroundImageURL).
+			SetCoverImageURL(ap.CoverImageURL)
 		if ap.Details != nil {
 			apps[i].
 				SetDescription(ap.Details.Description).

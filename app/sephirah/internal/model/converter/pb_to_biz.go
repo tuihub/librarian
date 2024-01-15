@@ -55,10 +55,14 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
+	// goverter:ignore LatestUpdateTime
 	ToBizApp(*librarian.App) *modelgebura.App
 	// goverter:matchIgnoreCase
 	ToBizAppDetail(*librarian.AppDetails) *modelgebura.AppDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
+	// goverter:matchIgnoreCase
+	ToBizAppID(*librarian.AppID) *modelgebura.AppID
+	ToBizAppIDList([]*librarian.AppID) []*modelgebura.AppID
 
 	// goverter:matchIgnoreCase
 	ToBizAppPackage(*librarian.AppPackage) *modelgebura.AppPackage
