@@ -14,8 +14,9 @@ type PullAccountAppRelation struct {
 }
 
 type PullApp struct {
-	ID    model.InternalID
-	AppID modelgebura.AppID
+	ID              model.InternalID
+	AppID           modelgebura.AppID
+	IgnoreRateLimit bool
 }
 
 type NotifyRouter struct {

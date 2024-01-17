@@ -92,6 +92,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.ToBizAppPackageBinary((*source).Binary)
 		modelgeburaAppPackage.Public = (*source).Public
+		modelgeburaAppPackage.AssignedAppID = ToBizInternalID((*source).AssignedAppId)
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage
@@ -512,7 +513,8 @@ func (c *toPBConverterImpl) ToPBAppMixed(source *modelgebura.AppMixed) *v1.AppMi
 		v1AppMixed.Type = ToPBAppType((*source).Type)
 		v1AppMixed.ShortDescription = (*source).ShortDescription
 		v1AppMixed.IconImageUrl = (*source).IconImageURL
-		v1AppMixed.HeroImageUrl = (*source).HeroImageURL
+		v1AppMixed.BackgroundImageUrl = (*source).BackgroundImageURL
+		v1AppMixed.CoverImageUrl = (*source).CoverImageURL
 		var stringList []string
 		if (*source).Tags != nil {
 			stringList = make([]string, len((*source).Tags))
@@ -546,6 +548,7 @@ func (c *toPBConverterImpl) ToPBAppPackage(source *modelgebura.AppPackage) *v1.A
 		v1AppPackage.Description = (*source).Description
 		v1AppPackage.Binary = c.ToPBAppPackageBinary((*source).Binary)
 		v1AppPackage.Public = (*source).Public
+		v1AppPackage.AssignedAppId = ToPBInternalID((*source).AssignedAppID)
 		pV1AppPackage = &v1AppPackage
 	}
 	return pV1AppPackage

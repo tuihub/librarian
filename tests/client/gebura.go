@@ -144,13 +144,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 
 	resp, err := c.cli.CreateAppPackage(ctx, &pb.CreateAppPackageRequest{
 		AppPackage: &librarian.AppPackage{
-			Id:          nil,
-			Source:      0,
-			SourceId:    nil,
-			Name:        "test app package",
-			Description: "test",
-			Binary:      nil,
-			Public:      false,
+			Id:            nil,
+			Source:        0,
+			SourceId:      nil,
+			Name:          "test app package",
+			Description:   "test",
+			Binary:        nil,
+			Public:        false,
+			AssignedAppId: nil,
 		},
 	})
 	if err != nil {
@@ -172,13 +173,14 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if _, err2 := c.cli.UpdateAppPackage(ctx, &pb.UpdateAppPackageRequest{
 		AppPackage: &librarian.AppPackage{
-			Id:          appPackageID,
-			Source:      0,
-			SourceId:    nil,
-			Name:        "test app package",
-			Description: "test2",
-			Binary:      nil,
-			Public:      false,
+			Id:            appPackageID,
+			Source:        0,
+			SourceId:      nil,
+			Name:          "test app package",
+			Description:   "test2",
+			Binary:        nil,
+			Public:        false,
+			AssignedAppId: nil,
 		},
 	}); err2 != nil {
 		log.Fatal(err2)

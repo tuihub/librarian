@@ -32,14 +32,15 @@ type AppID struct {
 }
 
 type AppMixed struct {
-	ID               model.InternalID
-	Name             string
-	Type             AppType
-	ShortDescription string
-	IconImageURL     string
-	HeroImageURL     string
-	Tags             []string
-	Details          *AppDetails
+	ID                 model.InternalID
+	Name               string
+	Type               AppType
+	ShortDescription   string
+	IconImageURL       string
+	BackgroundImageURL string
+	CoverImageURL      string
+	Tags               []string
+	Details            *AppDetails
 }
 
 type AppDetails struct {
@@ -66,13 +67,14 @@ const (
 )
 
 type AppPackage struct {
-	ID          model.InternalID
-	Source      AppPackageSource
-	SourceID    model.InternalID
-	Name        string
-	Description string
-	Binary      *AppPackageBinary
-	Public      bool
+	ID            model.InternalID
+	Source        AppPackageSource
+	SourceID      model.InternalID
+	Name          string
+	Description   string
+	Binary        *AppPackageBinary
+	Public        bool
+	AssignedAppID model.InternalID
 }
 
 type AppPackageBinary struct {
@@ -104,14 +106,15 @@ func (b *BoundApps) Flatten() *AppMixed {
 		res = mergeApp(res, a)
 	}
 	return &AppMixed{
-		ID:               res.ID,
-		Name:             res.Name,
-		Type:             res.Type,
-		ShortDescription: res.ShortDescription,
-		IconImageURL:     res.IconImageURL,
-		HeroImageURL:     res.BackgroundImageURL,
-		Tags:             res.Tags,
-		Details:          res.Details,
+		ID:                 res.ID,
+		Name:               res.Name,
+		Type:               res.Type,
+		ShortDescription:   res.ShortDescription,
+		IconImageURL:       res.IconImageURL,
+		BackgroundImageURL: res.BackgroundImageURL,
+		CoverImageURL:      res.CoverImageURL,
+		Tags:               res.Tags,
+		Details:            res.Details,
 	}
 }
 

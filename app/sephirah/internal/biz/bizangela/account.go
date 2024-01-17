@@ -111,6 +111,7 @@ func NewPullAccountAppRelationTopic(
 						Source:      r.Platform,
 						SourceAppID: app.SourceAppID,
 					},
+					IgnoreRateLimit: true,
 				})
 			}
 			return nil

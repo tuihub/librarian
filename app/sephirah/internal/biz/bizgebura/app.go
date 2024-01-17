@@ -108,8 +108,9 @@ func (g *Gebura) SyncApps(
 		}
 		if wait {
 			err = g.pullApp.LocalCall(ctx, modelangela.PullApp{
-				ID:    ids[i],
-				AppID: *appID,
+				ID:              ids[i],
+				AppID:           *appID,
+				IgnoreRateLimit: false,
 			})
 			if err != nil {
 				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
@@ -122,8 +123,9 @@ func (g *Gebura) SyncApps(
 			apps = append(apps, app)
 		} else {
 			_ = g.pullApp.Publish(ctx, modelangela.PullApp{
-				ID:    ids[i],
-				AppID: *appID,
+				ID:              ids[i],
+				AppID:           *appID,
+				IgnoreRateLimit: false,
 			})
 		}
 	}

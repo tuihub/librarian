@@ -28,9 +28,11 @@ func NewPullAppTopic(
 			if !a.supv.CheckAppSource(r.AppID.Source) {
 				return nil
 			}
-			if app, err := appCache.GetWithFallBack(ctx, r.AppID, nil); err == nil &&
-				app.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
-				return nil
+			if !r.IgnoreRateLimit {
+				if app, err := appCache.GetWithFallBack(ctx, r.AppID, nil); err == nil &&
+					app.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
+					return nil
+				}
 			}
 			id, err := a.searcher.NewID(ctx)
 			if err != nil {
@@ -51,11 +53,15 @@ func NewPullAppTopic(
 			app.ID = r.ID
 			app.Internal = false
 			app.Source = r.AppID.Source
+			if app.Type == modelgebura.AppTypeUnspecified {
+				app.Type = modelgebura.AppTypeGame
+			}
 			internalApp := new(modelgebura.App)
 			internalApp.ID = id
 			internalApp.Internal = true
 			internalApp.SourceAppID = strconv.FormatInt(int64(internalApp.ID), 10)
 			internalApp.BoundInternal = id
+			internalApp.Type = app.Type
 			err = a.repo.UpsertApp(ctx, app, internalApp)
 			if err != nil {
 				return err

@@ -93,7 +93,7 @@ func (t *Tiphereth) GetToken(
 	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) RefreshToken(
+func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 	ctx context.Context,
 	deviceID *model.InternalID,
 ) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
@@ -106,21 +106,25 @@ func (t *Tiphereth) RefreshToken(
 	if oldRefreshToken == "" {
 		return "", "", bizutils.NoPermissionError()
 	}
-	session, err := t.repo.FetchUserSession(ctx, claims.UserID, oldRefreshToken)
-	if err != nil {
-		return "", "", bizutils.NoPermissionError()
-	}
-	if session.RefreshToken != oldRefreshToken {
-		return "", "", bizutils.NoPermissionError()
-	}
 	needUpdate := false
-	if session.DeviceInfo == nil && deviceID != nil {
-		session.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
+	session := new(modeltiphereth.UserSession)
+	var err error
+	if claims.UserType != libauth.UserTypePorter { //nolint:nestif // TODO
+		session, err = t.repo.FetchUserSession(ctx, claims.UserID, oldRefreshToken)
 		if err != nil {
-			logger.Infof("FetchDeviceInfo failed: %s", err.Error())
-			return "", "", pb.ErrorErrorReasonUnauthorized("invalid device")
+			return "", "", bizutils.NoPermissionError()
 		}
-		needUpdate = true
+		if session.RefreshToken != oldRefreshToken {
+			return "", "", bizutils.NoPermissionError()
+		}
+		if session.DeviceInfo == nil && deviceID != nil {
+			session.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
+			if err != nil {
+				logger.Infof("FetchDeviceInfo failed: %s", err.Error())
+				return "", "", pb.ErrorErrorReasonUnauthorized("invalid device")
+			}
+			needUpdate = true
+		}
 	}
 	var accessToken, refreshToken string
 	accessToken, err = t.auth.GenerateToken(
@@ -155,7 +159,7 @@ func (t *Tiphereth) RefreshToken(
 		session.ExpireAt = time.Now().Add(refreshTokenExpire)
 		needUpdate = true
 	}
-	if needUpdate {
+	if claims.UserType != libauth.UserTypePorter && needUpdate {
 		err = t.repo.UpdateUserSession(ctx, session)
 		if err != nil {
 			logger.Infof("update user session failed: %s", err.Error())
