@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"strconv"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -94,7 +95,13 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	if _, err := c.cli.GetBoundApps(ctx, &pb.GetBoundAppsRequest{AppId: appID2}); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{AppId: appID2}); err != nil {
+	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{
+		AppId: &librarian.AppID{
+			Internal:    true,
+			Source:      "",
+			SourceAppId: strconv.FormatInt(appID2.GetId(), 10),
+		},
+	}); err != nil {
 		log.Fatal(err)
 	}
 	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{Source: nil}); err != nil {

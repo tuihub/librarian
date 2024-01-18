@@ -118,11 +118,13 @@ func (s *LibrarianSephirahServiceService) GetBoundApps(ctx context.Context, req 
 func (s *LibrarianSephirahServiceService) PurchaseApp(ctx context.Context, req *pb.PurchaseAppRequest) (
 	*pb.PurchaseAppResponse, error,
 ) {
-	err := s.g.PurchaseApp(ctx, converter.ToBizInternalID(req.GetAppId()))
+	id, err := s.g.PurchaseApp(ctx, converter.ToBizAppID(req.GetAppId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.PurchaseAppResponse{}, nil
+	return &pb.PurchaseAppResponse{
+		Id: converter.ToPBInternalID(id),
+	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetPurchasedApps(ctx context.Context, req *pb.GetPurchasedAppsRequest) (
 	*pb.GetPurchasedAppsResponse, error,

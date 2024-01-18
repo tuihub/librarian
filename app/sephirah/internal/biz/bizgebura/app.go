@@ -2,6 +2,7 @@ package bizgebura
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
@@ -116,7 +117,7 @@ func (g *Gebura) SyncApps(
 				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 			}
 			var app *modelgebura.App
-			app, err = g.appCache.Get(ctx, *appID)
+			app, err = g.appCache.GetWithFallBack(ctx, *appID, nil)
 			if err != nil {
 				continue
 			}
@@ -179,17 +180,47 @@ func (g *Gebura) GetBoundApps(ctx context.Context, id model.InternalID) ([]*mode
 	return apps, nil
 }
 
-func (g *Gebura) PurchaseApp(ctx context.Context, id model.InternalID) *errors.Error {
+func (g *Gebura) PurchaseApp(ctx context.Context, appID *modelgebura.AppID) (model.InternalID, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
-		return bizutils.NoPermissionError()
-	} else {
-		err := g.repo.PurchaseApp(ctx, claims.UserID, id)
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err)
-		}
+		return 0, bizutils.NoPermissionError()
 	}
-	return nil
+	id, err := g.repo.PurchaseApp(ctx, claims.UserID, appID, func(ctx2 context.Context) error {
+		if appID.Internal {
+			return fmt.Errorf("app not found")
+		}
+		ids, err := g.searcher.NewBatchIDs(ctx2, 2) //nolint:gomnd // checked
+		if err != nil {
+			return err
+		}
+		internalApp := new(modelgebura.App)
+		internalApp.ID = ids[0]
+		internalApp.Internal = true
+		internalApp.Source = ""
+		internalApp.SourceAppID = fmt.Sprintf("%d", ids[0])
+		internalApp.Type = modelgebura.AppTypeGame
+		internalApp.BoundInternal = ids[0]
+		externalApp := new(modelgebura.App)
+		externalApp.ID = ids[1]
+		externalApp.Internal = false
+		externalApp.Source = appID.Source
+		externalApp.SourceAppID = appID.SourceAppID
+		externalApp.Type = modelgebura.AppTypeGame
+		externalApp.BoundInternal = ids[0]
+		err = g.repo.CreateApp(ctx2, internalApp)
+		if err != nil {
+			return err
+		}
+		err = g.repo.CreateApp(ctx2, externalApp)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return 0, pb.ErrorErrorReasonUnspecified("%s", err)
+	}
+	return id, nil
 }
 
 func (g *Gebura) GetPurchasedApps(ctx context.Context, source string) ([]*modelgebura.AppMixed, *errors.Error) {

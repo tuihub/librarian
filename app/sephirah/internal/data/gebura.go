@@ -232,16 +232,45 @@ func (g geburaRepo) GetBatchBoundApps(ctx context.Context, ids []model.InternalI
 	return res, nil
 }
 
-func (g geburaRepo) PurchaseApp(ctx context.Context, userID model.InternalID, appID model.InternalID) error {
-	a, err := g.data.db.App.Get(ctx, appID)
+func (g geburaRepo) PurchaseApp(
+	ctx context.Context,
+	userID model.InternalID,
+	appID *modelgebura.AppID,
+	createFunc func(ctx2 context.Context) error,
+) (model.InternalID, error) {
+	q := g.data.db.App.Query().WithBindInternal()
+	if appID.Internal {
+		q.Where(
+			app.InternalEQ(true),
+			app.SourceAppIDEQ(appID.SourceAppID),
+		)
+	} else {
+		q.Where(
+			app.InternalEQ(false),
+			app.SourceEQ(appID.Source),
+			app.SourceAppIDEQ(appID.SourceAppID),
+		)
+	}
+	a, err := q.Only(ctx)
+	if ent.IsNotFound(err) && createFunc != nil {
+		err = createFunc(ctx)
+		if err != nil {
+			return 0, err
+		}
+		a, err = q.Only(ctx)
+		if err != nil {
+			return 0, err
+		}
+	}
 	if err != nil {
-		return err
+		return 0, err
 	}
-	if !a.Internal {
-		return errors.New("illegal app source")
+	if a.Edges.BindInternal != nil {
+		err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(a.Edges.BindInternal.ID).Exec(ctx)
+	} else {
+		err = errors.New("internal app not found")
 	}
-	err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(appID).Exec(ctx)
-	return err
+	return a.Edges.BindInternal.ID, err
 }
 
 func (g geburaRepo) GetPurchasedApps(ctx context.Context, id model.InternalID) ([]*modelgebura.BoundApps, error) {
