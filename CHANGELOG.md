@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.2.1](https://github.com/tuihub/librarian/compare/v0.2.0...v0.2.1) (2024-01-18)
+
+
+### Features
+
+* add stricter limit for anonymous requests ([b51b660](https://github.com/tuihub/librarian/commit/b51b66089f15ed7d6cfc4cfe56f998ea2231a8d6))
+* **gebura:** bump proto version to v0.3.8 & fixes ([56913ac](https://github.com/tuihub/librarian/commit/56913acc33d6df706c6f5da6a83eeb7ccf8d9ad0))
+* **gebura:** impl SyncApps ([8e6d184](https://github.com/tuihub/librarian/commit/8e6d184383bce7c642d918cf0b71a70e3a1c4659))
+* **gebura:** upgrade proto to v0.3.6 ([00c3360](https://github.com/tuihub/librarian/commit/00c3360287ac4c78e6bc7e38f7af70badd3a1b09))
+* **tiphereth:** impl session manage ([2555d7f](https://github.com/tuihub/librarian/commit/2555d7ff80467bfaa6bbf4d91e4e5d5cf95da76d))
+* **tiphereth:** upgrade proto to v0.3.3 ([861acc6](https://github.com/tuihub/librarian/commit/861acc69433a126c60043bffbb595d4c3903045f))
+
+
+### Bug Fixes
+
+* move porters to individual repos ([1335c91](https://github.com/tuihub/librarian/commit/1335c91608810fc501e4ba98e61c96073bdd1289))
+* test v0.2.0 features ([0170e80](https://github.com/tuihub/librarian/commit/0170e808d7be6d8cd2391a321b908539ffb94f3c))
+
 ## [0.2.0](https://github.com/tuihub/librarian/compare/v0.1.16...v0.2.0) (2024-01-10)
 
 
