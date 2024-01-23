@@ -27,6 +27,7 @@ type Settings struct {
 	ProtoVersion      string
 	BuildDate         string
 	SourceCodeAddress string
+	DemoMode          bool
 }
 
 type Flags struct {
@@ -37,8 +38,10 @@ type Flags struct {
 type Env string
 
 const (
-	EnvCreateAdmin Env = "CREATE_ADMIN"
-	EnvLogLevel    Env = "LOG_LEVEL"
+	EnvCreateAdminUserName Env = "CREATE_ADMIN_USER"
+	EnvCreateAdminPassword Env = "CREATE_ADMIN_PASS"
+	EnvLogLevel            Env = "LOG_LEVEL"
+	EnvDemoMode            Env = "DEMO_MODE"
 )
 
 func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, error) {
@@ -59,13 +62,14 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 			protoVersion,
 			date,
 			"https://github.com/TuiHub/Librarian",
+			false,
 		}
 	}
 	if as.ConfPath == "" {
 		as.ConfPath = as.DefaultConfPath
 	}
 	// override LogLevel by env
-	if logLevel, err := as.GetEnv(EnvLogLevel); err == nil {
+	if logLevel, err := as.Env(EnvLogLevel); err == nil {
 		switch strings.ToLower(logLevel) {
 		case "debug":
 			as.LogLevel = libzap.DebugLevel
@@ -98,12 +102,16 @@ func (a *Settings) LoadConfig(conf interface{}) {
 	}
 }
 
-func (a *Settings) GetEnv(env Env) (string, error) {
+func (a *Settings) Env(env Env) (string, error) {
 	return a.env.Value(string(env)).String()
 }
 
-func (a *Settings) GetEnvBool(env Env) (bool, error) {
-	return a.env.Value(string(env)).Bool()
+func (a *Settings) EnvExist(env Env) bool {
+	res, err := a.env.Value(string(env)).Bool()
+	if err != nil {
+		return false
+	}
+	return res
 }
 
 func checkDataPath(path string) error {

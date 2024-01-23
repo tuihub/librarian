@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -49,15 +48,7 @@ func NewLibrarianSephirahServiceService(
 	auth *libauth.Auth,
 	authFunc func(context.Context) (context.Context, error),
 ) pb.LibrarianSephirahServiceServer {
-	if enable, err := app.GetEnvBool(libapp.EnvCreateAdmin); err == nil && enable {
-		t.CreateDefaultAdmin(context.Background(), &modeltiphereth.User{
-			ID:       0,
-			UserName: "admin",
-			PassWord: "admin",
-			Type:     0,
-			Status:   0,
-		})
-	}
+	t.CreateConfiguredAdmin()
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		t:        t,

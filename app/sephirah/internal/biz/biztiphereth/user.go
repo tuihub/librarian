@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
@@ -21,6 +22,11 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 	}
 	if claims.UserType != libauth.UserTypeAdmin && user.Type != libauth.UserTypeSentinel {
 		return nil, bizutils.NoPermissionError()
+	}
+	if t.app.EnvExist(libapp.EnvDemoMode) {
+		if user.Type == libauth.UserTypeAdmin {
+			return nil, pb.ErrorErrorReasonForbidden("server running in demo mode, create admin user is not allowed")
+		}
 	}
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
@@ -62,6 +68,11 @@ func (t *Tiphereth) UpdateUser(
 	}
 	if user.PassWord != "" && originPassword == "" {
 		return pb.ErrorErrorReasonBadRequest("password required")
+	}
+	if t.app.EnvExist(libapp.EnvDemoMode) {
+		if user.Type == libauth.UserTypeAdmin {
+			return pb.ErrorErrorReasonForbidden("server running in demo mode, modify admin user is not allowed")
+		}
 	}
 	if claims.UserType != libauth.UserTypeAdmin &&
 		claims.UserID != user.ID {

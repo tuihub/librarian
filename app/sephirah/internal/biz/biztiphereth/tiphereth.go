@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -42,6 +43,7 @@ type TipherethRepo interface {
 }
 
 type Tiphereth struct {
+	app         *libapp.Settings
 	auth        *libauth.Auth
 	repo        TipherethRepo
 	supv        *supervisor.Supervisor
@@ -51,6 +53,7 @@ type Tiphereth struct {
 }
 
 func NewTiphereth(
+	app *libapp.Settings,
 	repo TipherethRepo,
 	auth *libauth.Auth,
 	supv *supervisor.Supervisor,
@@ -60,6 +63,7 @@ func NewTiphereth(
 	cron *libcron.Cron,
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
+		app:         app,
 		auth:        auth,
 		repo:        repo,
 		supv:        supv,
@@ -74,7 +78,29 @@ func NewTiphereth(
 	return t, nil
 }
 
-func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *modeltiphereth.User) {
+const (
+	demoAdminUserName = "admin"
+	demoAdminPassword = "admin"
+)
+
+func (t *Tiphereth) CreateConfiguredAdmin() {
+	ctx := context.Background()
+	if !(t.app.EnvExist(libapp.EnvDemoMode) || t.app.EnvExist(libapp.EnvCreateAdminUserName)) {
+		return
+	}
+	user := &modeltiphereth.User{
+		ID:       0,
+		UserName: demoAdminUserName,
+		PassWord: demoAdminPassword,
+		Type:     libauth.UserTypeAdmin,
+		Status:   modeltiphereth.UserStatusActive,
+	}
+	if username, err := t.app.Env(libapp.EnvCreateAdminUserName); err == nil && username != "" {
+		user.UserName = username
+	}
+	if password, err := t.app.Env(libapp.EnvCreateAdminPassword); err == nil && password != "" {
+		user.PassWord = password
+	}
 	password, err := t.auth.GeneratePassword(user.PassWord)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -86,8 +112,6 @@ func (t *Tiphereth) CreateDefaultAdmin(ctx context.Context, user *modeltiphereth
 		return
 	}
 	user.ID = id
-	user.Status = modeltiphereth.UserStatusActive
-	user.Type = libauth.UserTypeAdmin
 	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
 		{
 			Vid:  int64(user.ID),

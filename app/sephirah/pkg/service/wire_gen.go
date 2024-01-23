@@ -81,7 +81,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		return nil, nil, err
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, auth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3, cron)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, auth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3, cron)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

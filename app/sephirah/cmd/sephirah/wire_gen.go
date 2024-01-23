@@ -113,7 +113,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	cron := libcron.NewCron()
-	tiphereth, err := biztiphereth.NewTiphereth(tipherethRepo, libauthAuth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3, cron)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, librarianMapperServiceClient, searcher, topic3, cron)
 	if err != nil {
 		cleanup2()
 		cleanup()
