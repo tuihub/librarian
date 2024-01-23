@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2](https://github.com/tuihub/librarian/compare/v0.2.1...v0.2.2) (2024-01-23)
+
+
+### Features
+
+* add consul config ([4570a11](https://github.com/tuihub/librarian/commit/4570a1139194628bb7af9dca7206094e923edb53))
+* add demo mode ([6860c50](https://github.com/tuihub/librarian/commit/6860c507aa59d9ff5068cca9630e8a06f1dcaf37))
+
 ## [0.2.1](https://github.com/tuihub/librarian/compare/v0.2.0...v0.2.1) (2024-01-18)
 
 
