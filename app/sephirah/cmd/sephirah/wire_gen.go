@@ -32,7 +32,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -48,13 +48,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
-	librarianPorterServiceClient, err := client.NewPorterClient()
+	librarianPorterServiceClient, err := client.NewPorterClient(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	porter, err := client.NewPorter(librarianPorterServiceClient)
+	porter, err := client.NewPorter(librarianPorterServiceClient, consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -67,13 +67,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	geburaRepo := data.NewGeburaRepo(dataData)
-	librarianMapperServiceClient, err := client2.NewMapperClient()
+	librarianMapperServiceClient, err := client2.NewMapperClient(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSearcherServiceClient, err := client2.NewSearcherClient()
+	librarianSearcherServiceClient, err := client2.NewSearcherClient(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -137,7 +137,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	netzach := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, map3, map2, map4)
 	chesedRepo := data.NewChesedRepo(dataData)
-	librarianMinerServiceClient, err := client2.NewMinerClient()
+	librarianMinerServiceClient, err := client2.NewMinerClient(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -164,7 +164,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	registrar, err := libapp.NewRegistrar()
+	registrar, err := libapp.NewRegistrar(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()

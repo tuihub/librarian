@@ -78,6 +78,7 @@ func main() {
 		bc.GetSephirah().GetAuth(),
 		bc.GetSephirah().GetMq(),
 		bc.GetSephirah().GetCache(),
+		bc.GetSephirah().GetConsul(),
 		appSettings,
 	)
 	if err != nil {
@@ -93,30 +94,33 @@ func main() {
 
 func mapperClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
+	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
 ) (mapper.LibrarianMapperServiceClient, error) {
 	if conf.GetMapper() {
-		return client.NewMapperClient()
+		return client.NewMapperClient(c)
 	}
 	return inproc.Mapper, nil
 }
 
 func searcherClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
+	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
 ) (searcher.LibrarianSearcherServiceClient, error) {
 	if conf.GetSearcher() {
-		return client.NewSearcherClient()
+		return client.NewSearcherClient(c)
 	}
 	return inproc.Searcher, nil
 }
 
 func minerClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
+	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
 ) (miner.LibrarianMinerServiceClient, error) {
 	if conf.GetMiner() {
-		return client.NewMinerClient()
+		return client.NewMinerClient(c)
 	}
 	return inproc.Miner, nil
 }

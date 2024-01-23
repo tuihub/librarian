@@ -19,12 +19,12 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(miner_Server *conf.Miner_Server, miner_Data *conf.Miner_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(miner_Server *conf.Miner_Server, miner_Data *conf.Miner_Data, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	minerRepo := data.NewMinerRepo(miner_Data)
 	miner := biz.NewMiner(minerRepo)
 	librarianMinerServiceServer := service.NewLibrarianMinerServiceService(miner)
 	grpcServer := server.NewGRPCServer(miner_Server, librarianMinerServiceServer, settings)
-	registrar, err := libapp.NewRegistrar()
+	registrar, err := libapp.NewRegistrar(consul)
 	if err != nil {
 		return nil, nil, err
 	}

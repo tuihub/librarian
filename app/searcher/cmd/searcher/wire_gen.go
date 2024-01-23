@@ -19,7 +19,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher_Data, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	v, err := data.NewBleve(searcher_Data, settings)
 	if err != nil {
 		return nil, nil, err
@@ -36,7 +36,7 @@ func wireApp(searcher_Server *conf.Searcher_Server, searcher_Data *conf.Searcher
 	searcher := biz.NewSearcher(searcherRepo)
 	librarianSearcherServiceServer := service.NewLibrarianSearcherServiceService(searcher)
 	grpcServer := server.NewGRPCServer(searcher_Server, librarianSearcherServiceServer, settings)
-	registrar, err := libapp.NewRegistrar()
+	registrar, err := libapp.NewRegistrar(consul)
 	if err != nil {
 		return nil, nil, err
 	}

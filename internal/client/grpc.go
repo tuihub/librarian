@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
@@ -12,8 +13,8 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
-func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
-	r, err := libapp.NewDiscovery()
+func NewMapperClient(c *conf.Consul) (mapper.LibrarianMapperServiceClient, error) {
+	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
@@ -30,8 +31,8 @@ func NewMapperClient() (mapper.LibrarianMapperServiceClient, error) {
 	return cli, err
 }
 
-func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
-	r, err := libapp.NewDiscovery()
+func NewSearcherClient(c *conf.Consul) (searcher.LibrarianSearcherServiceClient, error) {
+	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
@@ -48,8 +49,8 @@ func NewSearcherClient() (searcher.LibrarianSearcherServiceClient, error) {
 	return cli, err
 }
 
-func NewMinerClient() (miner.LibrarianMinerServiceClient, error) {
-	r, err := libapp.NewDiscovery()
+func NewMinerClient(c *conf.Consul) (miner.LibrarianMinerServiceClient, error) {
+	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}

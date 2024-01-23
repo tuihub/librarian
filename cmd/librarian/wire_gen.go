@@ -25,7 +25,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -59,7 +59,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	inprocClients := inprocgrpc.NewInprocClients(librarianMapperServiceServer, librarianSearcherServiceServer, librarianMinerServiceServer)
-	librarianMapperServiceClient, err := mapperClientSelector(librarian_EnableServiceDiscovery, inprocClients)
+	librarianMapperServiceClient, err := mapperClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -67,7 +67,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, inprocClients)
+	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -75,7 +75,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, inprocClients)
+	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -83,7 +83,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, sephirah_Porter, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient)
+	librarianSephirahServiceServer, cleanup5, err := service4.NewSephirahService(sephirah_Data, sephirah_Porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianMapperServiceClient, librarianSearcherServiceClient, librarianMinerServiceClient)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -109,7 +109,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	registrar, err := libapp.NewRegistrar()
+	registrar, err := libapp.NewRegistrar(consul)
 	if err != nil {
 		cleanup5()
 		cleanup4()

@@ -57,6 +57,7 @@ func main() {
 		bc.GetAuth(),
 		bc.GetMq(),
 		bc.GetCache(),
+		bc.GetConsul(),
 		appSettings,
 	)
 	if err != nil {

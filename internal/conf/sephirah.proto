@@ -32,4 +32,5 @@ message Sephirah {
   MQ mq = 4;
   Cache cache = 5;
   Porter porter = 6;
+  Consul consul = 7;
 }

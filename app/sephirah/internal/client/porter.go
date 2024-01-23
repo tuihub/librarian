@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -20,8 +21,9 @@ type Porter struct {
 
 func NewPorter(
 	client porter.LibrarianPorterServiceClient,
+	consul *conf.Consul,
 ) (*Porter, error) {
-	checker, err := libapp.NewHealthChecker("porter")
+	checker, err := libapp.NewHealthChecker("porter", consul)
 	if err != nil {
 		return nil, err
 	}
@@ -43,8 +45,8 @@ func (p *Porter) GetServiceAddresses(ctx context.Context) ([]string, error) {
 	return res, nil
 }
 
-func NewPorterClient() (porter.LibrarianPorterServiceClient, error) {
-	r, err := libapp.NewDiscovery()
+func NewPorterClient(c *conf.Consul) (porter.LibrarianPorterServiceClient, error) {
+	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}

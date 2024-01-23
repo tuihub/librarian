@@ -75,6 +75,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:map Source | ToPBAppPackageSource
 	ToPBAppPackage(*modelgebura.AppPackage) *librarian.AppPackage
 	// goverter:matchIgnoreCase
+	// goverter:ignore TokenServerUrl
+	// goverter:ignore Chunks
 	ToPBAppPackageBinary(*modelgebura.AppPackageBinary) *librarian.AppPackageBinary
 	ToPBAppPackageList([]*modelgebura.AppPackage) []*librarian.AppPackage
 

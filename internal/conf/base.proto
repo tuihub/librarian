@@ -35,3 +35,8 @@ message Auth {
 message Cache {
   string driver = 1;
 }
+
+message Consul {
+  string addr = 1;
+  string token = 2;
+}

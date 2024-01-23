@@ -19,7 +19,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	db, cleanup := data.NewNebula(mapper_Data)
 	handle, cleanup2, err := data.NewCayley(mapper_Data, settings)
 	if err != nil {
@@ -35,7 +35,7 @@ func wireApp(mapper_Server *conf.Mapper_Server, mapper_Data *conf.Mapper_Data, s
 	mapper := biz.NewMapper(mapperRepo)
 	librarianMapperServiceServer := service.NewLibrarianMapperServiceService(mapper)
 	grpcServer := server.NewGRPCServer(mapper_Server, librarianMapperServiceServer, settings)
-	registrar, err := libapp.NewRegistrar()
+	registrar, err := libapp.NewRegistrar(consul)
 	if err != nil {
 		cleanup2()
 		cleanup()

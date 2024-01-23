@@ -33,19 +33,19 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_3.LibrarianMinerServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, consul *conf.Consul, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianMapperServiceClient v1.LibrarianMapperServiceClient, librarianSearcherServiceClient v1_2.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_3.LibrarianMinerServiceClient) (v1_4.LibrarianSephirahServiceServer, func(), error) {
 	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
-	librarianPorterServiceClient, err := client.NewPorterClient()
+	librarianPorterServiceClient, err := client.NewPorterClient(consul)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	porter, err := client.NewPorter(librarianPorterServiceClient)
+	porter, err := client.NewPorter(librarianPorterServiceClient, consul)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

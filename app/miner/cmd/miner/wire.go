@@ -17,7 +17,7 @@ import (
 )
 
 // wireApp init kratos application.
-func wireApp(*conf.Miner_Server, *conf.Miner_Data, *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(*conf.Miner_Server, *conf.Miner_Data, *conf.Consul, *libapp.Settings) (*kratos.App, func(), error) {
 	panic(wire.Build(
 		server.ProviderSet,
 		data.ProviderSet,

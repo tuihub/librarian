@@ -1,6 +1,8 @@
 package libapp
 
 import (
+	"github.com/tuihub/librarian/internal/conf"
+
 	"github.com/hashicorp/consul/api"
 )
 
@@ -9,9 +11,12 @@ type HealthChecker struct {
 	serviceName  string
 }
 
-func NewHealthChecker(serviceName string) (*HealthChecker, error) {
+func NewHealthChecker(serviceName string, c *conf.Consul) (*HealthChecker, error) {
 	config := api.DefaultConfig()
-	config.Address = DiscoveryAddress
+	if c != nil {
+		config.Address = c.GetAddr()
+		config.Token = c.GetToken()
+	}
 	client, err := api.NewClient(config)
 	if err != nil {
 		return nil, err

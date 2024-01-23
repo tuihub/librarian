@@ -3,19 +3,22 @@ package libapp
 import (
 	"context"
 
+	"github.com/tuihub/librarian/internal/conf"
+
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/selector"
 	capi "github.com/hashicorp/consul/api"
 )
 
-const DiscoveryAddress = "localhost:8500"
-
 type requiredFeatureKey struct{}
 
-func NewDiscovery() (registry.Discovery, error) {
+func NewDiscovery(c *conf.Consul) (registry.Discovery, error) {
 	config := capi.DefaultConfig()
-	config.Address = DiscoveryAddress
+	if c != nil {
+		config.Address = c.GetAddr()
+		config.Token = c.GetToken()
+	}
 	client, err := capi.NewClient(config)
 	if err != nil {
 		return nil, err
@@ -23,9 +26,12 @@ func NewDiscovery() (registry.Discovery, error) {
 	return consul.New(client), nil
 }
 
-func NewRegistrar() (registry.Registrar, error) {
+func NewRegistrar(c *conf.Consul) (registry.Registrar, error) {
 	config := capi.DefaultConfig()
-	config.Address = DiscoveryAddress
+	if c != nil {
+		config.Address = c.GetAddr()
+		config.Token = c.GetToken()
+	}
 	client, err := capi.NewClient(config)
 	if err != nil {
 		return nil, err

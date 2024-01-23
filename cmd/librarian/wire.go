@@ -34,6 +34,7 @@ func wireApp(
 	*conf.Auth,
 	*conf.MQ,
 	*conf.Cache,
+	*conf.Consul,
 	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(

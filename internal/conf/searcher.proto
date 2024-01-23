@@ -24,4 +24,5 @@ message Searcher {
 
   Server server = 1;
   Data data = 2;
+  Consul consul = 3;
 }

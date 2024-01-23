@@ -52,7 +52,7 @@ services:
 
   consul:
     image: consul:1.15
-    hostname: "discovery"
+    hostname: "consul"
     ports:
       - "127.0.0.1:8500:8500"
     command: "agent -dev -server -client=0.0.0.0 -ui"
