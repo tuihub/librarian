@@ -36,10 +36,6 @@ sephirah:
       no_ssl: true
   cache:
     driver: memory
-mapper:
-  data:
-    cayley:
-      store: sqlite
 searcher:
   data:
     meilisearch:

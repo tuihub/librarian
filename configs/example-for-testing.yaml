@@ -18,10 +18,6 @@ sephirah:
     driver: memory
   cache:
     driver: memory
-mapper:
-  data:
-    cayley:
-      store: memory
 searcher:
   data:
     bleve:

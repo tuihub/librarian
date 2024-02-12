@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -30,14 +29,14 @@ func (g *Gebura) CreateApp(ctx context.Context, app *modelgebura.App) (*modelgeb
 	app.SourceAppID = strconv.FormatInt(int64(app.ID), 10)
 	app.SourceURL = ""
 	app.BoundInternal = app.ID
-	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
-		VertexList: []*mapper.Vertex{{
-			Vid:  int64(app.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
-		}},
-	}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
+	// if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
+	//	VertexList: []*mapper.Vertex{{
+	//		Vid:  int64(app.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+	//	}},
+	// }); err != nil {
+	//	return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
 	if err = g.repo.CreateApp(ctx, app); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

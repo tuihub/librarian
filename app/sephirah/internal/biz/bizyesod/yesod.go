@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 
 type YesodRepo interface {
@@ -35,9 +34,9 @@ type YesodRepo interface {
 }
 
 type Yesod struct {
-	repo     YesodRepo
-	supv     *supervisor.Supervisor
-	mapper   mapper.LibrarianMapperServiceClient
+	repo YesodRepo
+	supv *supervisor.Supervisor
+	// mapper   mapper.LibrarianMapperServiceClient
 	searcher *client.Searcher
 	pullFeed *libmq.Topic[modelyesod.PullFeed]
 }
@@ -46,14 +45,14 @@ func NewYesod(
 	repo YesodRepo,
 	supv *supervisor.Supervisor,
 	cron *libcron.Cron,
-	mClient mapper.LibrarianMapperServiceClient,
+	// mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 ) (*Yesod, error) {
 	y := &Yesod{
-		repo:     repo,
-		supv:     supv,
-		mapper:   mClient,
+		repo: repo,
+		supv: supv,
+		//mapper:   mClient,
 		searcher: sClient,
 		pullFeed: pullFeed,
 	}

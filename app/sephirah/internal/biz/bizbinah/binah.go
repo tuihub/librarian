@@ -7,7 +7,6 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
@@ -15,7 +14,7 @@ type Binah struct {
 	repo     BinahRepo
 	callback *modelbinah.ControlBlock
 	auth     *libauth.Auth
-	mapper   mapper.LibrarianMapperServiceClient
+	// mapper   mapper.LibrarianMapperServiceClient
 	searcher searcher.LibrarianSearcherServiceClient
 }
 
@@ -37,14 +36,14 @@ func NewBinah(
 	repo BinahRepo,
 	callback *modelbinah.ControlBlock,
 	auth *libauth.Auth,
-	mClient mapper.LibrarianMapperServiceClient,
+	// mClient mapper.LibrarianMapperServiceClient,
 	sClient searcher.LibrarianSearcherServiceClient,
 ) *Binah {
 	return &Binah{
 		repo:     repo,
 		callback: callback,
 		auth:     auth,
-		mapper:   mClient,
+		//mapper:   mClient,
 		searcher: sClient,
 	}
 }

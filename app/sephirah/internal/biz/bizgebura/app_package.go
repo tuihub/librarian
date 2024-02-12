@@ -29,14 +29,14 @@ func (g *Gebura) CreateAppPackage(
 	a.ID = id
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
-	if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
-		VertexList: []*mapper.Vertex{{
-			Vid:  int64(a.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
-		}},
-	}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
+	// if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
+	//	VertexList: []*mapper.Vertex{{
+	//		Vid:  int64(a.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+	//	}},
+	// }); err != nil {
+	//	return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
 	if err = g.repo.CreateAppPackage(ctx, claims.UserID, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -145,9 +145,9 @@ func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelg
 		packages[i].SourceID = r.sourceID
 	}
 	if len(vl) > 0 {
-		if _, err = r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
+		// if _, err = r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {
+		//	return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		//}
 		if err = r.g.repo.UpsertAppPackages(ctx, r.sourceID, packages); err != nil {
 			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}

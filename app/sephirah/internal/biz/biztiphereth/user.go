@@ -9,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -39,15 +38,15 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	user.ID = id
-	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
-		{
-			Vid:  int64(user.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
-			Prop: nil,
-		},
-	}}); err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
+	// if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+	//	{
+	//		Vid:  int64(user.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+	//		Prop: nil,
+	//	},
+	// }}); err != nil {
+	//	return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
 	if err = t.repo.CreateUser(ctx, user, claims.UserID); err != nil {
 		logger.Infof("repo CreateUser failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())

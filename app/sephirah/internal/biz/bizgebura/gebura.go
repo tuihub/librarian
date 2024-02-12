@@ -11,7 +11,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -47,9 +46,9 @@ type GeburaRepo interface {
 }
 
 type Gebura struct {
-	auth           *libauth.Auth
-	repo           GeburaRepo
-	mapper         mapper.LibrarianMapperServiceClient
+	auth *libauth.Auth
+	repo GeburaRepo
+	// mapper         mapper.LibrarianMapperServiceClient
 	searcher       *client.Searcher
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex]
 	pullApp        *libmq.Topic[modelangela.PullApp]
@@ -59,16 +58,16 @@ type Gebura struct {
 func NewGebura(
 	repo GeburaRepo,
 	auth *libauth.Auth,
-	mClient mapper.LibrarianMapperServiceClient,
+	// mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
 	pullApp *libmq.Topic[modelangela.PullApp],
 	appCache *libcache.Map[modelgebura.AppID, modelgebura.App],
 ) *Gebura {
 	return &Gebura{
-		auth:           auth,
-		repo:           repo,
-		mapper:         mClient,
+		auth: auth,
+		repo: repo,
+		//mapper:         mClient,
 		searcher:       sClient,
 		updateAppIndex: updateAppIndex,
 		pullApp:        pullApp,

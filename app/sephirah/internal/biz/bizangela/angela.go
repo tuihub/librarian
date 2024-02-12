@@ -13,7 +13,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/wire"
@@ -40,10 +39,10 @@ type Angela struct {
 	mq *libmq.MQ
 }
 type AngelaBase struct {
-	repo     AngelaRepo
-	supv     *supervisor.Supervisor
-	g        bizgebura.GeburaRepo
-	mapper   mapper.LibrarianMapperServiceClient
+	repo AngelaRepo
+	supv *supervisor.Supervisor
+	g    bizgebura.GeburaRepo
+	// mapper   mapper.LibrarianMapperServiceClient
 	searcher *client.Searcher
 	porter   porter.LibrarianPorterServiceClient
 }
@@ -63,15 +62,15 @@ func NewAngelaBase(
 	repo AngelaRepo,
 	supv *supervisor.Supervisor,
 	g bizgebura.GeburaRepo,
-	mClient mapper.LibrarianMapperServiceClient,
+	// mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
 	sClient *client.Searcher,
 ) (*AngelaBase, error) {
 	return &AngelaBase{
-		repo:     repo,
-		supv:     supv,
-		g:        g,
-		mapper:   mClient,
+		repo: repo,
+		supv: supv,
+		g:    g,
+		//mapper:   mClient,
 		porter:   pClient,
 		searcher: sClient,
 	}, nil

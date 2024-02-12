@@ -5,7 +5,6 @@
 package main
 
 import (
-	mapperService "github.com/tuihub/librarian/app/mapper/pkg/service"
 	minerService "github.com/tuihub/librarian/app/miner/pkg/service"
 	searcherService "github.com/tuihub/librarian/app/searcher/pkg/service"
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
@@ -40,7 +39,7 @@ func wireApp(
 	panic(
 		wire.Build(
 			sephirahService.ProviderSet,
-			mapperService.ProviderSet,
+			//mapperService.ProviderSet,
 			searcherService.ProviderSet,
 			minerService.ProviderSet,
 			server.ProviderSet,

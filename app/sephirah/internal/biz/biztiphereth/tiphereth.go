@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 
 type TipherethRepo interface {
@@ -43,11 +42,11 @@ type TipherethRepo interface {
 }
 
 type Tiphereth struct {
-	app         *libapp.Settings
-	auth        *libauth.Auth
-	repo        TipherethRepo
-	supv        *supervisor.Supervisor
-	mapper      mapper.LibrarianMapperServiceClient
+	app  *libapp.Settings
+	auth *libauth.Auth
+	repo TipherethRepo
+	supv *supervisor.Supervisor
+	// mapper      mapper.LibrarianMapperServiceClient
 	searcher    *client.Searcher
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo]
 }
@@ -57,17 +56,17 @@ func NewTiphereth(
 	repo TipherethRepo,
 	auth *libauth.Auth,
 	supv *supervisor.Supervisor,
-	mClient mapper.LibrarianMapperServiceClient,
+	// mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 	cron *libcron.Cron,
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
-		app:         app,
-		auth:        auth,
-		repo:        repo,
-		supv:        supv,
-		mapper:      mClient,
+		app:  app,
+		auth: auth,
+		repo: repo,
+		supv: supv,
+		//mapper:      mClient,
 		searcher:    sClient,
 		pullAccount: pullAccount,
 	}
@@ -112,15 +111,15 @@ func (t *Tiphereth) CreateConfiguredAdmin() {
 		return
 	}
 	user.ID = id
-	if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
-		{
-			Vid:  int64(user.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
-			Prop: nil,
-		},
-	}}); err != nil {
-		return
-	}
+	// if _, err = t.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: []*mapper.Vertex{
+	//	{
+	//		Vid:  int64(user.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_ABSTRACT,
+	//		Prop: nil,
+	//	},
+	// }}); err != nil {
+	//	return
+	//}
 	if err = t.repo.CreateUser(ctx, user, user.ID); err != nil {
 		logger.Infof("repo CreateUser failed: %s", err.Error())
 		return

@@ -23,7 +23,6 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/google/wire"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 )
 
 func NewSephirahService(
@@ -35,7 +34,7 @@ func NewSephirahService(
 	*libcron.Cron,
 	libcache.Store,
 	*libapp.Settings,
-	mapper.LibrarianMapperServiceClient,
+	//mapper.LibrarianMapperServiceClient,
 	searcher.LibrarianSearcherServiceClient,
 	miner.LibrarianMinerServiceClient,
 ) (pb.LibrarianSephirahServiceServer, func(), error) {

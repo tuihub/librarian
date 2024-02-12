@@ -9,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
@@ -38,7 +37,7 @@ var (
 
 var ProviderSet = wire.NewSet(
 	newApp,
-	mapperClientSelector,
+	// mapperClientSelector,
 	searcherClientSelector,
 	minerClientSelector,
 )
@@ -92,16 +91,16 @@ func main() {
 	}
 }
 
-func mapperClientSelector(
-	conf *conf.Librarian_EnableServiceDiscovery,
-	c *conf.Consul,
-	inproc *inprocgrpc.InprocClients,
-) (mapper.LibrarianMapperServiceClient, error) {
-	if conf.GetMapper() {
-		return client.NewMapperClient(c)
-	}
-	return inproc.Mapper, nil
-}
+// func mapperClientSelector(
+//	conf *conf.Librarian_EnableServiceDiscovery,
+//	c *conf.Consul,
+//	inproc *inprocgrpc.InprocClients,
+// ) (mapper.LibrarianMapperServiceClient, error) {
+//	if conf.GetMapper() {
+//		return client.NewMapperClient(c)
+//	}
+//	return inproc.Mapper, nil
+//}
 
 func searcherClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,

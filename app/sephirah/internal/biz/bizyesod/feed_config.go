@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
-	mapper "github.com/tuihub/protos/pkg/librarian/mapper/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -26,14 +25,14 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	config.ID = id
-	if _, err = y.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
-		VertexList: []*mapper.Vertex{{
-			Vid:  int64(config.ID),
-			Type: mapper.VertexType_VERTEX_TYPE_METADATA,
-		}},
-	}); err != nil {
-		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
+	// if _, err = y.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
+	//	VertexList: []*mapper.Vertex{{
+	//		Vid:  int64(config.ID),
+	//		Type: mapper.VertexType_VERTEX_TYPE_METADATA,
+	//	}},
+	// }); err != nil {
+	//	return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	//}
 	err = y.repo.CreateFeedConfig(ctx, claims.UserID, config)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
