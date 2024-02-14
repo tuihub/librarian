@@ -27,8 +27,8 @@ message MQ {
 }
 
 message Auth {
-  string salt = 1;
-  string issuer = 2;
+  string password_salt = 1;
+  string jwt_issuer = 2;
   string jwt_secret = 3;
 }
 

@@ -24,7 +24,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahData, porter *conf.Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -65,14 +65,14 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirah_Data, sephirah_Porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
+	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirahData, porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	grpcServer, err := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
+	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -80,7 +80,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings)
 	if err != nil {
 		cleanup4()
 		cleanup3()

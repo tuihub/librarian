@@ -19,7 +19,7 @@ type binahRepo struct {
 	buckets map[bizbinah.Bucket]string
 }
 
-func NewBinahRepo(c *conf.Sephirah_Data) (bizbinah.BinahRepo, error) {
+func NewBinahRepo(c *conf.SephirahData) (bizbinah.BinahRepo, error) {
 	if c == nil || c.GetS3() == nil {
 		return new(binahRepo), nil
 	}

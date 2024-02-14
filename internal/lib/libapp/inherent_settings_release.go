@@ -8,6 +8,6 @@ func getInherentSettings() InherentSettings {
 	return InherentSettings{
 		EnablePanicRecovery: true,
 		LogLevel:            libzap.ErrorLevel,
-		DefaultConfPath:     "./config.yaml",
+		DefaultConfPath:     "",
 	}
 }

@@ -32,7 +32,7 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahData, porter *conf.Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -41,7 +41,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	if err != nil {
 		return nil, nil, err
 	}
-	entClient, cleanup2, err := data.NewSQLClient(sephirah_Data)
+	entClient, cleanup2, err := data.NewSQLClient(sephirahData, settings)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -54,13 +54,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		cleanup()
 		return nil, nil, err
 	}
-	porter, err := client.NewPorter(librarianPorterServiceClient, consul)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, libauthAuth, porter)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libauthAuth, clientPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -114,7 +114,7 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, topic, libmqTopic, libcacheMap)
-	binahRepo, err := data.NewBinahRepo(sephirah_Data)
+	binahRepo, err := data.NewBinahRepo(sephirahData)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -146,13 +146,13 @@ func wireApp(sephirah_Server *conf.Sephirah_Server, sephirah_Data *conf.Sephirah
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v)
-	grpcServer, err := server.NewGRPCServer(sephirah_Server, libauthAuth, librarianSephirahServiceServer, settings)
+	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirah_Server, libauthAuth, settings)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()

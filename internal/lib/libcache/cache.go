@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/dgraph-io/ristretto"
 	"github.com/google/wire"
@@ -12,10 +13,17 @@ import (
 
 var ProviderSet = wire.NewSet(NewStore)
 
-func NewStore(conf *conf.Cache) (Store, error) {
+func NewStore(c *conf.Cache) (Store, error) {
 	var res Store
 	var err error
-	switch conf.GetDriver() {
+	if c == nil {
+		c = new(conf.Cache)
+	}
+	if c.GetDriver() == "" {
+		logger.Warnf("cache driver is not set, using memory as default")
+		c.Driver = "memory"
+	}
+	switch c.GetDriver() {
 	case "memory":
 		res, err = newRistrettoCache()
 	case "redis":

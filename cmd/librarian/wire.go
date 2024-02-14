@@ -24,9 +24,9 @@ import (
 // wireApp init kratos application.
 func wireApp(
 	*conf.Librarian_EnableServiceDiscovery,
-	*conf.Sephirah_Server,
-	*conf.Sephirah_Data,
-	*conf.Sephirah_Porter,
+	*conf.SephirahServer,
+	*conf.SephirahData,
+	*conf.Porter,
 	*conf.Mapper_Data,
 	*conf.Searcher_Data,
 	*conf.Miner_Data,

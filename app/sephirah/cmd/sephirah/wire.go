@@ -25,9 +25,9 @@ import (
 
 // wireApp init kratos application.
 func wireApp(
-	*conf.Sephirah_Server,
-	*conf.Sephirah_Data,
-	*conf.Sephirah_Porter,
+	*conf.SephirahServer,
+	*conf.SephirahData,
+	*conf.Porter,
 	*conf.Auth,
 	*conf.MQ,
 	*conf.Cache,

@@ -5,29 +5,29 @@ option go_package = "Librarian/internal/conf;conf";
 
 import "conf/base.proto";
 
+message SephirahServer {
+  GRPC grpc = 1;
+  GRPC grpc_web = 2;
+}
+
+message SephirahData {
+  message S3 {
+    string end_point = 1;
+    string access_key = 2;
+    string secret_key = 3;
+    bool use_ssl = 4;
+  }
+  Database database = 1;
+  S3 s3 = 2;
+}
+
+message Porter {
+  repeated string trusted_address = 1;
+}
+
 message Sephirah {
-  message Server {
-    GRPC grpc = 1;
-    GRPC grpc_web = 2;
-  }
-
-  message Data {
-    message S3 {
-      string end_point = 1;
-      string access_key = 2;
-      string secret_key = 3;
-      bool use_ssl = 4;
-    }
-    Database database = 1;
-    S3 s3 = 2;
-  }
-
-  message Porter {
-    repeated string trusted_address = 1;
-  }
-
-  Server server = 1;
-  Data data = 2;
+  SephirahServer server = 1;
+  SephirahData data = 2;
   Auth auth = 3;
   MQ mq = 4;
   Cache cache = 5;

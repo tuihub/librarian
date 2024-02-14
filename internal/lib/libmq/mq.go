@@ -32,6 +32,13 @@ type pubSub struct {
 func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
+	if c == nil {
+		c = new(conf.MQ)
+	}
+	if c.GetDriver() == "" {
+		logger.Warnf("mq driver is not set, using memory as default")
+		c.Driver = "memory"
+	}
 	switch c.GetDriver() {
 	case "memory":
 		ps = newGoChannelAdapter(loggerAdapter)

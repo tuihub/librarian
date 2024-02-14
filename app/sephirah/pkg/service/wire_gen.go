@@ -32,8 +32,8 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf.Sephirah_Porter, consul *conf.Consul, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianSearcherServiceClient v1.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_2.LibrarianMinerServiceClient) (v1_3.LibrarianSephirahServiceServer, func(), error) {
-	entClient, cleanup, err := data.NewSQLClient(sephirah_Data)
+func NewSephirahService(sephirahData *conf.SephirahData, porter *conf.Porter, consul *conf.Consul, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianSearcherServiceClient v1.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_2.LibrarianMinerServiceClient) (v1_3.LibrarianSephirahServiceServer, func(), error) {
+	entClient, cleanup, err := data.NewSQLClient(sephirahData, settings)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -44,12 +44,12 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		cleanup()
 		return nil, nil, err
 	}
-	porter, err := client.NewPorter(librarianPorterServiceClient, consul)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	supervisorSupervisor, err := supervisor.NewSupervisor(sephirah_Porter, auth, porter)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, auth, clientPorter)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -86,7 +86,7 @@ func NewSephirahService(sephirah_Data *conf.Sephirah_Data, sephirah_Porter *conf
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, auth, searcher, topic, libmqTopic, libcacheMap)
-	binahRepo, err := data.NewBinahRepo(sephirah_Data)
+	binahRepo, err := data.NewBinahRepo(sephirahData)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

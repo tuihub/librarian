@@ -68,16 +68,16 @@ func main() {
 
 	app, cleanup, err := wireApp(
 		bc.GetEnableServiceDiscovery(),
-		bc.GetSephirah().GetServer(),
-		bc.GetSephirah().GetData(),
-		bc.GetSephirah().GetPorter(),
+		bc.GetServer(),
+		bc.GetData(),
+		bc.GetPorter(),
 		bc.GetMapper().GetData(),
 		bc.GetSearcher().GetData(),
 		bc.GetMiner().GetData(),
-		bc.GetSephirah().GetAuth(),
-		bc.GetSephirah().GetMq(),
-		bc.GetSephirah().GetCache(),
-		bc.GetSephirah().GetConsul(),
+		bc.GetAuth(),
+		bc.GetMq(),
+		bc.GetCache(),
+		bc.GetConsul(),
 		appSettings,
 	)
 	if err != nil {

@@ -107,7 +107,7 @@ func (a *Auth) GenerateToken(
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
 		RegisteredClaims: jwtv4.RegisteredClaims{
-			Issuer:    a.config.GetIssuer(),
+			Issuer:    a.config.GetJwtIssuer(),
 			Subject:   "",
 			Audience:  nil,
 			ExpiresAt: jwtv4.NewNumericDate(expireTime),

@@ -22,8 +22,8 @@ Config file is required. The config template is provided in [configs](configs)
 
 ### Command line arguments
 
-- `config` path, required, eg: --conf config.yaml
-- `data` path, required, eg: --data /opt/librarian/data
+- `config` path, eg: --conf config.yaml
+- `data` path, eg: --data /opt/librarian/data
 
 ### Environment variables
 

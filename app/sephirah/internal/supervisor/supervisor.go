@@ -32,12 +32,12 @@ type Supervisor struct {
 }
 
 func NewSupervisor(
-	c *conf.Sephirah_Porter,
+	c *conf.Porter,
 	auth *libauth.Auth,
 	porter *client.Porter,
 ) (*Supervisor, error) {
 	if c == nil {
-		c = new(conf.Sephirah_Porter)
+		c = new(conf.Porter)
 	}
 	return &Supervisor{
 		porter:                 porter,

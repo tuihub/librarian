@@ -3,6 +3,7 @@ package kratos.api;
 
 option go_package = "Librarian/internal/conf;conf";
 
+import "conf/base.proto";
 import "conf/sephirah.proto";
 import "conf/mapper.proto";
 import "conf/searcher.proto";
@@ -15,10 +16,18 @@ message Librarian {
     bool porter = 3;
     bool miner = 4;
   }
-  EnableServiceDiscovery enable_service_discovery = 1;
-  Sephirah sephirah = 2;
-  Mapper mapper = 3;
-  Searcher searcher = 4;
-  Miner miner = 5;
+  EnableServiceDiscovery enable_service_discovery = 10;
+
+  SephirahServer server = 1;
+  SephirahData data = 2;
+  Auth auth = 3;
+  MQ mq = 4;
+  Cache cache = 5;
+  Porter porter = 6;
+  Consul consul = 7;
+
+  Mapper mapper = 11;
+  Searcher searcher = 12;
+  Miner miner = 13;
 }
 

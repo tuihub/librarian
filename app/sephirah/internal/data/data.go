@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"path"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/migrate"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"entgo.io/ent/dialect/sql"
@@ -31,6 +33,12 @@ var ProviderSet = wire.NewSet(
 	NewBinahRepo,
 )
 
+const (
+	driverMemory   = "memory"
+	driverSQLite3  = "sqlite3"
+	driverPostgres = "postgres"
+)
+
 // Data .
 type Data struct {
 	db *ent.Client
@@ -43,13 +51,22 @@ func NewData(db *ent.Client) *Data {
 	}
 }
 
-func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
+func NewSQLClient(c *conf.SephirahData, app *libapp.Settings) (*ent.Client, func(), error) {
 	var driverName, dataSourceName string
+	if c == nil {
+		c = new(conf.SephirahData)
+	}
 	driverName = c.GetDatabase().GetDriver()
+	if driverName == "" {
+		logger.Warnf("database driver is empty, using memory mode.")
+		driverName = driverMemory
+	}
 	switch driverName {
-	case "sqlite3":
+	case driverMemory:
 		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
-	case "postgres":
+	case driverSQLite3:
+		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1", path.Join(app.DataPath, "librarian.db"))
+	case driverPostgres:
 		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
 			c.GetDatabase().GetHost(),
 			c.GetDatabase().GetPort(),
@@ -63,9 +80,12 @@ func NewSQLClient(c *conf.Sephirah_Data) (*ent.Client, func(), error) {
 	default:
 		return nil, func() {}, errors.New("unsupported sql database")
 	}
+	if driverName == driverMemory {
+		driverName = driverSQLite3
+	}
 	client, err := ent.Open(driverName, dataSourceName)
 	if err != nil {
-		logger.Errorf("failed opening connection to postgres: %v", err)
+		logger.Errorf("failed opening connection to database: %v", err)
 		return nil, func() {}, err
 	}
 	// Run the auto migration tool.

@@ -2,10 +2,11 @@ package data
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/tuihub/librarian/app/searcher/internal/biz"
+	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/blevesearch/bleve/v2"
 	"github.com/google/wire"
@@ -31,7 +32,22 @@ func NewSearcherRepo(
 			search: b,
 		}, nil
 	}
-	return nil, errors.New("no valid search backend")
+	logger.Warnf("no valid search backend, search function will not work")
+	return &defaultSearcherRepo{sf: sf}, nil
+}
+
+type defaultSearcherRepo struct {
+	sf *sonyflake.Sonyflake
+}
+
+func (d defaultSearcherRepo) DescribeID(
+	context.Context, model.InternalID, biz.Index, bool, string) error {
+	return nil // search disabled
+}
+
+func (d defaultSearcherRepo) SearchID(
+	context.Context, biz.Index, model.Paging, string) ([]*biz.SearchResult, error) {
+	return nil, nil // search disabled
 }
 
 func NewSnowFlake() *sonyflake.Sonyflake {
@@ -42,6 +58,11 @@ func NewSnowFlake() *sonyflake.Sonyflake {
 		},
 		CheckMachineID: nil,
 	})
+}
+
+func (d defaultSearcherRepo) NewID(ctx context.Context) (int64, error) {
+	id, err := d.sf.NextID()
+	return int64(id), err
 }
 
 func (r *bleveSearcherRepo) NewID(ctx context.Context) (int64, error) {

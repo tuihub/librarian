@@ -1,8 +1,6 @@
 package libauth
 
 import (
-	"errors"
-
 	"github.com/tuihub/librarian/internal/conf"
 
 	"github.com/google/wire"
@@ -16,11 +14,11 @@ type Auth struct {
 
 func NewAuth(config *conf.Auth) (*Auth, error) {
 	if config == nil {
-		return nil, errors.New("")
+		config = new(conf.Auth)
 	}
 	return &Auth{config: conf.Auth{
-		Salt:      config.GetSalt(),
-		Issuer:    config.GetIssuer(),
-		JwtSecret: config.GetJwtSecret(),
+		PasswordSalt: config.GetPasswordSalt(),
+		JwtIssuer:    config.GetJwtIssuer(),
+		JwtSecret:    config.GetJwtSecret(),
 	}}, nil
 }

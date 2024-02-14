@@ -50,7 +50,7 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 	if err := checkDataPath(flags.DataPath); err != nil {
 		return nil, err
 	}
-	initLogger(id, name, version, flags.DataPath, getInherentSettings().LogLevel)
+	initLogger(id, name, version, flags.DataPath, getInherentSettings().LogLevel, true)
 	if e, err := loadEnv(); err != nil {
 		return nil, err
 	} else {
@@ -81,11 +81,14 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 			as.LogLevel = libzap.ErrorLevel
 		}
 	}
-	initLogger(id, name, version, as.DataPath, as.LogLevel)
+	initLogger(id, name, version, as.DataPath, as.LogLevel, as.ConfPath == "")
 	return &as, nil
 }
 
 func (a *Settings) LoadConfig(conf interface{}) {
+	if a.ConfPath == "" {
+		return
+	}
 	c := config.New(
 		config.WithSource(
 			file.NewSource(a.ConfPath),
@@ -148,8 +151,14 @@ func loadEnv() (config.Config, error) {
 	return c, nil
 }
 
-func initLogger(id, name, version, dataPath string, logLevel libzap.Level) {
-	logger := log.With(zap.NewLogger(libzap.New(dataPath, logLevel)),
+func initLogger(id, name, version, dataPath string, logLevel libzap.Level, useStdout bool) {
+	var l *zap.Logger
+	if useStdout {
+		l = zap.NewLogger(libzap.NewStdout(logLevel))
+	} else {
+		l = zap.NewLogger(libzap.New(dataPath, logLevel))
+	}
+	logger := log.With(l,
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,

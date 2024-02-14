@@ -18,7 +18,7 @@ import (
 
 func NewGrpcWebServer(
 	s *grpc.Server,
-	c *conf.Sephirah_Server,
+	c *conf.SephirahServer,
 	auth *libauth.Auth,
 	app *libapp.Settings,
 ) (*http.Server, error) {

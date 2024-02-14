@@ -1,6 +1,7 @@
 package libzap
 
 import (
+	"os"
 	"path"
 
 	"go.uber.org/zap"
@@ -66,6 +67,16 @@ func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Log
 	}
 
 	return zap.New(zapcore.NewTee(cores...), zapOptions...)
+}
+
+func NewStdout(accessLogLevel Level) *zap.Logger {
+	encoderConfig := zap.NewProductionEncoderConfig()
+	core := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderConfig),
+		zapcore.Lock(os.Stdout),
+		accessLogLevel,
+	)
+	return zap.New(core)
 }
 
 func New(basePath string, accessLogLevel Level) *zap.Logger {

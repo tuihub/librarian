@@ -15,7 +15,7 @@ import (
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(
-	c *conf.Sephirah_Server,
+	c *conf.SephirahServer,
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
 	app *libapp.Settings,
