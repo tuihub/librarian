@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
@@ -41,6 +42,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizUserSessionList([]*ent.UserSession) []*modeltiphereth.UserSession
 
 	// goverter:matchIgnoreCase
+	// goverter:map SystemType | ToBizSystemType
 	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
 
 	// goverter:matchIgnoreCase
@@ -50,6 +52,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToBizPorterStatus
+	// goverter:ignore ConnectionStatus
 	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
 	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
 
@@ -208,5 +211,26 @@ func ToBizImageStatus(s image.Status) modelchesed.ImageStatus {
 		return modelchesed.ImageStatusScanned
 	default:
 		return modelchesed.ImageStatusUnspecified
+	}
+}
+
+func ToBizSystemType(s deviceinfo.SystemType) modeltiphereth.SystemType {
+	switch s {
+	case deviceinfo.SystemTypeUnknown:
+		return modeltiphereth.SystemTypeUnspecified
+	case deviceinfo.SystemTypeIos:
+		return modeltiphereth.SystemTypeIOS
+	case deviceinfo.SystemTypeAndroid:
+		return modeltiphereth.SystemTypeAndroid
+	case deviceinfo.SystemTypeWeb:
+		return modeltiphereth.SystemTypeWeb
+	case deviceinfo.SystemTypeWindows:
+		return modeltiphereth.SystemTypeWindows
+	case deviceinfo.SystemTypeMacos:
+		return modeltiphereth.SystemTypeMacOS
+	case deviceinfo.SystemTypeLinux:
+		return modeltiphereth.SystemTypeLinux
+	default:
+		return modeltiphereth.SystemTypeUnspecified
 	}
 }

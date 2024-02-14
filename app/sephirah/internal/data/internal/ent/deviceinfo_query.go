@@ -300,12 +300,12 @@ func (diq *DeviceInfoQuery) WithUserSession(opts ...func(*UserSessionQuery)) *De
 // Example:
 //
 //	var v []struct {
-//		DeviceModel string `json:"device_model,omitempty"`
+//		DeviceName string `json:"device_name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.DeviceInfo.Query().
-//		GroupBy(deviceinfo.FieldDeviceModel).
+//		GroupBy(deviceinfo.FieldDeviceName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (diq *DeviceInfoQuery) GroupBy(field string, fields ...string) *DeviceInfoGroupBy {
@@ -323,11 +323,11 @@ func (diq *DeviceInfoQuery) GroupBy(field string, fields ...string) *DeviceInfoG
 // Example:
 //
 //	var v []struct {
-//		DeviceModel string `json:"device_model,omitempty"`
+//		DeviceName string `json:"device_name,omitempty"`
 //	}
 //
 //	client.DeviceInfo.Query().
-//		Select(deviceinfo.FieldDeviceModel).
+//		Select(deviceinfo.FieldDeviceName).
 //		Scan(ctx, &v)
 func (diq *DeviceInfoQuery) Select(fields ...string) *DeviceInfoSelect {
 	diq.ctx.Fields = append(diq.ctx.Fields, fields...)

@@ -4513,7 +4513,8 @@ type DeviceInfoMutation struct {
 	op                         Op
 	typ                        string
 	id                         *model.InternalID
-	device_model               *string
+	device_name                *string
+	system_type                *deviceinfo.SystemType
 	system_version             *string
 	client_name                *string
 	client_source_code_address *string
@@ -4633,40 +4634,76 @@ func (m *DeviceInfoMutation) IDs(ctx context.Context) ([]model.InternalID, error
 	}
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (m *DeviceInfoMutation) SetDeviceModel(s string) {
-	m.device_model = &s
+// SetDeviceName sets the "device_name" field.
+func (m *DeviceInfoMutation) SetDeviceName(s string) {
+	m.device_name = &s
 }
 
-// DeviceModel returns the value of the "device_model" field in the mutation.
-func (m *DeviceInfoMutation) DeviceModel() (r string, exists bool) {
-	v := m.device_model
+// DeviceName returns the value of the "device_name" field in the mutation.
+func (m *DeviceInfoMutation) DeviceName() (r string, exists bool) {
+	v := m.device_name
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDeviceModel returns the old "device_model" field's value of the DeviceInfo entity.
+// OldDeviceName returns the old "device_name" field's value of the DeviceInfo entity.
 // If the DeviceInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceInfoMutation) OldDeviceModel(ctx context.Context) (v string, err error) {
+func (m *DeviceInfoMutation) OldDeviceName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceModel is only allowed on UpdateOne operations")
+		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceModel requires an ID field in the mutation")
+		return v, errors.New("OldDeviceName requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceModel: %w", err)
+		return v, fmt.Errorf("querying old value for OldDeviceName: %w", err)
 	}
-	return oldValue.DeviceModel, nil
+	return oldValue.DeviceName, nil
 }
 
-// ResetDeviceModel resets all changes to the "device_model" field.
-func (m *DeviceInfoMutation) ResetDeviceModel() {
-	m.device_model = nil
+// ResetDeviceName resets all changes to the "device_name" field.
+func (m *DeviceInfoMutation) ResetDeviceName() {
+	m.device_name = nil
+}
+
+// SetSystemType sets the "system_type" field.
+func (m *DeviceInfoMutation) SetSystemType(dt deviceinfo.SystemType) {
+	m.system_type = &dt
+}
+
+// SystemType returns the value of the "system_type" field in the mutation.
+func (m *DeviceInfoMutation) SystemType() (r deviceinfo.SystemType, exists bool) {
+	v := m.system_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSystemType returns the old "system_type" field's value of the DeviceInfo entity.
+// If the DeviceInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceInfoMutation) OldSystemType(ctx context.Context) (v deviceinfo.SystemType, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSystemType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSystemType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSystemType: %w", err)
+	}
+	return oldValue.SystemType, nil
+}
+
+// ResetSystemType resets all changes to the "system_type" field.
+func (m *DeviceInfoMutation) ResetSystemType() {
+	m.system_type = nil
 }
 
 // SetSystemVersion sets the "system_version" field.
@@ -4973,9 +5010,12 @@ func (m *DeviceInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceInfoMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.device_model != nil {
-		fields = append(fields, deviceinfo.FieldDeviceModel)
+	fields := make([]string, 0, 8)
+	if m.device_name != nil {
+		fields = append(fields, deviceinfo.FieldDeviceName)
+	}
+	if m.system_type != nil {
+		fields = append(fields, deviceinfo.FieldSystemType)
 	}
 	if m.system_version != nil {
 		fields = append(fields, deviceinfo.FieldSystemVersion)
@@ -5003,8 +5043,10 @@ func (m *DeviceInfoMutation) Fields() []string {
 // schema.
 func (m *DeviceInfoMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case deviceinfo.FieldDeviceModel:
-		return m.DeviceModel()
+	case deviceinfo.FieldDeviceName:
+		return m.DeviceName()
+	case deviceinfo.FieldSystemType:
+		return m.SystemType()
 	case deviceinfo.FieldSystemVersion:
 		return m.SystemVersion()
 	case deviceinfo.FieldClientName:
@@ -5026,8 +5068,10 @@ func (m *DeviceInfoMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *DeviceInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case deviceinfo.FieldDeviceModel:
-		return m.OldDeviceModel(ctx)
+	case deviceinfo.FieldDeviceName:
+		return m.OldDeviceName(ctx)
+	case deviceinfo.FieldSystemType:
+		return m.OldSystemType(ctx)
 	case deviceinfo.FieldSystemVersion:
 		return m.OldSystemVersion(ctx)
 	case deviceinfo.FieldClientName:
@@ -5049,12 +5093,19 @@ func (m *DeviceInfoMutation) OldField(ctx context.Context, name string) (ent.Val
 // type.
 func (m *DeviceInfoMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case deviceinfo.FieldDeviceModel:
+	case deviceinfo.FieldDeviceName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetDeviceModel(v)
+		m.SetDeviceName(v)
+		return nil
+	case deviceinfo.FieldSystemType:
+		v, ok := value.(deviceinfo.SystemType)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSystemType(v)
 		return nil
 	case deviceinfo.FieldSystemVersion:
 		v, ok := value.(string)
@@ -5147,8 +5198,11 @@ func (m *DeviceInfoMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *DeviceInfoMutation) ResetField(name string) error {
 	switch name {
-	case deviceinfo.FieldDeviceModel:
-		m.ResetDeviceModel()
+	case deviceinfo.FieldDeviceName:
+		m.ResetDeviceName()
+		return nil
+	case deviceinfo.FieldSystemType:
+		m.ResetSystemType()
 		return nil
 	case deviceinfo.FieldSystemVersion:
 		m.ResetSystemVersion()

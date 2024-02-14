@@ -15,7 +15,8 @@ type DeviceInfo struct {
 func (DeviceInfo) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.String("device_model"),
+		field.String("device_name"),
+		field.Enum("system_type").Values("ios", "android", "web", "windows", "macos", "linux", "unknown"),
 		field.String("system_version"),
 		field.String("client_name"),
 		field.String("client_source_code_address"),

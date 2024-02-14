@@ -56,9 +56,9 @@ func IDLTE(id model.InternalID) predicate.DeviceInfo {
 	return predicate.DeviceInfo(sql.FieldLTE(FieldID, id))
 }
 
-// DeviceModel applies equality check predicate on the "device_model" field. It's identical to DeviceModelEQ.
-func DeviceModel(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldEQ(FieldDeviceModel, v))
+// DeviceName applies equality check predicate on the "device_name" field. It's identical to DeviceNameEQ.
+func DeviceName(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEQ(FieldDeviceName, v))
 }
 
 // SystemVersion applies equality check predicate on the "system_version" field. It's identical to SystemVersionEQ.
@@ -91,69 +91,89 @@ func CreatedAt(v time.Time) predicate.DeviceInfo {
 	return predicate.DeviceInfo(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// DeviceModelEQ applies the EQ predicate on the "device_model" field.
-func DeviceModelEQ(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldEQ(FieldDeviceModel, v))
+// DeviceNameEQ applies the EQ predicate on the "device_name" field.
+func DeviceNameEQ(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEQ(FieldDeviceName, v))
 }
 
-// DeviceModelNEQ applies the NEQ predicate on the "device_model" field.
-func DeviceModelNEQ(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldNEQ(FieldDeviceModel, v))
+// DeviceNameNEQ applies the NEQ predicate on the "device_name" field.
+func DeviceNameNEQ(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNEQ(FieldDeviceName, v))
 }
 
-// DeviceModelIn applies the In predicate on the "device_model" field.
-func DeviceModelIn(vs ...string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldIn(FieldDeviceModel, vs...))
+// DeviceNameIn applies the In predicate on the "device_name" field.
+func DeviceNameIn(vs ...string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldIn(FieldDeviceName, vs...))
 }
 
-// DeviceModelNotIn applies the NotIn predicate on the "device_model" field.
-func DeviceModelNotIn(vs ...string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldNotIn(FieldDeviceModel, vs...))
+// DeviceNameNotIn applies the NotIn predicate on the "device_name" field.
+func DeviceNameNotIn(vs ...string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNotIn(FieldDeviceName, vs...))
 }
 
-// DeviceModelGT applies the GT predicate on the "device_model" field.
-func DeviceModelGT(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldGT(FieldDeviceModel, v))
+// DeviceNameGT applies the GT predicate on the "device_name" field.
+func DeviceNameGT(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldGT(FieldDeviceName, v))
 }
 
-// DeviceModelGTE applies the GTE predicate on the "device_model" field.
-func DeviceModelGTE(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldGTE(FieldDeviceModel, v))
+// DeviceNameGTE applies the GTE predicate on the "device_name" field.
+func DeviceNameGTE(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldGTE(FieldDeviceName, v))
 }
 
-// DeviceModelLT applies the LT predicate on the "device_model" field.
-func DeviceModelLT(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldLT(FieldDeviceModel, v))
+// DeviceNameLT applies the LT predicate on the "device_name" field.
+func DeviceNameLT(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldLT(FieldDeviceName, v))
 }
 
-// DeviceModelLTE applies the LTE predicate on the "device_model" field.
-func DeviceModelLTE(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldLTE(FieldDeviceModel, v))
+// DeviceNameLTE applies the LTE predicate on the "device_name" field.
+func DeviceNameLTE(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldLTE(FieldDeviceName, v))
 }
 
-// DeviceModelContains applies the Contains predicate on the "device_model" field.
-func DeviceModelContains(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldContains(FieldDeviceModel, v))
+// DeviceNameContains applies the Contains predicate on the "device_name" field.
+func DeviceNameContains(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldContains(FieldDeviceName, v))
 }
 
-// DeviceModelHasPrefix applies the HasPrefix predicate on the "device_model" field.
-func DeviceModelHasPrefix(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldHasPrefix(FieldDeviceModel, v))
+// DeviceNameHasPrefix applies the HasPrefix predicate on the "device_name" field.
+func DeviceNameHasPrefix(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldHasPrefix(FieldDeviceName, v))
 }
 
-// DeviceModelHasSuffix applies the HasSuffix predicate on the "device_model" field.
-func DeviceModelHasSuffix(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldHasSuffix(FieldDeviceModel, v))
+// DeviceNameHasSuffix applies the HasSuffix predicate on the "device_name" field.
+func DeviceNameHasSuffix(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldHasSuffix(FieldDeviceName, v))
 }
 
-// DeviceModelEqualFold applies the EqualFold predicate on the "device_model" field.
-func DeviceModelEqualFold(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldEqualFold(FieldDeviceModel, v))
+// DeviceNameEqualFold applies the EqualFold predicate on the "device_name" field.
+func DeviceNameEqualFold(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEqualFold(FieldDeviceName, v))
 }
 
-// DeviceModelContainsFold applies the ContainsFold predicate on the "device_model" field.
-func DeviceModelContainsFold(v string) predicate.DeviceInfo {
-	return predicate.DeviceInfo(sql.FieldContainsFold(FieldDeviceModel, v))
+// DeviceNameContainsFold applies the ContainsFold predicate on the "device_name" field.
+func DeviceNameContainsFold(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldContainsFold(FieldDeviceName, v))
+}
+
+// SystemTypeEQ applies the EQ predicate on the "system_type" field.
+func SystemTypeEQ(v SystemType) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEQ(FieldSystemType, v))
+}
+
+// SystemTypeNEQ applies the NEQ predicate on the "system_type" field.
+func SystemTypeNEQ(v SystemType) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNEQ(FieldSystemType, v))
+}
+
+// SystemTypeIn applies the In predicate on the "system_type" field.
+func SystemTypeIn(vs ...SystemType) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldIn(FieldSystemType, vs...))
+}
+
+// SystemTypeNotIn applies the NotIn predicate on the "system_type" field.
+func SystemTypeNotIn(vs ...SystemType) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNotIn(FieldSystemType, vs...))
 }
 
 // SystemVersionEQ applies the EQ predicate on the "system_version" field.

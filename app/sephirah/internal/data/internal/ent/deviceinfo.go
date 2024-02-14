@@ -18,8 +18,10 @@ type DeviceInfo struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
-	// DeviceModel holds the value of the "device_model" field.
-	DeviceModel string `json:"device_model,omitempty"`
+	// DeviceName holds the value of the "device_name" field.
+	DeviceName string `json:"device_name,omitempty"`
+	// SystemType holds the value of the "system_type" field.
+	SystemType deviceinfo.SystemType `json:"system_type,omitempty"`
 	// SystemVersion holds the value of the "system_version" field.
 	SystemVersion string `json:"system_version,omitempty"`
 	// ClientName holds the value of the "client_name" field.
@@ -64,7 +66,7 @@ func (*DeviceInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case deviceinfo.FieldID:
 			values[i] = new(sql.NullInt64)
-		case deviceinfo.FieldDeviceModel, deviceinfo.FieldSystemVersion, deviceinfo.FieldClientName, deviceinfo.FieldClientSourceCodeAddress, deviceinfo.FieldClientVersion:
+		case deviceinfo.FieldDeviceName, deviceinfo.FieldSystemType, deviceinfo.FieldSystemVersion, deviceinfo.FieldClientName, deviceinfo.FieldClientSourceCodeAddress, deviceinfo.FieldClientVersion:
 			values[i] = new(sql.NullString)
 		case deviceinfo.FieldUpdatedAt, deviceinfo.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -91,11 +93,17 @@ func (di *DeviceInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				di.ID = model.InternalID(value.Int64)
 			}
-		case deviceinfo.FieldDeviceModel:
+		case deviceinfo.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field device_model", values[i])
+				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
-				di.DeviceModel = value.String
+				di.DeviceName = value.String
+			}
+		case deviceinfo.FieldSystemType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field system_type", values[i])
+			} else if value.Valid {
+				di.SystemType = deviceinfo.SystemType(value.String)
 			}
 		case deviceinfo.FieldSystemVersion:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -181,8 +189,11 @@ func (di *DeviceInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("DeviceInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", di.ID))
-	builder.WriteString("device_model=")
-	builder.WriteString(di.DeviceModel)
+	builder.WriteString("device_name=")
+	builder.WriteString(di.DeviceName)
+	builder.WriteString(", ")
+	builder.WriteString("system_type=")
+	builder.WriteString(fmt.Sprintf("%v", di.SystemType))
 	builder.WriteString(", ")
 	builder.WriteString("system_version=")
 	builder.WriteString(di.SystemVersion)

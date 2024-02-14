@@ -31,6 +31,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map ID DeviceId
+	// goverter:map SystemType | ToPBSystemType
 	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
 	ToPBDeviceInfoList([]*modeltiphereth.DeviceInfo) []*pb.DeviceInfo
 
@@ -53,6 +54,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBPorterStatus
+	// goverter:map ConnectionStatus | ToPBPorterConnectionStatus
 	// goverter:ignore FeatureSummary
 	ToPBPorter(*modeltiphereth.PorterInstance) *pb.Porter
 	ToPBPorterList([]*modeltiphereth.PorterInstance) []*pb.Porter
@@ -242,5 +244,43 @@ func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus {
 		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	default:
 		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
+	}
+}
+
+func ToPBSystemType(s modeltiphereth.SystemType) pb.SystemType {
+	switch s {
+	case modeltiphereth.SystemTypeUnspecified:
+		return pb.SystemType_SYSTEM_TYPE_UNSPECIFIED
+	case modeltiphereth.SystemTypeIOS:
+		return pb.SystemType_SYSTEM_TYPE_IOS
+	case modeltiphereth.SystemTypeAndroid:
+		return pb.SystemType_SYSTEM_TYPE_ANDROID
+	case modeltiphereth.SystemTypeWeb:
+		return pb.SystemType_SYSTEM_TYPE_WEB
+	case modeltiphereth.SystemTypeWindows:
+		return pb.SystemType_SYSTEM_TYPE_WINDOWS
+	case modeltiphereth.SystemTypeMacOS:
+		return pb.SystemType_SYSTEM_TYPE_MACOS
+	case modeltiphereth.SystemTypeLinux:
+		return pb.SystemType_SYSTEM_TYPE_LINUX
+	default:
+		return pb.SystemType_SYSTEM_TYPE_UNSPECIFIED
+	}
+}
+
+func ToPBPorterConnectionStatus(s modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus {
+	switch s {
+	case modeltiphereth.PorterConnectionStatusUnspecified:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+	case modeltiphereth.PorterConnectionStatusConnected:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
+	case modeltiphereth.PorterConnectionStatusDisconnected:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
+	case modeltiphereth.PorterConnectionStatusActive:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
+	case modeltiphereth.PorterConnectionStatusActivationFailed:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
+	default:
+		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
 }

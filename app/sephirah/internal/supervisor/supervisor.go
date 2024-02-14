@@ -127,13 +127,14 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 		} else {
 			// new instance
 			ins = &modeltiphereth.PorterInstance{
-				ID:             0,
-				Name:           info.GetName(),
-				Version:        info.GetVersion(),
-				GlobalName:     info.GetGlobalName(),
-				Address:        address,
-				FeatureSummary: feature,
-				Status:         modeltiphereth.PorterInstanceStatusUnspecified,
+				ID:               0,
+				Name:             info.GetName(),
+				Version:          info.GetVersion(),
+				GlobalName:       info.GetGlobalName(),
+				Address:          address,
+				FeatureSummary:   feature,
+				Status:           modeltiphereth.PorterInstanceStatusUnspecified,
+				ConnectionStatus: modeltiphereth.PorterConnectionStatusUnspecified,
 			}
 		}
 		// new instance or feature changed

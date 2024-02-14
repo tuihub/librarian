@@ -4,6 +4,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
@@ -27,6 +28,7 @@ import (
 // goverter:extend ToEntAppPackageSource
 // goverter:extend ToEntFeedConfigStatus
 // goverter:extend ToEntNotifyTargetStatus
+// goverter:extend ToEntSystemType
 type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
@@ -158,5 +160,26 @@ func ToEntImageStatus(s modelchesed.ImageStatus) image.Status {
 		return image.StatusScanned
 	default:
 		return ""
+	}
+}
+
+func ToEntSystemType(s modeltiphereth.SystemType) deviceinfo.SystemType {
+	switch s {
+	case modeltiphereth.SystemTypeUnspecified:
+		return deviceinfo.SystemTypeUnknown
+	case modeltiphereth.SystemTypeIOS:
+		return deviceinfo.SystemTypeIos
+	case modeltiphereth.SystemTypeAndroid:
+		return deviceinfo.SystemTypeAndroid
+	case modeltiphereth.SystemTypeWindows:
+		return deviceinfo.SystemTypeWindows
+	case modeltiphereth.SystemTypeMacOS:
+		return deviceinfo.SystemTypeMacos
+	case modeltiphereth.SystemTypeLinux:
+		return deviceinfo.SystemTypeLinux
+	case modeltiphereth.SystemTypeWeb:
+		return deviceinfo.SystemTypeWeb
+	default:
+		return deviceinfo.SystemTypeUnknown
 	}
 }

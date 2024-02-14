@@ -30,16 +30,30 @@ func (diu *DeviceInfoUpdate) Where(ps ...predicate.DeviceInfo) *DeviceInfoUpdate
 	return diu
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (diu *DeviceInfoUpdate) SetDeviceModel(s string) *DeviceInfoUpdate {
-	diu.mutation.SetDeviceModel(s)
+// SetDeviceName sets the "device_name" field.
+func (diu *DeviceInfoUpdate) SetDeviceName(s string) *DeviceInfoUpdate {
+	diu.mutation.SetDeviceName(s)
 	return diu
 }
 
-// SetNillableDeviceModel sets the "device_model" field if the given value is not nil.
-func (diu *DeviceInfoUpdate) SetNillableDeviceModel(s *string) *DeviceInfoUpdate {
+// SetNillableDeviceName sets the "device_name" field if the given value is not nil.
+func (diu *DeviceInfoUpdate) SetNillableDeviceName(s *string) *DeviceInfoUpdate {
 	if s != nil {
-		diu.SetDeviceModel(*s)
+		diu.SetDeviceName(*s)
+	}
+	return diu
+}
+
+// SetSystemType sets the "system_type" field.
+func (diu *DeviceInfoUpdate) SetSystemType(dt deviceinfo.SystemType) *DeviceInfoUpdate {
+	diu.mutation.SetSystemType(dt)
+	return diu
+}
+
+// SetNillableSystemType sets the "system_type" field if the given value is not nil.
+func (diu *DeviceInfoUpdate) SetNillableSystemType(dt *deviceinfo.SystemType) *DeviceInfoUpdate {
+	if dt != nil {
+		diu.SetSystemType(*dt)
 	}
 	return diu
 }
@@ -197,7 +211,20 @@ func (diu *DeviceInfoUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (diu *DeviceInfoUpdate) check() error {
+	if v, ok := diu.mutation.SystemType(); ok {
+		if err := deviceinfo.SystemTypeValidator(v); err != nil {
+			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "DeviceInfo.system_type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (diu *DeviceInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := diu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(deviceinfo.Table, deviceinfo.Columns, sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64))
 	if ps := diu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -206,8 +233,11 @@ func (diu *DeviceInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := diu.mutation.DeviceModel(); ok {
-		_spec.SetField(deviceinfo.FieldDeviceModel, field.TypeString, value)
+	if value, ok := diu.mutation.DeviceName(); ok {
+		_spec.SetField(deviceinfo.FieldDeviceName, field.TypeString, value)
+	}
+	if value, ok := diu.mutation.SystemType(); ok {
+		_spec.SetField(deviceinfo.FieldSystemType, field.TypeEnum, value)
 	}
 	if value, ok := diu.mutation.SystemVersion(); ok {
 		_spec.SetField(deviceinfo.FieldSystemVersion, field.TypeString, value)
@@ -292,16 +322,30 @@ type DeviceInfoUpdateOne struct {
 	mutation *DeviceInfoMutation
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (diuo *DeviceInfoUpdateOne) SetDeviceModel(s string) *DeviceInfoUpdateOne {
-	diuo.mutation.SetDeviceModel(s)
+// SetDeviceName sets the "device_name" field.
+func (diuo *DeviceInfoUpdateOne) SetDeviceName(s string) *DeviceInfoUpdateOne {
+	diuo.mutation.SetDeviceName(s)
 	return diuo
 }
 
-// SetNillableDeviceModel sets the "device_model" field if the given value is not nil.
-func (diuo *DeviceInfoUpdateOne) SetNillableDeviceModel(s *string) *DeviceInfoUpdateOne {
+// SetNillableDeviceName sets the "device_name" field if the given value is not nil.
+func (diuo *DeviceInfoUpdateOne) SetNillableDeviceName(s *string) *DeviceInfoUpdateOne {
 	if s != nil {
-		diuo.SetDeviceModel(*s)
+		diuo.SetDeviceName(*s)
+	}
+	return diuo
+}
+
+// SetSystemType sets the "system_type" field.
+func (diuo *DeviceInfoUpdateOne) SetSystemType(dt deviceinfo.SystemType) *DeviceInfoUpdateOne {
+	diuo.mutation.SetSystemType(dt)
+	return diuo
+}
+
+// SetNillableSystemType sets the "system_type" field if the given value is not nil.
+func (diuo *DeviceInfoUpdateOne) SetNillableSystemType(dt *deviceinfo.SystemType) *DeviceInfoUpdateOne {
+	if dt != nil {
+		diuo.SetSystemType(*dt)
 	}
 	return diuo
 }
@@ -472,7 +516,20 @@ func (diuo *DeviceInfoUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (diuo *DeviceInfoUpdateOne) check() error {
+	if v, ok := diuo.mutation.SystemType(); ok {
+		if err := deviceinfo.SystemTypeValidator(v); err != nil {
+			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "DeviceInfo.system_type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (diuo *DeviceInfoUpdateOne) sqlSave(ctx context.Context) (_node *DeviceInfo, err error) {
+	if err := diuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(deviceinfo.Table, deviceinfo.Columns, sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64))
 	id, ok := diuo.mutation.ID()
 	if !ok {
@@ -498,8 +555,11 @@ func (diuo *DeviceInfoUpdateOne) sqlSave(ctx context.Context) (_node *DeviceInfo
 			}
 		}
 	}
-	if value, ok := diuo.mutation.DeviceModel(); ok {
-		_spec.SetField(deviceinfo.FieldDeviceModel, field.TypeString, value)
+	if value, ok := diuo.mutation.DeviceName(); ok {
+		_spec.SetField(deviceinfo.FieldDeviceName, field.TypeString, value)
+	}
+	if value, ok := diuo.mutation.SystemType(); ok {
+		_spec.SetField(deviceinfo.FieldSystemType, field.TypeEnum, value)
 	}
 	if value, ok := diuo.mutation.SystemVersion(); ok {
 		_spec.SetField(deviceinfo.FieldSystemVersion, field.TypeString, value)

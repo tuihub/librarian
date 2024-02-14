@@ -51,7 +51,8 @@ func (t tipherethRepo) CreateDevice(
 ) error {
 	return t.data.db.DeviceInfo.Create().
 		SetID(info.ID).
-		SetDeviceModel(info.DeviceModel).
+		SetDeviceName(info.DeviceName).
+		SetSystemType(converter.ToEntSystemType(info.SystemType)).
 		SetSystemVersion(info.SystemVersion).
 		SetClientName(info.ClientName).
 		SetClientSourceCodeAddress(info.ClientSourceCodeAddress).

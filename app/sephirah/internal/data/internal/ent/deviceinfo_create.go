@@ -24,9 +24,15 @@ type DeviceInfoCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (dic *DeviceInfoCreate) SetDeviceModel(s string) *DeviceInfoCreate {
-	dic.mutation.SetDeviceModel(s)
+// SetDeviceName sets the "device_name" field.
+func (dic *DeviceInfoCreate) SetDeviceName(s string) *DeviceInfoCreate {
+	dic.mutation.SetDeviceName(s)
+	return dic
+}
+
+// SetSystemType sets the "system_type" field.
+func (dic *DeviceInfoCreate) SetSystemType(dt deviceinfo.SystemType) *DeviceInfoCreate {
+	dic.mutation.SetSystemType(dt)
 	return dic
 }
 
@@ -150,8 +156,16 @@ func (dic *DeviceInfoCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (dic *DeviceInfoCreate) check() error {
-	if _, ok := dic.mutation.DeviceModel(); !ok {
-		return &ValidationError{Name: "device_model", err: errors.New(`ent: missing required field "DeviceInfo.device_model"`)}
+	if _, ok := dic.mutation.DeviceName(); !ok {
+		return &ValidationError{Name: "device_name", err: errors.New(`ent: missing required field "DeviceInfo.device_name"`)}
+	}
+	if _, ok := dic.mutation.SystemType(); !ok {
+		return &ValidationError{Name: "system_type", err: errors.New(`ent: missing required field "DeviceInfo.system_type"`)}
+	}
+	if v, ok := dic.mutation.SystemType(); ok {
+		if err := deviceinfo.SystemTypeValidator(v); err != nil {
+			return &ValidationError{Name: "system_type", err: fmt.Errorf(`ent: validator failed for field "DeviceInfo.system_type": %w`, err)}
+		}
 	}
 	if _, ok := dic.mutation.SystemVersion(); !ok {
 		return &ValidationError{Name: "system_version", err: errors.New(`ent: missing required field "DeviceInfo.system_version"`)}
@@ -204,9 +218,13 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := dic.mutation.DeviceModel(); ok {
-		_spec.SetField(deviceinfo.FieldDeviceModel, field.TypeString, value)
-		_node.DeviceModel = value
+	if value, ok := dic.mutation.DeviceName(); ok {
+		_spec.SetField(deviceinfo.FieldDeviceName, field.TypeString, value)
+		_node.DeviceName = value
+	}
+	if value, ok := dic.mutation.SystemType(); ok {
+		_spec.SetField(deviceinfo.FieldSystemType, field.TypeEnum, value)
+		_node.SystemType = value
 	}
 	if value, ok := dic.mutation.SystemVersion(); ok {
 		_spec.SetField(deviceinfo.FieldSystemVersion, field.TypeString, value)
@@ -255,7 +273,7 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.DeviceInfo.Create().
-//		SetDeviceModel(v).
+//		SetDeviceName(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -264,7 +282,7 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.DeviceInfoUpsert) {
-//			SetDeviceModel(v+v).
+//			SetDeviceName(v+v).
 //		}).
 //		Exec(ctx)
 func (dic *DeviceInfoCreate) OnConflict(opts ...sql.ConflictOption) *DeviceInfoUpsertOne {
@@ -300,15 +318,27 @@ type (
 	}
 )
 
-// SetDeviceModel sets the "device_model" field.
-func (u *DeviceInfoUpsert) SetDeviceModel(v string) *DeviceInfoUpsert {
-	u.Set(deviceinfo.FieldDeviceModel, v)
+// SetDeviceName sets the "device_name" field.
+func (u *DeviceInfoUpsert) SetDeviceName(v string) *DeviceInfoUpsert {
+	u.Set(deviceinfo.FieldDeviceName, v)
 	return u
 }
 
-// UpdateDeviceModel sets the "device_model" field to the value that was provided on create.
-func (u *DeviceInfoUpsert) UpdateDeviceModel() *DeviceInfoUpsert {
-	u.SetExcluded(deviceinfo.FieldDeviceModel)
+// UpdateDeviceName sets the "device_name" field to the value that was provided on create.
+func (u *DeviceInfoUpsert) UpdateDeviceName() *DeviceInfoUpsert {
+	u.SetExcluded(deviceinfo.FieldDeviceName)
+	return u
+}
+
+// SetSystemType sets the "system_type" field.
+func (u *DeviceInfoUpsert) SetSystemType(v deviceinfo.SystemType) *DeviceInfoUpsert {
+	u.Set(deviceinfo.FieldSystemType, v)
+	return u
+}
+
+// UpdateSystemType sets the "system_type" field to the value that was provided on create.
+func (u *DeviceInfoUpsert) UpdateSystemType() *DeviceInfoUpsert {
+	u.SetExcluded(deviceinfo.FieldSystemType)
 	return u
 }
 
@@ -432,17 +462,31 @@ func (u *DeviceInfoUpsertOne) Update(set func(*DeviceInfoUpsert)) *DeviceInfoUps
 	return u
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (u *DeviceInfoUpsertOne) SetDeviceModel(v string) *DeviceInfoUpsertOne {
+// SetDeviceName sets the "device_name" field.
+func (u *DeviceInfoUpsertOne) SetDeviceName(v string) *DeviceInfoUpsertOne {
 	return u.Update(func(s *DeviceInfoUpsert) {
-		s.SetDeviceModel(v)
+		s.SetDeviceName(v)
 	})
 }
 
-// UpdateDeviceModel sets the "device_model" field to the value that was provided on create.
-func (u *DeviceInfoUpsertOne) UpdateDeviceModel() *DeviceInfoUpsertOne {
+// UpdateDeviceName sets the "device_name" field to the value that was provided on create.
+func (u *DeviceInfoUpsertOne) UpdateDeviceName() *DeviceInfoUpsertOne {
 	return u.Update(func(s *DeviceInfoUpsert) {
-		s.UpdateDeviceModel()
+		s.UpdateDeviceName()
+	})
+}
+
+// SetSystemType sets the "system_type" field.
+func (u *DeviceInfoUpsertOne) SetSystemType(v deviceinfo.SystemType) *DeviceInfoUpsertOne {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.SetSystemType(v)
+	})
+}
+
+// UpdateSystemType sets the "system_type" field to the value that was provided on create.
+func (u *DeviceInfoUpsertOne) UpdateSystemType() *DeviceInfoUpsertOne {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.UpdateSystemType()
 	})
 }
 
@@ -665,7 +709,7 @@ func (dicb *DeviceInfoCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.DeviceInfoUpsert) {
-//			SetDeviceModel(v+v).
+//			SetDeviceName(v+v).
 //		}).
 //		Exec(ctx)
 func (dicb *DeviceInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *DeviceInfoUpsertBulk {
@@ -744,17 +788,31 @@ func (u *DeviceInfoUpsertBulk) Update(set func(*DeviceInfoUpsert)) *DeviceInfoUp
 	return u
 }
 
-// SetDeviceModel sets the "device_model" field.
-func (u *DeviceInfoUpsertBulk) SetDeviceModel(v string) *DeviceInfoUpsertBulk {
+// SetDeviceName sets the "device_name" field.
+func (u *DeviceInfoUpsertBulk) SetDeviceName(v string) *DeviceInfoUpsertBulk {
 	return u.Update(func(s *DeviceInfoUpsert) {
-		s.SetDeviceModel(v)
+		s.SetDeviceName(v)
 	})
 }
 
-// UpdateDeviceModel sets the "device_model" field to the value that was provided on create.
-func (u *DeviceInfoUpsertBulk) UpdateDeviceModel() *DeviceInfoUpsertBulk {
+// UpdateDeviceName sets the "device_name" field to the value that was provided on create.
+func (u *DeviceInfoUpsertBulk) UpdateDeviceName() *DeviceInfoUpsertBulk {
 	return u.Update(func(s *DeviceInfoUpsert) {
-		s.UpdateDeviceModel()
+		s.UpdateDeviceName()
+	})
+}
+
+// SetSystemType sets the "system_type" field.
+func (u *DeviceInfoUpsertBulk) SetSystemType(v deviceinfo.SystemType) *DeviceInfoUpsertBulk {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.SetSystemType(v)
+	})
+}
+
+// UpdateSystemType sets the "system_type" field to the value that was provided on create.
+func (u *DeviceInfoUpsertBulk) UpdateSystemType() *DeviceInfoUpsertBulk {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.UpdateSystemType()
 	})
 }
 

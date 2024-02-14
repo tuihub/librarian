@@ -123,7 +123,8 @@ func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphe
 	if source != nil {
 		var modeltipherethDeviceInfo modeltiphereth.DeviceInfo
 		modeltipherethDeviceInfo.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modeltipherethDeviceInfo.DeviceModel = (*source).DeviceModel
+		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
+		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
 		modeltipherethDeviceInfo.SystemVersion = (*source).SystemVersion
 		modeltipherethDeviceInfo.ClientName = (*source).ClientName
 		modeltipherethDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress

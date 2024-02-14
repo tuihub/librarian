@@ -154,7 +154,8 @@ var (
 	// DeviceInfosColumns holds the columns for the "device_infos" table.
 	DeviceInfosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "device_model", Type: field.TypeString},
+		{Name: "device_name", Type: field.TypeString},
+		{Name: "system_type", Type: field.TypeEnum, Enums: []string{"ios", "android", "web", "windows", "macos", "linux", "unknown"}},
 		{Name: "system_version", Type: field.TypeString},
 		{Name: "client_name", Type: field.TypeString},
 		{Name: "client_source_code_address", Type: field.TypeString},
@@ -171,7 +172,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "device_infos_users_device_info",
-				Columns:    []*schema.Column{DeviceInfosColumns[8]},
+				Columns:    []*schema.Column{DeviceInfosColumns[9]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

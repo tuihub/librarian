@@ -53,9 +53,22 @@ type UserSession struct {
 
 type DeviceInfo struct {
 	ID                      model.InternalID
-	DeviceModel             string
+	DeviceName              string
+	SystemType              SystemType
 	SystemVersion           string
 	ClientName              string
 	ClientSourceCodeAddress string
 	ClientVersion           string
 }
+
+type SystemType int
+
+const (
+	SystemTypeUnspecified SystemType = iota
+	SystemTypeAndroid
+	SystemTypeIOS
+	SystemTypeWindows
+	SystemTypeMacOS
+	SystemTypeLinux
+	SystemTypeWeb
+)

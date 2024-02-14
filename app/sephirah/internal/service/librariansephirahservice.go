@@ -75,7 +75,8 @@ func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context
 		ProtocolSummary: &pb.ServerProtocolSummary{
 			Version: s.app.ProtoVersion,
 		},
-		CurrentTime:    timestamppb.New(time.Now()),
-		FeatureSummary: converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
+		CurrentTime:           timestamppb.New(time.Now()),
+		FeatureSummary:        converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
+		ServerInstanceSummary: nil,
 	}, nil
 }

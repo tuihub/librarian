@@ -151,7 +151,8 @@ func (c *toBizConverterImpl) ToBizDeviceInfo(source *v11.DeviceInfo) *modeltiphe
 	if source != nil {
 		var modeltipherethDeviceInfo modeltiphereth.DeviceInfo
 		modeltipherethDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
-		modeltipherethDeviceInfo.DeviceModel = (*source).DeviceModel
+		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
+		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
 		modeltipherethDeviceInfo.SystemVersion = (*source).SystemVersion
 		modeltipherethDeviceInfo.ClientName = (*source).ClientName
 		modeltipherethDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
@@ -587,7 +588,8 @@ func (c *toPBConverterImpl) ToPBDeviceInfo(source *modeltiphereth.DeviceInfo) *v
 	if source != nil {
 		var v1DeviceInfo v11.DeviceInfo
 		v1DeviceInfo.DeviceId = ToPBInternalID((*source).ID)
-		v1DeviceInfo.DeviceModel = (*source).DeviceModel
+		v1DeviceInfo.DeviceName = (*source).DeviceName
+		v1DeviceInfo.SystemType = ToPBSystemType((*source).SystemType)
 		v1DeviceInfo.SystemVersion = (*source).SystemVersion
 		v1DeviceInfo.ClientName = (*source).ClientName
 		v1DeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
@@ -874,6 +876,7 @@ func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstance) *v
 		v1Porter.Version = (*source).Version
 		v1Porter.GlobalName = (*source).GlobalName
 		v1Porter.Status = ToPBPorterStatus((*source).Status)
+		v1Porter.ConnectionStatus = ToPBPorterConnectionStatus((*source).ConnectionStatus)
 		pV1Porter = &v1Porter
 	}
 	return pV1Porter

@@ -35,6 +35,8 @@ import (
 // goverter:extend ToBizNotifyFlowStatus
 // goverter:extend ToBizFileType
 // goverter:extend ToBizAccountAppRelationType
+// goverter:extend ToBizSystemType
+// goverter:extend ToBizPorterConnectionStatus
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	// goverter:matchIgnoreCase
@@ -264,5 +266,43 @@ func ToBizAccountAppRelationType(t librarian.AccountAppRelationType) model.Accou
 		return model.AccountAppRelationTypeOwner
 	default:
 		return model.AccountAppRelationTypeUnspecified
+	}
+}
+
+func ToBizSystemType(t pb.SystemType) modeltiphereth.SystemType {
+	switch t {
+	case pb.SystemType_SYSTEM_TYPE_UNSPECIFIED:
+		return modeltiphereth.SystemTypeUnspecified
+	case pb.SystemType_SYSTEM_TYPE_IOS:
+		return modeltiphereth.SystemTypeIOS
+	case pb.SystemType_SYSTEM_TYPE_ANDROID:
+		return modeltiphereth.SystemTypeAndroid
+	case pb.SystemType_SYSTEM_TYPE_WEB:
+		return modeltiphereth.SystemTypeWeb
+	case pb.SystemType_SYSTEM_TYPE_WINDOWS:
+		return modeltiphereth.SystemTypeWindows
+	case pb.SystemType_SYSTEM_TYPE_MACOS:
+		return modeltiphereth.SystemTypeMacOS
+	case pb.SystemType_SYSTEM_TYPE_LINUX:
+		return modeltiphereth.SystemTypeLinux
+	default:
+		return modeltiphereth.SystemTypeUnspecified
+	}
+}
+
+func ToBizPorterConnectionStatus(s pb.PorterConnectionStatus) modeltiphereth.PorterConnectionStatus {
+	switch s {
+	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED:
+		return modeltiphereth.PorterConnectionStatusUnspecified
+	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED:
+		return modeltiphereth.PorterConnectionStatusConnected
+	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED:
+		return modeltiphereth.PorterConnectionStatusDisconnected
+	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE:
+		return modeltiphereth.PorterConnectionStatusActive
+	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED:
+		return modeltiphereth.PorterConnectionStatusActivationFailed
+	default:
+		return modeltiphereth.PorterConnectionStatusUnspecified
 	}
 }

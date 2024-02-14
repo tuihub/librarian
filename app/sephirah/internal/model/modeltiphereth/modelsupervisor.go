@@ -5,13 +5,14 @@ import (
 )
 
 type PorterInstance struct {
-	ID             model.InternalID
-	Name           string
-	Version        string
-	GlobalName     string
-	Address        string
-	FeatureSummary *PorterFeatureSummary
-	Status         PorterInstanceStatus
+	ID               model.InternalID
+	Name             string
+	Version          string
+	GlobalName       string
+	Address          string
+	FeatureSummary   *PorterFeatureSummary
+	Status           PorterInstanceStatus
+	ConnectionStatus PorterConnectionStatus
 }
 
 type PorterFeatureSummary struct {
@@ -43,3 +44,13 @@ type ServerFeatureSummary struct {
 	SupportedFeedSources        []string
 	SupportedNotifyDestinations []string
 }
+
+type PorterConnectionStatus int
+
+const (
+	PorterConnectionStatusUnspecified PorterConnectionStatus = iota
+	PorterConnectionStatusConnected
+	PorterConnectionStatusDisconnected
+	PorterConnectionStatusActive
+	PorterConnectionStatusActivationFailed
+)

@@ -3,6 +3,7 @@
 package deviceinfo
 
 import (
+	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -14,8 +15,10 @@ const (
 	Label = "device_info"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldDeviceModel holds the string denoting the device_model field in the database.
-	FieldDeviceModel = "device_model"
+	// FieldDeviceName holds the string denoting the device_name field in the database.
+	FieldDeviceName = "device_name"
+	// FieldSystemType holds the string denoting the system_type field in the database.
+	FieldSystemType = "system_type"
 	// FieldSystemVersion holds the string denoting the system_version field in the database.
 	FieldSystemVersion = "system_version"
 	// FieldClientName holds the string denoting the client_name field in the database.
@@ -44,7 +47,8 @@ const (
 // Columns holds all SQL columns for deviceinfo fields.
 var Columns = []string{
 	FieldID,
-	FieldDeviceModel,
+	FieldDeviceName,
+	FieldSystemType,
 	FieldSystemVersion,
 	FieldClientName,
 	FieldClientSourceCodeAddress,
@@ -83,6 +87,34 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
+// SystemType defines the type for the "system_type" enum field.
+type SystemType string
+
+// SystemType values.
+const (
+	SystemTypeIos     SystemType = "ios"
+	SystemTypeAndroid SystemType = "android"
+	SystemTypeWeb     SystemType = "web"
+	SystemTypeWindows SystemType = "windows"
+	SystemTypeMacos   SystemType = "macos"
+	SystemTypeLinux   SystemType = "linux"
+	SystemTypeUnknown SystemType = "unknown"
+)
+
+func (st SystemType) String() string {
+	return string(st)
+}
+
+// SystemTypeValidator is a validator for the "system_type" field enum values. It is called by the builders before save.
+func SystemTypeValidator(st SystemType) error {
+	switch st {
+	case SystemTypeIos, SystemTypeAndroid, SystemTypeWeb, SystemTypeWindows, SystemTypeMacos, SystemTypeLinux, SystemTypeUnknown:
+		return nil
+	default:
+		return fmt.Errorf("deviceinfo: invalid enum value for system_type field: %q", st)
+	}
+}
+
 // OrderOption defines the ordering options for the DeviceInfo queries.
 type OrderOption func(*sql.Selector)
 
@@ -91,9 +123,14 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByDeviceModel orders the results by the device_model field.
-func ByDeviceModel(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeviceModel, opts...).ToFunc()
+// ByDeviceName orders the results by the device_name field.
+func ByDeviceName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
+}
+
+// BySystemType orders the results by the system_type field.
+func BySystemType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSystemType, opts...).ToFunc()
 }
 
 // BySystemVersion orders the results by the system_version field.
