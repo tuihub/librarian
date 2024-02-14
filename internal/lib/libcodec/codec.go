@@ -12,12 +12,15 @@ type ContentType string
 
 const (
 	JSON ContentType = "json"
+	TOML ContentType = "toml"
 )
 
 func checkContentType(contentType ContentType) (string, error) {
 	switch contentType {
 	case JSON:
 		return string(JSON), nil
+	case TOML:
+		return string(TOML), nil
 	default:
 		return "", errors.New("unsupported content type")
 	}

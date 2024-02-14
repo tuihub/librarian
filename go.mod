@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	entgo.io/ent v0.12.5
+	github.com/BurntSushi/toml v0.3.1
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/ThreeDotsLabs/watermill v1.3.4
 	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
