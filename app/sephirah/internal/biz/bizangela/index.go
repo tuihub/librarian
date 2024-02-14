@@ -2,7 +2,6 @@ package bizangela
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -22,7 +21,7 @@ func NewUpdateAppIndexTopic(
 			for _, app := range apps {
 				desc := app.Internal.Name
 				for _, other := range app.Others {
-					desc += fmt.Sprintf(" %s", other.Name)
+					desc += other.Name
 				}
 				err = a.searcher.DescribeID(ctx,
 					app.Internal.ID,

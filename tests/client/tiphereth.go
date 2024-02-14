@@ -30,7 +30,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	}
 	ctxForRefresh := metadata.NewOutgoingContext(
 		ctx,
-		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", refreshToken)),
+		metadata.Pairs("authorization", "bearer "+refreshToken),
 	)
 	if resp, err := c.cli.RefreshToken(ctxForRefresh, new(pb.RefreshTokenRequest)); err != nil {
 		log.Fatal(err)
@@ -39,7 +39,7 @@ func (c *Client) LoginViaDefaultAdmin(ctx context.Context) context.Context {
 	}
 	return metadata.NewOutgoingContext(
 		ctx,
-		metadata.Pairs("authorization", fmt.Sprintf("bearer %s", accessToken)),
+		metadata.Pairs("authorization", "bearer "+accessToken),
 	)
 }
 

@@ -3,7 +3,7 @@ GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 PROTO_VERSION=$(shell go list -m -f '{{.Version}}' github.com/tuihub/protos)
-GOLANG_CROSS_VERSION ?= v1.20.7
+GOLANG_CROSS_VERSION ?= v1.21.7
 SHELL:=/bin/bash
 
 ifeq ($(GOHOSTOS), windows)
@@ -24,7 +24,7 @@ init: init-lint
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 
 init-lint:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.55.2
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.1
 
 init-test:
 	cd tests && make init

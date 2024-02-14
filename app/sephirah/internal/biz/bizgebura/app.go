@@ -186,7 +186,7 @@ func (g *Gebura) PurchaseApp(ctx context.Context, appID *modelgebura.AppID) (mod
 	}
 	id, err := g.repo.PurchaseApp(ctx, claims.UserID, appID, func(ctx2 context.Context) error {
 		if appID.Internal {
-			return fmt.Errorf("app not found")
+			return errors.BadRequest("app not found", "")
 		}
 		ids, err := g.searcher.NewBatchIDs(ctx2, 2) //nolint:gomnd // checked
 		if err != nil {

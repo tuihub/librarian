@@ -2,7 +2,7 @@ package supervisor
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"reflect"
 	"sync"
 
@@ -73,7 +73,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 	ctx context.Context,
 ) ([]*modeltiphereth.PorterInstance, error) {
 	if s.knownInstances == nil {
-		return nil, fmt.Errorf("known instances not set")
+		return nil, errors.New("known instances not set")
 	}
 	addresses, err := s.porter.GetServiceAddresses(ctx)
 	if err != nil {
@@ -150,7 +150,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 // EnablePorterInstance enable porter instance, can be called multiple times.
 func (s *Supervisor) enablePorterInstance(ctx context.Context, instance *modeltiphereth.PorterInstance) error {
 	if instance == nil {
-		return fmt.Errorf("instance is nil")
+		return errors.New("instance is nil")
 	}
 	refreshToken, err := s.auth.GenerateToken(
 		instance.ID,
