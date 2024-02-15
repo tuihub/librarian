@@ -88,7 +88,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	registrar, err := libapp.NewRegistrar(consul)
+	app, err := newApp(grpcServer, httpServer, libmqMQ, cron, consul)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -96,7 +96,6 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	app := newApp(grpcServer, httpServer, libmqMQ, cron, registrar)
 	return app, func() {
 		cleanup4()
 		cleanup3()

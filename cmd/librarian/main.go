@@ -13,7 +13,6 @@ import (
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
@@ -42,15 +41,28 @@ var ProviderSet = wire.NewSet(
 	minerClientSelector,
 )
 
-func newApp(gs *grpc.Server, hs *http.Server, mq *libmq.MQ, cron *libcron.Cron, r registry.Registrar) *kratos.App {
-	return kratos.New(
-		kratos.ID(id+name),
+func newApp(
+	gs *grpc.Server,
+	hs *http.Server,
+	mq *libmq.MQ,
+	cron *libcron.Cron,
+	consul *conf.Consul,
+) (*kratos.App, error) {
+	options := []kratos.Option{
+		kratos.ID(id + name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs, hs, mq, cron),
-		kratos.Registrar(r),
-	)
+	}
+	if consul != nil {
+		r, err := libapp.NewRegistrar(consul)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, kratos.Registrar(r))
+	}
+	return kratos.New(options...), nil
 }
 
 func main() {

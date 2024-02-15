@@ -23,6 +23,14 @@ func NewDiscovery(c *conf.Consul) (registry.Discovery, error) {
 	if err != nil {
 		return nil, err
 	}
+	// check if the consul agent is available
+	_, err = client.Status().Leader()
+	if err != nil {
+		if c == nil { // if consul is not configured, return an empty discovery
+			return emptyDiscovery{}, nil
+		}
+		return nil, err
+	}
 	return consul.New(client), nil
 }
 
@@ -58,4 +66,24 @@ func NewNodeFilter() selector.NodeFilter {
 		}
 		return newNodes
 	}
+}
+
+type emptyDiscovery struct{}
+
+func (e emptyDiscovery) GetService(ctx context.Context, serviceName string) ([]*registry.ServiceInstance, error) {
+	return []*registry.ServiceInstance{}, nil
+}
+
+func (e emptyDiscovery) Watch(ctx context.Context, serviceName string) (registry.Watcher, error) {
+	return &emptyWatcher{}, nil
+}
+
+type emptyWatcher struct{}
+
+func (e emptyWatcher) Next() ([]*registry.ServiceInstance, error) {
+	return []*registry.ServiceInstance{}, nil
+}
+
+func (e emptyWatcher) Stop() error {
+	return nil
 }
