@@ -93,6 +93,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *v1.AppPackage) *modelgebura
 		modelgeburaAppPackage.Binary = c.ToBizAppPackageBinary((*source).Binary)
 		modelgeburaAppPackage.Public = (*source).Public
 		modelgeburaAppPackage.AssignedAppID = ToBizInternalID((*source).AssignedAppId)
+		modelgeburaAppPackage.GroupID = ToBizInternalID((*source).GroupId)
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage
@@ -550,6 +551,7 @@ func (c *toPBConverterImpl) ToPBAppPackage(source *modelgebura.AppPackage) *v1.A
 		v1AppPackage.Binary = c.ToPBAppPackageBinary((*source).Binary)
 		v1AppPackage.Public = (*source).Public
 		v1AppPackage.AssignedAppId = ToPBInternalID((*source).AssignedAppID)
+		v1AppPackage.GroupId = ToPBInternalID((*source).GroupID)
 		pV1AppPackage = &v1AppPackage
 	}
 	return pV1AppPackage

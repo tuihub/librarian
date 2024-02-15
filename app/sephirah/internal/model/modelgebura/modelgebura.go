@@ -75,6 +75,7 @@ type AppPackage struct {
 	Binary        *AppPackageBinary
 	Public        bool
 	AssignedAppID model.InternalID
+	GroupID       model.InternalID
 }
 
 type AppPackageBinary struct {

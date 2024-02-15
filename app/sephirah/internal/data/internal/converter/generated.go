@@ -89,6 +89,7 @@ func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebur
 		modelgeburaAppPackage.Description = (*source).Description
 		modelgeburaAppPackage.Binary = c.entAppPackageToPModelgeburaAppPackageBinary((*source))
 		modelgeburaAppPackage.Public = (*source).Public
+		modelgeburaAppPackage.GroupID = c.modelInternalIDToModelInternalID((*source).GroupID)
 		pModelgeburaAppPackage = &modelgeburaAppPackage
 	}
 	return pModelgeburaAppPackage

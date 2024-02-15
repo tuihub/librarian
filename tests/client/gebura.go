@@ -159,6 +159,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			Binary:        nil,
 			Public:        false,
 			AssignedAppId: nil,
+			GroupId:       nil,
 		},
 	})
 	if err != nil {
@@ -188,6 +189,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			Binary:        nil,
 			Public:        false,
 			AssignedAppId: nil,
+			GroupId:       nil,
 		},
 	}); err2 != nil {
 		log.Fatal(err2)

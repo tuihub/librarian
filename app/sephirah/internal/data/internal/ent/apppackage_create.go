@@ -103,6 +103,12 @@ func (apc *AppPackageCreate) SetBinarySha256(b []byte) *AppPackageCreate {
 	return apc
 }
 
+// SetGroupID sets the "group_id" field.
+func (apc *AppPackageCreate) SetGroupID(mi model.InternalID) *AppPackageCreate {
+	apc.mutation.SetGroupID(mi)
+	return apc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (apc *AppPackageCreate) SetUpdatedAt(t time.Time) *AppPackageCreate {
 	apc.mutation.SetUpdatedAt(t)
@@ -234,6 +240,9 @@ func (apc *AppPackageCreate) check() error {
 	if _, ok := apc.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "AppPackage.public"`)}
 	}
+	if _, ok := apc.mutation.GroupID(); !ok {
+		return &ValidationError{Name: "group_id", err: errors.New(`ent: missing required field "AppPackage.group_id"`)}
+	}
 	if _, ok := apc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppPackage.updated_at"`)}
 	}
@@ -311,6 +320,10 @@ func (apc *AppPackageCreate) createSpec() (*AppPackage, *sqlgraph.CreateSpec) {
 	if value, ok := apc.mutation.BinarySha256(); ok {
 		_spec.SetField(apppackage.FieldBinarySha256, field.TypeBytes, value)
 		_node.BinarySha256 = value
+	}
+	if value, ok := apc.mutation.GroupID(); ok {
+		_spec.SetField(apppackage.FieldGroupID, field.TypeInt64, value)
+		_node.GroupID = value
 	}
 	if value, ok := apc.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -547,6 +560,24 @@ func (u *AppPackageUpsert) UpdateBinarySha256() *AppPackageUpsert {
 // ClearBinarySha256 clears the value of the "binary_sha256" field.
 func (u *AppPackageUpsert) ClearBinarySha256() *AppPackageUpsert {
 	u.SetNull(apppackage.FieldBinarySha256)
+	return u
+}
+
+// SetGroupID sets the "group_id" field.
+func (u *AppPackageUpsert) SetGroupID(v model.InternalID) *AppPackageUpsert {
+	u.Set(apppackage.FieldGroupID, v)
+	return u
+}
+
+// UpdateGroupID sets the "group_id" field to the value that was provided on create.
+func (u *AppPackageUpsert) UpdateGroupID() *AppPackageUpsert {
+	u.SetExcluded(apppackage.FieldGroupID)
+	return u
+}
+
+// AddGroupID adds v to the "group_id" field.
+func (u *AppPackageUpsert) AddGroupID(v model.InternalID) *AppPackageUpsert {
+	u.Add(apppackage.FieldGroupID, v)
 	return u
 }
 
@@ -787,6 +818,27 @@ func (u *AppPackageUpsertOne) UpdateBinarySha256() *AppPackageUpsertOne {
 func (u *AppPackageUpsertOne) ClearBinarySha256() *AppPackageUpsertOne {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.ClearBinarySha256()
+	})
+}
+
+// SetGroupID sets the "group_id" field.
+func (u *AppPackageUpsertOne) SetGroupID(v model.InternalID) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetGroupID(v)
+	})
+}
+
+// AddGroupID adds v to the "group_id" field.
+func (u *AppPackageUpsertOne) AddGroupID(v model.InternalID) *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.AddGroupID(v)
+	})
+}
+
+// UpdateGroupID sets the "group_id" field to the value that was provided on create.
+func (u *AppPackageUpsertOne) UpdateGroupID() *AppPackageUpsertOne {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateGroupID()
 	})
 }
 
@@ -1197,6 +1249,27 @@ func (u *AppPackageUpsertBulk) UpdateBinarySha256() *AppPackageUpsertBulk {
 func (u *AppPackageUpsertBulk) ClearBinarySha256() *AppPackageUpsertBulk {
 	return u.Update(func(s *AppPackageUpsert) {
 		s.ClearBinarySha256()
+	})
+}
+
+// SetGroupID sets the "group_id" field.
+func (u *AppPackageUpsertBulk) SetGroupID(v model.InternalID) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.SetGroupID(v)
+	})
+}
+
+// AddGroupID adds v to the "group_id" field.
+func (u *AppPackageUpsertBulk) AddGroupID(v model.InternalID) *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.AddGroupID(v)
+	})
+}
+
+// UpdateGroupID sets the "group_id" field to the value that was provided on create.
+func (u *AppPackageUpsertBulk) UpdateGroupID() *AppPackageUpsertBulk {
+	return u.Update(func(s *AppPackageUpsert) {
+		s.UpdateGroupID()
 	})
 }
 

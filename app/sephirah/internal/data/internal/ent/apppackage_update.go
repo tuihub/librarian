@@ -187,6 +187,27 @@ func (apu *AppPackageUpdate) ClearBinarySha256() *AppPackageUpdate {
 	return apu
 }
 
+// SetGroupID sets the "group_id" field.
+func (apu *AppPackageUpdate) SetGroupID(mi model.InternalID) *AppPackageUpdate {
+	apu.mutation.ResetGroupID()
+	apu.mutation.SetGroupID(mi)
+	return apu
+}
+
+// SetNillableGroupID sets the "group_id" field if the given value is not nil.
+func (apu *AppPackageUpdate) SetNillableGroupID(mi *model.InternalID) *AppPackageUpdate {
+	if mi != nil {
+		apu.SetGroupID(*mi)
+	}
+	return apu
+}
+
+// AddGroupID adds mi to the "group_id" field.
+func (apu *AppPackageUpdate) AddGroupID(mi model.InternalID) *AppPackageUpdate {
+	apu.mutation.AddGroupID(mi)
+	return apu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (apu *AppPackageUpdate) SetUpdatedAt(t time.Time) *AppPackageUpdate {
 	apu.mutation.SetUpdatedAt(t)
@@ -359,6 +380,12 @@ func (apu *AppPackageUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if apu.mutation.BinarySha256Cleared() {
 		_spec.ClearField(apppackage.FieldBinarySha256, field.TypeBytes)
+	}
+	if value, ok := apu.mutation.GroupID(); ok {
+		_spec.SetField(apppackage.FieldGroupID, field.TypeInt64, value)
+	}
+	if value, ok := apu.mutation.AddedGroupID(); ok {
+		_spec.AddField(apppackage.FieldGroupID, field.TypeInt64, value)
 	}
 	if value, ok := apu.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)
@@ -600,6 +627,27 @@ func (apuo *AppPackageUpdateOne) ClearBinarySha256() *AppPackageUpdateOne {
 	return apuo
 }
 
+// SetGroupID sets the "group_id" field.
+func (apuo *AppPackageUpdateOne) SetGroupID(mi model.InternalID) *AppPackageUpdateOne {
+	apuo.mutation.ResetGroupID()
+	apuo.mutation.SetGroupID(mi)
+	return apuo
+}
+
+// SetNillableGroupID sets the "group_id" field if the given value is not nil.
+func (apuo *AppPackageUpdateOne) SetNillableGroupID(mi *model.InternalID) *AppPackageUpdateOne {
+	if mi != nil {
+		apuo.SetGroupID(*mi)
+	}
+	return apuo
+}
+
+// AddGroupID adds mi to the "group_id" field.
+func (apuo *AppPackageUpdateOne) AddGroupID(mi model.InternalID) *AppPackageUpdateOne {
+	apuo.mutation.AddGroupID(mi)
+	return apuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (apuo *AppPackageUpdateOne) SetUpdatedAt(t time.Time) *AppPackageUpdateOne {
 	apuo.mutation.SetUpdatedAt(t)
@@ -802,6 +850,12 @@ func (apuo *AppPackageUpdateOne) sqlSave(ctx context.Context) (_node *AppPackage
 	}
 	if apuo.mutation.BinarySha256Cleared() {
 		_spec.ClearField(apppackage.FieldBinarySha256, field.TypeBytes)
+	}
+	if value, ok := apuo.mutation.GroupID(); ok {
+		_spec.SetField(apppackage.FieldGroupID, field.TypeInt64, value)
+	}
+	if value, ok := apuo.mutation.AddedGroupID(); ok {
+		_spec.AddField(apppackage.FieldGroupID, field.TypeInt64, value)
 	}
 	if value, ok := apuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(apppackage.FieldUpdatedAt, field.TypeTime, value)

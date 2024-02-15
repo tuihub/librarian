@@ -29,6 +29,13 @@ func (g *Gebura) CreateAppPackage(
 	a.ID = id
 	a.Source = modelgebura.AppPackageSourceManual
 	a.SourceID = 0
+	if a.GroupID == 0 {
+		id, err = g.searcher.NewID(ctx)
+		if err != nil {
+			return nil, pb.ErrorErrorReasonUnspecified("%s", err)
+		}
+		a.GroupID = id
+	}
 	// if _, err = g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 	//	VertexList: []*mapper.Vertex{{
 	//		Vid:  int64(a.ID),
@@ -49,6 +56,13 @@ func (g *Gebura) UpdateAppPackage(ctx context.Context, a *modelgebura.AppPackage
 		return bizutils.NoPermissionError()
 	}
 	a.Source = modelgebura.AppPackageSourceManual
+	if a.GroupID == 0 {
+		id, err := g.searcher.NewID(ctx)
+		if err != nil {
+			return pb.ErrorErrorReasonUnspecified("%s", err)
+		}
+		a.GroupID = id
+	}
 	err := g.repo.UpdateAppPackage(ctx, claims.UserID, a)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())

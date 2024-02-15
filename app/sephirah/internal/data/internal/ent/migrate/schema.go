@@ -96,6 +96,7 @@ var (
 		{Name: "binary_size_bytes", Type: field.TypeInt64, Nullable: true},
 		{Name: "binary_public_url", Type: field.TypeString, Nullable: true},
 		{Name: "binary_sha256", Type: field.TypeBytes, Nullable: true},
+		{Name: "group_id", Type: field.TypeInt64},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "app_app_package", Type: field.TypeInt64, Nullable: true},
@@ -109,13 +110,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "app_packages_apps_app_package",
-				Columns:    []*schema.Column{AppPackagesColumns[12]},
+				Columns:    []*schema.Column{AppPackagesColumns[13]},
 				RefColumns: []*schema.Column{AppsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "app_packages_users_app_package",
-				Columns:    []*schema.Column{AppPackagesColumns[13]},
+				Columns:    []*schema.Column{AppPackagesColumns[14]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

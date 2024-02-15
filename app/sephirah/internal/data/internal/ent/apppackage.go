@@ -38,6 +38,8 @@ type AppPackage struct {
 	BinaryPublicURL string `json:"binary_public_url,omitempty"`
 	// BinarySha256 holds the value of the "binary_sha256" field.
 	BinarySha256 []byte `json:"binary_sha256,omitempty"`
+	// GroupID holds the value of the "group_id" field.
+	GroupID model.InternalID `json:"group_id,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -96,7 +98,7 @@ func (*AppPackage) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case apppackage.FieldPublic:
 			values[i] = new(sql.NullBool)
-		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeBytes:
+		case apppackage.FieldID, apppackage.FieldSourceID, apppackage.FieldBinarySizeBytes, apppackage.FieldGroupID:
 			values[i] = new(sql.NullInt64)
 		case apppackage.FieldSource, apppackage.FieldName, apppackage.FieldDescription, apppackage.FieldBinaryName, apppackage.FieldBinaryPublicURL:
 			values[i] = new(sql.NullString)
@@ -180,6 +182,12 @@ func (ap *AppPackage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field binary_sha256", values[i])
 			} else if value != nil {
 				ap.BinarySha256 = *value
+			}
+		case apppackage.FieldGroupID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field group_id", values[i])
+			} else if value.Valid {
+				ap.GroupID = model.InternalID(value.Int64)
 			}
 		case apppackage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -279,6 +287,9 @@ func (ap *AppPackage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("binary_sha256=")
 	builder.WriteString(fmt.Sprintf("%v", ap.BinarySha256))
+	builder.WriteString(", ")
+	builder.WriteString("group_id=")
+	builder.WriteString(fmt.Sprintf("%v", ap.GroupID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ap.UpdatedAt.Format(time.ANSIC))

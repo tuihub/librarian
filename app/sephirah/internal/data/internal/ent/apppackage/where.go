@@ -97,6 +97,12 @@ func BinarySha256(v []byte) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldBinarySha256, v))
 }
 
+// GroupID applies equality check predicate on the "group_id" field. It's identical to GroupIDEQ.
+func GroupID(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldEQ(FieldGroupID, vc))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldEQ(FieldUpdatedAt, v))
@@ -569,6 +575,60 @@ func BinarySha256IsNil() predicate.AppPackage {
 // BinarySha256NotNil applies the NotNil predicate on the "binary_sha256" field.
 func BinarySha256NotNil() predicate.AppPackage {
 	return predicate.AppPackage(sql.FieldNotNull(FieldBinarySha256))
+}
+
+// GroupIDEQ applies the EQ predicate on the "group_id" field.
+func GroupIDEQ(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldEQ(FieldGroupID, vc))
+}
+
+// GroupIDNEQ applies the NEQ predicate on the "group_id" field.
+func GroupIDNEQ(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldNEQ(FieldGroupID, vc))
+}
+
+// GroupIDIn applies the In predicate on the "group_id" field.
+func GroupIDIn(vs ...model.InternalID) predicate.AppPackage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppPackage(sql.FieldIn(FieldGroupID, v...))
+}
+
+// GroupIDNotIn applies the NotIn predicate on the "group_id" field.
+func GroupIDNotIn(vs ...model.InternalID) predicate.AppPackage {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppPackage(sql.FieldNotIn(FieldGroupID, v...))
+}
+
+// GroupIDGT applies the GT predicate on the "group_id" field.
+func GroupIDGT(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldGT(FieldGroupID, vc))
+}
+
+// GroupIDGTE applies the GTE predicate on the "group_id" field.
+func GroupIDGTE(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldGTE(FieldGroupID, vc))
+}
+
+// GroupIDLT applies the LT predicate on the "group_id" field.
+func GroupIDLT(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldLT(FieldGroupID, vc))
+}
+
+// GroupIDLTE applies the LTE predicate on the "group_id" field.
+func GroupIDLTE(v model.InternalID) predicate.AppPackage {
+	vc := int64(v)
+	return predicate.AppPackage(sql.FieldLTE(FieldGroupID, vc))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

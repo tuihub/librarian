@@ -2679,6 +2679,8 @@ type AppPackageMutation struct {
 	addbinary_size_bytes *int64
 	binary_public_url    *string
 	binary_sha256        *[]byte
+	group_id             *model.InternalID
+	addgroup_id          *model.InternalID
 	updated_at           *time.Time
 	created_at           *time.Time
 	clearedFields        map[string]struct{}
@@ -3212,6 +3214,62 @@ func (m *AppPackageMutation) ResetBinarySha256() {
 	delete(m.clearedFields, apppackage.FieldBinarySha256)
 }
 
+// SetGroupID sets the "group_id" field.
+func (m *AppPackageMutation) SetGroupID(mi model.InternalID) {
+	m.group_id = &mi
+	m.addgroup_id = nil
+}
+
+// GroupID returns the value of the "group_id" field in the mutation.
+func (m *AppPackageMutation) GroupID() (r model.InternalID, exists bool) {
+	v := m.group_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGroupID returns the old "group_id" field's value of the AppPackage entity.
+// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppPackageMutation) OldGroupID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGroupID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGroupID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGroupID: %w", err)
+	}
+	return oldValue.GroupID, nil
+}
+
+// AddGroupID adds mi to the "group_id" field.
+func (m *AppPackageMutation) AddGroupID(mi model.InternalID) {
+	if m.addgroup_id != nil {
+		*m.addgroup_id += mi
+	} else {
+		m.addgroup_id = &mi
+	}
+}
+
+// AddedGroupID returns the value that was added to the "group_id" field in this mutation.
+func (m *AppPackageMutation) AddedGroupID() (r model.InternalID, exists bool) {
+	v := m.addgroup_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetGroupID resets all changes to the "group_id" field.
+func (m *AppPackageMutation) ResetGroupID() {
+	m.group_id = nil
+	m.addgroup_id = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *AppPackageMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -3396,7 +3454,7 @@ func (m *AppPackageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppPackageMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.source != nil {
 		fields = append(fields, apppackage.FieldSource)
 	}
@@ -3423,6 +3481,9 @@ func (m *AppPackageMutation) Fields() []string {
 	}
 	if m.binary_sha256 != nil {
 		fields = append(fields, apppackage.FieldBinarySha256)
+	}
+	if m.group_id != nil {
+		fields = append(fields, apppackage.FieldGroupID)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, apppackage.FieldUpdatedAt)
@@ -3456,6 +3517,8 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.BinaryPublicURL()
 	case apppackage.FieldBinarySha256:
 		return m.BinarySha256()
+	case apppackage.FieldGroupID:
+		return m.GroupID()
 	case apppackage.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case apppackage.FieldCreatedAt:
@@ -3487,6 +3550,8 @@ func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldBinaryPublicURL(ctx)
 	case apppackage.FieldBinarySha256:
 		return m.OldBinarySha256(ctx)
+	case apppackage.FieldGroupID:
+		return m.OldGroupID(ctx)
 	case apppackage.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case apppackage.FieldCreatedAt:
@@ -3563,6 +3628,13 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetBinarySha256(v)
 		return nil
+	case apppackage.FieldGroupID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGroupID(v)
+		return nil
 	case apppackage.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -3591,6 +3663,9 @@ func (m *AppPackageMutation) AddedFields() []string {
 	if m.addbinary_size_bytes != nil {
 		fields = append(fields, apppackage.FieldBinarySizeBytes)
 	}
+	if m.addgroup_id != nil {
+		fields = append(fields, apppackage.FieldGroupID)
+	}
 	return fields
 }
 
@@ -3603,6 +3678,8 @@ func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedSourceID()
 	case apppackage.FieldBinarySizeBytes:
 		return m.AddedBinarySizeBytes()
+	case apppackage.FieldGroupID:
+		return m.AddedGroupID()
 	}
 	return nil, false
 }
@@ -3625,6 +3702,13 @@ func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddBinarySizeBytes(v)
+		return nil
+	case apppackage.FieldGroupID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddGroupID(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppPackage numeric field %s", name)
@@ -3706,6 +3790,9 @@ func (m *AppPackageMutation) ResetField(name string) error {
 		return nil
 	case apppackage.FieldBinarySha256:
 		m.ResetBinarySha256()
+		return nil
+	case apppackage.FieldGroupID:
+		m.ResetGroupID()
 		return nil
 	case apppackage.FieldUpdatedAt:
 		m.ResetUpdatedAt()

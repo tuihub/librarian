@@ -33,6 +33,8 @@ const (
 	FieldBinaryPublicURL = "binary_public_url"
 	// FieldBinarySha256 holds the string denoting the binary_sha256 field in the database.
 	FieldBinarySha256 = "binary_sha256"
+	// FieldGroupID holds the string denoting the group_id field in the database.
+	FieldGroupID = "group_id"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -71,6 +73,7 @@ var Columns = []string{
 	FieldBinarySizeBytes,
 	FieldBinaryPublicURL,
 	FieldBinarySha256,
+	FieldGroupID,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -175,6 +178,11 @@ func ByBinarySizeBytes(opts ...sql.OrderTermOption) OrderOption {
 // ByBinaryPublicURL orders the results by the binary_public_url field.
 func ByBinaryPublicURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBinaryPublicURL, opts...).ToFunc()
+}
+
+// ByGroupID orders the results by the group_id field.
+func ByGroupID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGroupID, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

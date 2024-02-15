@@ -31,6 +31,7 @@ func (AppPackage) Fields() []ent.Field {
 		field.Int64("binary_size_bytes").Optional(),
 		field.String("binary_public_url").Optional(),
 		field.Bytes("binary_sha256").Optional(),
+		field.Int64("group_id").GoType(model.InternalID(0)),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
