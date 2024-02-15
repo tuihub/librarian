@@ -26,6 +26,7 @@ import (
 )
 
 func NewSephirahService(
+	*conf.SephirahServer,
 	*conf.SephirahData,
 	*conf.Porter,
 	*conf.Consul,

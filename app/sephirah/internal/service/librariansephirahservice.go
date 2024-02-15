@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -33,6 +34,7 @@ type LibrarianSephirahServiceService struct {
 	app      *libapp.Settings
 	auth     *libauth.Auth
 	authFunc func(context.Context) (context.Context, error)
+	info     *pb.ServerInstanceSummary
 }
 
 func NewLibrarianSephirahServiceService(
@@ -47,8 +49,15 @@ func NewLibrarianSephirahServiceService(
 	app *libapp.Settings,
 	auth *libauth.Auth,
 	authFunc func(context.Context) (context.Context, error),
+	config *conf.SephirahServer,
 ) pb.LibrarianSephirahServiceServer {
 	t.CreateConfiguredAdmin()
+	if config == nil {
+		config = new(conf.SephirahServer)
+	}
+	if config.GetInfo() == nil {
+		config.Info = new(conf.SephirahServer_Info)
+	}
 	return &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		t:        t,
@@ -61,6 +70,13 @@ func NewLibrarianSephirahServiceService(
 		app:      app,
 		auth:     auth,
 		authFunc: authFunc,
+		info: &pb.ServerInstanceSummary{
+			Name:          config.GetInfo().GetName(),
+			Description:   config.GetInfo().GetDescription(),
+			WebsiteUrl:    config.GetInfo().GetWebsiteUrl(),
+			LogoUrl:       config.GetInfo().GetLogoUrl(),
+			BackgroundUrl: config.GetInfo().GetBackgroundUrl(),
+		},
 	}
 }
 
@@ -77,6 +93,6 @@ func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context
 		},
 		CurrentTime:           timestamppb.New(time.Now()),
 		FeatureSummary:        converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
-		ServerInstanceSummary: nil,
+		ServerInstanceSummary: s.info,
 	}, nil
 }

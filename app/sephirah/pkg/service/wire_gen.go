@@ -32,7 +32,7 @@ import (
 
 // Injectors from wire.go:
 
-func NewSephirahService(sephirahData *conf.SephirahData, porter *conf.Porter, consul *conf.Consul, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianSearcherServiceClient v1.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_2.LibrarianMinerServiceClient) (v1_3.LibrarianSephirahServiceServer, func(), error) {
+func NewSephirahService(sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahData, porter *conf.Porter, consul *conf.Consul, auth *libauth.Auth, mq *libmq.MQ, cron *libcron.Cron, store libcache.Store, settings *libapp.Settings, librarianSearcherServiceClient v1.LibrarianSearcherServiceClient, librarianMinerServiceClient v1_2.LibrarianMinerServiceClient) (v1_3.LibrarianSephirahServiceServer, func(), error) {
 	entClient, cleanup, err := data.NewSQLClient(sephirahData, settings)
 	if err != nil {
 		return nil, nil, err
@@ -108,7 +108,7 @@ func NewSephirahService(sephirahData *conf.SephirahData, porter *conf.Porter, co
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(auth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, auth, v)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, auth, v, sephirahServer)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

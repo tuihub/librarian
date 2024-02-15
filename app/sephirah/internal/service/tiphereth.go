@@ -217,6 +217,9 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
+	for i := range res {
+		res[i].ConnectionStatus = s.s.GetInstanceConnectionStatus(ctx, res[i].Address)
+	}
 	return &pb.ListPortersResponse{
 		Paging:  &librarian.PagingResponse{TotalSize: total},
 		Porters: converter.ToPBPorterList(res),

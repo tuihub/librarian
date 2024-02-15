@@ -65,7 +65,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirahData, porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
+	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirahServer, sephirahData, porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
 	if err != nil {
 		cleanup3()
 		cleanup2()

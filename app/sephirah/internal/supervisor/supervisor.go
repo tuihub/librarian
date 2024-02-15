@@ -110,13 +110,16 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 				continue
 			}
 			ins = s.knownInstances[address]
+			ins.ConnectionStatus = modeltiphereth.PorterConnectionStatusConnected
 			if ins.Status == modeltiphereth.PorterInstanceStatusActive {
 				// enable & check ownership
 				if err2 := s.enablePorterInstance(ctx, ins); err2 != nil {
 					logger.Errorf("%s", err2.Error())
+					ins.ConnectionStatus = modeltiphereth.PorterConnectionStatusActivationFailed
 					// bad instance, can't enable
 					continue
 				}
+				ins.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
 			}
 			if reflect.DeepEqual(ins.FeatureSummary, feature) {
 				// no change, but alive
@@ -134,7 +137,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 				Address:          address,
 				FeatureSummary:   feature,
 				Status:           modeltiphereth.PorterInstanceStatusUnspecified,
-				ConnectionStatus: modeltiphereth.PorterConnectionStatusUnspecified,
+				ConnectionStatus: modeltiphereth.PorterConnectionStatusConnected,
 			}
 		}
 		// new instance or feature changed
@@ -146,6 +149,16 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 		go s.updateFeatureSummary()
 	}
 	return newInstances, nil
+}
+
+func (s *Supervisor) GetInstanceConnectionStatus(
+	ctx context.Context,
+	address string,
+) modeltiphereth.PorterConnectionStatus {
+	if s.aliveInstances[address] == nil {
+		return modeltiphereth.PorterConnectionStatusDisconnected
+	}
+	return s.aliveInstances[address].ConnectionStatus
 }
 
 // EnablePorterInstance enable porter instance, can be called multiple times.
