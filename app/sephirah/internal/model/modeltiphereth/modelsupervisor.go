@@ -17,7 +17,7 @@ type PorterInstance struct {
 
 type PorterFeatureSummary struct {
 	SupportedAccounts           []*SupportedAccount `json:"supported_accounts"`
-	SupportedAppSources         []string            `json:"supported_app_sources"`
+	SupportedAppInfoSources     []string            `json:"supported_app_info_sources"`
 	SupportedFeedSources        []string            `json:"supported_feed_sources"`
 	SupportedNotifyDestinations []string            `json:"supported_notify_destinations"`
 }
@@ -40,7 +40,7 @@ const (
 
 type ServerFeatureSummary struct {
 	SupportedAccountPlatforms   []string
-	SupportedAppSources         []string
+	SupportedAppInfoSources     []string
 	SupportedFeedSources        []string
 	SupportedNotifyDestinations []string
 }

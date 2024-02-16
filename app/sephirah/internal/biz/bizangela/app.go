@@ -25,7 +25,7 @@ func NewPullAppInfoTopic(
 	return libmq.NewTopic[modelangela.PullAppInfo](
 		"PullAppInfo",
 		func(ctx context.Context, r *modelangela.PullAppInfo) error {
-			if !a.supv.CheckAppSource(r.AppInfoID.Source) {
+			if !a.supv.CheckAppInfoSource(r.AppInfoID.Source) {
 				return nil
 			}
 			if !r.IgnoreRateLimit {
@@ -39,7 +39,7 @@ func NewPullAppInfoTopic(
 				return err
 			}
 			resp, err := a.porter.PullAppInfo(
-				a.supv.CallAppSource(ctx, r.AppInfoID.Source),
+				a.supv.CallAppInfoSource(ctx, r.AppInfoID.Source),
 				&porter.PullAppInfoRequest{AppInfoId: &librarian.AppInfoID{
 					Internal:    false,
 					Source:      r.AppInfoID.Source,

@@ -440,13 +440,13 @@ func (c *toBizConverterImpl) pModeltipherethPorterFeatureSummaryToPModeltipheret
 		}
 		modeltipherethPorterFeatureSummary.SupportedAccounts = pModeltipherethSupportedAccountList
 		var stringList []string
-		if (*source).SupportedAppSources != nil {
-			stringList = make([]string, len((*source).SupportedAppSources))
-			for j := 0; j < len((*source).SupportedAppSources); j++ {
-				stringList[j] = (*source).SupportedAppSources[j]
+		if (*source).SupportedAppInfoSources != nil {
+			stringList = make([]string, len((*source).SupportedAppInfoSources))
+			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
+				stringList[j] = (*source).SupportedAppInfoSources[j]
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAppSources = stringList
+		modeltipherethPorterFeatureSummary.SupportedAppInfoSources = stringList
 		var stringList2 []string
 		if (*source).SupportedFeedSources != nil {
 			stringList2 = make([]string, len((*source).SupportedFeedSources))

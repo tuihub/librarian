@@ -77,11 +77,11 @@ func (s *LibrarianSephirahServiceService) MergeAppInfos(ctx context.Context, req
 func (s *LibrarianSephirahServiceService) SyncAppInfos(ctx context.Context, req *pb.SyncAppInfosRequest) (
 	*pb.SyncAppInfosResponse, error,
 ) {
-	apps, err := s.g.SyncAppInfos(ctx, converter.ToBizAppInfoIDList(req.GetAppIds()), req.GetWaitData())
+	apps, err := s.g.SyncAppInfos(ctx, converter.ToBizAppInfoIDList(req.GetAppInfoIds()), req.GetWaitData())
 	if err != nil {
 		return nil, err
 	}
-	return &pb.SyncAppInfosResponse{Apps: converter.ToPBAppInfoList(apps)}, nil
+	return &pb.SyncAppInfosResponse{AppInfos: converter.ToPBAppInfoList(apps)}, nil
 }
 func (s *LibrarianSephirahServiceService) SearchAppInfos(ctx context.Context, req *pb.SearchAppInfosRequest) (
 	*pb.SearchAppInfosResponse, error,
@@ -110,7 +110,7 @@ func (s *LibrarianSephirahServiceService) GetAppInfo(ctx context.Context, req *p
 func (s *LibrarianSephirahServiceService) GetBoundAppInfos(ctx context.Context, req *pb.GetBoundAppInfosRequest) (
 	*pb.GetBoundAppInfosResponse, error,
 ) {
-	al, err := s.g.GetBoundAppInfos(ctx, converter.ToBizInternalID(req.GetAppId()))
+	al, err := s.g.GetBoundAppInfos(ctx, converter.ToBizInternalID(req.GetAppInfoId()))
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func (s *LibrarianSephirahServiceService) GetBoundAppInfos(ctx context.Context, 
 func (s *LibrarianSephirahServiceService) PurchaseAppInfo(ctx context.Context, req *pb.PurchaseAppInfoRequest) (
 	*pb.PurchaseAppInfoResponse, error,
 ) {
-	id, err := s.g.PurchaseAppInfo(ctx, converter.ToBizAppInfoID(req.GetAppId()))
+	id, err := s.g.PurchaseAppInfo(ctx, converter.ToBizAppInfoID(req.GetAppInfoId()))
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +168,7 @@ func (s *LibrarianSephirahServiceService) ListApps(
 ) (*pb.ListAppsResponse, error) {
 	ap, total, err := s.g.ListApps(ctx,
 		model.ToBizPaging(req.GetPaging()),
-		converter.ToBizInternalIDList(req.GetAssignedAppIdFilter()),
+		converter.ToBizInternalIDList(req.GetAssignedAppInfoIdFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 	)
 	if err != nil {

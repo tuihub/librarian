@@ -40,11 +40,11 @@ func (s *Supervisor) summarize( //nolint:gocognit // how?
 			res.SupportedAccountPlatforms = append(res.SupportedAccountPlatforms, account.Platform)
 			supportedAccountPlatforms[account.Platform] = true
 		}
-		for _, appSource := range feat.SupportedAppSources {
+		for _, appSource := range feat.SupportedAppInfoSources {
 			if supportedAppSources[appSource] {
 				continue
 			}
-			res.SupportedAppSources = append(res.SupportedAppSources, appSource)
+			res.SupportedAppInfoSources = append(res.SupportedAppInfoSources, appSource)
 			supportedAppSources[appSource] = true
 		}
 		for _, feedSource := range feat.SupportedFeedSources {

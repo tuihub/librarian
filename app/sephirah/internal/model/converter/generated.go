@@ -326,13 +326,13 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 		}
 		modeltipherethPorterFeatureSummary.SupportedAccounts = pModeltipherethSupportedAccountList
 		var stringList []string
-		if (*source).SupportedAppSources != nil {
-			stringList = make([]string, len((*source).SupportedAppSources))
-			for j := 0; j < len((*source).SupportedAppSources); j++ {
-				stringList[j] = (*source).SupportedAppSources[j]
+		if (*source).SupportedAppInfoSources != nil {
+			stringList = make([]string, len((*source).SupportedAppInfoSources))
+			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
+				stringList[j] = (*source).SupportedAppInfoSources[j]
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAppSources = stringList
+		modeltipherethPorterFeatureSummary.SupportedAppInfoSources = stringList
 		var stringList2 []string
 		if (*source).SupportedFeedSources != nil {
 			stringList2 = make([]string, len((*source).SupportedFeedSources))
@@ -920,13 +920,13 @@ func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modeltiphereth.Serv
 		}
 		v1ServerFeatureSummary.SupportedAccountPlatforms = stringList
 		var stringList2 []string
-		if (*source).SupportedAppSources != nil {
-			stringList2 = make([]string, len((*source).SupportedAppSources))
-			for j := 0; j < len((*source).SupportedAppSources); j++ {
-				stringList2[j] = (*source).SupportedAppSources[j]
+		if (*source).SupportedAppInfoSources != nil {
+			stringList2 = make([]string, len((*source).SupportedAppInfoSources))
+			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
+				stringList2[j] = (*source).SupportedAppInfoSources[j]
 			}
 		}
-		v1ServerFeatureSummary.SupportedAppSources = stringList2
+		v1ServerFeatureSummary.SupportedAppInfoSources = stringList2
 		var stringList3 []string
 		if (*source).SupportedFeedSources != nil {
 			stringList3 = make([]string, len((*source).SupportedFeedSources))

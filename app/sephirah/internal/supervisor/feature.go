@@ -26,8 +26,8 @@ func (s *Supervisor) CallAccountPlatform(ctx context.Context, platform string) c
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckAppSource(source string) bool {
-	for _, p := range s.featureSummary.SupportedAppSources {
+func (s *Supervisor) CheckAppInfoSource(source string) bool {
+	for _, p := range s.featureSummary.SupportedAppInfoSources {
 		if p == source {
 			return true
 		}
@@ -35,9 +35,9 @@ func (s *Supervisor) CheckAppSource(source string) bool {
 	return false
 }
 
-func (s *Supervisor) CallAppSource(ctx context.Context, source string) context.Context {
+func (s *Supervisor) CallAppInfoSource(ctx context.Context, source string) context.Context {
 	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.SupportedAppSources {
+		for _, a := range i.FeatureSummary.SupportedAppInfoSources {
 			if a == source {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}

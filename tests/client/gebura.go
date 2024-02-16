@@ -92,11 +92,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := c.cli.GetBoundAppInfos(ctx, &pb.GetBoundAppInfosRequest{AppId: appID2}); err != nil {
+	if _, err := c.cli.GetBoundAppInfos(ctx, &pb.GetBoundAppInfosRequest{AppInfoId: appID2}); err != nil {
 		log.Fatal(err)
 	}
 	if _, err := c.cli.PurchaseAppInfo(ctx, &pb.PurchaseAppInfoRequest{
-		AppId: &librarian.AppInfoID{
+		AppInfoId: &librarian.AppInfoID{
 			Internal:    true,
 			Source:      "",
 			SourceAppId: strconv.FormatInt(appID2.GetId(), 10),
@@ -140,8 +140,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
-		IdFilter:            nil,
-		AssignedAppIdFilter: nil,
+		IdFilter:                nil,
+		AssignedAppInfoIdFilter: nil,
 	}); err != nil {
 		log.Fatal(err)
 	} else if resp.GetPaging().GetTotalSize() != 0 {
@@ -150,10 +150,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 
 	resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{
 		App: &pb.App{
-			Id:          nil,
-			Name:        "test app package",
-			Description: "test",
-			Public:      false,
+			Id:                nil,
+			Name:              "test app package",
+			Description:       "test",
+			AssignedAppInfoId: nil,
+			Public:            false,
 		},
 	})
 	if err != nil {
@@ -165,8 +166,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
-		IdFilter:            nil,
-		AssignedAppIdFilter: nil,
+		IdFilter:                nil,
+		AssignedAppInfoIdFilter: nil,
 	}); err2 != nil {
 		log.Fatal(err2)
 	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetAppPackages()[0].GetDescription() != "test" {
@@ -174,10 +175,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}
 	if _, err2 := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{
 		App: &pb.App{
-			Id:          appPackageID,
-			Name:        "test app package",
-			Description: "test2",
-			Public:      false,
+			Id:                appPackageID,
+			Name:              "test app package",
+			Description:       "test2",
+			AssignedAppInfoId: nil,
+			Public:            false,
 		},
 	}); err2 != nil {
 		log.Fatal(err2)
@@ -187,8 +189,8 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
-		IdFilter:            nil,
-		AssignedAppIdFilter: nil,
+		IdFilter:                nil,
+		AssignedAppInfoIdFilter: nil,
 	}); err2 != nil {
 		log.Fatal(err2)
 	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetAppPackages()[0].GetDescription() != "test2" {
