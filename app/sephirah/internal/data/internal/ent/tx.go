@@ -16,10 +16,14 @@ type Tx struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
-	// AppPackage is the client for interacting with the AppPackage builders.
-	AppPackage *AppPackageClient
-	// AppPackageRunTime is the client for interacting with the AppPackageRunTime builders.
-	AppPackageRunTime *AppPackageRunTimeClient
+	// AppBinary is the client for interacting with the AppBinary builders.
+	AppBinary *AppBinaryClient
+	// AppInfo is the client for interacting with the AppInfo builders.
+	AppInfo *AppInfoClient
+	// AppInst is the client for interacting with the AppInst builders.
+	AppInst *AppInstClient
+	// AppInstRunTime is the client for interacting with the AppInstRunTime builders.
+	AppInstRunTime *AppInstRunTimeClient
 	// DeviceInfo is the client for interacting with the DeviceInfo builders.
 	DeviceInfo *DeviceInfoClient
 	// Feed is the client for interacting with the Feed builders.
@@ -181,8 +185,10 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.App = NewAppClient(tx.config)
-	tx.AppPackage = NewAppPackageClient(tx.config)
-	tx.AppPackageRunTime = NewAppPackageRunTimeClient(tx.config)
+	tx.AppBinary = NewAppBinaryClient(tx.config)
+	tx.AppInfo = NewAppInfoClient(tx.config)
+	tx.AppInst = NewAppInstClient(tx.config)
+	tx.AppInstRunTime = NewAppInstRunTimeClient(tx.config)
 	tx.DeviceInfo = NewDeviceInfoClient(tx.config)
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)

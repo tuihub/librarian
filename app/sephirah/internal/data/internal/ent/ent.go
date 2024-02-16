@@ -14,8 +14,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appbinary"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -90,24 +92,26 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			account.Table:           account.ValidColumn,
-			app.Table:               app.ValidColumn,
-			apppackage.Table:        apppackage.ValidColumn,
-			apppackageruntime.Table: apppackageruntime.ValidColumn,
-			deviceinfo.Table:        deviceinfo.ValidColumn,
-			feed.Table:              feed.ValidColumn,
-			feedconfig.Table:        feedconfig.ValidColumn,
-			feeditem.Table:          feeditem.ValidColumn,
-			file.Table:              file.ValidColumn,
-			image.Table:             image.ValidColumn,
-			notifyflow.Table:        notifyflow.ValidColumn,
-			notifyflowsource.Table:  notifyflowsource.ValidColumn,
-			notifyflowtarget.Table:  notifyflowtarget.ValidColumn,
-			notifytarget.Table:      notifytarget.ValidColumn,
-			porterinstance.Table:    porterinstance.ValidColumn,
-			porterprivilege.Table:   porterprivilege.ValidColumn,
-			user.Table:              user.ValidColumn,
-			usersession.Table:       usersession.ValidColumn,
+			account.Table:          account.ValidColumn,
+			app.Table:              app.ValidColumn,
+			appbinary.Table:        appbinary.ValidColumn,
+			appinfo.Table:          appinfo.ValidColumn,
+			appinst.Table:          appinst.ValidColumn,
+			appinstruntime.Table:   appinstruntime.ValidColumn,
+			deviceinfo.Table:       deviceinfo.ValidColumn,
+			feed.Table:             feed.ValidColumn,
+			feedconfig.Table:       feedconfig.ValidColumn,
+			feeditem.Table:         feeditem.ValidColumn,
+			file.Table:             file.ValidColumn,
+			image.Table:            image.ValidColumn,
+			notifyflow.Table:       notifyflow.ValidColumn,
+			notifyflowsource.Table: notifyflowsource.ValidColumn,
+			notifyflowtarget.Table: notifyflowtarget.ValidColumn,
+			notifytarget.Table:     notifytarget.ValidColumn,
+			porterinstance.Table:   porterinstance.ValidColumn,
+			porterprivilege.Table:  porterprivilege.ValidColumn,
+			user.Table:             user.ValidColumn,
+			usersession.Table:      usersession.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

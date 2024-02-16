@@ -40,7 +40,7 @@ func (Account) Indexes() []ent.Index {
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("purchased_app", App.Type),
+		edge.To("purchased_app", AppInfo.Type),
 		edge.From("bind_user", User.Type).
 			Ref("bind_account").
 			Unique(),

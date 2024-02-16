@@ -10,6 +10,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -18,111 +20,59 @@ type App struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
-	// Internal holds the value of the "internal" field.
-	Internal bool `json:"internal,omitempty"`
-	// Source holds the value of the "source" field.
-	Source string `json:"source,omitempty"`
-	// SourceAppID holds the value of the "source_app_id" field.
-	SourceAppID string `json:"source_app_id,omitempty"`
-	// SourceURL holds the value of the "source_url" field.
-	SourceURL string `json:"source_url,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Type holds the value of the "type" field.
-	Type app.Type `json:"type,omitempty"`
-	// ShortDescription holds the value of the "short_description" field.
-	ShortDescription string `json:"short_description,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
-	// IconImageURL holds the value of the "icon_image_url" field.
-	IconImageURL string `json:"icon_image_url,omitempty"`
-	// BackgroundImageURL holds the value of the "background_image_url" field.
-	BackgroundImageURL string `json:"background_image_url,omitempty"`
-	// CoverImageURL holds the value of the "cover_image_url" field.
-	CoverImageURL string `json:"cover_image_url,omitempty"`
-	// ReleaseDate holds the value of the "release_date" field.
-	ReleaseDate string `json:"release_date,omitempty"`
-	// Developer holds the value of the "developer" field.
-	Developer string `json:"developer,omitempty"`
-	// Publisher holds the value of the "publisher" field.
-	Publisher string `json:"publisher,omitempty"`
-	// Version holds the value of the "version" field.
-	Version string `json:"version,omitempty"`
+	// Public holds the value of the "public" field.
+	Public bool `json:"public,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AppQuery when eager-loading is set.
-	Edges             AppEdges `json:"edges"`
-	app_bind_external *model.InternalID
-	selectValues      sql.SelectValues
+	Edges        AppEdges `json:"edges"`
+	app_info_app *model.InternalID
+	user_app     *model.InternalID
+	selectValues sql.SelectValues
 }
 
 // AppEdges holds the relations/edges for other nodes in the graph.
 type AppEdges struct {
-	// PurchasedByAccount holds the value of the purchased_by_account edge.
-	PurchasedByAccount []*Account `json:"purchased_by_account,omitempty"`
-	// PurchasedByUser holds the value of the purchased_by_user edge.
-	PurchasedByUser []*User `json:"purchased_by_user,omitempty"`
-	// AppPackage holds the value of the app_package edge.
-	AppPackage []*AppPackage `json:"app_package,omitempty"`
-	// BindInternal holds the value of the bind_internal edge.
-	BindInternal *App `json:"bind_internal,omitempty"`
-	// BindExternal holds the value of the bind_external edge.
-	BindExternal []*App `json:"bind_external,omitempty"`
+	// Owner holds the value of the owner edge.
+	Owner *User `json:"owner,omitempty"`
+	// AppInfo holds the value of the app_info edge.
+	AppInfo *AppInfo `json:"app_info,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [2]bool
 }
 
-// PurchasedByAccountOrErr returns the PurchasedByAccount value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppEdges) PurchasedByAccountOrErr() ([]*Account, error) {
-	if e.loadedTypes[0] {
-		return e.PurchasedByAccount, nil
-	}
-	return nil, &NotLoadedError{edge: "purchased_by_account"}
-}
-
-// PurchasedByUserOrErr returns the PurchasedByUser value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppEdges) PurchasedByUserOrErr() ([]*User, error) {
-	if e.loadedTypes[1] {
-		return e.PurchasedByUser, nil
-	}
-	return nil, &NotLoadedError{edge: "purchased_by_user"}
-}
-
-// AppPackageOrErr returns the AppPackage value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppEdges) AppPackageOrErr() ([]*AppPackage, error) {
-	if e.loadedTypes[2] {
-		return e.AppPackage, nil
-	}
-	return nil, &NotLoadedError{edge: "app_package"}
-}
-
-// BindInternalOrErr returns the BindInternal value or an error if the edge
+// OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AppEdges) BindInternalOrErr() (*App, error) {
-	if e.loadedTypes[3] {
-		if e.BindInternal == nil {
+func (e AppEdges) OwnerOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Owner == nil {
 			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: app.Label}
+			return nil, &NotFoundError{label: user.Label}
 		}
-		return e.BindInternal, nil
+		return e.Owner, nil
 	}
-	return nil, &NotLoadedError{edge: "bind_internal"}
+	return nil, &NotLoadedError{edge: "owner"}
 }
 
-// BindExternalOrErr returns the BindExternal value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppEdges) BindExternalOrErr() ([]*App, error) {
-	if e.loadedTypes[4] {
-		return e.BindExternal, nil
+// AppInfoOrErr returns the AppInfo value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e AppEdges) AppInfoOrErr() (*AppInfo, error) {
+	if e.loadedTypes[1] {
+		if e.AppInfo == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: appinfo.Label}
+		}
+		return e.AppInfo, nil
 	}
-	return nil, &NotLoadedError{edge: "bind_external"}
+	return nil, &NotLoadedError{edge: "app_info"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -130,15 +80,17 @@ func (*App) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case app.FieldInternal:
+		case app.FieldPublic:
 			values[i] = new(sql.NullBool)
 		case app.FieldID:
 			values[i] = new(sql.NullInt64)
-		case app.FieldSource, app.FieldSourceAppID, app.FieldSourceURL, app.FieldName, app.FieldType, app.FieldShortDescription, app.FieldDescription, app.FieldIconImageURL, app.FieldBackgroundImageURL, app.FieldCoverImageURL, app.FieldReleaseDate, app.FieldDeveloper, app.FieldPublisher, app.FieldVersion:
+		case app.FieldName, app.FieldDescription:
 			values[i] = new(sql.NullString)
 		case app.FieldUpdatedAt, app.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case app.ForeignKeys[0]: // app_bind_external
+		case app.ForeignKeys[0]: // app_info_app
+			values[i] = new(sql.NullInt64)
+		case app.ForeignKeys[1]: // user_app
 			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -161,47 +113,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.ID = model.InternalID(value.Int64)
 			}
-		case app.FieldInternal:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field internal", values[i])
-			} else if value.Valid {
-				a.Internal = value.Bool
-			}
-		case app.FieldSource:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field source", values[i])
-			} else if value.Valid {
-				a.Source = value.String
-			}
-		case app.FieldSourceAppID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field source_app_id", values[i])
-			} else if value.Valid {
-				a.SourceAppID = value.String
-			}
-		case app.FieldSourceURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field source_url", values[i])
-			} else if value.Valid {
-				a.SourceURL = value.String
-			}
 		case app.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				a.Name = value.String
-			}
-		case app.FieldType:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field type", values[i])
-			} else if value.Valid {
-				a.Type = app.Type(value.String)
-			}
-		case app.FieldShortDescription:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field short_description", values[i])
-			} else if value.Valid {
-				a.ShortDescription = value.String
 			}
 		case app.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -209,47 +125,11 @@ func (a *App) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.Description = value.String
 			}
-		case app.FieldIconImageURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field icon_image_url", values[i])
+		case app.FieldPublic:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field public", values[i])
 			} else if value.Valid {
-				a.IconImageURL = value.String
-			}
-		case app.FieldBackgroundImageURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field background_image_url", values[i])
-			} else if value.Valid {
-				a.BackgroundImageURL = value.String
-			}
-		case app.FieldCoverImageURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field cover_image_url", values[i])
-			} else if value.Valid {
-				a.CoverImageURL = value.String
-			}
-		case app.FieldReleaseDate:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field release_date", values[i])
-			} else if value.Valid {
-				a.ReleaseDate = value.String
-			}
-		case app.FieldDeveloper:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field developer", values[i])
-			} else if value.Valid {
-				a.Developer = value.String
-			}
-		case app.FieldPublisher:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field publisher", values[i])
-			} else if value.Valid {
-				a.Publisher = value.String
-			}
-		case app.FieldVersion:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field version", values[i])
-			} else if value.Valid {
-				a.Version = value.String
+				a.Public = value.Bool
 			}
 		case app.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -265,10 +145,17 @@ func (a *App) assignValues(columns []string, values []any) error {
 			}
 		case app.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_bind_external", values[i])
+				return fmt.Errorf("unexpected type %T for field app_info_app", values[i])
 			} else if value.Valid {
-				a.app_bind_external = new(model.InternalID)
-				*a.app_bind_external = model.InternalID(value.Int64)
+				a.app_info_app = new(model.InternalID)
+				*a.app_info_app = model.InternalID(value.Int64)
+			}
+		case app.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_app", values[i])
+			} else if value.Valid {
+				a.user_app = new(model.InternalID)
+				*a.user_app = model.InternalID(value.Int64)
 			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
@@ -283,29 +170,14 @@ func (a *App) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
 }
 
-// QueryPurchasedByAccount queries the "purchased_by_account" edge of the App entity.
-func (a *App) QueryPurchasedByAccount() *AccountQuery {
-	return NewAppClient(a.config).QueryPurchasedByAccount(a)
+// QueryOwner queries the "owner" edge of the App entity.
+func (a *App) QueryOwner() *UserQuery {
+	return NewAppClient(a.config).QueryOwner(a)
 }
 
-// QueryPurchasedByUser queries the "purchased_by_user" edge of the App entity.
-func (a *App) QueryPurchasedByUser() *UserQuery {
-	return NewAppClient(a.config).QueryPurchasedByUser(a)
-}
-
-// QueryAppPackage queries the "app_package" edge of the App entity.
-func (a *App) QueryAppPackage() *AppPackageQuery {
-	return NewAppClient(a.config).QueryAppPackage(a)
-}
-
-// QueryBindInternal queries the "bind_internal" edge of the App entity.
-func (a *App) QueryBindInternal() *AppQuery {
-	return NewAppClient(a.config).QueryBindInternal(a)
-}
-
-// QueryBindExternal queries the "bind_external" edge of the App entity.
-func (a *App) QueryBindExternal() *AppQuery {
-	return NewAppClient(a.config).QueryBindExternal(a)
+// QueryAppInfo queries the "app_info" edge of the App entity.
+func (a *App) QueryAppInfo() *AppInfoQuery {
+	return NewAppClient(a.config).QueryAppInfo(a)
 }
 
 // Update returns a builder for updating this App.
@@ -331,50 +203,14 @@ func (a *App) String() string {
 	var builder strings.Builder
 	builder.WriteString("App(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
-	builder.WriteString("internal=")
-	builder.WriteString(fmt.Sprintf("%v", a.Internal))
-	builder.WriteString(", ")
-	builder.WriteString("source=")
-	builder.WriteString(a.Source)
-	builder.WriteString(", ")
-	builder.WriteString("source_app_id=")
-	builder.WriteString(a.SourceAppID)
-	builder.WriteString(", ")
-	builder.WriteString("source_url=")
-	builder.WriteString(a.SourceURL)
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(a.Name)
-	builder.WriteString(", ")
-	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", a.Type))
-	builder.WriteString(", ")
-	builder.WriteString("short_description=")
-	builder.WriteString(a.ShortDescription)
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(a.Description)
 	builder.WriteString(", ")
-	builder.WriteString("icon_image_url=")
-	builder.WriteString(a.IconImageURL)
-	builder.WriteString(", ")
-	builder.WriteString("background_image_url=")
-	builder.WriteString(a.BackgroundImageURL)
-	builder.WriteString(", ")
-	builder.WriteString("cover_image_url=")
-	builder.WriteString(a.CoverImageURL)
-	builder.WriteString(", ")
-	builder.WriteString("release_date=")
-	builder.WriteString(a.ReleaseDate)
-	builder.WriteString(", ")
-	builder.WriteString("developer=")
-	builder.WriteString(a.Developer)
-	builder.WriteString(", ")
-	builder.WriteString("publisher=")
-	builder.WriteString(a.Publisher)
-	builder.WriteString(", ")
-	builder.WriteString("version=")
-	builder.WriteString(a.Version)
+	builder.WriteString("public=")
+	builder.WriteString(fmt.Sprintf("%v", a.Public))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(a.UpdatedAt.Format(time.ANSIC))

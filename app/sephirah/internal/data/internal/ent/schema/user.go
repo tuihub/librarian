@@ -35,8 +35,9 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("bind_account", Account.Type),
-		edge.To("purchased_app", App.Type),
-		edge.To("app_package", AppPackage.Type),
+		edge.To("purchased_app", AppInfo.Type),
+		edge.To("app", App.Type),
+		edge.To("app_inst", AppInst.Type),
 		edge.To("feed_config", FeedConfig.Type),
 		edge.To("notify_target", NotifyTarget.Type),
 		edge.To("notify_flow", NotifyFlow.Type),

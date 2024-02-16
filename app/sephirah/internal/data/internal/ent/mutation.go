@@ -13,8 +13,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appbinary"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -44,24 +46,26 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccount           = "Account"
-	TypeApp               = "App"
-	TypeAppPackage        = "AppPackage"
-	TypeAppPackageRunTime = "AppPackageRunTime"
-	TypeDeviceInfo        = "DeviceInfo"
-	TypeFeed              = "Feed"
-	TypeFeedConfig        = "FeedConfig"
-	TypeFeedItem          = "FeedItem"
-	TypeFile              = "File"
-	TypeImage             = "Image"
-	TypeNotifyFlow        = "NotifyFlow"
-	TypeNotifyFlowSource  = "NotifyFlowSource"
-	TypeNotifyFlowTarget  = "NotifyFlowTarget"
-	TypeNotifyTarget      = "NotifyTarget"
-	TypePorterInstance    = "PorterInstance"
-	TypePorterPrivilege   = "PorterPrivilege"
-	TypeUser              = "User"
-	TypeUserSession       = "UserSession"
+	TypeAccount          = "Account"
+	TypeApp              = "App"
+	TypeAppBinary        = "AppBinary"
+	TypeAppInfo          = "AppInfo"
+	TypeAppInst          = "AppInst"
+	TypeAppInstRunTime   = "AppInstRunTime"
+	TypeDeviceInfo       = "DeviceInfo"
+	TypeFeed             = "Feed"
+	TypeFeedConfig       = "FeedConfig"
+	TypeFeedItem         = "FeedItem"
+	TypeFile             = "File"
+	TypeImage            = "Image"
+	TypeNotifyFlow       = "NotifyFlow"
+	TypeNotifyFlowSource = "NotifyFlowSource"
+	TypeNotifyFlowTarget = "NotifyFlowTarget"
+	TypeNotifyTarget     = "NotifyTarget"
+	TypePorterInstance   = "PorterInstance"
+	TypePorterPrivilege  = "PorterPrivilege"
+	TypeUser             = "User"
+	TypeUserSession      = "UserSession"
 )
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
@@ -444,7 +448,7 @@ func (m *AccountMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by ids.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by ids.
 func (m *AccountMutation) AddPurchasedAppIDs(ids ...model.InternalID) {
 	if m.purchased_app == nil {
 		m.purchased_app = make(map[model.InternalID]struct{})
@@ -454,17 +458,17 @@ func (m *AccountMutation) AddPurchasedAppIDs(ids ...model.InternalID) {
 	}
 }
 
-// ClearPurchasedApp clears the "purchased_app" edge to the App entity.
+// ClearPurchasedApp clears the "purchased_app" edge to the AppInfo entity.
 func (m *AccountMutation) ClearPurchasedApp() {
 	m.clearedpurchased_app = true
 }
 
-// PurchasedAppCleared reports if the "purchased_app" edge to the App entity was cleared.
+// PurchasedAppCleared reports if the "purchased_app" edge to the AppInfo entity was cleared.
 func (m *AccountMutation) PurchasedAppCleared() bool {
 	return m.clearedpurchased_app
 }
 
-// RemovePurchasedAppIDs removes the "purchased_app" edge to the App entity by IDs.
+// RemovePurchasedAppIDs removes the "purchased_app" edge to the AppInfo entity by IDs.
 func (m *AccountMutation) RemovePurchasedAppIDs(ids ...model.InternalID) {
 	if m.removedpurchased_app == nil {
 		m.removedpurchased_app = make(map[model.InternalID]struct{})
@@ -475,7 +479,7 @@ func (m *AccountMutation) RemovePurchasedAppIDs(ids ...model.InternalID) {
 	}
 }
 
-// RemovedPurchasedApp returns the removed IDs of the "purchased_app" edge to the App entity.
+// RemovedPurchasedApp returns the removed IDs of the "purchased_app" edge to the AppInfo entity.
 func (m *AccountMutation) RemovedPurchasedAppIDs() (ids []model.InternalID) {
 	for id := range m.removedpurchased_app {
 		ids = append(ids, id)
@@ -875,44 +879,22 @@ func (m *AccountMutation) ResetEdge(name string) error {
 // AppMutation represents an operation that mutates the App nodes in the graph.
 type AppMutation struct {
 	config
-	op                          Op
-	typ                         string
-	id                          *model.InternalID
-	internal                    *bool
-	source                      *string
-	source_app_id               *string
-	source_url                  *string
-	name                        *string
-	_type                       *app.Type
-	short_description           *string
-	description                 *string
-	icon_image_url              *string
-	background_image_url        *string
-	cover_image_url             *string
-	release_date                *string
-	developer                   *string
-	publisher                   *string
-	version                     *string
-	updated_at                  *time.Time
-	created_at                  *time.Time
-	clearedFields               map[string]struct{}
-	purchased_by_account        map[model.InternalID]struct{}
-	removedpurchased_by_account map[model.InternalID]struct{}
-	clearedpurchased_by_account bool
-	purchased_by_user           map[model.InternalID]struct{}
-	removedpurchased_by_user    map[model.InternalID]struct{}
-	clearedpurchased_by_user    bool
-	app_package                 map[model.InternalID]struct{}
-	removedapp_package          map[model.InternalID]struct{}
-	clearedapp_package          bool
-	bind_internal               *model.InternalID
-	clearedbind_internal        bool
-	bind_external               map[model.InternalID]struct{}
-	removedbind_external        map[model.InternalID]struct{}
-	clearedbind_external        bool
-	done                        bool
-	oldValue                    func(context.Context) (*App, error)
-	predicates                  []predicate.App
+	op              Op
+	typ             string
+	id              *model.InternalID
+	name            *string
+	description     *string
+	public          *bool
+	updated_at      *time.Time
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	owner           *model.InternalID
+	clearedowner    bool
+	app_info        *model.InternalID
+	clearedapp_info bool
+	done            bool
+	oldValue        func(context.Context) (*App, error)
+	predicates      []predicate.App
 }
 
 var _ ent.Mutation = (*AppMutation)(nil)
@@ -1019,163 +1001,6 @@ func (m *AppMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 	}
 }
 
-// SetInternal sets the "internal" field.
-func (m *AppMutation) SetInternal(b bool) {
-	m.internal = &b
-}
-
-// Internal returns the value of the "internal" field in the mutation.
-func (m *AppMutation) Internal() (r bool, exists bool) {
-	v := m.internal
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldInternal returns the old "internal" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldInternal(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldInternal is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldInternal requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldInternal: %w", err)
-	}
-	return oldValue.Internal, nil
-}
-
-// ResetInternal resets all changes to the "internal" field.
-func (m *AppMutation) ResetInternal() {
-	m.internal = nil
-}
-
-// SetSource sets the "source" field.
-func (m *AppMutation) SetSource(s string) {
-	m.source = &s
-}
-
-// Source returns the value of the "source" field in the mutation.
-func (m *AppMutation) Source() (r string, exists bool) {
-	v := m.source
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSource returns the old "source" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldSource(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSource is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSource requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSource: %w", err)
-	}
-	return oldValue.Source, nil
-}
-
-// ResetSource resets all changes to the "source" field.
-func (m *AppMutation) ResetSource() {
-	m.source = nil
-}
-
-// SetSourceAppID sets the "source_app_id" field.
-func (m *AppMutation) SetSourceAppID(s string) {
-	m.source_app_id = &s
-}
-
-// SourceAppID returns the value of the "source_app_id" field in the mutation.
-func (m *AppMutation) SourceAppID() (r string, exists bool) {
-	v := m.source_app_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSourceAppID returns the old "source_app_id" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldSourceAppID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSourceAppID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceAppID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSourceAppID: %w", err)
-	}
-	return oldValue.SourceAppID, nil
-}
-
-// ResetSourceAppID resets all changes to the "source_app_id" field.
-func (m *AppMutation) ResetSourceAppID() {
-	m.source_app_id = nil
-}
-
-// SetSourceURL sets the "source_url" field.
-func (m *AppMutation) SetSourceURL(s string) {
-	m.source_url = &s
-}
-
-// SourceURL returns the value of the "source_url" field in the mutation.
-func (m *AppMutation) SourceURL() (r string, exists bool) {
-	v := m.source_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSourceURL returns the old "source_url" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldSourceURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSourceURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSourceURL: %w", err)
-	}
-	return oldValue.SourceURL, nil
-}
-
-// ClearSourceURL clears the value of the "source_url" field.
-func (m *AppMutation) ClearSourceURL() {
-	m.source_url = nil
-	m.clearedFields[app.FieldSourceURL] = struct{}{}
-}
-
-// SourceURLCleared returns if the "source_url" field was cleared in this mutation.
-func (m *AppMutation) SourceURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldSourceURL]
-	return ok
-}
-
-// ResetSourceURL resets all changes to the "source_url" field.
-func (m *AppMutation) ResetSourceURL() {
-	m.source_url = nil
-	delete(m.clearedFields, app.FieldSourceURL)
-}
-
 // SetName sets the "name" field.
 func (m *AppMutation) SetName(s string) {
 	m.name = &s
@@ -1212,91 +1037,6 @@ func (m *AppMutation) ResetName() {
 	m.name = nil
 }
 
-// SetType sets the "type" field.
-func (m *AppMutation) SetType(a app.Type) {
-	m._type = &a
-}
-
-// GetType returns the value of the "type" field in the mutation.
-func (m *AppMutation) GetType() (r app.Type, exists bool) {
-	v := m._type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldType returns the old "type" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldType(ctx context.Context) (v app.Type, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldType: %w", err)
-	}
-	return oldValue.Type, nil
-}
-
-// ResetType resets all changes to the "type" field.
-func (m *AppMutation) ResetType() {
-	m._type = nil
-}
-
-// SetShortDescription sets the "short_description" field.
-func (m *AppMutation) SetShortDescription(s string) {
-	m.short_description = &s
-}
-
-// ShortDescription returns the value of the "short_description" field in the mutation.
-func (m *AppMutation) ShortDescription() (r string, exists bool) {
-	v := m.short_description
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldShortDescription returns the old "short_description" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldShortDescription(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldShortDescription is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldShortDescription requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldShortDescription: %w", err)
-	}
-	return oldValue.ShortDescription, nil
-}
-
-// ClearShortDescription clears the value of the "short_description" field.
-func (m *AppMutation) ClearShortDescription() {
-	m.short_description = nil
-	m.clearedFields[app.FieldShortDescription] = struct{}{}
-}
-
-// ShortDescriptionCleared returns if the "short_description" field was cleared in this mutation.
-func (m *AppMutation) ShortDescriptionCleared() bool {
-	_, ok := m.clearedFields[app.FieldShortDescription]
-	return ok
-}
-
-// ResetShortDescription resets all changes to the "short_description" field.
-func (m *AppMutation) ResetShortDescription() {
-	m.short_description = nil
-	delete(m.clearedFields, app.FieldShortDescription)
-}
-
 // SetDescription sets the "description" field.
 func (m *AppMutation) SetDescription(s string) {
 	m.description = &s
@@ -1328,365 +1068,45 @@ func (m *AppMutation) OldDescription(ctx context.Context) (v string, err error) 
 	return oldValue.Description, nil
 }
 
-// ClearDescription clears the value of the "description" field.
-func (m *AppMutation) ClearDescription() {
-	m.description = nil
-	m.clearedFields[app.FieldDescription] = struct{}{}
-}
-
-// DescriptionCleared returns if the "description" field was cleared in this mutation.
-func (m *AppMutation) DescriptionCleared() bool {
-	_, ok := m.clearedFields[app.FieldDescription]
-	return ok
-}
-
 // ResetDescription resets all changes to the "description" field.
 func (m *AppMutation) ResetDescription() {
 	m.description = nil
-	delete(m.clearedFields, app.FieldDescription)
 }
 
-// SetIconImageURL sets the "icon_image_url" field.
-func (m *AppMutation) SetIconImageURL(s string) {
-	m.icon_image_url = &s
+// SetPublic sets the "public" field.
+func (m *AppMutation) SetPublic(b bool) {
+	m.public = &b
 }
 
-// IconImageURL returns the value of the "icon_image_url" field in the mutation.
-func (m *AppMutation) IconImageURL() (r string, exists bool) {
-	v := m.icon_image_url
+// Public returns the value of the "public" field in the mutation.
+func (m *AppMutation) Public() (r bool, exists bool) {
+	v := m.public
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldIconImageURL returns the old "icon_image_url" field's value of the App entity.
+// OldPublic returns the old "public" field's value of the App entity.
 // If the App object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldIconImageURL(ctx context.Context) (v string, err error) {
+func (m *AppMutation) OldPublic(ctx context.Context) (v bool, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIconImageURL is only allowed on UpdateOne operations")
+		return v, errors.New("OldPublic is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIconImageURL requires an ID field in the mutation")
+		return v, errors.New("OldPublic requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIconImageURL: %w", err)
+		return v, fmt.Errorf("querying old value for OldPublic: %w", err)
 	}
-	return oldValue.IconImageURL, nil
+	return oldValue.Public, nil
 }
 
-// ClearIconImageURL clears the value of the "icon_image_url" field.
-func (m *AppMutation) ClearIconImageURL() {
-	m.icon_image_url = nil
-	m.clearedFields[app.FieldIconImageURL] = struct{}{}
-}
-
-// IconImageURLCleared returns if the "icon_image_url" field was cleared in this mutation.
-func (m *AppMutation) IconImageURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldIconImageURL]
-	return ok
-}
-
-// ResetIconImageURL resets all changes to the "icon_image_url" field.
-func (m *AppMutation) ResetIconImageURL() {
-	m.icon_image_url = nil
-	delete(m.clearedFields, app.FieldIconImageURL)
-}
-
-// SetBackgroundImageURL sets the "background_image_url" field.
-func (m *AppMutation) SetBackgroundImageURL(s string) {
-	m.background_image_url = &s
-}
-
-// BackgroundImageURL returns the value of the "background_image_url" field in the mutation.
-func (m *AppMutation) BackgroundImageURL() (r string, exists bool) {
-	v := m.background_image_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBackgroundImageURL returns the old "background_image_url" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldBackgroundImageURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBackgroundImageURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBackgroundImageURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBackgroundImageURL: %w", err)
-	}
-	return oldValue.BackgroundImageURL, nil
-}
-
-// ClearBackgroundImageURL clears the value of the "background_image_url" field.
-func (m *AppMutation) ClearBackgroundImageURL() {
-	m.background_image_url = nil
-	m.clearedFields[app.FieldBackgroundImageURL] = struct{}{}
-}
-
-// BackgroundImageURLCleared returns if the "background_image_url" field was cleared in this mutation.
-func (m *AppMutation) BackgroundImageURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldBackgroundImageURL]
-	return ok
-}
-
-// ResetBackgroundImageURL resets all changes to the "background_image_url" field.
-func (m *AppMutation) ResetBackgroundImageURL() {
-	m.background_image_url = nil
-	delete(m.clearedFields, app.FieldBackgroundImageURL)
-}
-
-// SetCoverImageURL sets the "cover_image_url" field.
-func (m *AppMutation) SetCoverImageURL(s string) {
-	m.cover_image_url = &s
-}
-
-// CoverImageURL returns the value of the "cover_image_url" field in the mutation.
-func (m *AppMutation) CoverImageURL() (r string, exists bool) {
-	v := m.cover_image_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCoverImageURL returns the old "cover_image_url" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldCoverImageURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCoverImageURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCoverImageURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCoverImageURL: %w", err)
-	}
-	return oldValue.CoverImageURL, nil
-}
-
-// ClearCoverImageURL clears the value of the "cover_image_url" field.
-func (m *AppMutation) ClearCoverImageURL() {
-	m.cover_image_url = nil
-	m.clearedFields[app.FieldCoverImageURL] = struct{}{}
-}
-
-// CoverImageURLCleared returns if the "cover_image_url" field was cleared in this mutation.
-func (m *AppMutation) CoverImageURLCleared() bool {
-	_, ok := m.clearedFields[app.FieldCoverImageURL]
-	return ok
-}
-
-// ResetCoverImageURL resets all changes to the "cover_image_url" field.
-func (m *AppMutation) ResetCoverImageURL() {
-	m.cover_image_url = nil
-	delete(m.clearedFields, app.FieldCoverImageURL)
-}
-
-// SetReleaseDate sets the "release_date" field.
-func (m *AppMutation) SetReleaseDate(s string) {
-	m.release_date = &s
-}
-
-// ReleaseDate returns the value of the "release_date" field in the mutation.
-func (m *AppMutation) ReleaseDate() (r string, exists bool) {
-	v := m.release_date
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldReleaseDate returns the old "release_date" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldReleaseDate(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldReleaseDate is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldReleaseDate requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldReleaseDate: %w", err)
-	}
-	return oldValue.ReleaseDate, nil
-}
-
-// ClearReleaseDate clears the value of the "release_date" field.
-func (m *AppMutation) ClearReleaseDate() {
-	m.release_date = nil
-	m.clearedFields[app.FieldReleaseDate] = struct{}{}
-}
-
-// ReleaseDateCleared returns if the "release_date" field was cleared in this mutation.
-func (m *AppMutation) ReleaseDateCleared() bool {
-	_, ok := m.clearedFields[app.FieldReleaseDate]
-	return ok
-}
-
-// ResetReleaseDate resets all changes to the "release_date" field.
-func (m *AppMutation) ResetReleaseDate() {
-	m.release_date = nil
-	delete(m.clearedFields, app.FieldReleaseDate)
-}
-
-// SetDeveloper sets the "developer" field.
-func (m *AppMutation) SetDeveloper(s string) {
-	m.developer = &s
-}
-
-// Developer returns the value of the "developer" field in the mutation.
-func (m *AppMutation) Developer() (r string, exists bool) {
-	v := m.developer
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeveloper returns the old "developer" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldDeveloper(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeveloper is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeveloper requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeveloper: %w", err)
-	}
-	return oldValue.Developer, nil
-}
-
-// ClearDeveloper clears the value of the "developer" field.
-func (m *AppMutation) ClearDeveloper() {
-	m.developer = nil
-	m.clearedFields[app.FieldDeveloper] = struct{}{}
-}
-
-// DeveloperCleared returns if the "developer" field was cleared in this mutation.
-func (m *AppMutation) DeveloperCleared() bool {
-	_, ok := m.clearedFields[app.FieldDeveloper]
-	return ok
-}
-
-// ResetDeveloper resets all changes to the "developer" field.
-func (m *AppMutation) ResetDeveloper() {
-	m.developer = nil
-	delete(m.clearedFields, app.FieldDeveloper)
-}
-
-// SetPublisher sets the "publisher" field.
-func (m *AppMutation) SetPublisher(s string) {
-	m.publisher = &s
-}
-
-// Publisher returns the value of the "publisher" field in the mutation.
-func (m *AppMutation) Publisher() (r string, exists bool) {
-	v := m.publisher
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPublisher returns the old "publisher" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldPublisher(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPublisher is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublisher requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPublisher: %w", err)
-	}
-	return oldValue.Publisher, nil
-}
-
-// ClearPublisher clears the value of the "publisher" field.
-func (m *AppMutation) ClearPublisher() {
-	m.publisher = nil
-	m.clearedFields[app.FieldPublisher] = struct{}{}
-}
-
-// PublisherCleared returns if the "publisher" field was cleared in this mutation.
-func (m *AppMutation) PublisherCleared() bool {
-	_, ok := m.clearedFields[app.FieldPublisher]
-	return ok
-}
-
-// ResetPublisher resets all changes to the "publisher" field.
-func (m *AppMutation) ResetPublisher() {
-	m.publisher = nil
-	delete(m.clearedFields, app.FieldPublisher)
-}
-
-// SetVersion sets the "version" field.
-func (m *AppMutation) SetVersion(s string) {
-	m.version = &s
-}
-
-// Version returns the value of the "version" field in the mutation.
-func (m *AppMutation) Version() (r string, exists bool) {
-	v := m.version
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldVersion returns the old "version" field's value of the App entity.
-// If the App object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppMutation) OldVersion(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldVersion requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
-	}
-	return oldValue.Version, nil
-}
-
-// ClearVersion clears the value of the "version" field.
-func (m *AppMutation) ClearVersion() {
-	m.version = nil
-	m.clearedFields[app.FieldVersion] = struct{}{}
-}
-
-// VersionCleared returns if the "version" field was cleared in this mutation.
-func (m *AppMutation) VersionCleared() bool {
-	_, ok := m.clearedFields[app.FieldVersion]
-	return ok
-}
-
-// ResetVersion resets all changes to the "version" field.
-func (m *AppMutation) ResetVersion() {
-	m.version = nil
-	delete(m.clearedFields, app.FieldVersion)
+// ResetPublic resets all changes to the "public" field.
+func (m *AppMutation) ResetPublic() {
+	m.public = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -1761,259 +1181,82 @@ func (m *AppMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by ids.
-func (m *AppMutation) AddPurchasedByAccountIDs(ids ...model.InternalID) {
-	if m.purchased_by_account == nil {
-		m.purchased_by_account = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		m.purchased_by_account[ids[i]] = struct{}{}
-	}
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *AppMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
 }
 
-// ClearPurchasedByAccount clears the "purchased_by_account" edge to the Account entity.
-func (m *AppMutation) ClearPurchasedByAccount() {
-	m.clearedpurchased_by_account = true
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *AppMutation) ClearOwner() {
+	m.clearedowner = true
 }
 
-// PurchasedByAccountCleared reports if the "purchased_by_account" edge to the Account entity was cleared.
-func (m *AppMutation) PurchasedByAccountCleared() bool {
-	return m.clearedpurchased_by_account
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *AppMutation) OwnerCleared() bool {
+	return m.clearedowner
 }
 
-// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to the Account entity by IDs.
-func (m *AppMutation) RemovePurchasedByAccountIDs(ids ...model.InternalID) {
-	if m.removedpurchased_by_account == nil {
-		m.removedpurchased_by_account = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		delete(m.purchased_by_account, ids[i])
-		m.removedpurchased_by_account[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPurchasedByAccount returns the removed IDs of the "purchased_by_account" edge to the Account entity.
-func (m *AppMutation) RemovedPurchasedByAccountIDs() (ids []model.InternalID) {
-	for id := range m.removedpurchased_by_account {
-		ids = append(ids, id)
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *AppMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
 	}
 	return
 }
 
-// PurchasedByAccountIDs returns the "purchased_by_account" edge IDs in the mutation.
-func (m *AppMutation) PurchasedByAccountIDs() (ids []model.InternalID) {
-	for id := range m.purchased_by_account {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetPurchasedByAccount resets all changes to the "purchased_by_account" edge.
-func (m *AppMutation) ResetPurchasedByAccount() {
-	m.purchased_by_account = nil
-	m.clearedpurchased_by_account = false
-	m.removedpurchased_by_account = nil
-}
-
-// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by ids.
-func (m *AppMutation) AddPurchasedByUserIDs(ids ...model.InternalID) {
-	if m.purchased_by_user == nil {
-		m.purchased_by_user = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		m.purchased_by_user[ids[i]] = struct{}{}
-	}
-}
-
-// ClearPurchasedByUser clears the "purchased_by_user" edge to the User entity.
-func (m *AppMutation) ClearPurchasedByUser() {
-	m.clearedpurchased_by_user = true
-}
-
-// PurchasedByUserCleared reports if the "purchased_by_user" edge to the User entity was cleared.
-func (m *AppMutation) PurchasedByUserCleared() bool {
-	return m.clearedpurchased_by_user
-}
-
-// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to the User entity by IDs.
-func (m *AppMutation) RemovePurchasedByUserIDs(ids ...model.InternalID) {
-	if m.removedpurchased_by_user == nil {
-		m.removedpurchased_by_user = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		delete(m.purchased_by_user, ids[i])
-		m.removedpurchased_by_user[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedPurchasedByUser returns the removed IDs of the "purchased_by_user" edge to the User entity.
-func (m *AppMutation) RemovedPurchasedByUserIDs() (ids []model.InternalID) {
-	for id := range m.removedpurchased_by_user {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// PurchasedByUserIDs returns the "purchased_by_user" edge IDs in the mutation.
-func (m *AppMutation) PurchasedByUserIDs() (ids []model.InternalID) {
-	for id := range m.purchased_by_user {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetPurchasedByUser resets all changes to the "purchased_by_user" edge.
-func (m *AppMutation) ResetPurchasedByUser() {
-	m.purchased_by_user = nil
-	m.clearedpurchased_by_user = false
-	m.removedpurchased_by_user = nil
-}
-
-// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by ids.
-func (m *AppMutation) AddAppPackageIDs(ids ...model.InternalID) {
-	if m.app_package == nil {
-		m.app_package = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		m.app_package[ids[i]] = struct{}{}
-	}
-}
-
-// ClearAppPackage clears the "app_package" edge to the AppPackage entity.
-func (m *AppMutation) ClearAppPackage() {
-	m.clearedapp_package = true
-}
-
-// AppPackageCleared reports if the "app_package" edge to the AppPackage entity was cleared.
-func (m *AppMutation) AppPackageCleared() bool {
-	return m.clearedapp_package
-}
-
-// RemoveAppPackageIDs removes the "app_package" edge to the AppPackage entity by IDs.
-func (m *AppMutation) RemoveAppPackageIDs(ids ...model.InternalID) {
-	if m.removedapp_package == nil {
-		m.removedapp_package = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		delete(m.app_package, ids[i])
-		m.removedapp_package[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedAppPackage returns the removed IDs of the "app_package" edge to the AppPackage entity.
-func (m *AppMutation) RemovedAppPackageIDs() (ids []model.InternalID) {
-	for id := range m.removedapp_package {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// AppPackageIDs returns the "app_package" edge IDs in the mutation.
-func (m *AppMutation) AppPackageIDs() (ids []model.InternalID) {
-	for id := range m.app_package {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetAppPackage resets all changes to the "app_package" edge.
-func (m *AppMutation) ResetAppPackage() {
-	m.app_package = nil
-	m.clearedapp_package = false
-	m.removedapp_package = nil
-}
-
-// SetBindInternalID sets the "bind_internal" edge to the App entity by id.
-func (m *AppMutation) SetBindInternalID(id model.InternalID) {
-	m.bind_internal = &id
-}
-
-// ClearBindInternal clears the "bind_internal" edge to the App entity.
-func (m *AppMutation) ClearBindInternal() {
-	m.clearedbind_internal = true
-}
-
-// BindInternalCleared reports if the "bind_internal" edge to the App entity was cleared.
-func (m *AppMutation) BindInternalCleared() bool {
-	return m.clearedbind_internal
-}
-
-// BindInternalID returns the "bind_internal" edge ID in the mutation.
-func (m *AppMutation) BindInternalID() (id model.InternalID, exists bool) {
-	if m.bind_internal != nil {
-		return *m.bind_internal, true
-	}
-	return
-}
-
-// BindInternalIDs returns the "bind_internal" edge IDs in the mutation.
+// OwnerIDs returns the "owner" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// BindInternalID instead. It exists only for internal usage by the builders.
-func (m *AppMutation) BindInternalIDs() (ids []model.InternalID) {
-	if id := m.bind_internal; id != nil {
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *AppMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
 		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetBindInternal resets all changes to the "bind_internal" edge.
-func (m *AppMutation) ResetBindInternal() {
-	m.bind_internal = nil
-	m.clearedbind_internal = false
+// ResetOwner resets all changes to the "owner" edge.
+func (m *AppMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
 }
 
-// AddBindExternalIDs adds the "bind_external" edge to the App entity by ids.
-func (m *AppMutation) AddBindExternalIDs(ids ...model.InternalID) {
-	if m.bind_external == nil {
-		m.bind_external = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		m.bind_external[ids[i]] = struct{}{}
-	}
+// SetAppInfoID sets the "app_info" edge to the AppInfo entity by id.
+func (m *AppMutation) SetAppInfoID(id model.InternalID) {
+	m.app_info = &id
 }
 
-// ClearBindExternal clears the "bind_external" edge to the App entity.
-func (m *AppMutation) ClearBindExternal() {
-	m.clearedbind_external = true
+// ClearAppInfo clears the "app_info" edge to the AppInfo entity.
+func (m *AppMutation) ClearAppInfo() {
+	m.clearedapp_info = true
 }
 
-// BindExternalCleared reports if the "bind_external" edge to the App entity was cleared.
-func (m *AppMutation) BindExternalCleared() bool {
-	return m.clearedbind_external
+// AppInfoCleared reports if the "app_info" edge to the AppInfo entity was cleared.
+func (m *AppMutation) AppInfoCleared() bool {
+	return m.clearedapp_info
 }
 
-// RemoveBindExternalIDs removes the "bind_external" edge to the App entity by IDs.
-func (m *AppMutation) RemoveBindExternalIDs(ids ...model.InternalID) {
-	if m.removedbind_external == nil {
-		m.removedbind_external = make(map[model.InternalID]struct{})
-	}
-	for i := range ids {
-		delete(m.bind_external, ids[i])
-		m.removedbind_external[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedBindExternal returns the removed IDs of the "bind_external" edge to the App entity.
-func (m *AppMutation) RemovedBindExternalIDs() (ids []model.InternalID) {
-	for id := range m.removedbind_external {
-		ids = append(ids, id)
+// AppInfoID returns the "app_info" edge ID in the mutation.
+func (m *AppMutation) AppInfoID() (id model.InternalID, exists bool) {
+	if m.app_info != nil {
+		return *m.app_info, true
 	}
 	return
 }
 
-// BindExternalIDs returns the "bind_external" edge IDs in the mutation.
-func (m *AppMutation) BindExternalIDs() (ids []model.InternalID) {
-	for id := range m.bind_external {
-		ids = append(ids, id)
+// AppInfoIDs returns the "app_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppInfoID instead. It exists only for internal usage by the builders.
+func (m *AppMutation) AppInfoIDs() (ids []model.InternalID) {
+	if id := m.app_info; id != nil {
+		ids = append(ids, *id)
 	}
 	return
 }
 
-// ResetBindExternal resets all changes to the "bind_external" edge.
-func (m *AppMutation) ResetBindExternal() {
-	m.bind_external = nil
-	m.clearedbind_external = false
-	m.removedbind_external = nil
+// ResetAppInfo resets all changes to the "app_info" edge.
+func (m *AppMutation) ResetAppInfo() {
+	m.app_info = nil
+	m.clearedapp_info = false
 }
 
 // Where appends a list predicates to the AppMutation builder.
@@ -2050,51 +1293,15 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 17)
-	if m.internal != nil {
-		fields = append(fields, app.FieldInternal)
-	}
-	if m.source != nil {
-		fields = append(fields, app.FieldSource)
-	}
-	if m.source_app_id != nil {
-		fields = append(fields, app.FieldSourceAppID)
-	}
-	if m.source_url != nil {
-		fields = append(fields, app.FieldSourceURL)
-	}
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, app.FieldName)
-	}
-	if m._type != nil {
-		fields = append(fields, app.FieldType)
-	}
-	if m.short_description != nil {
-		fields = append(fields, app.FieldShortDescription)
 	}
 	if m.description != nil {
 		fields = append(fields, app.FieldDescription)
 	}
-	if m.icon_image_url != nil {
-		fields = append(fields, app.FieldIconImageURL)
-	}
-	if m.background_image_url != nil {
-		fields = append(fields, app.FieldBackgroundImageURL)
-	}
-	if m.cover_image_url != nil {
-		fields = append(fields, app.FieldCoverImageURL)
-	}
-	if m.release_date != nil {
-		fields = append(fields, app.FieldReleaseDate)
-	}
-	if m.developer != nil {
-		fields = append(fields, app.FieldDeveloper)
-	}
-	if m.publisher != nil {
-		fields = append(fields, app.FieldPublisher)
-	}
-	if m.version != nil {
-		fields = append(fields, app.FieldVersion)
+	if m.public != nil {
+		fields = append(fields, app.FieldPublic)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, app.FieldUpdatedAt)
@@ -2110,36 +1317,12 @@ func (m *AppMutation) Fields() []string {
 // schema.
 func (m *AppMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case app.FieldInternal:
-		return m.Internal()
-	case app.FieldSource:
-		return m.Source()
-	case app.FieldSourceAppID:
-		return m.SourceAppID()
-	case app.FieldSourceURL:
-		return m.SourceURL()
 	case app.FieldName:
 		return m.Name()
-	case app.FieldType:
-		return m.GetType()
-	case app.FieldShortDescription:
-		return m.ShortDescription()
 	case app.FieldDescription:
 		return m.Description()
-	case app.FieldIconImageURL:
-		return m.IconImageURL()
-	case app.FieldBackgroundImageURL:
-		return m.BackgroundImageURL()
-	case app.FieldCoverImageURL:
-		return m.CoverImageURL()
-	case app.FieldReleaseDate:
-		return m.ReleaseDate()
-	case app.FieldDeveloper:
-		return m.Developer()
-	case app.FieldPublisher:
-		return m.Publisher()
-	case app.FieldVersion:
-		return m.Version()
+	case app.FieldPublic:
+		return m.Public()
 	case app.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case app.FieldCreatedAt:
@@ -2153,36 +1336,12 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case app.FieldInternal:
-		return m.OldInternal(ctx)
-	case app.FieldSource:
-		return m.OldSource(ctx)
-	case app.FieldSourceAppID:
-		return m.OldSourceAppID(ctx)
-	case app.FieldSourceURL:
-		return m.OldSourceURL(ctx)
 	case app.FieldName:
 		return m.OldName(ctx)
-	case app.FieldType:
-		return m.OldType(ctx)
-	case app.FieldShortDescription:
-		return m.OldShortDescription(ctx)
 	case app.FieldDescription:
 		return m.OldDescription(ctx)
-	case app.FieldIconImageURL:
-		return m.OldIconImageURL(ctx)
-	case app.FieldBackgroundImageURL:
-		return m.OldBackgroundImageURL(ctx)
-	case app.FieldCoverImageURL:
-		return m.OldCoverImageURL(ctx)
-	case app.FieldReleaseDate:
-		return m.OldReleaseDate(ctx)
-	case app.FieldDeveloper:
-		return m.OldDeveloper(ctx)
-	case app.FieldPublisher:
-		return m.OldPublisher(ctx)
-	case app.FieldVersion:
-		return m.OldVersion(ctx)
+	case app.FieldPublic:
+		return m.OldPublic(ctx)
 	case app.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case app.FieldCreatedAt:
@@ -2196,54 +1355,12 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 // type.
 func (m *AppMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case app.FieldInternal:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetInternal(v)
-		return nil
-	case app.FieldSource:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSource(v)
-		return nil
-	case app.FieldSourceAppID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSourceAppID(v)
-		return nil
-	case app.FieldSourceURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSourceURL(v)
-		return nil
 	case app.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
-		return nil
-	case app.FieldType:
-		v, ok := value.(app.Type)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetType(v)
-		return nil
-	case app.FieldShortDescription:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetShortDescription(v)
 		return nil
 	case app.FieldDescription:
 		v, ok := value.(string)
@@ -2252,54 +1369,12 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
-	case app.FieldIconImageURL:
-		v, ok := value.(string)
+	case app.FieldPublic:
+		v, ok := value.(bool)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetIconImageURL(v)
-		return nil
-	case app.FieldBackgroundImageURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBackgroundImageURL(v)
-		return nil
-	case app.FieldCoverImageURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCoverImageURL(v)
-		return nil
-	case app.FieldReleaseDate:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetReleaseDate(v)
-		return nil
-	case app.FieldDeveloper:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeveloper(v)
-		return nil
-	case app.FieldPublisher:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPublisher(v)
-		return nil
-	case app.FieldVersion:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetVersion(v)
+		m.SetPublic(v)
 		return nil
 	case app.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -2344,38 +1419,7 @@ func (m *AppMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *AppMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(app.FieldSourceURL) {
-		fields = append(fields, app.FieldSourceURL)
-	}
-	if m.FieldCleared(app.FieldShortDescription) {
-		fields = append(fields, app.FieldShortDescription)
-	}
-	if m.FieldCleared(app.FieldDescription) {
-		fields = append(fields, app.FieldDescription)
-	}
-	if m.FieldCleared(app.FieldIconImageURL) {
-		fields = append(fields, app.FieldIconImageURL)
-	}
-	if m.FieldCleared(app.FieldBackgroundImageURL) {
-		fields = append(fields, app.FieldBackgroundImageURL)
-	}
-	if m.FieldCleared(app.FieldCoverImageURL) {
-		fields = append(fields, app.FieldCoverImageURL)
-	}
-	if m.FieldCleared(app.FieldReleaseDate) {
-		fields = append(fields, app.FieldReleaseDate)
-	}
-	if m.FieldCleared(app.FieldDeveloper) {
-		fields = append(fields, app.FieldDeveloper)
-	}
-	if m.FieldCleared(app.FieldPublisher) {
-		fields = append(fields, app.FieldPublisher)
-	}
-	if m.FieldCleared(app.FieldVersion) {
-		fields = append(fields, app.FieldVersion)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -2388,38 +1432,6 @@ func (m *AppMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *AppMutation) ClearField(name string) error {
-	switch name {
-	case app.FieldSourceURL:
-		m.ClearSourceURL()
-		return nil
-	case app.FieldShortDescription:
-		m.ClearShortDescription()
-		return nil
-	case app.FieldDescription:
-		m.ClearDescription()
-		return nil
-	case app.FieldIconImageURL:
-		m.ClearIconImageURL()
-		return nil
-	case app.FieldBackgroundImageURL:
-		m.ClearBackgroundImageURL()
-		return nil
-	case app.FieldCoverImageURL:
-		m.ClearCoverImageURL()
-		return nil
-	case app.FieldReleaseDate:
-		m.ClearReleaseDate()
-		return nil
-	case app.FieldDeveloper:
-		m.ClearDeveloper()
-		return nil
-	case app.FieldPublisher:
-		m.ClearPublisher()
-		return nil
-	case app.FieldVersion:
-		m.ClearVersion()
-		return nil
-	}
 	return fmt.Errorf("unknown App nullable field %s", name)
 }
 
@@ -2427,50 +1439,14 @@ func (m *AppMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *AppMutation) ResetField(name string) error {
 	switch name {
-	case app.FieldInternal:
-		m.ResetInternal()
-		return nil
-	case app.FieldSource:
-		m.ResetSource()
-		return nil
-	case app.FieldSourceAppID:
-		m.ResetSourceAppID()
-		return nil
-	case app.FieldSourceURL:
-		m.ResetSourceURL()
-		return nil
 	case app.FieldName:
 		m.ResetName()
-		return nil
-	case app.FieldType:
-		m.ResetType()
-		return nil
-	case app.FieldShortDescription:
-		m.ResetShortDescription()
 		return nil
 	case app.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case app.FieldIconImageURL:
-		m.ResetIconImageURL()
-		return nil
-	case app.FieldBackgroundImageURL:
-		m.ResetBackgroundImageURL()
-		return nil
-	case app.FieldCoverImageURL:
-		m.ResetCoverImageURL()
-		return nil
-	case app.FieldReleaseDate:
-		m.ResetReleaseDate()
-		return nil
-	case app.FieldDeveloper:
-		m.ResetDeveloper()
-		return nil
-	case app.FieldPublisher:
-		m.ResetPublisher()
-		return nil
-	case app.FieldVersion:
-		m.ResetVersion()
+	case app.FieldPublic:
+		m.ResetPublic()
 		return nil
 	case app.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -2484,21 +1460,12 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 5)
-	if m.purchased_by_account != nil {
-		edges = append(edges, app.EdgePurchasedByAccount)
+	edges := make([]string, 0, 2)
+	if m.owner != nil {
+		edges = append(edges, app.EdgeOwner)
 	}
-	if m.purchased_by_user != nil {
-		edges = append(edges, app.EdgePurchasedByUser)
-	}
-	if m.app_package != nil {
-		edges = append(edges, app.EdgeAppPackage)
-	}
-	if m.bind_internal != nil {
-		edges = append(edges, app.EdgeBindInternal)
-	}
-	if m.bind_external != nil {
-		edges = append(edges, app.EdgeBindExternal)
+	if m.app_info != nil {
+		edges = append(edges, app.EdgeAppInfo)
 	}
 	return edges
 }
@@ -2507,105 +1474,38 @@ func (m *AppMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *AppMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case app.EdgePurchasedByAccount:
-		ids := make([]ent.Value, 0, len(m.purchased_by_account))
-		for id := range m.purchased_by_account {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgePurchasedByUser:
-		ids := make([]ent.Value, 0, len(m.purchased_by_user))
-		for id := range m.purchased_by_user {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgeAppPackage:
-		ids := make([]ent.Value, 0, len(m.app_package))
-		for id := range m.app_package {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgeBindInternal:
-		if id := m.bind_internal; id != nil {
+	case app.EdgeOwner:
+		if id := m.owner; id != nil {
 			return []ent.Value{*id}
 		}
-	case app.EdgeBindExternal:
-		ids := make([]ent.Value, 0, len(m.bind_external))
-		for id := range m.bind_external {
-			ids = append(ids, id)
+	case app.EdgeAppInfo:
+		if id := m.app_info; id != nil {
+			return []ent.Value{*id}
 		}
-		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 5)
-	if m.removedpurchased_by_account != nil {
-		edges = append(edges, app.EdgePurchasedByAccount)
-	}
-	if m.removedpurchased_by_user != nil {
-		edges = append(edges, app.EdgePurchasedByUser)
-	}
-	if m.removedapp_package != nil {
-		edges = append(edges, app.EdgeAppPackage)
-	}
-	if m.removedbind_external != nil {
-		edges = append(edges, app.EdgeBindExternal)
-	}
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AppMutation) RemovedIDs(name string) []ent.Value {
-	switch name {
-	case app.EdgePurchasedByAccount:
-		ids := make([]ent.Value, 0, len(m.removedpurchased_by_account))
-		for id := range m.removedpurchased_by_account {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgePurchasedByUser:
-		ids := make([]ent.Value, 0, len(m.removedpurchased_by_user))
-		for id := range m.removedpurchased_by_user {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgeAppPackage:
-		ids := make([]ent.Value, 0, len(m.removedapp_package))
-		for id := range m.removedapp_package {
-			ids = append(ids, id)
-		}
-		return ids
-	case app.EdgeBindExternal:
-		ids := make([]ent.Value, 0, len(m.removedbind_external))
-		for id := range m.removedbind_external {
-			ids = append(ids, id)
-		}
-		return ids
-	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 5)
-	if m.clearedpurchased_by_account {
-		edges = append(edges, app.EdgePurchasedByAccount)
+	edges := make([]string, 0, 2)
+	if m.clearedowner {
+		edges = append(edges, app.EdgeOwner)
 	}
-	if m.clearedpurchased_by_user {
-		edges = append(edges, app.EdgePurchasedByUser)
-	}
-	if m.clearedapp_package {
-		edges = append(edges, app.EdgeAppPackage)
-	}
-	if m.clearedbind_internal {
-		edges = append(edges, app.EdgeBindInternal)
-	}
-	if m.clearedbind_external {
-		edges = append(edges, app.EdgeBindExternal)
+	if m.clearedapp_info {
+		edges = append(edges, app.EdgeAppInfo)
 	}
 	return edges
 }
@@ -2614,16 +1514,10 @@ func (m *AppMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *AppMutation) EdgeCleared(name string) bool {
 	switch name {
-	case app.EdgePurchasedByAccount:
-		return m.clearedpurchased_by_account
-	case app.EdgePurchasedByUser:
-		return m.clearedpurchased_by_user
-	case app.EdgeAppPackage:
-		return m.clearedapp_package
-	case app.EdgeBindInternal:
-		return m.clearedbind_internal
-	case app.EdgeBindExternal:
-		return m.clearedbind_external
+	case app.EdgeOwner:
+		return m.clearedowner
+	case app.EdgeAppInfo:
+		return m.clearedapp_info
 	}
 	return false
 }
@@ -2632,8 +1526,11 @@ func (m *AppMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *AppMutation) ClearEdge(name string) error {
 	switch name {
-	case app.EdgeBindInternal:
-		m.ClearBindInternal()
+	case app.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	case app.EdgeAppInfo:
+		m.ClearAppInfo()
 		return nil
 	}
 	return fmt.Errorf("unknown App unique edge %s", name)
@@ -2643,67 +1540,48 @@ func (m *AppMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *AppMutation) ResetEdge(name string) error {
 	switch name {
-	case app.EdgePurchasedByAccount:
-		m.ResetPurchasedByAccount()
+	case app.EdgeOwner:
+		m.ResetOwner()
 		return nil
-	case app.EdgePurchasedByUser:
-		m.ResetPurchasedByUser()
-		return nil
-	case app.EdgeAppPackage:
-		m.ResetAppPackage()
-		return nil
-	case app.EdgeBindInternal:
-		m.ResetBindInternal()
-		return nil
-	case app.EdgeBindExternal:
-		m.ResetBindExternal()
+	case app.EdgeAppInfo:
+		m.ResetAppInfo()
 		return nil
 	}
 	return fmt.Errorf("unknown App edge %s", name)
 }
 
-// AppPackageMutation represents an operation that mutates the AppPackage nodes in the graph.
-type AppPackageMutation struct {
+// AppBinaryMutation represents an operation that mutates the AppBinary nodes in the graph.
+type AppBinaryMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *model.InternalID
-	source               *apppackage.Source
-	source_id            *model.InternalID
-	addsource_id         *model.InternalID
-	name                 *string
-	description          *string
-	public               *bool
-	binary_name          *string
-	binary_size_bytes    *int64
-	addbinary_size_bytes *int64
-	binary_public_url    *string
-	binary_sha256        *[]byte
-	group_id             *model.InternalID
-	addgroup_id          *model.InternalID
-	updated_at           *time.Time
-	created_at           *time.Time
-	clearedFields        map[string]struct{}
-	owner                *model.InternalID
-	clearedowner         bool
-	app                  *model.InternalID
-	clearedapp           bool
-	done                 bool
-	oldValue             func(context.Context) (*AppPackage, error)
-	predicates           []predicate.AppPackage
+	op              Op
+	typ             string
+	id              *model.InternalID
+	name            *string
+	size_bytes      *int64
+	addsize_bytes   *int64
+	public_url      *string
+	sha256          *[]byte
+	updated_at      *time.Time
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	app_info        *model.InternalID
+	clearedapp_info bool
+	done            bool
+	oldValue        func(context.Context) (*AppBinary, error)
+	predicates      []predicate.AppBinary
 }
 
-var _ ent.Mutation = (*AppPackageMutation)(nil)
+var _ ent.Mutation = (*AppBinaryMutation)(nil)
 
-// apppackageOption allows management of the mutation configuration using functional options.
-type apppackageOption func(*AppPackageMutation)
+// appbinaryOption allows management of the mutation configuration using functional options.
+type appbinaryOption func(*AppBinaryMutation)
 
-// newAppPackageMutation creates new mutation for the AppPackage entity.
-func newAppPackageMutation(c config, op Op, opts ...apppackageOption) *AppPackageMutation {
-	m := &AppPackageMutation{
+// newAppBinaryMutation creates new mutation for the AppBinary entity.
+func newAppBinaryMutation(c config, op Op, opts ...appbinaryOption) *AppBinaryMutation {
+	m := &AppBinaryMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeAppPackage,
+		typ:           TypeAppBinary,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -2712,20 +1590,20 @@ func newAppPackageMutation(c config, op Op, opts ...apppackageOption) *AppPackag
 	return m
 }
 
-// withAppPackageID sets the ID field of the mutation.
-func withAppPackageID(id model.InternalID) apppackageOption {
-	return func(m *AppPackageMutation) {
+// withAppBinaryID sets the ID field of the mutation.
+func withAppBinaryID(id model.InternalID) appbinaryOption {
+	return func(m *AppBinaryMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *AppPackage
+			value *AppBinary
 		)
-		m.oldValue = func(ctx context.Context) (*AppPackage, error) {
+		m.oldValue = func(ctx context.Context) (*AppBinary, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().AppPackage.Get(ctx, id)
+					value, err = m.Client().AppBinary.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -2734,10 +1612,10 @@ func withAppPackageID(id model.InternalID) apppackageOption {
 	}
 }
 
-// withAppPackage sets the old AppPackage of the mutation.
-func withAppPackage(node *AppPackage) apppackageOption {
-	return func(m *AppPackageMutation) {
-		m.oldValue = func(context.Context) (*AppPackage, error) {
+// withAppBinary sets the old AppBinary of the mutation.
+func withAppBinary(node *AppBinary) appbinaryOption {
+	return func(m *AppBinaryMutation) {
+		m.oldValue = func(context.Context) (*AppBinary, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -2746,7 +1624,7 @@ func withAppPackage(node *AppPackage) apppackageOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AppPackageMutation) Client() *Client {
+func (m AppBinaryMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -2754,7 +1632,7 @@ func (m AppPackageMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m AppPackageMutation) Tx() (*Tx, error) {
+func (m AppBinaryMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -2764,14 +1642,14 @@ func (m AppPackageMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of AppPackage entities.
-func (m *AppPackageMutation) SetID(id model.InternalID) {
+// operation is only accepted on creation of AppBinary entities.
+func (m *AppBinaryMutation) SetID(id model.InternalID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppPackageMutation) ID() (id model.InternalID, exists bool) {
+func (m *AppBinaryMutation) ID() (id model.InternalID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -2782,7 +1660,7 @@ func (m *AppPackageMutation) ID() (id model.InternalID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppPackageMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+func (m *AppBinaryMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -2791,19 +1669,865 @@ func (m *AppPackageMutation) IDs(ctx context.Context) ([]model.InternalID, error
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().AppPackage.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().AppBinary.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
+// SetName sets the "name" field.
+func (m *AppBinaryMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *AppBinaryMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *AppBinaryMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[appbinary.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *AppBinaryMutation) NameCleared() bool {
+	_, ok := m.clearedFields[appbinary.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *AppBinaryMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, appbinary.FieldName)
+}
+
+// SetSizeBytes sets the "size_bytes" field.
+func (m *AppBinaryMutation) SetSizeBytes(i int64) {
+	m.size_bytes = &i
+	m.addsize_bytes = nil
+}
+
+// SizeBytes returns the value of the "size_bytes" field in the mutation.
+func (m *AppBinaryMutation) SizeBytes() (r int64, exists bool) {
+	v := m.size_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSizeBytes returns the old "size_bytes" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
+	}
+	return oldValue.SizeBytes, nil
+}
+
+// AddSizeBytes adds i to the "size_bytes" field.
+func (m *AppBinaryMutation) AddSizeBytes(i int64) {
+	if m.addsize_bytes != nil {
+		*m.addsize_bytes += i
+	} else {
+		m.addsize_bytes = &i
+	}
+}
+
+// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
+func (m *AppBinaryMutation) AddedSizeBytes() (r int64, exists bool) {
+	v := m.addsize_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearSizeBytes clears the value of the "size_bytes" field.
+func (m *AppBinaryMutation) ClearSizeBytes() {
+	m.size_bytes = nil
+	m.addsize_bytes = nil
+	m.clearedFields[appbinary.FieldSizeBytes] = struct{}{}
+}
+
+// SizeBytesCleared returns if the "size_bytes" field was cleared in this mutation.
+func (m *AppBinaryMutation) SizeBytesCleared() bool {
+	_, ok := m.clearedFields[appbinary.FieldSizeBytes]
+	return ok
+}
+
+// ResetSizeBytes resets all changes to the "size_bytes" field.
+func (m *AppBinaryMutation) ResetSizeBytes() {
+	m.size_bytes = nil
+	m.addsize_bytes = nil
+	delete(m.clearedFields, appbinary.FieldSizeBytes)
+}
+
+// SetPublicURL sets the "public_url" field.
+func (m *AppBinaryMutation) SetPublicURL(s string) {
+	m.public_url = &s
+}
+
+// PublicURL returns the value of the "public_url" field in the mutation.
+func (m *AppBinaryMutation) PublicURL() (r string, exists bool) {
+	v := m.public_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublicURL returns the old "public_url" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldPublicURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublicURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublicURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublicURL: %w", err)
+	}
+	return oldValue.PublicURL, nil
+}
+
+// ClearPublicURL clears the value of the "public_url" field.
+func (m *AppBinaryMutation) ClearPublicURL() {
+	m.public_url = nil
+	m.clearedFields[appbinary.FieldPublicURL] = struct{}{}
+}
+
+// PublicURLCleared returns if the "public_url" field was cleared in this mutation.
+func (m *AppBinaryMutation) PublicURLCleared() bool {
+	_, ok := m.clearedFields[appbinary.FieldPublicURL]
+	return ok
+}
+
+// ResetPublicURL resets all changes to the "public_url" field.
+func (m *AppBinaryMutation) ResetPublicURL() {
+	m.public_url = nil
+	delete(m.clearedFields, appbinary.FieldPublicURL)
+}
+
+// SetSha256 sets the "sha256" field.
+func (m *AppBinaryMutation) SetSha256(b []byte) {
+	m.sha256 = &b
+}
+
+// Sha256 returns the value of the "sha256" field in the mutation.
+func (m *AppBinaryMutation) Sha256() (r []byte, exists bool) {
+	v := m.sha256
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSha256 returns the old "sha256" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldSha256(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSha256 is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSha256 requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSha256: %w", err)
+	}
+	return oldValue.Sha256, nil
+}
+
+// ClearSha256 clears the value of the "sha256" field.
+func (m *AppBinaryMutation) ClearSha256() {
+	m.sha256 = nil
+	m.clearedFields[appbinary.FieldSha256] = struct{}{}
+}
+
+// Sha256Cleared returns if the "sha256" field was cleared in this mutation.
+func (m *AppBinaryMutation) Sha256Cleared() bool {
+	_, ok := m.clearedFields[appbinary.FieldSha256]
+	return ok
+}
+
+// ResetSha256 resets all changes to the "sha256" field.
+func (m *AppBinaryMutation) ResetSha256() {
+	m.sha256 = nil
+	delete(m.clearedFields, appbinary.FieldSha256)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppBinaryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppBinaryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppBinaryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppBinaryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppBinaryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppBinary entity.
+// If the AppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppBinaryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppBinaryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetAppInfoID sets the "app_info" edge to the AppInfo entity by id.
+func (m *AppBinaryMutation) SetAppInfoID(id model.InternalID) {
+	m.app_info = &id
+}
+
+// ClearAppInfo clears the "app_info" edge to the AppInfo entity.
+func (m *AppBinaryMutation) ClearAppInfo() {
+	m.clearedapp_info = true
+}
+
+// AppInfoCleared reports if the "app_info" edge to the AppInfo entity was cleared.
+func (m *AppBinaryMutation) AppInfoCleared() bool {
+	return m.clearedapp_info
+}
+
+// AppInfoID returns the "app_info" edge ID in the mutation.
+func (m *AppBinaryMutation) AppInfoID() (id model.InternalID, exists bool) {
+	if m.app_info != nil {
+		return *m.app_info, true
+	}
+	return
+}
+
+// AppInfoIDs returns the "app_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppInfoID instead. It exists only for internal usage by the builders.
+func (m *AppBinaryMutation) AppInfoIDs() (ids []model.InternalID) {
+	if id := m.app_info; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAppInfo resets all changes to the "app_info" edge.
+func (m *AppBinaryMutation) ResetAppInfo() {
+	m.app_info = nil
+	m.clearedapp_info = false
+}
+
+// Where appends a list predicates to the AppBinaryMutation builder.
+func (m *AppBinaryMutation) Where(ps ...predicate.AppBinary) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AppBinaryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AppBinaryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppBinary, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AppBinaryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AppBinaryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AppBinary).
+func (m *AppBinaryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppBinaryMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.name != nil {
+		fields = append(fields, appbinary.FieldName)
+	}
+	if m.size_bytes != nil {
+		fields = append(fields, appbinary.FieldSizeBytes)
+	}
+	if m.public_url != nil {
+		fields = append(fields, appbinary.FieldPublicURL)
+	}
+	if m.sha256 != nil {
+		fields = append(fields, appbinary.FieldSha256)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, appbinary.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, appbinary.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppBinaryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case appbinary.FieldName:
+		return m.Name()
+	case appbinary.FieldSizeBytes:
+		return m.SizeBytes()
+	case appbinary.FieldPublicURL:
+		return m.PublicURL()
+	case appbinary.FieldSha256:
+		return m.Sha256()
+	case appbinary.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case appbinary.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppBinaryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case appbinary.FieldName:
+		return m.OldName(ctx)
+	case appbinary.FieldSizeBytes:
+		return m.OldSizeBytes(ctx)
+	case appbinary.FieldPublicURL:
+		return m.OldPublicURL(ctx)
+	case appbinary.FieldSha256:
+		return m.OldSha256(ctx)
+	case appbinary.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case appbinary.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppBinary field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppBinaryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case appbinary.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case appbinary.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSizeBytes(v)
+		return nil
+	case appbinary.FieldPublicURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublicURL(v)
+		return nil
+	case appbinary.FieldSha256:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSha256(v)
+		return nil
+	case appbinary.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case appbinary.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppBinaryMutation) AddedFields() []string {
+	var fields []string
+	if m.addsize_bytes != nil {
+		fields = append(fields, appbinary.FieldSizeBytes)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppBinaryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case appbinary.FieldSizeBytes:
+		return m.AddedSizeBytes()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppBinaryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case appbinary.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSizeBytes(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppBinaryMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(appbinary.FieldName) {
+		fields = append(fields, appbinary.FieldName)
+	}
+	if m.FieldCleared(appbinary.FieldSizeBytes) {
+		fields = append(fields, appbinary.FieldSizeBytes)
+	}
+	if m.FieldCleared(appbinary.FieldPublicURL) {
+		fields = append(fields, appbinary.FieldPublicURL)
+	}
+	if m.FieldCleared(appbinary.FieldSha256) {
+		fields = append(fields, appbinary.FieldSha256)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppBinaryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppBinaryMutation) ClearField(name string) error {
+	switch name {
+	case appbinary.FieldName:
+		m.ClearName()
+		return nil
+	case appbinary.FieldSizeBytes:
+		m.ClearSizeBytes()
+		return nil
+	case appbinary.FieldPublicURL:
+		m.ClearPublicURL()
+		return nil
+	case appbinary.FieldSha256:
+		m.ClearSha256()
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppBinaryMutation) ResetField(name string) error {
+	switch name {
+	case appbinary.FieldName:
+		m.ResetName()
+		return nil
+	case appbinary.FieldSizeBytes:
+		m.ResetSizeBytes()
+		return nil
+	case appbinary.FieldPublicURL:
+		m.ResetPublicURL()
+		return nil
+	case appbinary.FieldSha256:
+		m.ResetSha256()
+		return nil
+	case appbinary.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case appbinary.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppBinaryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.app_info != nil {
+		edges = append(edges, appbinary.EdgeAppInfo)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppBinaryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appbinary.EdgeAppInfo:
+		if id := m.app_info; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppBinaryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppBinaryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppBinaryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedapp_info {
+		edges = append(edges, appbinary.EdgeAppInfo)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppBinaryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appbinary.EdgeAppInfo:
+		return m.clearedapp_info
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppBinaryMutation) ClearEdge(name string) error {
+	switch name {
+	case appbinary.EdgeAppInfo:
+		m.ClearAppInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppBinaryMutation) ResetEdge(name string) error {
+	switch name {
+	case appbinary.EdgeAppInfo:
+		m.ResetAppInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown AppBinary edge %s", name)
+}
+
+// AppInfoMutation represents an operation that mutates the AppInfo nodes in the graph.
+type AppInfoMutation struct {
+	config
+	op                          Op
+	typ                         string
+	id                          *model.InternalID
+	internal                    *bool
+	source                      *string
+	source_app_id               *string
+	source_url                  *string
+	name                        *string
+	_type                       *appinfo.Type
+	short_description           *string
+	description                 *string
+	icon_image_url              *string
+	background_image_url        *string
+	cover_image_url             *string
+	release_date                *string
+	developer                   *string
+	publisher                   *string
+	version                     *string
+	updated_at                  *time.Time
+	created_at                  *time.Time
+	clearedFields               map[string]struct{}
+	purchased_by_account        map[model.InternalID]struct{}
+	removedpurchased_by_account map[model.InternalID]struct{}
+	clearedpurchased_by_account bool
+	purchased_by_user           map[model.InternalID]struct{}
+	removedpurchased_by_user    map[model.InternalID]struct{}
+	clearedpurchased_by_user    bool
+	app                         map[model.InternalID]struct{}
+	removedapp                  map[model.InternalID]struct{}
+	clearedapp                  bool
+	app_binary                  map[model.InternalID]struct{}
+	removedapp_binary           map[model.InternalID]struct{}
+	clearedapp_binary           bool
+	bind_internal               *model.InternalID
+	clearedbind_internal        bool
+	bind_external               map[model.InternalID]struct{}
+	removedbind_external        map[model.InternalID]struct{}
+	clearedbind_external        bool
+	done                        bool
+	oldValue                    func(context.Context) (*AppInfo, error)
+	predicates                  []predicate.AppInfo
+}
+
+var _ ent.Mutation = (*AppInfoMutation)(nil)
+
+// appinfoOption allows management of the mutation configuration using functional options.
+type appinfoOption func(*AppInfoMutation)
+
+// newAppInfoMutation creates new mutation for the AppInfo entity.
+func newAppInfoMutation(c config, op Op, opts ...appinfoOption) *AppInfoMutation {
+	m := &AppInfoMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppInfo,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppInfoID sets the ID field of the mutation.
+func withAppInfoID(id model.InternalID) appinfoOption {
+	return func(m *AppInfoMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppInfo
+		)
+		m.oldValue = func(ctx context.Context) (*AppInfo, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppInfo.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppInfo sets the old AppInfo of the mutation.
+func withAppInfo(node *AppInfo) appinfoOption {
+	return func(m *AppInfoMutation) {
+		m.oldValue = func(context.Context) (*AppInfo, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppInfoMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppInfoMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppInfo entities.
+func (m *AppInfoMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppInfoMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppInfoMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppInfo.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetInternal sets the "internal" field.
+func (m *AppInfoMutation) SetInternal(b bool) {
+	m.internal = &b
+}
+
+// Internal returns the value of the "internal" field in the mutation.
+func (m *AppInfoMutation) Internal() (r bool, exists bool) {
+	v := m.internal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInternal returns the old "internal" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldInternal(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInternal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInternal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInternal: %w", err)
+	}
+	return oldValue.Internal, nil
+}
+
+// ResetInternal resets all changes to the "internal" field.
+func (m *AppInfoMutation) ResetInternal() {
+	m.internal = nil
+}
+
 // SetSource sets the "source" field.
-func (m *AppPackageMutation) SetSource(a apppackage.Source) {
-	m.source = &a
+func (m *AppInfoMutation) SetSource(s string) {
+	m.source = &s
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *AppPackageMutation) Source() (r apppackage.Source, exists bool) {
+func (m *AppInfoMutation) Source() (r string, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -2811,10 +2535,10 @@ func (m *AppPackageMutation) Source() (r apppackage.Source, exists bool) {
 	return *v, true
 }
 
-// OldSource returns the old "source" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldSource returns the old "source" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldSource(ctx context.Context) (v apppackage.Source, err error) {
+func (m *AppInfoMutation) OldSource(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -2829,73 +2553,102 @@ func (m *AppPackageMutation) OldSource(ctx context.Context) (v apppackage.Source
 }
 
 // ResetSource resets all changes to the "source" field.
-func (m *AppPackageMutation) ResetSource() {
+func (m *AppInfoMutation) ResetSource() {
 	m.source = nil
 }
 
-// SetSourceID sets the "source_id" field.
-func (m *AppPackageMutation) SetSourceID(mi model.InternalID) {
-	m.source_id = &mi
-	m.addsource_id = nil
+// SetSourceAppID sets the "source_app_id" field.
+func (m *AppInfoMutation) SetSourceAppID(s string) {
+	m.source_app_id = &s
 }
 
-// SourceID returns the value of the "source_id" field in the mutation.
-func (m *AppPackageMutation) SourceID() (r model.InternalID, exists bool) {
-	v := m.source_id
+// SourceAppID returns the value of the "source_app_id" field in the mutation.
+func (m *AppInfoMutation) SourceAppID() (r string, exists bool) {
+	v := m.source_app_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSourceID returns the old "source_id" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldSourceAppID returns the old "source_app_id" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldSourceID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppInfoMutation) OldSourceAppID(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSourceID is only allowed on UpdateOne operations")
+		return v, errors.New("OldSourceAppID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceID requires an ID field in the mutation")
+		return v, errors.New("OldSourceAppID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSourceID: %w", err)
+		return v, fmt.Errorf("querying old value for OldSourceAppID: %w", err)
 	}
-	return oldValue.SourceID, nil
+	return oldValue.SourceAppID, nil
 }
 
-// AddSourceID adds mi to the "source_id" field.
-func (m *AppPackageMutation) AddSourceID(mi model.InternalID) {
-	if m.addsource_id != nil {
-		*m.addsource_id += mi
-	} else {
-		m.addsource_id = &mi
-	}
+// ResetSourceAppID resets all changes to the "source_app_id" field.
+func (m *AppInfoMutation) ResetSourceAppID() {
+	m.source_app_id = nil
 }
 
-// AddedSourceID returns the value that was added to the "source_id" field in this mutation.
-func (m *AppPackageMutation) AddedSourceID() (r model.InternalID, exists bool) {
-	v := m.addsource_id
+// SetSourceURL sets the "source_url" field.
+func (m *AppInfoMutation) SetSourceURL(s string) {
+	m.source_url = &s
+}
+
+// SourceURL returns the value of the "source_url" field in the mutation.
+func (m *AppInfoMutation) SourceURL() (r string, exists bool) {
+	v := m.source_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetSourceID resets all changes to the "source_id" field.
-func (m *AppPackageMutation) ResetSourceID() {
-	m.source_id = nil
-	m.addsource_id = nil
+// OldSourceURL returns the old "source_url" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldSourceURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceURL: %w", err)
+	}
+	return oldValue.SourceURL, nil
+}
+
+// ClearSourceURL clears the value of the "source_url" field.
+func (m *AppInfoMutation) ClearSourceURL() {
+	m.source_url = nil
+	m.clearedFields[appinfo.FieldSourceURL] = struct{}{}
+}
+
+// SourceURLCleared returns if the "source_url" field was cleared in this mutation.
+func (m *AppInfoMutation) SourceURLCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldSourceURL]
+	return ok
+}
+
+// ResetSourceURL resets all changes to the "source_url" field.
+func (m *AppInfoMutation) ResetSourceURL() {
+	m.source_url = nil
+	delete(m.clearedFields, appinfo.FieldSourceURL)
 }
 
 // SetName sets the "name" field.
-func (m *AppPackageMutation) SetName(s string) {
+func (m *AppInfoMutation) SetName(s string) {
 	m.name = &s
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *AppPackageMutation) Name() (r string, exists bool) {
+func (m *AppInfoMutation) Name() (r string, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -2903,10 +2656,10 @@ func (m *AppPackageMutation) Name() (r string, exists bool) {
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldName returns the old "name" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *AppInfoMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -2921,17 +2674,102 @@ func (m *AppPackageMutation) OldName(ctx context.Context) (v string, err error) 
 }
 
 // ResetName resets all changes to the "name" field.
-func (m *AppPackageMutation) ResetName() {
+func (m *AppInfoMutation) ResetName() {
 	m.name = nil
 }
 
+// SetType sets the "type" field.
+func (m *AppInfoMutation) SetType(a appinfo.Type) {
+	m._type = &a
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *AppInfoMutation) GetType() (r appinfo.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldType(ctx context.Context) (v appinfo.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *AppInfoMutation) ResetType() {
+	m._type = nil
+}
+
+// SetShortDescription sets the "short_description" field.
+func (m *AppInfoMutation) SetShortDescription(s string) {
+	m.short_description = &s
+}
+
+// ShortDescription returns the value of the "short_description" field in the mutation.
+func (m *AppInfoMutation) ShortDescription() (r string, exists bool) {
+	v := m.short_description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldShortDescription returns the old "short_description" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldShortDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldShortDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldShortDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldShortDescription: %w", err)
+	}
+	return oldValue.ShortDescription, nil
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (m *AppInfoMutation) ClearShortDescription() {
+	m.short_description = nil
+	m.clearedFields[appinfo.FieldShortDescription] = struct{}{}
+}
+
+// ShortDescriptionCleared returns if the "short_description" field was cleared in this mutation.
+func (m *AppInfoMutation) ShortDescriptionCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldShortDescription]
+	return ok
+}
+
+// ResetShortDescription resets all changes to the "short_description" field.
+func (m *AppInfoMutation) ResetShortDescription() {
+	m.short_description = nil
+	delete(m.clearedFields, appinfo.FieldShortDescription)
+}
+
 // SetDescription sets the "description" field.
-func (m *AppPackageMutation) SetDescription(s string) {
+func (m *AppInfoMutation) SetDescription(s string) {
 	m.description = &s
 }
 
 // Description returns the value of the "description" field in the mutation.
-func (m *AppPackageMutation) Description() (r string, exists bool) {
+func (m *AppInfoMutation) Description() (r string, exists bool) {
 	v := m.description
 	if v == nil {
 		return
@@ -2939,10 +2777,10 @@ func (m *AppPackageMutation) Description() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDescription returns the old "description" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldDescription returns the old "description" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldDescription(ctx context.Context) (v string, err error) {
+func (m *AppInfoMutation) OldDescription(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
 	}
@@ -2956,327 +2794,374 @@ func (m *AppPackageMutation) OldDescription(ctx context.Context) (v string, err 
 	return oldValue.Description, nil
 }
 
-// ResetDescription resets all changes to the "description" field.
-func (m *AppPackageMutation) ResetDescription() {
+// ClearDescription clears the value of the "description" field.
+func (m *AppInfoMutation) ClearDescription() {
 	m.description = nil
+	m.clearedFields[appinfo.FieldDescription] = struct{}{}
 }
 
-// SetPublic sets the "public" field.
-func (m *AppPackageMutation) SetPublic(b bool) {
-	m.public = &b
-}
-
-// Public returns the value of the "public" field in the mutation.
-func (m *AppPackageMutation) Public() (r bool, exists bool) {
-	v := m.public
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPublic returns the old "public" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldPublic(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPublic is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublic requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPublic: %w", err)
-	}
-	return oldValue.Public, nil
-}
-
-// ResetPublic resets all changes to the "public" field.
-func (m *AppPackageMutation) ResetPublic() {
-	m.public = nil
-}
-
-// SetBinaryName sets the "binary_name" field.
-func (m *AppPackageMutation) SetBinaryName(s string) {
-	m.binary_name = &s
-}
-
-// BinaryName returns the value of the "binary_name" field in the mutation.
-func (m *AppPackageMutation) BinaryName() (r string, exists bool) {
-	v := m.binary_name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldBinaryName returns the old "binary_name" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinaryName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinaryName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinaryName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinaryName: %w", err)
-	}
-	return oldValue.BinaryName, nil
-}
-
-// ClearBinaryName clears the value of the "binary_name" field.
-func (m *AppPackageMutation) ClearBinaryName() {
-	m.binary_name = nil
-	m.clearedFields[apppackage.FieldBinaryName] = struct{}{}
-}
-
-// BinaryNameCleared returns if the "binary_name" field was cleared in this mutation.
-func (m *AppPackageMutation) BinaryNameCleared() bool {
-	_, ok := m.clearedFields[apppackage.FieldBinaryName]
+// DescriptionCleared returns if the "description" field was cleared in this mutation.
+func (m *AppInfoMutation) DescriptionCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldDescription]
 	return ok
 }
 
-// ResetBinaryName resets all changes to the "binary_name" field.
-func (m *AppPackageMutation) ResetBinaryName() {
-	m.binary_name = nil
-	delete(m.clearedFields, apppackage.FieldBinaryName)
+// ResetDescription resets all changes to the "description" field.
+func (m *AppInfoMutation) ResetDescription() {
+	m.description = nil
+	delete(m.clearedFields, appinfo.FieldDescription)
 }
 
-// SetBinarySizeBytes sets the "binary_size_bytes" field.
-func (m *AppPackageMutation) SetBinarySizeBytes(i int64) {
-	m.binary_size_bytes = &i
-	m.addbinary_size_bytes = nil
+// SetIconImageURL sets the "icon_image_url" field.
+func (m *AppInfoMutation) SetIconImageURL(s string) {
+	m.icon_image_url = &s
 }
 
-// BinarySizeBytes returns the value of the "binary_size_bytes" field in the mutation.
-func (m *AppPackageMutation) BinarySizeBytes() (r int64, exists bool) {
-	v := m.binary_size_bytes
+// IconImageURL returns the value of the "icon_image_url" field in the mutation.
+func (m *AppInfoMutation) IconImageURL() (r string, exists bool) {
+	v := m.icon_image_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBinarySizeBytes returns the old "binary_size_bytes" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldIconImageURL returns the old "icon_image_url" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinarySizeBytes(ctx context.Context) (v int64, err error) {
+func (m *AppInfoMutation) OldIconImageURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinarySizeBytes is only allowed on UpdateOne operations")
+		return v, errors.New("OldIconImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinarySizeBytes requires an ID field in the mutation")
+		return v, errors.New("OldIconImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinarySizeBytes: %w", err)
+		return v, fmt.Errorf("querying old value for OldIconImageURL: %w", err)
 	}
-	return oldValue.BinarySizeBytes, nil
+	return oldValue.IconImageURL, nil
 }
 
-// AddBinarySizeBytes adds i to the "binary_size_bytes" field.
-func (m *AppPackageMutation) AddBinarySizeBytes(i int64) {
-	if m.addbinary_size_bytes != nil {
-		*m.addbinary_size_bytes += i
-	} else {
-		m.addbinary_size_bytes = &i
-	}
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (m *AppInfoMutation) ClearIconImageURL() {
+	m.icon_image_url = nil
+	m.clearedFields[appinfo.FieldIconImageURL] = struct{}{}
 }
 
-// AddedBinarySizeBytes returns the value that was added to the "binary_size_bytes" field in this mutation.
-func (m *AppPackageMutation) AddedBinarySizeBytes() (r int64, exists bool) {
-	v := m.addbinary_size_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearBinarySizeBytes clears the value of the "binary_size_bytes" field.
-func (m *AppPackageMutation) ClearBinarySizeBytes() {
-	m.binary_size_bytes = nil
-	m.addbinary_size_bytes = nil
-	m.clearedFields[apppackage.FieldBinarySizeBytes] = struct{}{}
-}
-
-// BinarySizeBytesCleared returns if the "binary_size_bytes" field was cleared in this mutation.
-func (m *AppPackageMutation) BinarySizeBytesCleared() bool {
-	_, ok := m.clearedFields[apppackage.FieldBinarySizeBytes]
+// IconImageURLCleared returns if the "icon_image_url" field was cleared in this mutation.
+func (m *AppInfoMutation) IconImageURLCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldIconImageURL]
 	return ok
 }
 
-// ResetBinarySizeBytes resets all changes to the "binary_size_bytes" field.
-func (m *AppPackageMutation) ResetBinarySizeBytes() {
-	m.binary_size_bytes = nil
-	m.addbinary_size_bytes = nil
-	delete(m.clearedFields, apppackage.FieldBinarySizeBytes)
+// ResetIconImageURL resets all changes to the "icon_image_url" field.
+func (m *AppInfoMutation) ResetIconImageURL() {
+	m.icon_image_url = nil
+	delete(m.clearedFields, appinfo.FieldIconImageURL)
 }
 
-// SetBinaryPublicURL sets the "binary_public_url" field.
-func (m *AppPackageMutation) SetBinaryPublicURL(s string) {
-	m.binary_public_url = &s
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (m *AppInfoMutation) SetBackgroundImageURL(s string) {
+	m.background_image_url = &s
 }
 
-// BinaryPublicURL returns the value of the "binary_public_url" field in the mutation.
-func (m *AppPackageMutation) BinaryPublicURL() (r string, exists bool) {
-	v := m.binary_public_url
+// BackgroundImageURL returns the value of the "background_image_url" field in the mutation.
+func (m *AppInfoMutation) BackgroundImageURL() (r string, exists bool) {
+	v := m.background_image_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBinaryPublicURL returns the old "binary_public_url" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldBackgroundImageURL returns the old "background_image_url" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinaryPublicURL(ctx context.Context) (v string, err error) {
+func (m *AppInfoMutation) OldBackgroundImageURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinaryPublicURL is only allowed on UpdateOne operations")
+		return v, errors.New("OldBackgroundImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinaryPublicURL requires an ID field in the mutation")
+		return v, errors.New("OldBackgroundImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinaryPublicURL: %w", err)
+		return v, fmt.Errorf("querying old value for OldBackgroundImageURL: %w", err)
 	}
-	return oldValue.BinaryPublicURL, nil
+	return oldValue.BackgroundImageURL, nil
 }
 
-// ClearBinaryPublicURL clears the value of the "binary_public_url" field.
-func (m *AppPackageMutation) ClearBinaryPublicURL() {
-	m.binary_public_url = nil
-	m.clearedFields[apppackage.FieldBinaryPublicURL] = struct{}{}
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (m *AppInfoMutation) ClearBackgroundImageURL() {
+	m.background_image_url = nil
+	m.clearedFields[appinfo.FieldBackgroundImageURL] = struct{}{}
 }
 
-// BinaryPublicURLCleared returns if the "binary_public_url" field was cleared in this mutation.
-func (m *AppPackageMutation) BinaryPublicURLCleared() bool {
-	_, ok := m.clearedFields[apppackage.FieldBinaryPublicURL]
+// BackgroundImageURLCleared returns if the "background_image_url" field was cleared in this mutation.
+func (m *AppInfoMutation) BackgroundImageURLCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldBackgroundImageURL]
 	return ok
 }
 
-// ResetBinaryPublicURL resets all changes to the "binary_public_url" field.
-func (m *AppPackageMutation) ResetBinaryPublicURL() {
-	m.binary_public_url = nil
-	delete(m.clearedFields, apppackage.FieldBinaryPublicURL)
+// ResetBackgroundImageURL resets all changes to the "background_image_url" field.
+func (m *AppInfoMutation) ResetBackgroundImageURL() {
+	m.background_image_url = nil
+	delete(m.clearedFields, appinfo.FieldBackgroundImageURL)
 }
 
-// SetBinarySha256 sets the "binary_sha256" field.
-func (m *AppPackageMutation) SetBinarySha256(b []byte) {
-	m.binary_sha256 = &b
+// SetCoverImageURL sets the "cover_image_url" field.
+func (m *AppInfoMutation) SetCoverImageURL(s string) {
+	m.cover_image_url = &s
 }
 
-// BinarySha256 returns the value of the "binary_sha256" field in the mutation.
-func (m *AppPackageMutation) BinarySha256() (r []byte, exists bool) {
-	v := m.binary_sha256
+// CoverImageURL returns the value of the "cover_image_url" field in the mutation.
+func (m *AppInfoMutation) CoverImageURL() (r string, exists bool) {
+	v := m.cover_image_url
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldBinarySha256 returns the old "binary_sha256" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldCoverImageURL returns the old "cover_image_url" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldBinarySha256(ctx context.Context) (v []byte, err error) {
+func (m *AppInfoMutation) OldCoverImageURL(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldBinarySha256 is only allowed on UpdateOne operations")
+		return v, errors.New("OldCoverImageURL is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldBinarySha256 requires an ID field in the mutation")
+		return v, errors.New("OldCoverImageURL requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldBinarySha256: %w", err)
+		return v, fmt.Errorf("querying old value for OldCoverImageURL: %w", err)
 	}
-	return oldValue.BinarySha256, nil
+	return oldValue.CoverImageURL, nil
 }
 
-// ClearBinarySha256 clears the value of the "binary_sha256" field.
-func (m *AppPackageMutation) ClearBinarySha256() {
-	m.binary_sha256 = nil
-	m.clearedFields[apppackage.FieldBinarySha256] = struct{}{}
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (m *AppInfoMutation) ClearCoverImageURL() {
+	m.cover_image_url = nil
+	m.clearedFields[appinfo.FieldCoverImageURL] = struct{}{}
 }
 
-// BinarySha256Cleared returns if the "binary_sha256" field was cleared in this mutation.
-func (m *AppPackageMutation) BinarySha256Cleared() bool {
-	_, ok := m.clearedFields[apppackage.FieldBinarySha256]
+// CoverImageURLCleared returns if the "cover_image_url" field was cleared in this mutation.
+func (m *AppInfoMutation) CoverImageURLCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldCoverImageURL]
 	return ok
 }
 
-// ResetBinarySha256 resets all changes to the "binary_sha256" field.
-func (m *AppPackageMutation) ResetBinarySha256() {
-	m.binary_sha256 = nil
-	delete(m.clearedFields, apppackage.FieldBinarySha256)
+// ResetCoverImageURL resets all changes to the "cover_image_url" field.
+func (m *AppInfoMutation) ResetCoverImageURL() {
+	m.cover_image_url = nil
+	delete(m.clearedFields, appinfo.FieldCoverImageURL)
 }
 
-// SetGroupID sets the "group_id" field.
-func (m *AppPackageMutation) SetGroupID(mi model.InternalID) {
-	m.group_id = &mi
-	m.addgroup_id = nil
+// SetReleaseDate sets the "release_date" field.
+func (m *AppInfoMutation) SetReleaseDate(s string) {
+	m.release_date = &s
 }
 
-// GroupID returns the value of the "group_id" field in the mutation.
-func (m *AppPackageMutation) GroupID() (r model.InternalID, exists bool) {
-	v := m.group_id
+// ReleaseDate returns the value of the "release_date" field in the mutation.
+func (m *AppInfoMutation) ReleaseDate() (r string, exists bool) {
+	v := m.release_date
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldGroupID returns the old "group_id" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldReleaseDate returns the old "release_date" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldGroupID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppInfoMutation) OldReleaseDate(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGroupID is only allowed on UpdateOne operations")
+		return v, errors.New("OldReleaseDate is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGroupID requires an ID field in the mutation")
+		return v, errors.New("OldReleaseDate requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGroupID: %w", err)
+		return v, fmt.Errorf("querying old value for OldReleaseDate: %w", err)
 	}
-	return oldValue.GroupID, nil
+	return oldValue.ReleaseDate, nil
 }
 
-// AddGroupID adds mi to the "group_id" field.
-func (m *AppPackageMutation) AddGroupID(mi model.InternalID) {
-	if m.addgroup_id != nil {
-		*m.addgroup_id += mi
-	} else {
-		m.addgroup_id = &mi
-	}
+// ClearReleaseDate clears the value of the "release_date" field.
+func (m *AppInfoMutation) ClearReleaseDate() {
+	m.release_date = nil
+	m.clearedFields[appinfo.FieldReleaseDate] = struct{}{}
 }
 
-// AddedGroupID returns the value that was added to the "group_id" field in this mutation.
-func (m *AppPackageMutation) AddedGroupID() (r model.InternalID, exists bool) {
-	v := m.addgroup_id
+// ReleaseDateCleared returns if the "release_date" field was cleared in this mutation.
+func (m *AppInfoMutation) ReleaseDateCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldReleaseDate]
+	return ok
+}
+
+// ResetReleaseDate resets all changes to the "release_date" field.
+func (m *AppInfoMutation) ResetReleaseDate() {
+	m.release_date = nil
+	delete(m.clearedFields, appinfo.FieldReleaseDate)
+}
+
+// SetDeveloper sets the "developer" field.
+func (m *AppInfoMutation) SetDeveloper(s string) {
+	m.developer = &s
+}
+
+// Developer returns the value of the "developer" field in the mutation.
+func (m *AppInfoMutation) Developer() (r string, exists bool) {
+	v := m.developer
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetGroupID resets all changes to the "group_id" field.
-func (m *AppPackageMutation) ResetGroupID() {
-	m.group_id = nil
-	m.addgroup_id = nil
+// OldDeveloper returns the old "developer" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldDeveloper(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeveloper is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeveloper requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeveloper: %w", err)
+	}
+	return oldValue.Developer, nil
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (m *AppInfoMutation) ClearDeveloper() {
+	m.developer = nil
+	m.clearedFields[appinfo.FieldDeveloper] = struct{}{}
+}
+
+// DeveloperCleared returns if the "developer" field was cleared in this mutation.
+func (m *AppInfoMutation) DeveloperCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldDeveloper]
+	return ok
+}
+
+// ResetDeveloper resets all changes to the "developer" field.
+func (m *AppInfoMutation) ResetDeveloper() {
+	m.developer = nil
+	delete(m.clearedFields, appinfo.FieldDeveloper)
+}
+
+// SetPublisher sets the "publisher" field.
+func (m *AppInfoMutation) SetPublisher(s string) {
+	m.publisher = &s
+}
+
+// Publisher returns the value of the "publisher" field in the mutation.
+func (m *AppInfoMutation) Publisher() (r string, exists bool) {
+	v := m.publisher
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublisher returns the old "publisher" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldPublisher(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublisher is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublisher requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublisher: %w", err)
+	}
+	return oldValue.Publisher, nil
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (m *AppInfoMutation) ClearPublisher() {
+	m.publisher = nil
+	m.clearedFields[appinfo.FieldPublisher] = struct{}{}
+}
+
+// PublisherCleared returns if the "publisher" field was cleared in this mutation.
+func (m *AppInfoMutation) PublisherCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldPublisher]
+	return ok
+}
+
+// ResetPublisher resets all changes to the "publisher" field.
+func (m *AppInfoMutation) ResetPublisher() {
+	m.publisher = nil
+	delete(m.clearedFields, appinfo.FieldPublisher)
+}
+
+// SetVersion sets the "version" field.
+func (m *AppInfoMutation) SetVersion(s string) {
+	m.version = &s
+}
+
+// Version returns the value of the "version" field in the mutation.
+func (m *AppInfoMutation) Version() (r string, exists bool) {
+	v := m.version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersion returns the old "version" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInfoMutation) OldVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
+	}
+	return oldValue.Version, nil
+}
+
+// ClearVersion clears the value of the "version" field.
+func (m *AppInfoMutation) ClearVersion() {
+	m.version = nil
+	m.clearedFields[appinfo.FieldVersion] = struct{}{}
+}
+
+// VersionCleared returns if the "version" field was cleared in this mutation.
+func (m *AppInfoMutation) VersionCleared() bool {
+	_, ok := m.clearedFields[appinfo.FieldVersion]
+	return ok
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *AppInfoMutation) ResetVersion() {
+	m.version = nil
+	delete(m.clearedFields, appinfo.FieldVersion)
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *AppPackageMutation) SetUpdatedAt(t time.Time) {
+func (m *AppInfoMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *AppPackageMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *AppInfoMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -3284,10 +3169,10 @@ func (m *AppPackageMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AppInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -3302,17 +3187,17 @@ func (m *AppPackageMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *AppPackageMutation) ResetUpdatedAt() {
+func (m *AppInfoMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *AppPackageMutation) SetCreatedAt(t time.Time) {
+func (m *AppInfoMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *AppPackageMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *AppInfoMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -3320,10 +3205,10 @@ func (m *AppPackageMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the AppPackage entity.
-// If the AppPackage object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the AppInfo entity.
+// If the AppInfo object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AppInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -3338,97 +3223,328 @@ func (m *AppPackageMutation) OldCreatedAt(ctx context.Context) (v time.Time, err
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *AppPackageMutation) ResetCreatedAt() {
+func (m *AppInfoMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by id.
-func (m *AppPackageMutation) SetOwnerID(id model.InternalID) {
-	m.owner = &id
+// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by ids.
+func (m *AppInfoMutation) AddPurchasedByAccountIDs(ids ...model.InternalID) {
+	if m.purchased_by_account == nil {
+		m.purchased_by_account = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.purchased_by_account[ids[i]] = struct{}{}
+	}
 }
 
-// ClearOwner clears the "owner" edge to the User entity.
-func (m *AppPackageMutation) ClearOwner() {
-	m.clearedowner = true
+// ClearPurchasedByAccount clears the "purchased_by_account" edge to the Account entity.
+func (m *AppInfoMutation) ClearPurchasedByAccount() {
+	m.clearedpurchased_by_account = true
 }
 
-// OwnerCleared reports if the "owner" edge to the User entity was cleared.
-func (m *AppPackageMutation) OwnerCleared() bool {
-	return m.clearedowner
+// PurchasedByAccountCleared reports if the "purchased_by_account" edge to the Account entity was cleared.
+func (m *AppInfoMutation) PurchasedByAccountCleared() bool {
+	return m.clearedpurchased_by_account
 }
 
-// OwnerID returns the "owner" edge ID in the mutation.
-func (m *AppPackageMutation) OwnerID() (id model.InternalID, exists bool) {
-	if m.owner != nil {
-		return *m.owner, true
+// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to the Account entity by IDs.
+func (m *AppInfoMutation) RemovePurchasedByAccountIDs(ids ...model.InternalID) {
+	if m.removedpurchased_by_account == nil {
+		m.removedpurchased_by_account = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.purchased_by_account, ids[i])
+		m.removedpurchased_by_account[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPurchasedByAccount returns the removed IDs of the "purchased_by_account" edge to the Account entity.
+func (m *AppInfoMutation) RemovedPurchasedByAccountIDs() (ids []model.InternalID) {
+	for id := range m.removedpurchased_by_account {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// OwnerIDs returns the "owner" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// OwnerID instead. It exists only for internal usage by the builders.
-func (m *AppPackageMutation) OwnerIDs() (ids []model.InternalID) {
-	if id := m.owner; id != nil {
-		ids = append(ids, *id)
+// PurchasedByAccountIDs returns the "purchased_by_account" edge IDs in the mutation.
+func (m *AppInfoMutation) PurchasedByAccountIDs() (ids []model.InternalID) {
+	for id := range m.purchased_by_account {
+		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetOwner resets all changes to the "owner" edge.
-func (m *AppPackageMutation) ResetOwner() {
-	m.owner = nil
-	m.clearedowner = false
+// ResetPurchasedByAccount resets all changes to the "purchased_by_account" edge.
+func (m *AppInfoMutation) ResetPurchasedByAccount() {
+	m.purchased_by_account = nil
+	m.clearedpurchased_by_account = false
+	m.removedpurchased_by_account = nil
 }
 
-// SetAppID sets the "app" edge to the App entity by id.
-func (m *AppPackageMutation) SetAppID(id model.InternalID) {
-	m.app = &id
+// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by ids.
+func (m *AppInfoMutation) AddPurchasedByUserIDs(ids ...model.InternalID) {
+	if m.purchased_by_user == nil {
+		m.purchased_by_user = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.purchased_by_user[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPurchasedByUser clears the "purchased_by_user" edge to the User entity.
+func (m *AppInfoMutation) ClearPurchasedByUser() {
+	m.clearedpurchased_by_user = true
+}
+
+// PurchasedByUserCleared reports if the "purchased_by_user" edge to the User entity was cleared.
+func (m *AppInfoMutation) PurchasedByUserCleared() bool {
+	return m.clearedpurchased_by_user
+}
+
+// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to the User entity by IDs.
+func (m *AppInfoMutation) RemovePurchasedByUserIDs(ids ...model.InternalID) {
+	if m.removedpurchased_by_user == nil {
+		m.removedpurchased_by_user = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.purchased_by_user, ids[i])
+		m.removedpurchased_by_user[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPurchasedByUser returns the removed IDs of the "purchased_by_user" edge to the User entity.
+func (m *AppInfoMutation) RemovedPurchasedByUserIDs() (ids []model.InternalID) {
+	for id := range m.removedpurchased_by_user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PurchasedByUserIDs returns the "purchased_by_user" edge IDs in the mutation.
+func (m *AppInfoMutation) PurchasedByUserIDs() (ids []model.InternalID) {
+	for id := range m.purchased_by_user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPurchasedByUser resets all changes to the "purchased_by_user" edge.
+func (m *AppInfoMutation) ResetPurchasedByUser() {
+	m.purchased_by_user = nil
+	m.clearedpurchased_by_user = false
+	m.removedpurchased_by_user = nil
+}
+
+// AddAppIDs adds the "app" edge to the App entity by ids.
+func (m *AppInfoMutation) AddAppIDs(ids ...model.InternalID) {
+	if m.app == nil {
+		m.app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app[ids[i]] = struct{}{}
+	}
 }
 
 // ClearApp clears the "app" edge to the App entity.
-func (m *AppPackageMutation) ClearApp() {
+func (m *AppInfoMutation) ClearApp() {
 	m.clearedapp = true
 }
 
 // AppCleared reports if the "app" edge to the App entity was cleared.
-func (m *AppPackageMutation) AppCleared() bool {
+func (m *AppInfoMutation) AppCleared() bool {
 	return m.clearedapp
 }
 
-// AppID returns the "app" edge ID in the mutation.
-func (m *AppPackageMutation) AppID() (id model.InternalID, exists bool) {
-	if m.app != nil {
-		return *m.app, true
+// RemoveAppIDs removes the "app" edge to the App entity by IDs.
+func (m *AppInfoMutation) RemoveAppIDs(ids ...model.InternalID) {
+	if m.removedapp == nil {
+		m.removedapp = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app, ids[i])
+		m.removedapp[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedApp returns the removed IDs of the "app" edge to the App entity.
+func (m *AppInfoMutation) RemovedAppIDs() (ids []model.InternalID) {
+	for id := range m.removedapp {
+		ids = append(ids, id)
 	}
 	return
 }
 
 // AppIDs returns the "app" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// AppID instead. It exists only for internal usage by the builders.
-func (m *AppPackageMutation) AppIDs() (ids []model.InternalID) {
-	if id := m.app; id != nil {
-		ids = append(ids, *id)
+func (m *AppInfoMutation) AppIDs() (ids []model.InternalID) {
+	for id := range m.app {
+		ids = append(ids, id)
 	}
 	return
 }
 
 // ResetApp resets all changes to the "app" edge.
-func (m *AppPackageMutation) ResetApp() {
+func (m *AppInfoMutation) ResetApp() {
 	m.app = nil
 	m.clearedapp = false
+	m.removedapp = nil
 }
 
-// Where appends a list predicates to the AppPackageMutation builder.
-func (m *AppPackageMutation) Where(ps ...predicate.AppPackage) {
+// AddAppBinaryIDs adds the "app_binary" edge to the AppBinary entity by ids.
+func (m *AppInfoMutation) AddAppBinaryIDs(ids ...model.InternalID) {
+	if m.app_binary == nil {
+		m.app_binary = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppBinary clears the "app_binary" edge to the AppBinary entity.
+func (m *AppInfoMutation) ClearAppBinary() {
+	m.clearedapp_binary = true
+}
+
+// AppBinaryCleared reports if the "app_binary" edge to the AppBinary entity was cleared.
+func (m *AppInfoMutation) AppBinaryCleared() bool {
+	return m.clearedapp_binary
+}
+
+// RemoveAppBinaryIDs removes the "app_binary" edge to the AppBinary entity by IDs.
+func (m *AppInfoMutation) RemoveAppBinaryIDs(ids ...model.InternalID) {
+	if m.removedapp_binary == nil {
+		m.removedapp_binary = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app_binary, ids[i])
+		m.removedapp_binary[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppBinary returns the removed IDs of the "app_binary" edge to the AppBinary entity.
+func (m *AppInfoMutation) RemovedAppBinaryIDs() (ids []model.InternalID) {
+	for id := range m.removedapp_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppBinaryIDs returns the "app_binary" edge IDs in the mutation.
+func (m *AppInfoMutation) AppBinaryIDs() (ids []model.InternalID) {
+	for id := range m.app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppBinary resets all changes to the "app_binary" edge.
+func (m *AppInfoMutation) ResetAppBinary() {
+	m.app_binary = nil
+	m.clearedapp_binary = false
+	m.removedapp_binary = nil
+}
+
+// SetBindInternalID sets the "bind_internal" edge to the AppInfo entity by id.
+func (m *AppInfoMutation) SetBindInternalID(id model.InternalID) {
+	m.bind_internal = &id
+}
+
+// ClearBindInternal clears the "bind_internal" edge to the AppInfo entity.
+func (m *AppInfoMutation) ClearBindInternal() {
+	m.clearedbind_internal = true
+}
+
+// BindInternalCleared reports if the "bind_internal" edge to the AppInfo entity was cleared.
+func (m *AppInfoMutation) BindInternalCleared() bool {
+	return m.clearedbind_internal
+}
+
+// BindInternalID returns the "bind_internal" edge ID in the mutation.
+func (m *AppInfoMutation) BindInternalID() (id model.InternalID, exists bool) {
+	if m.bind_internal != nil {
+		return *m.bind_internal, true
+	}
+	return
+}
+
+// BindInternalIDs returns the "bind_internal" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// BindInternalID instead. It exists only for internal usage by the builders.
+func (m *AppInfoMutation) BindInternalIDs() (ids []model.InternalID) {
+	if id := m.bind_internal; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetBindInternal resets all changes to the "bind_internal" edge.
+func (m *AppInfoMutation) ResetBindInternal() {
+	m.bind_internal = nil
+	m.clearedbind_internal = false
+}
+
+// AddBindExternalIDs adds the "bind_external" edge to the AppInfo entity by ids.
+func (m *AppInfoMutation) AddBindExternalIDs(ids ...model.InternalID) {
+	if m.bind_external == nil {
+		m.bind_external = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.bind_external[ids[i]] = struct{}{}
+	}
+}
+
+// ClearBindExternal clears the "bind_external" edge to the AppInfo entity.
+func (m *AppInfoMutation) ClearBindExternal() {
+	m.clearedbind_external = true
+}
+
+// BindExternalCleared reports if the "bind_external" edge to the AppInfo entity was cleared.
+func (m *AppInfoMutation) BindExternalCleared() bool {
+	return m.clearedbind_external
+}
+
+// RemoveBindExternalIDs removes the "bind_external" edge to the AppInfo entity by IDs.
+func (m *AppInfoMutation) RemoveBindExternalIDs(ids ...model.InternalID) {
+	if m.removedbind_external == nil {
+		m.removedbind_external = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.bind_external, ids[i])
+		m.removedbind_external[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedBindExternal returns the removed IDs of the "bind_external" edge to the AppInfo entity.
+func (m *AppInfoMutation) RemovedBindExternalIDs() (ids []model.InternalID) {
+	for id := range m.removedbind_external {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// BindExternalIDs returns the "bind_external" edge IDs in the mutation.
+func (m *AppInfoMutation) BindExternalIDs() (ids []model.InternalID) {
+	for id := range m.bind_external {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetBindExternal resets all changes to the "bind_external" edge.
+func (m *AppInfoMutation) ResetBindExternal() {
+	m.bind_external = nil
+	m.clearedbind_external = false
+	m.removedbind_external = nil
+}
+
+// Where appends a list predicates to the AppInfoMutation builder.
+func (m *AppInfoMutation) Where(ps ...predicate.AppInfo) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the AppPackageMutation builder. Using this method,
+// WhereP appends storage-level predicates to the AppInfoMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AppPackageMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.AppPackage, len(ps))
+func (m *AppInfoMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppInfo, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -3436,60 +3552,75 @@ func (m *AppPackageMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *AppPackageMutation) Op() Op {
+func (m *AppInfoMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *AppPackageMutation) SetOp(op Op) {
+func (m *AppInfoMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (AppPackage).
-func (m *AppPackageMutation) Type() string {
+// Type returns the node type of this mutation (AppInfo).
+func (m *AppInfoMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *AppPackageMutation) Fields() []string {
-	fields := make([]string, 0, 12)
-	if m.source != nil {
-		fields = append(fields, apppackage.FieldSource)
+func (m *AppInfoMutation) Fields() []string {
+	fields := make([]string, 0, 17)
+	if m.internal != nil {
+		fields = append(fields, appinfo.FieldInternal)
 	}
-	if m.source_id != nil {
-		fields = append(fields, apppackage.FieldSourceID)
+	if m.source != nil {
+		fields = append(fields, appinfo.FieldSource)
+	}
+	if m.source_app_id != nil {
+		fields = append(fields, appinfo.FieldSourceAppID)
+	}
+	if m.source_url != nil {
+		fields = append(fields, appinfo.FieldSourceURL)
 	}
 	if m.name != nil {
-		fields = append(fields, apppackage.FieldName)
+		fields = append(fields, appinfo.FieldName)
+	}
+	if m._type != nil {
+		fields = append(fields, appinfo.FieldType)
+	}
+	if m.short_description != nil {
+		fields = append(fields, appinfo.FieldShortDescription)
 	}
 	if m.description != nil {
-		fields = append(fields, apppackage.FieldDescription)
+		fields = append(fields, appinfo.FieldDescription)
 	}
-	if m.public != nil {
-		fields = append(fields, apppackage.FieldPublic)
+	if m.icon_image_url != nil {
+		fields = append(fields, appinfo.FieldIconImageURL)
 	}
-	if m.binary_name != nil {
-		fields = append(fields, apppackage.FieldBinaryName)
+	if m.background_image_url != nil {
+		fields = append(fields, appinfo.FieldBackgroundImageURL)
 	}
-	if m.binary_size_bytes != nil {
-		fields = append(fields, apppackage.FieldBinarySizeBytes)
+	if m.cover_image_url != nil {
+		fields = append(fields, appinfo.FieldCoverImageURL)
 	}
-	if m.binary_public_url != nil {
-		fields = append(fields, apppackage.FieldBinaryPublicURL)
+	if m.release_date != nil {
+		fields = append(fields, appinfo.FieldReleaseDate)
 	}
-	if m.binary_sha256 != nil {
-		fields = append(fields, apppackage.FieldBinarySha256)
+	if m.developer != nil {
+		fields = append(fields, appinfo.FieldDeveloper)
 	}
-	if m.group_id != nil {
-		fields = append(fields, apppackage.FieldGroupID)
+	if m.publisher != nil {
+		fields = append(fields, appinfo.FieldPublisher)
+	}
+	if m.version != nil {
+		fields = append(fields, appinfo.FieldVersion)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, apppackage.FieldUpdatedAt)
+		fields = append(fields, appinfo.FieldUpdatedAt)
 	}
 	if m.created_at != nil {
-		fields = append(fields, apppackage.FieldCreatedAt)
+		fields = append(fields, appinfo.FieldCreatedAt)
 	}
 	return fields
 }
@@ -3497,31 +3628,41 @@ func (m *AppPackageMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
+func (m *AppInfoMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case apppackage.FieldSource:
+	case appinfo.FieldInternal:
+		return m.Internal()
+	case appinfo.FieldSource:
 		return m.Source()
-	case apppackage.FieldSourceID:
-		return m.SourceID()
-	case apppackage.FieldName:
+	case appinfo.FieldSourceAppID:
+		return m.SourceAppID()
+	case appinfo.FieldSourceURL:
+		return m.SourceURL()
+	case appinfo.FieldName:
 		return m.Name()
-	case apppackage.FieldDescription:
+	case appinfo.FieldType:
+		return m.GetType()
+	case appinfo.FieldShortDescription:
+		return m.ShortDescription()
+	case appinfo.FieldDescription:
 		return m.Description()
-	case apppackage.FieldPublic:
-		return m.Public()
-	case apppackage.FieldBinaryName:
-		return m.BinaryName()
-	case apppackage.FieldBinarySizeBytes:
-		return m.BinarySizeBytes()
-	case apppackage.FieldBinaryPublicURL:
-		return m.BinaryPublicURL()
-	case apppackage.FieldBinarySha256:
-		return m.BinarySha256()
-	case apppackage.FieldGroupID:
-		return m.GroupID()
-	case apppackage.FieldUpdatedAt:
+	case appinfo.FieldIconImageURL:
+		return m.IconImageURL()
+	case appinfo.FieldBackgroundImageURL:
+		return m.BackgroundImageURL()
+	case appinfo.FieldCoverImageURL:
+		return m.CoverImageURL()
+	case appinfo.FieldReleaseDate:
+		return m.ReleaseDate()
+	case appinfo.FieldDeveloper:
+		return m.Developer()
+	case appinfo.FieldPublisher:
+		return m.Publisher()
+	case appinfo.FieldVersion:
+		return m.Version()
+	case appinfo.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case apppackage.FieldCreatedAt:
+	case appinfo.FieldCreatedAt:
 		return m.CreatedAt()
 	}
 	return nil, false
@@ -3530,119 +3671,164 @@ func (m *AppPackageMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *AppPackageMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *AppInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case apppackage.FieldSource:
+	case appinfo.FieldInternal:
+		return m.OldInternal(ctx)
+	case appinfo.FieldSource:
 		return m.OldSource(ctx)
-	case apppackage.FieldSourceID:
-		return m.OldSourceID(ctx)
-	case apppackage.FieldName:
+	case appinfo.FieldSourceAppID:
+		return m.OldSourceAppID(ctx)
+	case appinfo.FieldSourceURL:
+		return m.OldSourceURL(ctx)
+	case appinfo.FieldName:
 		return m.OldName(ctx)
-	case apppackage.FieldDescription:
+	case appinfo.FieldType:
+		return m.OldType(ctx)
+	case appinfo.FieldShortDescription:
+		return m.OldShortDescription(ctx)
+	case appinfo.FieldDescription:
 		return m.OldDescription(ctx)
-	case apppackage.FieldPublic:
-		return m.OldPublic(ctx)
-	case apppackage.FieldBinaryName:
-		return m.OldBinaryName(ctx)
-	case apppackage.FieldBinarySizeBytes:
-		return m.OldBinarySizeBytes(ctx)
-	case apppackage.FieldBinaryPublicURL:
-		return m.OldBinaryPublicURL(ctx)
-	case apppackage.FieldBinarySha256:
-		return m.OldBinarySha256(ctx)
-	case apppackage.FieldGroupID:
-		return m.OldGroupID(ctx)
-	case apppackage.FieldUpdatedAt:
+	case appinfo.FieldIconImageURL:
+		return m.OldIconImageURL(ctx)
+	case appinfo.FieldBackgroundImageURL:
+		return m.OldBackgroundImageURL(ctx)
+	case appinfo.FieldCoverImageURL:
+		return m.OldCoverImageURL(ctx)
+	case appinfo.FieldReleaseDate:
+		return m.OldReleaseDate(ctx)
+	case appinfo.FieldDeveloper:
+		return m.OldDeveloper(ctx)
+	case appinfo.FieldPublisher:
+		return m.OldPublisher(ctx)
+	case appinfo.FieldVersion:
+		return m.OldVersion(ctx)
+	case appinfo.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case apppackage.FieldCreatedAt:
+	case appinfo.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown AppPackage field %s", name)
+	return nil, fmt.Errorf("unknown AppInfo field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
+func (m *AppInfoMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case apppackage.FieldSource:
-		v, ok := value.(apppackage.Source)
+	case appinfo.FieldInternal:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInternal(v)
+		return nil
+	case appinfo.FieldSource:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSource(v)
 		return nil
-	case apppackage.FieldSourceID:
-		v, ok := value.(model.InternalID)
+	case appinfo.FieldSourceAppID:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSourceID(v)
+		m.SetSourceAppID(v)
 		return nil
-	case apppackage.FieldName:
+	case appinfo.FieldSourceURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceURL(v)
+		return nil
+	case appinfo.FieldName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
 		return nil
-	case apppackage.FieldDescription:
+	case appinfo.FieldType:
+		v, ok := value.(appinfo.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	case appinfo.FieldShortDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetShortDescription(v)
+		return nil
+	case appinfo.FieldDescription:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
 		return nil
-	case apppackage.FieldPublic:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPublic(v)
-		return nil
-	case apppackage.FieldBinaryName:
+	case appinfo.FieldIconImageURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBinaryName(v)
+		m.SetIconImageURL(v)
 		return nil
-	case apppackage.FieldBinarySizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetBinarySizeBytes(v)
-		return nil
-	case apppackage.FieldBinaryPublicURL:
+	case appinfo.FieldBackgroundImageURL:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBinaryPublicURL(v)
+		m.SetBackgroundImageURL(v)
 		return nil
-	case apppackage.FieldBinarySha256:
-		v, ok := value.([]byte)
+	case appinfo.FieldCoverImageURL:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetBinarySha256(v)
+		m.SetCoverImageURL(v)
 		return nil
-	case apppackage.FieldGroupID:
-		v, ok := value.(model.InternalID)
+	case appinfo.FieldReleaseDate:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetGroupID(v)
+		m.SetReleaseDate(v)
 		return nil
-	case apppackage.FieldUpdatedAt:
+	case appinfo.FieldDeveloper:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeveloper(v)
+		return nil
+	case appinfo.FieldPublisher:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublisher(v)
+		return nil
+	case appinfo.FieldVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersion(v)
+		return nil
+	case appinfo.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case apppackage.FieldCreatedAt:
+	case appinfo.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -3650,284 +3836,409 @@ func (m *AppPackageMutation) SetField(name string, value ent.Value) error {
 		m.SetCreatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackage field %s", name)
+	return fmt.Errorf("unknown AppInfo field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *AppPackageMutation) AddedFields() []string {
-	var fields []string
-	if m.addsource_id != nil {
-		fields = append(fields, apppackage.FieldSourceID)
-	}
-	if m.addbinary_size_bytes != nil {
-		fields = append(fields, apppackage.FieldBinarySizeBytes)
-	}
-	if m.addgroup_id != nil {
-		fields = append(fields, apppackage.FieldGroupID)
-	}
-	return fields
+func (m *AppInfoMutation) AddedFields() []string {
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *AppPackageMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case apppackage.FieldSourceID:
-		return m.AddedSourceID()
-	case apppackage.FieldBinarySizeBytes:
-		return m.AddedBinarySizeBytes()
-	case apppackage.FieldGroupID:
-		return m.AddedGroupID()
-	}
+func (m *AppInfoMutation) AddedField(name string) (ent.Value, bool) {
 	return nil, false
 }
 
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AppPackageMutation) AddField(name string, value ent.Value) error {
+func (m *AppInfoMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case apppackage.FieldSourceID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSourceID(v)
-		return nil
-	case apppackage.FieldBinarySizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddBinarySizeBytes(v)
-		return nil
-	case apppackage.FieldGroupID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddGroupID(v)
-		return nil
 	}
-	return fmt.Errorf("unknown AppPackage numeric field %s", name)
+	return fmt.Errorf("unknown AppInfo numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *AppPackageMutation) ClearedFields() []string {
+func (m *AppInfoMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(apppackage.FieldBinaryName) {
-		fields = append(fields, apppackage.FieldBinaryName)
+	if m.FieldCleared(appinfo.FieldSourceURL) {
+		fields = append(fields, appinfo.FieldSourceURL)
 	}
-	if m.FieldCleared(apppackage.FieldBinarySizeBytes) {
-		fields = append(fields, apppackage.FieldBinarySizeBytes)
+	if m.FieldCleared(appinfo.FieldShortDescription) {
+		fields = append(fields, appinfo.FieldShortDescription)
 	}
-	if m.FieldCleared(apppackage.FieldBinaryPublicURL) {
-		fields = append(fields, apppackage.FieldBinaryPublicURL)
+	if m.FieldCleared(appinfo.FieldDescription) {
+		fields = append(fields, appinfo.FieldDescription)
 	}
-	if m.FieldCleared(apppackage.FieldBinarySha256) {
-		fields = append(fields, apppackage.FieldBinarySha256)
+	if m.FieldCleared(appinfo.FieldIconImageURL) {
+		fields = append(fields, appinfo.FieldIconImageURL)
+	}
+	if m.FieldCleared(appinfo.FieldBackgroundImageURL) {
+		fields = append(fields, appinfo.FieldBackgroundImageURL)
+	}
+	if m.FieldCleared(appinfo.FieldCoverImageURL) {
+		fields = append(fields, appinfo.FieldCoverImageURL)
+	}
+	if m.FieldCleared(appinfo.FieldReleaseDate) {
+		fields = append(fields, appinfo.FieldReleaseDate)
+	}
+	if m.FieldCleared(appinfo.FieldDeveloper) {
+		fields = append(fields, appinfo.FieldDeveloper)
+	}
+	if m.FieldCleared(appinfo.FieldPublisher) {
+		fields = append(fields, appinfo.FieldPublisher)
+	}
+	if m.FieldCleared(appinfo.FieldVersion) {
+		fields = append(fields, appinfo.FieldVersion)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *AppPackageMutation) FieldCleared(name string) bool {
+func (m *AppInfoMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *AppPackageMutation) ClearField(name string) error {
+func (m *AppInfoMutation) ClearField(name string) error {
 	switch name {
-	case apppackage.FieldBinaryName:
-		m.ClearBinaryName()
+	case appinfo.FieldSourceURL:
+		m.ClearSourceURL()
 		return nil
-	case apppackage.FieldBinarySizeBytes:
-		m.ClearBinarySizeBytes()
+	case appinfo.FieldShortDescription:
+		m.ClearShortDescription()
 		return nil
-	case apppackage.FieldBinaryPublicURL:
-		m.ClearBinaryPublicURL()
+	case appinfo.FieldDescription:
+		m.ClearDescription()
 		return nil
-	case apppackage.FieldBinarySha256:
-		m.ClearBinarySha256()
+	case appinfo.FieldIconImageURL:
+		m.ClearIconImageURL()
+		return nil
+	case appinfo.FieldBackgroundImageURL:
+		m.ClearBackgroundImageURL()
+		return nil
+	case appinfo.FieldCoverImageURL:
+		m.ClearCoverImageURL()
+		return nil
+	case appinfo.FieldReleaseDate:
+		m.ClearReleaseDate()
+		return nil
+	case appinfo.FieldDeveloper:
+		m.ClearDeveloper()
+		return nil
+	case appinfo.FieldPublisher:
+		m.ClearPublisher()
+		return nil
+	case appinfo.FieldVersion:
+		m.ClearVersion()
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackage nullable field %s", name)
+	return fmt.Errorf("unknown AppInfo nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *AppPackageMutation) ResetField(name string) error {
+func (m *AppInfoMutation) ResetField(name string) error {
 	switch name {
-	case apppackage.FieldSource:
+	case appinfo.FieldInternal:
+		m.ResetInternal()
+		return nil
+	case appinfo.FieldSource:
 		m.ResetSource()
 		return nil
-	case apppackage.FieldSourceID:
-		m.ResetSourceID()
+	case appinfo.FieldSourceAppID:
+		m.ResetSourceAppID()
 		return nil
-	case apppackage.FieldName:
+	case appinfo.FieldSourceURL:
+		m.ResetSourceURL()
+		return nil
+	case appinfo.FieldName:
 		m.ResetName()
 		return nil
-	case apppackage.FieldDescription:
+	case appinfo.FieldType:
+		m.ResetType()
+		return nil
+	case appinfo.FieldShortDescription:
+		m.ResetShortDescription()
+		return nil
+	case appinfo.FieldDescription:
 		m.ResetDescription()
 		return nil
-	case apppackage.FieldPublic:
-		m.ResetPublic()
+	case appinfo.FieldIconImageURL:
+		m.ResetIconImageURL()
 		return nil
-	case apppackage.FieldBinaryName:
-		m.ResetBinaryName()
+	case appinfo.FieldBackgroundImageURL:
+		m.ResetBackgroundImageURL()
 		return nil
-	case apppackage.FieldBinarySizeBytes:
-		m.ResetBinarySizeBytes()
+	case appinfo.FieldCoverImageURL:
+		m.ResetCoverImageURL()
 		return nil
-	case apppackage.FieldBinaryPublicURL:
-		m.ResetBinaryPublicURL()
+	case appinfo.FieldReleaseDate:
+		m.ResetReleaseDate()
 		return nil
-	case apppackage.FieldBinarySha256:
-		m.ResetBinarySha256()
+	case appinfo.FieldDeveloper:
+		m.ResetDeveloper()
 		return nil
-	case apppackage.FieldGroupID:
-		m.ResetGroupID()
+	case appinfo.FieldPublisher:
+		m.ResetPublisher()
 		return nil
-	case apppackage.FieldUpdatedAt:
+	case appinfo.FieldVersion:
+		m.ResetVersion()
+		return nil
+	case appinfo.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case apppackage.FieldCreatedAt:
+	case appinfo.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackage field %s", name)
+	return fmt.Errorf("unknown AppInfo field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AppPackageMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.owner != nil {
-		edges = append(edges, apppackage.EdgeOwner)
+func (m *AppInfoMutation) AddedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.purchased_by_account != nil {
+		edges = append(edges, appinfo.EdgePurchasedByAccount)
+	}
+	if m.purchased_by_user != nil {
+		edges = append(edges, appinfo.EdgePurchasedByUser)
 	}
 	if m.app != nil {
-		edges = append(edges, apppackage.EdgeApp)
+		edges = append(edges, appinfo.EdgeApp)
+	}
+	if m.app_binary != nil {
+		edges = append(edges, appinfo.EdgeAppBinary)
+	}
+	if m.bind_internal != nil {
+		edges = append(edges, appinfo.EdgeBindInternal)
+	}
+	if m.bind_external != nil {
+		edges = append(edges, appinfo.EdgeBindExternal)
 	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *AppPackageMutation) AddedIDs(name string) []ent.Value {
+func (m *AppInfoMutation) AddedIDs(name string) []ent.Value {
 	switch name {
-	case apppackage.EdgeOwner:
-		if id := m.owner; id != nil {
+	case appinfo.EdgePurchasedByAccount:
+		ids := make([]ent.Value, 0, len(m.purchased_by_account))
+		for id := range m.purchased_by_account {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgePurchasedByUser:
+		ids := make([]ent.Value, 0, len(m.purchased_by_user))
+		for id := range m.purchased_by_user {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.app))
+		for id := range m.app {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeAppBinary:
+		ids := make([]ent.Value, 0, len(m.app_binary))
+		for id := range m.app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeBindInternal:
+		if id := m.bind_internal; id != nil {
 			return []ent.Value{*id}
 		}
-	case apppackage.EdgeApp:
-		if id := m.app; id != nil {
-			return []ent.Value{*id}
+	case appinfo.EdgeBindExternal:
+		ids := make([]ent.Value, 0, len(m.bind_external))
+		for id := range m.bind_external {
+			ids = append(ids, id)
 		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AppPackageMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+func (m *AppInfoMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.removedpurchased_by_account != nil {
+		edges = append(edges, appinfo.EdgePurchasedByAccount)
+	}
+	if m.removedpurchased_by_user != nil {
+		edges = append(edges, appinfo.EdgePurchasedByUser)
+	}
+	if m.removedapp != nil {
+		edges = append(edges, appinfo.EdgeApp)
+	}
+	if m.removedapp_binary != nil {
+		edges = append(edges, appinfo.EdgeAppBinary)
+	}
+	if m.removedbind_external != nil {
+		edges = append(edges, appinfo.EdgeBindExternal)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *AppPackageMutation) RemovedIDs(name string) []ent.Value {
+func (m *AppInfoMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case appinfo.EdgePurchasedByAccount:
+		ids := make([]ent.Value, 0, len(m.removedpurchased_by_account))
+		for id := range m.removedpurchased_by_account {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgePurchasedByUser:
+		ids := make([]ent.Value, 0, len(m.removedpurchased_by_user))
+		for id := range m.removedpurchased_by_user {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.removedapp))
+		for id := range m.removedapp {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeAppBinary:
+		ids := make([]ent.Value, 0, len(m.removedapp_binary))
+		for id := range m.removedapp_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	case appinfo.EdgeBindExternal:
+		ids := make([]ent.Value, 0, len(m.removedbind_external))
+		for id := range m.removedbind_external {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AppPackageMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
-	if m.clearedowner {
-		edges = append(edges, apppackage.EdgeOwner)
+func (m *AppInfoMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 6)
+	if m.clearedpurchased_by_account {
+		edges = append(edges, appinfo.EdgePurchasedByAccount)
+	}
+	if m.clearedpurchased_by_user {
+		edges = append(edges, appinfo.EdgePurchasedByUser)
 	}
 	if m.clearedapp {
-		edges = append(edges, apppackage.EdgeApp)
+		edges = append(edges, appinfo.EdgeApp)
+	}
+	if m.clearedapp_binary {
+		edges = append(edges, appinfo.EdgeAppBinary)
+	}
+	if m.clearedbind_internal {
+		edges = append(edges, appinfo.EdgeBindInternal)
+	}
+	if m.clearedbind_external {
+		edges = append(edges, appinfo.EdgeBindExternal)
 	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *AppPackageMutation) EdgeCleared(name string) bool {
+func (m *AppInfoMutation) EdgeCleared(name string) bool {
 	switch name {
-	case apppackage.EdgeOwner:
-		return m.clearedowner
-	case apppackage.EdgeApp:
+	case appinfo.EdgePurchasedByAccount:
+		return m.clearedpurchased_by_account
+	case appinfo.EdgePurchasedByUser:
+		return m.clearedpurchased_by_user
+	case appinfo.EdgeApp:
 		return m.clearedapp
+	case appinfo.EdgeAppBinary:
+		return m.clearedapp_binary
+	case appinfo.EdgeBindInternal:
+		return m.clearedbind_internal
+	case appinfo.EdgeBindExternal:
+		return m.clearedbind_external
 	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *AppPackageMutation) ClearEdge(name string) error {
+func (m *AppInfoMutation) ClearEdge(name string) error {
 	switch name {
-	case apppackage.EdgeOwner:
-		m.ClearOwner()
-		return nil
-	case apppackage.EdgeApp:
-		m.ClearApp()
+	case appinfo.EdgeBindInternal:
+		m.ClearBindInternal()
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackage unique edge %s", name)
+	return fmt.Errorf("unknown AppInfo unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *AppPackageMutation) ResetEdge(name string) error {
+func (m *AppInfoMutation) ResetEdge(name string) error {
 	switch name {
-	case apppackage.EdgeOwner:
-		m.ResetOwner()
+	case appinfo.EdgePurchasedByAccount:
+		m.ResetPurchasedByAccount()
 		return nil
-	case apppackage.EdgeApp:
+	case appinfo.EdgePurchasedByUser:
+		m.ResetPurchasedByUser()
+		return nil
+	case appinfo.EdgeApp:
 		m.ResetApp()
 		return nil
+	case appinfo.EdgeAppBinary:
+		m.ResetAppBinary()
+		return nil
+	case appinfo.EdgeBindInternal:
+		m.ResetBindInternal()
+		return nil
+	case appinfo.EdgeBindExternal:
+		m.ResetBindExternal()
+		return nil
 	}
-	return fmt.Errorf("unknown AppPackage edge %s", name)
+	return fmt.Errorf("unknown AppInfo edge %s", name)
 }
 
-// AppPackageRunTimeMutation represents an operation that mutates the AppPackageRunTime nodes in the graph.
-type AppPackageRunTimeMutation struct {
+// AppInstMutation represents an operation that mutates the AppInst nodes in the graph.
+type AppInstMutation struct {
 	config
-	op                Op
-	typ               string
-	id                *int
-	user_id           *model.InternalID
-	adduser_id        *model.InternalID
-	app_package_id    *model.InternalID
-	addapp_package_id *model.InternalID
-	start_time        *time.Time
-	run_duration      *time.Duration
-	addrun_duration   *time.Duration
-	updated_at        *time.Time
-	created_at        *time.Time
-	clearedFields     map[string]struct{}
-	done              bool
-	oldValue          func(context.Context) (*AppPackageRunTime, error)
-	predicates        []predicate.AppPackageRunTime
+	op            Op
+	typ           string
+	id            *model.InternalID
+	device_id     *model.InternalID
+	adddevice_id  *model.InternalID
+	app_id        *model.InternalID
+	addapp_id     *model.InternalID
+	updated_at    *time.Time
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	owner         *model.InternalID
+	clearedowner  bool
+	done          bool
+	oldValue      func(context.Context) (*AppInst, error)
+	predicates    []predicate.AppInst
 }
 
-var _ ent.Mutation = (*AppPackageRunTimeMutation)(nil)
+var _ ent.Mutation = (*AppInstMutation)(nil)
 
-// apppackageruntimeOption allows management of the mutation configuration using functional options.
-type apppackageruntimeOption func(*AppPackageRunTimeMutation)
+// appinstOption allows management of the mutation configuration using functional options.
+type appinstOption func(*AppInstMutation)
 
-// newAppPackageRunTimeMutation creates new mutation for the AppPackageRunTime entity.
-func newAppPackageRunTimeMutation(c config, op Op, opts ...apppackageruntimeOption) *AppPackageRunTimeMutation {
-	m := &AppPackageRunTimeMutation{
+// newAppInstMutation creates new mutation for the AppInst entity.
+func newAppInstMutation(c config, op Op, opts ...appinstOption) *AppInstMutation {
+	m := &AppInstMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeAppPackageRunTime,
+		typ:           TypeAppInst,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -3936,20 +4247,20 @@ func newAppPackageRunTimeMutation(c config, op Op, opts ...apppackageruntimeOpti
 	return m
 }
 
-// withAppPackageRunTimeID sets the ID field of the mutation.
-func withAppPackageRunTimeID(id int) apppackageruntimeOption {
-	return func(m *AppPackageRunTimeMutation) {
+// withAppInstID sets the ID field of the mutation.
+func withAppInstID(id model.InternalID) appinstOption {
+	return func(m *AppInstMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *AppPackageRunTime
+			value *AppInst
 		)
-		m.oldValue = func(ctx context.Context) (*AppPackageRunTime, error) {
+		m.oldValue = func(ctx context.Context) (*AppInst, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().AppPackageRunTime.Get(ctx, id)
+					value, err = m.Client().AppInst.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -3958,10 +4269,10 @@ func withAppPackageRunTimeID(id int) apppackageruntimeOption {
 	}
 }
 
-// withAppPackageRunTime sets the old AppPackageRunTime of the mutation.
-func withAppPackageRunTime(node *AppPackageRunTime) apppackageruntimeOption {
-	return func(m *AppPackageRunTimeMutation) {
-		m.oldValue = func(context.Context) (*AppPackageRunTime, error) {
+// withAppInst sets the old AppInst of the mutation.
+func withAppInst(node *AppInst) appinstOption {
+	return func(m *AppInstMutation) {
+		m.oldValue = func(context.Context) (*AppInst, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -3970,7 +4281,7 @@ func withAppPackageRunTime(node *AppPackageRunTime) apppackageruntimeOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AppPackageRunTimeMutation) Client() *Client {
+func (m AppInstMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -3978,7 +4289,7 @@ func (m AppPackageRunTimeMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m AppPackageRunTimeMutation) Tx() (*Tx, error) {
+func (m AppInstMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -3987,9 +4298,15 @@ func (m AppPackageRunTimeMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppInst entities.
+func (m *AppInstMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppPackageRunTimeMutation) ID() (id int, exists bool) {
+func (m *AppInstMutation) ID() (id model.InternalID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -4000,7 +4317,632 @@ func (m *AppPackageRunTimeMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppPackageRunTimeMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppInstMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppInst.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetDeviceID sets the "device_id" field.
+func (m *AppInstMutation) SetDeviceID(mi model.InternalID) {
+	m.device_id = &mi
+	m.adddevice_id = nil
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *AppInstMutation) DeviceID() (r model.InternalID, exists bool) {
+	v := m.device_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the AppInst entity.
+// If the AppInst object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInstMutation) OldDeviceID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (m *AppInstMutation) AddDeviceID(mi model.InternalID) {
+	if m.adddevice_id != nil {
+		*m.adddevice_id += mi
+	} else {
+		m.adddevice_id = &mi
+	}
+}
+
+// AddedDeviceID returns the value that was added to the "device_id" field in this mutation.
+func (m *AppInstMutation) AddedDeviceID() (r model.InternalID, exists bool) {
+	v := m.adddevice_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *AppInstMutation) ResetDeviceID() {
+	m.device_id = nil
+	m.adddevice_id = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *AppInstMutation) SetAppID(mi model.InternalID) {
+	m.app_id = &mi
+	m.addapp_id = nil
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppInstMutation) AppID() (r model.InternalID, exists bool) {
+	v := m.app_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the AppInst entity.
+// If the AppInst object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInstMutation) OldAppID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// AddAppID adds mi to the "app_id" field.
+func (m *AppInstMutation) AddAppID(mi model.InternalID) {
+	if m.addapp_id != nil {
+		*m.addapp_id += mi
+	} else {
+		m.addapp_id = &mi
+	}
+}
+
+// AddedAppID returns the value that was added to the "app_id" field in this mutation.
+func (m *AppInstMutation) AddedAppID() (r model.InternalID, exists bool) {
+	v := m.addapp_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppInstMutation) ResetAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *AppInstMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *AppInstMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the AppInst entity.
+// If the AppInst object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInstMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *AppInstMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *AppInstMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *AppInstMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the AppInst entity.
+// If the AppInst object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppInstMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *AppInstMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *AppInstMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *AppInstMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *AppInstMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *AppInstMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *AppInstMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *AppInstMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// Where appends a list predicates to the AppInstMutation builder.
+func (m *AppInstMutation) Where(ps ...predicate.AppInst) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AppInstMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AppInstMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppInst, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AppInstMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AppInstMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AppInst).
+func (m *AppInstMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppInstMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.device_id != nil {
+		fields = append(fields, appinst.FieldDeviceID)
+	}
+	if m.app_id != nil {
+		fields = append(fields, appinst.FieldAppID)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, appinst.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, appinst.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppInstMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case appinst.FieldDeviceID:
+		return m.DeviceID()
+	case appinst.FieldAppID:
+		return m.AppID()
+	case appinst.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case appinst.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppInstMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case appinst.FieldDeviceID:
+		return m.OldDeviceID(ctx)
+	case appinst.FieldAppID:
+		return m.OldAppID(ctx)
+	case appinst.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case appinst.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppInst field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppInstMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case appinst.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
+		return nil
+	case appinst.FieldAppID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	case appinst.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case appinst.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppInst field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppInstMutation) AddedFields() []string {
+	var fields []string
+	if m.adddevice_id != nil {
+		fields = append(fields, appinst.FieldDeviceID)
+	}
+	if m.addapp_id != nil {
+		fields = append(fields, appinst.FieldAppID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppInstMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case appinst.FieldDeviceID:
+		return m.AddedDeviceID()
+	case appinst.FieldAppID:
+		return m.AddedAppID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppInstMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case appinst.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeviceID(v)
+		return nil
+	case appinst.FieldAppID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppInst numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppInstMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppInstMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppInstMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AppInst nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppInstMutation) ResetField(name string) error {
+	switch name {
+	case appinst.FieldDeviceID:
+		m.ResetDeviceID()
+		return nil
+	case appinst.FieldAppID:
+		m.ResetAppID()
+		return nil
+	case appinst.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case appinst.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown AppInst field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppInstMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.owner != nil {
+		edges = append(edges, appinst.EdgeOwner)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppInstMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appinst.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppInstMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppInstMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppInstMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedowner {
+		edges = append(edges, appinst.EdgeOwner)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppInstMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appinst.EdgeOwner:
+		return m.clearedowner
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppInstMutation) ClearEdge(name string) error {
+	switch name {
+	case appinst.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown AppInst unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppInstMutation) ResetEdge(name string) error {
+	switch name {
+	case appinst.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown AppInst edge %s", name)
+}
+
+// AppInstRunTimeMutation represents an operation that mutates the AppInstRunTime nodes in the graph.
+type AppInstRunTimeMutation struct {
+	config
+	op              Op
+	typ             string
+	id              *int
+	user_id         *model.InternalID
+	adduser_id      *model.InternalID
+	app_id          *model.InternalID
+	addapp_id       *model.InternalID
+	start_time      *time.Time
+	run_duration    *time.Duration
+	addrun_duration *time.Duration
+	updated_at      *time.Time
+	created_at      *time.Time
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*AppInstRunTime, error)
+	predicates      []predicate.AppInstRunTime
+}
+
+var _ ent.Mutation = (*AppInstRunTimeMutation)(nil)
+
+// appinstruntimeOption allows management of the mutation configuration using functional options.
+type appinstruntimeOption func(*AppInstRunTimeMutation)
+
+// newAppInstRunTimeMutation creates new mutation for the AppInstRunTime entity.
+func newAppInstRunTimeMutation(c config, op Op, opts ...appinstruntimeOption) *AppInstRunTimeMutation {
+	m := &AppInstRunTimeMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppInstRunTime,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppInstRunTimeID sets the ID field of the mutation.
+func withAppInstRunTimeID(id int) appinstruntimeOption {
+	return func(m *AppInstRunTimeMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppInstRunTime
+		)
+		m.oldValue = func(ctx context.Context) (*AppInstRunTime, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppInstRunTime.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppInstRunTime sets the old AppInstRunTime of the mutation.
+func withAppInstRunTime(node *AppInstRunTime) appinstruntimeOption {
+	return func(m *AppInstRunTimeMutation) {
+		m.oldValue = func(context.Context) (*AppInstRunTime, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppInstRunTimeMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppInstRunTimeMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppInstRunTimeMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppInstRunTimeMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -4009,20 +4951,20 @@ func (m *AppPackageRunTimeMutation) IDs(ctx context.Context) ([]int, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().AppPackageRunTime.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().AppInstRunTime.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetUserID sets the "user_id" field.
-func (m *AppPackageRunTimeMutation) SetUserID(mi model.InternalID) {
+func (m *AppInstRunTimeMutation) SetUserID(mi model.InternalID) {
 	m.user_id = &mi
 	m.adduser_id = nil
 }
 
 // UserID returns the value of the "user_id" field in the mutation.
-func (m *AppPackageRunTimeMutation) UserID() (r model.InternalID, exists bool) {
+func (m *AppInstRunTimeMutation) UserID() (r model.InternalID, exists bool) {
 	v := m.user_id
 	if v == nil {
 		return
@@ -4030,10 +4972,10 @@ func (m *AppPackageRunTimeMutation) UserID() (r model.InternalID, exists bool) {
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldUserID returns the old "user_id" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppInstRunTimeMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
 	}
@@ -4048,7 +4990,7 @@ func (m *AppPackageRunTimeMutation) OldUserID(ctx context.Context) (v model.Inte
 }
 
 // AddUserID adds mi to the "user_id" field.
-func (m *AppPackageRunTimeMutation) AddUserID(mi model.InternalID) {
+func (m *AppInstRunTimeMutation) AddUserID(mi model.InternalID) {
 	if m.adduser_id != nil {
 		*m.adduser_id += mi
 	} else {
@@ -4057,7 +4999,7 @@ func (m *AppPackageRunTimeMutation) AddUserID(mi model.InternalID) {
 }
 
 // AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *AppPackageRunTimeMutation) AddedUserID() (r model.InternalID, exists bool) {
+func (m *AppInstRunTimeMutation) AddedUserID() (r model.InternalID, exists bool) {
 	v := m.adduser_id
 	if v == nil {
 		return
@@ -4066,74 +5008,74 @@ func (m *AppPackageRunTimeMutation) AddedUserID() (r model.InternalID, exists bo
 }
 
 // ResetUserID resets all changes to the "user_id" field.
-func (m *AppPackageRunTimeMutation) ResetUserID() {
+func (m *AppInstRunTimeMutation) ResetUserID() {
 	m.user_id = nil
 	m.adduser_id = nil
 }
 
-// SetAppPackageID sets the "app_package_id" field.
-func (m *AppPackageRunTimeMutation) SetAppPackageID(mi model.InternalID) {
-	m.app_package_id = &mi
-	m.addapp_package_id = nil
+// SetAppID sets the "app_id" field.
+func (m *AppInstRunTimeMutation) SetAppID(mi model.InternalID) {
+	m.app_id = &mi
+	m.addapp_id = nil
 }
 
-// AppPackageID returns the value of the "app_package_id" field in the mutation.
-func (m *AppPackageRunTimeMutation) AppPackageID() (r model.InternalID, exists bool) {
-	v := m.app_package_id
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppInstRunTimeMutation) AppID() (r model.InternalID, exists bool) {
+	v := m.app_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAppPackageID returns the old "app_package_id" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldAppID returns the old "app_id" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldAppPackageID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppInstRunTimeMutation) OldAppID(ctx context.Context) (v model.InternalID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppPackageID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppPackageID requires an ID field in the mutation")
+		return v, errors.New("OldAppID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppPackageID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
 	}
-	return oldValue.AppPackageID, nil
+	return oldValue.AppID, nil
 }
 
-// AddAppPackageID adds mi to the "app_package_id" field.
-func (m *AppPackageRunTimeMutation) AddAppPackageID(mi model.InternalID) {
-	if m.addapp_package_id != nil {
-		*m.addapp_package_id += mi
+// AddAppID adds mi to the "app_id" field.
+func (m *AppInstRunTimeMutation) AddAppID(mi model.InternalID) {
+	if m.addapp_id != nil {
+		*m.addapp_id += mi
 	} else {
-		m.addapp_package_id = &mi
+		m.addapp_id = &mi
 	}
 }
 
-// AddedAppPackageID returns the value that was added to the "app_package_id" field in this mutation.
-func (m *AppPackageRunTimeMutation) AddedAppPackageID() (r model.InternalID, exists bool) {
-	v := m.addapp_package_id
+// AddedAppID returns the value that was added to the "app_id" field in this mutation.
+func (m *AppInstRunTimeMutation) AddedAppID() (r model.InternalID, exists bool) {
+	v := m.addapp_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAppPackageID resets all changes to the "app_package_id" field.
-func (m *AppPackageRunTimeMutation) ResetAppPackageID() {
-	m.app_package_id = nil
-	m.addapp_package_id = nil
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppInstRunTimeMutation) ResetAppID() {
+	m.app_id = nil
+	m.addapp_id = nil
 }
 
 // SetStartTime sets the "start_time" field.
-func (m *AppPackageRunTimeMutation) SetStartTime(t time.Time) {
+func (m *AppInstRunTimeMutation) SetStartTime(t time.Time) {
 	m.start_time = &t
 }
 
 // StartTime returns the value of the "start_time" field in the mutation.
-func (m *AppPackageRunTimeMutation) StartTime() (r time.Time, exists bool) {
+func (m *AppInstRunTimeMutation) StartTime() (r time.Time, exists bool) {
 	v := m.start_time
 	if v == nil {
 		return
@@ -4141,10 +5083,10 @@ func (m *AppPackageRunTimeMutation) StartTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldStartTime returns the old "start_time" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldStartTime returns the old "start_time" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
+func (m *AppInstRunTimeMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
 	}
@@ -4159,18 +5101,18 @@ func (m *AppPackageRunTimeMutation) OldStartTime(ctx context.Context) (v time.Ti
 }
 
 // ResetStartTime resets all changes to the "start_time" field.
-func (m *AppPackageRunTimeMutation) ResetStartTime() {
+func (m *AppInstRunTimeMutation) ResetStartTime() {
 	m.start_time = nil
 }
 
 // SetRunDuration sets the "run_duration" field.
-func (m *AppPackageRunTimeMutation) SetRunDuration(t time.Duration) {
+func (m *AppInstRunTimeMutation) SetRunDuration(t time.Duration) {
 	m.run_duration = &t
 	m.addrun_duration = nil
 }
 
 // RunDuration returns the value of the "run_duration" field in the mutation.
-func (m *AppPackageRunTimeMutation) RunDuration() (r time.Duration, exists bool) {
+func (m *AppInstRunTimeMutation) RunDuration() (r time.Duration, exists bool) {
 	v := m.run_duration
 	if v == nil {
 		return
@@ -4178,10 +5120,10 @@ func (m *AppPackageRunTimeMutation) RunDuration() (r time.Duration, exists bool)
 	return *v, true
 }
 
-// OldRunDuration returns the old "run_duration" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldRunDuration returns the old "run_duration" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldRunDuration(ctx context.Context) (v time.Duration, err error) {
+func (m *AppInstRunTimeMutation) OldRunDuration(ctx context.Context) (v time.Duration, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRunDuration is only allowed on UpdateOne operations")
 	}
@@ -4196,7 +5138,7 @@ func (m *AppPackageRunTimeMutation) OldRunDuration(ctx context.Context) (v time.
 }
 
 // AddRunDuration adds t to the "run_duration" field.
-func (m *AppPackageRunTimeMutation) AddRunDuration(t time.Duration) {
+func (m *AppInstRunTimeMutation) AddRunDuration(t time.Duration) {
 	if m.addrun_duration != nil {
 		*m.addrun_duration += t
 	} else {
@@ -4205,7 +5147,7 @@ func (m *AppPackageRunTimeMutation) AddRunDuration(t time.Duration) {
 }
 
 // AddedRunDuration returns the value that was added to the "run_duration" field in this mutation.
-func (m *AppPackageRunTimeMutation) AddedRunDuration() (r time.Duration, exists bool) {
+func (m *AppInstRunTimeMutation) AddedRunDuration() (r time.Duration, exists bool) {
 	v := m.addrun_duration
 	if v == nil {
 		return
@@ -4214,18 +5156,18 @@ func (m *AppPackageRunTimeMutation) AddedRunDuration() (r time.Duration, exists 
 }
 
 // ResetRunDuration resets all changes to the "run_duration" field.
-func (m *AppPackageRunTimeMutation) ResetRunDuration() {
+func (m *AppInstRunTimeMutation) ResetRunDuration() {
 	m.run_duration = nil
 	m.addrun_duration = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (m *AppPackageRunTimeMutation) SetUpdatedAt(t time.Time) {
+func (m *AppInstRunTimeMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
 }
 
 // UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *AppPackageRunTimeMutation) UpdatedAt() (r time.Time, exists bool) {
+func (m *AppInstRunTimeMutation) UpdatedAt() (r time.Time, exists bool) {
 	v := m.updated_at
 	if v == nil {
 		return
@@ -4233,10 +5175,10 @@ func (m *AppPackageRunTimeMutation) UpdatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdatedAt returns the old "updated_at" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AppInstRunTimeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
 	}
@@ -4251,17 +5193,17 @@ func (m *AppPackageRunTimeMutation) OldUpdatedAt(ctx context.Context) (v time.Ti
 }
 
 // ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *AppPackageRunTimeMutation) ResetUpdatedAt() {
+func (m *AppInstRunTimeMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (m *AppPackageRunTimeMutation) SetCreatedAt(t time.Time) {
+func (m *AppInstRunTimeMutation) SetCreatedAt(t time.Time) {
 	m.created_at = &t
 }
 
 // CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *AppPackageRunTimeMutation) CreatedAt() (r time.Time, exists bool) {
+func (m *AppInstRunTimeMutation) CreatedAt() (r time.Time, exists bool) {
 	v := m.created_at
 	if v == nil {
 		return
@@ -4269,10 +5211,10 @@ func (m *AppPackageRunTimeMutation) CreatedAt() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the AppPackageRunTime entity.
-// If the AppPackageRunTime object wasn't provided to the builder, the object is fetched from the database.
+// OldCreatedAt returns the old "created_at" field's value of the AppInstRunTime entity.
+// If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppPackageRunTimeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *AppInstRunTimeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
 	}
@@ -4287,19 +5229,19 @@ func (m *AppPackageRunTimeMutation) OldCreatedAt(ctx context.Context) (v time.Ti
 }
 
 // ResetCreatedAt resets all changes to the "created_at" field.
-func (m *AppPackageRunTimeMutation) ResetCreatedAt() {
+func (m *AppInstRunTimeMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// Where appends a list predicates to the AppPackageRunTimeMutation builder.
-func (m *AppPackageRunTimeMutation) Where(ps ...predicate.AppPackageRunTime) {
+// Where appends a list predicates to the AppInstRunTimeMutation builder.
+func (m *AppInstRunTimeMutation) Where(ps ...predicate.AppInstRunTime) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the AppPackageRunTimeMutation builder. Using this method,
+// WhereP appends storage-level predicates to the AppInstRunTimeMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AppPackageRunTimeMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.AppPackageRunTime, len(ps))
+func (m *AppInstRunTimeMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppInstRunTime, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -4307,42 +5249,42 @@ func (m *AppPackageRunTimeMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *AppPackageRunTimeMutation) Op() Op {
+func (m *AppInstRunTimeMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *AppPackageRunTimeMutation) SetOp(op Op) {
+func (m *AppInstRunTimeMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (AppPackageRunTime).
-func (m *AppPackageRunTimeMutation) Type() string {
+// Type returns the node type of this mutation (AppInstRunTime).
+func (m *AppInstRunTimeMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *AppPackageRunTimeMutation) Fields() []string {
+func (m *AppInstRunTimeMutation) Fields() []string {
 	fields := make([]string, 0, 6)
 	if m.user_id != nil {
-		fields = append(fields, apppackageruntime.FieldUserID)
+		fields = append(fields, appinstruntime.FieldUserID)
 	}
-	if m.app_package_id != nil {
-		fields = append(fields, apppackageruntime.FieldAppPackageID)
+	if m.app_id != nil {
+		fields = append(fields, appinstruntime.FieldAppID)
 	}
 	if m.start_time != nil {
-		fields = append(fields, apppackageruntime.FieldStartTime)
+		fields = append(fields, appinstruntime.FieldStartTime)
 	}
 	if m.run_duration != nil {
-		fields = append(fields, apppackageruntime.FieldRunDuration)
+		fields = append(fields, appinstruntime.FieldRunDuration)
 	}
 	if m.updated_at != nil {
-		fields = append(fields, apppackageruntime.FieldUpdatedAt)
+		fields = append(fields, appinstruntime.FieldUpdatedAt)
 	}
 	if m.created_at != nil {
-		fields = append(fields, apppackageruntime.FieldCreatedAt)
+		fields = append(fields, appinstruntime.FieldCreatedAt)
 	}
 	return fields
 }
@@ -4350,19 +5292,19 @@ func (m *AppPackageRunTimeMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *AppPackageRunTimeMutation) Field(name string) (ent.Value, bool) {
+func (m *AppInstRunTimeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		return m.UserID()
-	case apppackageruntime.FieldAppPackageID:
-		return m.AppPackageID()
-	case apppackageruntime.FieldStartTime:
+	case appinstruntime.FieldAppID:
+		return m.AppID()
+	case appinstruntime.FieldStartTime:
 		return m.StartTime()
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldRunDuration:
 		return m.RunDuration()
-	case apppackageruntime.FieldUpdatedAt:
+	case appinstruntime.FieldUpdatedAt:
 		return m.UpdatedAt()
-	case apppackageruntime.FieldCreatedAt:
+	case appinstruntime.FieldCreatedAt:
 		return m.CreatedAt()
 	}
 	return nil, false
@@ -4371,65 +5313,65 @@ func (m *AppPackageRunTimeMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *AppPackageRunTimeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *AppInstRunTimeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		return m.OldUserID(ctx)
-	case apppackageruntime.FieldAppPackageID:
-		return m.OldAppPackageID(ctx)
-	case apppackageruntime.FieldStartTime:
+	case appinstruntime.FieldAppID:
+		return m.OldAppID(ctx)
+	case appinstruntime.FieldStartTime:
 		return m.OldStartTime(ctx)
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldRunDuration:
 		return m.OldRunDuration(ctx)
-	case apppackageruntime.FieldUpdatedAt:
+	case appinstruntime.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
-	case apppackageruntime.FieldCreatedAt:
+	case appinstruntime.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
-	return nil, fmt.Errorf("unknown AppPackageRunTime field %s", name)
+	return nil, fmt.Errorf("unknown AppInstRunTime field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AppPackageRunTimeMutation) SetField(name string, value ent.Value) error {
+func (m *AppInstRunTimeMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserID(v)
 		return nil
-	case apppackageruntime.FieldAppPackageID:
+	case appinstruntime.FieldAppID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAppPackageID(v)
+		m.SetAppID(v)
 		return nil
-	case apppackageruntime.FieldStartTime:
+	case appinstruntime.FieldStartTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStartTime(v)
 		return nil
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldRunDuration:
 		v, ok := value.(time.Duration)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRunDuration(v)
 		return nil
-	case apppackageruntime.FieldUpdatedAt:
+	case appinstruntime.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdatedAt(v)
 		return nil
-	case apppackageruntime.FieldCreatedAt:
+	case appinstruntime.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -4437,21 +5379,21 @@ func (m *AppPackageRunTimeMutation) SetField(name string, value ent.Value) error
 		m.SetCreatedAt(v)
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackageRunTime field %s", name)
+	return fmt.Errorf("unknown AppInstRunTime field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *AppPackageRunTimeMutation) AddedFields() []string {
+func (m *AppInstRunTimeMutation) AddedFields() []string {
 	var fields []string
 	if m.adduser_id != nil {
-		fields = append(fields, apppackageruntime.FieldUserID)
+		fields = append(fields, appinstruntime.FieldUserID)
 	}
-	if m.addapp_package_id != nil {
-		fields = append(fields, apppackageruntime.FieldAppPackageID)
+	if m.addapp_id != nil {
+		fields = append(fields, appinstruntime.FieldAppID)
 	}
 	if m.addrun_duration != nil {
-		fields = append(fields, apppackageruntime.FieldRunDuration)
+		fields = append(fields, appinstruntime.FieldRunDuration)
 	}
 	return fields
 }
@@ -4459,13 +5401,13 @@ func (m *AppPackageRunTimeMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *AppPackageRunTimeMutation) AddedField(name string) (ent.Value, bool) {
+func (m *AppInstRunTimeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		return m.AddedUserID()
-	case apppackageruntime.FieldAppPackageID:
-		return m.AddedAppPackageID()
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldAppID:
+		return m.AddedAppID()
+	case appinstruntime.FieldRunDuration:
 		return m.AddedRunDuration()
 	}
 	return nil, false
@@ -4474,23 +5416,23 @@ func (m *AppPackageRunTimeMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *AppPackageRunTimeMutation) AddField(name string, value ent.Value) error {
+func (m *AppInstRunTimeMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUserID(v)
 		return nil
-	case apppackageruntime.FieldAppPackageID:
+	case appinstruntime.FieldAppID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAppPackageID(v)
+		m.AddAppID(v)
 		return nil
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldRunDuration:
 		v, ok := value.(time.Duration)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -4498,100 +5440,100 @@ func (m *AppPackageRunTimeMutation) AddField(name string, value ent.Value) error
 		m.AddRunDuration(v)
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackageRunTime numeric field %s", name)
+	return fmt.Errorf("unknown AppInstRunTime numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *AppPackageRunTimeMutation) ClearedFields() []string {
+func (m *AppInstRunTimeMutation) ClearedFields() []string {
 	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *AppPackageRunTimeMutation) FieldCleared(name string) bool {
+func (m *AppInstRunTimeMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *AppPackageRunTimeMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown AppPackageRunTime nullable field %s", name)
+func (m *AppInstRunTimeMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AppInstRunTime nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *AppPackageRunTimeMutation) ResetField(name string) error {
+func (m *AppInstRunTimeMutation) ResetField(name string) error {
 	switch name {
-	case apppackageruntime.FieldUserID:
+	case appinstruntime.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case apppackageruntime.FieldAppPackageID:
-		m.ResetAppPackageID()
+	case appinstruntime.FieldAppID:
+		m.ResetAppID()
 		return nil
-	case apppackageruntime.FieldStartTime:
+	case appinstruntime.FieldStartTime:
 		m.ResetStartTime()
 		return nil
-	case apppackageruntime.FieldRunDuration:
+	case appinstruntime.FieldRunDuration:
 		m.ResetRunDuration()
 		return nil
-	case apppackageruntime.FieldUpdatedAt:
+	case appinstruntime.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
-	case apppackageruntime.FieldCreatedAt:
+	case appinstruntime.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil
 	}
-	return fmt.Errorf("unknown AppPackageRunTime field %s", name)
+	return fmt.Errorf("unknown AppInstRunTime field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AppPackageRunTimeMutation) AddedEdges() []string {
+func (m *AppInstRunTimeMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *AppPackageRunTimeMutation) AddedIDs(name string) []ent.Value {
+func (m *AppInstRunTimeMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AppPackageRunTimeMutation) RemovedEdges() []string {
+func (m *AppInstRunTimeMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *AppPackageRunTimeMutation) RemovedIDs(name string) []ent.Value {
+func (m *AppInstRunTimeMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AppPackageRunTimeMutation) ClearedEdges() []string {
+func (m *AppInstRunTimeMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *AppPackageRunTimeMutation) EdgeCleared(name string) bool {
+func (m *AppInstRunTimeMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *AppPackageRunTimeMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown AppPackageRunTime unique edge %s", name)
+func (m *AppInstRunTimeMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown AppInstRunTime unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *AppPackageRunTimeMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown AppPackageRunTime edge %s", name)
+func (m *AppInstRunTimeMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown AppInstRunTime edge %s", name)
 }
 
 // DeviceInfoMutation represents an operation that mutates the DeviceInfo nodes in the graph.
@@ -15565,9 +16507,12 @@ type UserMutation struct {
 	purchased_app        map[model.InternalID]struct{}
 	removedpurchased_app map[model.InternalID]struct{}
 	clearedpurchased_app bool
-	app_package          map[model.InternalID]struct{}
-	removedapp_package   map[model.InternalID]struct{}
-	clearedapp_package   bool
+	app                  map[model.InternalID]struct{}
+	removedapp           map[model.InternalID]struct{}
+	clearedapp           bool
+	app_inst             map[model.InternalID]struct{}
+	removedapp_inst      map[model.InternalID]struct{}
+	clearedapp_inst      bool
 	feed_config          map[model.InternalID]struct{}
 	removedfeed_config   map[model.InternalID]struct{}
 	clearedfeed_config   bool
@@ -15970,7 +16915,7 @@ func (m *UserMutation) ResetBindAccount() {
 	m.removedbind_account = nil
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by ids.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by ids.
 func (m *UserMutation) AddPurchasedAppIDs(ids ...model.InternalID) {
 	if m.purchased_app == nil {
 		m.purchased_app = make(map[model.InternalID]struct{})
@@ -15980,17 +16925,17 @@ func (m *UserMutation) AddPurchasedAppIDs(ids ...model.InternalID) {
 	}
 }
 
-// ClearPurchasedApp clears the "purchased_app" edge to the App entity.
+// ClearPurchasedApp clears the "purchased_app" edge to the AppInfo entity.
 func (m *UserMutation) ClearPurchasedApp() {
 	m.clearedpurchased_app = true
 }
 
-// PurchasedAppCleared reports if the "purchased_app" edge to the App entity was cleared.
+// PurchasedAppCleared reports if the "purchased_app" edge to the AppInfo entity was cleared.
 func (m *UserMutation) PurchasedAppCleared() bool {
 	return m.clearedpurchased_app
 }
 
-// RemovePurchasedAppIDs removes the "purchased_app" edge to the App entity by IDs.
+// RemovePurchasedAppIDs removes the "purchased_app" edge to the AppInfo entity by IDs.
 func (m *UserMutation) RemovePurchasedAppIDs(ids ...model.InternalID) {
 	if m.removedpurchased_app == nil {
 		m.removedpurchased_app = make(map[model.InternalID]struct{})
@@ -16001,7 +16946,7 @@ func (m *UserMutation) RemovePurchasedAppIDs(ids ...model.InternalID) {
 	}
 }
 
-// RemovedPurchasedApp returns the removed IDs of the "purchased_app" edge to the App entity.
+// RemovedPurchasedApp returns the removed IDs of the "purchased_app" edge to the AppInfo entity.
 func (m *UserMutation) RemovedPurchasedAppIDs() (ids []model.InternalID) {
 	for id := range m.removedpurchased_app {
 		ids = append(ids, id)
@@ -16024,58 +16969,112 @@ func (m *UserMutation) ResetPurchasedApp() {
 	m.removedpurchased_app = nil
 }
 
-// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by ids.
-func (m *UserMutation) AddAppPackageIDs(ids ...model.InternalID) {
-	if m.app_package == nil {
-		m.app_package = make(map[model.InternalID]struct{})
+// AddAppIDs adds the "app" edge to the App entity by ids.
+func (m *UserMutation) AddAppIDs(ids ...model.InternalID) {
+	if m.app == nil {
+		m.app = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		m.app_package[ids[i]] = struct{}{}
+		m.app[ids[i]] = struct{}{}
 	}
 }
 
-// ClearAppPackage clears the "app_package" edge to the AppPackage entity.
-func (m *UserMutation) ClearAppPackage() {
-	m.clearedapp_package = true
+// ClearApp clears the "app" edge to the App entity.
+func (m *UserMutation) ClearApp() {
+	m.clearedapp = true
 }
 
-// AppPackageCleared reports if the "app_package" edge to the AppPackage entity was cleared.
-func (m *UserMutation) AppPackageCleared() bool {
-	return m.clearedapp_package
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *UserMutation) AppCleared() bool {
+	return m.clearedapp
 }
 
-// RemoveAppPackageIDs removes the "app_package" edge to the AppPackage entity by IDs.
-func (m *UserMutation) RemoveAppPackageIDs(ids ...model.InternalID) {
-	if m.removedapp_package == nil {
-		m.removedapp_package = make(map[model.InternalID]struct{})
+// RemoveAppIDs removes the "app" edge to the App entity by IDs.
+func (m *UserMutation) RemoveAppIDs(ids ...model.InternalID) {
+	if m.removedapp == nil {
+		m.removedapp = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		delete(m.app_package, ids[i])
-		m.removedapp_package[ids[i]] = struct{}{}
+		delete(m.app, ids[i])
+		m.removedapp[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedAppPackage returns the removed IDs of the "app_package" edge to the AppPackage entity.
-func (m *UserMutation) RemovedAppPackageIDs() (ids []model.InternalID) {
-	for id := range m.removedapp_package {
+// RemovedApp returns the removed IDs of the "app" edge to the App entity.
+func (m *UserMutation) RemovedAppIDs() (ids []model.InternalID) {
+	for id := range m.removedapp {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// AppPackageIDs returns the "app_package" edge IDs in the mutation.
-func (m *UserMutation) AppPackageIDs() (ids []model.InternalID) {
-	for id := range m.app_package {
+// AppIDs returns the "app" edge IDs in the mutation.
+func (m *UserMutation) AppIDs() (ids []model.InternalID) {
+	for id := range m.app {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetAppPackage resets all changes to the "app_package" edge.
-func (m *UserMutation) ResetAppPackage() {
-	m.app_package = nil
-	m.clearedapp_package = false
-	m.removedapp_package = nil
+// ResetApp resets all changes to the "app" edge.
+func (m *UserMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+	m.removedapp = nil
+}
+
+// AddAppInstIDs adds the "app_inst" edge to the AppInst entity by ids.
+func (m *UserMutation) AddAppInstIDs(ids ...model.InternalID) {
+	if m.app_inst == nil {
+		m.app_inst = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app_inst[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppInst clears the "app_inst" edge to the AppInst entity.
+func (m *UserMutation) ClearAppInst() {
+	m.clearedapp_inst = true
+}
+
+// AppInstCleared reports if the "app_inst" edge to the AppInst entity was cleared.
+func (m *UserMutation) AppInstCleared() bool {
+	return m.clearedapp_inst
+}
+
+// RemoveAppInstIDs removes the "app_inst" edge to the AppInst entity by IDs.
+func (m *UserMutation) RemoveAppInstIDs(ids ...model.InternalID) {
+	if m.removedapp_inst == nil {
+		m.removedapp_inst = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app_inst, ids[i])
+		m.removedapp_inst[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppInst returns the removed IDs of the "app_inst" edge to the AppInst entity.
+func (m *UserMutation) RemovedAppInstIDs() (ids []model.InternalID) {
+	for id := range m.removedapp_inst {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppInstIDs returns the "app_inst" edge IDs in the mutation.
+func (m *UserMutation) AppInstIDs() (ids []model.InternalID) {
+	for id := range m.app_inst {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppInst resets all changes to the "app_inst" edge.
+func (m *UserMutation) ResetAppInst() {
+	m.app_inst = nil
+	m.clearedapp_inst = false
+	m.removedapp_inst = nil
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
@@ -16713,15 +17712,18 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.purchased_app != nil {
 		edges = append(edges, user.EdgePurchasedApp)
 	}
-	if m.app_package != nil {
-		edges = append(edges, user.EdgeAppPackage)
+	if m.app != nil {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.app_inst != nil {
+		edges = append(edges, user.EdgeAppInst)
 	}
 	if m.feed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -16766,9 +17768,15 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeAppPackage:
-		ids := make([]ent.Value, 0, len(m.app_package))
-		for id := range m.app_package {
+	case user.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.app))
+		for id := range m.app {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeAppInst:
+		ids := make([]ent.Value, 0, len(m.app_inst))
+		for id := range m.app_inst {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16824,15 +17832,18 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.removedpurchased_app != nil {
 		edges = append(edges, user.EdgePurchasedApp)
 	}
-	if m.removedapp_package != nil {
-		edges = append(edges, user.EdgeAppPackage)
+	if m.removedapp != nil {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.removedapp_inst != nil {
+		edges = append(edges, user.EdgeAppInst)
 	}
 	if m.removedfeed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -16874,9 +17885,15 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case user.EdgeAppPackage:
-		ids := make([]ent.Value, 0, len(m.removedapp_package))
-		for id := range m.removedapp_package {
+	case user.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.removedapp))
+		for id := range m.removedapp {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeAppInst:
+		ids := make([]ent.Value, 0, len(m.removedapp_inst))
+		for id := range m.removedapp_inst {
 			ids = append(ids, id)
 		}
 		return ids
@@ -16928,15 +17945,18 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 11)
+	edges := make([]string, 0, 12)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
 	if m.clearedpurchased_app {
 		edges = append(edges, user.EdgePurchasedApp)
 	}
-	if m.clearedapp_package {
-		edges = append(edges, user.EdgeAppPackage)
+	if m.clearedapp {
+		edges = append(edges, user.EdgeApp)
+	}
+	if m.clearedapp_inst {
+		edges = append(edges, user.EdgeAppInst)
 	}
 	if m.clearedfeed_config {
 		edges = append(edges, user.EdgeFeedConfig)
@@ -16973,8 +17993,10 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedbind_account
 	case user.EdgePurchasedApp:
 		return m.clearedpurchased_app
-	case user.EdgeAppPackage:
-		return m.clearedapp_package
+	case user.EdgeApp:
+		return m.clearedapp
+	case user.EdgeAppInst:
+		return m.clearedapp_inst
 	case user.EdgeFeedConfig:
 		return m.clearedfeed_config
 	case user.EdgeNotifyTarget:
@@ -17016,8 +18038,11 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgePurchasedApp:
 		m.ResetPurchasedApp()
 		return nil
-	case user.EdgeAppPackage:
-		m.ResetAppPackage()
+	case user.EdgeApp:
+		m.ResetApp()
+		return nil
+	case user.EdgeAppInst:
+		m.ResetAppInst()
 		return nil
 	case user.EdgeFeedConfig:
 		m.ResetFeedConfig()

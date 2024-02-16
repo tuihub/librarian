@@ -4,8 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -62,20 +61,18 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map UpdatedAt LatestUpdateTime
 	// goverter:ignore BoundInternal
 	// goverter:ignore Tags
-	ToBizApp(*ent.App) *modelgebura.App
-	ToBizAppList([]*ent.App) []*modelgebura.App
+	ToBizAppInfo(*ent.AppInfo) *modelgebura.AppInfo
+	ToBizAppInfoList([]*ent.AppInfo) []*modelgebura.AppInfo
 
 	// goverter:matchIgnoreCase
-	// goverter:map Source | ToBizAppPackageSource
-	// goverter:map . Binary
-	// goverter:ignore AssignedAppID
-	ToBizAppPackage(*ent.AppPackage) *modelgebura.AppPackage
-	// goverter:map BinaryName Name
-	// goverter:map BinarySizeBytes SizeBytes
-	// goverter:map BinaryPublicURL PublicURL
-	// goverter:map BinarySha256 Sha256
-	ToBizAppPackageBinary(ent.AppPackage) modelgebura.AppPackageBinary
-	ToBizAppPackageList([]*ent.AppPackage) []*modelgebura.AppPackage
+	// goverter:ignore AssignedAppInfoID
+	ToBizApp(*ent.App) *modelgebura.App
+	ToBizAppList([]*ent.App) []*modelgebura.App
+	ToBizAppBinary(ent.AppBinary) modelgebura.AppBinary
+
+	// goverter:matchIgnoreCase
+	ToBizAppInst(*ent.AppInst) *modelgebura.AppInst
+	ToBizAppInstList([]*ent.AppInst) []*modelgebura.AppInst
 
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToBizFeedConfigStatus
@@ -148,25 +145,14 @@ func ToBizPorterStatus(s porterinstance.Status) modeltiphereth.PorterInstanceSta
 	}
 }
 
-func ToBizAppType(t app.Type) modelgebura.AppType {
+func ToBizAppType(t appinfo.Type) modelgebura.AppType {
 	switch t {
-	case app.TypeUnknown:
+	case appinfo.TypeUnknown:
 		return modelgebura.AppTypeUnspecified
-	case app.TypeGame:
+	case appinfo.TypeGame:
 		return modelgebura.AppTypeGame
 	default:
 		return modelgebura.AppTypeUnspecified
-	}
-}
-
-func ToBizAppPackageSource(a apppackage.Source) modelgebura.AppPackageSource {
-	switch a {
-	case apppackage.SourceManual:
-		return modelgebura.AppPackageSourceManual
-	case apppackage.SourceSentinel:
-		return modelgebura.AppPackageSourceSentinel
-	default:
-		return modelgebura.AppPackageSourceUnspecified
 	}
 }
 

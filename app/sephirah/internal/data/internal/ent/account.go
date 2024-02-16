@@ -43,7 +43,7 @@ type Account struct {
 // AccountEdges holds the relations/edges for other nodes in the graph.
 type AccountEdges struct {
 	// PurchasedApp holds the value of the purchased_app edge.
-	PurchasedApp []*App `json:"purchased_app,omitempty"`
+	PurchasedApp []*AppInfo `json:"purchased_app,omitempty"`
 	// BindUser holds the value of the bind_user edge.
 	BindUser *User `json:"bind_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
@@ -53,7 +53,7 @@ type AccountEdges struct {
 
 // PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
 // was not loaded in eager-loading.
-func (e AccountEdges) PurchasedAppOrErr() ([]*App, error) {
+func (e AccountEdges) PurchasedAppOrErr() ([]*AppInfo, error) {
 	if e.loadedTypes[0] {
 		return e.PurchasedApp, nil
 	}
@@ -170,7 +170,7 @@ func (a *Account) Value(name string) (ent.Value, error) {
 }
 
 // QueryPurchasedApp queries the "purchased_app" edge of the Account entity.
-func (a *Account) QueryPurchasedApp() *AppQuery {
+func (a *Account) QueryPurchasedApp() *AppInfoQuery {
 	return NewAccountClient(a.config).QueryPurchasedApp(a)
 }
 

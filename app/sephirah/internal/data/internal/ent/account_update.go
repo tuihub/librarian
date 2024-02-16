@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -121,14 +121,14 @@ func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
 	return au
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
 func (au *AccountUpdate) AddPurchasedAppIDs(ids ...model.InternalID) *AccountUpdate {
 	au.mutation.AddPurchasedAppIDs(ids...)
 	return au
 }
 
-// AddPurchasedApp adds the "purchased_app" edges to the App entity.
-func (au *AccountUpdate) AddPurchasedApp(a ...*App) *AccountUpdate {
+// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
+func (au *AccountUpdate) AddPurchasedApp(a ...*AppInfo) *AccountUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -160,20 +160,20 @@ func (au *AccountUpdate) Mutation() *AccountMutation {
 	return au.mutation
 }
 
-// ClearPurchasedApp clears all "purchased_app" edges to the App entity.
+// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
 func (au *AccountUpdate) ClearPurchasedApp() *AccountUpdate {
 	au.mutation.ClearPurchasedApp()
 	return au
 }
 
-// RemovePurchasedAppIDs removes the "purchased_app" edge to App entities by IDs.
+// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
 func (au *AccountUpdate) RemovePurchasedAppIDs(ids ...model.InternalID) *AccountUpdate {
 	au.mutation.RemovePurchasedAppIDs(ids...)
 	return au
 }
 
-// RemovePurchasedApp removes "purchased_app" edges to App entities.
-func (au *AccountUpdate) RemovePurchasedApp(a ...*App) *AccountUpdate {
+// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
+func (au *AccountUpdate) RemovePurchasedApp(a ...*AppInfo) *AccountUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -261,7 +261,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -274,7 +274,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -290,7 +290,7 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -437,14 +437,14 @@ func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOn
 	return auo
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
 func (auo *AccountUpdateOne) AddPurchasedAppIDs(ids ...model.InternalID) *AccountUpdateOne {
 	auo.mutation.AddPurchasedAppIDs(ids...)
 	return auo
 }
 
-// AddPurchasedApp adds the "purchased_app" edges to the App entity.
-func (auo *AccountUpdateOne) AddPurchasedApp(a ...*App) *AccountUpdateOne {
+// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
+func (auo *AccountUpdateOne) AddPurchasedApp(a ...*AppInfo) *AccountUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -476,20 +476,20 @@ func (auo *AccountUpdateOne) Mutation() *AccountMutation {
 	return auo.mutation
 }
 
-// ClearPurchasedApp clears all "purchased_app" edges to the App entity.
+// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
 func (auo *AccountUpdateOne) ClearPurchasedApp() *AccountUpdateOne {
 	auo.mutation.ClearPurchasedApp()
 	return auo
 }
 
-// RemovePurchasedAppIDs removes the "purchased_app" edge to App entities by IDs.
+// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
 func (auo *AccountUpdateOne) RemovePurchasedAppIDs(ids ...model.InternalID) *AccountUpdateOne {
 	auo.mutation.RemovePurchasedAppIDs(ids...)
 	return auo
 }
 
-// RemovePurchasedApp removes "purchased_app" edges to App entities.
-func (auo *AccountUpdateOne) RemovePurchasedApp(a ...*App) *AccountUpdateOne {
+// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
+func (auo *AccountUpdateOne) RemovePurchasedApp(a ...*AppInfo) *AccountUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -607,7 +607,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -620,7 +620,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -636,7 +636,7 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -12,7 +12,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (g *Gebura) AddAppPackageRunTime(
+func (g *Gebura) AddAppInstRunTime(
 	ctx context.Context,
 	packageID model.InternalID,
 	timeRange *model.TimeRange,
@@ -24,14 +24,14 @@ func (g *Gebura) AddAppPackageRunTime(
 	if timeRange == nil {
 		return pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	err := g.repo.AddAppPackageRunTime(ctx, claims.UserID, packageID, timeRange)
+	err := g.repo.AddAppInstRunTime(ctx, claims.UserID, packageID, timeRange)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
 }
 
-func (g *Gebura) SumAppPackageRunTime(
+func (g *Gebura) SumAppInstRunTime(
 	ctx context.Context,
 	packageID model.InternalID,
 	timeRange *model.TimeRange,
@@ -43,7 +43,7 @@ func (g *Gebura) SumAppPackageRunTime(
 	if timeRange == nil {
 		return time.Duration(0), pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	res, err := g.repo.SumAppPackageRunTime(ctx, claims.UserID, packageID, timeRange)
+	res, err := g.repo.SumAppInstRunTime(ctx, claims.UserID, packageID, timeRange)
 	if err != nil {
 		return time.Duration(0), pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

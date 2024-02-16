@@ -22,9 +22,9 @@ var ProviderSet = wire.NewSet(
 	NewAngela,
 	NewAngelaBase,
 	NewPullAccountTopic,
-	NewPullAccountAppRelationTopic,
-	NewPullAppTopic,
-	NewAppCache,
+	NewPullAccountAppInfoRelationTopic,
+	NewPullAppInfoTopic,
+	NewAppInfoCache,
 	NewPullFeedTopic,
 	NewNotifyRouterTopic,
 	NewNotifyPushTopic,
@@ -32,7 +32,7 @@ var ProviderSet = wire.NewSet(
 	NewNotifyFlowCache,
 	NewNotifyTargetCache,
 	NewParseFeedItemDigestTopic,
-	NewUpdateAppIndexTopic,
+	NewUpdateAppInfoIndexTopic,
 )
 
 type Angela struct {
@@ -49,9 +49,9 @@ type AngelaBase struct {
 
 type AngelaRepo interface {
 	UpdateAccount(context.Context, modeltiphereth.Account) error
-	UpsertApp(context.Context, *modelgebura.App, *modelgebura.App) error
-	UpsertApps(context.Context, []*modelgebura.App) error
-	AccountPurchaseApps(context.Context, model.InternalID, []model.InternalID) error
+	UpsertAppInfo(context.Context, *modelgebura.AppInfo, *modelgebura.AppInfo) error
+	UpsertAppInfos(context.Context, []*modelgebura.AppInfo) error
+	AccountPurchaseAppInfos(context.Context, model.InternalID, []model.InternalID) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
@@ -78,22 +78,22 @@ func NewAngelaBase(
 
 func NewAngela(
 	mq *libmq.MQ,
-	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
-	pullSteamAccountAppRelation *libmq.Topic[modelangela.PullAccountAppRelation],
-	pullSteamApp *libmq.Topic[modelangela.PullApp],
+	pullAccountInfo *libmq.Topic[modeltiphereth.PullAccountInfo],
+	pullAccountAppInfoRelation *libmq.Topic[modelangela.PullAccountAppInfoRelation],
+	pullAppInfo *libmq.Topic[modelangela.PullAppInfo],
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
 	notifyPush *libmq.Topic[modelangela.NotifyPush],
 	parseFeedItem *libmq.Topic[modelangela.ParseFeedItemDigest],
-	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
+	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
 ) (*Angela, error) {
-	if err := mq.RegisterTopic(pullAccount); err != nil {
+	if err := mq.RegisterTopic(pullAccountInfo); err != nil {
 		return nil, err
 	}
-	if err := mq.RegisterTopic(pullSteamAccountAppRelation); err != nil {
+	if err := mq.RegisterTopic(pullAccountAppInfoRelation); err != nil {
 		return nil, err
 	}
-	if err := mq.RegisterTopic(pullSteamApp); err != nil {
+	if err := mq.RegisterTopic(pullAppInfo); err != nil {
 		return nil, err
 	}
 	if err := mq.RegisterTopic(pullFeed); err != nil {

@@ -42,9 +42,11 @@ type UserEdges struct {
 	// BindAccount holds the value of the bind_account edge.
 	BindAccount []*Account `json:"bind_account,omitempty"`
 	// PurchasedApp holds the value of the purchased_app edge.
-	PurchasedApp []*App `json:"purchased_app,omitempty"`
-	// AppPackage holds the value of the app_package edge.
-	AppPackage []*AppPackage `json:"app_package,omitempty"`
+	PurchasedApp []*AppInfo `json:"purchased_app,omitempty"`
+	// App holds the value of the app edge.
+	App []*App `json:"app,omitempty"`
+	// AppInst holds the value of the app_inst edge.
+	AppInst []*AppInst `json:"app_inst,omitempty"`
 	// FeedConfig holds the value of the feed_config edge.
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
 	// NotifyTarget holds the value of the notify_target edge.
@@ -63,7 +65,7 @@ type UserEdges struct {
 	CreatedUser []*User `json:"created_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [11]bool
+	loadedTypes [12]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -77,26 +79,35 @@ func (e UserEdges) BindAccountOrErr() ([]*Account, error) {
 
 // PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) PurchasedAppOrErr() ([]*App, error) {
+func (e UserEdges) PurchasedAppOrErr() ([]*AppInfo, error) {
 	if e.loadedTypes[1] {
 		return e.PurchasedApp, nil
 	}
 	return nil, &NotLoadedError{edge: "purchased_app"}
 }
 
-// AppPackageOrErr returns the AppPackage value or an error if the edge
+// AppOrErr returns the App value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) AppPackageOrErr() ([]*AppPackage, error) {
+func (e UserEdges) AppOrErr() ([]*App, error) {
 	if e.loadedTypes[2] {
-		return e.AppPackage, nil
+		return e.App, nil
 	}
-	return nil, &NotLoadedError{edge: "app_package"}
+	return nil, &NotLoadedError{edge: "app"}
+}
+
+// AppInstOrErr returns the AppInst value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) AppInstOrErr() ([]*AppInst, error) {
+	if e.loadedTypes[3] {
+		return e.AppInst, nil
+	}
+	return nil, &NotLoadedError{edge: "app_inst"}
 }
 
 // FeedConfigOrErr returns the FeedConfig value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.FeedConfig, nil
 	}
 	return nil, &NotLoadedError{edge: "feed_config"}
@@ -105,7 +116,7 @@ func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
 // NotifyTargetOrErr returns the NotifyTarget value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[5] {
 		return e.NotifyTarget, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_target"}
@@ -114,7 +125,7 @@ func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
 // NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[6] {
 		return e.NotifyFlow, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_flow"}
@@ -123,7 +134,7 @@ func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
 // ImageOrErr returns the Image value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) ImageOrErr() ([]*Image, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[7] {
 		return e.Image, nil
 	}
 	return nil, &NotLoadedError{edge: "image"}
@@ -132,7 +143,7 @@ func (e UserEdges) ImageOrErr() ([]*Image, error) {
 // FileOrErr returns the File value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FileOrErr() ([]*File, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[8] {
 		return e.File, nil
 	}
 	return nil, &NotLoadedError{edge: "file"}
@@ -141,7 +152,7 @@ func (e UserEdges) FileOrErr() ([]*File, error) {
 // DeviceInfoOrErr returns the DeviceInfo value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[9] {
 		return e.DeviceInfo, nil
 	}
 	return nil, &NotLoadedError{edge: "device_info"}
@@ -150,7 +161,7 @@ func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[10] {
 		if e.Creator == nil {
 			// Edge was loaded but was not found.
 			return nil, &NotFoundError{label: user.Label}
@@ -163,7 +174,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[11] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -265,13 +276,18 @@ func (u *User) QueryBindAccount() *AccountQuery {
 }
 
 // QueryPurchasedApp queries the "purchased_app" edge of the User entity.
-func (u *User) QueryPurchasedApp() *AppQuery {
+func (u *User) QueryPurchasedApp() *AppInfoQuery {
 	return NewUserClient(u.config).QueryPurchasedApp(u)
 }
 
-// QueryAppPackage queries the "app_package" edge of the User entity.
-func (u *User) QueryAppPackage() *AppPackageQuery {
-	return NewUserClient(u.config).QueryAppPackage(u)
+// QueryApp queries the "app" edge of the User entity.
+func (u *User) QueryApp() *AppQuery {
+	return NewUserClient(u.config).QueryApp(u)
+}
+
+// QueryAppInst queries the "app_inst" edge of the User entity.
+func (u *User) QueryAppInst() *AppInstQuery {
+	return NewUserClient(u.config).QueryAppInst(u)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the User entity.

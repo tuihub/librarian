@@ -13,7 +13,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -105,14 +106,14 @@ func (uc *UserCreate) AddBindAccount(a ...*Account) *UserCreate {
 	return uc.AddBindAccountIDs(ids...)
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
 func (uc *UserCreate) AddPurchasedAppIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddPurchasedAppIDs(ids...)
 	return uc
 }
 
-// AddPurchasedApp adds the "purchased_app" edges to the App entity.
-func (uc *UserCreate) AddPurchasedApp(a ...*App) *UserCreate {
+// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
+func (uc *UserCreate) AddPurchasedApp(a ...*AppInfo) *UserCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -120,19 +121,34 @@ func (uc *UserCreate) AddPurchasedApp(a ...*App) *UserCreate {
 	return uc.AddPurchasedAppIDs(ids...)
 }
 
-// AddAppPackageIDs adds the "app_package" edge to the AppPackage entity by IDs.
-func (uc *UserCreate) AddAppPackageIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddAppPackageIDs(ids...)
+// AddAppIDs adds the "app" edge to the App entity by IDs.
+func (uc *UserCreate) AddAppIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddAppIDs(ids...)
 	return uc
 }
 
-// AddAppPackage adds the "app_package" edges to the AppPackage entity.
-func (uc *UserCreate) AddAppPackage(a ...*AppPackage) *UserCreate {
+// AddApp adds the "app" edges to the App entity.
+func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uc.AddAppPackageIDs(ids...)
+	return uc.AddAppIDs(ids...)
+}
+
+// AddAppInstIDs adds the "app_inst" edge to the AppInst entity by IDs.
+func (uc *UserCreate) AddAppInstIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddAppInstIDs(ids...)
+	return uc
+}
+
+// AddAppInst adds the "app_inst" edges to the AppInst entity.
+func (uc *UserCreate) AddAppInst(a ...*AppInst) *UserCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return uc.AddAppInstIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -410,6 +426,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Columns: user.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.AppTable,
+			Columns: []string{user.AppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
 			},
 		}
@@ -418,15 +450,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.AppPackageIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.AppInstIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.AppPackageTable,
-			Columns: []string{user.AppPackageColumn},
+			Table:   user.AppInstTable,
+			Columns: []string{user.AppInstColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(apppackage.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

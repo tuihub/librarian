@@ -86,10 +86,10 @@ func wireApp(sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahDat
 		cleanup()
 		return nil, nil, err
 	}
-	libcacheMap := bizangela.NewAppCache(geburaRepo, store)
-	topic := bizangela.NewUpdateAppIndexTopic(angelaBase)
-	libmqTopic := bizangela.NewPullAppTopic(angelaBase, libcacheMap, topic)
-	topic2 := bizangela.NewPullAccountAppRelationTopic(angelaBase, libmqTopic)
+	libcacheMap := bizangela.NewAppInfoCache(geburaRepo, store)
+	topic := bizangela.NewUpdateAppInfoIndexTopic(angelaBase)
+	libmqTopic := bizangela.NewPullAppInfoTopic(angelaBase, libcacheMap, topic)
+	topic2 := bizangela.NewPullAccountAppInfoRelationTopic(angelaBase, libmqTopic)
 	topic3 := bizangela.NewPullAccountTopic(angelaBase, topic2)
 	netzachRepo := data.NewNetzachRepo(dataData)
 	map2 := bizangela.NewNotifyFlowCache(netzachRepo, store)

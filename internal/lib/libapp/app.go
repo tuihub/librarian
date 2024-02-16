@@ -110,11 +110,8 @@ func (a *Settings) Env(env Env) (string, error) {
 }
 
 func (a *Settings) EnvExist(env Env) bool {
-	res, err := a.env.Value(string(env)).Bool()
-	if err != nil {
-		return false
-	}
-	return res
+	v, err := a.env.Value(string(env)).String()
+	return err == nil && v != ""
 }
 
 func checkDataPath(path string) error {

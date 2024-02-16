@@ -508,7 +508,7 @@ func HasPurchasedApp() predicate.Account {
 }
 
 // HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
-func HasPurchasedAppWith(preds ...predicate.App) predicate.Account {
+func HasPurchasedAppWith(preds ...predicate.AppInfo) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := newPurchasedAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

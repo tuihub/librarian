@@ -7,8 +7,10 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appbinary"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
@@ -45,39 +47,63 @@ func init() {
 	appFields := schema.App{}.Fields()
 	_ = appFields
 	// appDescUpdatedAt is the schema descriptor for updated_at field.
-	appDescUpdatedAt := appFields[16].Descriptor()
+	appDescUpdatedAt := appFields[4].Descriptor()
 	// app.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	app.DefaultUpdatedAt = appDescUpdatedAt.Default.(func() time.Time)
 	// app.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	app.UpdateDefaultUpdatedAt = appDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// appDescCreatedAt is the schema descriptor for created_at field.
-	appDescCreatedAt := appFields[17].Descriptor()
+	appDescCreatedAt := appFields[5].Descriptor()
 	// app.DefaultCreatedAt holds the default value on creation for the created_at field.
 	app.DefaultCreatedAt = appDescCreatedAt.Default.(func() time.Time)
-	apppackageFields := schema.AppPackage{}.Fields()
-	_ = apppackageFields
-	// apppackageDescUpdatedAt is the schema descriptor for updated_at field.
-	apppackageDescUpdatedAt := apppackageFields[11].Descriptor()
-	// apppackage.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	apppackage.DefaultUpdatedAt = apppackageDescUpdatedAt.Default.(func() time.Time)
-	// apppackage.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	apppackage.UpdateDefaultUpdatedAt = apppackageDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// apppackageDescCreatedAt is the schema descriptor for created_at field.
-	apppackageDescCreatedAt := apppackageFields[12].Descriptor()
-	// apppackage.DefaultCreatedAt holds the default value on creation for the created_at field.
-	apppackage.DefaultCreatedAt = apppackageDescCreatedAt.Default.(func() time.Time)
-	apppackageruntimeFields := schema.AppPackageRunTime{}.Fields()
-	_ = apppackageruntimeFields
-	// apppackageruntimeDescUpdatedAt is the schema descriptor for updated_at field.
-	apppackageruntimeDescUpdatedAt := apppackageruntimeFields[4].Descriptor()
-	// apppackageruntime.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	apppackageruntime.DefaultUpdatedAt = apppackageruntimeDescUpdatedAt.Default.(func() time.Time)
-	// apppackageruntime.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	apppackageruntime.UpdateDefaultUpdatedAt = apppackageruntimeDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// apppackageruntimeDescCreatedAt is the schema descriptor for created_at field.
-	apppackageruntimeDescCreatedAt := apppackageruntimeFields[5].Descriptor()
-	// apppackageruntime.DefaultCreatedAt holds the default value on creation for the created_at field.
-	apppackageruntime.DefaultCreatedAt = apppackageruntimeDescCreatedAt.Default.(func() time.Time)
+	appbinaryFields := schema.AppBinary{}.Fields()
+	_ = appbinaryFields
+	// appbinaryDescUpdatedAt is the schema descriptor for updated_at field.
+	appbinaryDescUpdatedAt := appbinaryFields[5].Descriptor()
+	// appbinary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	appbinary.DefaultUpdatedAt = appbinaryDescUpdatedAt.Default.(func() time.Time)
+	// appbinary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	appbinary.UpdateDefaultUpdatedAt = appbinaryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// appbinaryDescCreatedAt is the schema descriptor for created_at field.
+	appbinaryDescCreatedAt := appbinaryFields[6].Descriptor()
+	// appbinary.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appbinary.DefaultCreatedAt = appbinaryDescCreatedAt.Default.(func() time.Time)
+	appinfoFields := schema.AppInfo{}.Fields()
+	_ = appinfoFields
+	// appinfoDescUpdatedAt is the schema descriptor for updated_at field.
+	appinfoDescUpdatedAt := appinfoFields[16].Descriptor()
+	// appinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	appinfo.DefaultUpdatedAt = appinfoDescUpdatedAt.Default.(func() time.Time)
+	// appinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	appinfo.UpdateDefaultUpdatedAt = appinfoDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// appinfoDescCreatedAt is the schema descriptor for created_at field.
+	appinfoDescCreatedAt := appinfoFields[17].Descriptor()
+	// appinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appinfo.DefaultCreatedAt = appinfoDescCreatedAt.Default.(func() time.Time)
+	appinstFields := schema.AppInst{}.Fields()
+	_ = appinstFields
+	// appinstDescUpdatedAt is the schema descriptor for updated_at field.
+	appinstDescUpdatedAt := appinstFields[3].Descriptor()
+	// appinst.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	appinst.DefaultUpdatedAt = appinstDescUpdatedAt.Default.(func() time.Time)
+	// appinst.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	appinst.UpdateDefaultUpdatedAt = appinstDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// appinstDescCreatedAt is the schema descriptor for created_at field.
+	appinstDescCreatedAt := appinstFields[4].Descriptor()
+	// appinst.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appinst.DefaultCreatedAt = appinstDescCreatedAt.Default.(func() time.Time)
+	appinstruntimeFields := schema.AppInstRunTime{}.Fields()
+	_ = appinstruntimeFields
+	// appinstruntimeDescUpdatedAt is the schema descriptor for updated_at field.
+	appinstruntimeDescUpdatedAt := appinstruntimeFields[4].Descriptor()
+	// appinstruntime.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	appinstruntime.DefaultUpdatedAt = appinstruntimeDescUpdatedAt.Default.(func() time.Time)
+	// appinstruntime.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	appinstruntime.UpdateDefaultUpdatedAt = appinstruntimeDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// appinstruntimeDescCreatedAt is the schema descriptor for created_at field.
+	appinstruntimeDescCreatedAt := appinstruntimeFields[5].Descriptor()
+	// appinstruntime.DefaultCreatedAt holds the default value on creation for the created_at field.
+	appinstruntime.DefaultCreatedAt = appinstruntimeDescCreatedAt.Default.(func() time.Time)
 	deviceinfoFields := schema.DeviceInfo{}.Fields()
 	_ = deviceinfoFields
 	// deviceinfoDescUpdatedAt is the schema descriptor for updated_at field.

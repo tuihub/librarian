@@ -361,7 +361,7 @@ func HasPurchasedApp() predicate.User {
 }
 
 // HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
-func HasPurchasedAppWith(preds ...predicate.App) predicate.User {
+func HasPurchasedAppWith(preds ...predicate.AppInfo) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := newPurchasedAppStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
@@ -372,21 +372,44 @@ func HasPurchasedAppWith(preds ...predicate.App) predicate.User {
 	})
 }
 
-// HasAppPackage applies the HasEdge predicate on the "app_package" edge.
-func HasAppPackage() predicate.User {
+// HasApp applies the HasEdge predicate on the "app" edge.
+func HasApp() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, AppTable, AppColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasAppPackageWith applies the HasEdge predicate on the "app_package" edge with a given conditions (other predicates).
-func HasAppPackageWith(preds ...predicate.AppPackage) predicate.User {
+// HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
+func HasAppWith(preds ...predicate.App) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newAppPackageStep()
+		step := newAppStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAppInst applies the HasEdge predicate on the "app_inst" edge.
+func HasAppInst() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AppInstTable, AppInstColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppInstWith applies the HasEdge predicate on the "app_inst" edge with a given conditions (other predicates).
+func HasAppInstWith(preds ...predicate.AppInst) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newAppInstStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

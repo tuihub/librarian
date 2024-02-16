@@ -17,20 +17,20 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-func NewPullAppTopic(
+func NewPullAppInfoTopic(
 	a *AngelaBase,
-	appCache *libcache.Map[modelgebura.AppID, modelgebura.App],
-	updateAppIndex *libmq.Topic[modelangela.UpdateAppIndex],
-) *libmq.Topic[modelangela.PullApp] {
-	return libmq.NewTopic[modelangela.PullApp](
-		"PullApp",
-		func(ctx context.Context, r *modelangela.PullApp) error {
-			if !a.supv.CheckAppSource(r.AppID.Source) {
+	infoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],
+	updateAppInfoIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
+) *libmq.Topic[modelangela.PullAppInfo] {
+	return libmq.NewTopic[modelangela.PullAppInfo](
+		"PullAppInfo",
+		func(ctx context.Context, r *modelangela.PullAppInfo) error {
+			if !a.supv.CheckAppSource(r.AppInfoID.Source) {
 				return nil
 			}
 			if !r.IgnoreRateLimit {
-				if app, err := appCache.GetWithFallBack(ctx, r.AppID, nil); err == nil &&
-					app.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
+				if info, err := infoCache.GetWithFallBack(ctx, r.AppInfoID, nil); err == nil &&
+					info.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
 					return nil
 				}
 			}
@@ -38,53 +38,53 @@ func NewPullAppTopic(
 			if err != nil {
 				return err
 			}
-			resp, err := a.porter.PullApp(
-				a.supv.CallAppSource(ctx, r.AppID.Source),
-				&porter.PullAppRequest{AppId: &librarian.AppID{
+			resp, err := a.porter.PullAppInfo(
+				a.supv.CallAppSource(ctx, r.AppInfoID.Source),
+				&porter.PullAppInfoRequest{AppInfoId: &librarian.AppInfoID{
 					Internal:    false,
-					Source:      r.AppID.Source,
-					SourceAppId: r.AppID.SourceAppID,
+					Source:      r.AppInfoID.Source,
+					SourceAppId: r.AppInfoID.SourceAppID,
 				}},
 			)
 			if err != nil {
 				return err
 			}
-			app := converter.ToBizApp(resp.GetApp())
-			app.ID = r.ID
-			app.Internal = false
-			app.Source = r.AppID.Source
-			if app.Type == modelgebura.AppTypeUnspecified {
-				app.Type = modelgebura.AppTypeGame
+			info := converter.ToBizAppInfo(resp.GetAppInfo())
+			info.ID = r.ID
+			info.Internal = false
+			info.Source = r.AppInfoID.Source
+			if info.Type == modelgebura.AppTypeUnspecified {
+				info.Type = modelgebura.AppTypeGame
 			}
-			internalApp := new(modelgebura.App)
-			internalApp.ID = id
-			internalApp.Internal = true
-			internalApp.SourceAppID = strconv.FormatInt(int64(internalApp.ID), 10)
-			internalApp.BoundInternal = id
-			internalApp.Type = app.Type
-			err = a.repo.UpsertApp(ctx, app, internalApp)
+			internalInfo := new(modelgebura.AppInfo)
+			internalInfo.ID = id
+			internalInfo.Internal = true
+			internalInfo.SourceAppID = strconv.FormatInt(int64(internalInfo.ID), 10)
+			internalInfo.BoundInternal = id
+			internalInfo.Type = info.Type
+			err = a.repo.UpsertAppInfo(ctx, info, internalInfo)
 			if err != nil {
 				return err
 			}
-			_ = appCache.Delete(ctx, r.AppID)
-			_ = updateAppIndex.Publish(ctx, modelangela.UpdateAppIndex{IDs: []model.InternalID{id}})
+			_ = infoCache.Delete(ctx, r.AppInfoID)
+			_ = updateAppInfoIndex.Publish(ctx, modelangela.UpdateAppInfoIndex{IDs: []model.InternalID{id}})
 			return nil
 		},
 	)
 }
 
-func NewAppCache(
+func NewAppInfoCache(
 	g bizgebura.GeburaRepo,
 	store libcache.Store,
-) *libcache.Map[modelgebura.AppID, modelgebura.App] {
-	return libcache.NewMap[modelgebura.AppID, modelgebura.App](
+) *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo] {
+	return libcache.NewMap[modelgebura.AppInfoID, modelgebura.AppInfo](
 		store,
-		"App",
-		func(k modelgebura.AppID) string {
+		"AppInfo",
+		func(k modelgebura.AppInfoID) string {
 			return k.Source + ":" + k.SourceAppID
 		},
-		func(ctx context.Context, id modelgebura.AppID) (*modelgebura.App, error) {
-			res, err := g.GetApp(ctx, id)
+		func(ctx context.Context, id modelgebura.AppInfoID) (*modelgebura.AppInfo, error) {
+			res, err := g.GetAppInfo(ctx, id)
 			if err != nil {
 				return nil, err
 			}

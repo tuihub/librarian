@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
@@ -43,11 +44,11 @@ func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Accou
 		Exec(ctx)
 }
 
-func (a *angelaRepo) UpsertApp( //nolint:gocognit //TODO
-	ctx context.Context, ap *modelgebura.App, internal *modelgebura.App,
+func (a *angelaRepo) UpsertAppInfo( //nolint:gocognit //TODO
+	ctx context.Context, ap *modelgebura.AppInfo, internal *modelgebura.AppInfo,
 ) error {
 	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.App.Create().
+		q := tx.AppInfo.Create().
 			SetID(ap.ID).
 			SetInternal(ap.Internal).
 			SetSource(ap.Source).
@@ -91,23 +92,23 @@ func (a *angelaRepo) UpsertApp( //nolint:gocognit //TODO
 			}
 		}
 		q.OnConflict(
-			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
+			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
 			resolveWithIgnores([]string{
-				app.FieldID,
-				app.FieldSource,
-				app.FieldSourceAppID,
+				appinfo.FieldID,
+				appinfo.FieldSource,
+				appinfo.FieldSourceAppID,
 			}),
 		)
-		count, err := tx.App.Query().Where(
-			app.SourceEQ(ap.Source),
-			app.SourceAppIDEQ(ap.SourceAppID),
-			app.HasBindInternalWith(app.IDNEQ(0)),
+		count, err := tx.AppInfo.Query().Where(
+			appinfo.SourceEQ(ap.Source),
+			appinfo.SourceAppIDEQ(ap.SourceAppID),
+			appinfo.HasBindInternalWith(appinfo.IDNEQ(0)),
 		).Count(ctx)
 		if err != nil {
 			return err
 		}
 		if count == 0 {
-			err = tx.App.Create().
+			err = tx.AppInfo.Create().
 				SetID(internal.ID).
 				SetInternal(true).
 				SetSource(internal.Source).
@@ -125,13 +126,13 @@ func (a *angelaRepo) UpsertApp( //nolint:gocognit //TODO
 	})
 }
 
-func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) error {
-	apps := make([]*ent.AppCreate, len(al))
+func (a *angelaRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppInfo) error {
+	apps := make([]*ent.AppInfoCreate, len(al))
 	for i, ap := range al {
 		if ap.Details == nil {
-			ap.Details = new(modelgebura.AppDetails)
+			ap.Details = new(modelgebura.AppInfoDetails)
 		}
-		apps[i] = a.data.db.App.Create().
+		apps[i] = a.data.db.AppInfo.Create().
 			SetID(ap.ID).
 			SetInternal(ap.Internal).
 			SetSource(ap.Source).
@@ -152,18 +153,18 @@ func (a *angelaRepo) UpsertApps(ctx context.Context, al []*modelgebura.App) erro
 				SetVersion(ap.Details.Version)
 		}
 	}
-	return a.data.db.App.
+	return a.data.db.AppInfo.
 		CreateBulk(apps...).
 		OnConflict(
-			sql.ConflictColumns(app.FieldSource, app.FieldSourceAppID),
+			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
 			resolveWithIgnores([]string{
-				app.FieldID,
+				appinfo.FieldID,
 			}),
 		).
 		Exec(ctx)
 }
 
-func (a *angelaRepo) AccountPurchaseApps(
+func (a *angelaRepo) AccountPurchaseAppInfos(
 	ctx context.Context, id model.InternalID, ids []model.InternalID,
 ) error {
 	return a.data.WithTx(ctx, func(tx *ent.Tx) error {

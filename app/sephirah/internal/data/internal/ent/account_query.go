@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -25,7 +25,7 @@ type AccountQuery struct {
 	order            []account.OrderOption
 	inters           []Interceptor
 	predicates       []predicate.Account
-	withPurchasedApp *AppQuery
+	withPurchasedApp *AppInfoQuery
 	withBindUser     *UserQuery
 	withFKs          bool
 	// intermediate query (i.e. traversal path).
@@ -65,8 +65,8 @@ func (aq *AccountQuery) Order(o ...account.OrderOption) *AccountQuery {
 }
 
 // QueryPurchasedApp chains the current query on the "purchased_app" edge.
-func (aq *AccountQuery) QueryPurchasedApp() *AppQuery {
-	query := (&AppClient{config: aq.config}).Query()
+func (aq *AccountQuery) QueryPurchasedApp() *AppInfoQuery {
+	query := (&AppInfoClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -77,7 +77,7 @@ func (aq *AccountQuery) QueryPurchasedApp() *AppQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, selector),
-			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.To(appinfo.Table, appinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, account.PurchasedAppTable, account.PurchasedAppPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
@@ -310,8 +310,8 @@ func (aq *AccountQuery) Clone() *AccountQuery {
 
 // WithPurchasedApp tells the query-builder to eager-load the nodes that are connected to
 // the "purchased_app" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AccountQuery) WithPurchasedApp(opts ...func(*AppQuery)) *AccountQuery {
-	query := (&AppClient{config: aq.config}).Query()
+func (aq *AccountQuery) WithPurchasedApp(opts ...func(*AppInfoQuery)) *AccountQuery {
+	query := (&AppInfoClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -440,8 +440,8 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	}
 	if query := aq.withPurchasedApp; query != nil {
 		if err := aq.loadPurchasedApp(ctx, query, nodes,
-			func(n *Account) { n.Edges.PurchasedApp = []*App{} },
-			func(n *Account, e *App) { n.Edges.PurchasedApp = append(n.Edges.PurchasedApp, e) }); err != nil {
+			func(n *Account) { n.Edges.PurchasedApp = []*AppInfo{} },
+			func(n *Account, e *AppInfo) { n.Edges.PurchasedApp = append(n.Edges.PurchasedApp, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -454,7 +454,7 @@ func (aq *AccountQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Acco
 	return nodes, nil
 }
 
-func (aq *AccountQuery) loadPurchasedApp(ctx context.Context, query *AppQuery, nodes []*Account, init func(*Account), assign func(*Account, *App)) error {
+func (aq *AccountQuery) loadPurchasedApp(ctx context.Context, query *AppInfoQuery, nodes []*Account, init func(*Account), assign func(*Account, *AppInfo)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[model.InternalID]*Account)
 	nids := make(map[model.InternalID]map[*Account]struct{})
@@ -467,7 +467,7 @@ func (aq *AccountQuery) loadPurchasedApp(ctx context.Context, query *AppQuery, n
 	}
 	query.Where(func(s *sql.Selector) {
 		joinT := sql.Table(account.PurchasedAppTable)
-		s.Join(joinT).On(s.C(app.FieldID), joinT.C(account.PurchasedAppPrimaryKey[1]))
+		s.Join(joinT).On(s.C(appinfo.FieldID), joinT.C(account.PurchasedAppPrimaryKey[1]))
 		s.Where(sql.InValues(joinT.C(account.PurchasedAppPrimaryKey[0]), edgeIDs...))
 		columns := s.SelectedColumns()
 		s.Select(joinT.C(account.PurchasedAppPrimaryKey[0]))
@@ -500,7 +500,7 @@ func (aq *AccountQuery) loadPurchasedApp(ctx context.Context, query *AppQuery, n
 			}
 		})
 	})
-	neighbors, err := withInterceptors[[]*App](ctx, query, qr, query.inters)
+	neighbors, err := withInterceptors[[]*AppInfo](ctx, query, qr, query.inters)
 	if err != nil {
 		return err
 	}

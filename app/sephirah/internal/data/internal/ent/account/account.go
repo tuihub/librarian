@@ -36,9 +36,9 @@ const (
 	Table = "accounts"
 	// PurchasedAppTable is the table that holds the purchased_app relation/edge. The primary key declared below.
 	PurchasedAppTable = "account_purchased_app"
-	// PurchasedAppInverseTable is the table name for the App entity.
-	// It exists in this package in order to avoid circular dependency with the "app" package.
-	PurchasedAppInverseTable = "apps"
+	// PurchasedAppInverseTable is the table name for the AppInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "appinfo" package.
+	PurchasedAppInverseTable = "app_infos"
 	// BindUserTable is the table that holds the bind_user relation/edge.
 	BindUserTable = "accounts"
 	// BindUserInverseTable is the table name for the User entity.
@@ -69,7 +69,7 @@ var ForeignKeys = []string{
 var (
 	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
 	// primary key for the purchased_app relation (M2M).
-	PurchasedAppPrimaryKey = []string{"account_id", "app_id"}
+	PurchasedAppPrimaryKey = []string{"account_id", "app_info_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).

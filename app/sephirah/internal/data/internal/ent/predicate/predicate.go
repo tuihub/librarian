@@ -12,11 +12,17 @@ type Account func(*sql.Selector)
 // App is the predicate function for app builders.
 type App func(*sql.Selector)
 
-// AppPackage is the predicate function for apppackage builders.
-type AppPackage func(*sql.Selector)
+// AppBinary is the predicate function for appbinary builders.
+type AppBinary func(*sql.Selector)
 
-// AppPackageRunTime is the predicate function for apppackageruntime builders.
-type AppPackageRunTime func(*sql.Selector)
+// AppInfo is the predicate function for appinfo builders.
+type AppInfo func(*sql.Selector)
+
+// AppInst is the predicate function for appinst builders.
+type AppInst func(*sql.Selector)
+
+// AppInstRunTime is the predicate function for appinstruntime builders.
+type AppInstRunTime func(*sql.Selector)
 
 // DeviceInfo is the predicate function for deviceinfo builders.
 type DeviceInfo func(*sql.Selector)

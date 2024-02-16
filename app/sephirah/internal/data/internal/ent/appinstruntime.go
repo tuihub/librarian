@@ -9,19 +9,19 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackageruntime"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/internal/model"
 )
 
-// AppPackageRunTime is the model entity for the AppPackageRunTime schema.
-type AppPackageRunTime struct {
+// AppInstRunTime is the model entity for the AppInstRunTime schema.
+type AppInstRunTime struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID model.InternalID `json:"user_id,omitempty"`
-	// AppPackageID holds the value of the "app_package_id" field.
-	AppPackageID model.InternalID `json:"app_package_id,omitempty"`
+	// AppID holds the value of the "app_id" field.
+	AppID model.InternalID `json:"app_id,omitempty"`
 	// StartTime holds the value of the "start_time" field.
 	StartTime time.Time `json:"start_time,omitempty"`
 	// RunDuration holds the value of the "run_duration" field.
@@ -34,13 +34,13 @@ type AppPackageRunTime struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*AppPackageRunTime) scanValues(columns []string) ([]any, error) {
+func (*AppInstRunTime) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case apppackageruntime.FieldID, apppackageruntime.FieldUserID, apppackageruntime.FieldAppPackageID, apppackageruntime.FieldRunDuration:
+		case appinstruntime.FieldID, appinstruntime.FieldUserID, appinstruntime.FieldAppID, appinstruntime.FieldRunDuration:
 			values[i] = new(sql.NullInt64)
-		case apppackageruntime.FieldStartTime, apppackageruntime.FieldUpdatedAt, apppackageruntime.FieldCreatedAt:
+		case appinstruntime.FieldStartTime, appinstruntime.FieldUpdatedAt, appinstruntime.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -50,111 +50,111 @@ func (*AppPackageRunTime) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the AppPackageRunTime fields.
-func (aprt *AppPackageRunTime) assignValues(columns []string, values []any) error {
+// to the AppInstRunTime fields.
+func (airt *AppInstRunTime) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case apppackageruntime.FieldID:
+		case appinstruntime.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			aprt.ID = int(value.Int64)
-		case apppackageruntime.FieldUserID:
+			airt.ID = int(value.Int64)
+		case appinstruntime.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
-				aprt.UserID = model.InternalID(value.Int64)
+				airt.UserID = model.InternalID(value.Int64)
 			}
-		case apppackageruntime.FieldAppPackageID:
+		case appinstruntime.FieldAppID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_package_id", values[i])
+				return fmt.Errorf("unexpected type %T for field app_id", values[i])
 			} else if value.Valid {
-				aprt.AppPackageID = model.InternalID(value.Int64)
+				airt.AppID = model.InternalID(value.Int64)
 			}
-		case apppackageruntime.FieldStartTime:
+		case appinstruntime.FieldStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time", values[i])
 			} else if value.Valid {
-				aprt.StartTime = value.Time
+				airt.StartTime = value.Time
 			}
-		case apppackageruntime.FieldRunDuration:
+		case appinstruntime.FieldRunDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field run_duration", values[i])
 			} else if value.Valid {
-				aprt.RunDuration = time.Duration(value.Int64)
+				airt.RunDuration = time.Duration(value.Int64)
 			}
-		case apppackageruntime.FieldUpdatedAt:
+		case appinstruntime.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				aprt.UpdatedAt = value.Time
+				airt.UpdatedAt = value.Time
 			}
-		case apppackageruntime.FieldCreatedAt:
+		case appinstruntime.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				aprt.CreatedAt = value.Time
+				airt.CreatedAt = value.Time
 			}
 		default:
-			aprt.selectValues.Set(columns[i], values[i])
+			airt.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the AppPackageRunTime.
+// Value returns the ent.Value that was dynamically selected and assigned to the AppInstRunTime.
 // This includes values selected through modifiers, order, etc.
-func (aprt *AppPackageRunTime) Value(name string) (ent.Value, error) {
-	return aprt.selectValues.Get(name)
+func (airt *AppInstRunTime) Value(name string) (ent.Value, error) {
+	return airt.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this AppPackageRunTime.
-// Note that you need to call AppPackageRunTime.Unwrap() before calling this method if this AppPackageRunTime
+// Update returns a builder for updating this AppInstRunTime.
+// Note that you need to call AppInstRunTime.Unwrap() before calling this method if this AppInstRunTime
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (aprt *AppPackageRunTime) Update() *AppPackageRunTimeUpdateOne {
-	return NewAppPackageRunTimeClient(aprt.config).UpdateOne(aprt)
+func (airt *AppInstRunTime) Update() *AppInstRunTimeUpdateOne {
+	return NewAppInstRunTimeClient(airt.config).UpdateOne(airt)
 }
 
-// Unwrap unwraps the AppPackageRunTime entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the AppInstRunTime entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (aprt *AppPackageRunTime) Unwrap() *AppPackageRunTime {
-	_tx, ok := aprt.config.driver.(*txDriver)
+func (airt *AppInstRunTime) Unwrap() *AppInstRunTime {
+	_tx, ok := airt.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: AppPackageRunTime is not a transactional entity")
+		panic("ent: AppInstRunTime is not a transactional entity")
 	}
-	aprt.config.driver = _tx.drv
-	return aprt
+	airt.config.driver = _tx.drv
+	return airt
 }
 
 // String implements the fmt.Stringer.
-func (aprt *AppPackageRunTime) String() string {
+func (airt *AppInstRunTime) String() string {
 	var builder strings.Builder
-	builder.WriteString("AppPackageRunTime(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", aprt.ID))
+	builder.WriteString("AppInstRunTime(")
+	builder.WriteString(fmt.Sprintf("id=%v, ", airt.ID))
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", aprt.UserID))
+	builder.WriteString(fmt.Sprintf("%v", airt.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("app_package_id=")
-	builder.WriteString(fmt.Sprintf("%v", aprt.AppPackageID))
+	builder.WriteString("app_id=")
+	builder.WriteString(fmt.Sprintf("%v", airt.AppID))
 	builder.WriteString(", ")
 	builder.WriteString("start_time=")
-	builder.WriteString(aprt.StartTime.Format(time.ANSIC))
+	builder.WriteString(airt.StartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("run_duration=")
-	builder.WriteString(fmt.Sprintf("%v", aprt.RunDuration))
+	builder.WriteString(fmt.Sprintf("%v", airt.RunDuration))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(aprt.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(airt.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
-	builder.WriteString(aprt.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(airt.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// AppPackageRunTimes is a parsable slice of AppPackageRunTime.
-type AppPackageRunTimes []*AppPackageRunTime
+// AppInstRunTimes is a parsable slice of AppInstRunTime.
+type AppInstRunTimes []*AppInstRunTime

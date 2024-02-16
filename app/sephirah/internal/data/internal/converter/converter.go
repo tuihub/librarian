@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -30,11 +29,8 @@ func ToEntUserTypeList(a []libauth.UserType) []user.Type {
 func ToEntUserStatusList(a []modeltiphereth.UserStatus) []user.Status {
 	return toEnt.ToEntUserStatusList(a)
 }
-func ToEntApp(a modelgebura.App) ent.App {
-	return toEnt.ToEntApp(a)
-}
-func ToEntAppPackageSourceList(a []modelgebura.AppPackageSource) []apppackage.Source {
-	return toEnt.ToEntAppPackageSourceList(a)
+func ToEntAppInfo(a modelgebura.AppInfo) ent.AppInfo {
+	return toEnt.ToEntAppInfo(a)
 }
 func ToEntFeedConfigStatusList(a []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	return toEnt.ToEntFeedConfigStatusList(a)
@@ -67,20 +63,23 @@ func ToBizAccountList(a []*ent.Account) []*modeltiphereth.Account {
 func ToBizPorterList(a []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
 	return toBiz.ToBizPorterList(a)
 }
+func ToBizAppInfo(a *ent.AppInfo) *modelgebura.AppInfo {
+	return toBiz.ToBizAppInfo(a)
+}
+func ToBizAppInfoList(a []*ent.AppInfo) []*modelgebura.AppInfo {
+	return toBiz.ToBizAppInfoList(a)
+}
 func ToBizApp(a *ent.App) *modelgebura.App {
 	return toBiz.ToBizApp(a)
+}
+func ToBizAppBinary(a ent.AppBinary) modelgebura.AppBinary {
+	return toBiz.ToBizAppBinary(a)
 }
 func ToBizAppList(a []*ent.App) []*modelgebura.App {
 	return toBiz.ToBizAppList(a)
 }
-func ToBizAppPackage(a *ent.AppPackage) *modelgebura.AppPackage {
-	return toBiz.ToBizAppPackage(a)
-}
-func ToBizAppPackageBinary(a ent.AppPackage) modelgebura.AppPackageBinary {
-	return toBiz.ToBizAppPackageBinary(a)
-}
-func ToBizAppPackageList(a []*ent.AppPackage) []*modelgebura.AppPackage {
-	return toBiz.ToBizAppPackageList(a)
+func ToBizAppInstList(a []*ent.AppInst) []*modelgebura.AppInst {
+	return toBiz.ToBizAppInstList(a)
 }
 func ToBizFeedConfig(a *ent.FeedConfig) *modelyesod.FeedConfig {
 	return toBiz.ToBizFeedConfig(a)

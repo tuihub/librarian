@@ -31,8 +31,10 @@ const (
 	EdgeBindAccount = "bind_account"
 	// EdgePurchasedApp holds the string denoting the purchased_app edge name in mutations.
 	EdgePurchasedApp = "purchased_app"
-	// EdgeAppPackage holds the string denoting the app_package edge name in mutations.
-	EdgeAppPackage = "app_package"
+	// EdgeApp holds the string denoting the app edge name in mutations.
+	EdgeApp = "app"
+	// EdgeAppInst holds the string denoting the app_inst edge name in mutations.
+	EdgeAppInst = "app_inst"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
 	// EdgeNotifyTarget holds the string denoting the notify_target edge name in mutations.
@@ -60,16 +62,23 @@ const (
 	BindAccountColumn = "user_bind_account"
 	// PurchasedAppTable is the table that holds the purchased_app relation/edge. The primary key declared below.
 	PurchasedAppTable = "user_purchased_app"
-	// PurchasedAppInverseTable is the table name for the App entity.
+	// PurchasedAppInverseTable is the table name for the AppInfo entity.
+	// It exists in this package in order to avoid circular dependency with the "appinfo" package.
+	PurchasedAppInverseTable = "app_infos"
+	// AppTable is the table that holds the app relation/edge.
+	AppTable = "apps"
+	// AppInverseTable is the table name for the App entity.
 	// It exists in this package in order to avoid circular dependency with the "app" package.
-	PurchasedAppInverseTable = "apps"
-	// AppPackageTable is the table that holds the app_package relation/edge.
-	AppPackageTable = "app_packages"
-	// AppPackageInverseTable is the table name for the AppPackage entity.
-	// It exists in this package in order to avoid circular dependency with the "apppackage" package.
-	AppPackageInverseTable = "app_packages"
-	// AppPackageColumn is the table column denoting the app_package relation/edge.
-	AppPackageColumn = "user_app_package"
+	AppInverseTable = "apps"
+	// AppColumn is the table column denoting the app relation/edge.
+	AppColumn = "user_app"
+	// AppInstTable is the table that holds the app_inst relation/edge.
+	AppInstTable = "app_insts"
+	// AppInstInverseTable is the table name for the AppInst entity.
+	// It exists in this package in order to avoid circular dependency with the "appinst" package.
+	AppInstInverseTable = "app_insts"
+	// AppInstColumn is the table column denoting the app_inst relation/edge.
+	AppInstColumn = "user_app_inst"
 	// FeedConfigTable is the table that holds the feed_config relation/edge.
 	FeedConfigTable = "feed_configs"
 	// FeedConfigInverseTable is the table name for the FeedConfig entity.
@@ -142,7 +151,7 @@ var ForeignKeys = []string{
 var (
 	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
 	// primary key for the purchased_app relation (M2M).
-	PurchasedAppPrimaryKey = []string{"user_id", "app_id"}
+	PurchasedAppPrimaryKey = []string{"user_id", "app_info_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -282,17 +291,31 @@ func ByPurchasedApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByAppPackageCount orders the results by app_package count.
-func ByAppPackageCount(opts ...sql.OrderTermOption) OrderOption {
+// ByAppCount orders the results by app count.
+func ByAppCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAppPackageStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newAppStep(), opts...)
 	}
 }
 
-// ByAppPackage orders the results by app_package terms.
-func ByAppPackage(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByApp orders the results by app terms.
+func ByApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAppPackageStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newAppStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAppInstCount orders the results by app_inst count.
+func ByAppInstCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppInstStep(), opts...)
+	}
+}
+
+// ByAppInst orders the results by app_inst terms.
+func ByAppInst(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppInstStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -414,11 +437,18 @@ func newPurchasedAppStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
 	)
 }
-func newAppPackageStep() *sqlgraph.Step {
+func newAppStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AppPackageInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AppPackageTable, AppPackageColumn),
+		sqlgraph.To(AppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AppTable, AppColumn),
+	)
+}
+func newAppInstStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppInstInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AppInstTable, AppInstColumn),
 	)
 }
 func newFeedConfigStep() *sqlgraph.Step {

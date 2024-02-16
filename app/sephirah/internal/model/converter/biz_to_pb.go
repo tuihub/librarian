@@ -62,25 +62,28 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBAppType
 	// goverter:ignore AltNames
-	ToPBApp(*modelgebura.App) *librarian.App
+	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo
 	// goverter:matchIgnoreCase
 	// goverter:ignore ImageUrls
-	ToPBAppDetail(*modelgebura.AppDetails) *librarian.AppDetails
-	ToPBAppList([]*modelgebura.App) []*librarian.App
+	ToPBAppInfoDetail(*modelgebura.AppInfoDetails) *librarian.AppInfoDetails
+	ToPBAppInfoList([]*modelgebura.AppInfo) []*librarian.AppInfo
 	// goverter:matchIgnoreCase
 	// goverter:map Type | ToPBAppType
 	// goverter:ignore AltNames
-	ToPBAppMixed(*modelgebura.AppMixed) *librarian.AppMixed
-	ToPBAppMixedList([]*modelgebura.AppMixed) []*librarian.AppMixed
+	ToPBAppInfoMixed(*modelgebura.AppInfoMixed) *librarian.AppInfoMixed
+	ToPBAppInfoMixedList([]*modelgebura.AppInfoMixed) []*librarian.AppInfoMixed
 
 	// goverter:matchIgnoreCase
-	// goverter:map Source | ToPBAppPackageSource
-	ToPBAppPackage(*modelgebura.AppPackage) *librarian.AppPackage
+	ToPBApp(*modelgebura.App) *pb.App
+	ToPBAppList([]*modelgebura.App) []*pb.App
 	// goverter:matchIgnoreCase
 	// goverter:ignore TokenServerUrl
 	// goverter:ignore Chunks
-	ToPBAppPackageBinary(*modelgebura.AppPackageBinary) *librarian.AppPackageBinary
-	ToPBAppPackageList([]*modelgebura.AppPackage) []*librarian.AppPackage
+	ToPBAppBinary(*modelgebura.AppBinary) *pb.AppBinary
+
+	// goverter:matchIgnoreCase
+	ToPBAppInst(*modelgebura.AppInst) *pb.AppInst
+	ToPBAppInstList([]*modelgebura.AppInst) []*pb.AppInst
 
 	// goverter:matchIgnoreCase
 	ToPBFeed(*modelfeed.Feed) *librarian.Feed
@@ -192,19 +195,6 @@ func ToPBAppType(t modelgebura.AppType) librarian.AppType {
 		return librarian.AppType_APP_TYPE_GAME
 	default:
 		return librarian.AppType_APP_TYPE_UNSPECIFIED
-	}
-}
-
-func ToPBAppPackageSource(a modelgebura.AppPackageSource) librarian.AppPackageSource {
-	switch a {
-	case modelgebura.AppPackageSourceUnspecified:
-		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED
-	case modelgebura.AppPackageSourceManual:
-		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_MANUAL
-	case modelgebura.AppPackageSourceSentinel:
-		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL
-	default:
-		return librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED
 	}
 }
 

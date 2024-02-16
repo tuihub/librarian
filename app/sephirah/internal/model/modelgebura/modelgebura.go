@@ -6,7 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 )
 
-type App struct {
+type AppInfo struct {
 	ID                 model.InternalID
 	Internal           bool
 	Source             string
@@ -19,19 +19,19 @@ type App struct {
 	BackgroundImageURL string
 	CoverImageURL      string
 	Tags               []string
-	Details            *AppDetails
+	Details            *AppInfoDetails
 	// the bound Internal app id if self is external
 	BoundInternal    model.InternalID
 	LatestUpdateTime time.Time
 }
 
-type AppID struct {
+type AppInfoID struct {
 	Internal    bool
 	Source      string
 	SourceAppID string
 }
 
-type AppMixed struct {
+type AppInfoMixed struct {
 	ID                 model.InternalID
 	Name               string
 	Type               AppType
@@ -40,24 +40,16 @@ type AppMixed struct {
 	BackgroundImageURL string
 	CoverImageURL      string
 	Tags               []string
-	Details            *AppDetails
+	Details            *AppInfoDetails
 }
 
-type AppDetails struct {
+type AppInfoDetails struct {
 	Description string
 	ReleaseDate string
 	Developer   string
 	Publisher   string
 	Version     string
 }
-
-type AppSource int
-
-const (
-	AppSourceUnspecified AppSource = iota
-	AppSourceInternal
-	AppSourceSteam
-)
 
 type AppType int
 
@@ -66,39 +58,40 @@ const (
 	AppTypeGame
 )
 
-type AppPackage struct {
-	ID            model.InternalID
-	Source        AppPackageSource
-	SourceID      model.InternalID
-	Name          string
-	Description   string
-	Binary        *AppPackageBinary
-	Public        bool
-	AssignedAppID model.InternalID
-	GroupID       model.InternalID
+type App struct {
+	ID                model.InternalID
+	Name              string
+	Description       string
+	Public            bool
+	AssignedAppInfoID model.InternalID
 }
 
-type AppPackageBinary struct {
+type AppInst struct {
+	ID       model.InternalID
+	AppID    model.InternalID
+	DeviceID model.InternalID
+}
+
+type AppBinary struct {
 	Name      string
 	SizeBytes int64
 	PublicURL string
 	Sha256    []byte
 }
 
-type AppPackageSource int
-
-const (
-	AppPackageSourceUnspecified AppPackageSource = iota
-	AppPackageSourceManual
-	AppPackageSourceSentinel
-)
-
-type BoundApps struct {
-	Internal *App
-	Others   []*App
+type AppBinaryChunk struct {
+	Sequence  int64
+	SizeBytes int64
+	PublicURL string
+	Sha256    []byte
 }
 
-func (b *BoundApps) Flatten() *AppMixed {
+type BoundAppInfos struct {
+	Internal *AppInfo
+	Others   []*AppInfo
+}
+
+func (b *BoundAppInfos) Flatten() *AppInfoMixed {
 	if b == nil {
 		return nil
 	}
@@ -106,7 +99,7 @@ func (b *BoundApps) Flatten() *AppMixed {
 	for _, a := range b.Others {
 		res = mergeApp(res, a)
 	}
-	return &AppMixed{
+	return &AppInfoMixed{
 		ID:                 res.ID,
 		Name:               res.Name,
 		Type:               res.Type,
@@ -119,7 +112,7 @@ func (b *BoundApps) Flatten() *AppMixed {
 	}
 }
 
-func mergeApp(base *App, merged *App) *App {
+func mergeApp(base *AppInfo, merged *AppInfo) *AppInfo {
 	if base == nil {
 		base = merged
 		return base

@@ -12,7 +12,7 @@ import (
 
 func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // no need
 	var appID, appID2 *librarian.InternalID
-	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
+	if resp, err := c.cli.CreateAppInfo(ctx, &pb.CreateAppInfoRequest{AppInfo: &librarian.AppInfo{
 		Id:                 nil,
 		Internal:           true,
 		Source:             "",
@@ -32,7 +32,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	} else {
 		appID = resp.GetId()
 	}
-	if resp, err := c.cli.ListApps(ctx, &pb.ListAppsRequest{
+	if resp, err := c.cli.ListAppInfos(ctx, &pb.ListAppInfosRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
@@ -44,11 +44,11 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		ContainDetails:  false,
 	}); err != nil {
 		log.Fatal(err)
-	} else if len(resp.GetApps()) != 1 ||
-		resp.GetApps()[0].GetId().GetId() != appID.GetId() {
+	} else if len(resp.GetAppInfos()) != 1 ||
+		resp.GetAppInfos()[0].GetId().GetId() != appID.GetId() {
 		log.Fatal("inconsistent app id")
 	}
-	if _, err := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{App: &librarian.App{
+	if _, err := c.cli.UpdateAppInfo(ctx, &pb.UpdateAppInfoRequest{AppInfo: &librarian.AppInfo{
 		Id:                 appID,
 		Internal:           true,
 		Source:             "",
@@ -66,7 +66,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}}); err != nil {
 		log.Fatal(err)
 	}
-	if resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{App: &librarian.App{
+	if resp, err := c.cli.CreateAppInfo(ctx, &pb.CreateAppInfoRequest{AppInfo: &librarian.AppInfo{
 		Id:                 nil,
 		Internal:           true,
 		Source:             "",
@@ -86,17 +86,17 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	} else {
 		appID2 = resp.GetId()
 	}
-	if _, err := c.cli.SearchApps(ctx, &pb.SearchAppsRequest{
-		Paging:   defaultPaging,
-		Keywords: "2",
+	if _, err := c.cli.SearchAppInfos(ctx, &pb.SearchAppInfosRequest{
+		Paging: defaultPaging,
+		Query:  "2",
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := c.cli.GetBoundApps(ctx, &pb.GetBoundAppsRequest{AppId: appID2}); err != nil {
+	if _, err := c.cli.GetBoundAppInfos(ctx, &pb.GetBoundAppInfosRequest{AppId: appID2}); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := c.cli.PurchaseApp(ctx, &pb.PurchaseAppRequest{
-		AppId: &librarian.AppID{
+	if _, err := c.cli.PurchaseAppInfo(ctx, &pb.PurchaseAppInfoRequest{
+		AppId: &librarian.AppInfoID{
 			Internal:    true,
 			Source:      "",
 			SourceAppId: strconv.FormatInt(appID2.GetId(), 10),
@@ -104,13 +104,13 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{Source: nil}); err != nil {
+	if resp, err := c.cli.GetPurchasedAppInfos(ctx, &pb.GetPurchasedAppInfosRequest{Source: nil}); err != nil {
 		log.Fatal(err)
-	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID2.GetId() {
+	} else if len(resp.GetAppInfos()) != 1 || resp.GetAppInfos()[0].GetId().GetId() != appID2.GetId() {
 		log.Fatal("unexpected search result")
 	}
-	if _, err := c.cli.MergeApps(ctx, &pb.MergeAppsRequest{
-		Base: &librarian.App{
+	if _, err := c.cli.MergeAppInfos(ctx, &pb.MergeAppInfosRequest{
+		Base: &librarian.AppInfo{
 			Id:                 appID,
 			Internal:           true,
 			Source:             "",
@@ -130,17 +130,16 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	}); err != nil {
 		log.Fatal(err)
 	}
-	if resp, err := c.cli.GetPurchasedApps(ctx, &pb.GetPurchasedAppsRequest{Source: nil}); err != nil {
+	if resp, err := c.cli.GetPurchasedAppInfos(ctx, &pb.GetPurchasedAppInfosRequest{Source: nil}); err != nil {
 		log.Fatal(err)
-	} else if len(resp.GetApps()) != 1 || resp.GetApps()[0].GetId().GetId() != appID.GetId() {
+	} else if len(resp.GetAppInfos()) != 1 || resp.GetAppInfos()[0].GetId().GetId() != appID.GetId() {
 		log.Fatal("unexpected search result")
 	}
-	if resp, err := c.cli.ListAppPackages(ctx, &pb.ListAppPackagesRequest{
+	if resp, err := c.cli.ListApps(ctx, &pb.ListAppsRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
 		},
-		SourceFilter:        nil,
 		IdFilter:            nil,
 		AssignedAppIdFilter: nil,
 	}); err != nil {
@@ -149,29 +148,23 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		log.Fatal("unexpected app package list result")
 	}
 
-	resp, err := c.cli.CreateAppPackage(ctx, &pb.CreateAppPackageRequest{
-		AppPackage: &librarian.AppPackage{
-			Id:            nil,
-			Source:        0,
-			SourceId:      nil,
-			Name:          "test app package",
-			Description:   "test",
-			Binary:        nil,
-			Public:        false,
-			AssignedAppId: nil,
-			GroupId:       nil,
+	resp, err := c.cli.CreateApp(ctx, &pb.CreateAppRequest{
+		App: &pb.App{
+			Id:          nil,
+			Name:        "test app package",
+			Description: "test",
+			Public:      false,
 		},
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 	appPackageID := resp.GetId()
-	if resp2, err2 := c.cli.ListAppPackages(ctx, &pb.ListAppPackagesRequest{
+	if resp2, err2 := c.cli.ListApps(ctx, &pb.ListAppsRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
 		},
-		SourceFilter:        nil,
 		IdFilter:            nil,
 		AssignedAppIdFilter: nil,
 	}); err2 != nil {
@@ -179,27 +172,21 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetAppPackages()[0].GetDescription() != "test" {
 		log.Fatal("unexpected app package list result")
 	}
-	if _, err2 := c.cli.UpdateAppPackage(ctx, &pb.UpdateAppPackageRequest{
-		AppPackage: &librarian.AppPackage{
-			Id:            appPackageID,
-			Source:        0,
-			SourceId:      nil,
-			Name:          "test app package",
-			Description:   "test2",
-			Binary:        nil,
-			Public:        false,
-			AssignedAppId: nil,
-			GroupId:       nil,
+	if _, err2 := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{
+		App: &pb.App{
+			Id:          appPackageID,
+			Name:        "test app package",
+			Description: "test2",
+			Public:      false,
 		},
 	}); err2 != nil {
 		log.Fatal(err2)
 	}
-	if resp2, err2 := c.cli.ListAppPackages(ctx, &pb.ListAppPackagesRequest{
+	if resp2, err2 := c.cli.ListApps(ctx, &pb.ListAppsRequest{
 		Paging: &librarian.PagingRequest{
 			PageNum:  1,
 			PageSize: 1,
 		},
-		SourceFilter:        nil,
 		IdFilter:            nil,
 		AssignedAppIdFilter: nil,
 	}); err2 != nil {

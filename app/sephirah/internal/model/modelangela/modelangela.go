@@ -7,15 +7,15 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
-type PullAccountAppRelation struct {
+type PullAccountAppInfoRelation struct {
 	ID                model.InternalID
 	Platform          string
 	PlatformAccountID string
 }
 
-type PullApp struct {
+type PullAppInfo struct {
 	ID              model.InternalID
-	AppID           modelgebura.AppID
+	AppInfoID       modelgebura.AppInfoID
 	IgnoreRateLimit bool
 }
 
@@ -35,6 +35,6 @@ type ParseFeedItemDigest struct {
 	ID model.InternalID
 }
 
-type UpdateAppIndex struct {
+type UpdateAppInfoIndex struct {
 	IDs []model.InternalID
 }

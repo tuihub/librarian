@@ -28,7 +28,6 @@ import (
 // goverter:extend ToBizUserStatus
 // goverter:extend ToBizAppType
 // goverter:extend PtrToString
-// goverter:extend ToBizAppPackageSource
 // goverter:extend DurationPBToDuration
 // goverter:extend ToBizFeedConfigStatus
 // goverter:extend ToBizNotifyTargetStatus
@@ -58,20 +57,22 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime
-	ToBizApp(*librarian.App) *modelgebura.App
+	ToBizAppInfo(*librarian.AppInfo) *modelgebura.AppInfo
 	// goverter:matchIgnoreCase
-	ToBizAppDetail(*librarian.AppDetails) *modelgebura.AppDetails
+	ToBizAppInfoDetail(*librarian.AppInfoDetails) *modelgebura.AppInfoDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
 	// goverter:matchIgnoreCase
-	ToBizAppID(*librarian.AppID) *modelgebura.AppID
-	ToBizAppIDList([]*librarian.AppID) []*modelgebura.AppID
+	ToBizAppInfoID(*librarian.AppInfoID) *modelgebura.AppInfoID
+	ToBizAppInfoIDList([]*librarian.AppInfoID) []*modelgebura.AppInfoID
 
 	// goverter:matchIgnoreCase
-	ToBizAppPackage(*librarian.AppPackage) *modelgebura.AppPackage
+	ToBizApp(*pb.App) *modelgebura.App
 	// goverter:matchIgnoreCase
-	ToBizAppPackageBinary(*librarian.AppPackageBinary) *modelgebura.AppPackageBinary
-	ToBizAppPackageBinaryList([]*librarian.AppPackageBinary) []*modelgebura.AppPackageBinary
-	ToBizAppPackageSourceList([]librarian.AppPackageSource) []modelgebura.AppPackageSource
+	ToBizAppBinary(*pb.AppBinary) *modelgebura.AppBinary
+	ToBizAppBinaryList([]*pb.AppBinary) []*modelgebura.AppBinary
+
+	// goverter:matchIgnoreCase
+	ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore LatestUpdateTime
@@ -173,19 +174,6 @@ func ToBizAppType(t librarian.AppType) modelgebura.AppType {
 		return modelgebura.AppTypeGame
 	default:
 		return modelgebura.AppTypeUnspecified
-	}
-}
-
-func ToBizAppPackageSource(a librarian.AppPackageSource) modelgebura.AppPackageSource {
-	switch a {
-	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_UNSPECIFIED:
-		return modelgebura.AppPackageSourceUnspecified
-	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_MANUAL:
-		return modelgebura.AppPackageSourceManual
-	case librarian.AppPackageSource_APP_PACKAGE_SOURCE_SENTINEL:
-		return modelgebura.AppPackageSourceSentinel
-	default:
-		return modelgebura.AppPackageSourceUnspecified
 	}
 }
 

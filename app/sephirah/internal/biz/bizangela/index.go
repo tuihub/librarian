@@ -8,23 +8,23 @@ import (
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 )
 
-func NewUpdateAppIndexTopic(
+func NewUpdateAppInfoIndexTopic(
 	a *AngelaBase,
-) *libmq.Topic[modelangela.UpdateAppIndex] {
-	return libmq.NewTopic[modelangela.UpdateAppIndex](
-		"UpdateAppIndex",
-		func(ctx context.Context, r *modelangela.UpdateAppIndex) error {
-			apps, err := a.g.GetBatchBoundApps(ctx, r.IDs)
+) *libmq.Topic[modelangela.UpdateAppInfoIndex] {
+	return libmq.NewTopic[modelangela.UpdateAppInfoIndex](
+		"UpdateAppInfoIndex",
+		func(ctx context.Context, r *modelangela.UpdateAppInfoIndex) error {
+			infos, err := a.g.GetBatchBoundAppInfos(ctx, r.IDs)
 			if err != nil {
 				return err
 			}
-			for _, app := range apps {
-				desc := app.Internal.Name
-				for _, other := range app.Others {
+			for _, info := range infos {
+				desc := info.Internal.Name
+				for _, other := range info.Others {
 					desc += other.Name
 				}
 				err = a.searcher.DescribeID(ctx,
-					app.Internal.ID,
+					info.Internal.ID,
 					desc,
 					searcher.DescribeIDRequest_DESCRIBE_MODE_OVERRIDE,
 					searcher.Index_INDEX_GEBURA_APP,

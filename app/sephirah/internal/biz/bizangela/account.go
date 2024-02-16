@@ -16,7 +16,7 @@ import (
 
 func NewPullAccountTopic(
 	a *AngelaBase,
-	sr *libmq.Topic[modelangela.PullAccountAppRelation],
+	sr *libmq.Topic[modelangela.PullAccountAppInfoRelation],
 ) *libmq.Topic[modeltiphereth.PullAccountInfo] {
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
@@ -47,7 +47,7 @@ func NewPullAccountTopic(
 				return err
 			}
 			return sr.
-				Publish(ctx, modelangela.PullAccountAppRelation{
+				Publish(ctx, modelangela.PullAccountAppInfoRelation{
 					ID:                info.ID,
 					Platform:          info.Platform,
 					PlatformAccountID: info.PlatformAccountID,
@@ -56,20 +56,20 @@ func NewPullAccountTopic(
 	)
 }
 
-func NewPullAccountAppRelationTopic(
+func NewPullAccountAppInfoRelationTopic(
 	a *AngelaBase,
-	sa *libmq.Topic[modelangela.PullApp],
-) *libmq.Topic[modelangela.PullAccountAppRelation] {
-	return libmq.NewTopic[modelangela.PullAccountAppRelation](
-		"PullAccountAppRelation",
-		func(ctx context.Context, r *modelangela.PullAccountAppRelation) error {
+	sa *libmq.Topic[modelangela.PullAppInfo],
+) *libmq.Topic[modelangela.PullAccountAppInfoRelation] {
+	return libmq.NewTopic[modelangela.PullAccountAppInfoRelation](
+		"PullAccountAppInfoRelation",
+		func(ctx context.Context, r *modelangela.PullAccountAppInfoRelation) error {
 			if !a.supv.CheckAccountPlatform(r.Platform) {
 				return nil
 			}
-			var appList []*librarian.App
-			if resp, err := a.porter.PullAccountAppRelation(
+			var infoList []*librarian.AppInfo
+			if resp, err := a.porter.PullAccountAppInfoRelation(
 				a.supv.CallAccountPlatform(ctx, r.Platform),
-				&porter.PullAccountAppRelationRequest{
+				&porter.PullAccountAppInfoRelationRequest{
 					RelationType: librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
 					AccountId: &librarian.AccountID{
 						Platform:          r.Platform,
@@ -79,37 +79,37 @@ func NewPullAccountAppRelationTopic(
 			); err != nil {
 				return err
 			} else {
-				appList = resp.GetAppList()
+				infoList = resp.GetAppInfos()
 			}
-			appNum := len(appList)
-			if appNum <= 0 {
+			infoNum := len(infoList)
+			if infoNum <= 0 {
 				return nil
 			}
-			apps := make([]*modelgebura.App, 0, appNum)
-			var appIDs []model.InternalID
-			if id, err := a.searcher.NewBatchIDs(ctx, appNum); err != nil {
+			infos := make([]*modelgebura.AppInfo, 0, infoNum)
+			var infoIDs []model.InternalID
+			if id, err := a.searcher.NewBatchIDs(ctx, infoNum); err != nil {
 				return err
 			} else {
-				appIDs = id
+				infoIDs = id
 			}
-			for i, app := range appList {
-				apps = append(apps, converter.ToBizApp(app))
-				apps[i].ID = appIDs[i]
-				apps[i].Source = r.Platform
+			for i, info := range infoList {
+				infos = append(infos, converter.ToBizAppInfo(info))
+				infos[i].ID = infoIDs[i]
+				infos[i].Source = r.Platform
 			}
-			if err := a.repo.UpsertApps(ctx, apps); err != nil {
+			if err := a.repo.UpsertAppInfos(ctx, infos); err != nil {
 				return err
 			}
-			if err := a.repo.AccountPurchaseApps(ctx, r.ID, appIDs); err != nil {
+			if err := a.repo.AccountPurchaseAppInfos(ctx, r.ID, infoIDs); err != nil {
 				return err
 			}
-			for _, app := range apps {
-				_ = sa.Publish(ctx, modelangela.PullApp{
-					ID: app.ID,
-					AppID: modelgebura.AppID{
+			for _, info := range infos {
+				_ = sa.Publish(ctx, modelangela.PullAppInfo{
+					ID: info.ID,
+					AppInfoID: modelgebura.AppInfoID{
 						Internal:    false,
 						Source:      r.Platform,
-						SourceAppID: app.SourceAppID,
+						SourceAppID: info.SourceAppID,
 					},
 					IgnoreRateLimit: true,
 				})

@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -89,14 +89,14 @@ func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
 	return ac
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the App entity by IDs.
+// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
 func (ac *AccountCreate) AddPurchasedAppIDs(ids ...model.InternalID) *AccountCreate {
 	ac.mutation.AddPurchasedAppIDs(ids...)
 	return ac
 }
 
-// AddPurchasedApp adds the "purchased_app" edges to the App entity.
-func (ac *AccountCreate) AddPurchasedApp(a ...*App) *AccountCreate {
+// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
+func (ac *AccountCreate) AddPurchasedApp(a ...*AppInfo) *AccountCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
@@ -260,7 +260,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 			Columns: account.PurchasedAppPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

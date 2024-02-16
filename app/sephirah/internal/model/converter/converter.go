@@ -48,26 +48,29 @@ func ToPBAccountList(a []*modeltiphereth.Account) []*librarian.Account {
 func ToPBPorterList(a []*modeltiphereth.PorterInstance) []*pb.Porter {
 	return toPB.ToPBPorterList(a)
 }
-func ToPBApp(a *modelgebura.App) *librarian.App {
+func ToPBAppInfo(a *modelgebura.AppInfo) *librarian.AppInfo {
+	return toPB.ToPBAppInfo(a)
+}
+func ToPBAppInfoList(a []*modelgebura.AppInfo) []*librarian.AppInfo {
+	return toPB.ToPBAppInfoList(a)
+}
+func ToPBAppInfoMixed(a *modelgebura.AppInfoMixed) *librarian.AppInfoMixed {
+	return toPB.ToPBAppInfoMixed(a)
+}
+func ToPBAppInfoMixedList(a []*modelgebura.AppInfoMixed) []*librarian.AppInfoMixed {
+	return toPB.ToPBAppInfoMixedList(a)
+}
+func ToPBApp(a *modelgebura.App) *pb.App {
 	return toPB.ToPBApp(a)
 }
-func ToPBAppList(a []*modelgebura.App) []*librarian.App {
+func ToPBAppList(a []*modelgebura.App) []*pb.App {
 	return toPB.ToPBAppList(a)
 }
-func ToPBAppMixed(a *modelgebura.AppMixed) *librarian.AppMixed {
-	return toPB.ToPBAppMixed(a)
+func ToPBAppBinary(a *modelgebura.AppBinary) *pb.AppBinary {
+	return toPB.ToPBAppBinary(a)
 }
-func ToPBAppMixedList(a []*modelgebura.AppMixed) []*librarian.AppMixed {
-	return toPB.ToPBAppMixedList(a)
-}
-func ToPBAppPackage(a *modelgebura.AppPackage) *librarian.AppPackage {
-	return toPB.ToPBAppPackage(a)
-}
-func ToPBAppPackageBinary(a *modelgebura.AppPackageBinary) *librarian.AppPackageBinary {
-	return toPB.ToPBAppPackageBinary(a)
-}
-func ToPBAppPackageList(a []*modelgebura.AppPackage) []*librarian.AppPackage {
-	return toPB.ToPBAppPackageList(a)
+func ToPBAppInstList(a []*modelgebura.AppInst) []*pb.AppInst {
+	return toPB.ToPBAppInstList(a)
 }
 func ToPBFeed(a *modelfeed.Feed) *librarian.Feed {
 	return toPB.ToPBFeed(a)
@@ -138,26 +141,26 @@ func ToBizPorterPrivilege(a *pb.PorterPrivilege) *modeltiphereth.PorterInstanceP
 func ToBizDeviceInfo(a *pb.DeviceInfo) *modeltiphereth.DeviceInfo {
 	return toBiz.ToBizDeviceInfo(a)
 }
-func ToBizApp(a *librarian.App) *modelgebura.App {
-	return toBiz.ToBizApp(a)
+func ToBizAppInfo(a *librarian.AppInfo) *modelgebura.AppInfo {
+	return toBiz.ToBizAppInfo(a)
 }
-func ToBizAppID(a *librarian.AppID) *modelgebura.AppID {
-	return toBiz.ToBizAppID(a)
+func ToBizAppInfoID(a *librarian.AppInfoID) *modelgebura.AppInfoID {
+	return toBiz.ToBizAppInfoID(a)
 }
-func ToBizAppIDList(a []*librarian.AppID) []*modelgebura.AppID {
-	return toBiz.ToBizAppIDList(a)
+func ToBizAppInfoIDList(a []*librarian.AppInfoID) []*modelgebura.AppInfoID {
+	return toBiz.ToBizAppInfoIDList(a)
 }
 func ToBizAppTypeList(a []librarian.AppType) []modelgebura.AppType {
 	return toBiz.ToBizAppTypeList(a)
 }
-func ToBizAppPackage(a *librarian.AppPackage) *modelgebura.AppPackage {
-	return toBiz.ToBizAppPackage(a)
+func ToBizApp(a *pb.App) *modelgebura.App {
+	return toBiz.ToBizApp(a)
 }
-func ToBizAppPackageBinaryList(a []*librarian.AppPackageBinary) []*modelgebura.AppPackageBinary {
-	return toBiz.ToBizAppPackageBinaryList(a)
+func ToBizAppBinaryList(a []*pb.AppBinary) []*modelgebura.AppBinary {
+	return toBiz.ToBizAppBinaryList(a)
 }
-func ToBizAppPackageSourceList(a []librarian.AppPackageSource) []modelgebura.AppPackageSource {
-	return toBiz.ToBizAppPackageSourceList(a)
+func ToBizAppInst(a *pb.AppInst) *modelgebura.AppInst {
+	return toBiz.ToBizAppInst(a)
 }
 func ToBizFeedConfig(a *pb.FeedConfig) *modelyesod.FeedConfig {
 	return toBiz.ToBizFeedConfig(a)

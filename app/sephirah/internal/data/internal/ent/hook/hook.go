@@ -33,28 +33,52 @@ func (f AppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppMutation", m)
 }
 
-// The AppPackageFunc type is an adapter to allow the use of ordinary
-// function as AppPackage mutator.
-type AppPackageFunc func(context.Context, *ent.AppPackageMutation) (ent.Value, error)
+// The AppBinaryFunc type is an adapter to allow the use of ordinary
+// function as AppBinary mutator.
+type AppBinaryFunc func(context.Context, *ent.AppBinaryMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AppPackageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AppPackageMutation); ok {
+func (f AppBinaryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppBinaryMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPackageMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppBinaryMutation", m)
 }
 
-// The AppPackageRunTimeFunc type is an adapter to allow the use of ordinary
-// function as AppPackageRunTime mutator.
-type AppPackageRunTimeFunc func(context.Context, *ent.AppPackageRunTimeMutation) (ent.Value, error)
+// The AppInfoFunc type is an adapter to allow the use of ordinary
+// function as AppInfo mutator.
+type AppInfoFunc func(context.Context, *ent.AppInfoMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AppPackageRunTimeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AppPackageRunTimeMutation); ok {
+func (f AppInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppInfoMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppPackageRunTimeMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInfoMutation", m)
+}
+
+// The AppInstFunc type is an adapter to allow the use of ordinary
+// function as AppInst mutator.
+type AppInstFunc func(context.Context, *ent.AppInstMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppInstFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppInstMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInstMutation", m)
+}
+
+// The AppInstRunTimeFunc type is an adapter to allow the use of ordinary
+// function as AppInstRunTime mutator.
+type AppInstRunTimeFunc func(context.Context, *ent.AppInstRunTimeMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppInstRunTimeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppInstRunTimeMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInstRunTimeMutation", m)
 }
 
 // The DeviceInfoFunc type is an adapter to allow the use of ordinary

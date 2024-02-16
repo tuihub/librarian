@@ -2,8 +2,7 @@ package converter
 
 import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
@@ -25,7 +24,6 @@ import (
 // goverter:extend ToEntUserType
 // goverter:extend ToEntUserStatus
 // goverter:extend ToEntAppType
-// goverter:extend ToEntAppPackageSource
 // goverter:extend ToEntFeedConfigStatus
 // goverter:extend ToEntNotifyTargetStatus
 // goverter:extend ToEntSystemType
@@ -38,8 +36,7 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:ignore Edges
 	// goverter:ignore CreatedAt
 	// goverter:ignore UpdatedAt
-	ToEntApp(modelgebura.App) ent.App
-	ToEntAppPackageSourceList([]modelgebura.AppPackageSource) []apppackage.Source
+	ToEntAppInfo(modelgebura.AppInfo) ent.AppInfo
 
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
 
@@ -87,27 +84,14 @@ func ToEntPorterInstanceStatus(s modeltiphereth.PorterInstanceStatus) porterinst
 	}
 }
 
-func ToEntAppType(t modelgebura.AppType) app.Type {
+func ToEntAppType(t modelgebura.AppType) appinfo.Type {
 	switch t {
 	case modelgebura.AppTypeUnspecified:
-		return app.TypeUnknown
+		return appinfo.TypeUnknown
 	case modelgebura.AppTypeGame:
-		return app.TypeGame
+		return appinfo.TypeGame
 	default:
-		return app.TypeUnknown
-	}
-}
-
-func ToEntAppPackageSource(a modelgebura.AppPackageSource) apppackage.Source {
-	switch a {
-	case modelgebura.AppPackageSourceUnspecified:
-		return ""
-	case modelgebura.AppPackageSourceManual:
-		return apppackage.SourceManual
-	case modelgebura.AppPackageSourceSentinel:
-		return apppackage.SourceSentinel
-	default:
-		return ""
+		return appinfo.TypeUnknown
 	}
 }
 

@@ -5,7 +5,6 @@ package converter
 
 import (
 	ent "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	apppackage "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/apppackage"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -51,22 +50,80 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
-		modelgeburaApp.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaApp.Internal = (*source).Internal
-		modelgeburaApp.Source = (*source).Source
-		modelgeburaApp.SourceAppID = (*source).SourceAppID
-		modelgeburaApp.SourceURL = (*source).SourceURL
+		modelgeburaApp.ID = model.InternalID((*source).ID)
 		modelgeburaApp.Name = (*source).Name
-		modelgeburaApp.Type = ToBizAppType((*source).Type)
-		modelgeburaApp.ShortDescription = (*source).ShortDescription
-		modelgeburaApp.IconImageURL = (*source).IconImageURL
-		modelgeburaApp.BackgroundImageURL = (*source).BackgroundImageURL
-		modelgeburaApp.CoverImageURL = (*source).CoverImageURL
-		modelgeburaApp.Details = c.entAppToPModelgeburaAppDetails((*source))
-		modelgeburaApp.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
+		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.Public = (*source).Public
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
+}
+func (c *toBizConverterImpl) ToBizAppBinary(source ent.AppBinary) modelgebura.AppBinary {
+	var modelgeburaAppBinary modelgebura.AppBinary
+	modelgeburaAppBinary.Name = source.Name
+	modelgeburaAppBinary.SizeBytes = source.SizeBytes
+	modelgeburaAppBinary.PublicURL = source.PublicURL
+	var byteList []uint8
+	if source.Sha256 != nil {
+		byteList = make([]uint8, len(source.Sha256))
+		for i := 0; i < len(source.Sha256); i++ {
+			byteList[i] = source.Sha256[i]
+		}
+	}
+	modelgeburaAppBinary.Sha256 = byteList
+	return modelgeburaAppBinary
+}
+func (c *toBizConverterImpl) ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
+	var pModelgeburaAppInfo *modelgebura.AppInfo
+	if source != nil {
+		var modelgeburaAppInfo modelgebura.AppInfo
+		modelgeburaAppInfo.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppInfo.Internal = (*source).Internal
+		modelgeburaAppInfo.Source = (*source).Source
+		modelgeburaAppInfo.SourceAppID = (*source).SourceAppID
+		modelgeburaAppInfo.SourceURL = (*source).SourceURL
+		modelgeburaAppInfo.Name = (*source).Name
+		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
+		modelgeburaAppInfo.ShortDescription = (*source).ShortDescription
+		modelgeburaAppInfo.IconImageURL = (*source).IconImageURL
+		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageURL
+		modelgeburaAppInfo.CoverImageURL = (*source).CoverImageURL
+		modelgeburaAppInfo.Details = c.entAppInfoToPModelgeburaAppInfoDetails((*source))
+		modelgeburaAppInfo.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
+		pModelgeburaAppInfo = &modelgeburaAppInfo
+	}
+	return pModelgeburaAppInfo
+}
+func (c *toBizConverterImpl) ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
+	var pModelgeburaAppInfoList []*modelgebura.AppInfo
+	if source != nil {
+		pModelgeburaAppInfoList = make([]*modelgebura.AppInfo, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppInfoList[i] = c.ToBizAppInfo(source[i])
+		}
+	}
+	return pModelgeburaAppInfoList
+}
+func (c *toBizConverterImpl) ToBizAppInst(source *ent.AppInst) *modelgebura.AppInst {
+	var pModelgeburaAppInst *modelgebura.AppInst
+	if source != nil {
+		var modelgeburaAppInst modelgebura.AppInst
+		modelgeburaAppInst.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppInst.AppID = c.modelInternalIDToModelInternalID((*source).AppID)
+		modelgeburaAppInst.DeviceID = c.modelInternalIDToModelInternalID((*source).DeviceID)
+		pModelgeburaAppInst = &modelgeburaAppInst
+	}
+	return pModelgeburaAppInst
+}
+func (c *toBizConverterImpl) ToBizAppInstList(source []*ent.AppInst) []*modelgebura.AppInst {
+	var pModelgeburaAppInstList []*modelgebura.AppInst
+	if source != nil {
+		pModelgeburaAppInstList = make([]*modelgebura.AppInst, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppInstList[i] = c.ToBizAppInst(source[i])
+		}
+	}
+	return pModelgeburaAppInstList
 }
 func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App {
 	var pModelgeburaAppList []*modelgebura.App
@@ -77,47 +134,6 @@ func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App 
 		}
 	}
 	return pModelgeburaAppList
-}
-func (c *toBizConverterImpl) ToBizAppPackage(source *ent.AppPackage) *modelgebura.AppPackage {
-	var pModelgeburaAppPackage *modelgebura.AppPackage
-	if source != nil {
-		var modelgeburaAppPackage modelgebura.AppPackage
-		modelgeburaAppPackage.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaAppPackage.Source = ToBizAppPackageSource((*source).Source)
-		modelgeburaAppPackage.SourceID = c.modelInternalIDToModelInternalID((*source).SourceID)
-		modelgeburaAppPackage.Name = (*source).Name
-		modelgeburaAppPackage.Description = (*source).Description
-		modelgeburaAppPackage.Binary = c.entAppPackageToPModelgeburaAppPackageBinary((*source))
-		modelgeburaAppPackage.Public = (*source).Public
-		modelgeburaAppPackage.GroupID = c.modelInternalIDToModelInternalID((*source).GroupID)
-		pModelgeburaAppPackage = &modelgeburaAppPackage
-	}
-	return pModelgeburaAppPackage
-}
-func (c *toBizConverterImpl) ToBizAppPackageBinary(source ent.AppPackage) modelgebura.AppPackageBinary {
-	var modelgeburaAppPackageBinary modelgebura.AppPackageBinary
-	modelgeburaAppPackageBinary.Name = source.BinaryName
-	modelgeburaAppPackageBinary.SizeBytes = source.BinarySizeBytes
-	modelgeburaAppPackageBinary.PublicURL = source.BinaryPublicURL
-	var byteList []uint8
-	if source.BinarySha256 != nil {
-		byteList = make([]uint8, len(source.BinarySha256))
-		for i := 0; i < len(source.BinarySha256); i++ {
-			byteList[i] = source.BinarySha256[i]
-		}
-	}
-	modelgeburaAppPackageBinary.Sha256 = byteList
-	return modelgeburaAppPackageBinary
-}
-func (c *toBizConverterImpl) ToBizAppPackageList(source []*ent.AppPackage) []*modelgebura.AppPackage {
-	var pModelgeburaAppPackageList []*modelgebura.AppPackage
-	if source != nil {
-		pModelgeburaAppPackageList = make([]*modelgebura.AppPackage, len(source))
-		for i := 0; i < len(source); i++ {
-			pModelgeburaAppPackageList[i] = c.ToBizAppPackage(source[i])
-		}
-	}
-	return pModelgeburaAppPackageList
 }
 func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
 	var pModeltipherethDeviceInfo *modeltiphereth.DeviceInfo
@@ -368,18 +384,14 @@ func (c *toBizConverterImpl) ToBizUserSessionList(source []*ent.UserSession) []*
 	}
 	return pModeltipherethUserSessionList
 }
-func (c *toBizConverterImpl) entAppPackageToPModelgeburaAppPackageBinary(source ent.AppPackage) *modelgebura.AppPackageBinary {
-	modelgeburaAppPackageBinary := c.ToBizAppPackageBinary(source)
-	return &modelgeburaAppPackageBinary
-}
-func (c *toBizConverterImpl) entAppToPModelgeburaAppDetails(source ent.App) *modelgebura.AppDetails {
-	var modelgeburaAppDetails modelgebura.AppDetails
-	modelgeburaAppDetails.Description = source.Description
-	modelgeburaAppDetails.ReleaseDate = source.ReleaseDate
-	modelgeburaAppDetails.Developer = source.Developer
-	modelgeburaAppDetails.Publisher = source.Publisher
-	modelgeburaAppDetails.Version = source.Version
-	return &modelgeburaAppDetails
+func (c *toBizConverterImpl) entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.AppInfoDetails {
+	var modelgeburaAppInfoDetails modelgebura.AppInfoDetails
+	modelgeburaAppInfoDetails.Description = source.Description
+	modelgeburaAppInfoDetails.ReleaseDate = source.ReleaseDate
+	modelgeburaAppInfoDetails.Developer = source.Developer
+	modelgeburaAppInfoDetails.Publisher = source.Publisher
+	modelgeburaAppInfoDetails.Version = source.Version
+	return &modelgeburaAppInfoDetails
 }
 func (c *toBizConverterImpl) modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
 	return model.InternalID(source)
@@ -479,16 +491,16 @@ func (c *toBizConverterImpl) timeTimeToPTimeTime(source time.Time) *time.Time {
 
 type toEntConverterImpl struct{}
 
-func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
-	var entApp ent.App
-	entApp.ID = model.InternalID(source.ID)
-	entApp.Internal = source.Internal
-	entApp.Source = source.Source
-	entApp.SourceAppID = source.SourceAppID
-	entApp.SourceURL = source.SourceURL
-	entApp.Name = source.Name
-	entApp.Type = ToEntAppType(source.Type)
-	entApp.ShortDescription = source.ShortDescription
+func (c *toEntConverterImpl) ToEntAppInfo(source modelgebura.AppInfo) ent.AppInfo {
+	var entAppInfo ent.AppInfo
+	entAppInfo.ID = model.InternalID(source.ID)
+	entAppInfo.Internal = source.Internal
+	entAppInfo.Source = source.Source
+	entAppInfo.SourceAppID = source.SourceAppID
+	entAppInfo.SourceURL = source.SourceURL
+	entAppInfo.Name = source.Name
+	entAppInfo.Type = ToEntAppType(source.Type)
+	entAppInfo.ShortDescription = source.ShortDescription
 	var pString *string
 	if source.Details != nil {
 		pString = &source.Details.Description
@@ -497,10 +509,10 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	if pString != nil {
 		xstring = *pString
 	}
-	entApp.Description = xstring
-	entApp.IconImageURL = source.IconImageURL
-	entApp.BackgroundImageURL = source.BackgroundImageURL
-	entApp.CoverImageURL = source.CoverImageURL
+	entAppInfo.Description = xstring
+	entAppInfo.IconImageURL = source.IconImageURL
+	entAppInfo.BackgroundImageURL = source.BackgroundImageURL
+	entAppInfo.CoverImageURL = source.CoverImageURL
 	var pString2 *string
 	if source.Details != nil {
 		pString2 = &source.Details.ReleaseDate
@@ -509,7 +521,7 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	if pString2 != nil {
 		xstring2 = *pString2
 	}
-	entApp.ReleaseDate = xstring2
+	entAppInfo.ReleaseDate = xstring2
 	var pString3 *string
 	if source.Details != nil {
 		pString3 = &source.Details.Developer
@@ -518,7 +530,7 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	if pString3 != nil {
 		xstring3 = *pString3
 	}
-	entApp.Developer = xstring3
+	entAppInfo.Developer = xstring3
 	var pString4 *string
 	if source.Details != nil {
 		pString4 = &source.Details.Publisher
@@ -527,7 +539,7 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	if pString4 != nil {
 		xstring4 = *pString4
 	}
-	entApp.Publisher = xstring4
+	entAppInfo.Publisher = xstring4
 	var pString5 *string
 	if source.Details != nil {
 		pString5 = &source.Details.Version
@@ -536,18 +548,8 @@ func (c *toEntConverterImpl) ToEntApp(source modelgebura.App) ent.App {
 	if pString5 != nil {
 		xstring5 = *pString5
 	}
-	entApp.Version = xstring5
-	return entApp
-}
-func (c *toEntConverterImpl) ToEntAppPackageSourceList(source []modelgebura.AppPackageSource) []apppackage.Source {
-	var apppackageSourceList []apppackage.Source
-	if source != nil {
-		apppackageSourceList = make([]apppackage.Source, len(source))
-		for i := 0; i < len(source); i++ {
-			apppackageSourceList[i] = ToEntAppPackageSource(source[i])
-		}
-	}
-	return apppackageSourceList
+	entAppInfo.Version = xstring5
+	return entAppInfo
 }
 func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	var feedconfigStatusList []feedconfig.Status
