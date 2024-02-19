@@ -55,11 +55,8 @@ func newApp(
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(gs, hs, mq, cron),
 	}
-	if consul != nil {
-		r, err := libapp.NewRegistrar(consul)
-		if err != nil {
-			return nil, err
-		}
+	r, err := libapp.NewRegistrar(consul)
+	if err == nil {
 		options = append(options, kratos.Registrar(r))
 	}
 	return kratos.New(options...), nil

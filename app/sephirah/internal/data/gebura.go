@@ -362,7 +362,7 @@ func (g geburaRepo) ListApps(
 			res[i].AssignedAppInfoID = ap[i].Edges.AppInfo.ID
 		}
 	}
-	return converter.ToBizAppList(ap), total, nil
+	return res, total, nil
 }
 
 func (g geburaRepo) AssignApp(

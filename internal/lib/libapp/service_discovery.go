@@ -44,6 +44,11 @@ func NewRegistrar(c *conf.Consul) (registry.Registrar, error) {
 	if err != nil {
 		return nil, err
 	}
+	// check if the consul agent is available
+	_, err = client.Status().Leader()
+	if err != nil {
+		return nil, err
+	}
 	return consul.New(client), nil
 }
 
