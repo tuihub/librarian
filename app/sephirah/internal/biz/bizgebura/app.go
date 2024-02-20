@@ -46,6 +46,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) *errors.Erro
 func (g *Gebura) ListApps(
 	ctx context.Context,
 	paging model.Paging,
+	ownerIDs []model.InternalID,
 	appInfoIDs []model.InternalID,
 	ids []model.InternalID,
 ) ([]*modelgebura.App, int, *errors.Error) {
@@ -53,7 +54,12 @@ func (g *Gebura) ListApps(
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	res, total, err := g.repo.ListApps(ctx, claims.UserID, paging, appInfoIDs, ids)
+	publicOnly := true
+	if len(ownerIDs) == 0 {
+		ownerIDs = []model.InternalID{claims.UserID}
+		publicOnly = false
+	}
+	res, total, err := g.repo.ListApps(ctx, paging, ownerIDs, appInfoIDs, ids, publicOnly)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

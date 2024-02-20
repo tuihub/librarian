@@ -31,6 +31,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
@@ -65,6 +66,7 @@ const (
 	TypePorterInstance   = "PorterInstance"
 	TypePorterPrivilege  = "PorterPrivilege"
 	TypeUser             = "User"
+	TypeUserDevice       = "UserDevice"
 	TypeUserSession      = "UserSession"
 )
 
@@ -5551,9 +5553,15 @@ type DeviceInfoMutation struct {
 	updated_at                 *time.Time
 	created_at                 *time.Time
 	clearedFields              map[string]struct{}
+	user                       map[model.InternalID]struct{}
+	removeduser                map[model.InternalID]struct{}
+	cleareduser                bool
 	user_session               map[model.InternalID]struct{}
 	removeduser_session        map[model.InternalID]struct{}
 	cleareduser_session        bool
+	user_device                map[int]struct{}
+	removeduser_device         map[int]struct{}
+	cleareduser_device         bool
 	done                       bool
 	oldValue                   func(context.Context) (*DeviceInfo, error)
 	predicates                 []predicate.DeviceInfo
@@ -5951,6 +5959,60 @@ func (m *DeviceInfoMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddUserIDs adds the "user" edge to the User entity by ids.
+func (m *DeviceInfoMutation) AddUserIDs(ids ...model.InternalID) {
+	if m.user == nil {
+		m.user = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.user[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *DeviceInfoMutation) ClearUser() {
+	m.cleareduser = true
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *DeviceInfoMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// RemoveUserIDs removes the "user" edge to the User entity by IDs.
+func (m *DeviceInfoMutation) RemoveUserIDs(ids ...model.InternalID) {
+	if m.removeduser == nil {
+		m.removeduser = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.user, ids[i])
+		m.removeduser[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUser returns the removed IDs of the "user" edge to the User entity.
+func (m *DeviceInfoMutation) RemovedUserIDs() (ids []model.InternalID) {
+	for id := range m.removeduser {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+func (m *DeviceInfoMutation) UserIDs() (ids []model.InternalID) {
+	for id := range m.user {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *DeviceInfoMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+	m.removeduser = nil
+}
+
 // AddUserSessionIDs adds the "user_session" edge to the UserSession entity by ids.
 func (m *DeviceInfoMutation) AddUserSessionIDs(ids ...model.InternalID) {
 	if m.user_session == nil {
@@ -6003,6 +6065,60 @@ func (m *DeviceInfoMutation) ResetUserSession() {
 	m.user_session = nil
 	m.cleareduser_session = false
 	m.removeduser_session = nil
+}
+
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by ids.
+func (m *DeviceInfoMutation) AddUserDeviceIDs(ids ...int) {
+	if m.user_device == nil {
+		m.user_device = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.user_device[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUserDevice clears the "user_device" edge to the UserDevice entity.
+func (m *DeviceInfoMutation) ClearUserDevice() {
+	m.cleareduser_device = true
+}
+
+// UserDeviceCleared reports if the "user_device" edge to the UserDevice entity was cleared.
+func (m *DeviceInfoMutation) UserDeviceCleared() bool {
+	return m.cleareduser_device
+}
+
+// RemoveUserDeviceIDs removes the "user_device" edge to the UserDevice entity by IDs.
+func (m *DeviceInfoMutation) RemoveUserDeviceIDs(ids ...int) {
+	if m.removeduser_device == nil {
+		m.removeduser_device = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.user_device, ids[i])
+		m.removeduser_device[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUserDevice returns the removed IDs of the "user_device" edge to the UserDevice entity.
+func (m *DeviceInfoMutation) RemovedUserDeviceIDs() (ids []int) {
+	for id := range m.removeduser_device {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserDeviceIDs returns the "user_device" edge IDs in the mutation.
+func (m *DeviceInfoMutation) UserDeviceIDs() (ids []int) {
+	for id := range m.user_device {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUserDevice resets all changes to the "user_device" edge.
+func (m *DeviceInfoMutation) ResetUserDevice() {
+	m.user_device = nil
+	m.cleareduser_device = false
+	m.removeduser_device = nil
 }
 
 // Where appends a list predicates to the DeviceInfoMutation builder.
@@ -6257,9 +6373,15 @@ func (m *DeviceInfoMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *DeviceInfoMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.user != nil {
+		edges = append(edges, deviceinfo.EdgeUser)
+	}
 	if m.user_session != nil {
 		edges = append(edges, deviceinfo.EdgeUserSession)
+	}
+	if m.user_device != nil {
+		edges = append(edges, deviceinfo.EdgeUserDevice)
 	}
 	return edges
 }
@@ -6268,9 +6390,21 @@ func (m *DeviceInfoMutation) AddedEdges() []string {
 // name in this mutation.
 func (m *DeviceInfoMutation) AddedIDs(name string) []ent.Value {
 	switch name {
+	case deviceinfo.EdgeUser:
+		ids := make([]ent.Value, 0, len(m.user))
+		for id := range m.user {
+			ids = append(ids, id)
+		}
+		return ids
 	case deviceinfo.EdgeUserSession:
 		ids := make([]ent.Value, 0, len(m.user_session))
 		for id := range m.user_session {
+			ids = append(ids, id)
+		}
+		return ids
+	case deviceinfo.EdgeUserDevice:
+		ids := make([]ent.Value, 0, len(m.user_device))
+		for id := range m.user_device {
 			ids = append(ids, id)
 		}
 		return ids
@@ -6280,9 +6414,15 @@ func (m *DeviceInfoMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *DeviceInfoMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.removeduser != nil {
+		edges = append(edges, deviceinfo.EdgeUser)
+	}
 	if m.removeduser_session != nil {
 		edges = append(edges, deviceinfo.EdgeUserSession)
+	}
+	if m.removeduser_device != nil {
+		edges = append(edges, deviceinfo.EdgeUserDevice)
 	}
 	return edges
 }
@@ -6291,9 +6431,21 @@ func (m *DeviceInfoMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *DeviceInfoMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
+	case deviceinfo.EdgeUser:
+		ids := make([]ent.Value, 0, len(m.removeduser))
+		for id := range m.removeduser {
+			ids = append(ids, id)
+		}
+		return ids
 	case deviceinfo.EdgeUserSession:
 		ids := make([]ent.Value, 0, len(m.removeduser_session))
 		for id := range m.removeduser_session {
+			ids = append(ids, id)
+		}
+		return ids
+	case deviceinfo.EdgeUserDevice:
+		ids := make([]ent.Value, 0, len(m.removeduser_device))
+		for id := range m.removeduser_device {
 			ids = append(ids, id)
 		}
 		return ids
@@ -6303,9 +6455,15 @@ func (m *DeviceInfoMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *DeviceInfoMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 3)
+	if m.cleareduser {
+		edges = append(edges, deviceinfo.EdgeUser)
+	}
 	if m.cleareduser_session {
 		edges = append(edges, deviceinfo.EdgeUserSession)
+	}
+	if m.cleareduser_device {
+		edges = append(edges, deviceinfo.EdgeUserDevice)
 	}
 	return edges
 }
@@ -6314,8 +6472,12 @@ func (m *DeviceInfoMutation) ClearedEdges() []string {
 // was cleared in this mutation.
 func (m *DeviceInfoMutation) EdgeCleared(name string) bool {
 	switch name {
+	case deviceinfo.EdgeUser:
+		return m.cleareduser
 	case deviceinfo.EdgeUserSession:
 		return m.cleareduser_session
+	case deviceinfo.EdgeUserDevice:
+		return m.cleareduser_device
 	}
 	return false
 }
@@ -6332,8 +6494,14 @@ func (m *DeviceInfoMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *DeviceInfoMutation) ResetEdge(name string) error {
 	switch name {
+	case deviceinfo.EdgeUser:
+		m.ResetUser()
+		return nil
 	case deviceinfo.EdgeUserSession:
 		m.ResetUserSession()
+		return nil
+	case deviceinfo.EdgeUserDevice:
+		m.ResetUserDevice()
 		return nil
 	}
 	return fmt.Errorf("unknown DeviceInfo edge %s", name)
@@ -16536,6 +16704,9 @@ type UserMutation struct {
 	created_user         map[model.InternalID]struct{}
 	removedcreated_user  map[model.InternalID]struct{}
 	clearedcreated_user  bool
+	user_device          map[int]struct{}
+	removeduser_device   map[int]struct{}
+	cleareduser_device   bool
 	done                 bool
 	oldValue             func(context.Context) (*User, error)
 	predicates           []predicate.User
@@ -17494,6 +17665,60 @@ func (m *UserMutation) ResetCreatedUser() {
 	m.removedcreated_user = nil
 }
 
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by ids.
+func (m *UserMutation) AddUserDeviceIDs(ids ...int) {
+	if m.user_device == nil {
+		m.user_device = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.user_device[ids[i]] = struct{}{}
+	}
+}
+
+// ClearUserDevice clears the "user_device" edge to the UserDevice entity.
+func (m *UserMutation) ClearUserDevice() {
+	m.cleareduser_device = true
+}
+
+// UserDeviceCleared reports if the "user_device" edge to the UserDevice entity was cleared.
+func (m *UserMutation) UserDeviceCleared() bool {
+	return m.cleareduser_device
+}
+
+// RemoveUserDeviceIDs removes the "user_device" edge to the UserDevice entity by IDs.
+func (m *UserMutation) RemoveUserDeviceIDs(ids ...int) {
+	if m.removeduser_device == nil {
+		m.removeduser_device = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.user_device, ids[i])
+		m.removeduser_device[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedUserDevice returns the removed IDs of the "user_device" edge to the UserDevice entity.
+func (m *UserMutation) RemovedUserDeviceIDs() (ids []int) {
+	for id := range m.removeduser_device {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// UserDeviceIDs returns the "user_device" edge IDs in the mutation.
+func (m *UserMutation) UserDeviceIDs() (ids []int) {
+	for id := range m.user_device {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetUserDevice resets all changes to the "user_device" edge.
+func (m *UserMutation) ResetUserDevice() {
+	m.user_device = nil
+	m.cleareduser_device = false
+	m.removeduser_device = nil
+}
+
 // Where appends a list predicates to the UserMutation builder.
 func (m *UserMutation) Where(ps ...predicate.User) {
 	m.predicates = append(m.predicates, ps...)
@@ -17712,7 +17937,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -17748,6 +17973,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.created_user != nil {
 		edges = append(edges, user.EdgeCreatedUser)
+	}
+	if m.user_device != nil {
+		edges = append(edges, user.EdgeUserDevice)
 	}
 	return edges
 }
@@ -17826,13 +18054,19 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeUserDevice:
+		ids := make([]ent.Value, 0, len(m.user_device))
+		for id := range m.user_device {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -17865,6 +18099,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedcreated_user != nil {
 		edges = append(edges, user.EdgeCreatedUser)
+	}
+	if m.removeduser_device != nil {
+		edges = append(edges, user.EdgeUserDevice)
 	}
 	return edges
 }
@@ -17939,13 +18176,19 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeUserDevice:
+		ids := make([]ent.Value, 0, len(m.removeduser_device))
+		for id := range m.removeduser_device {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 12)
+	edges := make([]string, 0, 13)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -17982,6 +18225,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	if m.clearedcreated_user {
 		edges = append(edges, user.EdgeCreatedUser)
 	}
+	if m.cleareduser_device {
+		edges = append(edges, user.EdgeUserDevice)
+	}
 	return edges
 }
 
@@ -18013,6 +18259,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedcreator
 	case user.EdgeCreatedUser:
 		return m.clearedcreated_user
+	case user.EdgeUserDevice:
+		return m.cleareduser_device
 	}
 	return false
 }
@@ -18068,8 +18316,615 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgeCreatedUser:
 		m.ResetCreatedUser()
 		return nil
+	case user.EdgeUserDevice:
+		m.ResetUserDevice()
+		return nil
 	}
 	return fmt.Errorf("unknown User edge %s", name)
+}
+
+// UserDeviceMutation represents an operation that mutates the UserDevice nodes in the graph.
+type UserDeviceMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *int
+	updated_at         *time.Time
+	created_at         *time.Time
+	clearedFields      map[string]struct{}
+	device_info        *model.InternalID
+	cleareddevice_info bool
+	user               *model.InternalID
+	cleareduser        bool
+	done               bool
+	oldValue           func(context.Context) (*UserDevice, error)
+	predicates         []predicate.UserDevice
+}
+
+var _ ent.Mutation = (*UserDeviceMutation)(nil)
+
+// userdeviceOption allows management of the mutation configuration using functional options.
+type userdeviceOption func(*UserDeviceMutation)
+
+// newUserDeviceMutation creates new mutation for the UserDevice entity.
+func newUserDeviceMutation(c config, op Op, opts ...userdeviceOption) *UserDeviceMutation {
+	m := &UserDeviceMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeUserDevice,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withUserDeviceID sets the ID field of the mutation.
+func withUserDeviceID(id int) userdeviceOption {
+	return func(m *UserDeviceMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *UserDevice
+		)
+		m.oldValue = func(ctx context.Context) (*UserDevice, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().UserDevice.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withUserDevice sets the old UserDevice of the mutation.
+func withUserDevice(node *UserDevice) userdeviceOption {
+	return func(m *UserDeviceMutation) {
+		m.oldValue = func(context.Context) (*UserDevice, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m UserDeviceMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m UserDeviceMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *UserDeviceMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *UserDeviceMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().UserDevice.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *UserDeviceMutation) SetUserID(mi model.InternalID) {
+	m.user = &mi
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *UserDeviceMutation) UserID() (r model.InternalID, exists bool) {
+	v := m.user
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the UserDevice entity.
+// If the UserDevice object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserDeviceMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *UserDeviceMutation) ResetUserID() {
+	m.user = nil
+}
+
+// SetDeviceID sets the "device_id" field.
+func (m *UserDeviceMutation) SetDeviceID(mi model.InternalID) {
+	m.device_info = &mi
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *UserDeviceMutation) DeviceID() (r model.InternalID, exists bool) {
+	v := m.device_info
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the UserDevice entity.
+// If the UserDevice object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserDeviceMutation) OldDeviceID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *UserDeviceMutation) ResetDeviceID() {
+	m.device_info = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *UserDeviceMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *UserDeviceMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the UserDevice entity.
+// If the UserDevice object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserDeviceMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *UserDeviceMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *UserDeviceMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *UserDeviceMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the UserDevice entity.
+// If the UserDevice object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserDeviceMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *UserDeviceMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetDeviceInfoID sets the "device_info" edge to the DeviceInfo entity by id.
+func (m *UserDeviceMutation) SetDeviceInfoID(id model.InternalID) {
+	m.device_info = &id
+}
+
+// ClearDeviceInfo clears the "device_info" edge to the DeviceInfo entity.
+func (m *UserDeviceMutation) ClearDeviceInfo() {
+	m.cleareddevice_info = true
+	m.clearedFields[userdevice.FieldDeviceID] = struct{}{}
+}
+
+// DeviceInfoCleared reports if the "device_info" edge to the DeviceInfo entity was cleared.
+func (m *UserDeviceMutation) DeviceInfoCleared() bool {
+	return m.cleareddevice_info
+}
+
+// DeviceInfoID returns the "device_info" edge ID in the mutation.
+func (m *UserDeviceMutation) DeviceInfoID() (id model.InternalID, exists bool) {
+	if m.device_info != nil {
+		return *m.device_info, true
+	}
+	return
+}
+
+// DeviceInfoIDs returns the "device_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// DeviceInfoID instead. It exists only for internal usage by the builders.
+func (m *UserDeviceMutation) DeviceInfoIDs() (ids []model.InternalID) {
+	if id := m.device_info; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetDeviceInfo resets all changes to the "device_info" edge.
+func (m *UserDeviceMutation) ResetDeviceInfo() {
+	m.device_info = nil
+	m.cleareddevice_info = false
+}
+
+// ClearUser clears the "user" edge to the User entity.
+func (m *UserDeviceMutation) ClearUser() {
+	m.cleareduser = true
+	m.clearedFields[userdevice.FieldUserID] = struct{}{}
+}
+
+// UserCleared reports if the "user" edge to the User entity was cleared.
+func (m *UserDeviceMutation) UserCleared() bool {
+	return m.cleareduser
+}
+
+// UserIDs returns the "user" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// UserID instead. It exists only for internal usage by the builders.
+func (m *UserDeviceMutation) UserIDs() (ids []model.InternalID) {
+	if id := m.user; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetUser resets all changes to the "user" edge.
+func (m *UserDeviceMutation) ResetUser() {
+	m.user = nil
+	m.cleareduser = false
+}
+
+// Where appends a list predicates to the UserDeviceMutation builder.
+func (m *UserDeviceMutation) Where(ps ...predicate.UserDevice) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the UserDeviceMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *UserDeviceMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.UserDevice, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *UserDeviceMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *UserDeviceMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (UserDevice).
+func (m *UserDeviceMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *UserDeviceMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.user != nil {
+		fields = append(fields, userdevice.FieldUserID)
+	}
+	if m.device_info != nil {
+		fields = append(fields, userdevice.FieldDeviceID)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, userdevice.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, userdevice.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *UserDeviceMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case userdevice.FieldUserID:
+		return m.UserID()
+	case userdevice.FieldDeviceID:
+		return m.DeviceID()
+	case userdevice.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case userdevice.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *UserDeviceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case userdevice.FieldUserID:
+		return m.OldUserID(ctx)
+	case userdevice.FieldDeviceID:
+		return m.OldDeviceID(ctx)
+	case userdevice.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case userdevice.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown UserDevice field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *UserDeviceMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case userdevice.FieldUserID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case userdevice.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
+		return nil
+	case userdevice.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case userdevice.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown UserDevice field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *UserDeviceMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *UserDeviceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *UserDeviceMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown UserDevice numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *UserDeviceMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *UserDeviceMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *UserDeviceMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown UserDevice nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *UserDeviceMutation) ResetField(name string) error {
+	switch name {
+	case userdevice.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case userdevice.FieldDeviceID:
+		m.ResetDeviceID()
+		return nil
+	case userdevice.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case userdevice.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown UserDevice field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *UserDeviceMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.device_info != nil {
+		edges = append(edges, userdevice.EdgeDeviceInfo)
+	}
+	if m.user != nil {
+		edges = append(edges, userdevice.EdgeUser)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *UserDeviceMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case userdevice.EdgeDeviceInfo:
+		if id := m.device_info; id != nil {
+			return []ent.Value{*id}
+		}
+	case userdevice.EdgeUser:
+		if id := m.user; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *UserDeviceMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *UserDeviceMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *UserDeviceMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.cleareddevice_info {
+		edges = append(edges, userdevice.EdgeDeviceInfo)
+	}
+	if m.cleareduser {
+		edges = append(edges, userdevice.EdgeUser)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *UserDeviceMutation) EdgeCleared(name string) bool {
+	switch name {
+	case userdevice.EdgeDeviceInfo:
+		return m.cleareddevice_info
+	case userdevice.EdgeUser:
+		return m.cleareduser
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *UserDeviceMutation) ClearEdge(name string) error {
+	switch name {
+	case userdevice.EdgeDeviceInfo:
+		m.ClearDeviceInfo()
+		return nil
+	case userdevice.EdgeUser:
+		m.ClearUser()
+		return nil
+	}
+	return fmt.Errorf("unknown UserDevice unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *UserDeviceMutation) ResetEdge(name string) error {
+	switch name {
+	case userdevice.EdgeDeviceInfo:
+		m.ResetDeviceInfo()
+		return nil
+	case userdevice.EdgeUser:
+		m.ResetUser()
+		return nil
+	}
+	return fmt.Errorf("unknown UserDevice edge %s", name)
 }
 
 // UserSessionMutation represents an operation that mutates the UserSession nodes in the graph.

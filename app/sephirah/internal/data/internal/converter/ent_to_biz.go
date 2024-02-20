@@ -43,6 +43,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	// goverter:map SystemType | ToBizSystemType
 	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
+	ToBizDeviceInfoList([]*ent.DeviceInfo) []*modeltiphereth.DeviceInfo
 
 	// goverter:matchIgnoreCase
 	// goverter:map UpdatedAt LatestUpdateTime

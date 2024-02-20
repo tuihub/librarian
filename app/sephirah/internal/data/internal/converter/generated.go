@@ -150,6 +150,16 @@ func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphe
 	}
 	return pModeltipherethDeviceInfo
 }
+func (c *toBizConverterImpl) ToBizDeviceInfoList(source []*ent.DeviceInfo) []*modeltiphereth.DeviceInfo {
+	var pModeltipherethDeviceInfoList []*modeltiphereth.DeviceInfo
+	if source != nil {
+		pModeltipherethDeviceInfoList = make([]*modeltiphereth.DeviceInfo, len(source))
+		for i := 0; i < len(source); i++ {
+			pModeltipherethDeviceInfoList[i] = c.ToBizDeviceInfo(source[i])
+		}
+	}
+	return pModeltipherethDeviceInfoList
+}
 func (c *toBizConverterImpl) ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {

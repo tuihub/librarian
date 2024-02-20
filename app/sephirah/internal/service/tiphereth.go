@@ -75,6 +75,20 @@ func (s *LibrarianSephirahServiceService) RegisterDevice(ctx context.Context, re
 		DeviceId: converter.ToPBInternalID(id),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) ListRegisteredDevices(
+	ctx context.Context,
+	req *pb.ListRegisteredDevicesRequest,
+) (
+	*pb.ListRegisteredDevicesResponse, error,
+) {
+	devices, err := s.t.ListRegisteredDevices(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListRegisteredDevicesResponse{
+		Devices: converter.ToPBDeviceInfoList(devices),
+	}, nil
+}
 func (s *LibrarianSephirahServiceService) ListUserSessions(ctx context.Context, req *pb.ListUserSessionsRequest) (
 	*pb.ListUserSessionsResponse, error,
 ) {

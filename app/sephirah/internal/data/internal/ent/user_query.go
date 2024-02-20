@@ -23,6 +23,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -45,6 +46,7 @@ type UserQuery struct {
 	withDeviceInfo   *DeviceInfoQuery
 	withCreator      *UserQuery
 	withCreatedUser  *UserQuery
+	withUserDevice   *UserDeviceQuery
 	withFKs          bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -294,7 +296,7 @@ func (uq *UserQuery) QueryDeviceInfo() *DeviceInfoQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.DeviceInfoTable, user.DeviceInfoColumn),
+			sqlgraph.Edge(sqlgraph.M2M, false, user.DeviceInfoTable, user.DeviceInfoPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -339,6 +341,28 @@ func (uq *UserQuery) QueryCreatedUser() *UserQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CreatedUserTable, user.CreatedUserColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryUserDevice chains the current query on the "user_device" edge.
+func (uq *UserQuery) QueryUserDevice() *UserDeviceQuery {
+	query := (&UserDeviceClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(userdevice.Table, userdevice.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, user.UserDeviceTable, user.UserDeviceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -550,6 +574,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withDeviceInfo:   uq.withDeviceInfo.Clone(),
 		withCreator:      uq.withCreator.Clone(),
 		withCreatedUser:  uq.withCreatedUser.Clone(),
+		withUserDevice:   uq.withUserDevice.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -688,6 +713,17 @@ func (uq *UserQuery) WithCreatedUser(opts ...func(*UserQuery)) *UserQuery {
 	return uq
 }
 
+// WithUserDevice tells the query-builder to eager-load the nodes that are connected to
+// the "user_device" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithUserDevice(opts ...func(*UserDeviceQuery)) *UserQuery {
+	query := (&UserDeviceClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withUserDevice = query
+	return uq
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
@@ -767,7 +803,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [12]bool{
+		loadedTypes = [13]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withApp != nil,
@@ -780,6 +816,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withDeviceInfo != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
+			uq.withUserDevice != nil,
 		}
 	)
 	if uq.withCreator != nil {
@@ -886,6 +923,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadCreatedUser(ctx, query, nodes,
 			func(n *User) { n.Edges.CreatedUser = []*User{} },
 			func(n *User, e *User) { n.Edges.CreatedUser = append(n.Edges.CreatedUser, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withUserDevice; query != nil {
+		if err := uq.loadUserDevice(ctx, query, nodes,
+			func(n *User) { n.Edges.UserDevice = []*UserDevice{} },
+			func(n *User, e *UserDevice) { n.Edges.UserDevice = append(n.Edges.UserDevice, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1201,33 +1245,63 @@ func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Us
 	return nil
 }
 func (uq *UserQuery) loadDeviceInfo(ctx context.Context, query *DeviceInfoQuery, nodes []*User, init func(*User), assign func(*User, *DeviceInfo)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*User)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*User)
+	nids := make(map[model.InternalID]map[*User]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
 		if init != nil {
-			init(nodes[i])
+			init(node)
 		}
 	}
-	query.withFKs = true
-	query.Where(predicate.DeviceInfo(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.DeviceInfoColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(user.DeviceInfoTable)
+		s.Join(joinT).On(s.C(deviceinfo.FieldID), joinT.C(user.DeviceInfoPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(user.DeviceInfoPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(user.DeviceInfoPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*User]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*DeviceInfo](ctx, query, qr, query.inters)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_device_info
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_device_info" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_device_info" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected "device_info" node returned %v`, n.ID)
 		}
-		assign(node, n)
+		for kn := range nodes {
+			assign(kn, n)
+		}
 	}
 	return nil
 }
@@ -1289,6 +1363,36 @@ func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, node
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_created_user" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadUserDevice(ctx context.Context, query *UserDeviceQuery, nodes []*User, init func(*User), assign func(*User, *UserDevice)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userdevice.FieldUserID)
+	}
+	query.Where(predicate.UserDevice(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.UserDeviceColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.UserID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

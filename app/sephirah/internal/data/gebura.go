@@ -331,17 +331,23 @@ func (g geburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, ap 
 
 func (g geburaRepo) ListApps(
 	ctx context.Context,
-	ownerID model.InternalID,
 	paging model.Paging,
+	ownerIDs []model.InternalID,
 	appInfoIDs []model.InternalID,
 	ids []model.InternalID,
+	publicOnly bool,
 ) ([]*modelgebura.App, int, error) {
-	q := g.data.db.App.Query().Where(app.HasOwnerWith(user.IDEQ(ownerID)))
+	q := g.data.db.App.Query().Where(
+		app.HasOwnerWith(user.IDIn(ownerIDs...)),
+	)
 	if len(ids) > 0 {
 		q.Where(app.IDIn(ids...))
 	}
 	if len(appInfoIDs) > 0 {
 		q.Where(app.HasAppInfoWith(appinfo.IDIn(appInfoIDs...)))
+	}
+	if publicOnly {
+		q.Where(app.PublicEQ(true))
 	}
 	total, err := q.Count(ctx)
 	if err != nil {

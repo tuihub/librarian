@@ -204,21 +204,12 @@ var (
 		{Name: "client_version", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_device_info", Type: field.TypeInt64, Nullable: true},
 	}
 	// DeviceInfosTable holds the schema information for the "device_infos" table.
 	DeviceInfosTable = &schema.Table{
 		Name:       "device_infos",
 		Columns:    DeviceInfosColumns,
 		PrimaryKey: []*schema.Column{DeviceInfosColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "device_infos_users_device_info",
-				Columns:    []*schema.Column{DeviceInfosColumns[9]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
 	}
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
@@ -592,6 +583,41 @@ var (
 			},
 		},
 	}
+	// UserDevicesColumns holds the columns for the "user_devices" table.
+	UserDevicesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "device_id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64},
+	}
+	// UserDevicesTable holds the schema information for the "user_devices" table.
+	UserDevicesTable = &schema.Table{
+		Name:       "user_devices",
+		Columns:    UserDevicesColumns,
+		PrimaryKey: []*schema.Column{UserDevicesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "user_devices_device_infos_device_info",
+				Columns:    []*schema.Column{UserDevicesColumns[3]},
+				RefColumns: []*schema.Column{DeviceInfosColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "user_devices_users_user",
+				Columns:    []*schema.Column{UserDevicesColumns[4]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "userdevice_user_id_device_id",
+				Unique:  true,
+				Columns: []*schema.Column{UserDevicesColumns[4], UserDevicesColumns[3]},
+			},
+		},
+	}
 	// UserSessionsColumns holds the columns for the "user_sessions" table.
 	UserSessionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -694,6 +720,7 @@ var (
 		PorterInstancesTable,
 		PorterPrivilegesTable,
 		UsersTable,
+		UserDevicesTable,
 		UserSessionsTable,
 		AccountPurchasedAppTable,
 		UserPurchasedAppTable,
@@ -707,7 +734,6 @@ func init() {
 	AppBinariesTable.ForeignKeys[0].RefTable = AppInfosTable
 	AppInfosTable.ForeignKeys[0].RefTable = AppInfosTable
 	AppInstsTable.ForeignKeys[0].RefTable = UsersTable
-	DeviceInfosTable.ForeignKeys[0].RefTable = UsersTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable
@@ -721,6 +747,8 @@ func init() {
 	NotifyFlowTargetsTable.ForeignKeys[1].RefTable = NotifyTargetsTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
+	UserDevicesTable.ForeignKeys[0].RefTable = DeviceInfosTable
+	UserDevicesTable.ForeignKeys[1].RefTable = UsersTable
 	UserSessionsTable.ForeignKeys[0].RefTable = DeviceInfosTable
 	AccountPurchasedAppTable.ForeignKeys[0].RefTable = AccountsTable
 	AccountPurchasedAppTable.ForeignKeys[1].RefTable = AppInfosTable

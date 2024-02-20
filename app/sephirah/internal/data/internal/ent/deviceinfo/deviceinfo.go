@@ -31,10 +31,19 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
 	// EdgeUserSession holds the string denoting the user_session edge name in mutations.
 	EdgeUserSession = "user_session"
+	// EdgeUserDevice holds the string denoting the user_device edge name in mutations.
+	EdgeUserDevice = "user_device"
 	// Table holds the table name of the deviceinfo in the database.
 	Table = "device_infos"
+	// UserTable is the table that holds the user relation/edge. The primary key declared below.
+	UserTable = "user_devices"
+	// UserInverseTable is the table name for the User entity.
+	// It exists in this package in order to avoid circular dependency with the "user" package.
+	UserInverseTable = "users"
 	// UserSessionTable is the table that holds the user_session relation/edge.
 	UserSessionTable = "user_sessions"
 	// UserSessionInverseTable is the table name for the UserSession entity.
@@ -42,6 +51,13 @@ const (
 	UserSessionInverseTable = "user_sessions"
 	// UserSessionColumn is the table column denoting the user_session relation/edge.
 	UserSessionColumn = "device_info_user_session"
+	// UserDeviceTable is the table that holds the user_device relation/edge.
+	UserDeviceTable = "user_devices"
+	// UserDeviceInverseTable is the table name for the UserDevice entity.
+	// It exists in this package in order to avoid circular dependency with the "userdevice" package.
+	UserDeviceInverseTable = "user_devices"
+	// UserDeviceColumn is the table column denoting the user_device relation/edge.
+	UserDeviceColumn = "device_id"
 )
 
 // Columns holds all SQL columns for deviceinfo fields.
@@ -57,21 +73,16 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "device_infos"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"user_device_info",
-}
+var (
+	// UserPrimaryKey and UserColumn2 are the table columns denoting the
+	// primary key for the user relation (M2M).
+	UserPrimaryKey = []string{"user_id", "device_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -163,6 +174,20 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
+// ByUserCount orders the results by user count.
+func ByUserCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUserStep(), opts...)
+	}
+}
+
+// ByUser orders the results by user terms.
+func ByUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByUserSessionCount orders the results by user_session count.
 func ByUserSessionCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -176,10 +201,38 @@ func ByUserSession(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUserSessionStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByUserDeviceCount orders the results by user_device count.
+func ByUserDeviceCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUserDeviceStep(), opts...)
+	}
+}
+
+// ByUserDevice orders the results by user_device terms.
+func ByUserDevice(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserDeviceStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newUserStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, UserTable, UserPrimaryKey...),
+	)
+}
 func newUserSessionStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UserSessionInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, UserSessionTable, UserSessionColumn),
+	)
+}
+func newUserDeviceStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserDeviceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, UserDeviceTable, UserDeviceColumn),
 	)
 }

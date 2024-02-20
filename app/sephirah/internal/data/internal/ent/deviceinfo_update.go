@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -134,6 +136,21 @@ func (diu *DeviceInfoUpdate) SetNillableCreatedAt(t *time.Time) *DeviceInfoUpdat
 	return diu
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (diu *DeviceInfoUpdate) AddUserIDs(ids ...model.InternalID) *DeviceInfoUpdate {
+	diu.mutation.AddUserIDs(ids...)
+	return diu
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (diu *DeviceInfoUpdate) AddUser(u ...*User) *DeviceInfoUpdate {
+	ids := make([]model.InternalID, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diu.AddUserIDs(ids...)
+}
+
 // AddUserSessionIDs adds the "user_session" edge to the UserSession entity by IDs.
 func (diu *DeviceInfoUpdate) AddUserSessionIDs(ids ...model.InternalID) *DeviceInfoUpdate {
 	diu.mutation.AddUserSessionIDs(ids...)
@@ -149,9 +166,45 @@ func (diu *DeviceInfoUpdate) AddUserSession(u ...*UserSession) *DeviceInfoUpdate
 	return diu.AddUserSessionIDs(ids...)
 }
 
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
+func (diu *DeviceInfoUpdate) AddUserDeviceIDs(ids ...int) *DeviceInfoUpdate {
+	diu.mutation.AddUserDeviceIDs(ids...)
+	return diu
+}
+
+// AddUserDevice adds the "user_device" edges to the UserDevice entity.
+func (diu *DeviceInfoUpdate) AddUserDevice(u ...*UserDevice) *DeviceInfoUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diu.AddUserDeviceIDs(ids...)
+}
+
 // Mutation returns the DeviceInfoMutation object of the builder.
 func (diu *DeviceInfoUpdate) Mutation() *DeviceInfoMutation {
 	return diu.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (diu *DeviceInfoUpdate) ClearUser() *DeviceInfoUpdate {
+	diu.mutation.ClearUser()
+	return diu
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (diu *DeviceInfoUpdate) RemoveUserIDs(ids ...model.InternalID) *DeviceInfoUpdate {
+	diu.mutation.RemoveUserIDs(ids...)
+	return diu
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (diu *DeviceInfoUpdate) RemoveUser(u ...*User) *DeviceInfoUpdate {
+	ids := make([]model.InternalID, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diu.RemoveUserIDs(ids...)
 }
 
 // ClearUserSession clears all "user_session" edges to the UserSession entity.
@@ -173,6 +226,27 @@ func (diu *DeviceInfoUpdate) RemoveUserSession(u ...*UserSession) *DeviceInfoUpd
 		ids[i] = u[i].ID
 	}
 	return diu.RemoveUserSessionIDs(ids...)
+}
+
+// ClearUserDevice clears all "user_device" edges to the UserDevice entity.
+func (diu *DeviceInfoUpdate) ClearUserDevice() *DeviceInfoUpdate {
+	diu.mutation.ClearUserDevice()
+	return diu
+}
+
+// RemoveUserDeviceIDs removes the "user_device" edge to UserDevice entities by IDs.
+func (diu *DeviceInfoUpdate) RemoveUserDeviceIDs(ids ...int) *DeviceInfoUpdate {
+	diu.mutation.RemoveUserDeviceIDs(ids...)
+	return diu
+}
+
+// RemoveUserDevice removes "user_device" edges to UserDevice entities.
+func (diu *DeviceInfoUpdate) RemoveUserDevice(u ...*UserDevice) *DeviceInfoUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diu.RemoveUserDeviceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -257,6 +331,63 @@ func (diu *DeviceInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := diu.mutation.CreatedAt(); ok {
 		_spec.SetField(deviceinfo.FieldCreatedAt, field.TypeTime, value)
 	}
+	if diu.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &UserDeviceCreate{config: diu.config, mutation: newUserDeviceMutation(diu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diu.mutation.RemovedUserIDs(); len(nodes) > 0 && !diu.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &UserDeviceCreate{config: diu.config, mutation: newUserDeviceMutation(diu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diu.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &UserDeviceCreate{config: diu.config, mutation: newUserDeviceMutation(diu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if diu.mutation.UserSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -295,6 +426,51 @@ func (diu *DeviceInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if diu.mutation.UserDeviceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diu.mutation.RemovedUserDeviceIDs(); len(nodes) > 0 && !diu.mutation.UserDeviceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diu.mutation.UserDeviceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -426,6 +602,21 @@ func (diuo *DeviceInfoUpdateOne) SetNillableCreatedAt(t *time.Time) *DeviceInfoU
 	return diuo
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (diuo *DeviceInfoUpdateOne) AddUserIDs(ids ...model.InternalID) *DeviceInfoUpdateOne {
+	diuo.mutation.AddUserIDs(ids...)
+	return diuo
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (diuo *DeviceInfoUpdateOne) AddUser(u ...*User) *DeviceInfoUpdateOne {
+	ids := make([]model.InternalID, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diuo.AddUserIDs(ids...)
+}
+
 // AddUserSessionIDs adds the "user_session" edge to the UserSession entity by IDs.
 func (diuo *DeviceInfoUpdateOne) AddUserSessionIDs(ids ...model.InternalID) *DeviceInfoUpdateOne {
 	diuo.mutation.AddUserSessionIDs(ids...)
@@ -441,9 +632,45 @@ func (diuo *DeviceInfoUpdateOne) AddUserSession(u ...*UserSession) *DeviceInfoUp
 	return diuo.AddUserSessionIDs(ids...)
 }
 
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
+func (diuo *DeviceInfoUpdateOne) AddUserDeviceIDs(ids ...int) *DeviceInfoUpdateOne {
+	diuo.mutation.AddUserDeviceIDs(ids...)
+	return diuo
+}
+
+// AddUserDevice adds the "user_device" edges to the UserDevice entity.
+func (diuo *DeviceInfoUpdateOne) AddUserDevice(u ...*UserDevice) *DeviceInfoUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diuo.AddUserDeviceIDs(ids...)
+}
+
 // Mutation returns the DeviceInfoMutation object of the builder.
 func (diuo *DeviceInfoUpdateOne) Mutation() *DeviceInfoMutation {
 	return diuo.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (diuo *DeviceInfoUpdateOne) ClearUser() *DeviceInfoUpdateOne {
+	diuo.mutation.ClearUser()
+	return diuo
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (diuo *DeviceInfoUpdateOne) RemoveUserIDs(ids ...model.InternalID) *DeviceInfoUpdateOne {
+	diuo.mutation.RemoveUserIDs(ids...)
+	return diuo
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (diuo *DeviceInfoUpdateOne) RemoveUser(u ...*User) *DeviceInfoUpdateOne {
+	ids := make([]model.InternalID, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diuo.RemoveUserIDs(ids...)
 }
 
 // ClearUserSession clears all "user_session" edges to the UserSession entity.
@@ -465,6 +692,27 @@ func (diuo *DeviceInfoUpdateOne) RemoveUserSession(u ...*UserSession) *DeviceInf
 		ids[i] = u[i].ID
 	}
 	return diuo.RemoveUserSessionIDs(ids...)
+}
+
+// ClearUserDevice clears all "user_device" edges to the UserDevice entity.
+func (diuo *DeviceInfoUpdateOne) ClearUserDevice() *DeviceInfoUpdateOne {
+	diuo.mutation.ClearUserDevice()
+	return diuo
+}
+
+// RemoveUserDeviceIDs removes the "user_device" edge to UserDevice entities by IDs.
+func (diuo *DeviceInfoUpdateOne) RemoveUserDeviceIDs(ids ...int) *DeviceInfoUpdateOne {
+	diuo.mutation.RemoveUserDeviceIDs(ids...)
+	return diuo
+}
+
+// RemoveUserDevice removes "user_device" edges to UserDevice entities.
+func (diuo *DeviceInfoUpdateOne) RemoveUserDevice(u ...*UserDevice) *DeviceInfoUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return diuo.RemoveUserDeviceIDs(ids...)
 }
 
 // Where appends a list predicates to the DeviceInfoUpdate builder.
@@ -579,6 +827,63 @@ func (diuo *DeviceInfoUpdateOne) sqlSave(ctx context.Context) (_node *DeviceInfo
 	if value, ok := diuo.mutation.CreatedAt(); ok {
 		_spec.SetField(deviceinfo.FieldCreatedAt, field.TypeTime, value)
 	}
+	if diuo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &UserDeviceCreate{config: diuo.config, mutation: newUserDeviceMutation(diuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diuo.mutation.RemovedUserIDs(); len(nodes) > 0 && !diuo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &UserDeviceCreate{config: diuo.config, mutation: newUserDeviceMutation(diuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diuo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &UserDeviceCreate{config: diuo.config, mutation: newUserDeviceMutation(diuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if diuo.mutation.UserSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -617,6 +922,51 @@ func (diuo *DeviceInfoUpdateOne) sqlSave(ctx context.Context) (_node *DeviceInfo
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if diuo.mutation.UserDeviceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diuo.mutation.RemovedUserDeviceIDs(); len(nodes) > 0 && !diuo.mutation.UserDeviceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := diuo.mutation.UserDeviceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

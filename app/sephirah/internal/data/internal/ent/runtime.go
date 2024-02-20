@@ -25,6 +25,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 )
 
@@ -276,6 +277,18 @@ func init() {
 	userDescCreatedAt := userFields[6].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the created_at field.
 	user.DefaultCreatedAt = userDescCreatedAt.Default.(func() time.Time)
+	userdeviceFields := schema.UserDevice{}.Fields()
+	_ = userdeviceFields
+	// userdeviceDescUpdatedAt is the schema descriptor for updated_at field.
+	userdeviceDescUpdatedAt := userdeviceFields[2].Descriptor()
+	// userdevice.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	userdevice.DefaultUpdatedAt = userdeviceDescUpdatedAt.Default.(func() time.Time)
+	// userdevice.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	userdevice.UpdateDefaultUpdatedAt = userdeviceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// userdeviceDescCreatedAt is the schema descriptor for created_at field.
+	userdeviceDescCreatedAt := userdeviceFields[3].Descriptor()
+	// userdevice.DefaultCreatedAt holds the default value on creation for the created_at field.
+	userdevice.DefaultCreatedAt = userdeviceDescCreatedAt.Default.(func() time.Time)
 	usersessionFields := schema.UserSession{}.Fields()
 	_ = usersessionFields
 	// usersessionDescUpdatedAt is the schema descriptor for updated_at field.

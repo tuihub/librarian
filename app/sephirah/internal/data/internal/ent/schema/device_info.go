@@ -30,6 +30,9 @@ func (DeviceInfo) Fields() []ent.Field {
 
 func (DeviceInfo) Edges() []ent.Edge {
 	return []ent.Edge{
+		edge.From("user", User.Type).
+			Ref("device_info").
+			Through("user_device", UserDevice.Type),
 		edge.To("user_session", UserSession.Type),
 	}
 }

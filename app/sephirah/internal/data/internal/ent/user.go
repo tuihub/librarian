@@ -63,9 +63,11 @@ type UserEdges struct {
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
 	CreatedUser []*User `json:"created_user,omitempty"`
+	// UserDevice holds the value of the user_device edge.
+	UserDevice []*UserDevice `json:"user_device,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [12]bool
+	loadedTypes [13]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -178,6 +180,15 @@ func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
+}
+
+// UserDeviceOrErr returns the UserDevice value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) UserDeviceOrErr() ([]*UserDevice, error) {
+	if e.loadedTypes[12] {
+		return e.UserDevice, nil
+	}
+	return nil, &NotLoadedError{edge: "user_device"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -328,6 +339,11 @@ func (u *User) QueryCreator() *UserQuery {
 // QueryCreatedUser queries the "created_user" edge of the User entity.
 func (u *User) QueryCreatedUser() *UserQuery {
 	return NewUserClient(u.config).QueryCreatedUser(u)
+}
+
+// QueryUserDevice queries the "user_device" edge of the User entity.
+func (u *User) QueryUserDevice() *UserDeviceQuery {
+	return NewUserClient(u.config).QueryUserDevice(u)
 }
 
 // Update returns a builder for updating this User.

@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -24,8 +26,9 @@ type DeviceInfoQuery struct {
 	order           []deviceinfo.OrderOption
 	inters          []Interceptor
 	predicates      []predicate.DeviceInfo
+	withUser        *UserQuery
 	withUserSession *UserSessionQuery
-	withFKs         bool
+	withUserDevice  *UserDeviceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -62,6 +65,28 @@ func (diq *DeviceInfoQuery) Order(o ...deviceinfo.OrderOption) *DeviceInfoQuery 
 	return diq
 }
 
+// QueryUser chains the current query on the "user" edge.
+func (diq *DeviceInfoQuery) QueryUser() *UserQuery {
+	query := (&UserClient{config: diq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := diq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := diq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, deviceinfo.UserTable, deviceinfo.UserPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(diq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryUserSession chains the current query on the "user_session" edge.
 func (diq *DeviceInfoQuery) QueryUserSession() *UserSessionQuery {
 	query := (&UserSessionClient{config: diq.config}).Query()
@@ -77,6 +102,28 @@ func (diq *DeviceInfoQuery) QueryUserSession() *UserSessionQuery {
 			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, selector),
 			sqlgraph.To(usersession.Table, usersession.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, deviceinfo.UserSessionTable, deviceinfo.UserSessionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(diq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryUserDevice chains the current query on the "user_device" edge.
+func (diq *DeviceInfoQuery) QueryUserDevice() *UserDeviceQuery {
+	query := (&UserDeviceClient{config: diq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := diq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := diq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, selector),
+			sqlgraph.To(userdevice.Table, userdevice.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, deviceinfo.UserDeviceTable, deviceinfo.UserDeviceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(diq.driver.Dialect(), step)
 		return fromU, nil
@@ -276,11 +323,24 @@ func (diq *DeviceInfoQuery) Clone() *DeviceInfoQuery {
 		order:           append([]deviceinfo.OrderOption{}, diq.order...),
 		inters:          append([]Interceptor{}, diq.inters...),
 		predicates:      append([]predicate.DeviceInfo{}, diq.predicates...),
+		withUser:        diq.withUser.Clone(),
 		withUserSession: diq.withUserSession.Clone(),
+		withUserDevice:  diq.withUserDevice.Clone(),
 		// clone intermediate query.
 		sql:  diq.sql.Clone(),
 		path: diq.path,
 	}
+}
+
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (diq *DeviceInfoQuery) WithUser(opts ...func(*UserQuery)) *DeviceInfoQuery {
+	query := (&UserClient{config: diq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	diq.withUser = query
+	return diq
 }
 
 // WithUserSession tells the query-builder to eager-load the nodes that are connected to
@@ -291,6 +351,17 @@ func (diq *DeviceInfoQuery) WithUserSession(opts ...func(*UserSessionQuery)) *De
 		opt(query)
 	}
 	diq.withUserSession = query
+	return diq
+}
+
+// WithUserDevice tells the query-builder to eager-load the nodes that are connected to
+// the "user_device" edge. The optional arguments are used to configure the query builder of the edge.
+func (diq *DeviceInfoQuery) WithUserDevice(opts ...func(*UserDeviceQuery)) *DeviceInfoQuery {
+	query := (&UserDeviceClient{config: diq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	diq.withUserDevice = query
 	return diq
 }
 
@@ -371,15 +442,13 @@ func (diq *DeviceInfoQuery) prepareQuery(ctx context.Context) error {
 func (diq *DeviceInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*DeviceInfo, error) {
 	var (
 		nodes       = []*DeviceInfo{}
-		withFKs     = diq.withFKs
 		_spec       = diq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [3]bool{
+			diq.withUser != nil,
 			diq.withUserSession != nil,
+			diq.withUserDevice != nil,
 		}
 	)
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, deviceinfo.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*DeviceInfo).scanValues(nil, columns)
 	}
@@ -398,6 +467,13 @@ func (diq *DeviceInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := diq.withUser; query != nil {
+		if err := diq.loadUser(ctx, query, nodes,
+			func(n *DeviceInfo) { n.Edges.User = []*User{} },
+			func(n *DeviceInfo, e *User) { n.Edges.User = append(n.Edges.User, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := diq.withUserSession; query != nil {
 		if err := diq.loadUserSession(ctx, query, nodes,
 			func(n *DeviceInfo) { n.Edges.UserSession = []*UserSession{} },
@@ -405,9 +481,77 @@ func (diq *DeviceInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 			return nil, err
 		}
 	}
+	if query := diq.withUserDevice; query != nil {
+		if err := diq.loadUserDevice(ctx, query, nodes,
+			func(n *DeviceInfo) { n.Edges.UserDevice = []*UserDevice{} },
+			func(n *DeviceInfo, e *UserDevice) { n.Edges.UserDevice = append(n.Edges.UserDevice, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
 }
 
+func (diq *DeviceInfoQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*DeviceInfo, init func(*DeviceInfo), assign func(*DeviceInfo, *User)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*DeviceInfo)
+	nids := make(map[model.InternalID]map[*DeviceInfo]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(deviceinfo.UserTable)
+		s.Join(joinT).On(s.C(user.FieldID), joinT.C(deviceinfo.UserPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(deviceinfo.UserPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(deviceinfo.UserPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*DeviceInfo]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*User](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "user" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
 func (diq *DeviceInfoQuery) loadUserSession(ctx context.Context, query *UserSessionQuery, nodes []*DeviceInfo, init func(*DeviceInfo), assign func(*DeviceInfo, *UserSession)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*DeviceInfo)
@@ -434,6 +578,36 @@ func (diq *DeviceInfoQuery) loadUserSession(ctx context.Context, query *UserSess
 		node, ok := nodeids[*fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "device_info_user_session" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (diq *DeviceInfoQuery) loadUserDevice(ctx context.Context, query *UserDeviceQuery, nodes []*DeviceInfo, init func(*DeviceInfo), assign func(*DeviceInfo, *UserDevice)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*DeviceInfo)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(userdevice.FieldDeviceID)
+	}
+	query.Where(predicate.UserDevice(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(deviceinfo.UserDeviceColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.DeviceID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "device_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}

@@ -538,7 +538,7 @@ func HasDeviceInfo() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, DeviceInfoTable, DeviceInfoColumn),
+			sqlgraph.Edge(sqlgraph.M2M, false, DeviceInfoTable, DeviceInfoPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -594,6 +594,29 @@ func HasCreatedUser() predicate.User {
 func HasCreatedUserWith(preds ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := newCreatedUserStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasUserDevice applies the HasEdge predicate on the "user_device" edge.
+func HasUserDevice() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, UserDeviceTable, UserDeviceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasUserDeviceWith applies the HasEdge predicate on the "user_device" edge with a given conditions (other predicates).
+func HasUserDeviceWith(preds ...predicate.UserDevice) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newUserDeviceStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

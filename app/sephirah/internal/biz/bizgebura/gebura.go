@@ -34,8 +34,8 @@ type GeburaRepo interface {
 
 	CreateApp(context.Context, model.InternalID, *modelgebura.App) error
 	UpdateApp(context.Context, model.InternalID, *modelgebura.App) error
-	ListApps(context.Context, model.InternalID, model.Paging, []model.InternalID,
-		[]model.InternalID) ([]*modelgebura.App, int, error)
+	ListApps(context.Context, model.Paging, []model.InternalID, []model.InternalID,
+		[]model.InternalID, bool) ([]*modelgebura.App, int, error)
 	AssignApp(context.Context, model.InternalID, model.InternalID, model.InternalID) error
 	// ListAppPackageBinaryChecksumOfOneSource(context.Context, modelgebura.AppPackageSource,
 	//	model.InternalID) ([]string, error)

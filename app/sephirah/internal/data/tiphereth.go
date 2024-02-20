@@ -71,6 +71,16 @@ func (t tipherethRepo) FetchDeviceInfo(
 	return converter.ToBizDeviceInfo(res), nil
 }
 
+func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*modeltiphereth.DeviceInfo, error) {
+	devices, err := t.data.db.DeviceInfo.Query().Where(
+		deviceinfo.HasUserWith(user.IDEQ(id)),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizDeviceInfoList(devices), nil
+}
+
 func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.UserSession.Create().
@@ -87,7 +97,19 @@ func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiph
 				)).Exec(ctx)
 			q.SetDeviceInfoID(session.DeviceInfo.ID)
 		}
-		return q.Exec(ctx)
+		err := q.Exec(ctx)
+		if err != nil {
+			return err
+		}
+		if session.DeviceInfo != nil {
+			err = tx.User.UpdateOneID(session.UserID).
+				AddDeviceInfoIDs(session.DeviceInfo.ID).
+				Exec(ctx)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 }
 
@@ -131,14 +153,23 @@ func (t tipherethRepo) ListUserSessions(
 }
 
 func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
-	q := t.data.db.UserSession.UpdateOneID(session.ID).
-		SetRefreshToken(session.RefreshToken).
-		SetCreatedAt(session.CreateAt).
-		SetExpireAt(session.ExpireAt)
-	if session.DeviceInfo != nil {
-		q.SetDeviceInfoID(session.DeviceInfo.ID)
-	}
-	return q.Exec(ctx)
+	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.UserSession.UpdateOneID(session.ID).
+			SetRefreshToken(session.RefreshToken).
+			SetCreatedAt(session.CreateAt).
+			SetExpireAt(session.ExpireAt)
+		if session.DeviceInfo != nil {
+			q.SetDeviceInfoID(session.DeviceInfo.ID)
+
+			err := tx.User.UpdateOneID(session.UserID).
+				AddDeviceInfoIDs(session.DeviceInfo.ID).
+				Exec(ctx)
+			if err != nil {
+				return err
+			}
+		}
+		return q.Exec(ctx)
+	})
 }
 
 func (t tipherethRepo) DeleteUserSession(

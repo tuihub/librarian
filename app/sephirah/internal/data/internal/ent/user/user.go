@@ -51,6 +51,8 @@ const (
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
 	EdgeCreatedUser = "created_user"
+	// EdgeUserDevice holds the string denoting the user_device edge name in mutations.
+	EdgeUserDevice = "user_device"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// BindAccountTable is the table that holds the bind_account relation/edge.
@@ -114,13 +116,11 @@ const (
 	FileInverseTable = "files"
 	// FileColumn is the table column denoting the file relation/edge.
 	FileColumn = "user_file"
-	// DeviceInfoTable is the table that holds the device_info relation/edge.
-	DeviceInfoTable = "device_infos"
+	// DeviceInfoTable is the table that holds the device_info relation/edge. The primary key declared below.
+	DeviceInfoTable = "user_devices"
 	// DeviceInfoInverseTable is the table name for the DeviceInfo entity.
 	// It exists in this package in order to avoid circular dependency with the "deviceinfo" package.
 	DeviceInfoInverseTable = "device_infos"
-	// DeviceInfoColumn is the table column denoting the device_info relation/edge.
-	DeviceInfoColumn = "user_device_info"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.
@@ -129,6 +129,13 @@ const (
 	CreatedUserTable = "users"
 	// CreatedUserColumn is the table column denoting the created_user relation/edge.
 	CreatedUserColumn = "user_created_user"
+	// UserDeviceTable is the table that holds the user_device relation/edge.
+	UserDeviceTable = "user_devices"
+	// UserDeviceInverseTable is the table name for the UserDevice entity.
+	// It exists in this package in order to avoid circular dependency with the "userdevice" package.
+	UserDeviceInverseTable = "user_devices"
+	// UserDeviceColumn is the table column denoting the user_device relation/edge.
+	UserDeviceColumn = "user_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -152,6 +159,9 @@ var (
 	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
 	// primary key for the purchased_app relation (M2M).
 	PurchasedAppPrimaryKey = []string{"user_id", "app_info_id"}
+	// DeviceInfoPrimaryKey and DeviceInfoColumn2 are the table columns denoting the
+	// primary key for the device_info relation (M2M).
+	DeviceInfoPrimaryKey = []string{"user_id", "device_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -423,6 +433,20 @@ func ByCreatedUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCreatedUserStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByUserDeviceCount orders the results by user_device count.
+func ByUserDeviceCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newUserDeviceStep(), opts...)
+	}
+}
+
+// ByUserDevice orders the results by user_device terms.
+func ByUserDevice(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newUserDeviceStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newBindAccountStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -490,7 +514,7 @@ func newDeviceInfoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DeviceInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, DeviceInfoTable, DeviceInfoColumn),
+		sqlgraph.Edge(sqlgraph.M2M, false, DeviceInfoTable, DeviceInfoPrimaryKey...),
 	)
 }
 func newCreatorStep() *sqlgraph.Step {
@@ -505,5 +529,12 @@ func newCreatedUserStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(Table, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, CreatedUserTable, CreatedUserColumn),
+	)
+}
+func newUserDeviceStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(UserDeviceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, UserDeviceTable, UserDeviceColumn),
 	)
 }

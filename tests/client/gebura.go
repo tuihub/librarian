@@ -140,6 +140,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
+		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
 	}); err != nil {
@@ -166,11 +167,12 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
+		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
 	}); err2 != nil {
 		log.Fatal(err2)
-	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetAppPackages()[0].GetDescription() != "test" {
+	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetApps()[0].GetDescription() != "test" {
 		log.Fatal("unexpected app package list result")
 	}
 	if _, err2 := c.cli.UpdateApp(ctx, &pb.UpdateAppRequest{
@@ -189,11 +191,12 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			PageNum:  1,
 			PageSize: 1,
 		},
+		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
 	}); err2 != nil {
 		log.Fatal(err2)
-	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetAppPackages()[0].GetDescription() != "test2" {
+	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetApps()[0].GetDescription() != "test2" {
 		log.Fatal("unexpected app package list result")
 	}
 }

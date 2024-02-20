@@ -168,6 +168,7 @@ func (s *LibrarianSephirahServiceService) ListApps(
 ) (*pb.ListAppsResponse, error) {
 	ap, total, err := s.g.ListApps(ctx,
 		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizInternalIDList(req.GetOwnerIdFilter()),
 		converter.ToBizInternalIDList(req.GetAssignedAppInfoIdFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 	)
@@ -175,8 +176,8 @@ func (s *LibrarianSephirahServiceService) ListApps(
 		return nil, err
 	}
 	return &pb.ListAppsResponse{
-		Paging:      &librarian.PagingResponse{TotalSize: int64(total)},
-		AppPackages: converter.ToPBAppList(ap),
+		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
+		Apps:   converter.ToPBAppList(ap),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) AssignApp(

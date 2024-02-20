@@ -22,6 +22,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -265,6 +266,21 @@ func (uc *UserCreate) AddCreatedUser(u ...*User) *UserCreate {
 		ids[i] = u[i].ID
 	}
 	return uc.AddCreatedUserIDs(ids...)
+}
+
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
+func (uc *UserCreate) AddUserDeviceIDs(ids ...int) *UserCreate {
+	uc.mutation.AddUserDeviceIDs(ids...)
+	return uc
+}
+
+// AddUserDevice adds the "user_device" edges to the UserDevice entity.
+func (uc *UserCreate) AddUserDevice(u ...*UserDevice) *UserCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return uc.AddUserDeviceIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -548,10 +564,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	}
 	if nodes := uc.mutation.DeviceInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
+			Rel:     sqlgraph.M2M,
 			Inverse: false,
 			Table:   user.DeviceInfoTable,
-			Columns: []string{user.DeviceInfoColumn},
+			Columns: user.DeviceInfoPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
@@ -560,6 +576,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		createE := &UserDeviceCreate{config: uc.config, mutation: newUserDeviceMutation(uc.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.CreatorIDs(); len(nodes) > 0 {
@@ -588,6 +608,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.UserDeviceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   user.UserDeviceTable,
+			Columns: []string{user.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -94,6 +96,21 @@ func (dic *DeviceInfoCreate) SetID(mi model.InternalID) *DeviceInfoCreate {
 	return dic
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (dic *DeviceInfoCreate) AddUserIDs(ids ...model.InternalID) *DeviceInfoCreate {
+	dic.mutation.AddUserIDs(ids...)
+	return dic
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (dic *DeviceInfoCreate) AddUser(u ...*User) *DeviceInfoCreate {
+	ids := make([]model.InternalID, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return dic.AddUserIDs(ids...)
+}
+
 // AddUserSessionIDs adds the "user_session" edge to the UserSession entity by IDs.
 func (dic *DeviceInfoCreate) AddUserSessionIDs(ids ...model.InternalID) *DeviceInfoCreate {
 	dic.mutation.AddUserSessionIDs(ids...)
@@ -107,6 +124,21 @@ func (dic *DeviceInfoCreate) AddUserSession(u ...*UserSession) *DeviceInfoCreate
 		ids[i] = u[i].ID
 	}
 	return dic.AddUserSessionIDs(ids...)
+}
+
+// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
+func (dic *DeviceInfoCreate) AddUserDeviceIDs(ids ...int) *DeviceInfoCreate {
+	dic.mutation.AddUserDeviceIDs(ids...)
+	return dic
+}
+
+// AddUserDevice adds the "user_device" edges to the UserDevice entity.
+func (dic *DeviceInfoCreate) AddUserDevice(u ...*UserDevice) *DeviceInfoCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return dic.AddUserDeviceIDs(ids...)
 }
 
 // Mutation returns the DeviceInfoMutation object of the builder.
@@ -250,6 +282,26 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(deviceinfo.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := dic.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   deviceinfo.UserTable,
+			Columns: deviceinfo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &UserDeviceCreate{config: dic.config, mutation: newUserDeviceMutation(dic.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := dic.mutation.UserSessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -259,6 +311,22 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(usersession.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := dic.mutation.UserDeviceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   deviceinfo.UserDeviceTable,
+			Columns: []string{deviceinfo.UserDeviceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

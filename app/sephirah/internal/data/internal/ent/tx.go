@@ -50,6 +50,8 @@ type Tx struct {
 	PorterPrivilege *PorterPrivilegeClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// UserDevice is the client for interacting with the UserDevice builders.
+	UserDevice *UserDeviceClient
 	// UserSession is the client for interacting with the UserSession builders.
 	UserSession *UserSessionClient
 
@@ -202,6 +204,7 @@ func (tx *Tx) init() {
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
 	tx.PorterPrivilege = NewPorterPrivilegeClient(tx.config)
 	tx.User = NewUserClient(tx.config)
+	tx.UserDevice = NewUserDeviceClient(tx.config)
 	tx.UserSession = NewUserSessionClient(tx.config)
 }
 

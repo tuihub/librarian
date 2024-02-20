@@ -31,6 +31,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 )
 
@@ -111,6 +112,7 @@ func checkColumn(table, column string) error {
 			porterinstance.Table:   porterinstance.ValidColumn,
 			porterprivilege.Table:  porterprivilege.ValidColumn,
 			user.Table:             user.ValidColumn,
+			userdevice.Table:       userdevice.ValidColumn,
 			usersession.Table:      usersession.ValidColumn,
 		})
 	})

@@ -39,6 +39,7 @@ type TipherethRepo interface {
 	CreateUserSession(context.Context, *modeltiphereth.UserSession) error
 	FetchUserSession(context.Context, model.InternalID, string) (*modeltiphereth.UserSession, error)
 	UpdateUserSession(context.Context, *modeltiphereth.UserSession) error
+	ListDevices(context.Context, model.InternalID) ([]*modeltiphereth.DeviceInfo, error)
 }
 
 type Tiphereth struct {

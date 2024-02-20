@@ -218,6 +218,18 @@ func (t *Tiphereth) RegisterDevice(
 	return id, nil
 }
 
+func (t *Tiphereth) ListRegisteredDevices(ctx context.Context) ([]*modeltiphereth.DeviceInfo, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, bizutils.NoPermissionError()
+	}
+	devices, err := t.repo.ListDevices(ctx, claims.UserID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return devices, nil
+}
+
 func (t *Tiphereth) ListUserSessions(ctx context.Context) ([]*modeltiphereth.UserSession, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {

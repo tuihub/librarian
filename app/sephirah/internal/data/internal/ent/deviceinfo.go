@@ -36,27 +36,48 @@ type DeviceInfo struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the DeviceInfoQuery when eager-loading is set.
-	Edges            DeviceInfoEdges `json:"edges"`
-	user_device_info *model.InternalID
-	selectValues     sql.SelectValues
+	Edges        DeviceInfoEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // DeviceInfoEdges holds the relations/edges for other nodes in the graph.
 type DeviceInfoEdges struct {
+	// User holds the value of the user edge.
+	User []*User `json:"user,omitempty"`
 	// UserSession holds the value of the user_session edge.
 	UserSession []*UserSession `json:"user_session,omitempty"`
+	// UserDevice holds the value of the user_device edge.
+	UserDevice []*UserDevice `json:"user_device,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading.
+func (e DeviceInfoEdges) UserOrErr() ([]*User, error) {
+	if e.loadedTypes[0] {
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // UserSessionOrErr returns the UserSession value or an error if the edge
 // was not loaded in eager-loading.
 func (e DeviceInfoEdges) UserSessionOrErr() ([]*UserSession, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[1] {
 		return e.UserSession, nil
 	}
 	return nil, &NotLoadedError{edge: "user_session"}
+}
+
+// UserDeviceOrErr returns the UserDevice value or an error if the edge
+// was not loaded in eager-loading.
+func (e DeviceInfoEdges) UserDeviceOrErr() ([]*UserDevice, error) {
+	if e.loadedTypes[2] {
+		return e.UserDevice, nil
+	}
+	return nil, &NotLoadedError{edge: "user_device"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -70,8 +91,6 @@ func (*DeviceInfo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case deviceinfo.FieldUpdatedAt, deviceinfo.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case deviceinfo.ForeignKeys[0]: // user_device_info
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -141,13 +160,6 @@ func (di *DeviceInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				di.CreatedAt = value.Time
 			}
-		case deviceinfo.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_device_info", values[i])
-			} else if value.Valid {
-				di.user_device_info = new(model.InternalID)
-				*di.user_device_info = model.InternalID(value.Int64)
-			}
 		default:
 			di.selectValues.Set(columns[i], values[i])
 		}
@@ -161,9 +173,19 @@ func (di *DeviceInfo) Value(name string) (ent.Value, error) {
 	return di.selectValues.Get(name)
 }
 
+// QueryUser queries the "user" edge of the DeviceInfo entity.
+func (di *DeviceInfo) QueryUser() *UserQuery {
+	return NewDeviceInfoClient(di.config).QueryUser(di)
+}
+
 // QueryUserSession queries the "user_session" edge of the DeviceInfo entity.
 func (di *DeviceInfo) QueryUserSession() *UserSessionQuery {
 	return NewDeviceInfoClient(di.config).QueryUserSession(di)
+}
+
+// QueryUserDevice queries the "user_device" edge of the DeviceInfo entity.
+func (di *DeviceInfo) QueryUserDevice() *UserDeviceQuery {
+	return NewDeviceInfoClient(di.config).QueryUserDevice(di)
 }
 
 // Update returns a builder for updating this DeviceInfo.

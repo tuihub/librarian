@@ -237,6 +237,18 @@ func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
 }
 
+// The UserDeviceFunc type is an adapter to allow the use of ordinary
+// function as UserDevice mutator.
+type UserDeviceFunc func(context.Context, *ent.UserDeviceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f UserDeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.UserDeviceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserDeviceMutation", m)
+}
+
 // The UserSessionFunc type is an adapter to allow the use of ordinary
 // function as UserSession mutator.
 type UserSessionFunc func(context.Context, *ent.UserSessionMutation) (ent.Value, error)

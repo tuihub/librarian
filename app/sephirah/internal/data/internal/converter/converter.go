@@ -54,6 +54,9 @@ func ToBizUserSessionList(a []*ent.UserSession) []*modeltiphereth.UserSession {
 func ToBizDeviceInfo(a *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
 	return toBiz.ToBizDeviceInfo(a)
 }
+func ToBizDeviceInfoList(a []*ent.DeviceInfo) []*modeltiphereth.DeviceInfo {
+	return toBiz.ToBizDeviceInfoList(a)
+}
 func ToBizAccount(a *ent.Account) *modeltiphereth.Account {
 	return toBiz.ToBizAccount(a)
 }
