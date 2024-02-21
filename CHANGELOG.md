@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.2.3](https://github.com/tuihub/librarian/compare/v0.2.2...v0.2.3) (2024-02-20)
+
+
+### Features
+
+* add toml support ([54e8daa](https://github.com/tuihub/librarian/commit/54e8daa731700dc007e04d674355fc62ccc2bbf2))
+* remove mapper ([4cd88ab](https://github.com/tuihub/librarian/commit/4cd88ab4f33df74fdc622600b5452974a66ed49a))
+* support zero config run ([34c2bc7](https://github.com/tuihub/librarian/commit/34c2bc76110e0aa49bcf0356a41c34cf664d513f))
+* upgrade go version to 1.21 ([0a1b1cb](https://github.com/tuihub/librarian/commit/0a1b1cb140ac679e1ad80a59385ffbacab558271))
+* upgrade goverter to v1.3.2 ([062d24a](https://github.com/tuihub/librarian/commit/062d24afb150dd10357bc4611d0f16d288554843))
+* upgrade proto to v0.4.0 ([03cbc88](https://github.com/tuihub/librarian/commit/03cbc8835796522054b7f5bce5c9faf6877ee14e))
+* upgrade proto to v0.4.1 ([664b7d0](https://github.com/tuihub/librarian/commit/664b7d0184f68ba34a7119539a369aa1cc3484c8))
+* upgrade proto to v0.4.2 ([87228dd](https://github.com/tuihub/librarian/commit/87228dd9dfdd474979d38c924ced40fdf4195aad))
+* upgrade protos to v0.3.9 ([f745b82](https://github.com/tuihub/librarian/commit/f745b82c0d60e821e50889d86315b607b9dbfa99))
+
+
+### Bug Fixes
+
+* allow run without consul ([caf6f3a](https://github.com/tuihub/librarian/commit/caf6f3adb1a40f9d853452972a0aa6f219e54d6b))
+* impl porter connection status & instance info ([833921e](https://github.com/tuihub/librarian/commit/833921ea7bac778efb5bd24fbf32756a7f0ce2ec))
+* several logic fixes ([1f9259f](https://github.com/tuihub/librarian/commit/1f9259f22263de98f2b5f0766795bdb2bb5e67e4))
+* upgrade proto to v0.3.10 ([c05d45c](https://github.com/tuihub/librarian/commit/c05d45cac5057156576f944336206c58d7fcbf8d))
+
 ## [0.2.2](https://github.com/tuihub/librarian/compare/v0.2.1...v0.2.2) (2024-01-23)
 
 
