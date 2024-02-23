@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.5](https://github.com/tuihub/librarian/compare/v0.2.4...v0.2.5) (2024-02-23)
+
+
+### Bug Fixes
+
+* check pointer before use ([a0b6ecb](https://github.com/tuihub/librarian/commit/a0b6ecb13192c2e111b3c90d5c4a32923941b5e8))
+
 ## [0.2.4](https://github.com/tuihub/librarian/compare/v0.2.3...v0.2.4) (2024-02-23)
 
 
