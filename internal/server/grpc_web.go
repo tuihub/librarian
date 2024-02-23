@@ -6,11 +6,13 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libsentry"
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
@@ -29,12 +31,14 @@ func NewGrpcWebServer(
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 		ratelimit.Server(),
+		tracing.Server(),
 		validator,
 	}
-	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
+	middlewares = append(middlewares, libsentry.Server())
+	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),
 	}

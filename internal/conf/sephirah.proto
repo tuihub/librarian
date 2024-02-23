@@ -41,4 +41,5 @@ message Sephirah {
   Cache cache = 5;
   Porter porter = 6;
   Consul consul = 7;
+  Sentry sentry = 8;
 }

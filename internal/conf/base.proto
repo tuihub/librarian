@@ -40,3 +40,7 @@ message Consul {
   string addr = 1;
   string token = 2;
 }
+
+message Sentry {
+  string dsn = 1;
+}

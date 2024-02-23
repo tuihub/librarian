@@ -25,6 +25,7 @@ message Librarian {
   Cache cache = 5;
   Porter porter = 6;
   Consul consul = 7;
+  Sentry sentry = 8;
 
   Mapper mapper = 11;
   Searcher searcher = 12;

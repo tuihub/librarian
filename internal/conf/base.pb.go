@@ -399,6 +399,53 @@ func (x *Consul) GetToken() string {
 	return ""
 }
 
+type Sentry struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Dsn string `protobuf:"bytes,1,opt,name=dsn,proto3" json:"dsn,omitempty"`
+}
+
+func (x *Sentry) Reset() {
+	*x = Sentry{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_conf_base_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Sentry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Sentry) ProtoMessage() {}
+
+func (x *Sentry) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_base_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Sentry.ProtoReflect.Descriptor instead.
+func (*Sentry) Descriptor() ([]byte, []int) {
+	return file_conf_base_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *Sentry) GetDsn() string {
+	if x != nil {
+		return x.Dsn
+	}
+	return ""
+}
+
 var File_conf_base_proto protoreflect.FileDescriptor
 
 var file_conf_base_proto_rawDesc = []byte{
@@ -440,9 +487,11 @@ var file_conf_base_proto_rawDesc = []byte{
 	0x22, 0x32, 0x0a, 0x06, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x61, 0x64,
 	0x64, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x61, 0x64, 0x64, 0x72, 0x12, 0x14,
 	0x0a, 0x05, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x74,
-	0x6f, 0x6b, 0x65, 0x6e, 0x42, 0x1e, 0x5a, 0x1c, 0x4c, 0x69, 0x62, 0x72, 0x61, 0x72, 0x69, 0x61,
-	0x6e, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x3b,
-	0x63, 0x6f, 0x6e, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6b, 0x65, 0x6e, 0x22, 0x1a, 0x0a, 0x06, 0x53, 0x65, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10,
+	0x0a, 0x03, 0x64, 0x73, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x73, 0x6e,
+	0x42, 0x1e, 0x5a, 0x1c, 0x4c, 0x69, 0x62, 0x72, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x2f, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e, 0x66,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -457,7 +506,7 @@ func file_conf_base_proto_rawDescGZIP() []byte {
 	return file_conf_base_proto_rawDescData
 }
 
-var file_conf_base_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_conf_base_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_conf_base_proto_goTypes = []interface{}{
 	(*GRPC)(nil),                // 0: kratos.api.GRPC
 	(*Database)(nil),            // 1: kratos.api.Database
@@ -465,10 +514,11 @@ var file_conf_base_proto_goTypes = []interface{}{
 	(*Auth)(nil),                // 3: kratos.api.Auth
 	(*Cache)(nil),               // 4: kratos.api.Cache
 	(*Consul)(nil),              // 5: kratos.api.Consul
-	(*durationpb.Duration)(nil), // 6: google.protobuf.Duration
+	(*Sentry)(nil),              // 6: kratos.api.Sentry
+	(*durationpb.Duration)(nil), // 7: google.protobuf.Duration
 }
 var file_conf_base_proto_depIdxs = []int32{
-	6, // 0: kratos.api.GRPC.timeout:type_name -> google.protobuf.Duration
+	7, // 0: kratos.api.GRPC.timeout:type_name -> google.protobuf.Duration
 	1, // 1: kratos.api.MQ.database:type_name -> kratos.api.Database
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
@@ -555,6 +605,18 @@ func file_conf_base_proto_init() {
 				return nil
 			}
 		}
+		file_conf_base_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Sentry); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -562,7 +624,7 @@ func file_conf_base_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_conf_base_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
