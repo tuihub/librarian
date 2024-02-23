@@ -21,14 +21,14 @@ func newSentryListener() *sentryListener {
 	}
 }
 
-func (s sentryListener) NewDurationJob(name string, duration time.Duration) {
+func (s *sentryListener) NewDurationJob(name string, duration time.Duration) {
 	s.configMap[name] = &sentry.MonitorConfig{ //nolint:exhaustruct // no need
 		Schedule:      sentry.IntervalSchedule(int64(math.Ceil(duration.Minutes())), sentry.MonitorScheduleUnitMinute),
 		CheckInMargin: 1,
 	}
 }
 
-func (s sentryListener) EventListeners() []gocron.EventListener {
+func (s *sentryListener) EventListeners() []gocron.EventListener {
 	return []gocron.EventListener{
 		gocron.BeforeJobRuns(func(jobID uuid.UUID, jobName string) {
 			s.idMap[jobID] = sentry.CaptureCheckIn(
@@ -40,6 +40,9 @@ func (s sentryListener) EventListeners() []gocron.EventListener {
 			)
 		}),
 		gocron.AfterJobRuns(func(jobID uuid.UUID, jobName string) {
+			if s.idMap[jobID] == nil {
+				return
+			}
 			sentry.CaptureCheckIn(
 				&sentry.CheckIn{ //nolint:exhaustruct // no need
 					ID:          *s.idMap[jobID],
@@ -50,6 +53,9 @@ func (s sentryListener) EventListeners() []gocron.EventListener {
 			)
 		}),
 		gocron.AfterJobRunsWithError(func(jobID uuid.UUID, jobName string, err error) {
+			if s.idMap[jobID] == nil {
+				return
+			}
 			sentry.CaptureCheckIn(
 				&sentry.CheckIn{ //nolint:exhaustruct // no need
 					ID:          *s.idMap[jobID],
