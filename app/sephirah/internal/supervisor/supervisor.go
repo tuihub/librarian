@@ -117,6 +117,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit // TODO
 					logger.Errorf("%s", err2.Error())
 					ins.ConnectionStatus = modeltiphereth.PorterConnectionStatusActivationFailed
 					// bad instance, can't enable
+					aliveInstanceMap[address] = ins
 					continue
 				}
 				ins.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
