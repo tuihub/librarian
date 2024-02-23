@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.4](https://github.com/tuihub/librarian/compare/v0.2.3...v0.2.4) (2024-02-23)
+
+
+### Features
+
+* add sentry support ([23ea8ab](https://github.com/tuihub/librarian/commit/23ea8abb8d9cb8ee3d7e6aa7b549b48402a30c8f))
+* upgrade gocron to v2 & support sentry cron ([019993b](https://github.com/tuihub/librarian/commit/019993badfd9205e54cdefcc7e5ffc4cff7e4075))
+
+
+### Bug Fixes
+
+* supervisor save instance on activation failed ([9e88651](https://github.com/tuihub/librarian/commit/9e8865176e32cf866118525c8b74d089b14b6190))
+
 ## [0.2.3](https://github.com/tuihub/librarian/compare/v0.2.2...v0.2.3) (2024-02-20)
 
 
