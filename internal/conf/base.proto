@@ -43,4 +43,5 @@ message Consul {
 
 message Sentry {
   string dsn = 1;
+  string environment = 2;
 }

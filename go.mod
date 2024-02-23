@@ -16,7 +16,7 @@ require (
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/getsentry/sentry-go v0.27.0
 	github.com/getsentry/sentry-go/otel v0.27.0
-	github.com/go-co-op/gocron v1.37.0
+	github.com/go-co-op/gocron/v2 v2.2.4
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20240119085030-a556a2b53120
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20240119085030-a556a2b53120
 	github.com/go-kratos/kratos/v2 v2.7.2
@@ -113,6 +113,7 @@ require (
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jhump/protoreflect v1.14.1 // indirect
+	github.com/jonboulle/clockwork v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karrick/godirwalk v1.17.0 // indirect

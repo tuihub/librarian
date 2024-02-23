@@ -33,7 +33,11 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 	if err != nil {
 		return nil, nil, err
 	}
-	cron := libcron.NewCron()
+	cron, err := libcron.NewCron()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	store, err := libcache.NewStore(cache)
 	if err != nil {
 		cleanup()

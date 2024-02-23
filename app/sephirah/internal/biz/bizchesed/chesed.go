@@ -78,7 +78,7 @@ func NewChesed(
 		modelbinah.DownloadEmpty,
 		nil,
 	)
-	err := cron.BySeconds(60, c.ScanImage, context.Background()) //nolint:gomnd //TODO
+	err := cron.BySeconds("ChesedScanImage", 60, c.ScanImage, context.Background()) //nolint:gomnd //TODO
 	if err != nil {
 		return nil, err
 	}
@@ -140,27 +140,27 @@ func (c *Chesed) UploadImageCallback(ctx context.Context, id model.InternalID) e
 	return nil
 }
 
-func (c *Chesed) ScanImage(ctx context.Context) {
+func (c *Chesed) ScanImage(ctx context.Context) error {
 	if c.muScanImage.TryLock() {
 		defer c.muScanImage.Unlock()
 	} else {
-		return
+		return nil
 	}
 	images, err0 := c.repo.ListImageNeedScan(ctx)
 	if err0 != nil {
-		return
+		return err0
 	}
 	if len(images) == 0 {
-		return
+		return nil
 	}
 	for _, image := range images {
 		data, err := c.b.PresignedGetObject(ctx, bizbinah.BucketDefault, strconv.FormatInt(int64(image.ID), 10), libtime.Day)
 		if err != nil {
-			return
+			return err
 		}
 		results, err := c.miner.RecognizeImageURL(ctx, &miner.RecognizeImageURLRequest{Url: data})
 		if err != nil {
-			return
+			return err
 		}
 		var desReq string
 		for _, r := range results.GetResults() {
@@ -172,12 +172,13 @@ func (c *Chesed) ScanImage(ctx context.Context) {
 			searcherpb.DescribeIDRequest_DESCRIBE_MODE_APPEND,
 			searcherpb.Index_INDEX_CHESED_IMAGE,
 		); err != nil {
-			return
+			return err
 		}
 		if err = c.repo.SetImageStatus(ctx, image.ID, modelchesed.ImageStatusScanned); err != nil {
-			return
+			return err
 		}
 	}
+	return nil
 }
 
 func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.InternalID, int64, *errors.Error) {

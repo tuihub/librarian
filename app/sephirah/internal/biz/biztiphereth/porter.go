@@ -13,7 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (t *Tiphereth) updatePorters(ctx context.Context) {
+func (t *Tiphereth) updatePorters(ctx context.Context) error {
 	if t.supv.KnownInstancesRequireUpdate() {
 		porters, _, err := t.repo.ListPorters(ctx, model.Paging{
 			PageSize: 1000, //nolint:gomnd // TODO
@@ -21,22 +21,22 @@ func (t *Tiphereth) updatePorters(ctx context.Context) {
 		})
 		if err != nil {
 			logger.Errorf("list porters failed: %s", err.Error())
-			return
+			return err
 		}
 		t.supv.UpdateKnownInstances(porters)
 	}
 	newPorters, err := t.supv.RefreshAliveInstances(ctx)
 	if err != nil {
 		logger.Errorf("refresh alive instances failed: %s", err.Error())
-		return
+		return err
 	}
 	if len(newPorters) == 0 {
-		return
+		return nil
 	}
 	ids, err := t.searcher.NewBatchIDs(ctx, len(newPorters))
 	if err != nil {
 		logger.Errorf("new batch ids failed: %s", err.Error())
-		return
+		return err
 	}
 	for i, porter := range newPorters {
 		porter.ID = ids[i]
@@ -45,8 +45,9 @@ func (t *Tiphereth) updatePorters(ctx context.Context) {
 	err = t.repo.UpsertPorters(ctx, newPorters)
 	if err != nil {
 		logger.Errorf("upsert porters failed: %s", err.Error())
-		return
+		return err
 	}
+	return nil
 }
 
 func (t *Tiphereth) ListPorters(

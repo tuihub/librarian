@@ -56,21 +56,22 @@ func NewYesod(
 		searcher: sClient,
 		pullFeed: pullFeed,
 	}
-	err := cron.BySeconds(60, y.PullFeeds, context.Background()) //nolint:gomnd // hard code min interval
+	err := cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:gomnd // hard code min interval
 	if err != nil {
 		return nil, err
 	}
 	return y, nil
 }
 
-func (y *Yesod) PullFeeds(ctx context.Context) {
+func (y *Yesod) PullFeeds(ctx context.Context) error {
 	configs, err := y.repo.ListFeedConfigNeedPull(ctx, nil,
 		[]modelyesod.FeedConfigStatus{modelyesod.FeedConfigStatusActive},
 		modelyesod.ListFeedOrderNextPull, time.Now(), 32) //nolint:gomnd // TODO
 	if err != nil {
 		logger.Errorf("%s", err.Error())
-		return
+		return err
 	}
+	var errRes error
 	for _, c := range configs {
 		err = y.pullFeed.Publish(ctx, modelyesod.PullFeed{
 			InternalID: c.ID,
@@ -79,11 +80,14 @@ func (y *Yesod) PullFeeds(ctx context.Context) {
 		})
 		if err != nil {
 			logger.Errorf("%s", err.Error())
+			errRes = err
 			continue
 		}
 		err = y.repo.UpdateFeedConfigAsInQueue(ctx, c.ID)
 		if err != nil {
 			logger.Errorf("%s", err.Error())
+			errRes = err
 		}
 	}
+	return errRes
 }
