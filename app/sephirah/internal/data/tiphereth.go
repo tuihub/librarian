@@ -12,6 +12,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -102,8 +103,13 @@ func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiph
 			return err
 		}
 		if session.DeviceInfo != nil {
-			err = tx.User.UpdateOneID(session.UserID).
-				AddDeviceInfoIDs(session.DeviceInfo.ID).
+			err = tx.UserDevice.Create().
+				SetUserID(session.UserID).
+				SetDeviceInfoID(session.DeviceInfo.ID).
+				OnConflict(
+					sql.ConflictColumns(userdevice.FieldUserID, userdevice.FieldDeviceID),
+				).
+				UpdateNewValues().
 				Exec(ctx)
 			if err != nil {
 				return err
