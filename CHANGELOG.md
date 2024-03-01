@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.6](https://github.com/tuihub/librarian/compare/v0.2.5...v0.2.6) (2024-03-01)
+
+
+### Bug Fixes
+
+* **tiphereth:** error on creating new user session ([3151404](https://github.com/tuihub/librarian/commit/3151404ae32b3680542f3067cd97256bb23a36b7))
+
 ## [0.2.5](https://github.com/tuihub/librarian/compare/v0.2.4...v0.2.5) (2024-02-23)
 
 
