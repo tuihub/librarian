@@ -24,7 +24,7 @@ init: init-lint
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 
 init-lint:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.1
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.56.2
 
 init-test:
 	cd tests && make init
@@ -47,8 +47,8 @@ generate-code:
 .PHONY: lint
 # lint files
 lint:
-	golangci-lint run --fix --timeout 5m
-	golangci-lint run --timeout 5m # re-run to make sure fixes are valid, useful in some condition
+	golangci-lint run --fix
+	golangci-lint run # re-run to make sure fixes are valid, useful in some condition
 
 .PHONY: test-unit
 # run go test
