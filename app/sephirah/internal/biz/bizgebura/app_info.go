@@ -105,7 +105,7 @@ func (g *Gebura) SyncAppInfos(
 			err = g.pullAppInfo.LocalCall(ctx, modelangela.PullAppInfo{
 				ID:              ids[i],
 				AppInfoID:       *infoID,
-				IgnoreRateLimit: false,
+				IgnoreRateLimit: true,
 			})
 			if err != nil {
 				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
