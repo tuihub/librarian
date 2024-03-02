@@ -27,7 +27,7 @@ func NewStore(c *conf.Cache) (Store, error) {
 	case "memory":
 		res, err = newRistrettoCache()
 	case "redis":
-		res = newRedisCache()
+		res = newRedisCache(c)
 	default:
 		return nil, errors.New("unsupported cache driver")
 	}
@@ -49,8 +49,11 @@ func newRistrettoCache() (Store, error) {
 	return newRistretto(ristrettoCache), nil
 }
 
-func newRedisCache() Store {
+func newRedisCache(c *conf.Cache) Store {
 	return newRedis(redis.NewClient(&redis.Options{ //nolint:exhaustruct // no need
-		Addr: "127.0.0.1:6379",
+		Addr:     c.GetAddr(),
+		DB:       int(c.GetDb()),
+		Username: c.GetUser(),
+		Password: c.GetPassword(),
 	}))
 }

@@ -27,7 +27,8 @@ import (
 
 func NewSephirahService(
 	*conf.SephirahServer,
-	*conf.SephirahData,
+	*conf.Database,
+	*conf.S3,
 	*conf.Porter,
 	*conf.Consul,
 	*libauth.Auth,

@@ -24,12 +24,12 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahData, porter *conf.Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, mapper_Data *conf.Mapper_Data, searcher_Data *conf.Searcher_Data, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq, settings)
+	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -69,7 +69,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirahServer, sephirahData, porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
+	librarianSephirahServiceServer, cleanup4, err := service3.NewSephirahService(sephirahServer, database, s3, porter, consul, libauthAuth, libmqMQ, cron, store, settings, librarianSearcherServiceClient, librarianMinerServiceClient)
 	if err != nil {
 		cleanup3()
 		cleanup2()

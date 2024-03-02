@@ -32,16 +32,16 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahData, porter *conf.Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq, settings)
+	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings)
 	if err != nil {
 		return nil, nil, err
 	}
-	entClient, cleanup2, err := data.NewSQLClient(sephirahData, settings)
+	entClient, cleanup2, err := data.NewSQLClient(database, settings)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -119,7 +119,7 @@ func wireApp(sephirahServer *conf.SephirahServer, sephirahData *conf.SephirahDat
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, topic, libmqTopic, libcacheMap)
-	binahRepo, err := data.NewBinahRepo(sephirahData)
+	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()
 		cleanup()

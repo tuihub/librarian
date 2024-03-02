@@ -48,12 +48,10 @@ type UserDeviceEdges struct {
 // DeviceInfoOrErr returns the DeviceInfo value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserDeviceEdges) DeviceInfoOrErr() (*DeviceInfo, error) {
-	if e.loadedTypes[0] {
-		if e.DeviceInfo == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: deviceinfo.Label}
-		}
+	if e.DeviceInfo != nil {
 		return e.DeviceInfo, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: deviceinfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "device_info"}
 }
@@ -61,12 +59,10 @@ func (e UserDeviceEdges) DeviceInfoOrErr() (*DeviceInfo, error) {
 // UserOrErr returns the User value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserDeviceEdges) UserOrErr() (*User, error) {
-	if e.loadedTypes[1] {
-		if e.User == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.User != nil {
 		return e.User, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "user"}
 }

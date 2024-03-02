@@ -51,12 +51,12 @@ func NewData(db *ent.Client) *Data {
 	}
 }
 
-func NewSQLClient(c *conf.SephirahData, app *libapp.Settings) (*ent.Client, func(), error) {
+func NewSQLClient(c *conf.Database, app *libapp.Settings) (*ent.Client, func(), error) {
 	var driverName, dataSourceName string
 	if c == nil {
-		c = new(conf.SephirahData)
+		c = new(conf.Database)
 	}
-	driverName = c.GetDatabase().GetDriver()
+	driverName = c.GetDriver()
 	if driverName == "" {
 		logger.Warnf("database driver is empty, using memory mode.")
 		driverName = driverMemory
@@ -68,13 +68,13 @@ func NewSQLClient(c *conf.SephirahData, app *libapp.Settings) (*ent.Client, func
 		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1", path.Join(app.DataPath, "librarian.db"))
 	case driverPostgres:
 		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
-			c.GetDatabase().GetHost(),
-			c.GetDatabase().GetPort(),
-			c.GetDatabase().GetUser(),
-			c.GetDatabase().GetDbname(),
-			c.GetDatabase().GetPassword(),
+			c.GetHost(),
+			c.GetPort(),
+			c.GetUser(),
+			c.GetDbname(),
+			c.GetPassword(),
 		)
-		if c.GetDatabase().GetNoSsl() {
+		if c.GetNoSsl() {
 			dataSourceName += " sslmode=disable"
 		}
 	default:

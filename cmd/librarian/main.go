@@ -84,7 +84,8 @@ func main() {
 	app, cleanup, err := wireApp(
 		bc.GetEnableServiceDiscovery(),
 		bc.GetServer(),
-		bc.GetData(),
+		bc.GetDatabase(),
+		bc.GetS3(),
 		bc.GetPorter(),
 		bc.GetMapper().GetData(),
 		bc.GetSearcher().GetData(),

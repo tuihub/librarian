@@ -57,3 +57,9 @@ services:
       - "127.0.0.1:8500:8500"
     command: "agent -dev -server -client=0.0.0.0 -ui"
     restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    restart: unless-stopped

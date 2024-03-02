@@ -52,12 +52,10 @@ type ImageEdges struct {
 // OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e ImageEdges) OwnerOrErr() (*User, error) {
-	if e.loadedTypes[0] {
-		if e.Owner == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.Owner != nil {
 		return e.Owner, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "owner"}
 }
@@ -65,12 +63,10 @@ func (e ImageEdges) OwnerOrErr() (*User, error) {
 // FileOrErr returns the File value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e ImageEdges) FileOrErr() (*File, error) {
-	if e.loadedTypes[1] {
-		if e.File == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: file.Label}
-		}
+	if e.File != nil {
 		return e.File, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: file.Label}
 	}
 	return nil, &NotLoadedError{edge: "file"}
 }

@@ -21,9 +21,15 @@ message Database {
   bool no_ssl = 7;
 }
 
+message S3 {
+  string end_point = 1;
+  string access_key = 2;
+  string secret_key = 3;
+  bool use_ssl = 4;
+}
+
 message MQ {
   string driver = 1;
-  Database database = 2;
 }
 
 message Auth {
@@ -34,6 +40,10 @@ message Auth {
 
 message Cache {
   string driver = 1;
+  string addr = 2;
+  int64 db = 3;
+  string user = 4;
+  string password = 5;
 }
 
 message Consul {

@@ -25,7 +25,8 @@ import (
 func wireApp(
 	*conf.Librarian_EnableServiceDiscovery,
 	*conf.SephirahServer,
-	*conf.SephirahData,
+	*conf.Database,
+	*conf.S3,
 	*conf.Porter,
 	*conf.Mapper_Data,
 	*conf.Searcher_Data,

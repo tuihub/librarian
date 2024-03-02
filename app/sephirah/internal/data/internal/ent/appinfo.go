@@ -117,12 +117,10 @@ func (e AppInfoEdges) AppBinaryOrErr() ([]*AppBinary, error) {
 // BindInternalOrErr returns the BindInternal value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppInfoEdges) BindInternalOrErr() (*AppInfo, error) {
-	if e.loadedTypes[4] {
-		if e.BindInternal == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: appinfo.Label}
-		}
+	if e.BindInternal != nil {
 		return e.BindInternal, nil
+	} else if e.loadedTypes[4] {
+		return nil, &NotFoundError{label: appinfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "bind_internal"}
 }

@@ -163,12 +163,10 @@ func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
-	if e.loadedTypes[10] {
-		if e.Creator == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.Creator != nil {
 		return e.Creator, nil
+	} else if e.loadedTypes[10] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "creator"}
 }

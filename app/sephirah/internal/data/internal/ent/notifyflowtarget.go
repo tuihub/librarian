@@ -55,12 +55,10 @@ type NotifyFlowTargetEdges struct {
 // NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e NotifyFlowTargetEdges) NotifyFlowOrErr() (*NotifyFlow, error) {
-	if e.loadedTypes[0] {
-		if e.NotifyFlow == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: notifyflow.Label}
-		}
+	if e.NotifyFlow != nil {
 		return e.NotifyFlow, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: notifyflow.Label}
 	}
 	return nil, &NotLoadedError{edge: "notify_flow"}
 }
@@ -68,12 +66,10 @@ func (e NotifyFlowTargetEdges) NotifyFlowOrErr() (*NotifyFlow, error) {
 // NotifyTargetOrErr returns the NotifyTarget value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e NotifyFlowTargetEdges) NotifyTargetOrErr() (*NotifyTarget, error) {
-	if e.loadedTypes[1] {
-		if e.NotifyTarget == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: notifytarget.Label}
-		}
+	if e.NotifyTarget != nil {
 		return e.NotifyTarget, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: notifytarget.Label}
 	}
 	return nil, &NotLoadedError{edge: "notify_target"}
 }

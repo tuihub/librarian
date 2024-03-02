@@ -52,12 +52,10 @@ type AppEdges struct {
 // OwnerOrErr returns the Owner value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppEdges) OwnerOrErr() (*User, error) {
-	if e.loadedTypes[0] {
-		if e.Owner == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: user.Label}
-		}
+	if e.Owner != nil {
 		return e.Owner, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "owner"}
 }
@@ -65,12 +63,10 @@ func (e AppEdges) OwnerOrErr() (*User, error) {
 // AppInfoOrErr returns the AppInfo value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e AppEdges) AppInfoOrErr() (*AppInfo, error) {
-	if e.loadedTypes[1] {
-		if e.AppInfo == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: appinfo.Label}
-		}
+	if e.AppInfo != nil {
 		return e.AppInfo, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: appinfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "app_info"}
 }

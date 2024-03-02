@@ -5,10 +5,9 @@ server:
   grpc_web:
     addr: 0.0.0.0:10001
     timeout: 60s
-data:
-  database:
-    driver: memory
-  s3:
+database:
+  driver: memory
+s3:
 auth:
   password_salt: test
   jwt_issuer: test

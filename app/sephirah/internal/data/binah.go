@@ -19,13 +19,13 @@ type binahRepo struct {
 	buckets map[bizbinah.Bucket]string
 }
 
-func NewBinahRepo(c *conf.SephirahData) (bizbinah.BinahRepo, error) {
-	if c == nil || c.GetS3() == nil {
+func NewBinahRepo(c *conf.S3) (bizbinah.BinahRepo, error) {
+	if c == nil {
 		return new(binahRepo), nil
 	}
-	minioClient, err := minio.New(c.GetS3().GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
-		Creds:  credentials.NewStaticV4(c.GetS3().GetAccessKey(), c.GetS3().GetSecretKey(), ""),
-		Secure: c.GetS3().GetUseSsl(),
+	minioClient, err := minio.New(c.GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
+		Creds:  credentials.NewStaticV4(c.GetAccessKey(), c.GetSecretKey(), ""),
+		Secure: c.GetUseSsl(),
 	})
 	if err != nil {
 		return nil, err

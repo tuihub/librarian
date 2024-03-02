@@ -29,7 +29,7 @@ type pubSub struct {
 	subscriber message.Subscriber
 }
 
-func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
+func NewMQ(c *conf.MQ, dbc *conf.Database, cachec *conf.Cache, app *libapp.Settings) (*MQ, func(), error) {
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
 	if c == nil {
@@ -43,8 +43,20 @@ func NewMQ(c *conf.MQ, app *libapp.Settings) (*MQ, func(), error) {
 	case "memory":
 		ps = newGoChannelAdapter(loggerAdapter)
 	case "sql":
+		if dbc == nil || dbc.GetDriver() != "postgres" {
+			return nil, func() {}, errors.New("invalid postgres driver for mq")
+		}
 		var err error
-		ps, err = newSQLAdapter(c.GetDatabase(), loggerAdapter)
+		ps, err = newSQLAdapter(dbc, loggerAdapter)
+		if err != nil {
+			return nil, func() {}, err
+		}
+	case "redis":
+		if cachec == nil || cachec.GetDriver() != "redis" {
+			return nil, func() {}, errors.New("invalid redis driver for mq")
+		}
+		var err error
+		ps, err = newRedisAdapter(cachec, loggerAdapter)
 		if err != nil {
 			return nil, func() {}, err
 		}

@@ -77,6 +77,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBApp(*modelgebura.App) *pb.App
 	ToPBAppList([]*modelgebura.App) []*pb.App
 	// goverter:matchIgnoreCase
+	// goverter:ignore Id
 	// goverter:ignore TokenServerUrl
 	// goverter:ignore Chunks
 	ToPBAppBinary(*modelgebura.AppBinary) *pb.AppBinary

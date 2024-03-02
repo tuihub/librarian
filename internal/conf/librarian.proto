@@ -19,13 +19,14 @@ message Librarian {
   EnableServiceDiscovery enable_service_discovery = 10;
 
   SephirahServer server = 1;
-  SephirahData data = 2;
-  Auth auth = 3;
-  MQ mq = 4;
-  Cache cache = 5;
-  Porter porter = 6;
-  Consul consul = 7;
-  Sentry sentry = 8;
+  Database database = 2;
+  S3 s3 = 3;
+  Auth auth = 4;
+  MQ mq = 5;
+  Cache cache = 6;
+  Porter porter = 7;
+  Consul consul = 8;
+  Sentry sentry = 9;
 
   Mapper mapper = 11;
   Searcher searcher = 12;

@@ -67,12 +67,10 @@ func (e FeedEdges) ItemOrErr() ([]*FeedItem, error) {
 // ConfigOrErr returns the Config value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e FeedEdges) ConfigOrErr() (*FeedConfig, error) {
-	if e.loadedTypes[1] {
-		if e.Config == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: feedconfig.Label}
-		}
+	if e.Config != nil {
 		return e.Config, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: feedconfig.Label}
 	}
 	return nil, &NotLoadedError{edge: "config"}
 }
