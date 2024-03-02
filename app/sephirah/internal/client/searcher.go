@@ -61,12 +61,12 @@ func (s *Searcher) DescribeID(
 }
 
 func (s *Searcher) SearchID(
-	ctx context.Context, paging model.Paging, keyword string, index searcher.Index,
+	ctx context.Context, paging model.Paging, query string, index searcher.Index,
 ) ([]model.InternalID, error) {
 	resp, err := s.client.SearchID(ctx, &searcher.SearchIDRequest{
-		Paging:  model.ToPBPaging(paging),
-		Keyword: keyword,
-		Index:   index,
+		Paging: model.ToPBPaging(paging),
+		Query:  query,
+		Index:  index,
 	})
 	if err != nil {
 		return nil, err

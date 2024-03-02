@@ -66,13 +66,13 @@ func (m *meiliSearcherRepo) DescribeID(
 	return nil
 }
 
-func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, keyword string) (
+func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, query string) (
 	[]*biz.SearchResult, error) {
 	request := new(meilisearch.SearchRequest)
 	request.Limit = int64(paging.ToLimit())
 	request.Limit = int64(paging.ToOffset())
 	// https://github.com/meilisearch/meilisearch-go/issues/406
-	resultRaw, err := m.search.Index(biz.IndexNameMap()[index]).SearchRaw(keyword, request)
+	resultRaw, err := m.search.Index(biz.IndexNameMap()[index]).SearchRaw(query, request)
 	if err != nil {
 		return nil, err
 	}

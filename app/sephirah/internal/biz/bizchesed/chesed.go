@@ -197,14 +197,14 @@ func (c *Chesed) ListImages(ctx context.Context, paging model.Paging) ([]model.I
 	return res, total, nil
 }
 
-func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, keywords string) (
+func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, query string) (
 	[]model.InternalID, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
 	ids, err := c.searcher.SearchID(ctx,
 		paging,
-		keywords,
+		query,
 		searcherpb.Index_INDEX_CHESED_IMAGE,
 	)
 	if err != nil {

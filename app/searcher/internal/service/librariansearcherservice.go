@@ -66,7 +66,7 @@ func (s *LibrarianSearcherServiceService) SearchID(ctx context.Context, req *pb.
 		ctx,
 		model.ToBizPaging(req.GetPaging()),
 		toBizIndex(req.GetIndex()),
-		req.GetKeyword(),
+		req.GetQuery(),
 	)
 	if err != nil {
 		return nil, err

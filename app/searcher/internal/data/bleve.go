@@ -68,10 +68,9 @@ func (r *bleveSearcherRepo) DescribeID(
 	return nil
 }
 
-func (r *bleveSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, keyword string) (
+func (r *bleveSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, query string) (
 	[]*biz.SearchResult, error) {
-	query := bleve.NewFuzzyQuery(keyword)
-	search := bleve.NewSearchRequest(query)
+	search := bleve.NewSearchRequest(bleve.NewFuzzyQuery(query))
 	search.From = paging.ToOffset()
 	search.Size = paging.ToLimit()
 	result, err := r.search[index].Search(search)

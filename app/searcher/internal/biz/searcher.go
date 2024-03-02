@@ -66,7 +66,7 @@ func (g *Searcher) DescribeID(
 }
 
 func (g *Searcher) SearchID(
-	ctx context.Context, paging model.Paging, index Index, keyword string,
+	ctx context.Context, paging model.Paging, index Index, query string,
 ) ([]*SearchResult, error) {
-	return g.repo.SearchID(ctx, index, paging, keyword)
+	return g.repo.SearchID(ctx, index, paging, query)
 }
