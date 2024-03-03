@@ -69,8 +69,8 @@ github.com/ThreeDotsLabs/watermill v1.3.5 h1:50JEPEhMGZQMh08ct0tfO1PsgMOAOhV3zxK
 github.com/ThreeDotsLabs/watermill v1.3.5/go.mod h1:O/u/Ptyrk5MPTxSeWM5vzTtZcZfxXfO9PK9eXTYiFZY=
 github.com/ThreeDotsLabs/watermill-redisstream v1.2.2 h1:/fFHagJiObMBbYIDrygRoAq+RxqLPcQZdGi6b0ViG08=
 github.com/ThreeDotsLabs/watermill-redisstream v1.2.2/go.mod h1:ZRe0VpA0Ho/4MESUrXdqJMaWtiWhi4emxIYpqsxi98Y=
-github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0 h1:wswlLYY0Jc0tloj3lty4Y+VTEA8AM1vYfrIDwWtqyJk=
-github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0/go.mod h1:83l/4sKaLHwoHJlrAsDLaXcHN+QOHHntAAyabNmiuO4=
+github.com/ThreeDotsLabs/watermill-sql/v3 v3.0.0 h1:JiTc8jCUIsrKS9HS2W00eL0BIh3ZeMUedg+HVrm6l3E=
+github.com/ThreeDotsLabs/watermill-sql/v3 v3.0.0/go.mod h1:iYZqlHt0tJPQIFwQSXoI6GnxDhTZhAzxVR1/EIS3DOw=
 github.com/VividCortex/gohistogram v1.0.0/go.mod h1:Pf5mBqqDxYaXu3hDrrU+w6nw50o/4+TcAqDqk/vUH7g=
 github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5/go.mod h1:SkGFH1ia65gfNATL8TAiHDNxPzPdmEL5uirI2Uyuz6c=
 github.com/agext/levenshtein v1.2.3 h1:YB2fHEn0UJagG8T1rrWknE3ZQzWM06O8AMAatNn7lmo=

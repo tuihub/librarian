@@ -8,7 +8,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
-	"github.com/ThreeDotsLabs/watermill-sql/v2/pkg/sql"
+	"github.com/ThreeDotsLabs/watermill-sql/v3/pkg/sql"
 
 	_ "github.com/mattn/go-sqlite3" // required
 )
@@ -46,12 +46,7 @@ func newSQLAdapter(c *conf.Database, loggerAdapter *mqLogger) (*pubSub, error) {
 		return nil, err
 	}
 
-	subscriber, err := sql.NewSubscriber(db, sql.SubscriberConfig{
-		ConsumerGroup:    "",
-		PollInterval:     0,
-		ResendInterval:   0,
-		RetryInterval:    0,
-		BackoffManager:   nil,
+	subscriber, err := sql.NewSubscriber(db, sql.SubscriberConfig{ //nolint:exhaustruct // no need
 		SchemaAdapter:    sa,
 		OffsetsAdapter:   oa,
 		InitializeSchema: true,

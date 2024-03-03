@@ -8,7 +8,7 @@ require (
 	github.com/PuerkitoBio/goquery v1.9.0
 	github.com/ThreeDotsLabs/watermill v1.3.5
 	github.com/ThreeDotsLabs/watermill-redisstream v1.2.2
-	github.com/ThreeDotsLabs/watermill-sql/v2 v2.0.0
+	github.com/ThreeDotsLabs/watermill-sql/v3 v3.0.0
 	github.com/blevesearch/bleve/v2 v2.3.10
 	github.com/bufbuild/protovalidate-go v0.6.0
 	github.com/cayleygraph/cayley v0.7.7
