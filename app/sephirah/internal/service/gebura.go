@@ -98,6 +98,22 @@ func (s *LibrarianSephirahServiceService) SearchAppInfos(ctx context.Context, re
 		AppInfos: converter.ToPBAppInfoMixedList(infos),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) SearchNewAppInfos(ctx context.Context, req *pb.SearchNewAppInfosRequest) (
+	*pb.SearchNewAppInfosResponse, error,
+) {
+	infos, total, err := s.g.SearchNewAppInfos(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		req.GetName(),
+		req.GetSourceFilter(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.SearchNewAppInfosResponse{
+		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
+		AppInfos: converter.ToPBAppInfoList(infos),
+	}, nil
+}
 func (s *LibrarianSephirahServiceService) GetAppInfo(ctx context.Context, req *pb.GetAppInfoRequest) (
 	*pb.GetAppInfoResponse, error,
 ) {

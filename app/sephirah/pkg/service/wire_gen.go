@@ -85,7 +85,7 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, auth, searcher, topic, libmqTopic, libcacheMap)
+	gebura := bizgebura.NewGebura(geburaRepo, auth, searcher, librarianPorterServiceClient, supervisorSupervisor, topic, libmqTopic, libcacheMap)
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup()

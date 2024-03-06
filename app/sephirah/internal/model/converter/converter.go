@@ -144,6 +144,9 @@ func ToBizDeviceInfo(a *pb.DeviceInfo) *modeltiphereth.DeviceInfo {
 func ToBizAppInfo(a *librarian.AppInfo) *modelgebura.AppInfo {
 	return toBiz.ToBizAppInfo(a)
 }
+func ToBizAppInfoList(a []*librarian.AppInfo) []*modelgebura.AppInfo {
+	return toBiz.ToBizAppInfoList(a)
+}
 func ToBizAppInfoID(a *librarian.AppInfoID) *modelgebura.AppInfoID {
 	return toBiz.ToBizAppInfoID(a)
 }

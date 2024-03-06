@@ -118,7 +118,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, topic, libmqTopic, libcacheMap)
+	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, librarianPorterServiceClient, supervisorSupervisor, topic, libmqTopic, libcacheMap)
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()

@@ -6,10 +6,12 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -145,6 +147,34 @@ func (g *Gebura) SearchAppInfos(ctx context.Context, paging model.Paging, query 
 		res = append(res, a.Flatten())
 	}
 	return res, 0, nil
+}
+
+func (g *Gebura) SearchNewAppInfos(
+	ctx context.Context,
+	paging model.Paging,
+	name string,
+	sourceFilter []string,
+) ([]*modelgebura.AppInfo, int, *errors.Error) {
+	if libauth.FromContextAssertUserType(ctx) == nil {
+		return nil, 0, bizutils.NoPermissionError()
+	}
+	if len(sourceFilter) == 0 {
+		sourceFilter = g.supv.GetFeatureSummary().SupportedAppInfoSources
+	}
+	if len(sourceFilter) == 0 {
+		return nil, 0, pb.ErrorErrorReasonBadRequest("no available info source")
+	}
+	var infos []*modelgebura.AppInfo
+	for _, source := range sourceFilter {
+		info, err := g.porter.SearchAppInfo(g.supv.CallAppInfoSource(ctx, source), &porter.SearchAppInfoRequest{
+			Name: name,
+		})
+		if err != nil {
+			continue
+		}
+		infos = append(infos, converter.ToBizAppInfoList(info.GetAppInfos())...)
+	}
+	return infos, 0, nil
 }
 
 func (g *Gebura) GetAppInfo(ctx context.Context, id model.InternalID) (*modelgebura.AppInfo, *errors.Error) {

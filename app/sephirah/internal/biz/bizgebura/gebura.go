@@ -7,10 +7,12 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
+	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
@@ -53,6 +55,8 @@ type Gebura struct {
 	repo GeburaRepo
 	// mapper         mapper.LibrarianMapperServiceClient
 	searcher           *client.Searcher
+	porter             porter.LibrarianPorterServiceClient
+	supv               *supervisor.Supervisor
 	updateAppInfoIndex *libmq.Topic[modelangela.UpdateAppInfoIndex]
 	pullAppInfo        *libmq.Topic[modelangela.PullAppInfo]
 	appInfoCache       *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo]
@@ -63,6 +67,8 @@ func NewGebura(
 	auth *libauth.Auth,
 	// mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
+	pClient porter.LibrarianPorterServiceClient,
+	supv *supervisor.Supervisor,
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
 	pullAppInfo *libmq.Topic[modelangela.PullAppInfo],
 	appInfoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],
@@ -72,6 +78,8 @@ func NewGebura(
 		repo: repo,
 		//mapper:         mClient,
 		searcher:           sClient,
+		porter:             pClient,
+		supv:               supv,
 		updateAppInfoIndex: updateAppIndex,
 		pullAppInfo:        pullAppInfo,
 		appInfoCache:       appInfoCache,

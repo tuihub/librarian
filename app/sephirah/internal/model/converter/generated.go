@@ -123,6 +123,16 @@ func (c *toBizConverterImpl) ToBizAppInfoIDList(source []*v11.AppInfoID) []*mode
 	}
 	return pModelgeburaAppInfoIDList
 }
+func (c *toBizConverterImpl) ToBizAppInfoList(source []*v11.AppInfo) []*modelgebura.AppInfo {
+	var pModelgeburaAppInfoList []*modelgebura.AppInfo
+	if source != nil {
+		pModelgeburaAppInfoList = make([]*modelgebura.AppInfo, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppInfoList[i] = c.ToBizAppInfo(source[i])
+		}
+	}
+	return pModelgeburaAppInfoList
+}
 func (c *toBizConverterImpl) ToBizAppInst(source *v1.AppInst) *modelgebura.AppInst {
 	var pModelgeburaAppInst *modelgebura.AppInst
 	if source != nil {

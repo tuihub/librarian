@@ -58,6 +58,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime
 	ToBizAppInfo(*librarian.AppInfo) *modelgebura.AppInfo
+	ToBizAppInfoList([]*librarian.AppInfo) []*modelgebura.AppInfo
 	// goverter:matchIgnoreCase
 	ToBizAppInfoDetail(*librarian.AppInfoDetails) *modelgebura.AppInfoDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
