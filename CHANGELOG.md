@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.7](https://github.com/tuihub/librarian/compare/v0.2.6...v0.2.7) (2024-03-11)
+
+
+### Features
+
+* add redis driver for mq ([02dc32b](https://github.com/tuihub/librarian/commit/02dc32b14e9d6e21fae7f47eda8fbac0274828cc))
+* impl SearchNewAppInfos ([7c28bbe](https://github.com/tuihub/librarian/commit/7c28bbe898be8ed01db1fbd2e3b952d3eacd7973))
+* upgrade proto to v0.4.4 ([92b5aef](https://github.com/tuihub/librarian/commit/92b5aefd445f1e5553f12108b426aab41286ce6f))
+
+
+### Bug Fixes
+
+* add mutex ([bb884c9](https://github.com/tuihub/librarian/commit/bb884c955c61dbe333858300eb972f265d5536e7))
+* ignore rate limit in syncAppInfo ([de889c0](https://github.com/tuihub/librarian/commit/de889c07e50d6cd9335ca6183b4ba5567cef37de))
+
 ## [0.2.6](https://github.com/tuihub/librarian/compare/v0.2.5...v0.2.6) (2024-03-01)
 
 
