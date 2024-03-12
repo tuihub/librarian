@@ -28,6 +28,9 @@ func NewPullAppInfoTopic(
 			if !a.supv.CheckAppInfoSource(r.AppInfoID.Source) {
 				return nil
 			}
+			if r.AppInfoID.Internal {
+				return nil
+			}
 			if !r.IgnoreRateLimit {
 				if info, err := infoCache.GetWithFallBack(ctx, r.AppInfoID, nil); err == nil &&
 					info.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {

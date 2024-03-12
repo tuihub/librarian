@@ -107,7 +107,7 @@ func (g *Gebura) SyncAppInfos(
 			err = g.pullAppInfo.LocalCall(ctx, modelangela.PullAppInfo{
 				ID:              ids[i],
 				AppInfoID:       *infoID,
-				IgnoreRateLimit: true,
+				IgnoreRateLimit: false,
 			})
 			if err != nil {
 				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
@@ -124,6 +124,16 @@ func (g *Gebura) SyncAppInfos(
 				AppInfoID:       *infoID,
 				IgnoreRateLimit: false,
 			})
+			appInfo := new(modelgebura.AppInfo)
+			appInfo.ID = ids[i]
+			appInfo.Internal = infoID.Internal
+			appInfo.Source = infoID.Source
+			appInfo.SourceAppID = infoID.SourceAppID
+			appInfo, err = g.repo.CreateAppInfoOrGet(ctx, appInfo)
+			if err != nil {
+				continue
+			}
+			appInfos = append(appInfos, appInfo)
 		}
 	}
 	return appInfos, nil

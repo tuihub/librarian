@@ -53,6 +53,25 @@ func (g geburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) e
 	return q.Exec(ctx)
 }
 
+func (g geburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppInfo) (*modelgebura.AppInfo, error) {
+	err := g.CreateAppInfo(ctx, a)
+	if err == nil {
+		return a, nil
+	}
+	if ent.IsConstraintError(err) {
+		var ai *ent.AppInfo
+		ai, err = g.data.db.AppInfo.Query().Where(
+			appinfo.InternalEQ(a.Internal),
+			appinfo.SourceEQ(a.Source),
+			appinfo.SourceAppIDEQ(a.SourceAppID),
+		).Only(ctx)
+		if err == nil {
+			return converter.ToBizAppInfo(ai), nil
+		}
+	}
+	return nil, err
+}
+
 func (g geburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
 	q := g.data.db.AppInfo.Update().
 		Where(

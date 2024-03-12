@@ -23,6 +23,7 @@ type ReportAppPackageHandler interface {
 
 type GeburaRepo interface {
 	CreateAppInfo(context.Context, *modelgebura.AppInfo) error
+	CreateAppInfoOrGet(context.Context, *modelgebura.AppInfo) (*modelgebura.AppInfo, error)
 	UpdateAppInfo(context.Context, *modelgebura.AppInfo) error
 	ListAppInfos(context.Context, model.Paging, []string, []modelgebura.AppType,
 		[]model.InternalID, bool) ([]*modelgebura.AppInfo, int64, error)
