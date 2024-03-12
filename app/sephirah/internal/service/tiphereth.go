@@ -61,6 +61,37 @@ func (s *LibrarianSephirahServiceService) GainUserPrivilege(ctx context.Context,
 		AccessToken: string(token),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (
+	*pb.RegisterUserResponse, error,
+) {
+	var captchaAns *modeltiphereth.CaptchaAns
+	if req.GetCaptcha() != nil {
+		captchaAns = &modeltiphereth.CaptchaAns{
+			ID:    req.GetCaptcha().GetId(),
+			Value: req.GetCaptcha().GetValue(),
+		}
+	}
+	captchaQue, refreshToken, err := s.t.RegisterUser(
+		ctx,
+		req.GetUsername(),
+		req.GetPassword(),
+		captchaAns,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if len(refreshToken) > 0 {
+		return &pb.RegisterUserResponse{
+			Stage: &pb.RegisterUserResponse_RefreshToken{RefreshToken: refreshToken},
+		}, nil
+	}
+	return &pb.RegisterUserResponse{
+		Stage: &pb.RegisterUserResponse_Captcha{Captcha: &pb.RegisterUserResponse_ImageCaptcha{
+			Id:    captchaQue.ID,
+			Image: captchaQue.Image,
+		}},
+	}, nil
+}
 func (s *LibrarianSephirahServiceService) RegisterDevice(ctx context.Context, req *pb.RegisterDeviceRequest) (
 	*pb.RegisterDeviceResponse, error,
 ) {

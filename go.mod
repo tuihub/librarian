@@ -13,6 +13,7 @@ require (
 	github.com/bufbuild/protovalidate-go v0.6.0
 	github.com/cayleygraph/cayley v0.7.7
 	github.com/cayleygraph/quad v1.2.5
+	github.com/dchest/captcha v1.0.0
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/getsentry/sentry-go v0.27.0
@@ -35,7 +36,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tuihub/protos v0.4.4
+	github.com/tuihub/protos v0.4.7
 	github.com/zhihu/norm v0.1.11
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/sdk v1.24.0

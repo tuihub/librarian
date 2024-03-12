@@ -261,6 +261,10 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 	return converter.ToBizUser(u), nil
 }
 
+func (t tipherethRepo) GetUserCount(ctx context.Context) (int, error) {
+	return t.data.db.User.Query().Count(ctx)
+}
+
 func (t tipherethRepo) LinkAccount(
 	ctx context.Context,
 	a modeltiphereth.Account,

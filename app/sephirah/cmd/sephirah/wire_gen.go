@@ -112,7 +112,8 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, searcher, topic3, cron)
+	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, searcher, topic3, cron, key)
 	if err != nil {
 		cleanup2()
 		cleanup()

@@ -34,6 +34,7 @@ func NewStore(c *conf.Cache) (Store, error) {
 	if err != nil {
 		return nil, err
 	}
+	initCaptchaStore(res)
 	return res, nil
 }
 

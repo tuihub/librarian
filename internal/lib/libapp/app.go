@@ -42,6 +42,8 @@ const (
 	EnvCreateAdminPassword Env = "CREATE_ADMIN_PASS"
 	EnvLogLevel            Env = "LOG_LEVEL"
 	EnvDemoMode            Env = "DEMO_MODE"
+	EnvAllowRegister       Env = "ALLOW_REGISTER"
+	EnvUserCapacity        Env = "USER_CAPACITY"
 )
 
 func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, error) {

@@ -8,10 +8,19 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
+
+	"github.com/google/wire"
+)
+
+var ProviderSet = wire.NewSet(
+	NewTiphereth,
+	NewUserCountCache,
 )
 
 type TipherethRepo interface {
@@ -21,6 +30,7 @@ type TipherethRepo interface {
 	ListUsers(context.Context, model.Paging, []model.InternalID,
 		[]libauth.UserType, []modeltiphereth.UserStatus, []model.InternalID,
 		model.InternalID) ([]*modeltiphereth.User, int64, error)
+	GetUserCount(context.Context) (int, error)
 	LinkAccount(context.Context, modeltiphereth.Account, model.InternalID) (model.InternalID, error)
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	ListLinkAccounts(context.Context, model.InternalID) ([]*modeltiphereth.Account, error)
@@ -48,8 +58,9 @@ type Tiphereth struct {
 	repo TipherethRepo
 	supv *supervisor.Supervisor
 	// mapper      mapper.LibrarianMapperServiceClient
-	searcher    *client.Searcher
-	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo]
+	searcher       *client.Searcher
+	pullAccount    *libmq.Topic[modeltiphereth.PullAccountInfo]
+	userCountCache *libcache.Key[modeltiphereth.UserCount]
 }
 
 func NewTiphereth(
@@ -61,6 +72,7 @@ func NewTiphereth(
 	sClient *client.Searcher,
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 	cron *libcron.Cron,
+	userCountCache *libcache.Key[modeltiphereth.UserCount],
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
 		app:  app,
@@ -68,8 +80,9 @@ func NewTiphereth(
 		repo: repo,
 		supv: supv,
 		//mapper:      mClient,
-		searcher:    sClient,
-		pullAccount: pullAccount,
+		searcher:       sClient,
+		pullAccount:    pullAccount,
+		userCountCache: userCountCache,
 	}
 	err := cron.BySeconds(
 		"TipherethUpdatePorter",
@@ -129,4 +142,22 @@ func (t *Tiphereth) CreateConfiguredAdmin() {
 		logger.Infof("repo CreateUser failed: %s", err.Error())
 		return
 	}
+}
+
+func NewUserCountCache(
+	t TipherethRepo,
+	store libcache.Store,
+) *libcache.Key[modeltiphereth.UserCount] {
+	return libcache.NewKey[modeltiphereth.UserCount](
+		store,
+		"UserCount",
+		func(ctx context.Context) (*modeltiphereth.UserCount, error) {
+			res, err := t.GetUserCount(ctx)
+			if err != nil {
+				return nil, err
+			}
+			return &modeltiphereth.UserCount{Count: res}, nil
+		},
+		libcache.WithExpiration(libtime.SevenDays),
+	)
 }

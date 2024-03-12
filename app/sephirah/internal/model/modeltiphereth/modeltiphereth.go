@@ -72,3 +72,17 @@ const (
 	SystemTypeLinux
 	SystemTypeWeb
 )
+
+type CaptchaQue struct {
+	ID    string
+	Image []byte
+}
+
+type CaptchaAns struct {
+	ID    string
+	Value string
+}
+
+type UserCount struct {
+	Count int
+}

@@ -15,7 +15,7 @@ import (
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
 	bizangela.ProviderSet,
-	biztiphereth.NewTiphereth,
+	biztiphereth.ProviderSet,
 	bizgebura.NewGebura,
 	bizbinah.NewBinah,
 	bizbinah.NewControlBlock,
