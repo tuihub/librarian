@@ -32,15 +32,22 @@ func NewAngelaRepo(data *Data) bizangela.AngelaRepo {
 	}
 }
 
-func (a *angelaRepo) UpdateAccount(ctx context.Context, acc modeltiphereth.Account) error {
-	return a.data.db.Account.Update().Where(
-		account.IDEQ(acc.ID),
-		account.PlatformEQ(acc.Platform),
-		account.PlatformAccountIDEQ(acc.PlatformAccountID),
-	).
+func (a *angelaRepo) UpsertAccount(ctx context.Context, acc modeltiphereth.Account) error {
+	return a.data.db.Account.Create().
+		SetID(acc.ID).
+		SetPlatform(acc.Platform).
+		SetPlatformAccountID(acc.PlatformAccountID).
 		SetName(acc.Name).
 		SetProfileURL(acc.ProfileURL).
 		SetAvatarURL(acc.AvatarURL).
+		OnConflict(
+			sql.ConflictColumns(account.FieldPlatform, account.FieldPlatformAccountID),
+			resolveWithIgnores([]string{
+				account.FieldID,
+				account.FieldPlatform,
+				account.FieldPlatformAccountID,
+			}),
+		).
 		Exec(ctx)
 }
 

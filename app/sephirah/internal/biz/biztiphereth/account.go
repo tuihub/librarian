@@ -29,16 +29,17 @@ func (t *Tiphereth) LinkAccount(
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	a.ID = id
-	a.ID, err = t.repo.LinkAccount(ctx, a, claims.UserID)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	if err = t.pullAccount.Publish(ctx, modeltiphereth.PullAccountInfo{
+	if err = t.pullAccount.LocalCall(ctx, modeltiphereth.PullAccountInfo{
 		ID:                a.ID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
 	}); err != nil {
-		logger.Errorf("Publish PullAccountInfo failed %s", err.Error())
+		logger.Errorf("PullAccountInfo failed %s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("Get Account Info failed, %s", err.Error())
+	}
+	a.ID, err = t.repo.LinkAccount(ctx, a, claims.UserID)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return &a, nil
 }

@@ -48,7 +48,7 @@ type AngelaBase struct {
 }
 
 type AngelaRepo interface {
-	UpdateAccount(context.Context, modeltiphereth.Account) error
+	UpsertAccount(context.Context, modeltiphereth.Account) error
 	UpsertAppInfo(context.Context, *modelgebura.AppInfo, *modelgebura.AppInfo) error
 	UpsertAppInfos(context.Context, []*modelgebura.AppInfo) error
 	AccountPurchaseAppInfos(context.Context, model.InternalID, []model.InternalID) error

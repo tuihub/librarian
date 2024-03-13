@@ -34,7 +34,7 @@ func NewPullAccountTopic(
 			if err != nil {
 				return err
 			}
-			err = a.repo.UpdateAccount(ctx, modeltiphereth.Account{
+			err = a.repo.UpsertAccount(ctx, modeltiphereth.Account{
 				ID:                info.ID,
 				Platform:          info.Platform,
 				PlatformAccountID: info.PlatformAccountID,
