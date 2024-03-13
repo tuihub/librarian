@@ -17,11 +17,11 @@ type captchaStoreImpl struct {
 }
 
 func (c *captchaStoreImpl) Set(id string, digits []byte) {
-	_ = c.store.Set(context.Background(), captchaStoreKey+":"+id, string(digits), WithExpiration(captcha.Expiration))
+	_ = c.store.Set(context.Background(), c.key(id), string(digits), WithExpiration(captcha.Expiration))
 }
 
 func (c *captchaStoreImpl) Get(id string, clear bool) []byte {
-	get, err := c.store.Get(context.Background(), captchaStoreKey+":"+id)
+	get, err := c.store.Get(context.Background(), c.key(id))
 	if err != nil {
 		return nil
 	}
@@ -30,7 +30,11 @@ func (c *captchaStoreImpl) Get(id string, clear bool) []byte {
 		return nil
 	}
 	if clear {
-		_ = c.store.Delete(context.Background(), captchaStoreKey+id)
+		_ = c.store.Delete(context.Background(), c.key(id))
 	}
 	return []byte(digits)
+}
+
+func (c *captchaStoreImpl) key(id string) string {
+	return captchaStoreKey + ":" + id
 }
