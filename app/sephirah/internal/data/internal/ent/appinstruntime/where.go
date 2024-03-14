@@ -61,10 +61,10 @@ func UserID(v model.InternalID) predicate.AppInstRunTime {
 	return predicate.AppInstRunTime(sql.FieldEQ(FieldUserID, vc))
 }
 
-// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v model.InternalID) predicate.AppInstRunTime {
+// AppInstID applies equality check predicate on the "app_inst_id" field. It's identical to AppInstIDEQ.
+func AppInstID(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldEQ(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldEQ(FieldAppInstID, vc))
 }
 
 // StartTime applies equality check predicate on the "start_time" field. It's identical to StartTimeEQ.
@@ -142,58 +142,58 @@ func UserIDLTE(v model.InternalID) predicate.AppInstRunTime {
 	return predicate.AppInstRunTime(sql.FieldLTE(FieldUserID, vc))
 }
 
-// AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDEQ applies the EQ predicate on the "app_inst_id" field.
+func AppInstIDEQ(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldEQ(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldEQ(FieldAppInstID, vc))
 }
 
-// AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDNEQ applies the NEQ predicate on the "app_inst_id" field.
+func AppInstIDNEQ(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldNEQ(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldNEQ(FieldAppInstID, vc))
 }
 
-// AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...model.InternalID) predicate.AppInstRunTime {
+// AppInstIDIn applies the In predicate on the "app_inst_id" field.
+func AppInstIDIn(vs ...model.InternalID) predicate.AppInstRunTime {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.AppInstRunTime(sql.FieldIn(FieldAppID, v...))
+	return predicate.AppInstRunTime(sql.FieldIn(FieldAppInstID, v...))
 }
 
-// AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...model.InternalID) predicate.AppInstRunTime {
+// AppInstIDNotIn applies the NotIn predicate on the "app_inst_id" field.
+func AppInstIDNotIn(vs ...model.InternalID) predicate.AppInstRunTime {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.AppInstRunTime(sql.FieldNotIn(FieldAppID, v...))
+	return predicate.AppInstRunTime(sql.FieldNotIn(FieldAppInstID, v...))
 }
 
-// AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDGT applies the GT predicate on the "app_inst_id" field.
+func AppInstIDGT(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldGT(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldGT(FieldAppInstID, vc))
 }
 
-// AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDGTE applies the GTE predicate on the "app_inst_id" field.
+func AppInstIDGTE(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldGTE(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldGTE(FieldAppInstID, vc))
 }
 
-// AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDLT applies the LT predicate on the "app_inst_id" field.
+func AppInstIDLT(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldLT(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldLT(FieldAppInstID, vc))
 }
 
-// AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v model.InternalID) predicate.AppInstRunTime {
+// AppInstIDLTE applies the LTE predicate on the "app_inst_id" field.
+func AppInstIDLTE(v model.InternalID) predicate.AppInstRunTime {
 	vc := int64(v)
-	return predicate.AppInstRunTime(sql.FieldLTE(FieldAppID, vc))
+	return predicate.AppInstRunTime(sql.FieldLTE(FieldAppInstID, vc))
 }
 
 // StartTimeEQ applies the EQ predicate on the "start_time" field.

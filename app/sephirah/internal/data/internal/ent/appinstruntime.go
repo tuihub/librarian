@@ -20,8 +20,8 @@ type AppInstRunTime struct {
 	ID int `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID model.InternalID `json:"user_id,omitempty"`
-	// AppID holds the value of the "app_id" field.
-	AppID model.InternalID `json:"app_id,omitempty"`
+	// AppInstID holds the value of the "app_inst_id" field.
+	AppInstID model.InternalID `json:"app_inst_id,omitempty"`
 	// StartTime holds the value of the "start_time" field.
 	StartTime time.Time `json:"start_time,omitempty"`
 	// RunDuration holds the value of the "run_duration" field.
@@ -38,7 +38,7 @@ func (*AppInstRunTime) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appinstruntime.FieldID, appinstruntime.FieldUserID, appinstruntime.FieldAppID, appinstruntime.FieldRunDuration:
+		case appinstruntime.FieldID, appinstruntime.FieldUserID, appinstruntime.FieldAppInstID, appinstruntime.FieldRunDuration:
 			values[i] = new(sql.NullInt64)
 		case appinstruntime.FieldStartTime, appinstruntime.FieldUpdatedAt, appinstruntime.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -69,11 +69,11 @@ func (airt *AppInstRunTime) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				airt.UserID = model.InternalID(value.Int64)
 			}
-		case appinstruntime.FieldAppID:
+		case appinstruntime.FieldAppInstID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+				return fmt.Errorf("unexpected type %T for field app_inst_id", values[i])
 			} else if value.Valid {
-				airt.AppID = model.InternalID(value.Int64)
+				airt.AppInstID = model.InternalID(value.Int64)
 			}
 		case appinstruntime.FieldStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -138,8 +138,8 @@ func (airt *AppInstRunTime) String() string {
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", airt.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", airt.AppID))
+	builder.WriteString("app_inst_id=")
+	builder.WriteString(fmt.Sprintf("%v", airt.AppInstID))
 	builder.WriteString(", ")
 	builder.WriteString("start_time=")
 	builder.WriteString(airt.StartTime.Format(time.ANSIC))

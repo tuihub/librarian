@@ -29,9 +29,9 @@ func (airtc *AppInstRunTimeCreate) SetUserID(mi model.InternalID) *AppInstRunTim
 	return airtc
 }
 
-// SetAppID sets the "app_id" field.
-func (airtc *AppInstRunTimeCreate) SetAppID(mi model.InternalID) *AppInstRunTimeCreate {
-	airtc.mutation.SetAppID(mi)
+// SetAppInstID sets the "app_inst_id" field.
+func (airtc *AppInstRunTimeCreate) SetAppInstID(mi model.InternalID) *AppInstRunTimeCreate {
+	airtc.mutation.SetAppInstID(mi)
 	return airtc
 }
 
@@ -125,8 +125,8 @@ func (airtc *AppInstRunTimeCreate) check() error {
 	if _, ok := airtc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AppInstRunTime.user_id"`)}
 	}
-	if _, ok := airtc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppInstRunTime.app_id"`)}
+	if _, ok := airtc.mutation.AppInstID(); !ok {
+		return &ValidationError{Name: "app_inst_id", err: errors.New(`ent: missing required field "AppInstRunTime.app_inst_id"`)}
 	}
 	if _, ok := airtc.mutation.StartTime(); !ok {
 		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "AppInstRunTime.start_time"`)}
@@ -171,9 +171,9 @@ func (airtc *AppInstRunTimeCreate) createSpec() (*AppInstRunTime, *sqlgraph.Crea
 		_spec.SetField(appinstruntime.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
-	if value, ok := airtc.mutation.AppID(); ok {
-		_spec.SetField(appinstruntime.FieldAppID, field.TypeInt64, value)
-		_node.AppID = value
+	if value, ok := airtc.mutation.AppInstID(); ok {
+		_spec.SetField(appinstruntime.FieldAppInstID, field.TypeInt64, value)
+		_node.AppInstID = value
 	}
 	if value, ok := airtc.mutation.StartTime(); ok {
 		_spec.SetField(appinstruntime.FieldStartTime, field.TypeTime, value)
@@ -261,21 +261,21 @@ func (u *AppInstRunTimeUpsert) AddUserID(v model.InternalID) *AppInstRunTimeUpse
 	return u
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppInstRunTimeUpsert) SetAppID(v model.InternalID) *AppInstRunTimeUpsert {
-	u.Set(appinstruntime.FieldAppID, v)
+// SetAppInstID sets the "app_inst_id" field.
+func (u *AppInstRunTimeUpsert) SetAppInstID(v model.InternalID) *AppInstRunTimeUpsert {
+	u.Set(appinstruntime.FieldAppInstID, v)
 	return u
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppInstRunTimeUpsert) UpdateAppID() *AppInstRunTimeUpsert {
-	u.SetExcluded(appinstruntime.FieldAppID)
+// UpdateAppInstID sets the "app_inst_id" field to the value that was provided on create.
+func (u *AppInstRunTimeUpsert) UpdateAppInstID() *AppInstRunTimeUpsert {
+	u.SetExcluded(appinstruntime.FieldAppInstID)
 	return u
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppInstRunTimeUpsert) AddAppID(v model.InternalID) *AppInstRunTimeUpsert {
-	u.Add(appinstruntime.FieldAppID, v)
+// AddAppInstID adds v to the "app_inst_id" field.
+func (u *AppInstRunTimeUpsert) AddAppInstID(v model.InternalID) *AppInstRunTimeUpsert {
+	u.Add(appinstruntime.FieldAppInstID, v)
 	return u
 }
 
@@ -394,24 +394,24 @@ func (u *AppInstRunTimeUpsertOne) UpdateUserID() *AppInstRunTimeUpsertOne {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppInstRunTimeUpsertOne) SetAppID(v model.InternalID) *AppInstRunTimeUpsertOne {
+// SetAppInstID sets the "app_inst_id" field.
+func (u *AppInstRunTimeUpsertOne) SetAppInstID(v model.InternalID) *AppInstRunTimeUpsertOne {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.SetAppID(v)
+		s.SetAppInstID(v)
 	})
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppInstRunTimeUpsertOne) AddAppID(v model.InternalID) *AppInstRunTimeUpsertOne {
+// AddAppInstID adds v to the "app_inst_id" field.
+func (u *AppInstRunTimeUpsertOne) AddAppInstID(v model.InternalID) *AppInstRunTimeUpsertOne {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.AddAppID(v)
+		s.AddAppInstID(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppInstRunTimeUpsertOne) UpdateAppID() *AppInstRunTimeUpsertOne {
+// UpdateAppInstID sets the "app_inst_id" field to the value that was provided on create.
+func (u *AppInstRunTimeUpsertOne) UpdateAppInstID() *AppInstRunTimeUpsertOne {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.UpdateAppID()
+		s.UpdateAppInstID()
 	})
 }
 
@@ -703,24 +703,24 @@ func (u *AppInstRunTimeUpsertBulk) UpdateUserID() *AppInstRunTimeUpsertBulk {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppInstRunTimeUpsertBulk) SetAppID(v model.InternalID) *AppInstRunTimeUpsertBulk {
+// SetAppInstID sets the "app_inst_id" field.
+func (u *AppInstRunTimeUpsertBulk) SetAppInstID(v model.InternalID) *AppInstRunTimeUpsertBulk {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.SetAppID(v)
+		s.SetAppInstID(v)
 	})
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppInstRunTimeUpsertBulk) AddAppID(v model.InternalID) *AppInstRunTimeUpsertBulk {
+// AddAppInstID adds v to the "app_inst_id" field.
+func (u *AppInstRunTimeUpsertBulk) AddAppInstID(v model.InternalID) *AppInstRunTimeUpsertBulk {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.AddAppID(v)
+		s.AddAppInstID(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppInstRunTimeUpsertBulk) UpdateAppID() *AppInstRunTimeUpsertBulk {
+// UpdateAppInstID sets the "app_inst_id" field to the value that was provided on create.
+func (u *AppInstRunTimeUpsertBulk) UpdateAppInstID() *AppInstRunTimeUpsertBulk {
 	return u.Update(func(s *AppInstRunTimeUpsert) {
-		s.UpdateAppID()
+		s.UpdateAppInstID()
 	})
 }
 

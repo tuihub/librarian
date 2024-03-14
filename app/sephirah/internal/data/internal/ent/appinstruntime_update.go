@@ -50,24 +50,24 @@ func (airtu *AppInstRunTimeUpdate) AddUserID(mi model.InternalID) *AppInstRunTim
 	return airtu
 }
 
-// SetAppID sets the "app_id" field.
-func (airtu *AppInstRunTimeUpdate) SetAppID(mi model.InternalID) *AppInstRunTimeUpdate {
-	airtu.mutation.ResetAppID()
-	airtu.mutation.SetAppID(mi)
+// SetAppInstID sets the "app_inst_id" field.
+func (airtu *AppInstRunTimeUpdate) SetAppInstID(mi model.InternalID) *AppInstRunTimeUpdate {
+	airtu.mutation.ResetAppInstID()
+	airtu.mutation.SetAppInstID(mi)
 	return airtu
 }
 
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (airtu *AppInstRunTimeUpdate) SetNillableAppID(mi *model.InternalID) *AppInstRunTimeUpdate {
+// SetNillableAppInstID sets the "app_inst_id" field if the given value is not nil.
+func (airtu *AppInstRunTimeUpdate) SetNillableAppInstID(mi *model.InternalID) *AppInstRunTimeUpdate {
 	if mi != nil {
-		airtu.SetAppID(*mi)
+		airtu.SetAppInstID(*mi)
 	}
 	return airtu
 }
 
-// AddAppID adds mi to the "app_id" field.
-func (airtu *AppInstRunTimeUpdate) AddAppID(mi model.InternalID) *AppInstRunTimeUpdate {
-	airtu.mutation.AddAppID(mi)
+// AddAppInstID adds mi to the "app_inst_id" field.
+func (airtu *AppInstRunTimeUpdate) AddAppInstID(mi model.InternalID) *AppInstRunTimeUpdate {
+	airtu.mutation.AddAppInstID(mi)
 	return airtu
 }
 
@@ -182,11 +182,11 @@ func (airtu *AppInstRunTimeUpdate) sqlSave(ctx context.Context) (n int, err erro
 	if value, ok := airtu.mutation.AddedUserID(); ok {
 		_spec.AddField(appinstruntime.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := airtu.mutation.AppID(); ok {
-		_spec.SetField(appinstruntime.FieldAppID, field.TypeInt64, value)
+	if value, ok := airtu.mutation.AppInstID(); ok {
+		_spec.SetField(appinstruntime.FieldAppInstID, field.TypeInt64, value)
 	}
-	if value, ok := airtu.mutation.AddedAppID(); ok {
-		_spec.AddField(appinstruntime.FieldAppID, field.TypeInt64, value)
+	if value, ok := airtu.mutation.AddedAppInstID(); ok {
+		_spec.AddField(appinstruntime.FieldAppInstID, field.TypeInt64, value)
 	}
 	if value, ok := airtu.mutation.StartTime(); ok {
 		_spec.SetField(appinstruntime.FieldStartTime, field.TypeTime, value)
@@ -244,24 +244,24 @@ func (airtuo *AppInstRunTimeUpdateOne) AddUserID(mi model.InternalID) *AppInstRu
 	return airtuo
 }
 
-// SetAppID sets the "app_id" field.
-func (airtuo *AppInstRunTimeUpdateOne) SetAppID(mi model.InternalID) *AppInstRunTimeUpdateOne {
-	airtuo.mutation.ResetAppID()
-	airtuo.mutation.SetAppID(mi)
+// SetAppInstID sets the "app_inst_id" field.
+func (airtuo *AppInstRunTimeUpdateOne) SetAppInstID(mi model.InternalID) *AppInstRunTimeUpdateOne {
+	airtuo.mutation.ResetAppInstID()
+	airtuo.mutation.SetAppInstID(mi)
 	return airtuo
 }
 
-// SetNillableAppID sets the "app_id" field if the given value is not nil.
-func (airtuo *AppInstRunTimeUpdateOne) SetNillableAppID(mi *model.InternalID) *AppInstRunTimeUpdateOne {
+// SetNillableAppInstID sets the "app_inst_id" field if the given value is not nil.
+func (airtuo *AppInstRunTimeUpdateOne) SetNillableAppInstID(mi *model.InternalID) *AppInstRunTimeUpdateOne {
 	if mi != nil {
-		airtuo.SetAppID(*mi)
+		airtuo.SetAppInstID(*mi)
 	}
 	return airtuo
 }
 
-// AddAppID adds mi to the "app_id" field.
-func (airtuo *AppInstRunTimeUpdateOne) AddAppID(mi model.InternalID) *AppInstRunTimeUpdateOne {
-	airtuo.mutation.AddAppID(mi)
+// AddAppInstID adds mi to the "app_inst_id" field.
+func (airtuo *AppInstRunTimeUpdateOne) AddAppInstID(mi model.InternalID) *AppInstRunTimeUpdateOne {
+	airtuo.mutation.AddAppInstID(mi)
 	return airtuo
 }
 
@@ -406,11 +406,11 @@ func (airtuo *AppInstRunTimeUpdateOne) sqlSave(ctx context.Context) (_node *AppI
 	if value, ok := airtuo.mutation.AddedUserID(); ok {
 		_spec.AddField(appinstruntime.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := airtuo.mutation.AppID(); ok {
-		_spec.SetField(appinstruntime.FieldAppID, field.TypeInt64, value)
+	if value, ok := airtuo.mutation.AppInstID(); ok {
+		_spec.SetField(appinstruntime.FieldAppInstID, field.TypeInt64, value)
 	}
-	if value, ok := airtuo.mutation.AddedAppID(); ok {
-		_spec.AddField(appinstruntime.FieldAppID, field.TypeInt64, value)
+	if value, ok := airtuo.mutation.AddedAppInstID(); ok {
+		_spec.AddField(appinstruntime.FieldAppInstID, field.TypeInt64, value)
 	}
 	if value, ok := airtuo.mutation.StartTime(); ok {
 		_spec.SetField(appinstruntime.FieldStartTime, field.TypeTime, value)

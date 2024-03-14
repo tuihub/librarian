@@ -504,29 +504,42 @@ func (g geburaRepo) ListAppInsts(
 func (g geburaRepo) AddAppInstRunTime(
 	ctx context.Context,
 	userID model.InternalID,
-	packageID model.InternalID,
+	instID model.InternalID,
 	timeRange *model.TimeRange,
 ) error {
 	return g.data.db.AppInstRunTime.Create().
 		SetUserID(userID).
-		SetAppID(packageID).
+		SetAppInstID(instID).
 		SetStartTime(timeRange.StartTime).
-		SetRunDuration(timeRange.Duration).Exec(ctx)
+		SetRunDuration(timeRange.Duration).
+		Exec(ctx)
 }
 
 func (g geburaRepo) SumAppInstRunTime(
 	ctx context.Context,
 	userID model.InternalID,
-	packageID model.InternalID,
+	instID model.InternalID,
 	timeRange *model.TimeRange,
 ) (time.Duration, error) {
-	res, err := g.data.db.AppInstRunTime.Query().Where(
+	var v []struct {
+		Sum time.Duration
+	}
+	err := g.data.db.AppInstRunTime.Query().Where(
 		appinstruntime.UserIDEQ(userID),
-		appinstruntime.AppIDEQ(packageID),
-		appinstruntime.StartTimeGTE(timeRange.StartTime),
-		appinstruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+		appinstruntime.AppInstIDEQ(instID),
+		appinstruntime.And(
+			appinstruntime.StartTimeGTE(timeRange.StartTime),
+			appinstruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+		),
 	).Aggregate(
 		ent.Sum(appinstruntime.FieldRunDuration),
-	).Only(ctx)
-	return res.RunDuration, err
+	).Scan(ctx, &v)
+	if err != nil {
+		return time.Duration(0), err
+	}
+	var res time.Duration
+	for _, rt := range v {
+		res += rt.Sum
+	}
+	return res, nil
 }

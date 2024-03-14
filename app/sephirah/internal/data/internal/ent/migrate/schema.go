@@ -174,7 +174,7 @@ var (
 	AppInstRunTimesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "app_id", Type: field.TypeInt64},
+		{Name: "app_inst_id", Type: field.TypeInt64},
 		{Name: "start_time", Type: field.TypeTime},
 		{Name: "run_duration", Type: field.TypeInt64},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -187,8 +187,8 @@ var (
 		PrimaryKey: []*schema.Column{AppInstRunTimesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "appinstruntime_user_id_app_id",
-				Unique:  true,
+				Name:    "appinstruntime_user_id_app_inst_id",
+				Unique:  false,
 				Columns: []*schema.Column{AppInstRunTimesColumns[1], AppInstRunTimesColumns[2]},
 			},
 		},

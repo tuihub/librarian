@@ -15,8 +15,8 @@ const (
 	FieldID = "id"
 	// FieldUserID holds the string denoting the user_id field in the database.
 	FieldUserID = "user_id"
-	// FieldAppID holds the string denoting the app_id field in the database.
-	FieldAppID = "app_id"
+	// FieldAppInstID holds the string denoting the app_inst_id field in the database.
+	FieldAppInstID = "app_inst_id"
 	// FieldStartTime holds the string denoting the start_time field in the database.
 	FieldStartTime = "start_time"
 	// FieldRunDuration holds the string denoting the run_duration field in the database.
@@ -33,7 +33,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldUserID,
-	FieldAppID,
+	FieldAppInstID,
 	FieldStartTime,
 	FieldRunDuration,
 	FieldUpdatedAt,
@@ -72,9 +72,9 @@ func ByUserID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
-// ByAppID orders the results by the app_id field.
-func ByAppID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAppID, opts...).ToFunc()
+// ByAppInstID orders the results by the app_inst_id field.
+func ByAppInstID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAppInstID, opts...).ToFunc()
 }
 
 // ByStartTime orders the results by the start_time field.

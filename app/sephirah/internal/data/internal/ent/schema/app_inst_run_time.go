@@ -17,7 +17,7 @@ type AppInstRunTime struct {
 func (AppInstRunTime) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("user_id").GoType(model.InternalID(0)),
-		field.Int64("app_id").GoType(model.InternalID(0)),
+		field.Int64("app_inst_id").GoType(model.InternalID(0)),
 		field.Time("start_time"),
 		field.Int64("run_duration").GoType(time.Duration(0)),
 		field.Time("updated_at").
@@ -29,7 +29,6 @@ func (AppInstRunTime) Fields() []ent.Field {
 
 func (AppInstRunTime) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_id", "app_id").
-			Unique(),
+		index.Fields("user_id", "app_inst_id"),
 	}
 }

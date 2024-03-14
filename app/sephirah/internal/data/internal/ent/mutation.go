@@ -4848,8 +4848,8 @@ type AppInstRunTimeMutation struct {
 	id              *int
 	user_id         *model.InternalID
 	adduser_id      *model.InternalID
-	app_id          *model.InternalID
-	addapp_id       *model.InternalID
+	app_inst_id     *model.InternalID
+	addapp_inst_id  *model.InternalID
 	start_time      *time.Time
 	run_duration    *time.Duration
 	addrun_duration *time.Duration
@@ -5015,60 +5015,60 @@ func (m *AppInstRunTimeMutation) ResetUserID() {
 	m.adduser_id = nil
 }
 
-// SetAppID sets the "app_id" field.
-func (m *AppInstRunTimeMutation) SetAppID(mi model.InternalID) {
-	m.app_id = &mi
-	m.addapp_id = nil
+// SetAppInstID sets the "app_inst_id" field.
+func (m *AppInstRunTimeMutation) SetAppInstID(mi model.InternalID) {
+	m.app_inst_id = &mi
+	m.addapp_inst_id = nil
 }
 
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *AppInstRunTimeMutation) AppID() (r model.InternalID, exists bool) {
-	v := m.app_id
+// AppInstID returns the value of the "app_inst_id" field in the mutation.
+func (m *AppInstRunTimeMutation) AppInstID() (r model.InternalID, exists bool) {
+	v := m.app_inst_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAppID returns the old "app_id" field's value of the AppInstRunTime entity.
+// OldAppInstID returns the old "app_inst_id" field's value of the AppInstRunTime entity.
 // If the AppInstRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppInstRunTimeMutation) OldAppID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppInstRunTimeMutation) OldAppInstID(ctx context.Context) (v model.InternalID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+		return v, errors.New("OldAppInstID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
+		return v, errors.New("OldAppInstID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+		return v, fmt.Errorf("querying old value for OldAppInstID: %w", err)
 	}
-	return oldValue.AppID, nil
+	return oldValue.AppInstID, nil
 }
 
-// AddAppID adds mi to the "app_id" field.
-func (m *AppInstRunTimeMutation) AddAppID(mi model.InternalID) {
-	if m.addapp_id != nil {
-		*m.addapp_id += mi
+// AddAppInstID adds mi to the "app_inst_id" field.
+func (m *AppInstRunTimeMutation) AddAppInstID(mi model.InternalID) {
+	if m.addapp_inst_id != nil {
+		*m.addapp_inst_id += mi
 	} else {
-		m.addapp_id = &mi
+		m.addapp_inst_id = &mi
 	}
 }
 
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *AppInstRunTimeMutation) AddedAppID() (r model.InternalID, exists bool) {
-	v := m.addapp_id
+// AddedAppInstID returns the value that was added to the "app_inst_id" field in this mutation.
+func (m *AppInstRunTimeMutation) AddedAppInstID() (r model.InternalID, exists bool) {
+	v := m.addapp_inst_id
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAppID resets all changes to the "app_id" field.
-func (m *AppInstRunTimeMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
+// ResetAppInstID resets all changes to the "app_inst_id" field.
+func (m *AppInstRunTimeMutation) ResetAppInstID() {
+	m.app_inst_id = nil
+	m.addapp_inst_id = nil
 }
 
 // SetStartTime sets the "start_time" field.
@@ -5273,8 +5273,8 @@ func (m *AppInstRunTimeMutation) Fields() []string {
 	if m.user_id != nil {
 		fields = append(fields, appinstruntime.FieldUserID)
 	}
-	if m.app_id != nil {
-		fields = append(fields, appinstruntime.FieldAppID)
+	if m.app_inst_id != nil {
+		fields = append(fields, appinstruntime.FieldAppInstID)
 	}
 	if m.start_time != nil {
 		fields = append(fields, appinstruntime.FieldStartTime)
@@ -5298,8 +5298,8 @@ func (m *AppInstRunTimeMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case appinstruntime.FieldUserID:
 		return m.UserID()
-	case appinstruntime.FieldAppID:
-		return m.AppID()
+	case appinstruntime.FieldAppInstID:
+		return m.AppInstID()
 	case appinstruntime.FieldStartTime:
 		return m.StartTime()
 	case appinstruntime.FieldRunDuration:
@@ -5319,8 +5319,8 @@ func (m *AppInstRunTimeMutation) OldField(ctx context.Context, name string) (ent
 	switch name {
 	case appinstruntime.FieldUserID:
 		return m.OldUserID(ctx)
-	case appinstruntime.FieldAppID:
-		return m.OldAppID(ctx)
+	case appinstruntime.FieldAppInstID:
+		return m.OldAppInstID(ctx)
 	case appinstruntime.FieldStartTime:
 		return m.OldStartTime(ctx)
 	case appinstruntime.FieldRunDuration:
@@ -5345,12 +5345,12 @@ func (m *AppInstRunTimeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserID(v)
 		return nil
-	case appinstruntime.FieldAppID:
+	case appinstruntime.FieldAppInstID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAppID(v)
+		m.SetAppInstID(v)
 		return nil
 	case appinstruntime.FieldStartTime:
 		v, ok := value.(time.Time)
@@ -5391,8 +5391,8 @@ func (m *AppInstRunTimeMutation) AddedFields() []string {
 	if m.adduser_id != nil {
 		fields = append(fields, appinstruntime.FieldUserID)
 	}
-	if m.addapp_id != nil {
-		fields = append(fields, appinstruntime.FieldAppID)
+	if m.addapp_inst_id != nil {
+		fields = append(fields, appinstruntime.FieldAppInstID)
 	}
 	if m.addrun_duration != nil {
 		fields = append(fields, appinstruntime.FieldRunDuration)
@@ -5407,8 +5407,8 @@ func (m *AppInstRunTimeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case appinstruntime.FieldUserID:
 		return m.AddedUserID()
-	case appinstruntime.FieldAppID:
-		return m.AddedAppID()
+	case appinstruntime.FieldAppInstID:
+		return m.AddedAppInstID()
 	case appinstruntime.FieldRunDuration:
 		return m.AddedRunDuration()
 	}
@@ -5427,12 +5427,12 @@ func (m *AppInstRunTimeMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUserID(v)
 		return nil
-	case appinstruntime.FieldAppID:
+	case appinstruntime.FieldAppInstID:
 		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAppID(v)
+		m.AddAppInstID(v)
 		return nil
 	case appinstruntime.FieldRunDuration:
 		v, ok := value.(time.Duration)
@@ -5471,8 +5471,8 @@ func (m *AppInstRunTimeMutation) ResetField(name string) error {
 	case appinstruntime.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case appinstruntime.FieldAppID:
-		m.ResetAppID()
+	case appinstruntime.FieldAppInstID:
+		m.ResetAppInstID()
 		return nil
 	case appinstruntime.FieldStartTime:
 		m.ResetStartTime()

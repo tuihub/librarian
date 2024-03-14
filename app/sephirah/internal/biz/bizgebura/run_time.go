@@ -14,7 +14,7 @@ import (
 
 func (g *Gebura) AddAppInstRunTime(
 	ctx context.Context,
-	packageID model.InternalID,
+	instID model.InternalID,
 	timeRange *model.TimeRange,
 ) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
@@ -24,7 +24,10 @@ func (g *Gebura) AddAppInstRunTime(
 	if timeRange == nil {
 		return pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	err := g.repo.AddAppInstRunTime(ctx, claims.UserID, packageID, timeRange)
+	if timeRange.Duration <= 0 {
+		return pb.ErrorErrorReasonBadRequest("invalid time range")
+	}
+	err := g.repo.AddAppInstRunTime(ctx, claims.UserID, instID, timeRange)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -33,7 +36,7 @@ func (g *Gebura) AddAppInstRunTime(
 
 func (g *Gebura) SumAppInstRunTime(
 	ctx context.Context,
-	packageID model.InternalID,
+	instID model.InternalID,
 	timeRange *model.TimeRange,
 ) (time.Duration, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
@@ -43,7 +46,10 @@ func (g *Gebura) SumAppInstRunTime(
 	if timeRange == nil {
 		return time.Duration(0), pb.ErrorErrorReasonBadRequest("empty time range")
 	}
-	res, err := g.repo.SumAppInstRunTime(ctx, claims.UserID, packageID, timeRange)
+	if timeRange.Duration <= 0 {
+		return time.Duration(0), pb.ErrorErrorReasonBadRequest("invalid time range")
+	}
+	res, err := g.repo.SumAppInstRunTime(ctx, claims.UserID, instID, timeRange)
 	if err != nil {
 		return time.Duration(0), pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
