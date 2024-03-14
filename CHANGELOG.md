@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.8](https://github.com/tuihub/librarian/compare/v0.2.7...v0.2.8) (2024-03-14)
+
+
+### Features
+
+* **tiphereth:** impl RegisterUser ([fb70689](https://github.com/tuihub/librarian/commit/fb7068900a0433f031c7004c200626cefc5904c7))
+
+
+### Bug Fixes
+
+* fix captcha delete ([ca5b399](https://github.com/tuihub/librarian/commit/ca5b399975a1011278ffd15a9be30001cc20e588))
+* **gebura:** tested app inst run time ([fed04fa](https://github.com/tuihub/librarian/commit/fed04faa012db77ac6936990b8acec327aaa20e7))
+* **gebura:** update SyncAppInfo ([4f87179](https://github.com/tuihub/librarian/commit/4f87179ba577d9415d4809928f1d84f492015ba9))
+* **tiphereth:** sync pull account on linking ([699263b](https://github.com/tuihub/librarian/commit/699263bd1d5c1a21586f705fbd1bded6e25260a7))
+
 ## [0.2.7](https://github.com/tuihub/librarian/compare/v0.2.6...v0.2.7) (2024-03-11)
 
 
