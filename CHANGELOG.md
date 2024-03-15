@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.9](https://github.com/tuihub/librarian/compare/v0.2.8...v0.2.9) (2024-03-15)
+
+
+### Bug Fixes
+
+* **tiphereth:** fix user capacity ([4af5634](https://github.com/tuihub/librarian/commit/4af56348536dfaa6afe06b64c4c98bdc7332de40))
+
 ## [0.2.8](https://github.com/tuihub/librarian/compare/v0.2.7...v0.2.8) (2024-03-14)
 
 
