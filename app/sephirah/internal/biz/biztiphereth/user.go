@@ -214,7 +214,7 @@ func (t *Tiphereth) checkCapacity(ctx context.Context) *errors.Error {
 	if err != nil {
 		return pb.ErrorErrorReasonForbidden("server have invalid setting")
 	}
-	count, err := t.userCountCache.Get(ctx)
+	count, err := t.userCountCache.GetWithFallBack(ctx, nil)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
