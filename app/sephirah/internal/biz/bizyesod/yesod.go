@@ -25,9 +25,9 @@ type YesodRepo interface {
 	ListFeedConfigs(context.Context, model.InternalID, model.Paging, []model.InternalID, []model.InternalID,
 		[]string, []modelyesod.FeedConfigStatus, []string) ([]*modelyesod.FeedWithConfig, int, error)
 	ListFeedItems(context.Context, model.InternalID, model.Paging, []model.InternalID,
-		[]model.InternalID, []string, *model.TimeRange, []string) ([]*modelyesod.FeedItemDigest, int, error)
+		[]string, []string, *model.TimeRange, []string) ([]*modelyesod.FeedItemDigest, int, error)
 	GroupFeedItems(context.Context, model.InternalID, []model.TimeRange, []model.InternalID,
-		[]model.InternalID, []string, int, []string) (
+		[]string, []string, int, []string) (
 		map[model.TimeRange][]*modelyesod.FeedItemDigest, error)
 	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
 	ReadFeedItem(context.Context, model.InternalID, model.InternalID) error

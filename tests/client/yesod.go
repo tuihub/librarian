@@ -71,7 +71,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 	if resp, err := c.cli.ListFeedItems(ctx, &pb.ListFeedItemsRequest{
 		Paging:                defaultPaging,
 		FeedIdFilter:          nil,
-		AuthorIdFilter:        nil,
+		AuthorFilter:          nil,
 		PublishPlatformFilter: nil,
 		PublishTimeRange:      nil,
 		CategoryFilter:        nil,

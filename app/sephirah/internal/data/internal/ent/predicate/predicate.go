@@ -36,6 +36,9 @@ type FeedConfig func(*sql.Selector)
 // FeedItem is the predicate function for feeditem builders.
 type FeedItem func(*sql.Selector)
 
+// FeedItemCollection is the predicate function for feeditemcollection builders.
+type FeedItemCollection func(*sql.Selector)
+
 // File is the predicate function for file builders.
 type File func(*sql.Selector)
 
@@ -51,6 +54,9 @@ type NotifyFlowSource func(*sql.Selector)
 // NotifyFlowTarget is the predicate function for notifyflowtarget builders.
 type NotifyFlowTarget func(*sql.Selector)
 
+// NotifySource is the predicate function for notifysource builders.
+type NotifySource func(*sql.Selector)
+
 // NotifyTarget is the predicate function for notifytarget builders.
 type NotifyTarget func(*sql.Selector)
 
@@ -59,6 +65,9 @@ type PorterInstance func(*sql.Selector)
 
 // PorterPrivilege is the predicate function for porterprivilege builders.
 type PorterPrivilege func(*sql.Selector)
+
+// Tag is the predicate function for tag builders.
+type Tag func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

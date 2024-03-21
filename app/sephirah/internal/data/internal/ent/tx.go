@@ -32,6 +32,8 @@ type Tx struct {
 	FeedConfig *FeedConfigClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
+	// FeedItemCollection is the client for interacting with the FeedItemCollection builders.
+	FeedItemCollection *FeedItemCollectionClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
 	// Image is the client for interacting with the Image builders.
@@ -42,12 +44,16 @@ type Tx struct {
 	NotifyFlowSource *NotifyFlowSourceClient
 	// NotifyFlowTarget is the client for interacting with the NotifyFlowTarget builders.
 	NotifyFlowTarget *NotifyFlowTargetClient
+	// NotifySource is the client for interacting with the NotifySource builders.
+	NotifySource *NotifySourceClient
 	// NotifyTarget is the client for interacting with the NotifyTarget builders.
 	NotifyTarget *NotifyTargetClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
 	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
 	PorterPrivilege *PorterPrivilegeClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserDevice is the client for interacting with the UserDevice builders.
@@ -195,14 +201,17 @@ func (tx *Tx) init() {
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
 	tx.FeedItem = NewFeedItemClient(tx.config)
+	tx.FeedItemCollection = NewFeedItemCollectionClient(tx.config)
 	tx.File = NewFileClient(tx.config)
 	tx.Image = NewImageClient(tx.config)
 	tx.NotifyFlow = NewNotifyFlowClient(tx.config)
 	tx.NotifyFlowSource = NewNotifyFlowSourceClient(tx.config)
 	tx.NotifyFlowTarget = NewNotifyFlowTargetClient(tx.config)
+	tx.NotifySource = NewNotifySourceClient(tx.config)
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
 	tx.PorterPrivilege = NewPorterPrivilegeClient(tx.config)
+	tx.Tag = NewTagClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)
 	tx.UserSession = NewUserSessionClient(tx.config)

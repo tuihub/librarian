@@ -21,15 +21,18 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
@@ -47,27 +50,30 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccount          = "Account"
-	TypeApp              = "App"
-	TypeAppBinary        = "AppBinary"
-	TypeAppInfo          = "AppInfo"
-	TypeAppInst          = "AppInst"
-	TypeAppInstRunTime   = "AppInstRunTime"
-	TypeDeviceInfo       = "DeviceInfo"
-	TypeFeed             = "Feed"
-	TypeFeedConfig       = "FeedConfig"
-	TypeFeedItem         = "FeedItem"
-	TypeFile             = "File"
-	TypeImage            = "Image"
-	TypeNotifyFlow       = "NotifyFlow"
-	TypeNotifyFlowSource = "NotifyFlowSource"
-	TypeNotifyFlowTarget = "NotifyFlowTarget"
-	TypeNotifyTarget     = "NotifyTarget"
-	TypePorterInstance   = "PorterInstance"
-	TypePorterPrivilege  = "PorterPrivilege"
-	TypeUser             = "User"
-	TypeUserDevice       = "UserDevice"
-	TypeUserSession      = "UserSession"
+	TypeAccount            = "Account"
+	TypeApp                = "App"
+	TypeAppBinary          = "AppBinary"
+	TypeAppInfo            = "AppInfo"
+	TypeAppInst            = "AppInst"
+	TypeAppInstRunTime     = "AppInstRunTime"
+	TypeDeviceInfo         = "DeviceInfo"
+	TypeFeed               = "Feed"
+	TypeFeedConfig         = "FeedConfig"
+	TypeFeedItem           = "FeedItem"
+	TypeFeedItemCollection = "FeedItemCollection"
+	TypeFile               = "File"
+	TypeImage              = "Image"
+	TypeNotifyFlow         = "NotifyFlow"
+	TypeNotifyFlowSource   = "NotifyFlowSource"
+	TypeNotifyFlowTarget   = "NotifyFlowTarget"
+	TypeNotifySource       = "NotifySource"
+	TypeNotifyTarget       = "NotifyTarget"
+	TypePorterInstance     = "PorterInstance"
+	TypePorterPrivilege    = "PorterPrivilege"
+	TypeTag                = "Tag"
+	TypeUser               = "User"
+	TypeUserDevice         = "UserDevice"
+	TypeUserSession        = "UserSession"
 )
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
@@ -7506,37 +7512,34 @@ func (m *FeedMutation) ResetEdge(name string) error {
 // FeedConfigMutation represents an operation that mutates the FeedConfig nodes in the graph.
 type FeedConfigMutation struct {
 	config
-	op                        Op
-	typ                       string
-	id                        *model.InternalID
-	name                      *string
-	feed_url                  *string
-	author_account            *model.InternalID
-	addauthor_account         *model.InternalID
-	source                    *string
-	status                    *feedconfig.Status
-	category                  *string
-	pull_interval             *time.Duration
-	addpull_interval          *time.Duration
-	hide_items                *bool
-	latest_pull_at            *time.Time
-	next_pull_begin_at        *time.Time
-	updated_at                *time.Time
-	created_at                *time.Time
-	clearedFields             map[string]struct{}
-	owner                     *model.InternalID
-	clearedowner              bool
-	feed                      *model.InternalID
-	clearedfeed               bool
-	notify_flow               map[model.InternalID]struct{}
-	removednotify_flow        map[model.InternalID]struct{}
-	clearednotify_flow        bool
-	notify_flow_source        map[int]struct{}
-	removednotify_flow_source map[int]struct{}
-	clearednotify_flow_source bool
-	done                      bool
-	oldValue                  func(context.Context) (*FeedConfig, error)
-	predicates                []predicate.FeedConfig
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	name                 *string
+	feed_url             *string
+	author_account       *model.InternalID
+	addauthor_account    *model.InternalID
+	source               *string
+	status               *feedconfig.Status
+	category             *string
+	pull_interval        *time.Duration
+	addpull_interval     *time.Duration
+	hide_items           *bool
+	latest_pull_at       *time.Time
+	next_pull_begin_at   *time.Time
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	owner                *model.InternalID
+	clearedowner         bool
+	feed                 *model.InternalID
+	clearedfeed          bool
+	notify_source        map[model.InternalID]struct{}
+	removednotify_source map[model.InternalID]struct{}
+	clearednotify_source bool
+	done                 bool
+	oldValue             func(context.Context) (*FeedConfig, error)
+	predicates           []predicate.FeedConfig
 }
 
 var _ ent.Mutation = (*FeedConfigMutation)(nil)
@@ -8230,112 +8233,58 @@ func (m *FeedConfigMutation) ResetFeed() {
 	m.clearedfeed = false
 }
 
-// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by ids.
-func (m *FeedConfigMutation) AddNotifyFlowIDs(ids ...model.InternalID) {
-	if m.notify_flow == nil {
-		m.notify_flow = make(map[model.InternalID]struct{})
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by ids.
+func (m *FeedConfigMutation) AddNotifySourceIDs(ids ...model.InternalID) {
+	if m.notify_source == nil {
+		m.notify_source = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		m.notify_flow[ids[i]] = struct{}{}
+		m.notify_source[ids[i]] = struct{}{}
 	}
 }
 
-// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
-func (m *FeedConfigMutation) ClearNotifyFlow() {
-	m.clearednotify_flow = true
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
+func (m *FeedConfigMutation) ClearNotifySource() {
+	m.clearednotify_source = true
 }
 
-// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
-func (m *FeedConfigMutation) NotifyFlowCleared() bool {
-	return m.clearednotify_flow
+// NotifySourceCleared reports if the "notify_source" edge to the NotifySource entity was cleared.
+func (m *FeedConfigMutation) NotifySourceCleared() bool {
+	return m.clearednotify_source
 }
 
-// RemoveNotifyFlowIDs removes the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (m *FeedConfigMutation) RemoveNotifyFlowIDs(ids ...model.InternalID) {
-	if m.removednotify_flow == nil {
-		m.removednotify_flow = make(map[model.InternalID]struct{})
+// RemoveNotifySourceIDs removes the "notify_source" edge to the NotifySource entity by IDs.
+func (m *FeedConfigMutation) RemoveNotifySourceIDs(ids ...model.InternalID) {
+	if m.removednotify_source == nil {
+		m.removednotify_source = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		delete(m.notify_flow, ids[i])
-		m.removednotify_flow[ids[i]] = struct{}{}
+		delete(m.notify_source, ids[i])
+		m.removednotify_source[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedNotifyFlow returns the removed IDs of the "notify_flow" edge to the NotifyFlow entity.
-func (m *FeedConfigMutation) RemovedNotifyFlowIDs() (ids []model.InternalID) {
-	for id := range m.removednotify_flow {
+// RemovedNotifySource returns the removed IDs of the "notify_source" edge to the NotifySource entity.
+func (m *FeedConfigMutation) RemovedNotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_source {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
-func (m *FeedConfigMutation) NotifyFlowIDs() (ids []model.InternalID) {
-	for id := range m.notify_flow {
+// NotifySourceIDs returns the "notify_source" edge IDs in the mutation.
+func (m *FeedConfigMutation) NotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.notify_source {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetNotifyFlow resets all changes to the "notify_flow" edge.
-func (m *FeedConfigMutation) ResetNotifyFlow() {
-	m.notify_flow = nil
-	m.clearednotify_flow = false
-	m.removednotify_flow = nil
-}
-
-// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by ids.
-func (m *FeedConfigMutation) AddNotifyFlowSourceIDs(ids ...int) {
-	if m.notify_flow_source == nil {
-		m.notify_flow_source = make(map[int]struct{})
-	}
-	for i := range ids {
-		m.notify_flow_source[ids[i]] = struct{}{}
-	}
-}
-
-// ClearNotifyFlowSource clears the "notify_flow_source" edge to the NotifyFlowSource entity.
-func (m *FeedConfigMutation) ClearNotifyFlowSource() {
-	m.clearednotify_flow_source = true
-}
-
-// NotifyFlowSourceCleared reports if the "notify_flow_source" edge to the NotifyFlowSource entity was cleared.
-func (m *FeedConfigMutation) NotifyFlowSourceCleared() bool {
-	return m.clearednotify_flow_source
-}
-
-// RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (m *FeedConfigMutation) RemoveNotifyFlowSourceIDs(ids ...int) {
-	if m.removednotify_flow_source == nil {
-		m.removednotify_flow_source = make(map[int]struct{})
-	}
-	for i := range ids {
-		delete(m.notify_flow_source, ids[i])
-		m.removednotify_flow_source[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedNotifyFlowSource returns the removed IDs of the "notify_flow_source" edge to the NotifyFlowSource entity.
-func (m *FeedConfigMutation) RemovedNotifyFlowSourceIDs() (ids []int) {
-	for id := range m.removednotify_flow_source {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// NotifyFlowSourceIDs returns the "notify_flow_source" edge IDs in the mutation.
-func (m *FeedConfigMutation) NotifyFlowSourceIDs() (ids []int) {
-	for id := range m.notify_flow_source {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetNotifyFlowSource resets all changes to the "notify_flow_source" edge.
-func (m *FeedConfigMutation) ResetNotifyFlowSource() {
-	m.notify_flow_source = nil
-	m.clearednotify_flow_source = false
-	m.removednotify_flow_source = nil
+// ResetNotifySource resets all changes to the "notify_source" edge.
+func (m *FeedConfigMutation) ResetNotifySource() {
+	m.notify_source = nil
+	m.clearednotify_source = false
+	m.removednotify_source = nil
 }
 
 // Where appends a list predicates to the FeedConfigMutation builder.
@@ -8702,18 +8651,15 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedConfigMutation) AddedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.owner != nil {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
 	if m.feed != nil {
 		edges = append(edges, feedconfig.EdgeFeed)
 	}
-	if m.notify_flow != nil {
-		edges = append(edges, feedconfig.EdgeNotifyFlow)
-	}
-	if m.notify_flow_source != nil {
-		edges = append(edges, feedconfig.EdgeNotifyFlowSource)
+	if m.notify_source != nil {
+		edges = append(edges, feedconfig.EdgeNotifySource)
 	}
 	return edges
 }
@@ -8730,15 +8676,9 @@ func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
 		if id := m.feed; id != nil {
 			return []ent.Value{*id}
 		}
-	case feedconfig.EdgeNotifyFlow:
-		ids := make([]ent.Value, 0, len(m.notify_flow))
-		for id := range m.notify_flow {
-			ids = append(ids, id)
-		}
-		return ids
-	case feedconfig.EdgeNotifyFlowSource:
-		ids := make([]ent.Value, 0, len(m.notify_flow_source))
-		for id := range m.notify_flow_source {
+	case feedconfig.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.notify_source))
+		for id := range m.notify_source {
 			ids = append(ids, id)
 		}
 		return ids
@@ -8748,12 +8688,9 @@ func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedConfigMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 4)
-	if m.removednotify_flow != nil {
-		edges = append(edges, feedconfig.EdgeNotifyFlow)
-	}
-	if m.removednotify_flow_source != nil {
-		edges = append(edges, feedconfig.EdgeNotifyFlowSource)
+	edges := make([]string, 0, 3)
+	if m.removednotify_source != nil {
+		edges = append(edges, feedconfig.EdgeNotifySource)
 	}
 	return edges
 }
@@ -8762,15 +8699,9 @@ func (m *FeedConfigMutation) RemovedEdges() []string {
 // the given name in this mutation.
 func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
 	switch name {
-	case feedconfig.EdgeNotifyFlow:
-		ids := make([]ent.Value, 0, len(m.removednotify_flow))
-		for id := range m.removednotify_flow {
-			ids = append(ids, id)
-		}
-		return ids
-	case feedconfig.EdgeNotifyFlowSource:
-		ids := make([]ent.Value, 0, len(m.removednotify_flow_source))
-		for id := range m.removednotify_flow_source {
+	case feedconfig.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.removednotify_source))
+		for id := range m.removednotify_source {
 			ids = append(ids, id)
 		}
 		return ids
@@ -8780,18 +8711,15 @@ func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedConfigMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 4)
+	edges := make([]string, 0, 3)
 	if m.clearedowner {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
 	if m.clearedfeed {
 		edges = append(edges, feedconfig.EdgeFeed)
 	}
-	if m.clearednotify_flow {
-		edges = append(edges, feedconfig.EdgeNotifyFlow)
-	}
-	if m.clearednotify_flow_source {
-		edges = append(edges, feedconfig.EdgeNotifyFlowSource)
+	if m.clearednotify_source {
+		edges = append(edges, feedconfig.EdgeNotifySource)
 	}
 	return edges
 }
@@ -8804,10 +8732,8 @@ func (m *FeedConfigMutation) EdgeCleared(name string) bool {
 		return m.clearedowner
 	case feedconfig.EdgeFeed:
 		return m.clearedfeed
-	case feedconfig.EdgeNotifyFlow:
-		return m.clearednotify_flow
-	case feedconfig.EdgeNotifyFlowSource:
-		return m.clearednotify_flow_source
+	case feedconfig.EdgeNotifySource:
+		return m.clearednotify_source
 	}
 	return false
 }
@@ -8836,11 +8762,8 @@ func (m *FeedConfigMutation) ResetEdge(name string) error {
 	case feedconfig.EdgeFeed:
 		m.ResetFeed()
 		return nil
-	case feedconfig.EdgeNotifyFlow:
-		m.ResetNotifyFlow()
-		return nil
-	case feedconfig.EdgeNotifyFlowSource:
-		m.ResetNotifyFlowSource()
+	case feedconfig.EdgeNotifySource:
+		m.ResetNotifySource()
 		return nil
 	}
 	return fmt.Errorf("unknown FeedConfig edge %s", name)
@@ -8849,37 +8772,40 @@ func (m *FeedConfigMutation) ResetEdge(name string) error {
 // FeedItemMutation represents an operation that mutates the FeedItem nodes in the graph.
 type FeedItemMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *model.InternalID
-	title               *string
-	authors             *[]*modelfeed.Person
-	appendauthors       []*modelfeed.Person
-	description         *string
-	content             *string
-	guid                *string
-	link                *string
-	image               **modelfeed.Image
-	published           *string
-	published_parsed    *time.Time
-	updated             *string
-	updated_parsed      *time.Time
-	enclosures          *[]*modelfeed.Enclosure
-	appendenclosures    []*modelfeed.Enclosure
-	publish_platform    *string
-	read_count          *int64
-	addread_count       *int64
-	digest_description  *string
-	digest_images       *[]*modelfeed.Image
-	appenddigest_images []*modelfeed.Image
-	updated_at          *time.Time
-	created_at          *time.Time
-	clearedFields       map[string]struct{}
-	feed                *model.InternalID
-	clearedfeed         bool
-	done                bool
-	oldValue            func(context.Context) (*FeedItem, error)
-	predicates          []predicate.FeedItem
+	op                          Op
+	typ                         string
+	id                          *model.InternalID
+	title                       *string
+	authors                     *[]*modelfeed.Person
+	appendauthors               []*modelfeed.Person
+	description                 *string
+	content                     *string
+	guid                        *string
+	link                        *string
+	image                       **modelfeed.Image
+	published                   *string
+	published_parsed            *time.Time
+	updated                     *string
+	updated_parsed              *time.Time
+	enclosures                  *[]*modelfeed.Enclosure
+	appendenclosures            []*modelfeed.Enclosure
+	publish_platform            *string
+	read_count                  *int64
+	addread_count               *int64
+	digest_description          *string
+	digest_images               *[]*modelfeed.Image
+	appenddigest_images         []*modelfeed.Image
+	updated_at                  *time.Time
+	created_at                  *time.Time
+	clearedFields               map[string]struct{}
+	feed                        *model.InternalID
+	clearedfeed                 bool
+	feed_item_collection        map[model.InternalID]struct{}
+	removedfeed_item_collection map[model.InternalID]struct{}
+	clearedfeed_item_collection bool
+	done                        bool
+	oldValue                    func(context.Context) (*FeedItem, error)
+	predicates                  []predicate.FeedItem
 }
 
 var _ ent.Mutation = (*FeedItemMutation)(nil)
@@ -9934,6 +9860,60 @@ func (m *FeedItemMutation) ResetFeed() {
 	m.clearedfeed = false
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by ids.
+func (m *FeedItemMutation) AddFeedItemCollectionIDs(ids ...model.InternalID) {
+	if m.feed_item_collection == nil {
+		m.feed_item_collection = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_item_collection[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedItemCollection clears the "feed_item_collection" edge to the FeedItemCollection entity.
+func (m *FeedItemMutation) ClearFeedItemCollection() {
+	m.clearedfeed_item_collection = true
+}
+
+// FeedItemCollectionCleared reports if the "feed_item_collection" edge to the FeedItemCollection entity was cleared.
+func (m *FeedItemMutation) FeedItemCollectionCleared() bool {
+	return m.clearedfeed_item_collection
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (m *FeedItemMutation) RemoveFeedItemCollectionIDs(ids ...model.InternalID) {
+	if m.removedfeed_item_collection == nil {
+		m.removedfeed_item_collection = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_item_collection, ids[i])
+		m.removedfeed_item_collection[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedItemCollection returns the removed IDs of the "feed_item_collection" edge to the FeedItemCollection entity.
+func (m *FeedItemMutation) RemovedFeedItemCollectionIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_item_collection {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedItemCollectionIDs returns the "feed_item_collection" edge IDs in the mutation.
+func (m *FeedItemMutation) FeedItemCollectionIDs() (ids []model.InternalID) {
+	for id := range m.feed_item_collection {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedItemCollection resets all changes to the "feed_item_collection" edge.
+func (m *FeedItemMutation) ResetFeedItemCollection() {
+	m.feed_item_collection = nil
+	m.clearedfeed_item_collection = false
+	m.removedfeed_item_collection = nil
+}
+
 // Where appends a list predicates to the FeedItemMutation builder.
 func (m *FeedItemMutation) Where(ps ...predicate.FeedItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -10469,9 +10449,12 @@ func (m *FeedItemMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedItemMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.feed != nil {
 		edges = append(edges, feeditem.EdgeFeed)
+	}
+	if m.feed_item_collection != nil {
+		edges = append(edges, feeditem.EdgeFeedItemCollection)
 	}
 	return edges
 }
@@ -10484,27 +10467,47 @@ func (m *FeedItemMutation) AddedIDs(name string) []ent.Value {
 		if id := m.feed; id != nil {
 			return []ent.Value{*id}
 		}
+	case feeditem.EdgeFeedItemCollection:
+		ids := make([]ent.Value, 0, len(m.feed_item_collection))
+		for id := range m.feed_item_collection {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedItemMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
+	if m.removedfeed_item_collection != nil {
+		edges = append(edges, feeditem.EdgeFeedItemCollection)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *FeedItemMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feeditem.EdgeFeedItemCollection:
+		ids := make([]ent.Value, 0, len(m.removedfeed_item_collection))
+		for id := range m.removedfeed_item_collection {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedItemMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 2)
 	if m.clearedfeed {
 		edges = append(edges, feeditem.EdgeFeed)
+	}
+	if m.clearedfeed_item_collection {
+		edges = append(edges, feeditem.EdgeFeedItemCollection)
 	}
 	return edges
 }
@@ -10515,6 +10518,8 @@ func (m *FeedItemMutation) EdgeCleared(name string) bool {
 	switch name {
 	case feeditem.EdgeFeed:
 		return m.clearedfeed
+	case feeditem.EdgeFeedItemCollection:
+		return m.clearedfeed_item_collection
 	}
 	return false
 }
@@ -10537,8 +10542,794 @@ func (m *FeedItemMutation) ResetEdge(name string) error {
 	case feeditem.EdgeFeed:
 		m.ResetFeed()
 		return nil
+	case feeditem.EdgeFeedItemCollection:
+		m.ResetFeedItemCollection()
+		return nil
 	}
 	return fmt.Errorf("unknown FeedItem edge %s", name)
+}
+
+// FeedItemCollectionMutation represents an operation that mutates the FeedItemCollection nodes in the graph.
+type FeedItemCollectionMutation struct {
+	config
+	op                   Op
+	typ                  string
+	id                   *model.InternalID
+	name                 *string
+	description          *string
+	category             *string
+	updated_at           *time.Time
+	created_at           *time.Time
+	clearedFields        map[string]struct{}
+	owner                *model.InternalID
+	clearedowner         bool
+	feed_item            map[model.InternalID]struct{}
+	removedfeed_item     map[model.InternalID]struct{}
+	clearedfeed_item     bool
+	notify_source        map[model.InternalID]struct{}
+	removednotify_source map[model.InternalID]struct{}
+	clearednotify_source bool
+	done                 bool
+	oldValue             func(context.Context) (*FeedItemCollection, error)
+	predicates           []predicate.FeedItemCollection
+}
+
+var _ ent.Mutation = (*FeedItemCollectionMutation)(nil)
+
+// feeditemcollectionOption allows management of the mutation configuration using functional options.
+type feeditemcollectionOption func(*FeedItemCollectionMutation)
+
+// newFeedItemCollectionMutation creates new mutation for the FeedItemCollection entity.
+func newFeedItemCollectionMutation(c config, op Op, opts ...feeditemcollectionOption) *FeedItemCollectionMutation {
+	m := &FeedItemCollectionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFeedItemCollection,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFeedItemCollectionID sets the ID field of the mutation.
+func withFeedItemCollectionID(id model.InternalID) feeditemcollectionOption {
+	return func(m *FeedItemCollectionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FeedItemCollection
+		)
+		m.oldValue = func(ctx context.Context) (*FeedItemCollection, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FeedItemCollection.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFeedItemCollection sets the old FeedItemCollection of the mutation.
+func withFeedItemCollection(node *FeedItemCollection) feeditemcollectionOption {
+	return func(m *FeedItemCollectionMutation) {
+		m.oldValue = func(context.Context) (*FeedItemCollection, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FeedItemCollectionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FeedItemCollectionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FeedItemCollection entities.
+func (m *FeedItemCollectionMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FeedItemCollectionMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FeedItemCollectionMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FeedItemCollection.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *FeedItemCollectionMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *FeedItemCollectionMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *FeedItemCollectionMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *FeedItemCollectionMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *FeedItemCollectionMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *FeedItemCollectionMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetCategory sets the "category" field.
+func (m *FeedItemCollectionMutation) SetCategory(s string) {
+	m.category = &s
+}
+
+// Category returns the value of the "category" field in the mutation.
+func (m *FeedItemCollectionMutation) Category() (r string, exists bool) {
+	v := m.category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCategory returns the old "category" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldCategory(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCategory is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCategory requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCategory: %w", err)
+	}
+	return oldValue.Category, nil
+}
+
+// ResetCategory resets all changes to the "category" field.
+func (m *FeedItemCollectionMutation) ResetCategory() {
+	m.category = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *FeedItemCollectionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *FeedItemCollectionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *FeedItemCollectionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *FeedItemCollectionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *FeedItemCollectionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *FeedItemCollectionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *FeedItemCollectionMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *FeedItemCollectionMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *FeedItemCollectionMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *FeedItemCollectionMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *FeedItemCollectionMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *FeedItemCollectionMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// AddFeedItemIDs adds the "feed_item" edge to the FeedItem entity by ids.
+func (m *FeedItemCollectionMutation) AddFeedItemIDs(ids ...model.InternalID) {
+	if m.feed_item == nil {
+		m.feed_item = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_item[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedItem clears the "feed_item" edge to the FeedItem entity.
+func (m *FeedItemCollectionMutation) ClearFeedItem() {
+	m.clearedfeed_item = true
+}
+
+// FeedItemCleared reports if the "feed_item" edge to the FeedItem entity was cleared.
+func (m *FeedItemCollectionMutation) FeedItemCleared() bool {
+	return m.clearedfeed_item
+}
+
+// RemoveFeedItemIDs removes the "feed_item" edge to the FeedItem entity by IDs.
+func (m *FeedItemCollectionMutation) RemoveFeedItemIDs(ids ...model.InternalID) {
+	if m.removedfeed_item == nil {
+		m.removedfeed_item = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_item, ids[i])
+		m.removedfeed_item[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedItem returns the removed IDs of the "feed_item" edge to the FeedItem entity.
+func (m *FeedItemCollectionMutation) RemovedFeedItemIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_item {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedItemIDs returns the "feed_item" edge IDs in the mutation.
+func (m *FeedItemCollectionMutation) FeedItemIDs() (ids []model.InternalID) {
+	for id := range m.feed_item {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedItem resets all changes to the "feed_item" edge.
+func (m *FeedItemCollectionMutation) ResetFeedItem() {
+	m.feed_item = nil
+	m.clearedfeed_item = false
+	m.removedfeed_item = nil
+}
+
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by ids.
+func (m *FeedItemCollectionMutation) AddNotifySourceIDs(ids ...model.InternalID) {
+	if m.notify_source == nil {
+		m.notify_source = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_source[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
+func (m *FeedItemCollectionMutation) ClearNotifySource() {
+	m.clearednotify_source = true
+}
+
+// NotifySourceCleared reports if the "notify_source" edge to the NotifySource entity was cleared.
+func (m *FeedItemCollectionMutation) NotifySourceCleared() bool {
+	return m.clearednotify_source
+}
+
+// RemoveNotifySourceIDs removes the "notify_source" edge to the NotifySource entity by IDs.
+func (m *FeedItemCollectionMutation) RemoveNotifySourceIDs(ids ...model.InternalID) {
+	if m.removednotify_source == nil {
+		m.removednotify_source = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_source, ids[i])
+		m.removednotify_source[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifySource returns the removed IDs of the "notify_source" edge to the NotifySource entity.
+func (m *FeedItemCollectionMutation) RemovedNotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifySourceIDs returns the "notify_source" edge IDs in the mutation.
+func (m *FeedItemCollectionMutation) NotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.notify_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifySource resets all changes to the "notify_source" edge.
+func (m *FeedItemCollectionMutation) ResetNotifySource() {
+	m.notify_source = nil
+	m.clearednotify_source = false
+	m.removednotify_source = nil
+}
+
+// Where appends a list predicates to the FeedItemCollectionMutation builder.
+func (m *FeedItemCollectionMutation) Where(ps ...predicate.FeedItemCollection) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FeedItemCollectionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FeedItemCollectionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FeedItemCollection, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FeedItemCollectionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FeedItemCollectionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FeedItemCollection).
+func (m *FeedItemCollectionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FeedItemCollectionMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.name != nil {
+		fields = append(fields, feeditemcollection.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, feeditemcollection.FieldDescription)
+	}
+	if m.category != nil {
+		fields = append(fields, feeditemcollection.FieldCategory)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, feeditemcollection.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, feeditemcollection.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FeedItemCollectionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case feeditemcollection.FieldName:
+		return m.Name()
+	case feeditemcollection.FieldDescription:
+		return m.Description()
+	case feeditemcollection.FieldCategory:
+		return m.Category()
+	case feeditemcollection.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case feeditemcollection.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FeedItemCollectionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case feeditemcollection.FieldName:
+		return m.OldName(ctx)
+	case feeditemcollection.FieldDescription:
+		return m.OldDescription(ctx)
+	case feeditemcollection.FieldCategory:
+		return m.OldCategory(ctx)
+	case feeditemcollection.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case feeditemcollection.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown FeedItemCollection field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedItemCollectionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case feeditemcollection.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case feeditemcollection.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case feeditemcollection.FieldCategory:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCategory(v)
+		return nil
+	case feeditemcollection.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case feeditemcollection.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FeedItemCollection field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FeedItemCollectionMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FeedItemCollectionMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedItemCollectionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown FeedItemCollection numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FeedItemCollectionMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FeedItemCollectionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FeedItemCollectionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FeedItemCollection nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FeedItemCollectionMutation) ResetField(name string) error {
+	switch name {
+	case feeditemcollection.FieldName:
+		m.ResetName()
+		return nil
+	case feeditemcollection.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case feeditemcollection.FieldCategory:
+		m.ResetCategory()
+		return nil
+	case feeditemcollection.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case feeditemcollection.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedItemCollection field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FeedItemCollectionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.owner != nil {
+		edges = append(edges, feeditemcollection.EdgeOwner)
+	}
+	if m.feed_item != nil {
+		edges = append(edges, feeditemcollection.EdgeFeedItem)
+	}
+	if m.notify_source != nil {
+		edges = append(edges, feeditemcollection.EdgeNotifySource)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FeedItemCollectionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feeditemcollection.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case feeditemcollection.EdgeFeedItem:
+		ids := make([]ent.Value, 0, len(m.feed_item))
+		for id := range m.feed_item {
+			ids = append(ids, id)
+		}
+		return ids
+	case feeditemcollection.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.notify_source))
+		for id := range m.notify_source {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FeedItemCollectionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.removedfeed_item != nil {
+		edges = append(edges, feeditemcollection.EdgeFeedItem)
+	}
+	if m.removednotify_source != nil {
+		edges = append(edges, feeditemcollection.EdgeNotifySource)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FeedItemCollectionMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feeditemcollection.EdgeFeedItem:
+		ids := make([]ent.Value, 0, len(m.removedfeed_item))
+		for id := range m.removedfeed_item {
+			ids = append(ids, id)
+		}
+		return ids
+	case feeditemcollection.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.removednotify_source))
+		for id := range m.removednotify_source {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FeedItemCollectionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 3)
+	if m.clearedowner {
+		edges = append(edges, feeditemcollection.EdgeOwner)
+	}
+	if m.clearedfeed_item {
+		edges = append(edges, feeditemcollection.EdgeFeedItem)
+	}
+	if m.clearednotify_source {
+		edges = append(edges, feeditemcollection.EdgeNotifySource)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FeedItemCollectionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feeditemcollection.EdgeOwner:
+		return m.clearedowner
+	case feeditemcollection.EdgeFeedItem:
+		return m.clearedfeed_item
+	case feeditemcollection.EdgeNotifySource:
+		return m.clearednotify_source
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FeedItemCollectionMutation) ClearEdge(name string) error {
+	switch name {
+	case feeditemcollection.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedItemCollection unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FeedItemCollectionMutation) ResetEdge(name string) error {
+	switch name {
+	case feeditemcollection.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case feeditemcollection.EdgeFeedItem:
+		m.ResetFeedItem()
+		return nil
+	case feeditemcollection.EdgeNotifySource:
+		m.ResetNotifySource()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedItemCollection edge %s", name)
 }
 
 // FileMutation represents an operation that mutates the File nodes in the graph.
@@ -11996,9 +12787,9 @@ type NotifyFlowMutation struct {
 	notify_target             map[model.InternalID]struct{}
 	removednotify_target      map[model.InternalID]struct{}
 	clearednotify_target      bool
-	feed_config               map[model.InternalID]struct{}
-	removedfeed_config        map[model.InternalID]struct{}
-	clearedfeed_config        bool
+	notify_source             map[model.InternalID]struct{}
+	removednotify_source      map[model.InternalID]struct{}
+	clearednotify_source      bool
 	notify_flow_target        map[int]struct{}
 	removednotify_flow_target map[int]struct{}
 	clearednotify_flow_target bool
@@ -12387,58 +13178,58 @@ func (m *NotifyFlowMutation) ResetNotifyTarget() {
 	m.removednotify_target = nil
 }
 
-// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
-func (m *NotifyFlowMutation) AddFeedConfigIDs(ids ...model.InternalID) {
-	if m.feed_config == nil {
-		m.feed_config = make(map[model.InternalID]struct{})
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by ids.
+func (m *NotifyFlowMutation) AddNotifySourceIDs(ids ...model.InternalID) {
+	if m.notify_source == nil {
+		m.notify_source = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		m.feed_config[ids[i]] = struct{}{}
+		m.notify_source[ids[i]] = struct{}{}
 	}
 }
 
-// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
-func (m *NotifyFlowMutation) ClearFeedConfig() {
-	m.clearedfeed_config = true
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
+func (m *NotifyFlowMutation) ClearNotifySource() {
+	m.clearednotify_source = true
 }
 
-// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
-func (m *NotifyFlowMutation) FeedConfigCleared() bool {
-	return m.clearedfeed_config
+// NotifySourceCleared reports if the "notify_source" edge to the NotifySource entity was cleared.
+func (m *NotifyFlowMutation) NotifySourceCleared() bool {
+	return m.clearednotify_source
 }
 
-// RemoveFeedConfigIDs removes the "feed_config" edge to the FeedConfig entity by IDs.
-func (m *NotifyFlowMutation) RemoveFeedConfigIDs(ids ...model.InternalID) {
-	if m.removedfeed_config == nil {
-		m.removedfeed_config = make(map[model.InternalID]struct{})
+// RemoveNotifySourceIDs removes the "notify_source" edge to the NotifySource entity by IDs.
+func (m *NotifyFlowMutation) RemoveNotifySourceIDs(ids ...model.InternalID) {
+	if m.removednotify_source == nil {
+		m.removednotify_source = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
-		delete(m.feed_config, ids[i])
-		m.removedfeed_config[ids[i]] = struct{}{}
+		delete(m.notify_source, ids[i])
+		m.removednotify_source[ids[i]] = struct{}{}
 	}
 }
 
-// RemovedFeedConfig returns the removed IDs of the "feed_config" edge to the FeedConfig entity.
-func (m *NotifyFlowMutation) RemovedFeedConfigIDs() (ids []model.InternalID) {
-	for id := range m.removedfeed_config {
+// RemovedNotifySource returns the removed IDs of the "notify_source" edge to the NotifySource entity.
+func (m *NotifyFlowMutation) RemovedNotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_source {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
-func (m *NotifyFlowMutation) FeedConfigIDs() (ids []model.InternalID) {
-	for id := range m.feed_config {
+// NotifySourceIDs returns the "notify_source" edge IDs in the mutation.
+func (m *NotifyFlowMutation) NotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.notify_source {
 		ids = append(ids, id)
 	}
 	return
 }
 
-// ResetFeedConfig resets all changes to the "feed_config" edge.
-func (m *NotifyFlowMutation) ResetFeedConfig() {
-	m.feed_config = nil
-	m.clearedfeed_config = false
-	m.removedfeed_config = nil
+// ResetNotifySource resets all changes to the "notify_source" edge.
+func (m *NotifyFlowMutation) ResetNotifySource() {
+	m.notify_source = nil
+	m.clearednotify_source = false
+	m.removednotify_source = nil
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by ids.
@@ -12757,8 +13548,8 @@ func (m *NotifyFlowMutation) AddedEdges() []string {
 	if m.notify_target != nil {
 		edges = append(edges, notifyflow.EdgeNotifyTarget)
 	}
-	if m.feed_config != nil {
-		edges = append(edges, notifyflow.EdgeFeedConfig)
+	if m.notify_source != nil {
+		edges = append(edges, notifyflow.EdgeNotifySource)
 	}
 	if m.notify_flow_target != nil {
 		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
@@ -12783,9 +13574,9 @@ func (m *NotifyFlowMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case notifyflow.EdgeFeedConfig:
-		ids := make([]ent.Value, 0, len(m.feed_config))
-		for id := range m.feed_config {
+	case notifyflow.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.notify_source))
+		for id := range m.notify_source {
 			ids = append(ids, id)
 		}
 		return ids
@@ -12811,8 +13602,8 @@ func (m *NotifyFlowMutation) RemovedEdges() []string {
 	if m.removednotify_target != nil {
 		edges = append(edges, notifyflow.EdgeNotifyTarget)
 	}
-	if m.removedfeed_config != nil {
-		edges = append(edges, notifyflow.EdgeFeedConfig)
+	if m.removednotify_source != nil {
+		edges = append(edges, notifyflow.EdgeNotifySource)
 	}
 	if m.removednotify_flow_target != nil {
 		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
@@ -12833,9 +13624,9 @@ func (m *NotifyFlowMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case notifyflow.EdgeFeedConfig:
-		ids := make([]ent.Value, 0, len(m.removedfeed_config))
-		for id := range m.removedfeed_config {
+	case notifyflow.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.removednotify_source))
+		for id := range m.removednotify_source {
 			ids = append(ids, id)
 		}
 		return ids
@@ -12864,8 +13655,8 @@ func (m *NotifyFlowMutation) ClearedEdges() []string {
 	if m.clearednotify_target {
 		edges = append(edges, notifyflow.EdgeNotifyTarget)
 	}
-	if m.clearedfeed_config {
-		edges = append(edges, notifyflow.EdgeFeedConfig)
+	if m.clearednotify_source {
+		edges = append(edges, notifyflow.EdgeNotifySource)
 	}
 	if m.clearednotify_flow_target {
 		edges = append(edges, notifyflow.EdgeNotifyFlowTarget)
@@ -12884,8 +13675,8 @@ func (m *NotifyFlowMutation) EdgeCleared(name string) bool {
 		return m.clearedowner
 	case notifyflow.EdgeNotifyTarget:
 		return m.clearednotify_target
-	case notifyflow.EdgeFeedConfig:
-		return m.clearedfeed_config
+	case notifyflow.EdgeNotifySource:
+		return m.clearednotify_source
 	case notifyflow.EdgeNotifyFlowTarget:
 		return m.clearednotify_flow_target
 	case notifyflow.EdgeNotifyFlowSource:
@@ -12915,8 +13706,8 @@ func (m *NotifyFlowMutation) ResetEdge(name string) error {
 	case notifyflow.EdgeNotifyTarget:
 		m.ResetNotifyTarget()
 		return nil
-	case notifyflow.EdgeFeedConfig:
-		m.ResetFeedConfig()
+	case notifyflow.EdgeNotifySource:
+		m.ResetNotifySource()
 		return nil
 	case notifyflow.EdgeNotifyFlowTarget:
 		m.ResetNotifyFlowTarget()
@@ -13321,13 +14112,13 @@ func (m *NotifyFlowSourceMutation) ResetNotifyFlow() {
 	m.clearednotify_flow = false
 }
 
-// ClearNotifySource clears the "notify_source" edge to the FeedConfig entity.
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
 func (m *NotifyFlowSourceMutation) ClearNotifySource() {
 	m.clearednotify_source = true
 	m.clearedFields[notifyflowsource.FieldNotifySourceID] = struct{}{}
 }
 
-// NotifySourceCleared reports if the "notify_source" edge to the FeedConfig entity was cleared.
+// NotifySourceCleared reports if the "notify_source" edge to the NotifySource entity was cleared.
 func (m *NotifyFlowSourceMutation) NotifySourceCleared() bool {
 	return m.clearednotify_source
 }
@@ -14442,6 +15233,871 @@ func (m *NotifyFlowTargetMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown NotifyFlowTarget edge %s", name)
+}
+
+// NotifySourceMutation represents an operation that mutates the NotifySource nodes in the graph.
+type NotifySourceMutation struct {
+	config
+	op                          Op
+	typ                         string
+	id                          *model.InternalID
+	updated_at                  *time.Time
+	created_at                  *time.Time
+	clearedFields               map[string]struct{}
+	owner                       *model.InternalID
+	clearedowner                bool
+	notify_flow                 map[model.InternalID]struct{}
+	removednotify_flow          map[model.InternalID]struct{}
+	clearednotify_flow          bool
+	feed_config                 *model.InternalID
+	clearedfeed_config          bool
+	feed_item_collection        *model.InternalID
+	clearedfeed_item_collection bool
+	notify_flow_source          map[int]struct{}
+	removednotify_flow_source   map[int]struct{}
+	clearednotify_flow_source   bool
+	done                        bool
+	oldValue                    func(context.Context) (*NotifySource, error)
+	predicates                  []predicate.NotifySource
+}
+
+var _ ent.Mutation = (*NotifySourceMutation)(nil)
+
+// notifysourceOption allows management of the mutation configuration using functional options.
+type notifysourceOption func(*NotifySourceMutation)
+
+// newNotifySourceMutation creates new mutation for the NotifySource entity.
+func newNotifySourceMutation(c config, op Op, opts ...notifysourceOption) *NotifySourceMutation {
+	m := &NotifySourceMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeNotifySource,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withNotifySourceID sets the ID field of the mutation.
+func withNotifySourceID(id model.InternalID) notifysourceOption {
+	return func(m *NotifySourceMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *NotifySource
+		)
+		m.oldValue = func(ctx context.Context) (*NotifySource, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().NotifySource.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withNotifySource sets the old NotifySource of the mutation.
+func withNotifySource(node *NotifySource) notifysourceOption {
+	return func(m *NotifySourceMutation) {
+		m.oldValue = func(context.Context) (*NotifySource, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m NotifySourceMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m NotifySourceMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of NotifySource entities.
+func (m *NotifySourceMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *NotifySourceMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *NotifySourceMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().NotifySource.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetFeedConfigID sets the "feed_config_id" field.
+func (m *NotifySourceMutation) SetFeedConfigID(mi model.InternalID) {
+	m.feed_config = &mi
+}
+
+// FeedConfigID returns the value of the "feed_config_id" field in the mutation.
+func (m *NotifySourceMutation) FeedConfigID() (r model.InternalID, exists bool) {
+	v := m.feed_config
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFeedConfigID returns the old "feed_config_id" field's value of the NotifySource entity.
+// If the NotifySource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifySourceMutation) OldFeedConfigID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFeedConfigID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFeedConfigID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFeedConfigID: %w", err)
+	}
+	return oldValue.FeedConfigID, nil
+}
+
+// ClearFeedConfigID clears the value of the "feed_config_id" field.
+func (m *NotifySourceMutation) ClearFeedConfigID() {
+	m.feed_config = nil
+	m.clearedFields[notifysource.FieldFeedConfigID] = struct{}{}
+}
+
+// FeedConfigIDCleared returns if the "feed_config_id" field was cleared in this mutation.
+func (m *NotifySourceMutation) FeedConfigIDCleared() bool {
+	_, ok := m.clearedFields[notifysource.FieldFeedConfigID]
+	return ok
+}
+
+// ResetFeedConfigID resets all changes to the "feed_config_id" field.
+func (m *NotifySourceMutation) ResetFeedConfigID() {
+	m.feed_config = nil
+	delete(m.clearedFields, notifysource.FieldFeedConfigID)
+}
+
+// SetFeedItemCollectionID sets the "feed_item_collection_id" field.
+func (m *NotifySourceMutation) SetFeedItemCollectionID(mi model.InternalID) {
+	m.feed_item_collection = &mi
+}
+
+// FeedItemCollectionID returns the value of the "feed_item_collection_id" field in the mutation.
+func (m *NotifySourceMutation) FeedItemCollectionID() (r model.InternalID, exists bool) {
+	v := m.feed_item_collection
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFeedItemCollectionID returns the old "feed_item_collection_id" field's value of the NotifySource entity.
+// If the NotifySource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifySourceMutation) OldFeedItemCollectionID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFeedItemCollectionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFeedItemCollectionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFeedItemCollectionID: %w", err)
+	}
+	return oldValue.FeedItemCollectionID, nil
+}
+
+// ClearFeedItemCollectionID clears the value of the "feed_item_collection_id" field.
+func (m *NotifySourceMutation) ClearFeedItemCollectionID() {
+	m.feed_item_collection = nil
+	m.clearedFields[notifysource.FieldFeedItemCollectionID] = struct{}{}
+}
+
+// FeedItemCollectionIDCleared returns if the "feed_item_collection_id" field was cleared in this mutation.
+func (m *NotifySourceMutation) FeedItemCollectionIDCleared() bool {
+	_, ok := m.clearedFields[notifysource.FieldFeedItemCollectionID]
+	return ok
+}
+
+// ResetFeedItemCollectionID resets all changes to the "feed_item_collection_id" field.
+func (m *NotifySourceMutation) ResetFeedItemCollectionID() {
+	m.feed_item_collection = nil
+	delete(m.clearedFields, notifysource.FieldFeedItemCollectionID)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *NotifySourceMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *NotifySourceMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the NotifySource entity.
+// If the NotifySource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifySourceMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *NotifySourceMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *NotifySourceMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *NotifySourceMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the NotifySource entity.
+// If the NotifySource object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NotifySourceMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *NotifySourceMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *NotifySourceMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *NotifySourceMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *NotifySourceMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *NotifySourceMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *NotifySourceMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *NotifySourceMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by ids.
+func (m *NotifySourceMutation) AddNotifyFlowIDs(ids ...model.InternalID) {
+	if m.notify_flow == nil {
+		m.notify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlow clears the "notify_flow" edge to the NotifyFlow entity.
+func (m *NotifySourceMutation) ClearNotifyFlow() {
+	m.clearednotify_flow = true
+}
+
+// NotifyFlowCleared reports if the "notify_flow" edge to the NotifyFlow entity was cleared.
+func (m *NotifySourceMutation) NotifyFlowCleared() bool {
+	return m.clearednotify_flow
+}
+
+// RemoveNotifyFlowIDs removes the "notify_flow" edge to the NotifyFlow entity by IDs.
+func (m *NotifySourceMutation) RemoveNotifyFlowIDs(ids ...model.InternalID) {
+	if m.removednotify_flow == nil {
+		m.removednotify_flow = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow, ids[i])
+		m.removednotify_flow[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlow returns the removed IDs of the "notify_flow" edge to the NotifyFlow entity.
+func (m *NotifySourceMutation) RemovedNotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowIDs returns the "notify_flow" edge IDs in the mutation.
+func (m *NotifySourceMutation) NotifyFlowIDs() (ids []model.InternalID) {
+	for id := range m.notify_flow {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlow resets all changes to the "notify_flow" edge.
+func (m *NotifySourceMutation) ResetNotifyFlow() {
+	m.notify_flow = nil
+	m.clearednotify_flow = false
+	m.removednotify_flow = nil
+}
+
+// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
+func (m *NotifySourceMutation) ClearFeedConfig() {
+	m.clearedfeed_config = true
+	m.clearedFields[notifysource.FieldFeedConfigID] = struct{}{}
+}
+
+// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
+func (m *NotifySourceMutation) FeedConfigCleared() bool {
+	return m.FeedConfigIDCleared() || m.clearedfeed_config
+}
+
+// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedConfigID instead. It exists only for internal usage by the builders.
+func (m *NotifySourceMutation) FeedConfigIDs() (ids []model.InternalID) {
+	if id := m.feed_config; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFeedConfig resets all changes to the "feed_config" edge.
+func (m *NotifySourceMutation) ResetFeedConfig() {
+	m.feed_config = nil
+	m.clearedfeed_config = false
+}
+
+// ClearFeedItemCollection clears the "feed_item_collection" edge to the FeedItemCollection entity.
+func (m *NotifySourceMutation) ClearFeedItemCollection() {
+	m.clearedfeed_item_collection = true
+	m.clearedFields[notifysource.FieldFeedItemCollectionID] = struct{}{}
+}
+
+// FeedItemCollectionCleared reports if the "feed_item_collection" edge to the FeedItemCollection entity was cleared.
+func (m *NotifySourceMutation) FeedItemCollectionCleared() bool {
+	return m.FeedItemCollectionIDCleared() || m.clearedfeed_item_collection
+}
+
+// FeedItemCollectionIDs returns the "feed_item_collection" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedItemCollectionID instead. It exists only for internal usage by the builders.
+func (m *NotifySourceMutation) FeedItemCollectionIDs() (ids []model.InternalID) {
+	if id := m.feed_item_collection; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFeedItemCollection resets all changes to the "feed_item_collection" edge.
+func (m *NotifySourceMutation) ResetFeedItemCollection() {
+	m.feed_item_collection = nil
+	m.clearedfeed_item_collection = false
+}
+
+// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by ids.
+func (m *NotifySourceMutation) AddNotifyFlowSourceIDs(ids ...int) {
+	if m.notify_flow_source == nil {
+		m.notify_flow_source = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.notify_flow_source[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifyFlowSource clears the "notify_flow_source" edge to the NotifyFlowSource entity.
+func (m *NotifySourceMutation) ClearNotifyFlowSource() {
+	m.clearednotify_flow_source = true
+}
+
+// NotifyFlowSourceCleared reports if the "notify_flow_source" edge to the NotifyFlowSource entity was cleared.
+func (m *NotifySourceMutation) NotifyFlowSourceCleared() bool {
+	return m.clearednotify_flow_source
+}
+
+// RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
+func (m *NotifySourceMutation) RemoveNotifyFlowSourceIDs(ids ...int) {
+	if m.removednotify_flow_source == nil {
+		m.removednotify_flow_source = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_flow_source, ids[i])
+		m.removednotify_flow_source[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifyFlowSource returns the removed IDs of the "notify_flow_source" edge to the NotifyFlowSource entity.
+func (m *NotifySourceMutation) RemovedNotifyFlowSourceIDs() (ids []int) {
+	for id := range m.removednotify_flow_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifyFlowSourceIDs returns the "notify_flow_source" edge IDs in the mutation.
+func (m *NotifySourceMutation) NotifyFlowSourceIDs() (ids []int) {
+	for id := range m.notify_flow_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifyFlowSource resets all changes to the "notify_flow_source" edge.
+func (m *NotifySourceMutation) ResetNotifyFlowSource() {
+	m.notify_flow_source = nil
+	m.clearednotify_flow_source = false
+	m.removednotify_flow_source = nil
+}
+
+// Where appends a list predicates to the NotifySourceMutation builder.
+func (m *NotifySourceMutation) Where(ps ...predicate.NotifySource) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the NotifySourceMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *NotifySourceMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.NotifySource, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *NotifySourceMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *NotifySourceMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (NotifySource).
+func (m *NotifySourceMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *NotifySourceMutation) Fields() []string {
+	fields := make([]string, 0, 4)
+	if m.feed_config != nil {
+		fields = append(fields, notifysource.FieldFeedConfigID)
+	}
+	if m.feed_item_collection != nil {
+		fields = append(fields, notifysource.FieldFeedItemCollectionID)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, notifysource.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, notifysource.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *NotifySourceMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case notifysource.FieldFeedConfigID:
+		return m.FeedConfigID()
+	case notifysource.FieldFeedItemCollectionID:
+		return m.FeedItemCollectionID()
+	case notifysource.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case notifysource.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *NotifySourceMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case notifysource.FieldFeedConfigID:
+		return m.OldFeedConfigID(ctx)
+	case notifysource.FieldFeedItemCollectionID:
+		return m.OldFeedItemCollectionID(ctx)
+	case notifysource.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case notifysource.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown NotifySource field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifySourceMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case notifysource.FieldFeedConfigID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFeedConfigID(v)
+		return nil
+	case notifysource.FieldFeedItemCollectionID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFeedItemCollectionID(v)
+		return nil
+	case notifysource.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case notifysource.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown NotifySource field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *NotifySourceMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *NotifySourceMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *NotifySourceMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown NotifySource numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *NotifySourceMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(notifysource.FieldFeedConfigID) {
+		fields = append(fields, notifysource.FieldFeedConfigID)
+	}
+	if m.FieldCleared(notifysource.FieldFeedItemCollectionID) {
+		fields = append(fields, notifysource.FieldFeedItemCollectionID)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *NotifySourceMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *NotifySourceMutation) ClearField(name string) error {
+	switch name {
+	case notifysource.FieldFeedConfigID:
+		m.ClearFeedConfigID()
+		return nil
+	case notifysource.FieldFeedItemCollectionID:
+		m.ClearFeedItemCollectionID()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifySource nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *NotifySourceMutation) ResetField(name string) error {
+	switch name {
+	case notifysource.FieldFeedConfigID:
+		m.ResetFeedConfigID()
+		return nil
+	case notifysource.FieldFeedItemCollectionID:
+		m.ResetFeedItemCollectionID()
+		return nil
+	case notifysource.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case notifysource.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifySource field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *NotifySourceMutation) AddedEdges() []string {
+	edges := make([]string, 0, 5)
+	if m.owner != nil {
+		edges = append(edges, notifysource.EdgeOwner)
+	}
+	if m.notify_flow != nil {
+		edges = append(edges, notifysource.EdgeNotifyFlow)
+	}
+	if m.feed_config != nil {
+		edges = append(edges, notifysource.EdgeFeedConfig)
+	}
+	if m.feed_item_collection != nil {
+		edges = append(edges, notifysource.EdgeFeedItemCollection)
+	}
+	if m.notify_flow_source != nil {
+		edges = append(edges, notifysource.EdgeNotifyFlowSource)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *NotifySourceMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case notifysource.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifysource.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.notify_flow))
+		for id := range m.notify_flow {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifysource.EdgeFeedConfig:
+		if id := m.feed_config; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifysource.EdgeFeedItemCollection:
+		if id := m.feed_item_collection; id != nil {
+			return []ent.Value{*id}
+		}
+	case notifysource.EdgeNotifyFlowSource:
+		ids := make([]ent.Value, 0, len(m.notify_flow_source))
+		for id := range m.notify_flow_source {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *NotifySourceMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 5)
+	if m.removednotify_flow != nil {
+		edges = append(edges, notifysource.EdgeNotifyFlow)
+	}
+	if m.removednotify_flow_source != nil {
+		edges = append(edges, notifysource.EdgeNotifyFlowSource)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *NotifySourceMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case notifysource.EdgeNotifyFlow:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow))
+		for id := range m.removednotify_flow {
+			ids = append(ids, id)
+		}
+		return ids
+	case notifysource.EdgeNotifyFlowSource:
+		ids := make([]ent.Value, 0, len(m.removednotify_flow_source))
+		for id := range m.removednotify_flow_source {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *NotifySourceMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 5)
+	if m.clearedowner {
+		edges = append(edges, notifysource.EdgeOwner)
+	}
+	if m.clearednotify_flow {
+		edges = append(edges, notifysource.EdgeNotifyFlow)
+	}
+	if m.clearedfeed_config {
+		edges = append(edges, notifysource.EdgeFeedConfig)
+	}
+	if m.clearedfeed_item_collection {
+		edges = append(edges, notifysource.EdgeFeedItemCollection)
+	}
+	if m.clearednotify_flow_source {
+		edges = append(edges, notifysource.EdgeNotifyFlowSource)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *NotifySourceMutation) EdgeCleared(name string) bool {
+	switch name {
+	case notifysource.EdgeOwner:
+		return m.clearedowner
+	case notifysource.EdgeNotifyFlow:
+		return m.clearednotify_flow
+	case notifysource.EdgeFeedConfig:
+		return m.clearedfeed_config
+	case notifysource.EdgeFeedItemCollection:
+		return m.clearedfeed_item_collection
+	case notifysource.EdgeNotifyFlowSource:
+		return m.clearednotify_flow_source
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *NotifySourceMutation) ClearEdge(name string) error {
+	switch name {
+	case notifysource.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	case notifysource.EdgeFeedConfig:
+		m.ClearFeedConfig()
+		return nil
+	case notifysource.EdgeFeedItemCollection:
+		m.ClearFeedItemCollection()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifySource unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *NotifySourceMutation) ResetEdge(name string) error {
+	switch name {
+	case notifysource.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case notifysource.EdgeNotifyFlow:
+		m.ResetNotifyFlow()
+		return nil
+	case notifysource.EdgeFeedConfig:
+		m.ResetFeedConfig()
+		return nil
+	case notifysource.EdgeFeedItemCollection:
+		m.ResetFeedItemCollection()
+		return nil
+	case notifysource.EdgeNotifyFlowSource:
+		m.ResetNotifyFlowSource()
+		return nil
+	}
+	return fmt.Errorf("unknown NotifySource edge %s", name)
 }
 
 // NotifyTargetMutation represents an operation that mutates the NotifyTarget nodes in the graph.
@@ -16656,60 +18312,741 @@ func (m *PorterPrivilegeMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown PorterPrivilege edge %s", name)
 }
 
+// TagMutation represents an operation that mutates the Tag nodes in the graph.
+type TagMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *model.InternalID
+	name          *string
+	description   *string
+	public        *bool
+	updated_at    *time.Time
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	owner         *model.InternalID
+	clearedowner  bool
+	done          bool
+	oldValue      func(context.Context) (*Tag, error)
+	predicates    []predicate.Tag
+}
+
+var _ ent.Mutation = (*TagMutation)(nil)
+
+// tagOption allows management of the mutation configuration using functional options.
+type tagOption func(*TagMutation)
+
+// newTagMutation creates new mutation for the Tag entity.
+func newTagMutation(c config, op Op, opts ...tagOption) *TagMutation {
+	m := &TagMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTag,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTagID sets the ID field of the mutation.
+func withTagID(id model.InternalID) tagOption {
+	return func(m *TagMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Tag
+		)
+		m.oldValue = func(ctx context.Context) (*Tag, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Tag.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTag sets the old Tag of the mutation.
+func withTag(node *Tag) tagOption {
+	return func(m *TagMutation) {
+		m.oldValue = func(context.Context) (*Tag, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TagMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TagMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Tag entities.
+func (m *TagMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TagMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TagMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Tag.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserTag sets the "user_tag" field.
+func (m *TagMutation) SetUserTag(mi model.InternalID) {
+	m.owner = &mi
+}
+
+// UserTag returns the value of the "user_tag" field in the mutation.
+func (m *TagMutation) UserTag() (r model.InternalID, exists bool) {
+	v := m.owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserTag returns the old "user_tag" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldUserTag(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserTag is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserTag requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserTag: %w", err)
+	}
+	return oldValue.UserTag, nil
+}
+
+// ResetUserTag resets all changes to the "user_tag" field.
+func (m *TagMutation) ResetUserTag() {
+	m.owner = nil
+}
+
+// SetName sets the "name" field.
+func (m *TagMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *TagMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *TagMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *TagMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *TagMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *TagMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetPublic sets the "public" field.
+func (m *TagMutation) SetPublic(b bool) {
+	m.public = &b
+}
+
+// Public returns the value of the "public" field in the mutation.
+func (m *TagMutation) Public() (r bool, exists bool) {
+	v := m.public
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublic returns the old "public" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldPublic(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublic is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublic requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublic: %w", err)
+	}
+	return oldValue.Public, nil
+}
+
+// ResetPublic resets all changes to the "public" field.
+func (m *TagMutation) ResetPublic() {
+	m.public = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *TagMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *TagMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *TagMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *TagMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *TagMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *TagMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *TagMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *TagMutation) ClearOwner() {
+	m.clearedowner = true
+	m.clearedFields[tag.FieldUserTag] = struct{}{}
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *TagMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *TagMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *TagMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *TagMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// Where appends a list predicates to the TagMutation builder.
+func (m *TagMutation) Where(ps ...predicate.Tag) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TagMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TagMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Tag, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TagMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TagMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Tag).
+func (m *TagMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TagMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.owner != nil {
+		fields = append(fields, tag.FieldUserTag)
+	}
+	if m.name != nil {
+		fields = append(fields, tag.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, tag.FieldDescription)
+	}
+	if m.public != nil {
+		fields = append(fields, tag.FieldPublic)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, tag.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, tag.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TagMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case tag.FieldUserTag:
+		return m.UserTag()
+	case tag.FieldName:
+		return m.Name()
+	case tag.FieldDescription:
+		return m.Description()
+	case tag.FieldPublic:
+		return m.Public()
+	case tag.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case tag.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TagMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case tag.FieldUserTag:
+		return m.OldUserTag(ctx)
+	case tag.FieldName:
+		return m.OldName(ctx)
+	case tag.FieldDescription:
+		return m.OldDescription(ctx)
+	case tag.FieldPublic:
+		return m.OldPublic(ctx)
+	case tag.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case tag.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown Tag field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TagMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case tag.FieldUserTag:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserTag(v)
+		return nil
+	case tag.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case tag.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case tag.FieldPublic:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublic(v)
+		return nil
+	case tag.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case tag.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Tag field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TagMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TagMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TagMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Tag numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TagMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TagMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TagMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Tag nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TagMutation) ResetField(name string) error {
+	switch name {
+	case tag.FieldUserTag:
+		m.ResetUserTag()
+		return nil
+	case tag.FieldName:
+		m.ResetName()
+		return nil
+	case tag.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case tag.FieldPublic:
+		m.ResetPublic()
+		return nil
+	case tag.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case tag.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown Tag field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TagMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.owner != nil {
+		edges = append(edges, tag.EdgeOwner)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TagMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case tag.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TagMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TagMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TagMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedowner {
+		edges = append(edges, tag.EdgeOwner)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TagMutation) EdgeCleared(name string) bool {
+	switch name {
+	case tag.EdgeOwner:
+		return m.clearedowner
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TagMutation) ClearEdge(name string) error {
+	switch name {
+	case tag.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown Tag unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TagMutation) ResetEdge(name string) error {
+	switch name {
+	case tag.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown Tag edge %s", name)
+}
+
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *model.InternalID
-	username             *string
-	password             *string
-	status               *user.Status
-	_type                *user.Type
-	updated_at           *time.Time
-	created_at           *time.Time
-	clearedFields        map[string]struct{}
-	bind_account         map[model.InternalID]struct{}
-	removedbind_account  map[model.InternalID]struct{}
-	clearedbind_account  bool
-	purchased_app        map[model.InternalID]struct{}
-	removedpurchased_app map[model.InternalID]struct{}
-	clearedpurchased_app bool
-	app                  map[model.InternalID]struct{}
-	removedapp           map[model.InternalID]struct{}
-	clearedapp           bool
-	app_inst             map[model.InternalID]struct{}
-	removedapp_inst      map[model.InternalID]struct{}
-	clearedapp_inst      bool
-	feed_config          map[model.InternalID]struct{}
-	removedfeed_config   map[model.InternalID]struct{}
-	clearedfeed_config   bool
-	notify_target        map[model.InternalID]struct{}
-	removednotify_target map[model.InternalID]struct{}
-	clearednotify_target bool
-	notify_flow          map[model.InternalID]struct{}
-	removednotify_flow   map[model.InternalID]struct{}
-	clearednotify_flow   bool
-	image                map[model.InternalID]struct{}
-	removedimage         map[model.InternalID]struct{}
-	clearedimage         bool
-	file                 map[model.InternalID]struct{}
-	removedfile          map[model.InternalID]struct{}
-	clearedfile          bool
-	device_info          map[model.InternalID]struct{}
-	removeddevice_info   map[model.InternalID]struct{}
-	cleareddevice_info   bool
-	creator              *model.InternalID
-	clearedcreator       bool
-	created_user         map[model.InternalID]struct{}
-	removedcreated_user  map[model.InternalID]struct{}
-	clearedcreated_user  bool
-	user_device          map[int]struct{}
-	removeduser_device   map[int]struct{}
-	cleareduser_device   bool
-	done                 bool
-	oldValue             func(context.Context) (*User, error)
-	predicates           []predicate.User
+	op                          Op
+	typ                         string
+	id                          *model.InternalID
+	username                    *string
+	password                    *string
+	status                      *user.Status
+	_type                       *user.Type
+	updated_at                  *time.Time
+	created_at                  *time.Time
+	clearedFields               map[string]struct{}
+	bind_account                map[model.InternalID]struct{}
+	removedbind_account         map[model.InternalID]struct{}
+	clearedbind_account         bool
+	purchased_app               map[model.InternalID]struct{}
+	removedpurchased_app        map[model.InternalID]struct{}
+	clearedpurchased_app        bool
+	app                         map[model.InternalID]struct{}
+	removedapp                  map[model.InternalID]struct{}
+	clearedapp                  bool
+	app_inst                    map[model.InternalID]struct{}
+	removedapp_inst             map[model.InternalID]struct{}
+	clearedapp_inst             bool
+	feed_config                 map[model.InternalID]struct{}
+	removedfeed_config          map[model.InternalID]struct{}
+	clearedfeed_config          bool
+	feed_item_collection        map[model.InternalID]struct{}
+	removedfeed_item_collection map[model.InternalID]struct{}
+	clearedfeed_item_collection bool
+	notify_source               map[model.InternalID]struct{}
+	removednotify_source        map[model.InternalID]struct{}
+	clearednotify_source        bool
+	notify_target               map[model.InternalID]struct{}
+	removednotify_target        map[model.InternalID]struct{}
+	clearednotify_target        bool
+	notify_flow                 map[model.InternalID]struct{}
+	removednotify_flow          map[model.InternalID]struct{}
+	clearednotify_flow          bool
+	image                       map[model.InternalID]struct{}
+	removedimage                map[model.InternalID]struct{}
+	clearedimage                bool
+	file                        map[model.InternalID]struct{}
+	removedfile                 map[model.InternalID]struct{}
+	clearedfile                 bool
+	device_info                 map[model.InternalID]struct{}
+	removeddevice_info          map[model.InternalID]struct{}
+	cleareddevice_info          bool
+	tag                         map[model.InternalID]struct{}
+	removedtag                  map[model.InternalID]struct{}
+	clearedtag                  bool
+	creator                     *model.InternalID
+	clearedcreator              bool
+	created_user                map[model.InternalID]struct{}
+	removedcreated_user         map[model.InternalID]struct{}
+	clearedcreated_user         bool
+	user_device                 map[int]struct{}
+	removeduser_device          map[int]struct{}
+	cleareduser_device          bool
+	done                        bool
+	oldValue                    func(context.Context) (*User, error)
+	predicates                  []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -17302,6 +19639,114 @@ func (m *UserMutation) ResetFeedConfig() {
 	m.removedfeed_config = nil
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by ids.
+func (m *UserMutation) AddFeedItemCollectionIDs(ids ...model.InternalID) {
+	if m.feed_item_collection == nil {
+		m.feed_item_collection = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_item_collection[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedItemCollection clears the "feed_item_collection" edge to the FeedItemCollection entity.
+func (m *UserMutation) ClearFeedItemCollection() {
+	m.clearedfeed_item_collection = true
+}
+
+// FeedItemCollectionCleared reports if the "feed_item_collection" edge to the FeedItemCollection entity was cleared.
+func (m *UserMutation) FeedItemCollectionCleared() bool {
+	return m.clearedfeed_item_collection
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (m *UserMutation) RemoveFeedItemCollectionIDs(ids ...model.InternalID) {
+	if m.removedfeed_item_collection == nil {
+		m.removedfeed_item_collection = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_item_collection, ids[i])
+		m.removedfeed_item_collection[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedItemCollection returns the removed IDs of the "feed_item_collection" edge to the FeedItemCollection entity.
+func (m *UserMutation) RemovedFeedItemCollectionIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_item_collection {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedItemCollectionIDs returns the "feed_item_collection" edge IDs in the mutation.
+func (m *UserMutation) FeedItemCollectionIDs() (ids []model.InternalID) {
+	for id := range m.feed_item_collection {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedItemCollection resets all changes to the "feed_item_collection" edge.
+func (m *UserMutation) ResetFeedItemCollection() {
+	m.feed_item_collection = nil
+	m.clearedfeed_item_collection = false
+	m.removedfeed_item_collection = nil
+}
+
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by ids.
+func (m *UserMutation) AddNotifySourceIDs(ids ...model.InternalID) {
+	if m.notify_source == nil {
+		m.notify_source = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.notify_source[ids[i]] = struct{}{}
+	}
+}
+
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
+func (m *UserMutation) ClearNotifySource() {
+	m.clearednotify_source = true
+}
+
+// NotifySourceCleared reports if the "notify_source" edge to the NotifySource entity was cleared.
+func (m *UserMutation) NotifySourceCleared() bool {
+	return m.clearednotify_source
+}
+
+// RemoveNotifySourceIDs removes the "notify_source" edge to the NotifySource entity by IDs.
+func (m *UserMutation) RemoveNotifySourceIDs(ids ...model.InternalID) {
+	if m.removednotify_source == nil {
+		m.removednotify_source = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.notify_source, ids[i])
+		m.removednotify_source[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedNotifySource returns the removed IDs of the "notify_source" edge to the NotifySource entity.
+func (m *UserMutation) RemovedNotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.removednotify_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// NotifySourceIDs returns the "notify_source" edge IDs in the mutation.
+func (m *UserMutation) NotifySourceIDs() (ids []model.InternalID) {
+	for id := range m.notify_source {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetNotifySource resets all changes to the "notify_source" edge.
+func (m *UserMutation) ResetNotifySource() {
+	m.notify_source = nil
+	m.clearednotify_source = false
+	m.removednotify_source = nil
+}
+
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by ids.
 func (m *UserMutation) AddNotifyTargetIDs(ids ...model.InternalID) {
 	if m.notify_target == nil {
@@ -17570,6 +20015,60 @@ func (m *UserMutation) ResetDeviceInfo() {
 	m.device_info = nil
 	m.cleareddevice_info = false
 	m.removeddevice_info = nil
+}
+
+// AddTagIDs adds the "tag" edge to the Tag entity by ids.
+func (m *UserMutation) AddTagIDs(ids ...model.InternalID) {
+	if m.tag == nil {
+		m.tag = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.tag[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTag clears the "tag" edge to the Tag entity.
+func (m *UserMutation) ClearTag() {
+	m.clearedtag = true
+}
+
+// TagCleared reports if the "tag" edge to the Tag entity was cleared.
+func (m *UserMutation) TagCleared() bool {
+	return m.clearedtag
+}
+
+// RemoveTagIDs removes the "tag" edge to the Tag entity by IDs.
+func (m *UserMutation) RemoveTagIDs(ids ...model.InternalID) {
+	if m.removedtag == nil {
+		m.removedtag = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.tag, ids[i])
+		m.removedtag[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTag returns the removed IDs of the "tag" edge to the Tag entity.
+func (m *UserMutation) RemovedTagIDs() (ids []model.InternalID) {
+	for id := range m.removedtag {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// TagIDs returns the "tag" edge IDs in the mutation.
+func (m *UserMutation) TagIDs() (ids []model.InternalID) {
+	for id := range m.tag {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTag resets all changes to the "tag" edge.
+func (m *UserMutation) ResetTag() {
+	m.tag = nil
+	m.clearedtag = false
+	m.removedtag = nil
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by id.
@@ -17937,7 +20436,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 16)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -17953,6 +20452,12 @@ func (m *UserMutation) AddedEdges() []string {
 	if m.feed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
 	}
+	if m.feed_item_collection != nil {
+		edges = append(edges, user.EdgeFeedItemCollection)
+	}
+	if m.notify_source != nil {
+		edges = append(edges, user.EdgeNotifySource)
+	}
 	if m.notify_target != nil {
 		edges = append(edges, user.EdgeNotifyTarget)
 	}
@@ -17967,6 +20472,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.device_info != nil {
 		edges = append(edges, user.EdgeDeviceInfo)
+	}
+	if m.tag != nil {
+		edges = append(edges, user.EdgeTag)
 	}
 	if m.creator != nil {
 		edges = append(edges, user.EdgeCreator)
@@ -18014,6 +20522,18 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeFeedItemCollection:
+		ids := make([]ent.Value, 0, len(m.feed_item_collection))
+		for id := range m.feed_item_collection {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.notify_source))
+		for id := range m.notify_source {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeNotifyTarget:
 		ids := make([]ent.Value, 0, len(m.notify_target))
 		for id := range m.notify_target {
@@ -18044,6 +20564,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeTag:
+		ids := make([]ent.Value, 0, len(m.tag))
+		for id := range m.tag {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreator:
 		if id := m.creator; id != nil {
 			return []ent.Value{*id}
@@ -18066,7 +20592,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 16)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -18082,6 +20608,12 @@ func (m *UserMutation) RemovedEdges() []string {
 	if m.removedfeed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
 	}
+	if m.removedfeed_item_collection != nil {
+		edges = append(edges, user.EdgeFeedItemCollection)
+	}
+	if m.removednotify_source != nil {
+		edges = append(edges, user.EdgeNotifySource)
+	}
 	if m.removednotify_target != nil {
 		edges = append(edges, user.EdgeNotifyTarget)
 	}
@@ -18096,6 +20628,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removeddevice_info != nil {
 		edges = append(edges, user.EdgeDeviceInfo)
+	}
+	if m.removedtag != nil {
+		edges = append(edges, user.EdgeTag)
 	}
 	if m.removedcreated_user != nil {
 		edges = append(edges, user.EdgeCreatedUser)
@@ -18140,6 +20675,18 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeFeedItemCollection:
+		ids := make([]ent.Value, 0, len(m.removedfeed_item_collection))
+		for id := range m.removedfeed_item_collection {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeNotifySource:
+		ids := make([]ent.Value, 0, len(m.removednotify_source))
+		for id := range m.removednotify_source {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeNotifyTarget:
 		ids := make([]ent.Value, 0, len(m.removednotify_target))
 		for id := range m.removednotify_target {
@@ -18170,6 +20717,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgeTag:
+		ids := make([]ent.Value, 0, len(m.removedtag))
+		for id := range m.removedtag {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreatedUser:
 		ids := make([]ent.Value, 0, len(m.removedcreated_user))
 		for id := range m.removedcreated_user {
@@ -18188,7 +20741,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 13)
+	edges := make([]string, 0, 16)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -18204,6 +20757,12 @@ func (m *UserMutation) ClearedEdges() []string {
 	if m.clearedfeed_config {
 		edges = append(edges, user.EdgeFeedConfig)
 	}
+	if m.clearedfeed_item_collection {
+		edges = append(edges, user.EdgeFeedItemCollection)
+	}
+	if m.clearednotify_source {
+		edges = append(edges, user.EdgeNotifySource)
+	}
 	if m.clearednotify_target {
 		edges = append(edges, user.EdgeNotifyTarget)
 	}
@@ -18218,6 +20777,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.cleareddevice_info {
 		edges = append(edges, user.EdgeDeviceInfo)
+	}
+	if m.clearedtag {
+		edges = append(edges, user.EdgeTag)
 	}
 	if m.clearedcreator {
 		edges = append(edges, user.EdgeCreator)
@@ -18245,6 +20807,10 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedapp_inst
 	case user.EdgeFeedConfig:
 		return m.clearedfeed_config
+	case user.EdgeFeedItemCollection:
+		return m.clearedfeed_item_collection
+	case user.EdgeNotifySource:
+		return m.clearednotify_source
 	case user.EdgeNotifyTarget:
 		return m.clearednotify_target
 	case user.EdgeNotifyFlow:
@@ -18255,6 +20821,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedfile
 	case user.EdgeDeviceInfo:
 		return m.cleareddevice_info
+	case user.EdgeTag:
+		return m.clearedtag
 	case user.EdgeCreator:
 		return m.clearedcreator
 	case user.EdgeCreatedUser:
@@ -18295,6 +20863,12 @@ func (m *UserMutation) ResetEdge(name string) error {
 	case user.EdgeFeedConfig:
 		m.ResetFeedConfig()
 		return nil
+	case user.EdgeFeedItemCollection:
+		m.ResetFeedItemCollection()
+		return nil
+	case user.EdgeNotifySource:
+		m.ResetNotifySource()
+		return nil
 	case user.EdgeNotifyTarget:
 		m.ResetNotifyTarget()
 		return nil
@@ -18309,6 +20883,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeDeviceInfo:
 		m.ResetDeviceInfo()
+		return nil
+	case user.EdgeTag:
+		m.ResetTag()
 		return nil
 	case user.EdgeCreator:
 		m.ResetCreator()

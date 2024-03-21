@@ -42,8 +42,8 @@ type NotifyFlowEdges struct {
 	Owner *User `json:"owner,omitempty"`
 	// NotifyTarget holds the value of the notify_target edge.
 	NotifyTarget []*NotifyTarget `json:"notify_target,omitempty"`
-	// FeedConfig holds the value of the feed_config edge.
-	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
+	// NotifySource holds the value of the notify_source edge.
+	NotifySource []*NotifySource `json:"notify_source,omitempty"`
 	// NotifyFlowTarget holds the value of the notify_flow_target edge.
 	NotifyFlowTarget []*NotifyFlowTarget `json:"notify_flow_target,omitempty"`
 	// NotifyFlowSource holds the value of the notify_flow_source edge.
@@ -73,13 +73,13 @@ func (e NotifyFlowEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
 	return nil, &NotLoadedError{edge: "notify_target"}
 }
 
-// FeedConfigOrErr returns the FeedConfig value or an error if the edge
+// NotifySourceOrErr returns the NotifySource value or an error if the edge
 // was not loaded in eager-loading.
-func (e NotifyFlowEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
+func (e NotifyFlowEdges) NotifySourceOrErr() ([]*NotifySource, error) {
 	if e.loadedTypes[2] {
-		return e.FeedConfig, nil
+		return e.NotifySource, nil
 	}
-	return nil, &NotLoadedError{edge: "feed_config"}
+	return nil, &NotLoadedError{edge: "notify_source"}
 }
 
 // NotifyFlowTargetOrErr returns the NotifyFlowTarget value or an error if the edge
@@ -194,9 +194,9 @@ func (nf *NotifyFlow) QueryNotifyTarget() *NotifyTargetQuery {
 	return NewNotifyFlowClient(nf.config).QueryNotifyTarget(nf)
 }
 
-// QueryFeedConfig queries the "feed_config" edge of the NotifyFlow entity.
-func (nf *NotifyFlow) QueryFeedConfig() *FeedConfigQuery {
-	return NewNotifyFlowClient(nf.config).QueryFeedConfig(nf)
+// QueryNotifySource queries the "notify_source" edge of the NotifyFlow entity.
+func (nf *NotifyFlow) QueryNotifySource() *NotifySourceQuery {
+	return NewNotifyFlowClient(nf.config).QueryNotifySource(nf)
 }
 
 // QueryNotifyFlowTarget queries the "notify_flow_target" edge of the NotifyFlow entity.

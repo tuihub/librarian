@@ -13,7 +13,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
 
@@ -331,9 +333,45 @@ func (fiu *FeedItemUpdate) SetNillableCreatedAt(t *time.Time) *FeedItemUpdate {
 	return fiu
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (fiu *FeedItemUpdate) AddFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemUpdate {
+	fiu.mutation.AddFeedItemCollectionIDs(ids...)
+	return fiu
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (fiu *FeedItemUpdate) AddFeedItemCollection(f ...*FeedItemCollection) *FeedItemUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fiu.AddFeedItemCollectionIDs(ids...)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiu *FeedItemUpdate) Mutation() *FeedItemMutation {
 	return fiu.mutation
+}
+
+// ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
+func (fiu *FeedItemUpdate) ClearFeedItemCollection() *FeedItemUpdate {
+	fiu.mutation.ClearFeedItemCollection()
+	return fiu
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to FeedItemCollection entities by IDs.
+func (fiu *FeedItemUpdate) RemoveFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemUpdate {
+	fiu.mutation.RemoveFeedItemCollectionIDs(ids...)
+	return fiu
+}
+
+// RemoveFeedItemCollection removes "feed_item_collection" edges to FeedItemCollection entities.
+func (fiu *FeedItemUpdate) RemoveFeedItemCollection(f ...*FeedItemCollection) *FeedItemUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fiu.RemoveFeedItemCollectionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -499,6 +537,51 @@ func (fiu *FeedItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fiu.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fiu.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiu.mutation.RemovedFeedItemCollectionIDs(); len(nodes) > 0 && !fiu.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiu.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, fiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -821,9 +904,45 @@ func (fiuo *FeedItemUpdateOne) SetNillableCreatedAt(t *time.Time) *FeedItemUpdat
 	return fiuo
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (fiuo *FeedItemUpdateOne) AddFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemUpdateOne {
+	fiuo.mutation.AddFeedItemCollectionIDs(ids...)
+	return fiuo
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (fiuo *FeedItemUpdateOne) AddFeedItemCollection(f ...*FeedItemCollection) *FeedItemUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fiuo.AddFeedItemCollectionIDs(ids...)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fiuo *FeedItemUpdateOne) Mutation() *FeedItemMutation {
 	return fiuo.mutation
+}
+
+// ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
+func (fiuo *FeedItemUpdateOne) ClearFeedItemCollection() *FeedItemUpdateOne {
+	fiuo.mutation.ClearFeedItemCollection()
+	return fiuo
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to FeedItemCollection entities by IDs.
+func (fiuo *FeedItemUpdateOne) RemoveFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemUpdateOne {
+	fiuo.mutation.RemoveFeedItemCollectionIDs(ids...)
+	return fiuo
+}
+
+// RemoveFeedItemCollection removes "feed_item_collection" edges to FeedItemCollection entities.
+func (fiuo *FeedItemUpdateOne) RemoveFeedItemCollection(f ...*FeedItemCollection) *FeedItemUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fiuo.RemoveFeedItemCollectionIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedItemUpdate builder.
@@ -1019,6 +1138,51 @@ func (fiuo *FeedItemUpdateOne) sqlSave(ctx context.Context) (_node *FeedItem, er
 	}
 	if value, ok := fiuo.mutation.CreatedAt(); ok {
 		_spec.SetField(feeditem.FieldCreatedAt, field.TypeTime, value)
+	}
+	if fiuo.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiuo.mutation.RemovedFeedItemCollectionIDs(); len(nodes) > 0 && !fiuo.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fiuo.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &FeedItem{config: fiuo.config}
 	_spec.Assign = _node.assignValues

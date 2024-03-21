@@ -13,8 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -251,34 +250,19 @@ func (fcu *FeedConfigUpdate) SetFeed(f *Feed) *FeedConfigUpdate {
 	return fcu.SetFeedID(f.ID)
 }
 
-// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (fcu *FeedConfigUpdate) AddNotifyFlowIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.AddNotifyFlowIDs(ids...)
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (fcu *FeedConfigUpdate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.AddNotifySourceIDs(ids...)
 	return fcu
 }
 
-// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (fcu *FeedConfigUpdate) AddNotifyFlow(n ...*NotifyFlow) *FeedConfigUpdate {
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (fcu *FeedConfigUpdate) AddNotifySource(n ...*NotifySource) *FeedConfigUpdate {
 	ids := make([]model.InternalID, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return fcu.AddNotifyFlowIDs(ids...)
-}
-
-// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (fcu *FeedConfigUpdate) AddNotifyFlowSourceIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.AddNotifyFlowSourceIDs(ids...)
-	return fcu
-}
-
-// AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (fcu *FeedConfigUpdate) AddNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return fcu.AddNotifyFlowSourceIDs(ids...)
+	return fcu.AddNotifySourceIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -298,46 +282,25 @@ func (fcu *FeedConfigUpdate) ClearFeed() *FeedConfigUpdate {
 	return fcu
 }
 
-// ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (fcu *FeedConfigUpdate) ClearNotifyFlow() *FeedConfigUpdate {
-	fcu.mutation.ClearNotifyFlow()
+// ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
+func (fcu *FeedConfigUpdate) ClearNotifySource() *FeedConfigUpdate {
+	fcu.mutation.ClearNotifySource()
 	return fcu
 }
 
-// RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveNotifyFlowIDs(ids ...model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.RemoveNotifyFlowIDs(ids...)
+// RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
+func (fcu *FeedConfigUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.RemoveNotifySourceIDs(ids...)
 	return fcu
 }
 
-// RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (fcu *FeedConfigUpdate) RemoveNotifyFlow(n ...*NotifyFlow) *FeedConfigUpdate {
+// RemoveNotifySource removes "notify_source" edges to NotifySource entities.
+func (fcu *FeedConfigUpdate) RemoveNotifySource(n ...*NotifySource) *FeedConfigUpdate {
 	ids := make([]model.InternalID, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return fcu.RemoveNotifyFlowIDs(ids...)
-}
-
-// ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (fcu *FeedConfigUpdate) ClearNotifyFlowSource() *FeedConfigUpdate {
-	fcu.mutation.ClearNotifyFlowSource()
-	return fcu
-}
-
-// RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (fcu *FeedConfigUpdate) RemoveNotifyFlowSourceIDs(ids ...int) *FeedConfigUpdate {
-	fcu.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return fcu
-}
-
-// RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (fcu *FeedConfigUpdate) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigUpdate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return fcu.RemoveNotifyFlowSourceIDs(ids...)
+	return fcu.RemoveNotifySourceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -501,85 +464,28 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcu.mutation.NotifyFlowCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		createE := &NotifyFlowSourceCreate{config: fcu.config, mutation: newNotifyFlowSourceMutation(fcu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fcu.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !fcu.mutation.NotifyFlowCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowSourceCreate{config: fcu.config, mutation: newNotifyFlowSourceMutation(fcu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fcu.mutation.NotifyFlowIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowSourceCreate{config: fcu.config, mutation: newNotifyFlowSourceMutation(fcu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fcu.mutation.NotifyFlowSourceCleared() {
+	if fcu.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !fcu.mutation.NotifyFlowSourceCleared() {
+	if nodes := fcu.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !fcu.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -587,15 +493,15 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcu.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := fcu.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -841,34 +747,19 @@ func (fcuo *FeedConfigUpdateOne) SetFeed(f *Feed) *FeedConfigUpdateOne {
 	return fcuo.SetFeedID(f.ID)
 }
 
-// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddNotifyFlowIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.AddNotifyFlowIDs(ids...)
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (fcuo *FeedConfigUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.AddNotifySourceIDs(ids...)
 	return fcuo
 }
 
-// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (fcuo *FeedConfigUpdateOne) AddNotifyFlow(n ...*NotifyFlow) *FeedConfigUpdateOne {
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (fcuo *FeedConfigUpdateOne) AddNotifySource(n ...*NotifySource) *FeedConfigUpdateOne {
 	ids := make([]model.InternalID, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return fcuo.AddNotifyFlowIDs(ids...)
-}
-
-// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (fcuo *FeedConfigUpdateOne) AddNotifyFlowSourceIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.AddNotifyFlowSourceIDs(ids...)
-	return fcuo
-}
-
-// AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (fcuo *FeedConfigUpdateOne) AddNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return fcuo.AddNotifyFlowSourceIDs(ids...)
+	return fcuo.AddNotifySourceIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -888,46 +779,25 @@ func (fcuo *FeedConfigUpdateOne) ClearFeed() *FeedConfigUpdateOne {
 	return fcuo
 }
 
-// ClearNotifyFlow clears all "notify_flow" edges to the NotifyFlow entity.
-func (fcuo *FeedConfigUpdateOne) ClearNotifyFlow() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearNotifyFlow()
+// ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
+func (fcuo *FeedConfigUpdateOne) ClearNotifySource() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearNotifySource()
 	return fcuo
 }
 
-// RemoveNotifyFlowIDs removes the "notify_flow" edge to NotifyFlow entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifyFlowIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveNotifyFlowIDs(ids...)
+// RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
+func (fcuo *FeedConfigUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.RemoveNotifySourceIDs(ids...)
 	return fcuo
 }
 
-// RemoveNotifyFlow removes "notify_flow" edges to NotifyFlow entities.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifyFlow(n ...*NotifyFlow) *FeedConfigUpdateOne {
+// RemoveNotifySource removes "notify_source" edges to NotifySource entities.
+func (fcuo *FeedConfigUpdateOne) RemoveNotifySource(n ...*NotifySource) *FeedConfigUpdateOne {
 	ids := make([]model.InternalID, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return fcuo.RemoveNotifyFlowIDs(ids...)
-}
-
-// ClearNotifyFlowSource clears all "notify_flow_source" edges to the NotifyFlowSource entity.
-func (fcuo *FeedConfigUpdateOne) ClearNotifyFlowSource() *FeedConfigUpdateOne {
-	fcuo.mutation.ClearNotifyFlowSource()
-	return fcuo
-}
-
-// RemoveNotifyFlowSourceIDs removes the "notify_flow_source" edge to NotifyFlowSource entities by IDs.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifyFlowSourceIDs(ids ...int) *FeedConfigUpdateOne {
-	fcuo.mutation.RemoveNotifyFlowSourceIDs(ids...)
-	return fcuo
-}
-
-// RemoveNotifyFlowSource removes "notify_flow_source" edges to NotifyFlowSource entities.
-func (fcuo *FeedConfigUpdateOne) RemoveNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigUpdateOne {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return fcuo.RemoveNotifyFlowSourceIDs(ids...)
+	return fcuo.RemoveNotifySourceIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
@@ -1121,85 +991,28 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fcuo.mutation.NotifyFlowCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		createE := &NotifyFlowSourceCreate{config: fcuo.config, mutation: newNotifyFlowSourceMutation(fcuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fcuo.mutation.RemovedNotifyFlowIDs(); len(nodes) > 0 && !fcuo.mutation.NotifyFlowCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowSourceCreate{config: fcuo.config, mutation: newNotifyFlowSourceMutation(fcuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fcuo.mutation.NotifyFlowIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowSourceCreate{config: fcuo.config, mutation: newNotifyFlowSourceMutation(fcuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fcuo.mutation.NotifyFlowSourceCleared() {
+	if fcuo.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.RemovedNotifyFlowSourceIDs(); len(nodes) > 0 && !fcuo.mutation.NotifyFlowSourceCleared() {
+	if nodes := fcuo.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !fcuo.mutation.NotifySourceCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1207,15 +1020,15 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fcuo.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := fcuo.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -45,10 +45,8 @@ const (
 	EdgeOwner = "owner"
 	// EdgeFeed holds the string denoting the feed edge name in mutations.
 	EdgeFeed = "feed"
-	// EdgeNotifyFlow holds the string denoting the notify_flow edge name in mutations.
-	EdgeNotifyFlow = "notify_flow"
-	// EdgeNotifyFlowSource holds the string denoting the notify_flow_source edge name in mutations.
-	EdgeNotifyFlowSource = "notify_flow_source"
+	// EdgeNotifySource holds the string denoting the notify_source edge name in mutations.
+	EdgeNotifySource = "notify_source"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
 	// OwnerTable is the table that holds the owner relation/edge.
@@ -65,18 +63,13 @@ const (
 	FeedInverseTable = "feeds"
 	// FeedColumn is the table column denoting the feed relation/edge.
 	FeedColumn = "feed_config_feed"
-	// NotifyFlowTable is the table that holds the notify_flow relation/edge. The primary key declared below.
-	NotifyFlowTable = "notify_flow_sources"
-	// NotifyFlowInverseTable is the table name for the NotifyFlow entity.
-	// It exists in this package in order to avoid circular dependency with the "notifyflow" package.
-	NotifyFlowInverseTable = "notify_flows"
-	// NotifyFlowSourceTable is the table that holds the notify_flow_source relation/edge.
-	NotifyFlowSourceTable = "notify_flow_sources"
-	// NotifyFlowSourceInverseTable is the table name for the NotifyFlowSource entity.
-	// It exists in this package in order to avoid circular dependency with the "notifyflowsource" package.
-	NotifyFlowSourceInverseTable = "notify_flow_sources"
-	// NotifyFlowSourceColumn is the table column denoting the notify_flow_source relation/edge.
-	NotifyFlowSourceColumn = "notify_source_id"
+	// NotifySourceTable is the table that holds the notify_source relation/edge.
+	NotifySourceTable = "notify_sources"
+	// NotifySourceInverseTable is the table name for the NotifySource entity.
+	// It exists in this package in order to avoid circular dependency with the "notifysource" package.
+	NotifySourceInverseTable = "notify_sources"
+	// NotifySourceColumn is the table column denoting the notify_source relation/edge.
+	NotifySourceColumn = "feed_config_id"
 )
 
 // Columns holds all SQL columns for feedconfig fields.
@@ -96,12 +89,6 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
-
-var (
-	// NotifyFlowPrimaryKey and NotifyFlowColumn2 are the table columns denoting the
-	// primary key for the notify_flow relation (M2M).
-	NotifyFlowPrimaryKey = []string{"notify_source_id", "notify_flow_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -238,31 +225,17 @@ func ByFeedField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// ByNotifyFlowCount orders the results by notify_flow count.
-func ByNotifyFlowCount(opts ...sql.OrderTermOption) OrderOption {
+// ByNotifySourceCount orders the results by notify_source count.
+func ByNotifySourceCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newNotifySourceStep(), opts...)
 	}
 }
 
-// ByNotifyFlow orders the results by notify_flow terms.
-func ByNotifyFlow(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByNotifySource orders the results by notify_source terms.
+func ByNotifySource(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByNotifyFlowSourceCount orders the results by notify_flow_source count.
-func ByNotifyFlowSourceCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newNotifyFlowSourceStep(), opts...)
-	}
-}
-
-// ByNotifyFlowSource orders the results by notify_flow_source terms.
-func ByNotifyFlowSource(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newNotifyFlowSourceStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNotifySourceStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newOwnerStep() *sqlgraph.Step {
@@ -279,17 +252,10 @@ func newFeedStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2O, false, FeedTable, FeedColumn),
 	)
 }
-func newNotifyFlowStep() *sqlgraph.Step {
+func newNotifySourceStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(NotifyFlowInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, NotifyFlowTable, NotifyFlowPrimaryKey...),
-	)
-}
-func newNotifyFlowSourceStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(NotifyFlowSourceInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, NotifyFlowSourceTable, NotifyFlowSourceColumn),
+		sqlgraph.To(NotifySourceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotifySourceTable, NotifySourceColumn),
 	)
 }

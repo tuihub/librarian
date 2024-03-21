@@ -29,8 +29,8 @@ const (
 	EdgeOwner = "owner"
 	// EdgeNotifyTarget holds the string denoting the notify_target edge name in mutations.
 	EdgeNotifyTarget = "notify_target"
-	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
-	EdgeFeedConfig = "feed_config"
+	// EdgeNotifySource holds the string denoting the notify_source edge name in mutations.
+	EdgeNotifySource = "notify_source"
 	// EdgeNotifyFlowTarget holds the string denoting the notify_flow_target edge name in mutations.
 	EdgeNotifyFlowTarget = "notify_flow_target"
 	// EdgeNotifyFlowSource holds the string denoting the notify_flow_source edge name in mutations.
@@ -49,11 +49,11 @@ const (
 	// NotifyTargetInverseTable is the table name for the NotifyTarget entity.
 	// It exists in this package in order to avoid circular dependency with the "notifytarget" package.
 	NotifyTargetInverseTable = "notify_targets"
-	// FeedConfigTable is the table that holds the feed_config relation/edge. The primary key declared below.
-	FeedConfigTable = "notify_flow_sources"
-	// FeedConfigInverseTable is the table name for the FeedConfig entity.
-	// It exists in this package in order to avoid circular dependency with the "feedconfig" package.
-	FeedConfigInverseTable = "feed_configs"
+	// NotifySourceTable is the table that holds the notify_source relation/edge. The primary key declared below.
+	NotifySourceTable = "notify_flow_sources"
+	// NotifySourceInverseTable is the table name for the NotifySource entity.
+	// It exists in this package in order to avoid circular dependency with the "notifysource" package.
+	NotifySourceInverseTable = "notify_sources"
 	// NotifyFlowTargetTable is the table that holds the notify_flow_target relation/edge.
 	NotifyFlowTargetTable = "notify_flow_targets"
 	// NotifyFlowTargetInverseTable is the table name for the NotifyFlowTarget entity.
@@ -90,9 +90,9 @@ var (
 	// NotifyTargetPrimaryKey and NotifyTargetColumn2 are the table columns denoting the
 	// primary key for the notify_target relation (M2M).
 	NotifyTargetPrimaryKey = []string{"notify_flow_id", "notify_target_id"}
-	// FeedConfigPrimaryKey and FeedConfigColumn2 are the table columns denoting the
-	// primary key for the feed_config relation (M2M).
-	FeedConfigPrimaryKey = []string{"notify_source_id", "notify_flow_id"}
+	// NotifySourcePrimaryKey and NotifySourceColumn2 are the table columns denoting the
+	// primary key for the notify_source relation (M2M).
+	NotifySourcePrimaryKey = []string{"notify_flow_id", "notify_source_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -196,17 +196,17 @@ func ByNotifyTarget(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByFeedConfigCount orders the results by feed_config count.
-func ByFeedConfigCount(opts ...sql.OrderTermOption) OrderOption {
+// ByNotifySourceCount orders the results by notify_source count.
+func ByNotifySourceCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newFeedConfigStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newNotifySourceStep(), opts...)
 	}
 }
 
-// ByFeedConfig orders the results by feed_config terms.
-func ByFeedConfig(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByNotifySource orders the results by notify_source terms.
+func ByNotifySource(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newFeedConfigStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newNotifySourceStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -251,11 +251,11 @@ func newNotifyTargetStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2M, false, NotifyTargetTable, NotifyTargetPrimaryKey...),
 	)
 }
-func newFeedConfigStep() *sqlgraph.Step {
+func newNotifySourceStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(FeedConfigInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, FeedConfigTable, FeedConfigPrimaryKey...),
+		sqlgraph.To(NotifySourceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, NotifySourceTable, NotifySourcePrimaryKey...),
 	)
 }
 func newNotifyFlowTargetStep() *sqlgraph.Step {

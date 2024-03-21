@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -19,11 +21,12 @@ import (
 // FeedItemQuery is the builder for querying FeedItem entities.
 type FeedItemQuery struct {
 	config
-	ctx        *QueryContext
-	order      []feeditem.OrderOption
-	inters     []Interceptor
-	predicates []predicate.FeedItem
-	withFeed   *FeedQuery
+	ctx                    *QueryContext
+	order                  []feeditem.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.FeedItem
+	withFeed               *FeedQuery
+	withFeedItemCollection *FeedItemCollectionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -75,6 +78,28 @@ func (fiq *FeedItemQuery) QueryFeed() *FeedQuery {
 			sqlgraph.From(feeditem.Table, feeditem.FieldID, selector),
 			sqlgraph.To(feed.Table, feed.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, feeditem.FeedTable, feeditem.FeedColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fiq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFeedItemCollection chains the current query on the "feed_item_collection" edge.
+func (fiq *FeedItemQuery) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	query := (&FeedItemCollectionClient{config: fiq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fiq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fiq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditem.Table, feeditem.FieldID, selector),
+			sqlgraph.To(feeditemcollection.Table, feeditemcollection.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, feeditem.FeedItemCollectionTable, feeditem.FeedItemCollectionPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(fiq.driver.Dialect(), step)
 		return fromU, nil
@@ -269,12 +294,13 @@ func (fiq *FeedItemQuery) Clone() *FeedItemQuery {
 		return nil
 	}
 	return &FeedItemQuery{
-		config:     fiq.config,
-		ctx:        fiq.ctx.Clone(),
-		order:      append([]feeditem.OrderOption{}, fiq.order...),
-		inters:     append([]Interceptor{}, fiq.inters...),
-		predicates: append([]predicate.FeedItem{}, fiq.predicates...),
-		withFeed:   fiq.withFeed.Clone(),
+		config:                 fiq.config,
+		ctx:                    fiq.ctx.Clone(),
+		order:                  append([]feeditem.OrderOption{}, fiq.order...),
+		inters:                 append([]Interceptor{}, fiq.inters...),
+		predicates:             append([]predicate.FeedItem{}, fiq.predicates...),
+		withFeed:               fiq.withFeed.Clone(),
+		withFeedItemCollection: fiq.withFeedItemCollection.Clone(),
 		// clone intermediate query.
 		sql:  fiq.sql.Clone(),
 		path: fiq.path,
@@ -289,6 +315,17 @@ func (fiq *FeedItemQuery) WithFeed(opts ...func(*FeedQuery)) *FeedItemQuery {
 		opt(query)
 	}
 	fiq.withFeed = query
+	return fiq
+}
+
+// WithFeedItemCollection tells the query-builder to eager-load the nodes that are connected to
+// the "feed_item_collection" edge. The optional arguments are used to configure the query builder of the edge.
+func (fiq *FeedItemQuery) WithFeedItemCollection(opts ...func(*FeedItemCollectionQuery)) *FeedItemQuery {
+	query := (&FeedItemCollectionClient{config: fiq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fiq.withFeedItemCollection = query
 	return fiq
 }
 
@@ -370,8 +407,9 @@ func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fe
 	var (
 		nodes       = []*FeedItem{}
 		_spec       = fiq.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			fiq.withFeed != nil,
+			fiq.withFeedItemCollection != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -395,6 +433,15 @@ func (fiq *FeedItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fe
 	if query := fiq.withFeed; query != nil {
 		if err := fiq.loadFeed(ctx, query, nodes, nil,
 			func(n *FeedItem, e *Feed) { n.Edges.Feed = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := fiq.withFeedItemCollection; query != nil {
+		if err := fiq.loadFeedItemCollection(ctx, query, nodes,
+			func(n *FeedItem) { n.Edges.FeedItemCollection = []*FeedItemCollection{} },
+			func(n *FeedItem, e *FeedItemCollection) {
+				n.Edges.FeedItemCollection = append(n.Edges.FeedItemCollection, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -426,6 +473,67 @@ func (fiq *FeedItemQuery) loadFeed(ctx context.Context, query *FeedQuery, nodes 
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
+		}
+	}
+	return nil
+}
+func (fiq *FeedItemQuery) loadFeedItemCollection(ctx context.Context, query *FeedItemCollectionQuery, nodes []*FeedItem, init func(*FeedItem), assign func(*FeedItem, *FeedItemCollection)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*FeedItem)
+	nids := make(map[model.InternalID]map[*FeedItem]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(feeditem.FeedItemCollectionTable)
+		s.Join(joinT).On(s.C(feeditemcollection.FieldID), joinT.C(feeditem.FeedItemCollectionPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(feeditem.FeedItemCollectionPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(feeditem.FeedItemCollectionPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*FeedItem]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*FeedItemCollection](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "feed_item_collection" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
 		}
 	}
 	return nil

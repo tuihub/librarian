@@ -26,14 +26,17 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
@@ -64,6 +67,8 @@ type Client struct {
 	FeedConfig *FeedConfigClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
+	// FeedItemCollection is the client for interacting with the FeedItemCollection builders.
+	FeedItemCollection *FeedItemCollectionClient
 	// File is the client for interacting with the File builders.
 	File *FileClient
 	// Image is the client for interacting with the Image builders.
@@ -74,12 +79,16 @@ type Client struct {
 	NotifyFlowSource *NotifyFlowSourceClient
 	// NotifyFlowTarget is the client for interacting with the NotifyFlowTarget builders.
 	NotifyFlowTarget *NotifyFlowTargetClient
+	// NotifySource is the client for interacting with the NotifySource builders.
+	NotifySource *NotifySourceClient
 	// NotifyTarget is the client for interacting with the NotifyTarget builders.
 	NotifyTarget *NotifyTargetClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
 	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
 	PorterPrivilege *PorterPrivilegeClient
+	// Tag is the client for interacting with the Tag builders.
+	Tag *TagClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 	// UserDevice is the client for interacting with the UserDevice builders.
@@ -107,14 +116,17 @@ func (c *Client) init() {
 	c.Feed = NewFeedClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
+	c.FeedItemCollection = NewFeedItemCollectionClient(c.config)
 	c.File = NewFileClient(c.config)
 	c.Image = NewImageClient(c.config)
 	c.NotifyFlow = NewNotifyFlowClient(c.config)
 	c.NotifyFlowSource = NewNotifyFlowSourceClient(c.config)
 	c.NotifyFlowTarget = NewNotifyFlowTargetClient(c.config)
+	c.NotifySource = NewNotifySourceClient(c.config)
 	c.NotifyTarget = NewNotifyTargetClient(c.config)
 	c.PorterInstance = NewPorterInstanceClient(c.config)
 	c.PorterPrivilege = NewPorterPrivilegeClient(c.config)
+	c.Tag = NewTagClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
 	c.UserSession = NewUserSessionClient(c.config)
@@ -208,29 +220,32 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		Account:          NewAccountClient(cfg),
-		App:              NewAppClient(cfg),
-		AppBinary:        NewAppBinaryClient(cfg),
-		AppInfo:          NewAppInfoClient(cfg),
-		AppInst:          NewAppInstClient(cfg),
-		AppInstRunTime:   NewAppInstRunTimeClient(cfg),
-		DeviceInfo:       NewDeviceInfoClient(cfg),
-		Feed:             NewFeedClient(cfg),
-		FeedConfig:       NewFeedConfigClient(cfg),
-		FeedItem:         NewFeedItemClient(cfg),
-		File:             NewFileClient(cfg),
-		Image:            NewImageClient(cfg),
-		NotifyFlow:       NewNotifyFlowClient(cfg),
-		NotifyFlowSource: NewNotifyFlowSourceClient(cfg),
-		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
-		NotifyTarget:     NewNotifyTargetClient(cfg),
-		PorterInstance:   NewPorterInstanceClient(cfg),
-		PorterPrivilege:  NewPorterPrivilegeClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserSession:      NewUserSessionClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		Account:            NewAccountClient(cfg),
+		App:                NewAppClient(cfg),
+		AppBinary:          NewAppBinaryClient(cfg),
+		AppInfo:            NewAppInfoClient(cfg),
+		AppInst:            NewAppInstClient(cfg),
+		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
+		DeviceInfo:         NewDeviceInfoClient(cfg),
+		Feed:               NewFeedClient(cfg),
+		FeedConfig:         NewFeedConfigClient(cfg),
+		FeedItem:           NewFeedItemClient(cfg),
+		FeedItemCollection: NewFeedItemCollectionClient(cfg),
+		File:               NewFileClient(cfg),
+		Image:              NewImageClient(cfg),
+		NotifyFlow:         NewNotifyFlowClient(cfg),
+		NotifyFlowSource:   NewNotifyFlowSourceClient(cfg),
+		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
+		NotifySource:       NewNotifySourceClient(cfg),
+		NotifyTarget:       NewNotifyTargetClient(cfg),
+		PorterInstance:     NewPorterInstanceClient(cfg),
+		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
+		Tag:                NewTagClient(cfg),
+		User:               NewUserClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserSession:        NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -248,29 +263,32 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:              ctx,
-		config:           cfg,
-		Account:          NewAccountClient(cfg),
-		App:              NewAppClient(cfg),
-		AppBinary:        NewAppBinaryClient(cfg),
-		AppInfo:          NewAppInfoClient(cfg),
-		AppInst:          NewAppInstClient(cfg),
-		AppInstRunTime:   NewAppInstRunTimeClient(cfg),
-		DeviceInfo:       NewDeviceInfoClient(cfg),
-		Feed:             NewFeedClient(cfg),
-		FeedConfig:       NewFeedConfigClient(cfg),
-		FeedItem:         NewFeedItemClient(cfg),
-		File:             NewFileClient(cfg),
-		Image:            NewImageClient(cfg),
-		NotifyFlow:       NewNotifyFlowClient(cfg),
-		NotifyFlowSource: NewNotifyFlowSourceClient(cfg),
-		NotifyFlowTarget: NewNotifyFlowTargetClient(cfg),
-		NotifyTarget:     NewNotifyTargetClient(cfg),
-		PorterInstance:   NewPorterInstanceClient(cfg),
-		PorterPrivilege:  NewPorterPrivilegeClient(cfg),
-		User:             NewUserClient(cfg),
-		UserDevice:       NewUserDeviceClient(cfg),
-		UserSession:      NewUserSessionClient(cfg),
+		ctx:                ctx,
+		config:             cfg,
+		Account:            NewAccountClient(cfg),
+		App:                NewAppClient(cfg),
+		AppBinary:          NewAppBinaryClient(cfg),
+		AppInfo:            NewAppInfoClient(cfg),
+		AppInst:            NewAppInstClient(cfg),
+		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
+		DeviceInfo:         NewDeviceInfoClient(cfg),
+		Feed:               NewFeedClient(cfg),
+		FeedConfig:         NewFeedConfigClient(cfg),
+		FeedItem:           NewFeedItemClient(cfg),
+		FeedItemCollection: NewFeedItemCollectionClient(cfg),
+		File:               NewFileClient(cfg),
+		Image:              NewImageClient(cfg),
+		NotifyFlow:         NewNotifyFlowClient(cfg),
+		NotifyFlowSource:   NewNotifyFlowSourceClient(cfg),
+		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
+		NotifySource:       NewNotifySourceClient(cfg),
+		NotifyTarget:       NewNotifyTargetClient(cfg),
+		PorterInstance:     NewPorterInstanceClient(cfg),
+		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
+		Tag:                NewTagClient(cfg),
+		User:               NewUserClient(cfg),
+		UserDevice:         NewUserDeviceClient(cfg),
+		UserSession:        NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -301,9 +319,10 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.File, c.Image, c.NotifyFlow,
-		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifyTarget, c.PorterInstance,
-		c.PorterPrivilege, c.User, c.UserDevice, c.UserSession,
+		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
+		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
+		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.Tag, c.User,
+		c.UserDevice, c.UserSession,
 	} {
 		n.Use(hooks...)
 	}
@@ -314,9 +333,10 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.File, c.Image, c.NotifyFlow,
-		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifyTarget, c.PorterInstance,
-		c.PorterPrivilege, c.User, c.UserDevice, c.UserSession,
+		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
+		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
+		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.Tag, c.User,
+		c.UserDevice, c.UserSession,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -345,6 +365,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.FeedConfig.mutate(ctx, m)
 	case *FeedItemMutation:
 		return c.FeedItem.mutate(ctx, m)
+	case *FeedItemCollectionMutation:
+		return c.FeedItemCollection.mutate(ctx, m)
 	case *FileMutation:
 		return c.File.mutate(ctx, m)
 	case *ImageMutation:
@@ -355,12 +377,16 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.NotifyFlowSource.mutate(ctx, m)
 	case *NotifyFlowTargetMutation:
 		return c.NotifyFlowTarget.mutate(ctx, m)
+	case *NotifySourceMutation:
+		return c.NotifySource.mutate(ctx, m)
 	case *NotifyTargetMutation:
 		return c.NotifyTarget.mutate(ctx, m)
 	case *PorterInstanceMutation:
 		return c.PorterInstance.mutate(ctx, m)
 	case *PorterPrivilegeMutation:
 		return c.PorterPrivilege.mutate(ctx, m)
+	case *TagMutation:
+		return c.Tag.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	case *UserDeviceMutation:
@@ -1848,31 +1874,15 @@ func (c *FeedConfigClient) QueryFeed(fc *FeedConfig) *FeedQuery {
 	return query
 }
 
-// QueryNotifyFlow queries the notify_flow edge of a FeedConfig.
-func (c *FeedConfigClient) QueryNotifyFlow(fc *FeedConfig) *NotifyFlowQuery {
-	query := (&NotifyFlowClient{config: c.config}).Query()
+// QueryNotifySource queries the notify_source edge of a FeedConfig.
+func (c *FeedConfigClient) QueryNotifySource(fc *FeedConfig) *NotifySourceQuery {
+	query := (&NotifySourceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := fc.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
-			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, feedconfig.NotifyFlowTable, feedconfig.NotifyFlowPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryNotifyFlowSource queries the notify_flow_source edge of a FeedConfig.
-func (c *FeedConfigClient) QueryNotifyFlowSource(fc *FeedConfig) *NotifyFlowSourceQuery {
-	query := (&NotifyFlowSourceClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := fc.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
-			sqlgraph.To(notifyflowsource.Table, notifyflowsource.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, feedconfig.NotifyFlowSourceTable, feedconfig.NotifyFlowSourceColumn),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.NotifySourceTable, feedconfig.NotifySourceColumn),
 		)
 		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
 		return fromV, nil
@@ -2029,6 +2039,22 @@ func (c *FeedItemClient) QueryFeed(fi *FeedItem) *FeedQuery {
 	return query
 }
 
+// QueryFeedItemCollection queries the feed_item_collection edge of a FeedItem.
+func (c *FeedItemClient) QueryFeedItemCollection(fi *FeedItem) *FeedItemCollectionQuery {
+	query := (&FeedItemCollectionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fi.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditem.Table, feeditem.FieldID, id),
+			sqlgraph.To(feeditemcollection.Table, feeditemcollection.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, feeditem.FeedItemCollectionTable, feeditem.FeedItemCollectionPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(fi.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FeedItemClient) Hooks() []Hook {
 	return c.hooks.FeedItem
@@ -2051,6 +2077,187 @@ func (c *FeedItemClient) mutate(ctx context.Context, m *FeedItemMutation) (Value
 		return (&FeedItemDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown FeedItem mutation op: %q", m.Op())
+	}
+}
+
+// FeedItemCollectionClient is a client for the FeedItemCollection schema.
+type FeedItemCollectionClient struct {
+	config
+}
+
+// NewFeedItemCollectionClient returns a client for the FeedItemCollection from the given config.
+func NewFeedItemCollectionClient(c config) *FeedItemCollectionClient {
+	return &FeedItemCollectionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feeditemcollection.Hooks(f(g(h())))`.
+func (c *FeedItemCollectionClient) Use(hooks ...Hook) {
+	c.hooks.FeedItemCollection = append(c.hooks.FeedItemCollection, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feeditemcollection.Intercept(f(g(h())))`.
+func (c *FeedItemCollectionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedItemCollection = append(c.inters.FeedItemCollection, interceptors...)
+}
+
+// Create returns a builder for creating a FeedItemCollection entity.
+func (c *FeedItemCollectionClient) Create() *FeedItemCollectionCreate {
+	mutation := newFeedItemCollectionMutation(c.config, OpCreate)
+	return &FeedItemCollectionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedItemCollection entities.
+func (c *FeedItemCollectionClient) CreateBulk(builders ...*FeedItemCollectionCreate) *FeedItemCollectionCreateBulk {
+	return &FeedItemCollectionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedItemCollectionClient) MapCreateBulk(slice any, setFunc func(*FeedItemCollectionCreate, int)) *FeedItemCollectionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedItemCollectionCreateBulk{err: fmt.Errorf("calling to FeedItemCollectionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedItemCollectionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FeedItemCollectionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedItemCollection.
+func (c *FeedItemCollectionClient) Update() *FeedItemCollectionUpdate {
+	mutation := newFeedItemCollectionMutation(c.config, OpUpdate)
+	return &FeedItemCollectionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedItemCollectionClient) UpdateOne(fic *FeedItemCollection) *FeedItemCollectionUpdateOne {
+	mutation := newFeedItemCollectionMutation(c.config, OpUpdateOne, withFeedItemCollection(fic))
+	return &FeedItemCollectionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedItemCollectionClient) UpdateOneID(id model.InternalID) *FeedItemCollectionUpdateOne {
+	mutation := newFeedItemCollectionMutation(c.config, OpUpdateOne, withFeedItemCollectionID(id))
+	return &FeedItemCollectionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedItemCollection.
+func (c *FeedItemCollectionClient) Delete() *FeedItemCollectionDelete {
+	mutation := newFeedItemCollectionMutation(c.config, OpDelete)
+	return &FeedItemCollectionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedItemCollectionClient) DeleteOne(fic *FeedItemCollection) *FeedItemCollectionDeleteOne {
+	return c.DeleteOneID(fic.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedItemCollectionClient) DeleteOneID(id model.InternalID) *FeedItemCollectionDeleteOne {
+	builder := c.Delete().Where(feeditemcollection.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedItemCollectionDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedItemCollection.
+func (c *FeedItemCollectionClient) Query() *FeedItemCollectionQuery {
+	return &FeedItemCollectionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeedItemCollection},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedItemCollection entity by its id.
+func (c *FeedItemCollectionClient) Get(ctx context.Context, id model.InternalID) (*FeedItemCollection, error) {
+	return c.Query().Where(feeditemcollection.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedItemCollectionClient) GetX(ctx context.Context, id model.InternalID) *FeedItemCollection {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a FeedItemCollection.
+func (c *FeedItemCollectionClient) QueryOwner(fic *FeedItemCollection) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fic.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditemcollection.Table, feeditemcollection.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feeditemcollection.OwnerTable, feeditemcollection.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(fic.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedItem queries the feed_item edge of a FeedItemCollection.
+func (c *FeedItemCollectionClient) QueryFeedItem(fic *FeedItemCollection) *FeedItemQuery {
+	query := (&FeedItemClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fic.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditemcollection.Table, feeditemcollection.FieldID, id),
+			sqlgraph.To(feeditem.Table, feeditem.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, feeditemcollection.FeedItemTable, feeditemcollection.FeedItemPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(fic.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifySource queries the notify_source edge of a FeedItemCollection.
+func (c *FeedItemCollectionClient) QueryNotifySource(fic *FeedItemCollection) *NotifySourceQuery {
+	query := (&NotifySourceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fic.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feeditemcollection.Table, feeditemcollection.FieldID, id),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, feeditemcollection.NotifySourceTable, feeditemcollection.NotifySourceColumn),
+		)
+		fromV = sqlgraph.Neighbors(fic.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FeedItemCollectionClient) Hooks() []Hook {
+	return c.hooks.FeedItemCollection
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedItemCollectionClient) Interceptors() []Interceptor {
+	return c.inters.FeedItemCollection
+}
+
+func (c *FeedItemCollectionClient) mutate(ctx context.Context, m *FeedItemCollectionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedItemCollectionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedItemCollectionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedItemCollectionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedItemCollectionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedItemCollection mutation op: %q", m.Op())
 	}
 }
 
@@ -2524,15 +2731,15 @@ func (c *NotifyFlowClient) QueryNotifyTarget(nf *NotifyFlow) *NotifyTargetQuery 
 	return query
 }
 
-// QueryFeedConfig queries the feed_config edge of a NotifyFlow.
-func (c *NotifyFlowClient) QueryFeedConfig(nf *NotifyFlow) *FeedConfigQuery {
-	query := (&FeedConfigClient{config: c.config}).Query()
+// QueryNotifySource queries the notify_source edge of a NotifyFlow.
+func (c *NotifyFlowClient) QueryNotifySource(nf *NotifyFlow) *NotifySourceQuery {
+	query := (&NotifySourceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := nf.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(notifyflow.Table, notifyflow.FieldID, id),
-			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, notifyflow.FeedConfigTable, notifyflow.FeedConfigPrimaryKey...),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, notifyflow.NotifySourceTable, notifyflow.NotifySourcePrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(nf.driver.Dialect(), step)
 		return fromV, nil
@@ -2722,13 +2929,13 @@ func (c *NotifyFlowSourceClient) QueryNotifyFlow(nfs *NotifyFlowSource) *NotifyF
 }
 
 // QueryNotifySource queries the notify_source edge of a NotifyFlowSource.
-func (c *NotifyFlowSourceClient) QueryNotifySource(nfs *NotifyFlowSource) *FeedConfigQuery {
-	query := (&FeedConfigClient{config: c.config}).Query()
+func (c *NotifyFlowSourceClient) QueryNotifySource(nfs *NotifyFlowSource) *NotifySourceQuery {
+	query := (&NotifySourceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := nfs.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(notifyflowsource.Table, notifyflowsource.FieldID, id),
-			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowsource.NotifySourceTable, notifyflowsource.NotifySourceColumn),
 		)
 		fromV = sqlgraph.Neighbors(nfs.driver.Dialect(), step)
@@ -2924,6 +3131,219 @@ func (c *NotifyFlowTargetClient) mutate(ctx context.Context, m *NotifyFlowTarget
 		return (&NotifyFlowTargetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown NotifyFlowTarget mutation op: %q", m.Op())
+	}
+}
+
+// NotifySourceClient is a client for the NotifySource schema.
+type NotifySourceClient struct {
+	config
+}
+
+// NewNotifySourceClient returns a client for the NotifySource from the given config.
+func NewNotifySourceClient(c config) *NotifySourceClient {
+	return &NotifySourceClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `notifysource.Hooks(f(g(h())))`.
+func (c *NotifySourceClient) Use(hooks ...Hook) {
+	c.hooks.NotifySource = append(c.hooks.NotifySource, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `notifysource.Intercept(f(g(h())))`.
+func (c *NotifySourceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.NotifySource = append(c.inters.NotifySource, interceptors...)
+}
+
+// Create returns a builder for creating a NotifySource entity.
+func (c *NotifySourceClient) Create() *NotifySourceCreate {
+	mutation := newNotifySourceMutation(c.config, OpCreate)
+	return &NotifySourceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of NotifySource entities.
+func (c *NotifySourceClient) CreateBulk(builders ...*NotifySourceCreate) *NotifySourceCreateBulk {
+	return &NotifySourceCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *NotifySourceClient) MapCreateBulk(slice any, setFunc func(*NotifySourceCreate, int)) *NotifySourceCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &NotifySourceCreateBulk{err: fmt.Errorf("calling to NotifySourceClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*NotifySourceCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &NotifySourceCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for NotifySource.
+func (c *NotifySourceClient) Update() *NotifySourceUpdate {
+	mutation := newNotifySourceMutation(c.config, OpUpdate)
+	return &NotifySourceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *NotifySourceClient) UpdateOne(ns *NotifySource) *NotifySourceUpdateOne {
+	mutation := newNotifySourceMutation(c.config, OpUpdateOne, withNotifySource(ns))
+	return &NotifySourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *NotifySourceClient) UpdateOneID(id model.InternalID) *NotifySourceUpdateOne {
+	mutation := newNotifySourceMutation(c.config, OpUpdateOne, withNotifySourceID(id))
+	return &NotifySourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for NotifySource.
+func (c *NotifySourceClient) Delete() *NotifySourceDelete {
+	mutation := newNotifySourceMutation(c.config, OpDelete)
+	return &NotifySourceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *NotifySourceClient) DeleteOne(ns *NotifySource) *NotifySourceDeleteOne {
+	return c.DeleteOneID(ns.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *NotifySourceClient) DeleteOneID(id model.InternalID) *NotifySourceDeleteOne {
+	builder := c.Delete().Where(notifysource.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &NotifySourceDeleteOne{builder}
+}
+
+// Query returns a query builder for NotifySource.
+func (c *NotifySourceClient) Query() *NotifySourceQuery {
+	return &NotifySourceQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeNotifySource},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a NotifySource entity by its id.
+func (c *NotifySourceClient) Get(ctx context.Context, id model.InternalID) (*NotifySource, error) {
+	return c.Query().Where(notifysource.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *NotifySourceClient) GetX(ctx context.Context, id model.InternalID) *NotifySource {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a NotifySource.
+func (c *NotifySourceClient) QueryOwner(ns *NotifySource) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ns.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifysource.Table, notifysource.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notifysource.OwnerTable, notifysource.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ns.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlow queries the notify_flow edge of a NotifySource.
+func (c *NotifySourceClient) QueryNotifyFlow(ns *NotifySource) *NotifyFlowQuery {
+	query := (&NotifyFlowClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ns.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifysource.Table, notifysource.FieldID, id),
+			sqlgraph.To(notifyflow.Table, notifyflow.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, notifysource.NotifyFlowTable, notifysource.NotifyFlowPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(ns.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedConfig queries the feed_config edge of a NotifySource.
+func (c *NotifySourceClient) QueryFeedConfig(ns *NotifySource) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ns.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifysource.Table, notifysource.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notifysource.FeedConfigTable, notifysource.FeedConfigColumn),
+		)
+		fromV = sqlgraph.Neighbors(ns.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedItemCollection queries the feed_item_collection edge of a NotifySource.
+func (c *NotifySourceClient) QueryFeedItemCollection(ns *NotifySource) *FeedItemCollectionQuery {
+	query := (&FeedItemCollectionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ns.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifysource.Table, notifysource.FieldID, id),
+			sqlgraph.To(feeditemcollection.Table, feeditemcollection.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, notifysource.FeedItemCollectionTable, notifysource.FeedItemCollectionColumn),
+		)
+		fromV = sqlgraph.Neighbors(ns.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifyFlowSource queries the notify_flow_source edge of a NotifySource.
+func (c *NotifySourceClient) QueryNotifyFlowSource(ns *NotifySource) *NotifyFlowSourceQuery {
+	query := (&NotifyFlowSourceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ns.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(notifysource.Table, notifysource.FieldID, id),
+			sqlgraph.To(notifyflowsource.Table, notifyflowsource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, notifysource.NotifyFlowSourceTable, notifysource.NotifyFlowSourceColumn),
+		)
+		fromV = sqlgraph.Neighbors(ns.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *NotifySourceClient) Hooks() []Hook {
+	return c.hooks.NotifySource
+}
+
+// Interceptors returns the client interceptors.
+func (c *NotifySourceClient) Interceptors() []Interceptor {
+	return c.inters.NotifySource
+}
+
+func (c *NotifySourceClient) mutate(ctx context.Context, m *NotifySourceMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&NotifySourceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&NotifySourceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&NotifySourceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&NotifySourceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown NotifySource mutation op: %q", m.Op())
 	}
 }
 
@@ -3374,6 +3794,155 @@ func (c *PorterPrivilegeClient) mutate(ctx context.Context, m *PorterPrivilegeMu
 	}
 }
 
+// TagClient is a client for the Tag schema.
+type TagClient struct {
+	config
+}
+
+// NewTagClient returns a client for the Tag from the given config.
+func NewTagClient(c config) *TagClient {
+	return &TagClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tag.Hooks(f(g(h())))`.
+func (c *TagClient) Use(hooks ...Hook) {
+	c.hooks.Tag = append(c.hooks.Tag, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tag.Intercept(f(g(h())))`.
+func (c *TagClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Tag = append(c.inters.Tag, interceptors...)
+}
+
+// Create returns a builder for creating a Tag entity.
+func (c *TagClient) Create() *TagCreate {
+	mutation := newTagMutation(c.config, OpCreate)
+	return &TagCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tag entities.
+func (c *TagClient) CreateBulk(builders ...*TagCreate) *TagCreateBulk {
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *TagClient) MapCreateBulk(slice any, setFunc func(*TagCreate, int)) *TagCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &TagCreateBulk{err: fmt.Errorf("calling to TagClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*TagCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &TagCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tag.
+func (c *TagClient) Update() *TagUpdate {
+	mutation := newTagMutation(c.config, OpUpdate)
+	return &TagUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TagClient) UpdateOne(t *Tag) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTag(t))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TagClient) UpdateOneID(id model.InternalID) *TagUpdateOne {
+	mutation := newTagMutation(c.config, OpUpdateOne, withTagID(id))
+	return &TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tag.
+func (c *TagClient) Delete() *TagDelete {
+	mutation := newTagMutation(c.config, OpDelete)
+	return &TagDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TagClient) DeleteOne(t *Tag) *TagDeleteOne {
+	return c.DeleteOneID(t.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TagClient) DeleteOneID(id model.InternalID) *TagDeleteOne {
+	builder := c.Delete().Where(tag.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TagDeleteOne{builder}
+}
+
+// Query returns a query builder for Tag.
+func (c *TagClient) Query() *TagQuery {
+	return &TagQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTag},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Tag entity by its id.
+func (c *TagClient) Get(ctx context.Context, id model.InternalID) (*Tag, error) {
+	return c.Query().Where(tag.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TagClient) GetX(ctx context.Context, id model.InternalID) *Tag {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a Tag.
+func (c *TagClient) QueryOwner(t *Tag) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := t.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(tag.Table, tag.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, tag.OwnerTable, tag.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(t.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *TagClient) Hooks() []Hook {
+	return c.hooks.Tag
+}
+
+// Interceptors returns the client interceptors.
+func (c *TagClient) Interceptors() []Interceptor {
+	return c.inters.Tag
+}
+
+func (c *TagClient) mutate(ctx context.Context, m *TagMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TagCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TagUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TagUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TagDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Tag mutation op: %q", m.Op())
+	}
+}
+
 // UserClient is a client for the User schema.
 type UserClient struct {
 	config
@@ -3562,6 +4131,38 @@ func (c *UserClient) QueryFeedConfig(u *User) *FeedConfigQuery {
 	return query
 }
 
+// QueryFeedItemCollection queries the feed_item_collection edge of a User.
+func (c *UserClient) QueryFeedItemCollection(u *User) *FeedItemCollectionQuery {
+	query := (&FeedItemCollectionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(feeditemcollection.Table, feeditemcollection.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedItemCollectionTable, user.FeedItemCollectionColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryNotifySource queries the notify_source edge of a User.
+func (c *UserClient) QueryNotifySource(u *User) *NotifySourceQuery {
+	query := (&NotifySourceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifySourceTable, user.NotifySourceColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryNotifyTarget queries the notify_target edge of a User.
 func (c *UserClient) QueryNotifyTarget(u *User) *NotifyTargetQuery {
 	query := (&NotifyTargetClient{config: c.config}).Query()
@@ -3635,6 +4236,22 @@ func (c *UserClient) QueryDeviceInfo(u *User) *DeviceInfoQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, user.DeviceInfoTable, user.DeviceInfoPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTag queries the tag edge of a User.
+func (c *UserClient) QueryTag(u *User) *TagQuery {
+	query := (&TagClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(tag.Table, tag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.TagTable, user.TagColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -4033,14 +4650,14 @@ func (c *UserSessionClient) mutate(ctx context.Context, m *UserSessionMutation) 
 type (
 	hooks struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedConfig, FeedItem, File, Image, NotifyFlow, NotifyFlowSource,
-		NotifyFlowTarget, NotifyTarget, PorterInstance, PorterPrivilege, User,
-		UserDevice, UserSession []ent.Hook
+		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
+		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
+		PorterPrivilege, Tag, User, UserDevice, UserSession []ent.Hook
 	}
 	inters struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedConfig, FeedItem, File, Image, NotifyFlow, NotifyFlowSource,
-		NotifyFlowTarget, NotifyTarget, PorterInstance, PorterPrivilege, User,
-		UserDevice, UserSession []ent.Interceptor
+		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
+		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
+		PorterPrivilege, Tag, User, UserDevice, UserSession []ent.Interceptor
 	}
 )

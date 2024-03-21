@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -246,6 +247,21 @@ func (fic *FeedItemCreate) SetFeed(f *Feed) *FeedItemCreate {
 	return fic.SetFeedID(f.ID)
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (fic *FeedItemCreate) AddFeedItemCollectionIDs(ids ...model.InternalID) *FeedItemCreate {
+	fic.mutation.AddFeedItemCollectionIDs(ids...)
+	return fic
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (fic *FeedItemCreate) AddFeedItemCollection(f ...*FeedItemCollection) *FeedItemCreate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fic.AddFeedItemCollectionIDs(ids...)
+}
+
 // Mutation returns the FeedItemMutation object of the builder.
 func (fic *FeedItemCreate) Mutation() *FeedItemMutation {
 	return fic.mutation
@@ -438,6 +454,22 @@ func (fic *FeedItemCreate) createSpec() (*FeedItem, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.FeedID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fic.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feeditem.FeedItemCollectionTable,
+			Columns: feeditem.FeedItemCollectionPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

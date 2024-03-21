@@ -11,9 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -82,9 +82,9 @@ func (nfsc *NotifyFlowSourceCreate) SetNotifyFlow(n *NotifyFlow) *NotifyFlowSour
 	return nfsc.SetNotifyFlowID(n.ID)
 }
 
-// SetNotifySource sets the "notify_source" edge to the FeedConfig entity.
-func (nfsc *NotifyFlowSourceCreate) SetNotifySource(f *FeedConfig) *NotifyFlowSourceCreate {
-	return nfsc.SetNotifySourceID(f.ID)
+// SetNotifySource sets the "notify_source" edge to the NotifySource entity.
+func (nfsc *NotifyFlowSourceCreate) SetNotifySource(n *NotifySource) *NotifyFlowSourceCreate {
+	return nfsc.SetNotifySourceID(n.ID)
 }
 
 // Mutation returns the NotifyFlowSourceMutation object of the builder.
@@ -226,7 +226,7 @@ func (nfsc *NotifyFlowSourceCreate) createSpec() (*NotifyFlowSource, *sqlgraph.C
 			Columns: []string{notifyflowsource.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

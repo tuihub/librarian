@@ -39,12 +39,15 @@ func (User) Edges() []ent.Edge {
 		edge.To("app", App.Type),
 		edge.To("app_inst", AppInst.Type),
 		edge.To("feed_config", FeedConfig.Type),
+		edge.To("feed_item_collection", FeedItemCollection.Type),
+		edge.To("notify_source", NotifySource.Type),
 		edge.To("notify_target", NotifyTarget.Type),
 		edge.To("notify_flow", NotifyFlow.Type),
 		edge.To("image", Image.Type),
 		edge.To("file", File.Type),
 		edge.To("device_info", DeviceInfo.Type).
 			Through("user_device", UserDevice.Type),
+		edge.To("tag", Tag.Type),
 		edge.To("created_user", User.Type).
 			From("creator").
 			Unique().

@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -109,9 +109,9 @@ func (nfsu *NotifyFlowSourceUpdate) SetNotifyFlow(n *NotifyFlow) *NotifyFlowSour
 	return nfsu.SetNotifyFlowID(n.ID)
 }
 
-// SetNotifySource sets the "notify_source" edge to the FeedConfig entity.
-func (nfsu *NotifyFlowSourceUpdate) SetNotifySource(f *FeedConfig) *NotifyFlowSourceUpdate {
-	return nfsu.SetNotifySourceID(f.ID)
+// SetNotifySource sets the "notify_source" edge to the NotifySource entity.
+func (nfsu *NotifyFlowSourceUpdate) SetNotifySource(n *NotifySource) *NotifyFlowSourceUpdate {
+	return nfsu.SetNotifySourceID(n.ID)
 }
 
 // Mutation returns the NotifyFlowSourceMutation object of the builder.
@@ -125,7 +125,7 @@ func (nfsu *NotifyFlowSourceUpdate) ClearNotifyFlow() *NotifyFlowSourceUpdate {
 	return nfsu
 }
 
-// ClearNotifySource clears the "notify_source" edge to the FeedConfig entity.
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
 func (nfsu *NotifyFlowSourceUpdate) ClearNotifySource() *NotifyFlowSourceUpdate {
 	nfsu.mutation.ClearNotifySource()
 	return nfsu
@@ -249,7 +249,7 @@ func (nfsu *NotifyFlowSourceUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{notifyflowsource.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -262,7 +262,7 @@ func (nfsu *NotifyFlowSourceUpdate) sqlSave(ctx context.Context) (n int, err err
 			Columns: []string{notifyflowsource.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -367,9 +367,9 @@ func (nfsuo *NotifyFlowSourceUpdateOne) SetNotifyFlow(n *NotifyFlow) *NotifyFlow
 	return nfsuo.SetNotifyFlowID(n.ID)
 }
 
-// SetNotifySource sets the "notify_source" edge to the FeedConfig entity.
-func (nfsuo *NotifyFlowSourceUpdateOne) SetNotifySource(f *FeedConfig) *NotifyFlowSourceUpdateOne {
-	return nfsuo.SetNotifySourceID(f.ID)
+// SetNotifySource sets the "notify_source" edge to the NotifySource entity.
+func (nfsuo *NotifyFlowSourceUpdateOne) SetNotifySource(n *NotifySource) *NotifyFlowSourceUpdateOne {
+	return nfsuo.SetNotifySourceID(n.ID)
 }
 
 // Mutation returns the NotifyFlowSourceMutation object of the builder.
@@ -383,7 +383,7 @@ func (nfsuo *NotifyFlowSourceUpdateOne) ClearNotifyFlow() *NotifyFlowSourceUpdat
 	return nfsuo
 }
 
-// ClearNotifySource clears the "notify_source" edge to the FeedConfig entity.
+// ClearNotifySource clears the "notify_source" edge to the NotifySource entity.
 func (nfsuo *NotifyFlowSourceUpdateOne) ClearNotifySource() *NotifyFlowSourceUpdateOne {
 	nfsuo.mutation.ClearNotifySource()
 	return nfsuo
@@ -537,7 +537,7 @@ func (nfsuo *NotifyFlowSourceUpdateOne) sqlSave(ctx context.Context) (_node *Not
 			Columns: []string{notifyflowsource.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -550,7 +550,7 @@ func (nfsuo *NotifyFlowSourceUpdateOne) sqlSave(ctx context.Context) (_node *Not
 			Columns: []string{notifyflowsource.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

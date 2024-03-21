@@ -37,7 +37,7 @@ func (y *Yesod) ListFeedItems(
 	ctx context.Context,
 	paging model.Paging,
 	feedIDs []model.InternalID,
-	authorIDs []model.InternalID,
+	authors []string,
 	platforms []string,
 	timeRange *model.TimeRange,
 	categories []string,
@@ -47,7 +47,7 @@ func (y *Yesod) ListFeedItems(
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	items, i, err := y.repo.ListFeedItems(ctx,
-		claims.UserID, paging, feedIDs, authorIDs, platforms, timeRange, categories)
+		claims.UserID, paging, feedIDs, authors, platforms, timeRange, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -58,7 +58,7 @@ func (y *Yesod) GroupFeedItems(
 	ctx context.Context,
 	groupBy modelyesod.GroupFeedItemsBy,
 	feedIDs []model.InternalID,
-	authorIDs []model.InternalID,
+	authors []string,
 	platforms []string,
 	timeRange *model.TimeRange,
 	groupSize int,
@@ -121,7 +121,7 @@ func (y *Yesod) GroupFeedItems(
 	if groupSize <= 0 || groupSize > 100 {
 		groupSize = 100
 	}
-	items, err := y.repo.GroupFeedItems(ctx, claims.UserID, groups, feedIDs, authorIDs,
+	items, err := y.repo.GroupFeedItems(ctx, claims.UserID, groups, feedIDs, authors,
 		platforms, groupSize, categories)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())

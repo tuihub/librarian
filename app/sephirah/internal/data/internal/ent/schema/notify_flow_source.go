@@ -44,7 +44,7 @@ func (NotifyFlowSource) Edges() []ent.Edge {
 			Unique().
 			Required().
 			Field("notify_flow_id"),
-		edge.To("notify_source", FeedConfig.Type).
+		edge.To("notify_source", NotifySource.Type).
 			Unique().
 			Required().
 			Field("notify_source_id"),

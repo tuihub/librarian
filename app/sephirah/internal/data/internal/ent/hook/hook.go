@@ -129,6 +129,18 @@ func (f FeedItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, er
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedItemMutation", m)
 }
 
+// The FeedItemCollectionFunc type is an adapter to allow the use of ordinary
+// function as FeedItemCollection mutator.
+type FeedItemCollectionFunc func(context.Context, *ent.FeedItemCollectionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f FeedItemCollectionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.FeedItemCollectionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.FeedItemCollectionMutation", m)
+}
+
 // The FileFunc type is an adapter to allow the use of ordinary
 // function as File mutator.
 type FileFunc func(context.Context, *ent.FileMutation) (ent.Value, error)
@@ -189,6 +201,18 @@ func (f NotifyFlowTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.V
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyFlowTargetMutation", m)
 }
 
+// The NotifySourceFunc type is an adapter to allow the use of ordinary
+// function as NotifySource mutator.
+type NotifySourceFunc func(context.Context, *ent.NotifySourceMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f NotifySourceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.NotifySourceMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifySourceMutation", m)
+}
+
 // The NotifyTargetFunc type is an adapter to allow the use of ordinary
 // function as NotifyTarget mutator.
 type NotifyTargetFunc func(context.Context, *ent.NotifyTargetMutation) (ent.Value, error)
@@ -223,6 +247,18 @@ func (f PorterPrivilegeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterPrivilegeMutation", m)
+}
+
+// The TagFunc type is an adapter to allow the use of ordinary
+// function as Tag mutator.
+type TagFunc func(context.Context, *ent.TagMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TagFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TagMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TagMutation", m)
 }
 
 // The UserFunc type is an adapter to allow the use of ordinary

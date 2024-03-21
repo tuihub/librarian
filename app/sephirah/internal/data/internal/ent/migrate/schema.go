@@ -330,6 +330,37 @@ var (
 			},
 		},
 	}
+	// FeedItemCollectionsColumns holds the columns for the "feed_item_collections" table.
+	FeedItemCollectionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "category", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_feed_item_collection", Type: field.TypeInt64},
+	}
+	// FeedItemCollectionsTable holds the schema information for the "feed_item_collections" table.
+	FeedItemCollectionsTable = &schema.Table{
+		Name:       "feed_item_collections",
+		Columns:    FeedItemCollectionsColumns,
+		PrimaryKey: []*schema.Column{FeedItemCollectionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feed_item_collections_users_feed_item_collection",
+				Columns:    []*schema.Column{FeedItemCollectionsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feeditemcollection_category",
+				Unique:  false,
+				Columns: []*schema.Column{FeedItemCollectionsColumns[3]},
+			},
+		},
+	}
 	// FilesColumns holds the columns for the "files" table.
 	FilesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -433,9 +464,9 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 			{
-				Symbol:     "notify_flow_sources_feed_configs_notify_source",
+				Symbol:     "notify_flow_sources_notify_sources_notify_source",
 				Columns:    []*schema.Column{NotifyFlowSourcesColumns[6]},
-				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
+				RefColumns: []*schema.Column{NotifySourcesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -482,6 +513,41 @@ var (
 				Name:    "notifyflowtarget_notify_flow_id_notify_target_id",
 				Unique:  true,
 				Columns: []*schema.Column{NotifyFlowTargetsColumns[6], NotifyFlowTargetsColumns[7]},
+			},
+		},
+	}
+	// NotifySourcesColumns holds the columns for the "notify_sources" table.
+	NotifySourcesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "feed_config_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "feed_item_collection_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_notify_source", Type: field.TypeInt64},
+	}
+	// NotifySourcesTable holds the schema information for the "notify_sources" table.
+	NotifySourcesTable = &schema.Table{
+		Name:       "notify_sources",
+		Columns:    NotifySourcesColumns,
+		PrimaryKey: []*schema.Column{NotifySourcesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "notify_sources_feed_configs_notify_source",
+				Columns:    []*schema.Column{NotifySourcesColumns[3]},
+				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "notify_sources_feed_item_collections_notify_source",
+				Columns:    []*schema.Column{NotifySourcesColumns[4]},
+				RefColumns: []*schema.Column{FeedItemCollectionsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "notify_sources_users_notify_source",
+				Columns:    []*schema.Column{NotifySourcesColumns[5]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -555,6 +621,30 @@ var (
 				Name:    "porterprivilege_user_id_porter_id",
 				Unique:  true,
 				Columns: []*schema.Column{PorterPrivilegesColumns[1], PorterPrivilegesColumns[2]},
+			},
+		},
+	}
+	// TagsColumns holds the columns for the "tags" table.
+	TagsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "public", Type: field.TypeBool, Default: false},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_tag", Type: field.TypeInt64},
+	}
+	// TagsTable holds the schema information for the "tags" table.
+	TagsTable = &schema.Table{
+		Name:       "tags",
+		Columns:    TagsColumns,
+		PrimaryKey: []*schema.Column{TagsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "tags_users_tag",
+				Columns:    []*schema.Column{TagsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 	}
@@ -674,6 +764,31 @@ var (
 			},
 		},
 	}
+	// FeedItemFeedItemCollectionColumns holds the columns for the "feed_item_feed_item_collection" table.
+	FeedItemFeedItemCollectionColumns = []*schema.Column{
+		{Name: "feed_item_id", Type: field.TypeInt64},
+		{Name: "feed_item_collection_id", Type: field.TypeInt64},
+	}
+	// FeedItemFeedItemCollectionTable holds the schema information for the "feed_item_feed_item_collection" table.
+	FeedItemFeedItemCollectionTable = &schema.Table{
+		Name:       "feed_item_feed_item_collection",
+		Columns:    FeedItemFeedItemCollectionColumns,
+		PrimaryKey: []*schema.Column{FeedItemFeedItemCollectionColumns[0], FeedItemFeedItemCollectionColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feed_item_feed_item_collection_feed_item_id",
+				Columns:    []*schema.Column{FeedItemFeedItemCollectionColumns[0]},
+				RefColumns: []*schema.Column{FeedItemsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "feed_item_feed_item_collection_feed_item_collection_id",
+				Columns:    []*schema.Column{FeedItemFeedItemCollectionColumns[1]},
+				RefColumns: []*schema.Column{FeedItemCollectionsColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// UserPurchasedAppColumns holds the columns for the "user_purchased_app" table.
 	UserPurchasedAppColumns = []*schema.Column{
 		{Name: "user_id", Type: field.TypeInt64},
@@ -711,18 +826,22 @@ var (
 		FeedsTable,
 		FeedConfigsTable,
 		FeedItemsTable,
+		FeedItemCollectionsTable,
 		FilesTable,
 		ImagesTable,
 		NotifyFlowsTable,
 		NotifyFlowSourcesTable,
 		NotifyFlowTargetsTable,
+		NotifySourcesTable,
 		NotifyTargetsTable,
 		PorterInstancesTable,
 		PorterPrivilegesTable,
+		TagsTable,
 		UsersTable,
 		UserDevicesTable,
 		UserSessionsTable,
 		AccountPurchasedAppTable,
+		FeedItemFeedItemCollectionTable,
 		UserPurchasedAppTable,
 	}
 )
@@ -737,21 +856,28 @@ func init() {
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable
+	FeedItemCollectionsTable.ForeignKeys[0].RefTable = UsersTable
 	FilesTable.ForeignKeys[0].RefTable = UsersTable
 	ImagesTable.ForeignKeys[0].RefTable = FilesTable
 	ImagesTable.ForeignKeys[1].RefTable = UsersTable
 	NotifyFlowsTable.ForeignKeys[0].RefTable = UsersTable
 	NotifyFlowSourcesTable.ForeignKeys[0].RefTable = NotifyFlowsTable
-	NotifyFlowSourcesTable.ForeignKeys[1].RefTable = FeedConfigsTable
+	NotifyFlowSourcesTable.ForeignKeys[1].RefTable = NotifySourcesTable
 	NotifyFlowTargetsTable.ForeignKeys[0].RefTable = NotifyFlowsTable
 	NotifyFlowTargetsTable.ForeignKeys[1].RefTable = NotifyTargetsTable
+	NotifySourcesTable.ForeignKeys[0].RefTable = FeedConfigsTable
+	NotifySourcesTable.ForeignKeys[1].RefTable = FeedItemCollectionsTable
+	NotifySourcesTable.ForeignKeys[2].RefTable = UsersTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
+	TagsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
 	UserDevicesTable.ForeignKeys[0].RefTable = DeviceInfosTable
 	UserDevicesTable.ForeignKeys[1].RefTable = UsersTable
 	UserSessionsTable.ForeignKeys[0].RefTable = DeviceInfosTable
 	AccountPurchasedAppTable.ForeignKeys[0].RefTable = AccountsTable
 	AccountPurchasedAppTable.ForeignKeys[1].RefTable = AppInfosTable
+	FeedItemFeedItemCollectionTable.ForeignKeys[0].RefTable = FeedItemsTable
+	FeedItemFeedItemCollectionTable.ForeignKeys[1].RefTable = FeedItemCollectionsTable
 	UserPurchasedAppTable.ForeignKeys[0].RefTable = UsersTable
 	UserPurchasedAppTable.ForeignKeys[1].RefTable = AppInfosTable
 }

@@ -13,8 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -181,34 +180,19 @@ func (fcc *FeedConfigCreate) SetFeed(f *Feed) *FeedConfigCreate {
 	return fcc.SetFeedID(f.ID)
 }
 
-// AddNotifyFlowIDs adds the "notify_flow" edge to the NotifyFlow entity by IDs.
-func (fcc *FeedConfigCreate) AddNotifyFlowIDs(ids ...model.InternalID) *FeedConfigCreate {
-	fcc.mutation.AddNotifyFlowIDs(ids...)
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (fcc *FeedConfigCreate) AddNotifySourceIDs(ids ...model.InternalID) *FeedConfigCreate {
+	fcc.mutation.AddNotifySourceIDs(ids...)
 	return fcc
 }
 
-// AddNotifyFlow adds the "notify_flow" edges to the NotifyFlow entity.
-func (fcc *FeedConfigCreate) AddNotifyFlow(n ...*NotifyFlow) *FeedConfigCreate {
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (fcc *FeedConfigCreate) AddNotifySource(n ...*NotifySource) *FeedConfigCreate {
 	ids := make([]model.InternalID, len(n))
 	for i := range n {
 		ids[i] = n[i].ID
 	}
-	return fcc.AddNotifyFlowIDs(ids...)
-}
-
-// AddNotifyFlowSourceIDs adds the "notify_flow_source" edge to the NotifyFlowSource entity by IDs.
-func (fcc *FeedConfigCreate) AddNotifyFlowSourceIDs(ids ...int) *FeedConfigCreate {
-	fcc.mutation.AddNotifyFlowSourceIDs(ids...)
-	return fcc
-}
-
-// AddNotifyFlowSource adds the "notify_flow_source" edges to the NotifyFlowSource entity.
-func (fcc *FeedConfigCreate) AddNotifyFlowSource(n ...*NotifyFlowSource) *FeedConfigCreate {
-	ids := make([]int, len(n))
-	for i := range n {
-		ids[i] = n[i].ID
-	}
-	return fcc.AddNotifyFlowSourceIDs(ids...)
+	return fcc.AddNotifySourceIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -431,35 +415,15 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fcc.mutation.NotifyFlowIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   feedconfig.NotifyFlowTable,
-			Columns: feedconfig.NotifyFlowPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflow.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &NotifyFlowSourceCreate{config: fcc.config, mutation: newNotifyFlowSourceMutation(fcc.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := fcc.mutation.NotifyFlowSourceIDs(); len(nodes) > 0 {
+	if nodes := fcc.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   feedconfig.NotifyFlowSourceTable,
-			Columns: []string{feedconfig.NotifyFlowSourceColumn},
+			Inverse: false,
+			Table:   feedconfig.NotifySourceTable,
+			Columns: []string{feedconfig.NotifySourceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(notifyflowsource.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -58,13 +58,11 @@ type FeedConfigEdges struct {
 	Owner *User `json:"owner,omitempty"`
 	// Feed holds the value of the feed edge.
 	Feed *Feed `json:"feed,omitempty"`
-	// NotifyFlow holds the value of the notify_flow edge.
-	NotifyFlow []*NotifyFlow `json:"notify_flow,omitempty"`
-	// NotifyFlowSource holds the value of the notify_flow_source edge.
-	NotifyFlowSource []*NotifyFlowSource `json:"notify_flow_source,omitempty"`
+	// NotifySource holds the value of the notify_source edge.
+	NotifySource []*NotifySource `json:"notify_source,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [3]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -89,22 +87,13 @@ func (e FeedConfigEdges) FeedOrErr() (*Feed, error) {
 	return nil, &NotLoadedError{edge: "feed"}
 }
 
-// NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
+// NotifySourceOrErr returns the NotifySource value or an error if the edge
 // was not loaded in eager-loading.
-func (e FeedConfigEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
+func (e FeedConfigEdges) NotifySourceOrErr() ([]*NotifySource, error) {
 	if e.loadedTypes[2] {
-		return e.NotifyFlow, nil
+		return e.NotifySource, nil
 	}
-	return nil, &NotLoadedError{edge: "notify_flow"}
-}
-
-// NotifyFlowSourceOrErr returns the NotifyFlowSource value or an error if the edge
-// was not loaded in eager-loading.
-func (e FeedConfigEdges) NotifyFlowSourceOrErr() ([]*NotifyFlowSource, error) {
-	if e.loadedTypes[3] {
-		return e.NotifyFlowSource, nil
-	}
-	return nil, &NotLoadedError{edge: "notify_flow_source"}
+	return nil, &NotLoadedError{edge: "notify_source"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -242,14 +231,9 @@ func (fc *FeedConfig) QueryFeed() *FeedQuery {
 	return NewFeedConfigClient(fc.config).QueryFeed(fc)
 }
 
-// QueryNotifyFlow queries the "notify_flow" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryNotifyFlow() *NotifyFlowQuery {
-	return NewFeedConfigClient(fc.config).QueryNotifyFlow(fc)
-}
-
-// QueryNotifyFlowSource queries the "notify_flow_source" edge of the FeedConfig entity.
-func (fc *FeedConfig) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
-	return NewFeedConfigClient(fc.config).QueryNotifyFlowSource(fc)
+// QueryNotifySource queries the "notify_source" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryNotifySource() *NotifySourceQuery {
+	return NewFeedConfigClient(fc.config).QueryNotifySource(fc)
 }
 
 // Update returns a builder for updating this FeedConfig.

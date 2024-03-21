@@ -15,15 +15,18 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
@@ -169,6 +172,18 @@ func init() {
 	feeditemDescCreatedAt := feeditemFields[19].Descriptor()
 	// feeditem.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feeditem.DefaultCreatedAt = feeditemDescCreatedAt.Default.(func() time.Time)
+	feeditemcollectionFields := schema.FeedItemCollection{}.Fields()
+	_ = feeditemcollectionFields
+	// feeditemcollectionDescUpdatedAt is the schema descriptor for updated_at field.
+	feeditemcollectionDescUpdatedAt := feeditemcollectionFields[4].Descriptor()
+	// feeditemcollection.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	feeditemcollection.DefaultUpdatedAt = feeditemcollectionDescUpdatedAt.Default.(func() time.Time)
+	// feeditemcollection.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	feeditemcollection.UpdateDefaultUpdatedAt = feeditemcollectionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// feeditemcollectionDescCreatedAt is the schema descriptor for created_at field.
+	feeditemcollectionDescCreatedAt := feeditemcollectionFields[5].Descriptor()
+	// feeditemcollection.DefaultCreatedAt holds the default value on creation for the created_at field.
+	feeditemcollection.DefaultCreatedAt = feeditemcollectionDescCreatedAt.Default.(func() time.Time)
 	fileFields := schema.File{}.Fields()
 	_ = fileFields
 	// fileDescUpdatedAt is the schema descriptor for updated_at field.
@@ -229,6 +244,18 @@ func init() {
 	notifyflowtargetDescCreatedAt := notifyflowtargetFields[6].Descriptor()
 	// notifyflowtarget.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifyflowtarget.DefaultCreatedAt = notifyflowtargetDescCreatedAt.Default.(func() time.Time)
+	notifysourceFields := schema.NotifySource{}.Fields()
+	_ = notifysourceFields
+	// notifysourceDescUpdatedAt is the schema descriptor for updated_at field.
+	notifysourceDescUpdatedAt := notifysourceFields[3].Descriptor()
+	// notifysource.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	notifysource.DefaultUpdatedAt = notifysourceDescUpdatedAt.Default.(func() time.Time)
+	// notifysource.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	notifysource.UpdateDefaultUpdatedAt = notifysourceDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// notifysourceDescCreatedAt is the schema descriptor for created_at field.
+	notifysourceDescCreatedAt := notifysourceFields[4].Descriptor()
+	// notifysource.DefaultCreatedAt holds the default value on creation for the created_at field.
+	notifysource.DefaultCreatedAt = notifysourceDescCreatedAt.Default.(func() time.Time)
 	notifytargetFields := schema.NotifyTarget{}.Fields()
 	_ = notifytargetFields
 	// notifytargetDescUpdatedAt is the schema descriptor for updated_at field.
@@ -265,6 +292,22 @@ func init() {
 	porterprivilegeDescCreatedAt := porterprivilegeFields[4].Descriptor()
 	// porterprivilege.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterprivilege.DefaultCreatedAt = porterprivilegeDescCreatedAt.Default.(func() time.Time)
+	tagFields := schema.Tag{}.Fields()
+	_ = tagFields
+	// tagDescPublic is the schema descriptor for public field.
+	tagDescPublic := tagFields[4].Descriptor()
+	// tag.DefaultPublic holds the default value on creation for the public field.
+	tag.DefaultPublic = tagDescPublic.Default.(bool)
+	// tagDescUpdatedAt is the schema descriptor for updated_at field.
+	tagDescUpdatedAt := tagFields[5].Descriptor()
+	// tag.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	tag.DefaultUpdatedAt = tagDescUpdatedAt.Default.(func() time.Time)
+	// tag.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	tag.UpdateDefaultUpdatedAt = tagDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// tagDescCreatedAt is the schema descriptor for created_at field.
+	tagDescCreatedAt := tagFields[6].Descriptor()
+	// tag.DefaultCreatedAt holds the default value on creation for the created_at field.
+	tag.DefaultCreatedAt = tagDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescUpdatedAt is the schema descriptor for updated_at field.

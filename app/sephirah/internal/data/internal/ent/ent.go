@@ -22,14 +22,17 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
@@ -93,27 +96,30 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			account.Table:          account.ValidColumn,
-			app.Table:              app.ValidColumn,
-			appbinary.Table:        appbinary.ValidColumn,
-			appinfo.Table:          appinfo.ValidColumn,
-			appinst.Table:          appinst.ValidColumn,
-			appinstruntime.Table:   appinstruntime.ValidColumn,
-			deviceinfo.Table:       deviceinfo.ValidColumn,
-			feed.Table:             feed.ValidColumn,
-			feedconfig.Table:       feedconfig.ValidColumn,
-			feeditem.Table:         feeditem.ValidColumn,
-			file.Table:             file.ValidColumn,
-			image.Table:            image.ValidColumn,
-			notifyflow.Table:       notifyflow.ValidColumn,
-			notifyflowsource.Table: notifyflowsource.ValidColumn,
-			notifyflowtarget.Table: notifyflowtarget.ValidColumn,
-			notifytarget.Table:     notifytarget.ValidColumn,
-			porterinstance.Table:   porterinstance.ValidColumn,
-			porterprivilege.Table:  porterprivilege.ValidColumn,
-			user.Table:             user.ValidColumn,
-			userdevice.Table:       userdevice.ValidColumn,
-			usersession.Table:      usersession.ValidColumn,
+			account.Table:            account.ValidColumn,
+			app.Table:                app.ValidColumn,
+			appbinary.Table:          appbinary.ValidColumn,
+			appinfo.Table:            appinfo.ValidColumn,
+			appinst.Table:            appinst.ValidColumn,
+			appinstruntime.Table:     appinstruntime.ValidColumn,
+			deviceinfo.Table:         deviceinfo.ValidColumn,
+			feed.Table:               feed.ValidColumn,
+			feedconfig.Table:         feedconfig.ValidColumn,
+			feeditem.Table:           feeditem.ValidColumn,
+			feeditemcollection.Table: feeditemcollection.ValidColumn,
+			file.Table:               file.ValidColumn,
+			image.Table:              image.ValidColumn,
+			notifyflow.Table:         notifyflow.ValidColumn,
+			notifyflowsource.Table:   notifyflowsource.ValidColumn,
+			notifyflowtarget.Table:   notifyflowtarget.ValidColumn,
+			notifysource.Table:       notifysource.ValidColumn,
+			notifytarget.Table:       notifytarget.ValidColumn,
+			porterinstance.Table:     porterinstance.ValidColumn,
+			porterprivilege.Table:    porterprivilege.ValidColumn,
+			tag.Table:                tag.ValidColumn,
+			user.Table:               user.ValidColumn,
+			userdevice.Table:         userdevice.ValidColumn,
+			usersession.Table:        usersession.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

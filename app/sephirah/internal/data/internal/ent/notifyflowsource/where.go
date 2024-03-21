@@ -253,7 +253,7 @@ func HasNotifySource() predicate.NotifyFlowSource {
 }
 
 // HasNotifySourceWith applies the HasEdge predicate on the "notify_source" edge with a given conditions (other predicates).
-func HasNotifySourceWith(preds ...predicate.FeedConfig) predicate.NotifyFlowSource {
+func HasNotifySourceWith(preds ...predicate.NotifySource) predicate.NotifyFlowSource {
 	return predicate.NotifyFlowSource(func(s *sql.Selector) {
 		step := newNotifySourceStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {

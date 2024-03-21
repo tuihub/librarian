@@ -64,5 +64,6 @@ func (FeedItem) Edges() []ent.Edge {
 			Unique().
 			Immutable().
 			Required(),
+		edge.To("feed_item_collection", FeedItemCollection.Type),
 	}
 }

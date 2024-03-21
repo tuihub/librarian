@@ -1100,6 +1100,29 @@ func HasFeedWith(preds ...predicate.Feed) predicate.FeedItem {
 	})
 }
 
+// HasFeedItemCollection applies the HasEdge predicate on the "feed_item_collection" edge.
+func HasFeedItemCollection() predicate.FeedItem {
+	return predicate.FeedItem(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, FeedItemCollectionTable, FeedItemCollectionPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedItemCollectionWith applies the HasEdge predicate on the "feed_item_collection" edge with a given conditions (other predicates).
+func HasFeedItemCollectionWith(preds ...predicate.FeedItemCollection) predicate.FeedItem {
+	return predicate.FeedItem(func(s *sql.Selector) {
+		step := newFeedItemCollectionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.FeedItem) predicate.FeedItem {
 	return predicate.FeedItem(sql.AndPredicates(predicates...))

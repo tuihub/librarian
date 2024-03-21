@@ -11,10 +11,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -106,19 +106,19 @@ func (nfc *NotifyFlowCreate) AddNotifyTarget(n ...*NotifyTarget) *NotifyFlowCrea
 	return nfc.AddNotifyTargetIDs(ids...)
 }
 
-// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
-func (nfc *NotifyFlowCreate) AddFeedConfigIDs(ids ...model.InternalID) *NotifyFlowCreate {
-	nfc.mutation.AddFeedConfigIDs(ids...)
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (nfc *NotifyFlowCreate) AddNotifySourceIDs(ids ...model.InternalID) *NotifyFlowCreate {
+	nfc.mutation.AddNotifySourceIDs(ids...)
 	return nfc
 }
 
-// AddFeedConfig adds the "feed_config" edges to the FeedConfig entity.
-func (nfc *NotifyFlowCreate) AddFeedConfig(f ...*FeedConfig) *NotifyFlowCreate {
-	ids := make([]model.InternalID, len(f))
-	for i := range f {
-		ids[i] = f[i].ID
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (nfc *NotifyFlowCreate) AddNotifySource(n ...*NotifySource) *NotifyFlowCreate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
 	}
-	return nfc.AddFeedConfigIDs(ids...)
+	return nfc.AddNotifySourceIDs(ids...)
 }
 
 // AddNotifyFlowTargetIDs adds the "notify_flow_target" edge to the NotifyFlowTarget entity by IDs.
@@ -311,15 +311,15 @@ func (nfc *NotifyFlowCreate) createSpec() (*NotifyFlow, *sqlgraph.CreateSpec) {
 		edge.Target.Fields = specE.Fields
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := nfc.mutation.FeedConfigIDs(); len(nodes) > 0 {
+	if nodes := nfc.mutation.NotifySourceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   notifyflow.FeedConfigTable,
-			Columns: notifyflow.FeedConfigPrimaryKey,
+			Inverse: false,
+			Table:   notifyflow.NotifySourceTable,
+			Columns: notifyflow.NotifySourcePrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -49,6 +49,10 @@ type UserEdges struct {
 	AppInst []*AppInst `json:"app_inst,omitempty"`
 	// FeedConfig holds the value of the feed_config edge.
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
+	// FeedItemCollection holds the value of the feed_item_collection edge.
+	FeedItemCollection []*FeedItemCollection `json:"feed_item_collection,omitempty"`
+	// NotifySource holds the value of the notify_source edge.
+	NotifySource []*NotifySource `json:"notify_source,omitempty"`
 	// NotifyTarget holds the value of the notify_target edge.
 	NotifyTarget []*NotifyTarget `json:"notify_target,omitempty"`
 	// NotifyFlow holds the value of the notify_flow edge.
@@ -59,6 +63,8 @@ type UserEdges struct {
 	File []*File `json:"file,omitempty"`
 	// DeviceInfo holds the value of the device_info edge.
 	DeviceInfo []*DeviceInfo `json:"device_info,omitempty"`
+	// Tag holds the value of the tag edge.
+	Tag []*Tag `json:"tag,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
@@ -67,7 +73,7 @@ type UserEdges struct {
 	UserDevice []*UserDevice `json:"user_device,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [13]bool
+	loadedTypes [16]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -115,10 +121,28 @@ func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
 	return nil, &NotLoadedError{edge: "feed_config"}
 }
 
+// FeedItemCollectionOrErr returns the FeedItemCollection value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) FeedItemCollectionOrErr() ([]*FeedItemCollection, error) {
+	if e.loadedTypes[5] {
+		return e.FeedItemCollection, nil
+	}
+	return nil, &NotLoadedError{edge: "feed_item_collection"}
+}
+
+// NotifySourceOrErr returns the NotifySource value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) NotifySourceOrErr() ([]*NotifySource, error) {
+	if e.loadedTypes[6] {
+		return e.NotifySource, nil
+	}
+	return nil, &NotLoadedError{edge: "notify_source"}
+}
+
 // NotifyTargetOrErr returns the NotifyTarget value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[7] {
 		return e.NotifyTarget, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_target"}
@@ -127,7 +151,7 @@ func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
 // NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[8] {
 		return e.NotifyFlow, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_flow"}
@@ -136,7 +160,7 @@ func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
 // ImageOrErr returns the Image value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) ImageOrErr() ([]*Image, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[9] {
 		return e.Image, nil
 	}
 	return nil, &NotLoadedError{edge: "image"}
@@ -145,7 +169,7 @@ func (e UserEdges) ImageOrErr() ([]*Image, error) {
 // FileOrErr returns the File value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FileOrErr() ([]*File, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[10] {
 		return e.File, nil
 	}
 	return nil, &NotLoadedError{edge: "file"}
@@ -154,10 +178,19 @@ func (e UserEdges) FileOrErr() ([]*File, error) {
 // DeviceInfoOrErr returns the DeviceInfo value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[11] {
 		return e.DeviceInfo, nil
 	}
 	return nil, &NotLoadedError{edge: "device_info"}
+}
+
+// TagOrErr returns the Tag value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) TagOrErr() ([]*Tag, error) {
+	if e.loadedTypes[12] {
+		return e.Tag, nil
+	}
+	return nil, &NotLoadedError{edge: "tag"}
 }
 
 // CreatorOrErr returns the Creator value or an error if the edge
@@ -165,7 +198,7 @@ func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
 func (e UserEdges) CreatorOrErr() (*User, error) {
 	if e.Creator != nil {
 		return e.Creator, nil
-	} else if e.loadedTypes[10] {
+	} else if e.loadedTypes[13] {
 		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "creator"}
@@ -174,7 +207,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[14] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -183,7 +216,7 @@ func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
 // UserDeviceOrErr returns the UserDevice value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) UserDeviceOrErr() ([]*UserDevice, error) {
-	if e.loadedTypes[12] {
+	if e.loadedTypes[15] {
 		return e.UserDevice, nil
 	}
 	return nil, &NotLoadedError{edge: "user_device"}
@@ -304,6 +337,16 @@ func (u *User) QueryFeedConfig() *FeedConfigQuery {
 	return NewUserClient(u.config).QueryFeedConfig(u)
 }
 
+// QueryFeedItemCollection queries the "feed_item_collection" edge of the User entity.
+func (u *User) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	return NewUserClient(u.config).QueryFeedItemCollection(u)
+}
+
+// QueryNotifySource queries the "notify_source" edge of the User entity.
+func (u *User) QueryNotifySource() *NotifySourceQuery {
+	return NewUserClient(u.config).QueryNotifySource(u)
+}
+
 // QueryNotifyTarget queries the "notify_target" edge of the User entity.
 func (u *User) QueryNotifyTarget() *NotifyTargetQuery {
 	return NewUserClient(u.config).QueryNotifyTarget(u)
@@ -327,6 +370,11 @@ func (u *User) QueryFile() *FileQuery {
 // QueryDeviceInfo queries the "device_info" edge of the User entity.
 func (u *User) QueryDeviceInfo() *DeviceInfoQuery {
 	return NewUserClient(u.config).QueryDeviceInfo(u)
+}
+
+// QueryTag queries the "tag" edge of the User entity.
+func (u *User) QueryTag() *TagQuery {
+	return NewUserClient(u.config).QueryTag(u)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.

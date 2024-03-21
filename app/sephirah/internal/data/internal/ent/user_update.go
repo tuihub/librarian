@@ -17,11 +17,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
@@ -191,6 +194,36 @@ func (uu *UserUpdate) AddFeedConfig(f ...*FeedConfig) *UserUpdate {
 	return uu.AddFeedConfigIDs(ids...)
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (uu *UserUpdate) AddFeedItemCollectionIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddFeedItemCollectionIDs(ids...)
+	return uu
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (uu *UserUpdate) AddFeedItemCollection(f ...*FeedItemCollection) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.AddFeedItemCollectionIDs(ids...)
+}
+
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (uu *UserUpdate) AddNotifySourceIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddNotifySourceIDs(ids...)
+	return uu
+}
+
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (uu *UserUpdate) AddNotifySource(n ...*NotifySource) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.AddNotifySourceIDs(ids...)
+}
+
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
 func (uu *UserUpdate) AddNotifyTargetIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddNotifyTargetIDs(ids...)
@@ -264,6 +297,21 @@ func (uu *UserUpdate) AddDeviceInfo(d ...*DeviceInfo) *UserUpdate {
 		ids[i] = d[i].ID
 	}
 	return uu.AddDeviceInfoIDs(ids...)
+}
+
+// AddTagIDs adds the "tag" edge to the Tag entity by IDs.
+func (uu *UserUpdate) AddTagIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddTagIDs(ids...)
+	return uu
+}
+
+// AddTag adds the "tag" edges to the Tag entity.
+func (uu *UserUpdate) AddTag(t ...*Tag) *UserUpdate {
+	ids := make([]model.InternalID, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uu.AddTagIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -417,6 +465,48 @@ func (uu *UserUpdate) RemoveFeedConfig(f ...*FeedConfig) *UserUpdate {
 	return uu.RemoveFeedConfigIDs(ids...)
 }
 
+// ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
+func (uu *UserUpdate) ClearFeedItemCollection() *UserUpdate {
+	uu.mutation.ClearFeedItemCollection()
+	return uu
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to FeedItemCollection entities by IDs.
+func (uu *UserUpdate) RemoveFeedItemCollectionIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveFeedItemCollectionIDs(ids...)
+	return uu
+}
+
+// RemoveFeedItemCollection removes "feed_item_collection" edges to FeedItemCollection entities.
+func (uu *UserUpdate) RemoveFeedItemCollection(f ...*FeedItemCollection) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.RemoveFeedItemCollectionIDs(ids...)
+}
+
+// ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
+func (uu *UserUpdate) ClearNotifySource() *UserUpdate {
+	uu.mutation.ClearNotifySource()
+	return uu
+}
+
+// RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
+func (uu *UserUpdate) RemoveNotifySourceIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveNotifySourceIDs(ids...)
+	return uu
+}
+
+// RemoveNotifySource removes "notify_source" edges to NotifySource entities.
+func (uu *UserUpdate) RemoveNotifySource(n ...*NotifySource) *UserUpdate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uu.RemoveNotifySourceIDs(ids...)
+}
+
 // ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
 func (uu *UserUpdate) ClearNotifyTarget() *UserUpdate {
 	uu.mutation.ClearNotifyTarget()
@@ -520,6 +610,27 @@ func (uu *UserUpdate) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdate {
 		ids[i] = d[i].ID
 	}
 	return uu.RemoveDeviceInfoIDs(ids...)
+}
+
+// ClearTag clears all "tag" edges to the Tag entity.
+func (uu *UserUpdate) ClearTag() *UserUpdate {
+	uu.mutation.ClearTag()
+	return uu
+}
+
+// RemoveTagIDs removes the "tag" edge to Tag entities by IDs.
+func (uu *UserUpdate) RemoveTagIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveTagIDs(ids...)
+	return uu
+}
+
+// RemoveTag removes "tag" edges to Tag entities.
+func (uu *UserUpdate) RemoveTag(t ...*Tag) *UserUpdate {
+	ids := make([]model.InternalID, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uu.RemoveTagIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -879,6 +990,96 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedFeedItemCollectionIDs(); len(nodes) > 0 && !uu.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.NotifySourceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !uu.mutation.NotifySourceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.NotifySourceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1114,6 +1315,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.TagCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedTagIDs(); len(nodes) > 0 && !uu.mutation.TagCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.TagIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if uu.mutation.CreatorCleared() {
@@ -1406,6 +1652,36 @@ func (uuo *UserUpdateOne) AddFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 	return uuo.AddFeedConfigIDs(ids...)
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (uuo *UserUpdateOne) AddFeedItemCollectionIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddFeedItemCollectionIDs(ids...)
+	return uuo
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (uuo *UserUpdateOne) AddFeedItemCollection(f ...*FeedItemCollection) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.AddFeedItemCollectionIDs(ids...)
+}
+
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (uuo *UserUpdateOne) AddNotifySourceIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddNotifySourceIDs(ids...)
+	return uuo
+}
+
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (uuo *UserUpdateOne) AddNotifySource(n ...*NotifySource) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.AddNotifySourceIDs(ids...)
+}
+
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
 func (uuo *UserUpdateOne) AddNotifyTargetIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddNotifyTargetIDs(ids...)
@@ -1479,6 +1755,21 @@ func (uuo *UserUpdateOne) AddDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return uuo.AddDeviceInfoIDs(ids...)
+}
+
+// AddTagIDs adds the "tag" edge to the Tag entity by IDs.
+func (uuo *UserUpdateOne) AddTagIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddTagIDs(ids...)
+	return uuo
+}
+
+// AddTag adds the "tag" edges to the Tag entity.
+func (uuo *UserUpdateOne) AddTag(t ...*Tag) *UserUpdateOne {
+	ids := make([]model.InternalID, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uuo.AddTagIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -1632,6 +1923,48 @@ func (uuo *UserUpdateOne) RemoveFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 	return uuo.RemoveFeedConfigIDs(ids...)
 }
 
+// ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
+func (uuo *UserUpdateOne) ClearFeedItemCollection() *UserUpdateOne {
+	uuo.mutation.ClearFeedItemCollection()
+	return uuo
+}
+
+// RemoveFeedItemCollectionIDs removes the "feed_item_collection" edge to FeedItemCollection entities by IDs.
+func (uuo *UserUpdateOne) RemoveFeedItemCollectionIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveFeedItemCollectionIDs(ids...)
+	return uuo
+}
+
+// RemoveFeedItemCollection removes "feed_item_collection" edges to FeedItemCollection entities.
+func (uuo *UserUpdateOne) RemoveFeedItemCollection(f ...*FeedItemCollection) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.RemoveFeedItemCollectionIDs(ids...)
+}
+
+// ClearNotifySource clears all "notify_source" edges to the NotifySource entity.
+func (uuo *UserUpdateOne) ClearNotifySource() *UserUpdateOne {
+	uuo.mutation.ClearNotifySource()
+	return uuo
+}
+
+// RemoveNotifySourceIDs removes the "notify_source" edge to NotifySource entities by IDs.
+func (uuo *UserUpdateOne) RemoveNotifySourceIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveNotifySourceIDs(ids...)
+	return uuo
+}
+
+// RemoveNotifySource removes "notify_source" edges to NotifySource entities.
+func (uuo *UserUpdateOne) RemoveNotifySource(n ...*NotifySource) *UserUpdateOne {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uuo.RemoveNotifySourceIDs(ids...)
+}
+
 // ClearNotifyTarget clears all "notify_target" edges to the NotifyTarget entity.
 func (uuo *UserUpdateOne) ClearNotifyTarget() *UserUpdateOne {
 	uuo.mutation.ClearNotifyTarget()
@@ -1735,6 +2068,27 @@ func (uuo *UserUpdateOne) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
 		ids[i] = d[i].ID
 	}
 	return uuo.RemoveDeviceInfoIDs(ids...)
+}
+
+// ClearTag clears all "tag" edges to the Tag entity.
+func (uuo *UserUpdateOne) ClearTag() *UserUpdateOne {
+	uuo.mutation.ClearTag()
+	return uuo
+}
+
+// RemoveTagIDs removes the "tag" edge to Tag entities by IDs.
+func (uuo *UserUpdateOne) RemoveTagIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveTagIDs(ids...)
+	return uuo
+}
+
+// RemoveTag removes "tag" edges to Tag entities.
+func (uuo *UserUpdateOne) RemoveTag(t ...*Tag) *UserUpdateOne {
+	ids := make([]model.InternalID, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uuo.RemoveTagIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -2124,6 +2478,96 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uuo.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedFeedItemCollectionIDs(); len(nodes) > 0 && !uuo.mutation.FeedItemCollectionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.NotifySourceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedNotifySourceIDs(); len(nodes) > 0 && !uuo.mutation.NotifySourceCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.NotifySourceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uuo.mutation.NotifyTargetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -2359,6 +2803,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.TagCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedTagIDs(); len(nodes) > 0 && !uuo.mutation.TagCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.TagIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if uuo.mutation.CreatorCleared() {

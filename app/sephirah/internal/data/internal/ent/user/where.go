@@ -441,6 +441,52 @@ func HasFeedConfigWith(preds ...predicate.FeedConfig) predicate.User {
 	})
 }
 
+// HasFeedItemCollection applies the HasEdge predicate on the "feed_item_collection" edge.
+func HasFeedItemCollection() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FeedItemCollectionTable, FeedItemCollectionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedItemCollectionWith applies the HasEdge predicate on the "feed_item_collection" edge with a given conditions (other predicates).
+func HasFeedItemCollectionWith(preds ...predicate.FeedItemCollection) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newFeedItemCollectionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasNotifySource applies the HasEdge predicate on the "notify_source" edge.
+func HasNotifySource() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, NotifySourceTable, NotifySourceColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasNotifySourceWith applies the HasEdge predicate on the "notify_source" edge with a given conditions (other predicates).
+func HasNotifySourceWith(preds ...predicate.NotifySource) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newNotifySourceStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasNotifyTarget applies the HasEdge predicate on the "notify_target" edge.
 func HasNotifyTarget() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -548,6 +594,29 @@ func HasDeviceInfo() predicate.User {
 func HasDeviceInfoWith(preds ...predicate.DeviceInfo) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := newDeviceInfoStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasTag applies the HasEdge predicate on the "tag" edge.
+func HasTag() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, TagTable, TagColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasTagWith applies the HasEdge predicate on the "tag" edge with a given conditions (other predicates).
+func HasTagWith(preds ...predicate.Tag) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newTagStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

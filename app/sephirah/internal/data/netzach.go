@@ -6,10 +6,10 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
@@ -270,7 +270,7 @@ func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*
 
 func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
 	ids, err := n.data.db.NotifyFlow.Query().Where(
-		notifyflow.HasFeedConfigWith(feedconfig.IDEQ(id)),
+		notifyflow.HasNotifySourceWith(notifysource.FeedConfigIDEQ(id)),
 	).IDs(ctx)
 	if err != nil {
 		return nil, err

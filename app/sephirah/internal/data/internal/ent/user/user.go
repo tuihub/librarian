@@ -37,6 +37,10 @@ const (
 	EdgeAppInst = "app_inst"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
+	// EdgeFeedItemCollection holds the string denoting the feed_item_collection edge name in mutations.
+	EdgeFeedItemCollection = "feed_item_collection"
+	// EdgeNotifySource holds the string denoting the notify_source edge name in mutations.
+	EdgeNotifySource = "notify_source"
 	// EdgeNotifyTarget holds the string denoting the notify_target edge name in mutations.
 	EdgeNotifyTarget = "notify_target"
 	// EdgeNotifyFlow holds the string denoting the notify_flow edge name in mutations.
@@ -47,6 +51,8 @@ const (
 	EdgeFile = "file"
 	// EdgeDeviceInfo holds the string denoting the device_info edge name in mutations.
 	EdgeDeviceInfo = "device_info"
+	// EdgeTag holds the string denoting the tag edge name in mutations.
+	EdgeTag = "tag"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
@@ -88,6 +94,20 @@ const (
 	FeedConfigInverseTable = "feed_configs"
 	// FeedConfigColumn is the table column denoting the feed_config relation/edge.
 	FeedConfigColumn = "user_feed_config"
+	// FeedItemCollectionTable is the table that holds the feed_item_collection relation/edge.
+	FeedItemCollectionTable = "feed_item_collections"
+	// FeedItemCollectionInverseTable is the table name for the FeedItemCollection entity.
+	// It exists in this package in order to avoid circular dependency with the "feeditemcollection" package.
+	FeedItemCollectionInverseTable = "feed_item_collections"
+	// FeedItemCollectionColumn is the table column denoting the feed_item_collection relation/edge.
+	FeedItemCollectionColumn = "user_feed_item_collection"
+	// NotifySourceTable is the table that holds the notify_source relation/edge.
+	NotifySourceTable = "notify_sources"
+	// NotifySourceInverseTable is the table name for the NotifySource entity.
+	// It exists in this package in order to avoid circular dependency with the "notifysource" package.
+	NotifySourceInverseTable = "notify_sources"
+	// NotifySourceColumn is the table column denoting the notify_source relation/edge.
+	NotifySourceColumn = "user_notify_source"
 	// NotifyTargetTable is the table that holds the notify_target relation/edge.
 	NotifyTargetTable = "notify_targets"
 	// NotifyTargetInverseTable is the table name for the NotifyTarget entity.
@@ -121,6 +141,13 @@ const (
 	// DeviceInfoInverseTable is the table name for the DeviceInfo entity.
 	// It exists in this package in order to avoid circular dependency with the "deviceinfo" package.
 	DeviceInfoInverseTable = "device_infos"
+	// TagTable is the table that holds the tag relation/edge.
+	TagTable = "tags"
+	// TagInverseTable is the table name for the Tag entity.
+	// It exists in this package in order to avoid circular dependency with the "tag" package.
+	TagInverseTable = "tags"
+	// TagColumn is the table column denoting the tag relation/edge.
+	TagColumn = "user_tag"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.
@@ -343,6 +370,34 @@ func ByFeedConfig(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByFeedItemCollectionCount orders the results by feed_item_collection count.
+func ByFeedItemCollectionCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedItemCollectionStep(), opts...)
+	}
+}
+
+// ByFeedItemCollection orders the results by feed_item_collection terms.
+func ByFeedItemCollection(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedItemCollectionStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByNotifySourceCount orders the results by notify_source count.
+func ByNotifySourceCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newNotifySourceStep(), opts...)
+	}
+}
+
+// ByNotifySource orders the results by notify_source terms.
+func ByNotifySource(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newNotifySourceStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByNotifyTargetCount orders the results by notify_target count.
 func ByNotifyTargetCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -410,6 +465,20 @@ func ByDeviceInfoCount(opts ...sql.OrderTermOption) OrderOption {
 func ByDeviceInfo(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newDeviceInfoStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByTagCount orders the results by tag count.
+func ByTagCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTagStep(), opts...)
+	}
+}
+
+// ByTag orders the results by tag terms.
+func ByTag(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTagStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -482,6 +551,20 @@ func newFeedConfigStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, FeedConfigTable, FeedConfigColumn),
 	)
 }
+func newFeedItemCollectionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedItemCollectionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FeedItemCollectionTable, FeedItemCollectionColumn),
+	)
+}
+func newNotifySourceStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(NotifySourceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, NotifySourceTable, NotifySourceColumn),
+	)
+}
 func newNotifyTargetStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -515,6 +598,13 @@ func newDeviceInfoStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(DeviceInfoInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, false, DeviceInfoTable, DeviceInfoPrimaryKey...),
+	)
+}
+func newTagStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TagInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, TagTable, TagColumn),
 	)
 }
 func newCreatorStep() *sqlgraph.Step {

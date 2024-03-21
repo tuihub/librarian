@@ -352,21 +352,21 @@ func HasNotifyTargetWith(preds ...predicate.NotifyTarget) predicate.NotifyFlow {
 	})
 }
 
-// HasFeedConfig applies the HasEdge predicate on the "feed_config" edge.
-func HasFeedConfig() predicate.NotifyFlow {
+// HasNotifySource applies the HasEdge predicate on the "notify_source" edge.
+func HasNotifySource() predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, FeedConfigTable, FeedConfigPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, false, NotifySourceTable, NotifySourcePrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasFeedConfigWith applies the HasEdge predicate on the "feed_config" edge with a given conditions (other predicates).
-func HasFeedConfigWith(preds ...predicate.FeedConfig) predicate.NotifyFlow {
+// HasNotifySourceWith applies the HasEdge predicate on the "notify_source" edge with a given conditions (other predicates).
+func HasNotifySourceWith(preds ...predicate.NotifySource) predicate.NotifyFlow {
 	return predicate.NotifyFlow(func(s *sql.Selector) {
-		step := newFeedConfigStep()
+		step := newNotifySourceStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

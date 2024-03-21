@@ -36,7 +36,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.8.4
-	github.com/tuihub/protos v0.4.7
+	github.com/tuihub/protos v0.4.8
 	github.com/zhihu/norm v0.1.11
 	go.opentelemetry.io/otel v1.24.0
 	go.opentelemetry.io/otel/sdk v1.24.0
@@ -45,7 +45,7 @@ require (
 	golang.org/x/crypto v0.20.0
 	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
 	google.golang.org/grpc v1.62.0
-	google.golang.org/protobuf v1.32.0
+	google.golang.org/protobuf v1.33.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -100,7 +100,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/geo v0.0.0-20210211234256-740aa86cb551 // indirect
 	github.com/golang/glog v1.2.0 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.20.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect

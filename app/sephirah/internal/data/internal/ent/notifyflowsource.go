@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -44,7 +44,7 @@ type NotifyFlowSourceEdges struct {
 	// NotifyFlow holds the value of the notify_flow edge.
 	NotifyFlow *NotifyFlow `json:"notify_flow,omitempty"`
 	// NotifySource holds the value of the notify_source edge.
-	NotifySource *FeedConfig `json:"notify_source,omitempty"`
+	NotifySource *NotifySource `json:"notify_source,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -63,11 +63,11 @@ func (e NotifyFlowSourceEdges) NotifyFlowOrErr() (*NotifyFlow, error) {
 
 // NotifySourceOrErr returns the NotifySource value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e NotifyFlowSourceEdges) NotifySourceOrErr() (*FeedConfig, error) {
+func (e NotifyFlowSourceEdges) NotifySourceOrErr() (*NotifySource, error) {
 	if e.NotifySource != nil {
 		return e.NotifySource, nil
 	} else if e.loadedTypes[1] {
-		return nil, &NotFoundError{label: feedconfig.Label}
+		return nil, &NotFoundError{label: notifysource.Label}
 	}
 	return nil, &NotLoadedError{edge: "notify_source"}
 }
@@ -163,7 +163,7 @@ func (nfs *NotifyFlowSource) QueryNotifyFlow() *NotifyFlowQuery {
 }
 
 // QueryNotifySource queries the "notify_source" edge of the NotifyFlowSource entity.
-func (nfs *NotifyFlowSource) QueryNotifySource() *FeedConfigQuery {
+func (nfs *NotifyFlowSource) QueryNotifySource() *NotifySourceQuery {
 	return NewNotifyFlowSourceClient(nfs.config).QueryNotifySource(nfs)
 }
 

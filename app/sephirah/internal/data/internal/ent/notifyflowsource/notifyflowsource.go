@@ -41,9 +41,9 @@ const (
 	NotifyFlowColumn = "notify_flow_id"
 	// NotifySourceTable is the table that holds the notify_source relation/edge.
 	NotifySourceTable = "notify_flow_sources"
-	// NotifySourceInverseTable is the table name for the FeedConfig entity.
-	// It exists in this package in order to avoid circular dependency with the "feedconfig" package.
-	NotifySourceInverseTable = "feed_configs"
+	// NotifySourceInverseTable is the table name for the NotifySource entity.
+	// It exists in this package in order to avoid circular dependency with the "notifysource" package.
+	NotifySourceInverseTable = "notify_sources"
 	// NotifySourceColumn is the table column denoting the notify_source relation/edge.
 	NotifySourceColumn = "notify_source_id"
 )

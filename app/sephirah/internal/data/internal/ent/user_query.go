@@ -17,11 +17,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
@@ -30,24 +33,27 @@ import (
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx              *QueryContext
-	order            []user.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.User
-	withBindAccount  *AccountQuery
-	withPurchasedApp *AppInfoQuery
-	withApp          *AppQuery
-	withAppInst      *AppInstQuery
-	withFeedConfig   *FeedConfigQuery
-	withNotifyTarget *NotifyTargetQuery
-	withNotifyFlow   *NotifyFlowQuery
-	withImage        *ImageQuery
-	withFile         *FileQuery
-	withDeviceInfo   *DeviceInfoQuery
-	withCreator      *UserQuery
-	withCreatedUser  *UserQuery
-	withUserDevice   *UserDeviceQuery
-	withFKs          bool
+	ctx                    *QueryContext
+	order                  []user.OrderOption
+	inters                 []Interceptor
+	predicates             []predicate.User
+	withBindAccount        *AccountQuery
+	withPurchasedApp       *AppInfoQuery
+	withApp                *AppQuery
+	withAppInst            *AppInstQuery
+	withFeedConfig         *FeedConfigQuery
+	withFeedItemCollection *FeedItemCollectionQuery
+	withNotifySource       *NotifySourceQuery
+	withNotifyTarget       *NotifyTargetQuery
+	withNotifyFlow         *NotifyFlowQuery
+	withImage              *ImageQuery
+	withFile               *FileQuery
+	withDeviceInfo         *DeviceInfoQuery
+	withTag                *TagQuery
+	withCreator            *UserQuery
+	withCreatedUser        *UserQuery
+	withUserDevice         *UserDeviceQuery
+	withFKs                bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -194,6 +200,50 @@ func (uq *UserQuery) QueryFeedConfig() *FeedConfigQuery {
 	return query
 }
 
+// QueryFeedItemCollection chains the current query on the "feed_item_collection" edge.
+func (uq *UserQuery) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	query := (&FeedItemCollectionClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(feeditemcollection.Table, feeditemcollection.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedItemCollectionTable, user.FeedItemCollectionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryNotifySource chains the current query on the "notify_source" edge.
+func (uq *UserQuery) QueryNotifySource() *NotifySourceQuery {
+	query := (&NotifySourceClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.NotifySourceTable, user.NotifySourceColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryNotifyTarget chains the current query on the "notify_target" edge.
 func (uq *UserQuery) QueryNotifyTarget() *NotifyTargetQuery {
 	query := (&NotifyTargetClient{config: uq.config}).Query()
@@ -297,6 +347,28 @@ func (uq *UserQuery) QueryDeviceInfo() *DeviceInfoQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, user.DeviceInfoTable, user.DeviceInfoPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTag chains the current query on the "tag" edge.
+func (uq *UserQuery) QueryTag() *TagQuery {
+	query := (&TagClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(tag.Table, tag.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.TagTable, user.TagColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -557,24 +629,27 @@ func (uq *UserQuery) Clone() *UserQuery {
 		return nil
 	}
 	return &UserQuery{
-		config:           uq.config,
-		ctx:              uq.ctx.Clone(),
-		order:            append([]user.OrderOption{}, uq.order...),
-		inters:           append([]Interceptor{}, uq.inters...),
-		predicates:       append([]predicate.User{}, uq.predicates...),
-		withBindAccount:  uq.withBindAccount.Clone(),
-		withPurchasedApp: uq.withPurchasedApp.Clone(),
-		withApp:          uq.withApp.Clone(),
-		withAppInst:      uq.withAppInst.Clone(),
-		withFeedConfig:   uq.withFeedConfig.Clone(),
-		withNotifyTarget: uq.withNotifyTarget.Clone(),
-		withNotifyFlow:   uq.withNotifyFlow.Clone(),
-		withImage:        uq.withImage.Clone(),
-		withFile:         uq.withFile.Clone(),
-		withDeviceInfo:   uq.withDeviceInfo.Clone(),
-		withCreator:      uq.withCreator.Clone(),
-		withCreatedUser:  uq.withCreatedUser.Clone(),
-		withUserDevice:   uq.withUserDevice.Clone(),
+		config:                 uq.config,
+		ctx:                    uq.ctx.Clone(),
+		order:                  append([]user.OrderOption{}, uq.order...),
+		inters:                 append([]Interceptor{}, uq.inters...),
+		predicates:             append([]predicate.User{}, uq.predicates...),
+		withBindAccount:        uq.withBindAccount.Clone(),
+		withPurchasedApp:       uq.withPurchasedApp.Clone(),
+		withApp:                uq.withApp.Clone(),
+		withAppInst:            uq.withAppInst.Clone(),
+		withFeedConfig:         uq.withFeedConfig.Clone(),
+		withFeedItemCollection: uq.withFeedItemCollection.Clone(),
+		withNotifySource:       uq.withNotifySource.Clone(),
+		withNotifyTarget:       uq.withNotifyTarget.Clone(),
+		withNotifyFlow:         uq.withNotifyFlow.Clone(),
+		withImage:              uq.withImage.Clone(),
+		withFile:               uq.withFile.Clone(),
+		withDeviceInfo:         uq.withDeviceInfo.Clone(),
+		withTag:                uq.withTag.Clone(),
+		withCreator:            uq.withCreator.Clone(),
+		withCreatedUser:        uq.withCreatedUser.Clone(),
+		withUserDevice:         uq.withUserDevice.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -636,6 +711,28 @@ func (uq *UserQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *UserQuery {
 	return uq
 }
 
+// WithFeedItemCollection tells the query-builder to eager-load the nodes that are connected to
+// the "feed_item_collection" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithFeedItemCollection(opts ...func(*FeedItemCollectionQuery)) *UserQuery {
+	query := (&FeedItemCollectionClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withFeedItemCollection = query
+	return uq
+}
+
+// WithNotifySource tells the query-builder to eager-load the nodes that are connected to
+// the "notify_source" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *UserQuery {
+	query := (&NotifySourceClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withNotifySource = query
+	return uq
+}
+
 // WithNotifyTarget tells the query-builder to eager-load the nodes that are connected to
 // the "notify_target" edge. The optional arguments are used to configure the query builder of the edge.
 func (uq *UserQuery) WithNotifyTarget(opts ...func(*NotifyTargetQuery)) *UserQuery {
@@ -688,6 +785,17 @@ func (uq *UserQuery) WithDeviceInfo(opts ...func(*DeviceInfoQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withDeviceInfo = query
+	return uq
+}
+
+// WithTag tells the query-builder to eager-load the nodes that are connected to
+// the "tag" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithTag(opts ...func(*TagQuery)) *UserQuery {
+	query := (&TagClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withTag = query
 	return uq
 }
 
@@ -803,17 +911,20 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [13]bool{
+		loadedTypes = [16]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withApp != nil,
 			uq.withAppInst != nil,
 			uq.withFeedConfig != nil,
+			uq.withFeedItemCollection != nil,
+			uq.withNotifySource != nil,
 			uq.withNotifyTarget != nil,
 			uq.withNotifyFlow != nil,
 			uq.withImage != nil,
 			uq.withFile != nil,
 			uq.withDeviceInfo != nil,
+			uq.withTag != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
 			uq.withUserDevice != nil,
@@ -878,6 +989,22 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
+	if query := uq.withFeedItemCollection; query != nil {
+		if err := uq.loadFeedItemCollection(ctx, query, nodes,
+			func(n *User) { n.Edges.FeedItemCollection = []*FeedItemCollection{} },
+			func(n *User, e *FeedItemCollection) {
+				n.Edges.FeedItemCollection = append(n.Edges.FeedItemCollection, e)
+			}); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withNotifySource; query != nil {
+		if err := uq.loadNotifySource(ctx, query, nodes,
+			func(n *User) { n.Edges.NotifySource = []*NotifySource{} },
+			func(n *User, e *NotifySource) { n.Edges.NotifySource = append(n.Edges.NotifySource, e) }); err != nil {
+			return nil, err
+		}
+	}
 	if query := uq.withNotifyTarget; query != nil {
 		if err := uq.loadNotifyTarget(ctx, query, nodes,
 			func(n *User) { n.Edges.NotifyTarget = []*NotifyTarget{} },
@@ -910,6 +1037,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadDeviceInfo(ctx, query, nodes,
 			func(n *User) { n.Edges.DeviceInfo = []*DeviceInfo{} },
 			func(n *User, e *DeviceInfo) { n.Edges.DeviceInfo = append(n.Edges.DeviceInfo, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withTag; query != nil {
+		if err := uq.loadTag(ctx, query, nodes,
+			func(n *User) { n.Edges.Tag = []*Tag{} },
+			func(n *User, e *Tag) { n.Edges.Tag = append(n.Edges.Tag, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1120,6 +1254,68 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 	}
 	return nil
 }
+func (uq *UserQuery) loadFeedItemCollection(ctx context.Context, query *FeedItemCollectionQuery, nodes []*User, init func(*User), assign func(*User, *FeedItemCollection)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.FeedItemCollection(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.FeedItemCollectionColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_feed_item_collection
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_feed_item_collection" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_feed_item_collection" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*User, init func(*User), assign func(*User, *NotifySource)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.NotifySource(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.NotifySourceColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_notify_source
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_notify_source" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_notify_source" returned %v for node %v`, *fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
 func (uq *UserQuery) loadNotifyTarget(ctx context.Context, query *NotifyTargetQuery, nodes []*User, init func(*User), assign func(*User, *NotifyTarget)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*User)
@@ -1302,6 +1498,36 @@ func (uq *UserQuery) loadDeviceInfo(ctx context.Context, query *DeviceInfoQuery,
 		for kn := range nodes {
 			assign(kn, n)
 		}
+	}
+	return nil
+}
+func (uq *UserQuery) loadTag(ctx context.Context, query *TagQuery, nodes []*User, init func(*User), assign func(*User, *Tag)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(tag.FieldUserTag)
+	}
+	query.Where(predicate.Tag(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.TagColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.UserTag
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_tag" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }

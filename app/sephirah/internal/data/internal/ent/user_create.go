@@ -17,10 +17,13 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
@@ -167,6 +170,36 @@ func (uc *UserCreate) AddFeedConfig(f ...*FeedConfig) *UserCreate {
 	return uc.AddFeedConfigIDs(ids...)
 }
 
+// AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
+func (uc *UserCreate) AddFeedItemCollectionIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddFeedItemCollectionIDs(ids...)
+	return uc
+}
+
+// AddFeedItemCollection adds the "feed_item_collection" edges to the FeedItemCollection entity.
+func (uc *UserCreate) AddFeedItemCollection(f ...*FeedItemCollection) *UserCreate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uc.AddFeedItemCollectionIDs(ids...)
+}
+
+// AddNotifySourceIDs adds the "notify_source" edge to the NotifySource entity by IDs.
+func (uc *UserCreate) AddNotifySourceIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddNotifySourceIDs(ids...)
+	return uc
+}
+
+// AddNotifySource adds the "notify_source" edges to the NotifySource entity.
+func (uc *UserCreate) AddNotifySource(n ...*NotifySource) *UserCreate {
+	ids := make([]model.InternalID, len(n))
+	for i := range n {
+		ids[i] = n[i].ID
+	}
+	return uc.AddNotifySourceIDs(ids...)
+}
+
 // AddNotifyTargetIDs adds the "notify_target" edge to the NotifyTarget entity by IDs.
 func (uc *UserCreate) AddNotifyTargetIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddNotifyTargetIDs(ids...)
@@ -240,6 +273,21 @@ func (uc *UserCreate) AddDeviceInfo(d ...*DeviceInfo) *UserCreate {
 		ids[i] = d[i].ID
 	}
 	return uc.AddDeviceInfoIDs(ids...)
+}
+
+// AddTagIDs adds the "tag" edge to the Tag entity by IDs.
+func (uc *UserCreate) AddTagIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddTagIDs(ids...)
+	return uc
+}
+
+// AddTag adds the "tag" edges to the Tag entity.
+func (uc *UserCreate) AddTag(t ...*Tag) *UserCreate {
+	ids := make([]model.InternalID, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return uc.AddTagIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -498,6 +546,38 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
+	if nodes := uc.mutation.FeedItemCollectionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedItemCollectionTable,
+			Columns: []string{user.FeedItemCollectionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feeditemcollection.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.NotifySourceIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.NotifySourceTable,
+			Columns: []string{user.NotifySourceColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	if nodes := uc.mutation.NotifyTargetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -580,6 +660,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		createE.defaults()
 		_, specE := createE.createSpec()
 		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.TagIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.TagTable,
+			Columns: []string{user.TagColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.CreatorIDs(); len(nodes) > 0 {

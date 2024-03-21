@@ -10,9 +10,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -25,7 +25,7 @@ type NotifyFlowSourceQuery struct {
 	inters           []Interceptor
 	predicates       []predicate.NotifyFlowSource
 	withNotifyFlow   *NotifyFlowQuery
-	withNotifySource *FeedConfigQuery
+	withNotifySource *NotifySourceQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -85,8 +85,8 @@ func (nfsq *NotifyFlowSourceQuery) QueryNotifyFlow() *NotifyFlowQuery {
 }
 
 // QueryNotifySource chains the current query on the "notify_source" edge.
-func (nfsq *NotifyFlowSourceQuery) QueryNotifySource() *FeedConfigQuery {
-	query := (&FeedConfigClient{config: nfsq.config}).Query()
+func (nfsq *NotifyFlowSourceQuery) QueryNotifySource() *NotifySourceQuery {
+	query := (&NotifySourceClient{config: nfsq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := nfsq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -97,7 +97,7 @@ func (nfsq *NotifyFlowSourceQuery) QueryNotifySource() *FeedConfigQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(notifyflowsource.Table, notifyflowsource.FieldID, selector),
-			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.To(notifysource.Table, notifysource.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, notifyflowsource.NotifySourceTable, notifyflowsource.NotifySourceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(nfsq.driver.Dialect(), step)
@@ -319,8 +319,8 @@ func (nfsq *NotifyFlowSourceQuery) WithNotifyFlow(opts ...func(*NotifyFlowQuery)
 
 // WithNotifySource tells the query-builder to eager-load the nodes that are connected to
 // the "notify_source" edge. The optional arguments are used to configure the query builder of the edge.
-func (nfsq *NotifyFlowSourceQuery) WithNotifySource(opts ...func(*FeedConfigQuery)) *NotifyFlowSourceQuery {
-	query := (&FeedConfigClient{config: nfsq.config}).Query()
+func (nfsq *NotifyFlowSourceQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *NotifyFlowSourceQuery {
+	query := (&NotifySourceClient{config: nfsq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -437,7 +437,7 @@ func (nfsq *NotifyFlowSourceQuery) sqlAll(ctx context.Context, hooks ...queryHoo
 	}
 	if query := nfsq.withNotifySource; query != nil {
 		if err := nfsq.loadNotifySource(ctx, query, nodes, nil,
-			func(n *NotifyFlowSource, e *FeedConfig) { n.Edges.NotifySource = e }); err != nil {
+			func(n *NotifyFlowSource, e *NotifySource) { n.Edges.NotifySource = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -473,7 +473,7 @@ func (nfsq *NotifyFlowSourceQuery) loadNotifyFlow(ctx context.Context, query *No
 	}
 	return nil
 }
-func (nfsq *NotifyFlowSourceQuery) loadNotifySource(ctx context.Context, query *FeedConfigQuery, nodes []*NotifyFlowSource, init func(*NotifyFlowSource), assign func(*NotifyFlowSource, *FeedConfig)) error {
+func (nfsq *NotifyFlowSourceQuery) loadNotifySource(ctx context.Context, query *NotifySourceQuery, nodes []*NotifyFlowSource, init func(*NotifyFlowSource), assign func(*NotifyFlowSource, *NotifySource)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*NotifyFlowSource)
 	for i := range nodes {
@@ -486,7 +486,7 @@ func (nfsq *NotifyFlowSourceQuery) loadNotifySource(ctx context.Context, query *
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(feedconfig.IDIn(ids...))
+	query.Where(notifysource.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

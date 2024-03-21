@@ -69,9 +69,11 @@ type FeedItem struct {
 type FeedItemEdges struct {
 	// Feed holds the value of the feed edge.
 	Feed *Feed `json:"feed,omitempty"`
+	// FeedItemCollection holds the value of the feed_item_collection edge.
+	FeedItemCollection []*FeedItemCollection `json:"feed_item_collection,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // FeedOrErr returns the Feed value or an error if the edge
@@ -83,6 +85,15 @@ func (e FeedItemEdges) FeedOrErr() (*Feed, error) {
 		return nil, &NotFoundError{label: feed.Label}
 	}
 	return nil, &NotLoadedError{edge: "feed"}
+}
+
+// FeedItemCollectionOrErr returns the FeedItemCollection value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedItemEdges) FeedItemCollectionOrErr() ([]*FeedItemCollection, error) {
+	if e.loadedTypes[1] {
+		return e.FeedItemCollection, nil
+	}
+	return nil, &NotLoadedError{edge: "feed_item_collection"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -258,6 +269,11 @@ func (fi *FeedItem) Value(name string) (ent.Value, error) {
 // QueryFeed queries the "feed" edge of the FeedItem entity.
 func (fi *FeedItem) QueryFeed() *FeedQuery {
 	return NewFeedItemClient(fi.config).QueryFeed(fi)
+}
+
+// QueryFeedItemCollection queries the "feed_item_collection" edge of the FeedItem entity.
+func (fi *FeedItem) QueryFeedItemCollection() *FeedItemCollectionQuery {
+	return NewFeedItemClient(fi.config).QueryFeedItemCollection(fi)
 }
 
 // Update returns a builder for updating this FeedItem.

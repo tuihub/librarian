@@ -63,7 +63,6 @@ func (FeedConfig) Edges() []ent.Edge {
 			Unique(),
 		edge.To("feed", Feed.Type).
 			Unique(),
-		edge.To("notify_flow", NotifyFlow.Type).
-			Through("notify_flow_source", NotifyFlowSource.Type),
+		edge.To("notify_source", NotifySource.Type),
 	}
 }
