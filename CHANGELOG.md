@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.10](https://github.com/tuihub/librarian/compare/v0.2.9...v0.2.10) (2024-03-22)
+
+
+### Features
+
+* upgrade proto to v0.4.8 ([c3cefe9](https://github.com/tuihub/librarian/commit/c3cefe99a860e7430eb427acfa3b16228a1d1700))
+* **yesod:** impl feed item collection api ([6c8e4eb](https://github.com/tuihub/librarian/commit/6c8e4ebdb0ffda0c8a5ade4bfd4a9676acacfc5e))
+
 ## [0.2.9](https://github.com/tuihub/librarian/compare/v0.2.8...v0.2.9) (2024-03-15)
 
 
