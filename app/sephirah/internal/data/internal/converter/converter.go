@@ -175,6 +175,10 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	return digest
 }
 
+func ToBizFeedItemCollectionList(a []*ent.FeedItemCollection) []*modelyesod.FeedItemCollection {
+	return toBiz.ToBizFeedItemCollectionList(a)
+}
+
 func ToBizImage(a *ent.Image) *modelchesed.Image {
 	return toBiz.ToBizImage(a)
 }

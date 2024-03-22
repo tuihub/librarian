@@ -159,3 +159,99 @@ func (s *LibrarianSephirahServiceService) ReadFeedItem(
 	}
 	return &pb.ReadFeedItemResponse{}, nil
 }
+
+func (s *LibrarianSephirahServiceService) CreateFeedItemCollection(
+	ctx context.Context,
+	req *pb.CreateFeedItemCollectionRequest,
+) (*pb.CreateFeedItemCollectionResponse, error) {
+	_, err := s.y.CreateFeedItemCollection(ctx, converter.ToBizFeedItemCollection(req.GetCollection()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateFeedItemCollectionResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) UpdateFeedItemCollection(
+	ctx context.Context,
+	req *pb.UpdateFeedItemCollectionRequest,
+) (*pb.UpdateFeedItemCollectionResponse, error) {
+	err := s.y.UpdateFeedItemCollection(ctx, converter.ToBizFeedItemCollection(req.GetCollection()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateFeedItemCollectionResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ListFeedItemCollections(
+	ctx context.Context,
+	req *pb.ListFeedItemCollectionsRequest,
+) (*pb.ListFeedItemCollectionsResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	collections, total, err := s.y.ListFeedItemCollections(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizInternalIDList(req.GetIdFilter()),
+		req.GetCategoryFilter(),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedItemCollectionsResponse{
+		Paging:      &librarian.PagingResponse{TotalSize: int64(total)},
+		Collections: converter.ToPBFeedItemCollectionList(collections),
+	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) AddFeedItemToCollection(
+	ctx context.Context,
+	req *pb.AddFeedItemToCollectionRequest,
+) (*pb.AddFeedItemToCollectionResponse, error) {
+	err := s.y.AddFeedItemToCollection(ctx,
+		converter.ToBizInternalID(req.GetCollectionId()),
+		converter.ToBizInternalID(req.GetFeedItemId()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AddFeedItemToCollectionResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) RemoveFeedItemFromCollection(
+	ctx context.Context,
+	req *pb.RemoveFeedItemFromCollectionRequest,
+) (*pb.RemoveFeedItemFromCollectionResponse, error) {
+	err := s.y.RemoveFeedItemFromCollection(
+		ctx,
+		converter.ToBizInternalID(req.GetCollectionId()),
+		converter.ToBizInternalID(req.GetFeedItemId()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RemoveFeedItemFromCollectionResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ListFeedItemsInCollection(
+	ctx context.Context,
+	req *pb.ListFeedItemsInCollectionRequest,
+) (*pb.ListFeedItemsInCollectionResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	items, total, err := s.y.ListFeedItemsInCollection(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizInternalIDList(req.GetCollectionIdFilter()),
+		req.GetAuthorFilter(),
+		req.GetPublishPlatformFilter(),
+		req.GetCategoryFilter(),
+		converter.ToBizTimeRange(req.GetPublishTimeRange()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedItemsInCollectionResponse{
+		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
+		Items:  converter.ToPBFeedItemDigestList(items),
+	}, nil
+}

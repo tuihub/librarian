@@ -256,6 +256,28 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 	}
 	return pModelfeedItem
 }
+func (c *toBizConverterImpl) ToBizFeedItemCollection(source *ent.FeedItemCollection) *modelyesod.FeedItemCollection {
+	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
+	if source != nil {
+		var modelyesodFeedItemCollection modelyesod.FeedItemCollection
+		modelyesodFeedItemCollection.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelyesodFeedItemCollection.Name = (*source).Name
+		modelyesodFeedItemCollection.Description = (*source).Description
+		modelyesodFeedItemCollection.Category = (*source).Category
+		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
+	}
+	return pModelyesodFeedItemCollection
+}
+func (c *toBizConverterImpl) ToBizFeedItemCollectionList(source []*ent.FeedItemCollection) []*modelyesod.FeedItemCollection {
+	var pModelyesodFeedItemCollectionList []*modelyesod.FeedItemCollection
+	if source != nil {
+		pModelyesodFeedItemCollectionList = make([]*modelyesod.FeedItemCollection, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelyesodFeedItemCollectionList[i] = c.ToBizFeedItemCollection(source[i])
+		}
+	}
+	return pModelyesodFeedItemCollectionList
+}
 func (c *toBizConverterImpl) ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
 	var pModelfeedItemList []*modelfeed.Item
 	if source != nil {

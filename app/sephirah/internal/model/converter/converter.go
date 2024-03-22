@@ -102,6 +102,9 @@ func ToPBItemIDWithFeedID(a *modelyesod.FeedItemDigest) *pb.FeedItemDigest {
 func ToPBFeedItemDigestList(a []*modelyesod.FeedItemDigest) []*pb.FeedItemDigest {
 	return toPB.ToPBFeedItemDigestList(a)
 }
+func ToPBFeedItemCollectionList(a []*modelyesod.FeedItemCollection) []*pb.FeedItemCollection {
+	return toPB.ToPBFeedItemCollectionList(a)
+}
 func ToPBTimeRange(a *model.TimeRange) *librarian.TimeRange {
 	return toPB.ToPBTimeRange(a)
 }
@@ -170,6 +173,9 @@ func ToBizFeedConfig(a *pb.FeedConfig) *modelyesod.FeedConfig {
 }
 func ToBizFeedConfigStatusList(a []pb.FeedConfigStatus) []modelyesod.FeedConfigStatus {
 	return toBiz.ToBizFeedConfigStatusList(a)
+}
+func ToBizFeedItemCollection(a *pb.FeedItemCollection) *modelyesod.FeedItemCollection {
+	return toBiz.ToBizFeedItemCollection(a)
 }
 func ToBizTimeRange(a *librarian.TimeRange) *model.TimeRange {
 	return toBiz.ToBizTimeRange(a)

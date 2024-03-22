@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libtime"
@@ -355,4 +356,158 @@ func (y *yesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, i
 	return y.data.db.FeedItem.UpdateOneID(id).Where(
 		feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(userID)))),
 	).AddReadCount(1).Exec(ctx)
+}
+
+func (y *yesodRepo) CreateFeedItemCollection(
+	ctx context.Context,
+	ownerID model.InternalID,
+	collection *modelyesod.FeedItemCollection,
+) error {
+	return y.data.db.FeedItemCollection.Create().
+		SetOwnerID(ownerID).
+		SetID(collection.ID).
+		SetName(collection.Name).
+		SetDescription(collection.Description).
+		SetCategory(collection.Category).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) UpdateFeedItemCollection(
+	ctx context.Context,
+	ownerID model.InternalID,
+	collection *modelyesod.FeedItemCollection,
+) error {
+	return y.data.db.FeedItemCollection.UpdateOneID(collection.ID).
+		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
+		SetName(collection.Name).
+		SetDescription(collection.Description).
+		SetCategory(collection.Category).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) ListFeedItemCollections(
+	ctx context.Context,
+	ownerID model.InternalID,
+	paging model.Paging,
+	ids []model.InternalID,
+	categories []string,
+) ([]*modelyesod.FeedItemCollection, int, error) {
+	var res []*modelyesod.FeedItemCollection
+	var total int
+	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		u, err := tx.User.Get(ctx, ownerID)
+		if err != nil {
+			return err
+		}
+		q := tx.User.QueryFeedItemCollection(u)
+		if len(ids) > 0 {
+			q.Where(feeditemcollection.IDIn(ids...))
+		}
+		if len(categories) > 0 {
+			q.Where(feeditemcollection.CategoryIn(categories...))
+		}
+		total, err = q.Count(ctx)
+		if err != nil {
+			return err
+		}
+		collections, err := q.
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		res = converter.ToBizFeedItemCollectionList(collections)
+		return nil
+	})
+	if err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
+}
+
+func (y *yesodRepo) AddFeedItemToCollection(
+	ctx context.Context,
+	ownerID model.InternalID,
+	collectionID model.InternalID,
+	itemID model.InternalID,
+) error {
+	return y.data.db.FeedItemCollection.UpdateOneID(collectionID).
+		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
+		AddFeedItemIDs(itemID).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) RemoveFeedItemFromCollection(
+	ctx context.Context,
+	ownerID model.InternalID,
+	collectionID model.InternalID,
+	itemID model.InternalID,
+) error {
+	return y.data.db.FeedItemCollection.UpdateOneID(collectionID).
+		Where(feeditemcollection.HasOwnerWith(user.IDEQ(ownerID))).
+		RemoveFeedItemIDs(itemID).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) ListFeedItemsInCollection(
+	ctx context.Context,
+	ownerID model.InternalID,
+	paging model.Paging,
+	ids []model.InternalID,
+	authors []string,
+	platforms []string,
+	categories []string,
+	timeRange *model.TimeRange,
+) ([]*modelyesod.FeedItemDigest, int, error) {
+	var res []*modelyesod.FeedItemDigest
+	var total int
+	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		u, err := tx.User.Get(ctx, ownerID)
+		if err != nil {
+			return err
+		}
+		q := tx.User.QueryFeedItemCollection(u)
+		if len(ids) > 0 {
+			q.Where(feeditemcollection.IDIn(ids...))
+		}
+		iq := q.QueryFeedItem()
+		if len(platforms) > 0 {
+			iq.Where(feeditem.PublishPlatformIn(platforms...))
+		}
+		if len(categories) > 0 {
+			iq.Where(feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.CategoryIn(categories...))))
+		}
+		if timeRange != nil {
+			iq.
+				Where(feeditem.PublishedParsedGTE(timeRange.StartTime)).
+				Where(feeditem.PublishedParsedLT(timeRange.StartTime.Add(timeRange.Duration)))
+		}
+		total, err = iq.Count(ctx)
+		if err != nil {
+			return err
+		}
+		items, err := iq.
+			WithFeed(func(q *ent.FeedQuery) {
+				q.Select(feed.FieldImage).WithConfig(func(q *ent.FeedConfigQuery) {
+					q.Select(feedconfig.FieldName)
+				})
+			}).
+			Order(ent.Desc(feeditem.FieldPublishedParsed)).
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		res = make([]*modelyesod.FeedItemDigest, 0, len(items))
+		for _, item := range items {
+			res = append(res, converter.ToBizFeedItemDigest(item))
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
 }

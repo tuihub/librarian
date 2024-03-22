@@ -70,3 +70,10 @@ const (
 	GroupFeedItemsByDay
 	GroupFeedItemsByOverall
 )
+
+type FeedItemCollection struct {
+	ID          model.InternalID
+	Name        string
+	Description string
+	Category    string
+}

@@ -31,6 +31,14 @@ type YesodRepo interface {
 		map[model.TimeRange][]*modelyesod.FeedItemDigest, error)
 	GetFeedItems(context.Context, model.InternalID, []model.InternalID) ([]*modelfeed.Item, error)
 	ReadFeedItem(context.Context, model.InternalID, model.InternalID) error
+	CreateFeedItemCollection(context.Context, model.InternalID, *modelyesod.FeedItemCollection) error
+	UpdateFeedItemCollection(context.Context, model.InternalID, *modelyesod.FeedItemCollection) error
+	ListFeedItemCollections(context.Context, model.InternalID, model.Paging, []model.InternalID,
+		[]string) ([]*modelyesod.FeedItemCollection, int, error)
+	AddFeedItemToCollection(context.Context, model.InternalID, model.InternalID, model.InternalID) error
+	RemoveFeedItemFromCollection(context.Context, model.InternalID, model.InternalID, model.InternalID) error
+	ListFeedItemsInCollection(context.Context, model.InternalID, model.Paging, []model.InternalID, []string,
+		[]string, []string, *model.TimeRange) ([]*modelyesod.FeedItemDigest, int, error)
 }
 
 type Yesod struct {

@@ -196,6 +196,18 @@ func (c *toBizConverterImpl) ToBizFeedConfigStatusList(source []v1.FeedConfigSta
 	}
 	return modelyesodFeedConfigStatusList
 }
+func (c *toBizConverterImpl) ToBizFeedItemCollection(source *v1.FeedItemCollection) *modelyesod.FeedItemCollection {
+	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
+	if source != nil {
+		var modelyesodFeedItemCollection modelyesod.FeedItemCollection
+		modelyesodFeedItemCollection.ID = ToBizInternalID((*source).Id)
+		modelyesodFeedItemCollection.Name = (*source).Name
+		modelyesodFeedItemCollection.Description = (*source).Description
+		modelyesodFeedItemCollection.Category = (*source).Category
+		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
+	}
+	return pModelyesodFeedItemCollection
+}
 func (c *toBizConverterImpl) ToBizFileMetadata(source *v1.FileMetadata) *modelbinah.FileMetadata {
 	var pModelbinahFileMetadata *modelbinah.FileMetadata
 	if source != nil {
@@ -732,6 +744,28 @@ func (c *toPBConverterImpl) ToPBFeedItem(source *modelfeed.Item) *v11.FeedItem {
 		pV1FeedItem = &v1FeedItem
 	}
 	return pV1FeedItem
+}
+func (c *toPBConverterImpl) ToPBFeedItemCollection(source *modelyesod.FeedItemCollection) *v1.FeedItemCollection {
+	var pV1FeedItemCollection *v1.FeedItemCollection
+	if source != nil {
+		var v1FeedItemCollection v1.FeedItemCollection
+		v1FeedItemCollection.Id = ToPBInternalID((*source).ID)
+		v1FeedItemCollection.Name = (*source).Name
+		v1FeedItemCollection.Description = (*source).Description
+		v1FeedItemCollection.Category = (*source).Category
+		pV1FeedItemCollection = &v1FeedItemCollection
+	}
+	return pV1FeedItemCollection
+}
+func (c *toPBConverterImpl) ToPBFeedItemCollectionList(source []*modelyesod.FeedItemCollection) []*v1.FeedItemCollection {
+	var pV1FeedItemCollectionList []*v1.FeedItemCollection
+	if source != nil {
+		pV1FeedItemCollectionList = make([]*v1.FeedItemCollection, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1FeedItemCollectionList[i] = c.ToPBFeedItemCollection(source[i])
+		}
+	}
+	return pV1FeedItemCollectionList
 }
 func (c *toPBConverterImpl) ToPBFeedItemDigest(source *modelyesod.FeedItemDigest) *v1.FeedItemDigest {
 	var pV1FeedItemDigest *v1.FeedItemDigest

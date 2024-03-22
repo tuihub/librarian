@@ -90,6 +90,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
 	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
 
+	// goverter:matchIgnoreCase
+	ToBizFeedItemCollection(*ent.FeedItemCollection) *modelyesod.FeedItemCollection
+	ToBizFeedItemCollectionList([]*ent.FeedItemCollection) []*modelyesod.FeedItemCollection
+
 	// goverter:map Status | ToBizNotifyTargetStatus
 	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
 	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget

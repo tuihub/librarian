@@ -107,6 +107,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
 	// goverter:matchIgnoreCase
+	ToPBFeedItemCollection(*modelyesod.FeedItemCollection) *pb.FeedItemCollection
+	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*pb.FeedItemCollection
+
+	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBNotifyTargetStatus
 	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
 	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
