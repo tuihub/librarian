@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/transport"
-	jwtv4 "github.com/golang-jwt/jwt/v4"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
@@ -19,7 +19,7 @@ type Claims struct {
 	Type             ClaimsType       `json:"ct"`
 	UserType         UserType         `json:"ut"`
 	TransferMetadata any              `json:"tm,omitempty"`
-	jwtv4.RegisteredClaims
+	jwtv5.RegisteredClaims
 }
 
 type ClaimsType int
@@ -42,13 +42,13 @@ const (
 	UserTypePorter
 )
 
-func (a *Auth) KeyFunc(t ClaimsType) jwtv4.Keyfunc {
-	return func(token *jwtv4.Token) (interface{}, error) {
+func (a *Auth) KeyFunc(t ClaimsType) jwtv5.Keyfunc {
+	return func(token *jwtv5.Token) (interface{}, error) {
 		return a.generateSecret(t), nil
 	}
 }
 
-func NewClaims() jwtv4.Claims {
+func NewClaims() jwtv5.Claims {
 	return new(Claims)
 }
 
@@ -106,18 +106,18 @@ func (a *Auth) GenerateToken(
 		Type:             claimsType,
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
-		RegisteredClaims: jwtv4.RegisteredClaims{
+		RegisteredClaims: jwtv5.RegisteredClaims{
 			Issuer:    a.config.GetJwtIssuer(),
 			Subject:   "",
 			Audience:  nil,
-			ExpiresAt: jwtv4.NewNumericDate(expireTime),
+			ExpiresAt: jwtv5.NewNumericDate(expireTime),
 			NotBefore: nil,
 			IssuedAt:  nil,
 			ID:        "",
 		},
 	}
 
-	tokenClaims := jwtv4.NewWithClaims(jwtv4.SigningMethodHS256, claims)
+	tokenClaims := jwtv5.NewWithClaims(jwtv5.SigningMethodHS256, claims)
 
 	token, err := tokenClaims.SignedString(a.generateSecret(claimsType))
 	return token, err

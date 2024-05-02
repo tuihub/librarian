@@ -9,7 +9,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
-	jwtv4 "github.com/golang-jwt/jwt/v4"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
 func NewTokenMatcher(auth *libauth.Auth) []middleware.Middleware {
@@ -26,28 +26,28 @@ func NewTokenMatcher(auth *libauth.Auth) []middleware.Middleware {
 		selector.Server(
 			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeAccessToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
 				jwt.WithClaims(libauth.NewClaims),
 			),
 		).Match(NewAccessTokenMatcher()).Build(),
 		selector.Server(
 			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeRefreshToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
 				jwt.WithClaims(libauth.NewClaims),
 			),
 		).Match(NewRefreshTokenMatcher()).Build(),
 		selector.Server(
 			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeUploadToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
 				jwt.WithClaims(libauth.NewClaims),
 			),
 		).Match(NewUploadTokenMatcher()).Build(),
 		selector.Server(
 			jwt.Server(
 				auth.KeyFunc(libauth.ClaimsTypeDownloadToken),
-				jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+				jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
 				jwt.WithClaims(libauth.NewClaims),
 			),
 		).Match(NewDownloadTokenMatcher()).Build(),
