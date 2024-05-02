@@ -6,7 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
-	jwtv4 "github.com/golang-jwt/jwt/v4"
+	jwtv5 "github.com/golang-jwt/jwt/v5"
 	"github.com/google/wire"
 )
 
@@ -19,7 +19,7 @@ func NewAuthMiddleware(auth *libauth.Auth) func(context.Context) (context.Contex
 		var newContext context.Context
 		mw := jwt.Server(
 			auth.KeyFunc(libauth.ClaimsTypeAccessToken),
-			jwt.WithSigningMethod(jwtv4.SigningMethodHS256),
+			jwt.WithSigningMethod(jwtv5.SigningMethodHS256),
 			jwt.WithClaims(libauth.NewClaims),
 		)
 		handler := mw(func(ctx context.Context, req interface{}) (interface{}, error) {
