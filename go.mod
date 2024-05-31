@@ -4,8 +4,8 @@ go 1.21
 
 require (
 	entgo.io/ent v0.13.1
-	github.com/BurntSushi/toml v1.3.2
-	github.com/PuerkitoBio/goquery v1.9.1
+	github.com/BurntSushi/toml v1.4.0
+	github.com/PuerkitoBio/goquery v1.9.2
 	github.com/ThreeDotsLabs/watermill v1.3.5
 	github.com/ThreeDotsLabs/watermill-redisstream v1.3.0
 	github.com/ThreeDotsLabs/watermill-sql/v3 v3.0.1
@@ -16,36 +16,36 @@ require (
 	github.com/dchest/captcha v1.0.0
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/getsentry/sentry-go v0.27.0
-	github.com/getsentry/sentry-go/otel v0.27.0
-	github.com/go-co-op/gocron/v2 v2.2.10
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20240301031206-50cad79c96ae
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20240301031206-50cad79c96ae
+	github.com/getsentry/sentry-go v0.28.0
+	github.com/getsentry/sentry-go/otel v0.28.0
+	github.com/go-co-op/gocron/v2 v2.5.0
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20240516020449-fbac5fa25e7a
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20240516020449-fbac5fa25e7a
 	github.com/go-kratos/kratos/v2 v2.7.3
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
-	github.com/hashicorp/consul/api v1.28.2
+	github.com/hashicorp/consul/api v1.28.3
 	github.com/improbable-eng/grpc-web v0.15.0
-	github.com/johannesboyne/gofakes3 v0.0.0-20240217095638-c55a48f17be6
+	github.com/johannesboyne/gofakes3 v0.0.0-20240513200200-99de01ee122d
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.22
-	github.com/meilisearch/meilisearch-go v0.26.2
+	github.com/meilisearch/meilisearch-go v0.26.3
 	github.com/minio/minio-go/v7 v7.0.70
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.9.0
 	github.com/tuihub/protos v0.4.9
 	github.com/zhihu/norm v0.1.11
-	go.opentelemetry.io/otel v1.26.0
-	go.opentelemetry.io/otel/sdk v1.26.0
+	go.opentelemetry.io/otel v1.27.0
+	go.opentelemetry.io/otel/sdk v1.27.0
 	go.uber.org/ratelimit v0.3.1
 	go.uber.org/zap v1.27.0
-	golang.org/x/crypto v0.22.0
+	golang.org/x/crypto v0.23.0
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f
-	google.golang.org/grpc v1.63.2
-	google.golang.org/protobuf v1.33.0
+	google.golang.org/grpc v1.64.0
+	google.golang.org/protobuf v1.34.1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -55,7 +55,7 @@ require (
 	github.com/Rican7/retry v0.3.1 // indirect
 	github.com/RoaringBitmap/roaring v1.2.3 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/facebook/fbthrift/thrift/lib/go/thrift v0.0.0-20240106173148-f66811508108 // indirect
-	github.com/fatih/color v1.14.1 // indirect
+	github.com/fatih/color v1.16.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
@@ -108,6 +108,7 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.20.1 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
+	github.com/hashicorp/consul/proto-public v0.6.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
@@ -124,7 +125,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/karrick/godirwalk v1.17.0 // indirect
-	github.com/klauspost/compress v1.17.6 // indirect
+	github.com/klauspost/compress v1.17.7 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/lufia/plan9stats v0.0.0-20230326075908-cb1d2100619a // indirect
@@ -133,7 +134,7 @@ require (
 	github.com/markbates/oncer v1.0.0 // indirect
 	github.com/markbates/safe v1.0.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.17 // indirect
+	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
@@ -162,22 +163,22 @@ require (
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.40.0 // indirect
+	github.com/valyala/fasthttp v1.52.0 // indirect
 	github.com/vesoft-inc/nebula-go/v2 v2.6.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect
-	go.opentelemetry.io/otel/metric v1.26.0 // indirect
-	go.opentelemetry.io/otel/trace v1.26.0 // indirect
+	go.opentelemetry.io/otel/metric v1.27.0 // indirect
+	go.opentelemetry.io/otel/trace v1.27.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/term v0.19.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/term v0.20.0 // indirect
+	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/tools v0.20.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240401170217-c3f982113cda // indirect
