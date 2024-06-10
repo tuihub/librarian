@@ -173,7 +173,7 @@ func (n *Netzach) UpdateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	}
 	if flow.Sources != nil && len(flow.Sources) > 0 {
 		for _, source := range flow.Sources {
-			err = n.notifySourceCache.Delete(ctx, source.SourceID)
+			err = n.notifySourceCache.Delete(ctx, source.FeedConfigID)
 			if err != nil {
 				logger.Errorf("failed to delete cache %s", err.Error())
 			}

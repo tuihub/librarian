@@ -294,7 +294,6 @@ func (c *toBizConverterImpl) ToBizNotifyFlowSource(source *v1.NotifyFlowSource) 
 	var pModelnetzachNotifyFlowSource *modelnetzach.NotifyFlowSource
 	if source != nil {
 		var modelnetzachNotifyFlowSource modelnetzach.NotifyFlowSource
-		modelnetzachNotifyFlowSource.SourceID = ToBizInternalID((*source).SourceId)
 		modelnetzachNotifyFlowSource.Filter = c.ToBizNotifyFilter((*source).Filter)
 		pModelnetzachNotifyFlowSource = &modelnetzachNotifyFlowSource
 	}
@@ -887,7 +886,6 @@ func (c *toPBConverterImpl) ToPBNotifyFlowSource(source *modelnetzach.NotifyFlow
 	if source != nil {
 		var v1NotifyFlowSource v1.NotifyFlowSource
 		v1NotifyFlowSource.Filter = c.pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
-		v1NotifyFlowSource.SourceId = ToPBInternalID((*source).SourceID)
 		pV1NotifyFlowSource = &v1NotifyFlowSource
 	}
 	return pV1NotifyFlowSource

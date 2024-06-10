@@ -123,7 +123,7 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 		for i, source := range f.Sources {
 			flowSources[i] = tx.NotifyFlowSource.Create().
 				SetNotifyFlowID(f.ID).
-				SetNotifySourceID(source.SourceID).
+				SetNotifySourceID(source.FeedConfigID).
 				SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
 				SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
 		}
@@ -181,7 +181,7 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 			for i, source := range f.Sources {
 				flowSources[i] = tx.NotifyFlowSource.Create().
 					SetNotifyFlowID(f.ID).
-					SetNotifySourceID(source.SourceID).
+					SetNotifySourceID(source.FeedConfigID).
 					SetFilterExcludeKeywords(source.Filter.ExcludeKeywords).
 					SetFilterIncludeKeywords(source.Filter.IncludeKeywords)
 			}

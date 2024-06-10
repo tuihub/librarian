@@ -119,6 +119,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:map Status | ToPBNotifyFlowStatus
 	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *pb.NotifyFlow
 	// goverter:matchIgnoreCase
+	// goverter:ignore Source
 	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget

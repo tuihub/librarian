@@ -118,10 +118,20 @@ func ToPBNotifyTargetList(a []*modelnetzach.NotifyTarget) []*pb.NotifyTarget {
 	return toPB.ToPBNotifyTargetList(a)
 }
 func ToPBNotifyFlow(a *modelnetzach.NotifyFlow) *pb.NotifyFlow {
-	return toPB.ToPBNotifyFlow(a)
+	res := toPB.ToPBNotifyFlow(a)
+	for i := range a.Sources {
+		res.Sources[i].Source = &pb.NotifyFlowSource_FeedConfigId{
+			FeedConfigId: ToPBInternalID(a.Sources[i].FeedConfigID),
+		}
+	}
+	return res
 }
 func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
-	return toPB.ToPBNotifyFlowList(a)
+	res := make([]*pb.NotifyFlow, 0, len(a))
+	for i := range a {
+		res[i] = ToPBNotifyFlow(a[i])
+	}
+	return res
 }
 func ToBizPorterFeatureSummary(a *porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	return toBiz.ToBizPorterFeatureSummary(a)
@@ -187,7 +197,11 @@ func ToBizNotifyTargetStatusList(a []pb.NotifyTargetStatus) []modelnetzach.Notif
 	return toBiz.ToBizNotifyTargetStatusList(a)
 }
 func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
-	return toBiz.ToBizNotifyFlow(a)
+	res := toBiz.ToBizNotifyFlow(a)
+	for i := range a.GetSources() {
+		res.Sources[i].FeedConfigID = ToBizInternalID(a.GetSources()[i].GetFeedConfigId())
+	}
+	return res
 }
 func ToBizFileMetadata(a *pb.FileMetadata) *modelbinah.FileMetadata {
 	return toBiz.ToBizFileMetadata(a)

@@ -89,6 +89,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
 	// goverter:matchIgnoreCase
+	// goverter:ignore FeedConfigID
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget

@@ -114,7 +114,7 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 		res.Sources = make([]*modelnetzach.NotifyFlowSource, 0, len(a.Edges.NotifyFlowSource))
 		for _, source := range a.Edges.NotifyFlowSource {
 			res.Sources = append(res.Sources, &modelnetzach.NotifyFlowSource{
-				SourceID: source.NotifySourceID,
+				FeedConfigID: source.NotifySourceID,
 				Filter: &modelnetzach.NotifyFilter{
 					ExcludeKeywords: source.FilterExcludeKeywords,
 					IncludeKeywords: source.FilterIncludeKeywords,

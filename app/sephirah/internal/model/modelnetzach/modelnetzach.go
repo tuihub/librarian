@@ -14,8 +14,8 @@ type NotifyFlow struct {
 }
 
 type NotifyFlowSource struct {
-	SourceID model.InternalID
-	Filter   *NotifyFilter
+	FeedConfigID model.InternalID
+	Filter       *NotifyFilter
 }
 
 type NotifyFlowTarget struct {
