@@ -48,7 +48,10 @@ func main() {
 	}
 
 	var bc conf.Sephirah
-	appSettings.LoadConfig(&bc)
+	err = appSettings.LoadConfig(&bc)
+	if err != nil {
+		panic(err)
+	}
 
 	app, cleanup, err := wireApp(
 		bc.GetServer(),

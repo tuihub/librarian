@@ -45,7 +45,10 @@ func main() {
 	}
 
 	var bc conf.Searcher
-	appSettings.LoadConfig(&bc)
+	err = appSettings.LoadConfig(&bc)
+	if err != nil {
+		panic(err)
+	}
 
 	app, cleanup, err := wireApp(bc.GetServer(), bc.GetData(), bc.GetConsul(), appSettings)
 	if err != nil {

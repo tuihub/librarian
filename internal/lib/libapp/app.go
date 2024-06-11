@@ -87,9 +87,9 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 	return &as, nil
 }
 
-func (a *Settings) LoadConfig(conf interface{}) {
+func (a *Settings) LoadConfig(conf interface{}) error {
 	if a.ConfPath == "" {
-		return
+		return nil
 	}
 	c := config.New(
 		config.WithSource(
@@ -99,12 +99,13 @@ func (a *Settings) LoadConfig(conf interface{}) {
 	defer c.Close()
 
 	if err := c.Load(); err != nil {
-		panic(err)
+		return err
 	}
 
 	if err := c.Scan(conf); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (a *Settings) Env(env Env) (string, error) {

@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
+	"github.com/tuihub/librarian/internal/lib/libzap"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
@@ -18,6 +19,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
+	"go.uber.org/zap"
 )
 
 // go build -ldflags "-X main.version=x.y.z".
@@ -65,26 +67,36 @@ func newApp(
 }
 
 func main() {
+	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
+	stdLogger.Infof("=== Configuring ===")
+	stdLogger.Infof("[Service] Name: %s", name)
+	stdLogger.Infof("[Service] Version: %s", version)
 	appSettings, err := libapp.NewAppSettings(id, name, version, protoVersion, date)
 	if err != nil {
-		panic(err)
+		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
 	var bc conf.Librarian
-	appSettings.LoadConfig(&bc)
+	err = appSettings.LoadConfig(&bc)
+	if err != nil {
+		stdLogger.Fatalf("Load config failed: %v", err)
+	}
+	logConfigDigest(&bc, stdLogger)
 
 	if bc.GetEnableServiceDiscovery() == nil {
 		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
 	}
 
+	stdLogger.Infof("=== Initializing ===")
+
 	err = libobserve.InitOTEL(bc.GetOtlp())
 	if err != nil {
-		panic(err)
+		stdLogger.Fatalf("Initialize OTLP client failed: %v", err)
 	}
 
 	err = libsentry.InitSentry(bc.GetSentry())
 	if err != nil {
-		panic(err)
+		stdLogger.Fatalf("Initialize Sentry client failed: %v", err)
 	}
 
 	app, cleanup, err := wireApp(
@@ -103,13 +115,14 @@ func main() {
 		appSettings,
 	)
 	if err != nil {
-		panic(err)
+		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 	defer cleanup()
 
 	// start and wait for stop signal
+	stdLogger.Infof("=== Start Service ===")
 	if err = app.Run(); err != nil {
-		panic(err)
+		stdLogger.Fatalf("Exit with error: %v", err)
 	}
 }
 
@@ -144,4 +157,54 @@ func minerClientSelector(
 		return client.NewMinerClient(c)
 	}
 	return inproc.Miner, nil
+}
+
+func logConfigDigest(bc *conf.Librarian, logger *zap.SugaredLogger) { //nolint:gocognit // no need
+	if bc == nil {
+		logger.Warnf("Config not specified")
+		return
+	}
+	if bc.GetServer() == nil {
+		logger.Warnf("[Server\t] Not specified")
+	} else {
+		if bc.GetServer().GetInfo() != nil && len(bc.GetServer().GetInfo().GetName()) > 0 {
+			logger.Infof("[Server\t] Name: %s", bc.GetServer().GetInfo().GetName())
+		}
+		if bc.GetServer().GetGrpc() != nil {
+			logger.Infof("[Server\t] Listen gRPC on: %s", bc.GetServer().GetGrpc().GetAddr())
+		}
+		if bc.GetServer().GetGrpcWeb() != nil {
+			logger.Infof("[Server\t] Listen gRPC-Web on: %s", bc.GetServer().GetGrpcWeb().GetAddr())
+		}
+	}
+	if bc.GetDatabase() == nil || len(bc.GetDatabase().GetDriver()) == 0 {
+		logger.Warnf("[DB\t\t] Not specified")
+	} else {
+		logger.Infof("[DB\t\t] Configured - Driver %s", bc.GetDatabase().GetDriver())
+	}
+	if bc.GetMq() == nil || len(bc.GetMq().GetDriver()) == 0 {
+		logger.Warnf("[MQ\t\t] Not specified")
+	} else {
+		logger.Infof("[MQ\t\t] Configured - Driver %s", bc.GetMq().GetDriver())
+	}
+	if bc.GetCache() == nil || len(bc.GetCache().GetDriver()) == 0 {
+		logger.Warnf("[Cache\t] Not specified")
+	} else {
+		logger.Infof("[Cache\t] Configured - Driver %s", bc.GetCache().GetDriver())
+	}
+	if bc.GetConsul() == nil || len(bc.GetConsul().GetAddr()) == 0 {
+		logger.Warnf("[Consul\t] Not specified")
+	} else {
+		logger.Infof("[Consul\t] Configured")
+	}
+	if bc.GetSentry() == nil || len(bc.GetSentry().GetDsn()) == 0 {
+		logger.Warnf("[Sentry\t] Not specified")
+	} else {
+		logger.Infof("[Sentry\t] Configured")
+	}
+	if bc.GetOtlp() == nil || len(bc.GetOtlp().GetProtocol()) == 0 {
+		logger.Warnf("[OTLP\t] Not specified")
+	} else {
+		logger.Infof("[OTLP\t] Configured - Protocol %s", bc.GetOtlp().GetProtocol())
+	}
 }
