@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
@@ -74,6 +75,11 @@ func main() {
 
 	if bc.GetEnableServiceDiscovery() == nil {
 		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
+	}
+
+	err = libobserve.InitOTEL(bc.GetOtlp())
+	if err != nil {
+		panic(err)
 	}
 
 	err = libsentry.InitSentry(bc.GetSentry())

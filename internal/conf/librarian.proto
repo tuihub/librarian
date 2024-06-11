@@ -27,6 +27,7 @@ message Librarian {
   Porter porter = 7;
   Consul consul = 8;
   Sentry sentry = 9;
+  OTLP otlp = 14;
 
   Mapper mapper = 11;
   Searcher searcher = 12;

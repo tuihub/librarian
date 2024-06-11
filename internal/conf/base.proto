@@ -55,3 +55,10 @@ message Sentry {
   string dsn = 1;
   string environment = 2;
 }
+
+message OTLP {
+  string protocol = 1;
+  string endpoint = 2;
+  string headers = 3;
+  bool grpc_insecure = 4;
+}

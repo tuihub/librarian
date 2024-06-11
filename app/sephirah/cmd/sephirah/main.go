@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/lib/libsentry"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/registry"
@@ -50,11 +49,6 @@ func main() {
 
 	var bc conf.Sephirah
 	appSettings.LoadConfig(&bc)
-
-	err = libsentry.InitSentry(bc.GetSentry())
-	if err != nil {
-		panic(err)
-	}
 
 	app, cleanup, err := wireApp(
 		bc.GetServer(),
