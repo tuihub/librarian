@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -23,6 +24,7 @@ func NewGrpcWebServer(
 	c *conf.SephirahServer,
 	auth *libauth.Auth,
 	app *libapp.Settings,
+	observer *libobserve.BuiltInObserver,
 ) (*http.Server, error) {
 	validator, err := libapp.NewValidator()
 	if err != nil {
@@ -38,6 +40,7 @@ func NewGrpcWebServer(
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	middlewares = append(middlewares, libsentry.Server())
+	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),

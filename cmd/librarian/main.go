@@ -50,6 +50,7 @@ func newApp(
 	hs *http.Server,
 	mq *libmq.MQ,
 	cron *libcron.Cron,
+	obs *libobserve.BuiltInObserver,
 	consul *conf.Consul,
 ) (*kratos.App, error) {
 	options := []kratos.Option{
@@ -57,7 +58,7 @@ func newApp(
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs, hs, mq, cron),
+		kratos.Server(gs, hs, mq, cron, obs),
 	}
 	r, err := libapp.NewRegistrar(consul)
 	if err == nil {

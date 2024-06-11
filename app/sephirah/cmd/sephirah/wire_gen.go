@@ -26,6 +26,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/server"
 )
 
@@ -37,7 +38,11 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	if err != nil {
 		return nil, nil, err
 	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings)
+	builtInObserver, err := libobserve.NewBuiltInObserver()
+	if err != nil {
+		return nil, nil, err
+	}
+	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -152,13 +157,13 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
 	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v, sephirahServer)
-	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings)
+	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings, builtInObserver)
 	if err != nil {
 		cleanup2()
 		cleanup()

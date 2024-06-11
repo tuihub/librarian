@@ -8,6 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/ThreeDotsLabs/watermill"
@@ -22,6 +23,7 @@ type MQ struct {
 	router    *message.Router
 	pubSub    *pubSub
 	topicList map[string]bool
+	observer  *libobserve.BuiltInObserver
 }
 
 type pubSub struct {
@@ -29,7 +31,13 @@ type pubSub struct {
 	subscriber message.Subscriber
 }
 
-func NewMQ(c *conf.MQ, dbc *conf.Database, cachec *conf.Cache, app *libapp.Settings) (*MQ, func(), error) {
+func NewMQ(
+	c *conf.MQ,
+	dbc *conf.Database,
+	cachec *conf.Cache,
+	app *libapp.Settings,
+	obs *libobserve.BuiltInObserver,
+) (*MQ, func(), error) {
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
 	if c == nil {
@@ -76,6 +84,7 @@ func NewMQ(c *conf.MQ, dbc *conf.Database, cachec *conf.Cache, app *libapp.Setti
 		router:    router,
 		pubSub:    ps,
 		topicList: make(map[string]bool),
+		observer:  obs,
 	}, cleanup, err
 }
 

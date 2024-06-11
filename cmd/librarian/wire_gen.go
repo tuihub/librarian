@@ -18,6 +18,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/server"
 )
 
@@ -29,7 +30,11 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 	if err != nil {
 		return nil, nil, err
 	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings)
+	builtInObserver, err := libobserve.NewBuiltInObserver()
+	if err != nil {
+		return nil, nil, err
+	}
+	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -76,7 +81,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings)
+	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -84,7 +89,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings, builtInObserver)
 	if err != nil {
 		cleanup4()
 		cleanup3()
@@ -92,7 +97,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	app, err := newApp(grpcServer, httpServer, libmqMQ, cron, consul)
+	app, err := newApp(grpcServer, httpServer, libmqMQ, cron, builtInObserver, consul)
 	if err != nil {
 		cleanup4()
 		cleanup3()

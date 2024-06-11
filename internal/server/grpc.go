@@ -4,6 +4,7 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -21,6 +22,7 @@ func NewGRPCServer(
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
 	app *libapp.Settings,
+	observer *libobserve.BuiltInObserver,
 ) (*grpc.Server, error) {
 	validator, err := libapp.NewValidator()
 	if err != nil {
@@ -36,6 +38,7 @@ func NewGRPCServer(
 		middlewares = append(middlewares, recovery.Recovery())
 	}
 	middlewares = append(middlewares, libsentry.Server())
+	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(middlewares...),

@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -49,6 +50,7 @@ func wireApp(
 			libmq.ProviderSet,
 			libcron.ProviderSet,
 			libcache.ProviderSet,
+			libobserve.ProviderSet,
 			ProviderSet,
 		),
 	)
