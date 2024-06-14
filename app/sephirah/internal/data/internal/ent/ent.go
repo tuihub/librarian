@@ -32,6 +32,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
@@ -116,6 +117,7 @@ func checkColumn(table, column string) error {
 			notifytarget.Table:       notifytarget.ValidColumn,
 			porterinstance.Table:     porterinstance.ValidColumn,
 			porterprivilege.Table:    porterprivilege.ValidColumn,
+			systemnotification.Table: systemnotification.ValidColumn,
 			tag.Table:                tag.ValidColumn,
 			user.Table:               user.ValidColumn,
 			userdevice.Table:         userdevice.ValidColumn,

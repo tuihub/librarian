@@ -249,6 +249,18 @@ func (f PorterPrivilegeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterPrivilegeMutation", m)
 }
 
+// The SystemNotificationFunc type is an adapter to allow the use of ordinary
+// function as SystemNotification mutator.
+type SystemNotificationFunc func(context.Context, *ent.SystemNotificationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SystemNotificationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SystemNotificationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SystemNotificationMutation", m)
+}
+
 // The TagFunc type is an adapter to allow the use of ordinary
 // function as Tag mutator.
 type TagFunc func(context.Context, *ent.TagMutation) (ent.Value, error)

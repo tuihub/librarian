@@ -52,6 +52,8 @@ type Tx struct {
 	PorterInstance *PorterInstanceClient
 	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
 	PorterPrivilege *PorterPrivilegeClient
+	// SystemNotification is the client for interacting with the SystemNotification builders.
+	SystemNotification *SystemNotificationClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// User is the client for interacting with the User builders.
@@ -211,6 +213,7 @@ func (tx *Tx) init() {
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
 	tx.PorterPrivilege = NewPorterPrivilegeClient(tx.config)
+	tx.SystemNotification = NewSystemNotificationClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 	tx.UserDevice = NewUserDeviceClient(tx.config)

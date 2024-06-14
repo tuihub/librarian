@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -137,6 +138,26 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusActive NotifyFlowStatusActive
 	// goverter:enum:map StatusSuspend NotifyFlowStatusSuspend
 	ToBizNotifyFlowStatus(notifyflow.Status) modelnetzach.NotifyFlowStatus
+
+	// goverter:matchIgnoreCase
+	// goverter:map CreatedAt CreateTime
+	ToBizSystemNotification(*ent.SystemNotification) *modelnetzach.SystemNotification
+	ToBizSystemNotificationList([]*ent.SystemNotification) []*modelnetzach.SystemNotification
+	// goverter:enum:unknown SystemNotificationTypeUnspecified
+	// goverter:enum:map TypeSystem SystemNotificationTypeSystem
+	// goverter:enum:map TypeUser SystemNotificationTypeUser
+	ToBizSystemNotificationType(systemnotification.Type) modelnetzach.SystemNotificationType
+	// goverter:enum:unknown SystemNotificationLevelUnspecified
+	// goverter:enum:map LevelInfo SystemNotificationLevelInfo
+	// goverter:enum:map LevelWarn SystemNotificationLevelWarning
+	// goverter:enum:map LevelError SystemNotificationLevelError
+	// goverter:enum:map LevelOngoing SystemNotificationLevelOngoing
+	ToBizSystemNotificationLevel(systemnotification.Level) modelnetzach.SystemNotificationLevel
+	// goverter:enum:unknown SystemNotificationStatusUnspecified
+	// goverter:enum:map StatusUnread SystemNotificationStatusUnread
+	// goverter:enum:map StatusRead SystemNotificationStatusRead
+	// goverter:enum:map StatusDismissed SystemNotificationStatusDismissed
+	ToBizSystemNotificationStatus(systemnotification.Status) modelnetzach.SystemNotificationStatus
 
 	ToBizImage(*ent.Image) *modelchesed.Image
 	ToBizImageList([]*ent.Image) []*modelchesed.Image

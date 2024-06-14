@@ -30,6 +30,9 @@ type NetzachRepo interface {
 		[]*modelnetzach.NotifyFlow, int64, error)
 	GetNotifyFlow(context.Context, model.InternalID) (*modelnetzach.NotifyFlow, error)
 	GetNotifyFlowIDsWithFeed(context.Context, model.InternalID) ([]model.InternalID, error)
+	ListSystemNotifications(context.Context, model.Paging, *model.InternalID, []modelnetzach.SystemNotificationType,
+		[]modelnetzach.SystemNotificationLevel, []modelnetzach.SystemNotificationStatus) (
+		[]*modelnetzach.SystemNotification, int64, error)
 }
 
 type Netzach struct {
@@ -196,6 +199,29 @@ func (n *Netzach) ListNotifyFlows(
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	res, total, err := n.repo.ListNotifyFlows(ctx, paging, claims.UserID, ids)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res, total, nil
+}
+
+func (n *Netzach) ListSystemNotifications(
+	ctx context.Context,
+	paging model.Paging,
+	types []modelnetzach.SystemNotificationType,
+	levels []modelnetzach.SystemNotificationLevel,
+	statuses []modelnetzach.SystemNotificationStatus,
+) ([]*modelnetzach.SystemNotification, int64, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
+	}
+	var userID *model.InternalID
+	if claims.UserType != libauth.UserTypeAdmin {
+		types = []modelnetzach.SystemNotificationType{modelnetzach.SystemNotificationTypeUser}
+		userID = &claims.UserID
+	}
+	res, total, err := n.repo.ListSystemNotifications(ctx, paging, userID, types, levels, statuses)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

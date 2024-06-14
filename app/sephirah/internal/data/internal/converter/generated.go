@@ -12,6 +12,7 @@ import (
 	notifyflow "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	porterinstance "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	systemnotification "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	modelchesed "github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -464,6 +465,73 @@ func (c *toBizConverterImpl) ToBizPorterStatus(source porterinstance.Status) mod
 	}
 	return modeltipherethPorterInstanceStatus
 }
+func (c *toBizConverterImpl) ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
+	var pModelnetzachSystemNotification *modelnetzach.SystemNotification
+	if source != nil {
+		var modelnetzachSystemNotification modelnetzach.SystemNotification
+		modelnetzachSystemNotification.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelnetzachSystemNotification.Type = c.ToBizSystemNotificationType((*source).Type)
+		modelnetzachSystemNotification.Level = c.ToBizSystemNotificationLevel((*source).Level)
+		modelnetzachSystemNotification.Status = c.ToBizSystemNotificationStatus((*source).Status)
+		modelnetzachSystemNotification.Title = (*source).Title
+		modelnetzachSystemNotification.Content = (*source).Content
+		modelnetzachSystemNotification.CreateTime = TimeToTime((*source).CreatedAt)
+		pModelnetzachSystemNotification = &modelnetzachSystemNotification
+	}
+	return pModelnetzachSystemNotification
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationLevel(source systemnotification.Level) modelnetzach.SystemNotificationLevel {
+	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
+	switch source {
+	case systemnotification.LevelError:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelError
+	case systemnotification.LevelInfo:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelInfo
+	case systemnotification.LevelOngoing:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelOngoing
+	case systemnotification.LevelWarn:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelWarning
+	default:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
+	}
+	return modelnetzachSystemNotificationLevel
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationList(source []*ent.SystemNotification) []*modelnetzach.SystemNotification {
+	var pModelnetzachSystemNotificationList []*modelnetzach.SystemNotification
+	if source != nil {
+		pModelnetzachSystemNotificationList = make([]*modelnetzach.SystemNotification, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelnetzachSystemNotificationList[i] = c.ToBizSystemNotification(source[i])
+		}
+	}
+	return pModelnetzachSystemNotificationList
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationStatus(source systemnotification.Status) modelnetzach.SystemNotificationStatus {
+	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
+	switch source {
+	case systemnotification.StatusDismissed:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusDismissed
+	case systemnotification.StatusRead:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusRead
+	case systemnotification.StatusUnread:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnread
+	default:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
+	}
+	return modelnetzachSystemNotificationStatus
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationType(source systemnotification.Type) modelnetzach.SystemNotificationType {
+	var modelnetzachSystemNotificationType modelnetzach.SystemNotificationType
+	switch source {
+	case systemnotification.TypeSystem:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeSystem
+	case systemnotification.TypeUser:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUser
+	default:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
+	}
+	return modelnetzachSystemNotificationType
+}
 func (c *toBizConverterImpl) ToBizSystemType(source deviceinfo.SystemType) modeltiphereth.SystemType {
 	var modeltipherethSystemType modeltiphereth.SystemType
 	switch source {
@@ -743,6 +811,36 @@ func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.N
 		}
 	}
 	return notifytargetStatusList
+}
+func (c *toEntConverterImpl) ToEntSystemNotificationLevelList(source []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
+	var systemnotificationLevelList []systemnotification.Level
+	if source != nil {
+		systemnotificationLevelList = make([]systemnotification.Level, len(source))
+		for i := 0; i < len(source); i++ {
+			systemnotificationLevelList[i] = ToEntSystemNotificationLevel(source[i])
+		}
+	}
+	return systemnotificationLevelList
+}
+func (c *toEntConverterImpl) ToEntSystemNotificationStatusList(source []modelnetzach.SystemNotificationStatus) []systemnotification.Status {
+	var systemnotificationStatusList []systemnotification.Status
+	if source != nil {
+		systemnotificationStatusList = make([]systemnotification.Status, len(source))
+		for i := 0; i < len(source); i++ {
+			systemnotificationStatusList[i] = ToEntSystemNotificationStatus(source[i])
+		}
+	}
+	return systemnotificationStatusList
+}
+func (c *toEntConverterImpl) ToEntSystemNotificationTypeList(source []modelnetzach.SystemNotificationType) []systemnotification.Type {
+	var systemnotificationTypeList []systemnotification.Type
+	if source != nil {
+		systemnotificationTypeList = make([]systemnotification.Type, len(source))
+		for i := 0; i < len(source); i++ {
+			systemnotificationTypeList[i] = ToEntSystemNotificationType(source[i])
+		}
+	}
+	return systemnotificationTypeList
 }
 func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
 	var userStatusList []user.Status

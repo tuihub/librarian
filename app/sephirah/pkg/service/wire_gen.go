@@ -74,7 +74,8 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 	topic5 := bizangela.NewNotifyRouterTopic(angelaBase, map2, map3, topic4)
 	topic6 := bizangela.NewParseFeedItemDigestTopic(angelaBase)
 	topic7 := bizangela.NewPullFeedTopic(angelaBase, topic5, topic6)
-	angela, err := bizangela.NewAngela(mq, topic3, topic2, libmqTopic, topic7, topic5, topic4, topic6, topic)
+	topic8 := bizangela.NewSystemNotificationTopic(angelaBase)
+	angela, err := bizangela.NewAngela(mq, topic3, topic2, libmqTopic, topic7, topic5, topic4, topic6, topic, topic8)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

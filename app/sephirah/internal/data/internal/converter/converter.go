@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -37,6 +38,15 @@ func ToEntFeedConfigStatusList(a []modelyesod.FeedConfigStatus) []feedconfig.Sta
 }
 func ToEntNotifyTargetStatusList(a []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
 	return toEnt.ToEntNotifyTargetStatusList(a)
+}
+func ToEntSystemNotificationTypeList(a []modelnetzach.SystemNotificationType) []systemnotification.Type {
+	return toEnt.ToEntSystemNotificationTypeList(a)
+}
+func ToEntSystemNotificationLevelList(a []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
+	return toEnt.ToEntSystemNotificationLevelList(a)
+}
+func ToEntSystemNotificationStatusList(a []modelnetzach.SystemNotificationStatus) []systemnotification.Status {
+	return toEnt.ToEntSystemNotificationStatusList(a)
 }
 
 func ToBizUser(a *ent.User) *modeltiphereth.User {
@@ -185,4 +195,8 @@ func ToBizImage(a *ent.Image) *modelchesed.Image {
 
 func ToBizImageList(a []*ent.Image) []*modelchesed.Image {
 	return toBiz.ToBizImageList(a)
+}
+
+func ToBizSystemNotificationList(a []*ent.SystemNotification) []*modelnetzach.SystemNotification {
+	return toBiz.ToBizSystemNotificationList(a)
 }

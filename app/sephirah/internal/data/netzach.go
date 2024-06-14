@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model"
@@ -276,4 +277,32 @@ func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.Int
 		return nil, err
 	}
 	return ids, nil
+}
+
+func (n *netzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {
+	q := n.data.db.SystemNotification.Query()
+	if userID != nil {
+		q.Where(systemnotification.UserIDEQ(*userID))
+	}
+	if len(types) > 0 {
+		q.Where(systemnotification.TypeIn(converter.ToEntSystemNotificationTypeList(types)...))
+	}
+	if len(levels) > 0 {
+		q.Where(systemnotification.LevelIn(converter.ToEntSystemNotificationLevelList(levels)...))
+	}
+	if len(statuses) > 0 {
+		q.Where(systemnotification.StatusIn(converter.ToEntSystemNotificationStatusList(statuses)...))
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	res, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizSystemNotificationList(res), int64(total), nil
 }

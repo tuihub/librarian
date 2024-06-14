@@ -13,7 +13,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -303,4 +305,25 @@ func (a *angelaRepo) UpdateFeedItemDigest(ctx context.Context, item *modelfeed.I
 		SetDigestImages(item.DigestImages).
 		Exec(ctx)
 	return err
+}
+
+func (a *angelaRepo) UpsertSystemNotification(
+	ctx context.Context,
+	userID model.InternalID,
+	notification *modelnetzach.SystemNotification,
+) error {
+	q := a.data.db.SystemNotification.Create().
+		SetID(notification.ID).
+		SetType(converter.ToEntSystemNotificationType(notification.Type)).
+		SetLevel(converter.ToEntSystemNotificationLevel(notification.Level)).
+		SetStatus(converter.ToEntSystemNotificationStatus(notification.Status)).
+		SetTitle(notification.Title).
+		SetContent(notification.Content)
+	if notification.Type == modelnetzach.SystemNotificationTypeUser {
+		q.SetUserID(userID)
+	}
+	return q.OnConflict(
+		sql.ConflictColumns(systemnotification.FieldID),
+		sql.ResolveWithNewValues(),
+	).Exec(ctx)
 }

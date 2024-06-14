@@ -485,6 +485,84 @@ func (c *toBizConverterImpl) ToBizPorterPrivilege(source *v11.PorterPrivilege) *
 	}
 	return pModeltipherethPorterInstancePrivilege
 }
+func (c *toBizConverterImpl) ToBizSystemNotificationLevel(source v11.SystemNotificationLevel) modelnetzach.SystemNotificationLevel {
+	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
+	switch source {
+	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelError
+	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelInfo
+	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelOngoing
+	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
+	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelWarning
+	default:
+		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
+	}
+	return modelnetzachSystemNotificationLevel
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationLevelList(source []v11.SystemNotificationLevel) []modelnetzach.SystemNotificationLevel {
+	var modelnetzachSystemNotificationLevelList []modelnetzach.SystemNotificationLevel
+	if source != nil {
+		modelnetzachSystemNotificationLevelList = make([]modelnetzach.SystemNotificationLevel, len(source))
+		for i := 0; i < len(source); i++ {
+			modelnetzachSystemNotificationLevelList[i] = c.ToBizSystemNotificationLevel(source[i])
+		}
+	}
+	return modelnetzachSystemNotificationLevelList
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationStatus(source v11.SystemNotificationStatus) modelnetzach.SystemNotificationStatus {
+	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
+	switch source {
+	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusDismissed
+	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusRead
+	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnread
+	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
+	default:
+		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
+	}
+	return modelnetzachSystemNotificationStatus
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationStatusList(source []v11.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus {
+	var modelnetzachSystemNotificationStatusList []modelnetzach.SystemNotificationStatus
+	if source != nil {
+		modelnetzachSystemNotificationStatusList = make([]modelnetzach.SystemNotificationStatus, len(source))
+		for i := 0; i < len(source); i++ {
+			modelnetzachSystemNotificationStatusList[i] = c.ToBizSystemNotificationStatus(source[i])
+		}
+	}
+	return modelnetzachSystemNotificationStatusList
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationType(source v11.SystemNotificationType) modelnetzach.SystemNotificationType {
+	var modelnetzachSystemNotificationType modelnetzach.SystemNotificationType
+	switch source {
+	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeSystem
+	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
+	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUser
+	default:
+		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
+	}
+	return modelnetzachSystemNotificationType
+}
+func (c *toBizConverterImpl) ToBizSystemNotificationTypeList(source []v11.SystemNotificationType) []modelnetzach.SystemNotificationType {
+	var modelnetzachSystemNotificationTypeList []modelnetzach.SystemNotificationType
+	if source != nil {
+		modelnetzachSystemNotificationTypeList = make([]modelnetzach.SystemNotificationType, len(source))
+		for i := 0; i < len(source); i++ {
+			modelnetzachSystemNotificationTypeList[i] = c.ToBizSystemNotificationType(source[i])
+		}
+	}
+	return modelnetzachSystemNotificationTypeList
+}
 func (c *toBizConverterImpl) ToBizSystemType(source v11.SystemType) modeltiphereth.SystemType {
 	var modeltipherethSystemType modeltiphereth.SystemType
 	switch source {
@@ -1219,6 +1297,79 @@ func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modeltiphereth.Serv
 		pV1ServerFeatureSummary = &v1ServerFeatureSummary
 	}
 	return pV1ServerFeatureSummary
+}
+func (c *toPBConverterImpl) ToPBSystemNotification(source *modelnetzach.SystemNotification) *v11.SystemNotification {
+	var pV1SystemNotification *v11.SystemNotification
+	if source != nil {
+		var v1SystemNotification v11.SystemNotification
+		v1SystemNotification.Id = ToPBInternalID((*source).ID)
+		v1SystemNotification.Type = c.ToPBSystemNotificationType((*source).Type)
+		v1SystemNotification.Level = c.ToPBSystemNotificationLevel((*source).Level)
+		v1SystemNotification.Status = c.ToPBSystemNotificationStatus((*source).Status)
+		v1SystemNotification.Title = (*source).Title
+		v1SystemNotification.Message = (*source).Content
+		v1SystemNotification.CreateTime = ToPBTime((*source).CreateTime)
+		pV1SystemNotification = &v1SystemNotification
+	}
+	return pV1SystemNotification
+}
+func (c *toPBConverterImpl) ToPBSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) v11.SystemNotificationLevel {
+	var v1SystemNotificationLevel v11.SystemNotificationLevel
+	switch source {
+	case modelnetzach.SystemNotificationLevelError:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR
+	case modelnetzach.SystemNotificationLevelInfo:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO
+	case modelnetzach.SystemNotificationLevelOngoing:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING
+	case modelnetzach.SystemNotificationLevelUnspecified:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+	case modelnetzach.SystemNotificationLevelWarning:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING
+	default:
+		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+	}
+	return v1SystemNotificationLevel
+}
+func (c *toPBConverterImpl) ToPBSystemNotificationList(source []*modelnetzach.SystemNotification) []*v11.SystemNotification {
+	var pV1SystemNotificationList []*v11.SystemNotification
+	if source != nil {
+		pV1SystemNotificationList = make([]*v11.SystemNotification, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1SystemNotificationList[i] = c.ToPBSystemNotification(source[i])
+		}
+	}
+	return pV1SystemNotificationList
+}
+func (c *toPBConverterImpl) ToPBSystemNotificationStatus(source modelnetzach.SystemNotificationStatus) v11.SystemNotificationStatus {
+	var v1SystemNotificationStatus v11.SystemNotificationStatus
+	switch source {
+	case modelnetzach.SystemNotificationStatusDismissed:
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS
+	case modelnetzach.SystemNotificationStatusRead:
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
+	case modelnetzach.SystemNotificationStatusUnread:
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
+	case modelnetzach.SystemNotificationStatusUnspecified:
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+	default:
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+	}
+	return v1SystemNotificationStatus
+}
+func (c *toPBConverterImpl) ToPBSystemNotificationType(source modelnetzach.SystemNotificationType) v11.SystemNotificationType {
+	var v1SystemNotificationType v11.SystemNotificationType
+	switch source {
+	case modelnetzach.SystemNotificationTypeSystem:
+		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM
+	case modelnetzach.SystemNotificationTypeUnspecified:
+		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
+	case modelnetzach.SystemNotificationTypeUser:
+		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER
+	default:
+		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
+	}
+	return v1SystemNotificationType
 }
 func (c *toPBConverterImpl) ToPBSystemType(source modeltiphereth.SystemType) v11.SystemType {
 	var v1SystemType v11.SystemType

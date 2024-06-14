@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
@@ -33,6 +34,7 @@ var ProviderSet = wire.NewSet(
 	NewNotifyTargetCache,
 	NewParseFeedItemDigestTopic,
 	NewUpdateAppInfoIndexTopic,
+	NewSystemNotificationTopic,
 )
 
 type Angela struct {
@@ -56,6 +58,7 @@ type AngelaRepo interface {
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
 	UpdateFeedItemDigest(context.Context, *modelfeed.Item) error
+	UpsertSystemNotification(context.Context, model.InternalID, *modelnetzach.SystemNotification) error
 }
 
 func NewAngelaBase(
@@ -86,6 +89,7 @@ func NewAngela(
 	notifyPush *libmq.Topic[modelangela.NotifyPush],
 	parseFeedItem *libmq.Topic[modelangela.ParseFeedItemDigest],
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
+	systemNotification *libmq.Topic[modelangela.SystemNotify],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccountInfo); err != nil {
 		return nil, err
@@ -109,6 +113,9 @@ func NewAngela(
 		return nil, err
 	}
 	if err := mq.RegisterTopic(updateAppIndex); err != nil {
+		return nil, err
+	}
+	if err := mq.RegisterTopic(systemNotification); err != nil {
 		return nil, err
 	}
 	return &Angela{

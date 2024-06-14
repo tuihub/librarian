@@ -9,6 +9,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -27,6 +28,9 @@ import (
 // goverter:extend ToEntFeedConfigStatus
 // goverter:extend ToEntNotifyTargetStatus
 // goverter:extend ToEntSystemType
+// goverter:extend ToEntSystemNotificationType
+// goverter:extend ToEntSystemNotificationLevel
+// goverter:extend ToEntSystemNotificationStatus
 type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
@@ -41,6 +45,12 @@ type toEntConverter interface { //nolint:unused // used by generator
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
 
 	ToEntNotifyTargetStatusList([]modelnetzach.NotifyTargetStatus) []notifytarget.Status
+
+	ToEntSystemNotificationTypeList([]modelnetzach.SystemNotificationType) []systemnotification.Type
+
+	ToEntSystemNotificationLevelList([]modelnetzach.SystemNotificationLevel) []systemnotification.Level
+
+	ToEntSystemNotificationStatusList([]modelnetzach.SystemNotificationStatus) []systemnotification.Status
 }
 
 func ToEntUserType(t libauth.UserType) user.Type {
@@ -165,5 +175,50 @@ func ToEntSystemType(s modeltiphereth.SystemType) deviceinfo.SystemType {
 		return deviceinfo.SystemTypeWeb
 	default:
 		return deviceinfo.SystemTypeUnknown
+	}
+}
+
+func ToEntSystemNotificationType(t modelnetzach.SystemNotificationType) systemnotification.Type {
+	switch t {
+	case modelnetzach.SystemNotificationTypeUnspecified:
+		return ""
+	case modelnetzach.SystemNotificationTypeSystem:
+		return systemnotification.TypeSystem
+	case modelnetzach.SystemNotificationTypeUser:
+		return systemnotification.TypeUser
+	default:
+		return ""
+	}
+}
+
+func ToEntSystemNotificationLevel(l modelnetzach.SystemNotificationLevel) systemnotification.Level {
+	switch l {
+	case modelnetzach.SystemNotificationLevelUnspecified:
+		return ""
+	case modelnetzach.SystemNotificationLevelInfo:
+		return systemnotification.LevelInfo
+	case modelnetzach.SystemNotificationLevelWarning:
+		return systemnotification.LevelWarn
+	case modelnetzach.SystemNotificationLevelError:
+		return systemnotification.LevelError
+	case modelnetzach.SystemNotificationLevelOngoing:
+		return systemnotification.LevelOngoing
+	default:
+		return ""
+	}
+}
+
+func ToEntSystemNotificationStatus(s modelnetzach.SystemNotificationStatus) systemnotification.Status {
+	switch s {
+	case modelnetzach.SystemNotificationStatusUnspecified:
+		return ""
+	case modelnetzach.SystemNotificationStatusUnread:
+		return systemnotification.StatusUnread
+	case modelnetzach.SystemNotificationStatusRead:
+		return systemnotification.StatusRead
+	case modelnetzach.SystemNotificationStatusDismissed:
+		return systemnotification.StatusDismissed
+	default:
+		return ""
 	}
 }

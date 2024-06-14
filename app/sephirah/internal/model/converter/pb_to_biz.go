@@ -137,6 +137,28 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToBizNotifyFilter(*pb.NotifyFilter) *modelnetzach.NotifyFilter
 
+	// goverter:enum:unknown SystemNotificationTypeUnspecified
+	// goverter:enum:map SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED SystemNotificationTypeUnspecified
+	// goverter:enum:map SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM SystemNotificationTypeSystem
+	// goverter:enum:map SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER SystemNotificationTypeUser
+	ToBizSystemNotificationType(pb.SystemNotificationType) modelnetzach.SystemNotificationType
+	ToBizSystemNotificationTypeList([]pb.SystemNotificationType) []modelnetzach.SystemNotificationType
+	// goverter:enum:unknown SystemNotificationLevelUnspecified
+	// goverter:enum:map SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED SystemNotificationLevelUnspecified
+	// goverter:enum:map SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO SystemNotificationLevelInfo
+	// goverter:enum:map SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING SystemNotificationLevelWarning
+	// goverter:enum:map SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR SystemNotificationLevelError
+	// goverter:enum:map SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING SystemNotificationLevelOngoing
+	ToBizSystemNotificationLevel(pb.SystemNotificationLevel) modelnetzach.SystemNotificationLevel
+	ToBizSystemNotificationLevelList([]pb.SystemNotificationLevel) []modelnetzach.SystemNotificationLevel
+	// goverter:enum:unknown SystemNotificationStatusUnspecified
+	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED SystemNotificationStatusUnspecified
+	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD SystemNotificationStatusUnread
+	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ SystemNotificationStatusRead
+	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS SystemNotificationStatusDismissed
+	ToBizSystemNotificationStatus(pb.SystemNotificationStatus) modelnetzach.SystemNotificationStatus
+	ToBizSystemNotificationStatusList([]pb.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus
+
 	// goverter:matchIgnoreCase
 	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
 	// goverter:enum:unknown FileTypeUnspecified

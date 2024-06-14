@@ -163,6 +163,29 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
 	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
+
+	// goverter:matchIgnoreCase
+	// goverter:map Content Message
+	ToPBSystemNotification(*modelnetzach.SystemNotification) *pb.SystemNotification
+	ToPBSystemNotificationList([]*modelnetzach.SystemNotification) []*pb.SystemNotification
+	// goverter:enum:unknown SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
+	// goverter:enum:map SystemNotificationTypeUnspecified SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
+	// goverter:enum:map SystemNotificationTypeSystem SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM
+	// goverter:enum:map SystemNotificationTypeUser SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER
+	ToPBSystemNotificationType(modelnetzach.SystemNotificationType) pb.SystemNotificationType
+	// goverter:enum:unknown SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+	// goverter:enum:map SystemNotificationLevelUnspecified SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+	// goverter:enum:map SystemNotificationLevelInfo SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO
+	// goverter:enum:map SystemNotificationLevelWarning SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING
+	// goverter:enum:map SystemNotificationLevelError SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR
+	// goverter:enum:map SystemNotificationLevelOngoing SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING
+	ToPBSystemNotificationLevel(modelnetzach.SystemNotificationLevel) pb.SystemNotificationLevel
+	// goverter:enum:unknown SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+	// goverter:enum:map SystemNotificationStatusUnspecified SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+	// goverter:enum:map SystemNotificationStatusUnread SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
+	// goverter:enum:map SystemNotificationStatusRead SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
+	// goverter:enum:map SystemNotificationStatusDismissed SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS
+	ToPBSystemNotificationStatus(modelnetzach.SystemNotificationStatus) pb.SystemNotificationStatus
 }
 
 func DurationPBToDuration(t *durationpb.Duration) time.Duration {

@@ -26,6 +26,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
@@ -292,6 +293,18 @@ func init() {
 	porterprivilegeDescCreatedAt := porterprivilegeFields[4].Descriptor()
 	// porterprivilege.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterprivilege.DefaultCreatedAt = porterprivilegeDescCreatedAt.Default.(func() time.Time)
+	systemnotificationFields := schema.SystemNotification{}.Fields()
+	_ = systemnotificationFields
+	// systemnotificationDescUpdatedAt is the schema descriptor for updated_at field.
+	systemnotificationDescUpdatedAt := systemnotificationFields[7].Descriptor()
+	// systemnotification.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	systemnotification.DefaultUpdatedAt = systemnotificationDescUpdatedAt.Default.(func() time.Time)
+	// systemnotification.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	systemnotification.UpdateDefaultUpdatedAt = systemnotificationDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// systemnotificationDescCreatedAt is the schema descriptor for created_at field.
+	systemnotificationDescCreatedAt := systemnotificationFields[8].Descriptor()
+	// systemnotification.DefaultCreatedAt holds the default value on creation for the created_at field.
+	systemnotification.DefaultCreatedAt = systemnotificationDescCreatedAt.Default.(func() time.Time)
 	tagFields := schema.Tag{}.Fields()
 	_ = tagFields
 	// tagDescPublic is the schema descriptor for public field.

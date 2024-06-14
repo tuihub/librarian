@@ -66,6 +66,9 @@ type PorterInstance func(*sql.Selector)
 // PorterPrivilege is the predicate function for porterprivilege builders.
 type PorterPrivilege func(*sql.Selector)
 
+// SystemNotification is the predicate function for systemnotification builders.
+type SystemNotification func(*sql.Selector)
+
 // Tag is the predicate function for tag builders.
 type Tag func(*sql.Selector)
 

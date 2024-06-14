@@ -83,6 +83,14 @@ func (t *Topic[T]) LocalCall(ctx context.Context, i T) error {
 	return err
 }
 
+func (t *Topic[T]) PublishFallsLocalCall(ctx context.Context, i T) error {
+	err := t.Publish(ctx, i)
+	if err != nil {
+		return t.LocalCall(ctx, i)
+	}
+	return nil
+}
+
 func (t *Topic[T]) Consume(ctx context.Context, i []byte) error {
 	p := new(T)
 	err := libcodec.Unmarshal(libcodec.JSON, i, p)

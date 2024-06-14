@@ -133,6 +133,9 @@ func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
 	}
 	return res
 }
+func ToPBSystemNotificationList(a []*modelnetzach.SystemNotification) []*pb.SystemNotification {
+	return toPB.ToPBSystemNotificationList(a)
+}
 func ToBizPorterFeatureSummary(a *porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	return toBiz.ToBizPorterFeatureSummary(a)
 }
@@ -205,4 +208,13 @@ func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
 }
 func ToBizFileMetadata(a *pb.FileMetadata) *modelbinah.FileMetadata {
 	return toBiz.ToBizFileMetadata(a)
+}
+func ToBizSystemNotificationTypeList(a []pb.SystemNotificationType) []modelnetzach.SystemNotificationType {
+	return toBiz.ToBizSystemNotificationTypeList(a)
+}
+func ToBizSystemNotificationLevelList(a []pb.SystemNotificationLevel) []modelnetzach.SystemNotificationLevel {
+	return toBiz.ToBizSystemNotificationLevelList(a)
+}
+func ToBizSystemNotificationStatusList(a []pb.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus {
+	return toBiz.ToBizSystemNotificationStatusList(a)
 }

@@ -626,6 +626,24 @@ var (
 			},
 		},
 	}
+	// SystemNotificationsColumns holds the columns for the "system_notifications" table.
+	SystemNotificationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"system", "user"}},
+		{Name: "level", Type: field.TypeEnum, Enums: []string{"info", "warn", "error", "ongoing"}},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"unread", "read", "dismissed"}},
+		{Name: "title", Type: field.TypeString},
+		{Name: "content", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// SystemNotificationsTable holds the schema information for the "system_notifications" table.
+	SystemNotificationsTable = &schema.Table{
+		Name:       "system_notifications",
+		Columns:    SystemNotificationsColumns,
+		PrimaryKey: []*schema.Column{SystemNotificationsColumns[0]},
+	}
 	// TagsColumns holds the columns for the "tags" table.
 	TagsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -838,6 +856,7 @@ var (
 		NotifyTargetsTable,
 		PorterInstancesTable,
 		PorterPrivilegesTable,
+		SystemNotificationsTable,
 		TagsTable,
 		UsersTable,
 		UserDevicesTable,

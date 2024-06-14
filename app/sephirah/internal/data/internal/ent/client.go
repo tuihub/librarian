@@ -36,6 +36,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
@@ -87,6 +88,8 @@ type Client struct {
 	PorterInstance *PorterInstanceClient
 	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
 	PorterPrivilege *PorterPrivilegeClient
+	// SystemNotification is the client for interacting with the SystemNotification builders.
+	SystemNotification *SystemNotificationClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// User is the client for interacting with the User builders.
@@ -126,6 +129,7 @@ func (c *Client) init() {
 	c.NotifyTarget = NewNotifyTargetClient(c.config)
 	c.PorterInstance = NewPorterInstanceClient(c.config)
 	c.PorterPrivilege = NewPorterPrivilegeClient(c.config)
+	c.SystemNotification = NewSystemNotificationClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.User = NewUserClient(c.config)
 	c.UserDevice = NewUserDeviceClient(c.config)
@@ -242,6 +246,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		NotifyTarget:       NewNotifyTargetClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
 		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
+		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
 		UserDevice:         NewUserDeviceClient(cfg),
@@ -285,6 +290,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		NotifyTarget:       NewNotifyTargetClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
 		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
+		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
 		UserDevice:         NewUserDeviceClient(cfg),
@@ -321,8 +327,8 @@ func (c *Client) Use(hooks ...Hook) {
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
 		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
 		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
-		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.Tag, c.User,
-		c.UserDevice, c.UserSession,
+		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.SystemNotification,
+		c.Tag, c.User, c.UserDevice, c.UserSession,
 	} {
 		n.Use(hooks...)
 	}
@@ -335,8 +341,8 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
 		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
 		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
-		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.Tag, c.User,
-		c.UserDevice, c.UserSession,
+		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.SystemNotification,
+		c.Tag, c.User, c.UserDevice, c.UserSession,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -385,6 +391,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PorterInstance.mutate(ctx, m)
 	case *PorterPrivilegeMutation:
 		return c.PorterPrivilege.mutate(ctx, m)
+	case *SystemNotificationMutation:
+		return c.SystemNotification.mutate(ctx, m)
 	case *TagMutation:
 		return c.Tag.mutate(ctx, m)
 	case *UserMutation:
@@ -3794,6 +3802,139 @@ func (c *PorterPrivilegeClient) mutate(ctx context.Context, m *PorterPrivilegeMu
 	}
 }
 
+// SystemNotificationClient is a client for the SystemNotification schema.
+type SystemNotificationClient struct {
+	config
+}
+
+// NewSystemNotificationClient returns a client for the SystemNotification from the given config.
+func NewSystemNotificationClient(c config) *SystemNotificationClient {
+	return &SystemNotificationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `systemnotification.Hooks(f(g(h())))`.
+func (c *SystemNotificationClient) Use(hooks ...Hook) {
+	c.hooks.SystemNotification = append(c.hooks.SystemNotification, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `systemnotification.Intercept(f(g(h())))`.
+func (c *SystemNotificationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SystemNotification = append(c.inters.SystemNotification, interceptors...)
+}
+
+// Create returns a builder for creating a SystemNotification entity.
+func (c *SystemNotificationClient) Create() *SystemNotificationCreate {
+	mutation := newSystemNotificationMutation(c.config, OpCreate)
+	return &SystemNotificationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SystemNotification entities.
+func (c *SystemNotificationClient) CreateBulk(builders ...*SystemNotificationCreate) *SystemNotificationCreateBulk {
+	return &SystemNotificationCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SystemNotificationClient) MapCreateBulk(slice any, setFunc func(*SystemNotificationCreate, int)) *SystemNotificationCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SystemNotificationCreateBulk{err: fmt.Errorf("calling to SystemNotificationClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SystemNotificationCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SystemNotificationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SystemNotification.
+func (c *SystemNotificationClient) Update() *SystemNotificationUpdate {
+	mutation := newSystemNotificationMutation(c.config, OpUpdate)
+	return &SystemNotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SystemNotificationClient) UpdateOne(sn *SystemNotification) *SystemNotificationUpdateOne {
+	mutation := newSystemNotificationMutation(c.config, OpUpdateOne, withSystemNotification(sn))
+	return &SystemNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SystemNotificationClient) UpdateOneID(id model.InternalID) *SystemNotificationUpdateOne {
+	mutation := newSystemNotificationMutation(c.config, OpUpdateOne, withSystemNotificationID(id))
+	return &SystemNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SystemNotification.
+func (c *SystemNotificationClient) Delete() *SystemNotificationDelete {
+	mutation := newSystemNotificationMutation(c.config, OpDelete)
+	return &SystemNotificationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SystemNotificationClient) DeleteOne(sn *SystemNotification) *SystemNotificationDeleteOne {
+	return c.DeleteOneID(sn.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SystemNotificationClient) DeleteOneID(id model.InternalID) *SystemNotificationDeleteOne {
+	builder := c.Delete().Where(systemnotification.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SystemNotificationDeleteOne{builder}
+}
+
+// Query returns a query builder for SystemNotification.
+func (c *SystemNotificationClient) Query() *SystemNotificationQuery {
+	return &SystemNotificationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSystemNotification},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SystemNotification entity by its id.
+func (c *SystemNotificationClient) Get(ctx context.Context, id model.InternalID) (*SystemNotification, error) {
+	return c.Query().Where(systemnotification.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SystemNotificationClient) GetX(ctx context.Context, id model.InternalID) *SystemNotification {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SystemNotificationClient) Hooks() []Hook {
+	return c.hooks.SystemNotification
+}
+
+// Interceptors returns the client interceptors.
+func (c *SystemNotificationClient) Interceptors() []Interceptor {
+	return c.inters.SystemNotification
+}
+
+func (c *SystemNotificationClient) mutate(ctx context.Context, m *SystemNotificationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SystemNotificationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SystemNotificationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SystemNotificationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SystemNotificationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SystemNotification mutation op: %q", m.Op())
+	}
+}
+
 // TagClient is a client for the Tag schema.
 type TagClient struct {
 	config
@@ -4652,12 +4793,14 @@ type (
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
 		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
 		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
-		PorterPrivilege, Tag, User, UserDevice, UserSession []ent.Hook
+		PorterPrivilege, SystemNotification, Tag, User, UserDevice,
+		UserSession []ent.Hook
 	}
 	inters struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
 		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
 		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
-		PorterPrivilege, Tag, User, UserDevice, UserSession []ent.Interceptor
+		PorterPrivilege, SystemNotification, Tag, User, UserDevice,
+		UserSession []ent.Interceptor
 	}
 )

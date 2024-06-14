@@ -1,6 +1,8 @@
 package modelnetzach
 
 import (
+	"time"
+
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -53,3 +55,40 @@ type NotifyFilter struct {
 	ExcludeKeywords []string
 	IncludeKeywords []string
 }
+
+type SystemNotification struct {
+	ID         model.InternalID
+	Type       SystemNotificationType
+	Level      SystemNotificationLevel
+	Status     SystemNotificationStatus
+	Title      string
+	Content    string
+	CreateTime time.Time
+}
+
+type SystemNotificationType int
+
+const (
+	SystemNotificationTypeUnspecified SystemNotificationType = iota
+	SystemNotificationTypeSystem
+	SystemNotificationTypeUser
+)
+
+type SystemNotificationLevel int
+
+const (
+	SystemNotificationLevelUnspecified SystemNotificationLevel = iota
+	SystemNotificationLevelOngoing
+	SystemNotificationLevelError
+	SystemNotificationLevelWarning
+	SystemNotificationLevelInfo
+)
+
+type SystemNotificationStatus int
+
+const (
+	SystemNotificationStatusUnspecified SystemNotificationStatus = iota
+	SystemNotificationStatusUnread
+	SystemNotificationStatusRead
+	SystemNotificationStatusDismissed
+)
