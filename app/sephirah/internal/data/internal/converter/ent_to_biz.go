@@ -24,15 +24,23 @@ import (
 // goverter:converter
 // goverter:output:file ./generated.go
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
+// goverter:enum:exclude time:Duration
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToLibAuthUserType
-	// goverter:map Status | ToBizUserStatus
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *modeltiphereth.User
 	ToBizUserList([]*ent.User) []*modeltiphereth.User
+	// goverter:enum:unknown UserTypeUnspecified
+	// goverter:enum:map TypeAdmin UserTypeAdmin
+	// goverter:enum:map TypeNormal UserTypeNormal
+	// goverter:enum:map TypeSentinel UserTypeSentinel
+	ToLibAuthUserType(user.Type) libauth.UserType
+	// goverter:enum:unknown UserStatusUnspecified
+	// goverter:enum:map StatusActive UserStatusActive
+	// goverter:enum:map StatusBlocked UserStatusBlocked
+	ToBizUserStatus(user.Status) modeltiphereth.UserStatus
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore DeviceInfo
@@ -41,9 +49,17 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizUserSessionList([]*ent.UserSession) []*modeltiphereth.UserSession
 
 	// goverter:matchIgnoreCase
-	// goverter:map SystemType | ToBizSystemType
 	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
 	ToBizDeviceInfoList([]*ent.DeviceInfo) []*modeltiphereth.DeviceInfo
+	// goverter:enum:unknown SystemTypeUnspecified
+	// goverter:enum:map SystemTypeUnknown SystemTypeUnspecified
+	// goverter:enum:map SystemTypeIos SystemTypeIOS
+	// goverter:enum:map SystemTypeAndroid SystemTypeAndroid
+	// goverter:enum:map SystemTypeWeb SystemTypeWeb
+	// goverter:enum:map SystemTypeWindows SystemTypeWindows
+	// goverter:enum:map SystemTypeMacos SystemTypeMacOS
+	// goverter:enum:map SystemTypeLinux SystemTypeLinux
+	ToBizSystemType(deviceinfo.SystemType) modeltiphereth.SystemType
 
 	// goverter:matchIgnoreCase
 	// goverter:map UpdatedAt LatestUpdateTime
@@ -51,19 +67,25 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:map Status | ToBizPorterStatus
 	// goverter:ignore ConnectionStatus
 	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
 	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
+	// goverter:enum:unknown PorterInstanceStatusUnspecified
+	// goverter:enum:map StatusActive PorterInstanceStatusActive
+	// goverter:enum:map StatusBlocked PorterInstanceStatusBlocked
+	ToBizPorterStatus(porterinstance.Status) modeltiphereth.PorterInstanceStatus
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToBizAppType
 	// goverter:map . Details
 	// goverter:map UpdatedAt LatestUpdateTime
 	// goverter:ignore BoundInternal
 	// goverter:ignore Tags
 	ToBizAppInfo(*ent.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*ent.AppInfo) []*modelgebura.AppInfo
+	// goverter:enum:unknown AppTypeUnspecified
+	// goverter:enum:map TypeUnknown AppTypeUnspecified
+	// goverter:enum:map TypeGame AppTypeGame
+	ToBizAppType(appinfo.Type) modelgebura.AppType
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore AssignedAppInfoID
@@ -76,11 +98,18 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppInstList([]*ent.AppInst) []*modelgebura.AppInst
 
 	// goverter:matchIgnoreCase
-	// goverter:map Status | ToBizFeedConfigStatus
 	// goverter:map LatestPullAt LatestPullTime
-	// goverter:map LatestPullStatus | ToBizFeedConfigPullStatus
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
+	// goverter:enum:unknown FeedConfigStatusUnspecified
+	// goverter:enum:map StatusActive FeedConfigStatusActive
+	// goverter:enum:map StatusSuspend FeedConfigStatusSuspend
+	ToBizFeedConfigStatus(feedconfig.Status) modelyesod.FeedConfigStatus
+	// goverter:enum:unknown FeedConfigPullStatusUnspecified
+	// goverter:enum:map LatestPullStatusProcessing FeedConfigPullStatusProcessing
+	// goverter:enum:map LatestPullStatusSuccess FeedConfigPullStatusSuccess
+	// goverter:enum:map LatestPullStatusFailed FeedConfigPullStatusFailed
+	ToBizFeedConfigPullStatus(feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus
 
 	// goverter:matchIgnoreCase
 	// goverter:ignore Items
@@ -95,17 +124,26 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedItemCollection(*ent.FeedItemCollection) *modelyesod.FeedItemCollection
 	ToBizFeedItemCollectionList([]*ent.FeedItemCollection) []*modelyesod.FeedItemCollection
 
-	// goverter:map Status | ToBizNotifyTargetStatus
 	ToBizNotifyTarget(*ent.NotifyTarget) *modelnetzach.NotifyTarget
 	ToBizNotifyTargetList([]*ent.NotifyTarget) []*modelnetzach.NotifyTarget
+	// goverter:enum:unknown NotifyTargetStatusUnspecified
+	// goverter:enum:map StatusActive NotifyTargetStatusActive
+	// goverter:enum:map StatusSuspend NotifyTargetStatusSuspend
+	ToBizNotifyTargetStatus(notifytarget.Status) modelnetzach.NotifyTargetStatus
 	// goverter:ignore Sources
 	// goverter:ignore Targets
-	// goverter:map Status | ToBizNotifyFlowStatus
 	ToBizNotifyFlow(*ent.NotifyFlow) *modelnetzach.NotifyFlow
+	// goverter:enum:unknown NotifyFlowStatusUnspecified
+	// goverter:enum:map StatusActive NotifyFlowStatusActive
+	// goverter:enum:map StatusSuspend NotifyFlowStatusSuspend
+	ToBizNotifyFlowStatus(notifyflow.Status) modelnetzach.NotifyFlowStatus
 
-	// goverter:map Status | ToBizImageStatus
 	ToBizImage(*ent.Image) *modelchesed.Image
 	ToBizImageList([]*ent.Image) []*modelchesed.Image
+	// goverter:enum:unknown ImageStatusUnspecified
+	// goverter:enum:map StatusUploaded ImageStatusUploaded
+	// goverter:enum:map StatusScanned ImageStatusScanned
+	ToBizImageStatus(image.Status) modelchesed.ImageStatus
 }
 
 func TimeToTime(t time.Time) time.Time {
@@ -114,128 +152,4 @@ func TimeToTime(t time.Time) time.Time {
 
 func TimeToTimePtr(t *time.Time) *time.Time {
 	return t
-}
-
-func ToLibAuthUserType(t user.Type) libauth.UserType {
-	switch t {
-	case user.TypeAdmin:
-		return libauth.UserTypeAdmin
-	case user.TypeNormal:
-		return libauth.UserTypeNormal
-	case user.TypeSentinel:
-		return libauth.UserTypeSentinel
-	default:
-		return libauth.UserTypeUnspecified
-	}
-}
-
-func ToBizUserStatus(s user.Status) modeltiphereth.UserStatus {
-	switch s {
-	case user.StatusActive:
-		return modeltiphereth.UserStatusActive
-	case user.StatusBlocked:
-		return modeltiphereth.UserStatusBlocked
-	default:
-		return modeltiphereth.UserStatusUnspecified
-	}
-}
-
-func ToBizPorterStatus(s porterinstance.Status) modeltiphereth.PorterInstanceStatus {
-	switch s {
-	case porterinstance.StatusActive:
-		return modeltiphereth.PorterInstanceStatusActive
-	case porterinstance.StatusBlocked:
-		return modeltiphereth.PorterInstanceStatusBlocked
-	default:
-		return modeltiphereth.PorterInstanceStatusUnspecified
-	}
-}
-
-func ToBizAppType(t appinfo.Type) modelgebura.AppType {
-	switch t {
-	case appinfo.TypeUnknown:
-		return modelgebura.AppTypeUnspecified
-	case appinfo.TypeGame:
-		return modelgebura.AppTypeGame
-	default:
-		return modelgebura.AppTypeUnspecified
-	}
-}
-
-func ToBizFeedConfigStatus(s feedconfig.Status) modelyesod.FeedConfigStatus {
-	switch s {
-	case feedconfig.StatusActive:
-		return modelyesod.FeedConfigStatusActive
-	case feedconfig.StatusSuspend:
-		return modelyesod.FeedConfigStatusSuspend
-	default:
-		return modelyesod.FeedConfigStatusUnspecified
-	}
-}
-
-func ToBizNotifyTargetStatus(s notifytarget.Status) modelnetzach.NotifyTargetStatus {
-	switch s {
-	case notifytarget.StatusActive:
-		return modelnetzach.NotifyTargetStatusActive
-	case notifytarget.StatusSuspend:
-		return modelnetzach.NotifyTargetStatusSuspend
-	default:
-		return modelnetzach.NotifyTargetStatusUnspecified
-	}
-}
-
-func ToBizNotifyFlowStatus(s notifyflow.Status) modelnetzach.NotifyFlowStatus {
-	switch s {
-	case notifyflow.StatusActive:
-		return modelnetzach.NotifyFlowStatusActive
-	case notifyflow.StatusSuspend:
-		return modelnetzach.NotifyFlowStatusSuspend
-	default:
-		return modelnetzach.NotifyFlowStatusUnspecified
-	}
-}
-
-func ToBizImageStatus(s image.Status) modelchesed.ImageStatus {
-	switch s {
-	case image.StatusUploaded:
-		return modelchesed.ImageStatusUploaded
-	case image.StatusScanned:
-		return modelchesed.ImageStatusScanned
-	default:
-		return modelchesed.ImageStatusUnspecified
-	}
-}
-
-func ToBizSystemType(s deviceinfo.SystemType) modeltiphereth.SystemType {
-	switch s {
-	case deviceinfo.SystemTypeUnknown:
-		return modeltiphereth.SystemTypeUnspecified
-	case deviceinfo.SystemTypeIos:
-		return modeltiphereth.SystemTypeIOS
-	case deviceinfo.SystemTypeAndroid:
-		return modeltiphereth.SystemTypeAndroid
-	case deviceinfo.SystemTypeWeb:
-		return modeltiphereth.SystemTypeWeb
-	case deviceinfo.SystemTypeWindows:
-		return modeltiphereth.SystemTypeWindows
-	case deviceinfo.SystemTypeMacos:
-		return modeltiphereth.SystemTypeMacOS
-	case deviceinfo.SystemTypeLinux:
-		return modeltiphereth.SystemTypeLinux
-	default:
-		return modeltiphereth.SystemTypeUnspecified
-	}
-}
-
-func ToBizFeedConfigPullStatus(s feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
-	switch s {
-	case feedconfig.LatestPullStatusProcessing:
-		return modelyesod.FeedConfigPullStatusProcessing
-	case feedconfig.LatestPullStatusSuccess:
-		return modelyesod.FeedConfigPullStatusSuccess
-	case feedconfig.LatestPullStatusFailed:
-		return modelyesod.FeedConfigPullStatusFailed
-	default:
-		return modelyesod.FeedConfigPullStatusUnspecified
-	}
 }

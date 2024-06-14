@@ -31,9 +31,17 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map ID DeviceId
-	// goverter:map SystemType | ToPBSystemType
 	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
 	ToPBDeviceInfoList([]*modeltiphereth.DeviceInfo) []*pb.DeviceInfo
+	// goverter:enum:unknown SystemType_SYSTEM_TYPE_UNSPECIFIED
+	// goverter:enum:map SystemTypeUnspecified SystemType_SYSTEM_TYPE_UNSPECIFIED
+	// goverter:enum:map SystemTypeIOS SystemType_SYSTEM_TYPE_IOS
+	// goverter:enum:map SystemTypeAndroid SystemType_SYSTEM_TYPE_ANDROID
+	// goverter:enum:map SystemTypeWeb SystemType_SYSTEM_TYPE_WEB
+	// goverter:enum:map SystemTypeWindows SystemType_SYSTEM_TYPE_WINDOWS
+	// goverter:enum:map SystemTypeMacOS SystemType_SYSTEM_TYPE_MACOS
+	// goverter:enum:map SystemTypeLinux SystemType_SYSTEM_TYPE_LINUX
+	ToPBSystemType(modeltiphereth.SystemType) pb.SystemType
 
 	// goverter:matchIgnoreCase
 	// goverter:map CreateAt CreateTime
@@ -42,11 +50,21 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBUserSessionList([]*modeltiphereth.UserSession) []*pb.UserSession
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToPBUserType
-	// goverter:map Status | ToPBUserStatus
 	// goverter:ignore Password
 	ToPBUser(*modeltiphereth.User) *pb.User
 	ToPBUserList([]*modeltiphereth.User) []*pb.User
+	// goverter:enum:unknown UserType_USER_TYPE_UNSPECIFIED
+	// goverter:enum:map UserTypeUnspecified UserType_USER_TYPE_UNSPECIFIED
+	// goverter:enum:map UserTypeAdmin UserType_USER_TYPE_ADMIN
+	// goverter:enum:map UserTypeNormal UserType_USER_TYPE_NORMAL
+	// goverter:enum:map UserTypeSentinel UserType_USER_TYPE_SENTINEL
+	// goverter:enum:map UserTypePorter UserType_USER_TYPE_PORTER
+	ToPBUserType(libauth.UserType) pb.UserType
+	// goverter:enum:unknown UserStatus_USER_STATUS_UNSPECIFIED
+	// goverter:enum:map UserStatusUnspecified UserStatus_USER_STATUS_UNSPECIFIED
+	// goverter:enum:map UserStatusActive UserStatus_USER_STATUS_ACTIVE
+	// goverter:enum:map UserStatusBlocked UserStatus_USER_STATUS_BLOCKED
+	ToPBUserStatus(modeltiphereth.UserStatus) pb.UserStatus
 
 	// goverter:matchIgnoreCase
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
@@ -54,13 +72,18 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBPorterStatus
-	// goverter:map ConnectionStatus | ToPBPorterConnectionStatus
 	// goverter:ignore FeatureSummary
 	ToPBPorter(*modeltiphereth.PorterInstance) *pb.Porter
 	ToPBPorterList([]*modeltiphereth.PorterInstance) []*pb.Porter
+	// goverter:enum:unknown PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterConnectionStatusUnspecified PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterConnectionStatusConnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
+	// goverter:enum:map PorterConnectionStatusDisconnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
+	// goverter:enum:map PorterConnectionStatusActive PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
+	// goverter:enum:map PorterConnectionStatusActivationFailed PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
+	ToPBPorterConnectionStatus(modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus
 
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToPBAppType
 	// goverter:ignore AltNames
 	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo
 	// goverter:matchIgnoreCase
@@ -68,10 +91,13 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBAppInfoDetail(*modelgebura.AppInfoDetails) *librarian.AppInfoDetails
 	ToPBAppInfoList([]*modelgebura.AppInfo) []*librarian.AppInfo
 	// goverter:matchIgnoreCase
-	// goverter:map Type | ToPBAppType
 	// goverter:ignore AltNames
 	ToPBAppInfoMixed(*modelgebura.AppInfoMixed) *librarian.AppInfoMixed
 	ToPBAppInfoMixedList([]*modelgebura.AppInfoMixed) []*librarian.AppInfoMixed
+	// goverter:enum:unknown AppType_APP_TYPE_UNSPECIFIED
+	// goverter:enum:map AppTypeUnspecified AppType_APP_TYPE_UNSPECIFIED
+	// goverter:enum:map AppTypeGame AppType_APP_TYPE_GAME
+	ToPBAppType(modelgebura.AppType) librarian.AppType
 
 	// goverter:matchIgnoreCase
 	ToPBApp(*modelgebura.App) *pb.App
@@ -96,9 +122,13 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToPBEnclosure(*modelfeed.Enclosure) *librarian.FeedEnclosure
 	// goverter:matchIgnoreCase
-	// goverter:map Status | ToPBFeedConfigStatus
 	// goverter:map LatestPullStatus | ToPBFeedConfigPullStatus
 	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
+	// goverter:enum:unknown FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
+	// goverter:enum:map FeedConfigStatusUnspecified FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
+	// goverter:enum:map FeedConfigStatusActive FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
+	// goverter:enum:map FeedConfigStatusSuspend FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
+	ToPBFeedConfigStatus(modelyesod.FeedConfigStatus) pb.FeedConfigStatus
 	// goverter:matchIgnoreCase
 	// goverter:map FeedConfig Config
 	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig
@@ -112,13 +142,21 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*pb.FeedItemCollection
 
 	// goverter:matchIgnoreCase
-	// goverter:map Status | ToPBNotifyTargetStatus
 	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
 	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
+	// goverter:enum:unknown NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
+	// goverter:enum:map NotifyTargetStatusUnspecified NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
+	// goverter:enum:map NotifyTargetStatusActive NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
+	// goverter:enum:map NotifyTargetStatusSuspend NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
+	ToPBNotifyTargetStatus(modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus
 
 	// goverter:matchIgnoreCase
-	// goverter:map Status | ToPBNotifyFlowStatus
 	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *pb.NotifyFlow
+	// goverter:enum:unknown NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
+	// goverter:enum:map NotifyFlowStatusUnspecified NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
+	// goverter:enum:map NotifyFlowStatusActive NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
+	// goverter:enum:map NotifyFlowStatusSuspend NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
+	ToPBNotifyFlowStatus(modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus
 	// goverter:matchIgnoreCase
 	// goverter:ignore Source
 	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
@@ -153,34 +191,6 @@ func ToPBDuration(d time.Duration) *durationpb.Duration {
 	return durationpb.New(d)
 }
 
-func ToPBUserType(u libauth.UserType) pb.UserType {
-	switch u {
-	case libauth.UserTypeUnspecified:
-		return pb.UserType_USER_TYPE_UNSPECIFIED
-	case libauth.UserTypeAdmin:
-		return pb.UserType_USER_TYPE_ADMIN
-	case libauth.UserTypeNormal:
-		return pb.UserType_USER_TYPE_NORMAL
-	case libauth.UserTypeSentinel:
-		return pb.UserType_USER_TYPE_SENTINEL
-	default:
-		return pb.UserType_USER_TYPE_UNSPECIFIED
-	}
-}
-
-func ToPBUserStatus(s modeltiphereth.UserStatus) pb.UserStatus {
-	switch s {
-	case modeltiphereth.UserStatusUnspecified:
-		return pb.UserStatus_USER_STATUS_UNSPECIFIED
-	case modeltiphereth.UserStatusActive:
-		return pb.UserStatus_USER_STATUS_ACTIVE
-	case modeltiphereth.UserStatusBlocked:
-		return pb.UserStatus_USER_STATUS_BLOCKED
-	default:
-		return pb.UserStatus_USER_STATUS_UNSPECIFIED
-	}
-}
-
 func ToPBPorterStatus(s modeltiphereth.PorterInstanceStatus) pb.UserStatus {
 	switch s {
 	case modeltiphereth.PorterInstanceStatusUnspecified:
@@ -191,94 +201,6 @@ func ToPBPorterStatus(s modeltiphereth.PorterInstanceStatus) pb.UserStatus {
 		return pb.UserStatus_USER_STATUS_BLOCKED
 	default:
 		return pb.UserStatus_USER_STATUS_UNSPECIFIED
-	}
-}
-
-func ToPBAppType(t modelgebura.AppType) librarian.AppType {
-	switch t {
-	case modelgebura.AppTypeUnspecified:
-		return librarian.AppType_APP_TYPE_UNSPECIFIED
-	case modelgebura.AppTypeGame:
-		return librarian.AppType_APP_TYPE_GAME
-	default:
-		return librarian.AppType_APP_TYPE_UNSPECIFIED
-	}
-}
-
-func ToPBFeedConfigStatus(s modelyesod.FeedConfigStatus) pb.FeedConfigStatus {
-	switch s {
-	case modelyesod.FeedConfigStatusUnspecified:
-		return pb.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
-	case modelyesod.FeedConfigStatusActive:
-		return pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
-	case modelyesod.FeedConfigStatusSuspend:
-		return pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
-	default:
-		return pb.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
-	}
-}
-
-func ToPBNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus {
-	switch s {
-	case modelnetzach.NotifyTargetStatusUnspecified:
-		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
-	case modelnetzach.NotifyTargetStatusActive:
-		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
-	case modelnetzach.NotifyTargetStatusSuspend:
-		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
-	default:
-		return pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
-	}
-}
-
-func ToPBNotifyFlowStatus(s modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus {
-	switch s {
-	case modelnetzach.NotifyFlowStatusUnspecified:
-		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
-	case modelnetzach.NotifyFlowStatusActive:
-		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
-	case modelnetzach.NotifyFlowStatusSuspend:
-		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
-	default:
-		return pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
-	}
-}
-
-func ToPBSystemType(s modeltiphereth.SystemType) pb.SystemType {
-	switch s {
-	case modeltiphereth.SystemTypeUnspecified:
-		return pb.SystemType_SYSTEM_TYPE_UNSPECIFIED
-	case modeltiphereth.SystemTypeIOS:
-		return pb.SystemType_SYSTEM_TYPE_IOS
-	case modeltiphereth.SystemTypeAndroid:
-		return pb.SystemType_SYSTEM_TYPE_ANDROID
-	case modeltiphereth.SystemTypeWeb:
-		return pb.SystemType_SYSTEM_TYPE_WEB
-	case modeltiphereth.SystemTypeWindows:
-		return pb.SystemType_SYSTEM_TYPE_WINDOWS
-	case modeltiphereth.SystemTypeMacOS:
-		return pb.SystemType_SYSTEM_TYPE_MACOS
-	case modeltiphereth.SystemTypeLinux:
-		return pb.SystemType_SYSTEM_TYPE_LINUX
-	default:
-		return pb.SystemType_SYSTEM_TYPE_UNSPECIFIED
-	}
-}
-
-func ToPBPorterConnectionStatus(s modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus {
-	switch s {
-	case modeltiphereth.PorterConnectionStatusUnspecified:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
-	case modeltiphereth.PorterConnectionStatusConnected:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
-	case modeltiphereth.PorterConnectionStatusDisconnected:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
-	case modeltiphereth.PorterConnectionStatusActive:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
-	case modeltiphereth.PorterConnectionStatusActivationFailed:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
-	default:
-		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
 }
 

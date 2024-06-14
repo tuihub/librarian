@@ -24,33 +24,47 @@ import (
 // goverter:extend ToBizInternalID
 // goverter:extend ToBizTime
 // goverter:extend ToBizDuration
-// goverter:extend ToLibAuthUserType
-// goverter:extend ToBizUserStatus
-// goverter:extend ToBizAppType
 // goverter:extend PtrToString
 // goverter:extend DurationPBToDuration
-// goverter:extend ToBizFeedConfigStatus
-// goverter:extend ToBizNotifyTargetStatus
-// goverter:extend ToBizNotifyFlowStatus
-// goverter:extend ToBizFileType
-// goverter:extend ToBizAccountAppRelationType
-// goverter:extend ToBizSystemType
-// goverter:extend ToBizPorterConnectionStatus
-// goverter:extend ToBizFeedConfigPullStatus
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	// goverter:matchIgnoreCase
 	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
+	// goverter:enum:unknown AccountAppRelationTypeUnspecified
+	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED AccountAppRelationTypeUnspecified
+	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN AccountAppRelationTypeOwner
+	ToBizAccountAppRelationType(librarian.AccountAppRelationType) model.AccountAppRelationType
 
-	ToBizInternalIDList(idl []*librarian.InternalID) []model.InternalID
+	ToBizInternalIDList([]*librarian.InternalID) []model.InternalID
 
 	// goverter:matchIgnoreCase
 	// goverter:map DeviceId ID
 	ToBizDeviceInfo(*pb.DeviceInfo) *modeltiphereth.DeviceInfo
+	// goverter:enum:unknown SystemTypeUnspecified
+	// goverter:enum:map SystemType_SYSTEM_TYPE_UNSPECIFIED SystemTypeUnspecified
+	// goverter:enum:map SystemType_SYSTEM_TYPE_IOS SystemTypeIOS
+	// goverter:enum:map SystemType_SYSTEM_TYPE_ANDROID SystemTypeAndroid
+	// goverter:enum:map SystemType_SYSTEM_TYPE_WEB SystemTypeWeb
+	// goverter:enum:map SystemType_SYSTEM_TYPE_WINDOWS SystemTypeWindows
+	// goverter:enum:map SystemType_SYSTEM_TYPE_MACOS SystemTypeMacOS
+	// goverter:enum:map SystemType_SYSTEM_TYPE_LINUX SystemTypeLinux
+	ToBizSystemType(pb.SystemType) modeltiphereth.SystemType
 	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
+	// goverter:enum:unknown UserTypeUnspecified
+	// goverter:enum:map UserType_USER_TYPE_UNSPECIFIED UserTypeUnspecified
+	// goverter:enum:map UserType_USER_TYPE_ADMIN UserTypeAdmin
+	// goverter:enum:map UserType_USER_TYPE_NORMAL UserTypeNormal
+	// goverter:enum:map UserType_USER_TYPE_SENTINEL UserTypeSentinel
+	// goverter:enum:map UserType_USER_TYPE_PORTER UserTypePorter
+	ToLibAuthUserType(pb.UserType) libauth.UserType
 	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
 	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
+	// goverter:enum:unknown UserStatusUnspecified
+	// goverter:enum:map UserStatus_USER_STATUS_UNSPECIFIED UserStatusUnspecified
+	// goverter:enum:map UserStatus_USER_STATUS_ACTIVE UserStatusActive
+	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
+	ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus
 
 	// goverter:matchIgnoreCase
 	ToBizPorterPrivilege(*pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege
@@ -72,6 +86,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:matchIgnoreCase
 	ToBizAppBinary(*pb.AppBinary) *modelgebura.AppBinary
 	ToBizAppBinaryList([]*pb.AppBinary) []*modelgebura.AppBinary
+	// goverter:enum:unknown AppTypeUnspecified
+	// goverter:enum:map AppType_APP_TYPE_UNSPECIFIED AppTypeUnspecified
+	// goverter:enum:map AppType_APP_TYPE_GAME AppTypeGame
+	ToBizAppType(librarian.AppType) modelgebura.AppType
 
 	// goverter:matchIgnoreCase
 	ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
@@ -80,6 +98,17 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore LatestPullTime
 	// goverter:useZeroValueOnPointerInconsistency
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
+	// goverter:enum:unknown FeedConfigStatusUnspecified
+	// goverter:enum:map FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED FeedConfigStatusUnspecified
+	// goverter:enum:map FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE FeedConfigStatusActive
+	// goverter:enum:map FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND FeedConfigStatusSuspend
+	ToBizFeedConfigStatus(pb.FeedConfigStatus) modelyesod.FeedConfigStatus
+	// goverter:enum:unknown FeedConfigPullStatusUnspecified
+	// goverter:enum:map FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED FeedConfigPullStatusUnspecified
+	// goverter:enum:map FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING FeedConfigPullStatusProcessing
+	// goverter:enum:map FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS FeedConfigPullStatusSuccess
+	// goverter:enum:map FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED FeedConfigPullStatusFailed
+	ToBizFeedConfigPullStatus(pb.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
 	// goverter:matchIgnoreCase
@@ -87,9 +116,19 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	ToBizNotifyTarget(*pb.NotifyTarget) *modelnetzach.NotifyTarget
+	// goverter:enum:unknown NotifyTargetStatusUnspecified
+	// goverter:enum:map NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED NotifyTargetStatusUnspecified
+	// goverter:enum:map NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE NotifyTargetStatusActive
+	// goverter:enum:map NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND NotifyTargetStatusSuspend
+	ToBizNotifyTargetStatus(pb.NotifyTargetStatus) modelnetzach.NotifyTargetStatus
 	ToBizNotifyTargetStatusList([]pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
+	// goverter:enum:unknown NotifyFlowStatusUnspecified
+	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED NotifyFlowStatusUnspecified
+	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE NotifyFlowStatusActive
+	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND NotifyFlowStatusSuspend
+	ToBizNotifyFlowStatus(pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus
 	// goverter:matchIgnoreCase
 	// goverter:ignore FeedConfigID
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
@@ -100,6 +139,11 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
+	// goverter:enum:unknown FileTypeUnspecified
+	// goverter:enum:map FileType_FILE_TYPE_UNSPECIFIED FileTypeUnspecified
+	// goverter:enum:map FileType_FILE_TYPE_GEBURA_SAVE FileTypeGeburaSave
+	// goverter:enum:map FileType_FILE_TYPE_CHESED_IMAGE FileTypeChesedImage
+	ToBizFileType(pb.FileType) modelbinah.FileType
 }
 
 func PtrToString(u *string) string {
@@ -132,34 +176,6 @@ func ToBizDuration(d *durationpb.Duration) time.Duration {
 	return d.AsDuration()
 }
 
-func ToLibAuthUserType(u pb.UserType) libauth.UserType {
-	switch u {
-	case pb.UserType_USER_TYPE_UNSPECIFIED:
-		return libauth.UserTypeUnspecified
-	case pb.UserType_USER_TYPE_ADMIN:
-		return libauth.UserTypeAdmin
-	case pb.UserType_USER_TYPE_NORMAL:
-		return libauth.UserTypeNormal
-	case pb.UserType_USER_TYPE_SENTINEL:
-		return libauth.UserTypeSentinel
-	default:
-		return libauth.UserTypeUnspecified
-	}
-}
-
-func ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus {
-	switch s {
-	case pb.UserStatus_USER_STATUS_UNSPECIFIED:
-		return modeltiphereth.UserStatusUnspecified
-	case pb.UserStatus_USER_STATUS_ACTIVE:
-		return modeltiphereth.UserStatusActive
-	case pb.UserStatus_USER_STATUS_BLOCKED:
-		return modeltiphereth.UserStatusBlocked
-	default:
-		return modeltiphereth.UserStatusUnspecified
-	}
-}
-
 func ToBizPorterStatus(s pb.UserStatus) modeltiphereth.PorterInstanceStatus {
 	switch s {
 	case pb.UserStatus_USER_STATUS_UNSPECIFIED:
@@ -170,30 +186,6 @@ func ToBizPorterStatus(s pb.UserStatus) modeltiphereth.PorterInstanceStatus {
 		return modeltiphereth.PorterInstanceStatusBlocked
 	default:
 		return modeltiphereth.PorterInstanceStatusUnspecified
-	}
-}
-
-func ToBizAppType(t librarian.AppType) modelgebura.AppType {
-	switch t {
-	case librarian.AppType_APP_TYPE_UNSPECIFIED:
-		return modelgebura.AppTypeUnspecified
-	case librarian.AppType_APP_TYPE_GAME:
-		return modelgebura.AppTypeGame
-	default:
-		return modelgebura.AppTypeUnspecified
-	}
-}
-
-func ToBizFeedConfigStatus(s pb.FeedConfigStatus) modelyesod.FeedConfigStatus {
-	switch s {
-	case pb.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED:
-		return modelyesod.FeedConfigStatusUnspecified
-	case pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE:
-		return modelyesod.FeedConfigStatusActive
-	case pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND:
-		return modelyesod.FeedConfigStatusSuspend
-	default:
-		return modelyesod.FeedConfigStatusUnspecified
 	}
 }
 
@@ -211,106 +203,5 @@ func ToBizGroupFeedItemsBy(by librarian.TimeAggregation_AggregationType) modelye
 		return modelyesod.GroupFeedItemsByOverall
 	default:
 		return modelyesod.GroupFeedItemsByUnspecified
-	}
-}
-
-func ToBizNotifyTargetStatus(s pb.NotifyTargetStatus) modelnetzach.NotifyTargetStatus {
-	switch s {
-	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED:
-		return modelnetzach.NotifyTargetStatusUnspecified
-	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE:
-		return modelnetzach.NotifyTargetStatusActive
-	case pb.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND:
-		return modelnetzach.NotifyTargetStatusSuspend
-	default:
-		return modelnetzach.NotifyTargetStatusUnspecified
-	}
-}
-
-func ToBizNotifyFlowStatus(s pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus {
-	switch s {
-	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED:
-		return modelnetzach.NotifyFlowStatusUnspecified
-	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE:
-		return modelnetzach.NotifyFlowStatusActive
-	case pb.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND:
-		return modelnetzach.NotifyFlowStatusSuspend
-	default:
-		return modelnetzach.NotifyFlowStatusUnspecified
-	}
-}
-
-func ToBizFileType(t pb.FileType) modelbinah.FileType {
-	switch t {
-	case pb.FileType_FILE_TYPE_UNSPECIFIED:
-		return modelbinah.FileTypeUnspecified
-	case pb.FileType_FILE_TYPE_GEBURA_SAVE:
-		return modelbinah.FileTypeGeburaSave
-	case pb.FileType_FILE_TYPE_CHESED_IMAGE:
-		return modelbinah.FileTypeChesedImage
-	default:
-		return modelbinah.FileTypeUnspecified
-	}
-}
-
-func ToBizAccountAppRelationType(t librarian.AccountAppRelationType) model.AccountAppRelationType {
-	switch t {
-	case librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED:
-		return model.AccountAppRelationTypeUnspecified
-	case librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN:
-		return model.AccountAppRelationTypeOwner
-	default:
-		return model.AccountAppRelationTypeUnspecified
-	}
-}
-
-func ToBizSystemType(t pb.SystemType) modeltiphereth.SystemType {
-	switch t {
-	case pb.SystemType_SYSTEM_TYPE_UNSPECIFIED:
-		return modeltiphereth.SystemTypeUnspecified
-	case pb.SystemType_SYSTEM_TYPE_IOS:
-		return modeltiphereth.SystemTypeIOS
-	case pb.SystemType_SYSTEM_TYPE_ANDROID:
-		return modeltiphereth.SystemTypeAndroid
-	case pb.SystemType_SYSTEM_TYPE_WEB:
-		return modeltiphereth.SystemTypeWeb
-	case pb.SystemType_SYSTEM_TYPE_WINDOWS:
-		return modeltiphereth.SystemTypeWindows
-	case pb.SystemType_SYSTEM_TYPE_MACOS:
-		return modeltiphereth.SystemTypeMacOS
-	case pb.SystemType_SYSTEM_TYPE_LINUX:
-		return modeltiphereth.SystemTypeLinux
-	default:
-		return modeltiphereth.SystemTypeUnspecified
-	}
-}
-
-func ToBizPorterConnectionStatus(s pb.PorterConnectionStatus) modeltiphereth.PorterConnectionStatus {
-	switch s {
-	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED:
-		return modeltiphereth.PorterConnectionStatusUnspecified
-	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED:
-		return modeltiphereth.PorterConnectionStatusConnected
-	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED:
-		return modeltiphereth.PorterConnectionStatusDisconnected
-	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE:
-		return modeltiphereth.PorterConnectionStatusActive
-	case pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED:
-		return modeltiphereth.PorterConnectionStatusActivationFailed
-	default:
-		return modeltiphereth.PorterConnectionStatusUnspecified
-	}
-}
-
-func ToBizFeedConfigPullStatus(s pb.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus {
-	switch s {
-	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED:
-		return modelyesod.FeedConfigPullStatusUnspecified
-	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS:
-		return modelyesod.FeedConfigPullStatusSuccess
-	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED:
-		return modelyesod.FeedConfigPullStatusFailed
-	default:
-		return modelyesod.FeedConfigPullStatusUnspecified
 	}
 }

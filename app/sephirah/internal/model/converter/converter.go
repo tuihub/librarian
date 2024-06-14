@@ -16,7 +16,7 @@ import (
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-//go:generate go run github.com/jmattheis/goverter/cmd/goverter@v1.3.0 gen -g ignoreUnexported .
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter@v1.4.0 gen -g ignoreUnexported .
 
 var toPB = &toPBConverterImpl{}   //nolint:gochecknoglobals // checked
 var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked

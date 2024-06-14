@@ -5,8 +5,13 @@ package converter
 
 import (
 	ent "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
+	appinfo "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
+	deviceinfo "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	feedconfig "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	image "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
+	notifyflow "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	porterinstance "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	modelchesed "github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -83,7 +88,7 @@ func (c *toBizConverterImpl) ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppI
 		modelgeburaAppInfo.SourceAppID = (*source).SourceAppID
 		modelgeburaAppInfo.SourceURL = (*source).SourceURL
 		modelgeburaAppInfo.Name = (*source).Name
-		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
+		modelgeburaAppInfo.Type = c.ToBizAppType((*source).Type)
 		modelgeburaAppInfo.ShortDescription = (*source).ShortDescription
 		modelgeburaAppInfo.IconImageURL = (*source).IconImageURL
 		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageURL
@@ -135,13 +140,25 @@ func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App 
 	}
 	return pModelgeburaAppList
 }
+func (c *toBizConverterImpl) ToBizAppType(source appinfo.Type) modelgebura.AppType {
+	var modelgeburaAppType modelgebura.AppType
+	switch source {
+	case appinfo.TypeGame:
+		modelgeburaAppType = modelgebura.AppTypeGame
+	case appinfo.TypeUnknown:
+		modelgeburaAppType = modelgebura.AppTypeUnspecified
+	default:
+		modelgeburaAppType = modelgebura.AppTypeUnspecified
+	}
+	return modelgeburaAppType
+}
 func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
 	var pModeltipherethDeviceInfo *modeltiphereth.DeviceInfo
 	if source != nil {
 		var modeltipherethDeviceInfo modeltiphereth.DeviceInfo
 		modeltipherethDeviceInfo.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
-		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
+		modeltipherethDeviceInfo.SystemType = c.ToBizSystemType((*source).SystemType)
 		modeltipherethDeviceInfo.SystemVersion = (*source).SystemVersion
 		modeltipherethDeviceInfo.ClientName = (*source).ClientName
 		modeltipherethDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
@@ -192,10 +209,10 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.AuthorAccount = c.modelInternalIDToModelInternalID((*source).AuthorAccount)
 		modelyesodFeedConfig.Source = (*source).Source
-		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
+		modelyesodFeedConfig.Status = c.ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
 		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
-		modelyesodFeedConfig.LatestPullStatus = ToBizFeedConfigPullStatus((*source).LatestPullStatus)
+		modelyesodFeedConfig.LatestPullStatus = c.ToBizFeedConfigPullStatus((*source).LatestPullStatus)
 		modelyesodFeedConfig.LatestPullMessage = (*source).LatestPullMessage
 		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
@@ -211,6 +228,32 @@ func (c *toBizConverterImpl) ToBizFeedConfigList(source []*ent.FeedConfig) []*mo
 		}
 	}
 	return pModelyesodFeedConfigList
+}
+func (c *toBizConverterImpl) ToBizFeedConfigPullStatus(source feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
+	var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
+	switch source {
+	case feedconfig.LatestPullStatusFailed:
+		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusFailed
+	case feedconfig.LatestPullStatusProcessing:
+		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusProcessing
+	case feedconfig.LatestPullStatusSuccess:
+		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusSuccess
+	default:
+		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusUnspecified
+	}
+	return modelyesodFeedConfigPullStatus
+}
+func (c *toBizConverterImpl) ToBizFeedConfigStatus(source feedconfig.Status) modelyesod.FeedConfigStatus {
+	var modelyesodFeedConfigStatus modelyesod.FeedConfigStatus
+	switch source {
+	case feedconfig.StatusActive:
+		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusActive
+	case feedconfig.StatusSuspend:
+		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusSuspend
+	default:
+		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusUnspecified
+	}
+	return modelyesodFeedConfigStatus
 }
 func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
 	var pModelfeedItem *modelfeed.Item
@@ -297,7 +340,7 @@ func (c *toBizConverterImpl) ToBizImage(source *ent.Image) *modelchesed.Image {
 		modelchesedImage.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelchesedImage.Name = (*source).Name
 		modelchesedImage.Description = (*source).Description
-		modelchesedImage.Status = ToBizImageStatus((*source).Status)
+		modelchesedImage.Status = c.ToBizImageStatus((*source).Status)
 		pModelchesedImage = &modelchesedImage
 	}
 	return pModelchesedImage
@@ -312,6 +355,18 @@ func (c *toBizConverterImpl) ToBizImageList(source []*ent.Image) []*modelchesed.
 	}
 	return pModelchesedImageList
 }
+func (c *toBizConverterImpl) ToBizImageStatus(source image.Status) modelchesed.ImageStatus {
+	var modelchesedImageStatus modelchesed.ImageStatus
+	switch source {
+	case image.StatusScanned:
+		modelchesedImageStatus = modelchesed.ImageStatusScanned
+	case image.StatusUploaded:
+		modelchesedImageStatus = modelchesed.ImageStatusUploaded
+	default:
+		modelchesedImageStatus = modelchesed.ImageStatusUnspecified
+	}
+	return modelchesedImageStatus
+}
 func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
@@ -319,10 +374,22 @@ func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetza
 		modelnetzachNotifyFlow.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyFlow.Name = (*source).Name
 		modelnetzachNotifyFlow.Description = (*source).Description
-		modelnetzachNotifyFlow.Status = ToBizNotifyFlowStatus((*source).Status)
+		modelnetzachNotifyFlow.Status = c.ToBizNotifyFlowStatus((*source).Status)
 		pModelnetzachNotifyFlow = &modelnetzachNotifyFlow
 	}
 	return pModelnetzachNotifyFlow
+}
+func (c *toBizConverterImpl) ToBizNotifyFlowStatus(source notifyflow.Status) modelnetzach.NotifyFlowStatus {
+	var modelnetzachNotifyFlowStatus modelnetzach.NotifyFlowStatus
+	switch source {
+	case notifyflow.StatusActive:
+		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusActive
+	case notifyflow.StatusSuspend:
+		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusSuspend
+	default:
+		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusUnspecified
+	}
+	return modelnetzachNotifyFlowStatus
 }
 func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
@@ -332,7 +399,7 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
 		modelnetzachNotifyTarget.Destination = (*source).Destination
-		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
+		modelnetzachNotifyTarget.Status = c.ToBizNotifyTargetStatus((*source).Status)
 		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
@@ -348,6 +415,18 @@ func (c *toBizConverterImpl) ToBizNotifyTargetList(source []*ent.NotifyTarget) [
 	}
 	return pModelnetzachNotifyTargetList
 }
+func (c *toBizConverterImpl) ToBizNotifyTargetStatus(source notifytarget.Status) modelnetzach.NotifyTargetStatus {
+	var modelnetzachNotifyTargetStatus modelnetzach.NotifyTargetStatus
+	switch source {
+	case notifytarget.StatusActive:
+		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusActive
+	case notifytarget.StatusSuspend:
+		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusSuspend
+	default:
+		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusUnspecified
+	}
+	return modelnetzachNotifyTargetStatus
+}
 func (c *toBizConverterImpl) ToBizPorter(source *ent.PorterInstance) *modeltiphereth.PorterInstance {
 	var pModeltipherethPorterInstance *modeltiphereth.PorterInstance
 	if source != nil {
@@ -358,7 +437,7 @@ func (c *toBizConverterImpl) ToBizPorter(source *ent.PorterInstance) *modeltiphe
 		modeltipherethPorterInstance.GlobalName = (*source).GlobalName
 		modeltipherethPorterInstance.Address = (*source).Address
 		modeltipherethPorterInstance.FeatureSummary = c.pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary((*source).FeatureSummary)
-		modeltipherethPorterInstance.Status = ToBizPorterStatus((*source).Status)
+		modeltipherethPorterInstance.Status = c.ToBizPorterStatus((*source).Status)
 		pModeltipherethPorterInstance = &modeltipherethPorterInstance
 	}
 	return pModeltipherethPorterInstance
@@ -373,14 +452,48 @@ func (c *toBizConverterImpl) ToBizPorterList(source []*ent.PorterInstance) []*mo
 	}
 	return pModeltipherethPorterInstanceList
 }
+func (c *toBizConverterImpl) ToBizPorterStatus(source porterinstance.Status) modeltiphereth.PorterInstanceStatus {
+	var modeltipherethPorterInstanceStatus modeltiphereth.PorterInstanceStatus
+	switch source {
+	case porterinstance.StatusActive:
+		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusActive
+	case porterinstance.StatusBlocked:
+		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusBlocked
+	default:
+		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusUnspecified
+	}
+	return modeltipherethPorterInstanceStatus
+}
+func (c *toBizConverterImpl) ToBizSystemType(source deviceinfo.SystemType) modeltiphereth.SystemType {
+	var modeltipherethSystemType modeltiphereth.SystemType
+	switch source {
+	case deviceinfo.SystemTypeAndroid:
+		modeltipherethSystemType = modeltiphereth.SystemTypeAndroid
+	case deviceinfo.SystemTypeIos:
+		modeltipherethSystemType = modeltiphereth.SystemTypeIOS
+	case deviceinfo.SystemTypeLinux:
+		modeltipherethSystemType = modeltiphereth.SystemTypeLinux
+	case deviceinfo.SystemTypeMacos:
+		modeltipherethSystemType = modeltiphereth.SystemTypeMacOS
+	case deviceinfo.SystemTypeUnknown:
+		modeltipherethSystemType = modeltiphereth.SystemTypeUnspecified
+	case deviceinfo.SystemTypeWeb:
+		modeltipherethSystemType = modeltiphereth.SystemTypeWeb
+	case deviceinfo.SystemTypeWindows:
+		modeltipherethSystemType = modeltiphereth.SystemTypeWindows
+	default:
+		modeltipherethSystemType = modeltiphereth.SystemTypeUnspecified
+	}
+	return modeltipherethSystemType
+}
 func (c *toBizConverterImpl) ToBizUser(source *ent.User) *modeltiphereth.User {
 	var pModeltipherethUser *modeltiphereth.User
 	if source != nil {
 		var modeltipherethUser modeltiphereth.User
 		modeltipherethUser.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethUser.UserName = (*source).Username
-		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
-		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
+		modeltipherethUser.Type = c.ToLibAuthUserType((*source).Type)
+		modeltipherethUser.Status = c.ToBizUserStatus((*source).Status)
 		pModeltipherethUser = &modeltipherethUser
 	}
 	return pModeltipherethUser
@@ -417,6 +530,32 @@ func (c *toBizConverterImpl) ToBizUserSessionList(source []*ent.UserSession) []*
 		}
 	}
 	return pModeltipherethUserSessionList
+}
+func (c *toBizConverterImpl) ToBizUserStatus(source user.Status) modeltiphereth.UserStatus {
+	var modeltipherethUserStatus modeltiphereth.UserStatus
+	switch source {
+	case user.StatusActive:
+		modeltipherethUserStatus = modeltiphereth.UserStatusActive
+	case user.StatusBlocked:
+		modeltipherethUserStatus = modeltiphereth.UserStatusBlocked
+	default:
+		modeltipherethUserStatus = modeltiphereth.UserStatusUnspecified
+	}
+	return modeltipherethUserStatus
+}
+func (c *toBizConverterImpl) ToLibAuthUserType(source user.Type) libauth.UserType {
+	var libauthUserType libauth.UserType
+	switch source {
+	case user.TypeAdmin:
+		libauthUserType = libauth.UserTypeAdmin
+	case user.TypeNormal:
+		libauthUserType = libauth.UserTypeNormal
+	case user.TypeSentinel:
+		libauthUserType = libauth.UserTypeSentinel
+	default:
+		libauthUserType = libauth.UserTypeUnspecified
+	}
+	return libauthUserType
 }
 func (c *toBizConverterImpl) entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.AppInfoDetails {
 	var modelgeburaAppInfoDetails modelgebura.AppInfoDetails
