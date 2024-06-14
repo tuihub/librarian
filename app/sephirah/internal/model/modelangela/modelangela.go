@@ -48,17 +48,16 @@ type SystemNotify struct {
 
 func NewSystemNotify(
 	level modelnetzach.SystemNotificationLevel,
-	status modelnetzach.SystemNotificationStatus,
 	title string,
 	content string,
-) *SystemNotify {
-	return &SystemNotify{
+) SystemNotify {
+	return SystemNotify{
 		UserID: 0,
 		Notification: modelnetzach.SystemNotification{
 			ID:         0,
 			Type:       modelnetzach.SystemNotificationTypeSystem,
 			Level:      level,
-			Status:     status,
+			Status:     modelnetzach.SystemNotificationStatusUnread,
 			Title:      title,
 			Content:    content,
 			CreateTime: time.Now(),
@@ -69,17 +68,16 @@ func NewSystemNotify(
 func NewUserNotify(
 	userID model.InternalID,
 	level modelnetzach.SystemNotificationLevel,
-	status modelnetzach.SystemNotificationStatus,
 	title string,
 	content string,
-) *SystemNotify {
-	return &SystemNotify{
+) SystemNotify {
+	return SystemNotify{
 		UserID: userID,
 		Notification: modelnetzach.SystemNotification{
 			ID:         0,
 			Type:       modelnetzach.SystemNotificationTypeUser,
 			Level:      level,
-			Status:     status,
+			Status:     modelnetzach.SystemNotificationStatusUnread,
 			Title:      title,
 			Content:    content,
 			CreateTime: time.Now(),

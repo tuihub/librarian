@@ -222,3 +222,18 @@ func ToEntSystemNotificationStatus(s modelnetzach.SystemNotificationStatus) syst
 		return ""
 	}
 }
+
+func ToEntFeedConfigLatestPullStatus(s modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus {
+	switch s {
+	case modelyesod.FeedConfigPullStatusUnspecified:
+		return ""
+	case modelyesod.FeedConfigPullStatusProcessing:
+		return feedconfig.LatestPullStatusProcessing
+	case modelyesod.FeedConfigPullStatusSuccess:
+		return feedconfig.LatestPullStatusSuccess
+	case modelyesod.FeedConfigPullStatusFailed:
+		return feedconfig.LatestPullStatusFailed
+	default:
+		return ""
+	}
+}

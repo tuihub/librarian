@@ -56,6 +56,7 @@ type AngelaRepo interface {
 	AccountPurchaseAppInfos(context.Context, model.InternalID, []model.InternalID) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
+	UpdateFeedPullStatus(context.Context, *modelyesod.FeedConfig) error
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
 	UpdateFeedItemDigest(context.Context, *modelfeed.Item) error
 	UpsertSystemNotification(context.Context, model.InternalID, *modelnetzach.SystemNotification) error

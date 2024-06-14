@@ -12,6 +12,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
@@ -510,4 +511,12 @@ func (y *yesodRepo) ListFeedItemsInCollection(
 		return nil, 0, err
 	}
 	return res, total, nil
+}
+
+func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*modeltiphereth.User, error) {
+	only, err := y.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(id)).QueryOwner().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizUser(only), nil
 }

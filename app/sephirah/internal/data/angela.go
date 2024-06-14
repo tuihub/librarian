@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
@@ -213,14 +214,6 @@ func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 				sql.ResolveWithNewValues(),
 			).
 			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.FeedConfig.Update().
-			Where(feedconfig.IDEQ(f.ID)).
-			SetLatestPullAt(time.Now()).
-			SetNextPullBeginAt(time.Now().Add(conf.PullInterval)).
-			Exec(ctx)
 		return err
 	})
 }
@@ -291,6 +284,16 @@ func (a *angelaRepo) UpsertFeedItems(
 	return res, nil
 }
 
+func (a *angelaRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {
+	return a.data.db.FeedConfig.Update().
+		Where(feedconfig.IDEQ(conf.ID)).
+		SetLatestPullAt(conf.LatestPullTime).
+		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(conf.LatestPullStatus)).
+		SetLatestPullMessage(conf.LatestPullMessage).
+		SetNextPullBeginAt(conf.LatestPullTime.Add(conf.PullInterval)).
+		Exec(ctx)
+}
+
 func (a *angelaRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfeed.Item, error) {
 	item, err := a.data.db.FeedItem.Get(ctx, id)
 	if err != nil {
@@ -324,6 +327,10 @@ func (a *angelaRepo) UpsertSystemNotification(
 	}
 	return q.OnConflict(
 		sql.ConflictColumns(systemnotification.FieldID),
-		sql.ResolveWithNewValues(),
+		resolveWithIgnores([]string{
+			systemnotification.FieldID,
+			systemnotification.FieldUserID,
+			systemnotification.FieldType,
+		}),
 	).Exec(ctx)
 }
