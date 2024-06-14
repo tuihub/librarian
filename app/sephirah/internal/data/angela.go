@@ -285,12 +285,15 @@ func (a *angelaRepo) UpsertFeedItems(
 }
 
 func (a *angelaRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {
-	return a.data.db.FeedConfig.Update().
-		Where(feedconfig.IDEQ(conf.ID)).
+	c, err := a.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(conf.ID)).Only(ctx)
+	if err != nil {
+		return err
+	}
+	return c.Update().
 		SetLatestPullAt(conf.LatestPullTime).
 		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(conf.LatestPullStatus)).
 		SetLatestPullMessage(conf.LatestPullMessage).
-		SetNextPullBeginAt(conf.LatestPullTime.Add(conf.PullInterval)).
+		SetNextPullBeginAt(conf.LatestPullTime.Add(c.PullInterval)).
 		Exec(ctx)
 }
 

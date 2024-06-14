@@ -152,12 +152,12 @@ func poisonedTopicName(topic string) string {
 
 func retryMiddleware() func(h message.HandlerFunc) message.HandlerFunc {
 	return middleware.Retry{
-		MaxRetries:          10, //nolint:gomnd //TODO
+		MaxRetries:          5, //nolint:gomnd //TODO
 		InitialInterval:     time.Second,
 		MaxInterval:         time.Minute,
 		Multiplier:          2, //nolint:gomnd //TODO
 		MaxElapsedTime:      0,
-		RandomizationFactor: 0.1, //nolint:gomnd //TODO
+		RandomizationFactor: 0.2, //nolint:gomnd //TODO
 		OnRetryHook:         nil,
 		Logger:              newMQLogger(),
 	}.Middleware

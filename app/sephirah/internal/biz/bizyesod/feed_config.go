@@ -25,6 +25,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	config.ID = id
+	config.LatestPullStatus = modelyesod.FeedConfigPullStatusProcessing
 	// if _, err = y.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{
 	//	VertexList: []*mapper.Vertex{{
 	//		Vid:  int64(config.ID),

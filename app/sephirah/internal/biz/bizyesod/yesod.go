@@ -2,6 +2,7 @@ package bizyesod
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -110,7 +111,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 			un := modelangela.NewUserNotify(
 				owner.ID,
 				modelnetzach.SystemNotificationLevelOngoing,
-				"",
+				fmt.Sprintf("Scheduled Server Task: Update Feed %s", c.Name),
 				"",
 			)
 			un.Notification.ID, err = y.searcher.NewID(ctx)

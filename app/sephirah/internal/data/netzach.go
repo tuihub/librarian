@@ -280,7 +280,8 @@ func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.Int
 }
 
 func (n *netzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {
-	q := n.data.db.SystemNotification.Query()
+	q := n.data.db.SystemNotification.Query().
+		Order(ent.Desc(systemnotification.FieldUpdatedAt))
 	if userID != nil {
 		q.Where(systemnotification.UserIDEQ(*userID))
 	}

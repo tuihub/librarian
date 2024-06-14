@@ -41,6 +41,8 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 		SetSource(c.Source).
 		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
 		SetPullInterval(c.PullInterval).
+		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(c.LatestPullStatus)).
+		SetLatestPullMessage("").
 		SetHideItems(c.HideItems)
 	return q.Exec(ctx)
 }

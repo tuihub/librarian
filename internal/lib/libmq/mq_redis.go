@@ -9,10 +9,11 @@ import (
 
 func newRedisAdapter(c *conf.Cache, loggerAdapter *mqLogger) (*pubSub, error) {
 	client := redis.NewClient(&redis.Options{ //nolint:exhaustruct // no need
-		Addr:     c.GetAddr(),
-		DB:       int(c.GetDb()),
-		Username: c.GetUser(),
-		Password: c.GetPassword(),
+		Addr:       c.GetAddr(),
+		DB:         int(c.GetDb()),
+		Username:   c.GetUser(),
+		Password:   c.GetPassword(),
+		MaxRetries: -1, // Use middleware to handle retry
 	})
 	subScriber, err := redisstream.NewSubscriber(
 		redisstream.SubscriberConfig{ //nolint:exhaustruct // no need
