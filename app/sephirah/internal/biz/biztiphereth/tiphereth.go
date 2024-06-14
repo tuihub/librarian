@@ -86,7 +86,7 @@ func NewTiphereth(
 	}
 	err := cron.BySeconds(
 		"TipherethUpdatePorter",
-		60, //nolint:gomnd // hard code min interval
+		updatePorterInterval,
 		t.updatePorters, context.Background(),
 	)
 	if err != nil {
@@ -96,8 +96,9 @@ func NewTiphereth(
 }
 
 const (
-	demoAdminUserName = "admin"
-	demoAdminPassword = "admin"
+	updatePorterInterval = 10
+	demoAdminUserName    = "admin"
+	demoAdminPassword    = "admin"
 )
 
 func (t *Tiphereth) CreateConfiguredAdmin() {

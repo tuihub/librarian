@@ -12,16 +12,18 @@ import (
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
+const leakyBucketSize = 10
+
 func NewTokenMatcher(auth *libauth.Auth) []middleware.Middleware {
 	return []middleware.Middleware{
 		selector.Server(
-			libapp.NewLeakyBucketMiddleware(10), //nolint:gomnd // 10 requests per second
+			libapp.NewLeakyBucketMiddleware(leakyBucketSize),
 		).Match(NewAllowAnonymousMatcher()).Build(),
 		selector.Server(
-			libapp.NewLeakyBucketMiddleware(1),
+			libapp.NewLeakyBucketMiddleware(leakyBucketSize),
 		).Match(NewRegisterMatcher()).Build(),
 		selector.Server(
-			libapp.NewLeakyBucketMiddleware(1),
+			libapp.NewLeakyBucketMiddleware(leakyBucketSize),
 		).Match(NewLoginMatcher()).Build(),
 		selector.Server(
 			jwt.Server(
