@@ -186,6 +186,34 @@ func (fcu *FeedConfigUpdate) SetNillableLatestPullAt(t *time.Time) *FeedConfigUp
 	return fcu
 }
 
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (fcu *FeedConfigUpdate) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigUpdate {
+	fcu.mutation.SetLatestPullStatus(fps)
+	return fcu
+}
+
+// SetNillableLatestPullStatus sets the "latest_pull_status" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableLatestPullStatus(fps *feedconfig.LatestPullStatus) *FeedConfigUpdate {
+	if fps != nil {
+		fcu.SetLatestPullStatus(*fps)
+	}
+	return fcu
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (fcu *FeedConfigUpdate) SetLatestPullMessage(s string) *FeedConfigUpdate {
+	fcu.mutation.SetLatestPullMessage(s)
+	return fcu
+}
+
+// SetNillableLatestPullMessage sets the "latest_pull_message" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableLatestPullMessage(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetLatestPullMessage(*s)
+	}
+	return fcu
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (fcu *FeedConfigUpdate) SetNextPullBeginAt(t time.Time) *FeedConfigUpdate {
 	fcu.mutation.SetNextPullBeginAt(t)
@@ -346,6 +374,11 @@ func (fcu *FeedConfigUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
+	if v, ok := fcu.mutation.LatestPullStatus(); ok {
+		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
+			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
+		}
+	}
 	if _, ok := fcu.mutation.OwnerID(); fcu.mutation.OwnerCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
@@ -396,6 +429,12 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := fcu.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
+	}
+	if value, ok := fcu.mutation.LatestPullStatus(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
+	}
+	if value, ok := fcu.mutation.LatestPullMessage(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
 	}
 	if value, ok := fcu.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
@@ -683,6 +722,34 @@ func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullAt(t *time.Time) *FeedConf
 	return fcuo
 }
 
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (fcuo *FeedConfigUpdateOne) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
+	fcuo.mutation.SetLatestPullStatus(fps)
+	return fcuo
+}
+
+// SetNillableLatestPullStatus sets the "latest_pull_status" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullStatus(fps *feedconfig.LatestPullStatus) *FeedConfigUpdateOne {
+	if fps != nil {
+		fcuo.SetLatestPullStatus(*fps)
+	}
+	return fcuo
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (fcuo *FeedConfigUpdateOne) SetLatestPullMessage(s string) *FeedConfigUpdateOne {
+	fcuo.mutation.SetLatestPullMessage(s)
+	return fcuo
+}
+
+// SetNillableLatestPullMessage sets the "latest_pull_message" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableLatestPullMessage(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetLatestPullMessage(*s)
+	}
+	return fcuo
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (fcuo *FeedConfigUpdateOne) SetNextPullBeginAt(t time.Time) *FeedConfigUpdateOne {
 	fcuo.mutation.SetNextPullBeginAt(t)
@@ -856,6 +923,11 @@ func (fcuo *FeedConfigUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.status": %w`, err)}
 		}
 	}
+	if v, ok := fcuo.mutation.LatestPullStatus(); ok {
+		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
+			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
+		}
+	}
 	if _, ok := fcuo.mutation.OwnerID(); fcuo.mutation.OwnerCleared() && !ok {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
@@ -923,6 +995,12 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
+	}
+	if value, ok := fcuo.mutation.LatestPullStatus(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
+	}
+	if value, ok := fcuo.mutation.LatestPullMessage(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
 	}
 	if value, ok := fcuo.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)

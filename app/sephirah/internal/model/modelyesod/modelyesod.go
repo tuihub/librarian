@@ -28,16 +28,18 @@ type FeedWithConfig struct {
 }
 
 type FeedConfig struct {
-	ID               model.InternalID
-	Name             string
-	FeedURL          string
-	Category         string
-	AuthorAccount    model.InternalID
-	Source           string
-	Status           FeedConfigStatus
-	PullInterval     time.Duration
-	LatestUpdateTime time.Time
-	HideItems        bool
+	ID                model.InternalID
+	Name              string
+	FeedURL           string
+	Category          string
+	AuthorAccount     model.InternalID
+	Source            string
+	Status            FeedConfigStatus
+	PullInterval      time.Duration
+	LatestPullTime    time.Time
+	LatestPullStatus  FeedConfigPullStatus
+	LatestPullMessage string
+	HideItems         bool
 }
 
 type FeedConfigStatus int
@@ -46,6 +48,15 @@ const (
 	FeedConfigStatusUnspecified FeedConfigStatus = iota
 	FeedConfigStatusActive
 	FeedConfigStatusSuspend
+)
+
+type FeedConfigPullStatus int
+
+const (
+	FeedConfigPullStatusUnspecified FeedConfigPullStatus = iota
+	FeedConfigPullStatusProcessing
+	FeedConfigPullStatusSuccess
+	FeedConfigPullStatusFailed
 )
 
 type ListFeedOrder int

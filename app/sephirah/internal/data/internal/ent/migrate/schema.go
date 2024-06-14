@@ -250,6 +250,8 @@ var (
 		{Name: "pull_interval", Type: field.TypeInt64},
 		{Name: "hide_items", Type: field.TypeBool, Default: false},
 		{Name: "latest_pull_at", Type: field.TypeTime},
+		{Name: "latest_pull_status", Type: field.TypeEnum, Enums: []string{"processing", "success", "failed"}},
+		{Name: "latest_pull_message", Type: field.TypeString},
 		{Name: "next_pull_begin_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
@@ -263,7 +265,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[13]},
+				Columns:    []*schema.Column{FeedConfigsColumns[15]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -272,7 +274,7 @@ var (
 			{
 				Name:    "feedconfig_user_feed_config_feed_url",
 				Unique:  true,
-				Columns: []*schema.Column{FeedConfigsColumns[13], FeedConfigsColumns[2]},
+				Columns: []*schema.Column{FeedConfigsColumns[15], FeedConfigsColumns[2]},
 			},
 			{
 				Name:    "feedconfig_category",

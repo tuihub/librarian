@@ -77,7 +77,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToBizFeedConfigStatus
-	// goverter:map LatestPullAt LatestUpdateTime
+	// goverter:map LatestPullAt LatestPullTime
+	// goverter:map LatestPullStatus | ToBizFeedConfigPullStatus
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
 
@@ -223,5 +224,18 @@ func ToBizSystemType(s deviceinfo.SystemType) modeltiphereth.SystemType {
 		return modeltiphereth.SystemTypeLinux
 	default:
 		return modeltiphereth.SystemTypeUnspecified
+	}
+}
+
+func ToBizFeedConfigPullStatus(s feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
+	switch s {
+	case feedconfig.LatestPullStatusProcessing:
+		return modelyesod.FeedConfigPullStatusProcessing
+	case feedconfig.LatestPullStatusSuccess:
+		return modelyesod.FeedConfigPullStatusSuccess
+	case feedconfig.LatestPullStatusFailed:
+		return modelyesod.FeedConfigPullStatusFailed
+	default:
+		return modelyesod.FeedConfigPullStatusUnspecified
 	}
 }

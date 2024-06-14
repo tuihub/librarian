@@ -35,6 +35,10 @@ const (
 	FieldHideItems = "hide_items"
 	// FieldLatestPullAt holds the string denoting the latest_pull_at field in the database.
 	FieldLatestPullAt = "latest_pull_at"
+	// FieldLatestPullStatus holds the string denoting the latest_pull_status field in the database.
+	FieldLatestPullStatus = "latest_pull_status"
+	// FieldLatestPullMessage holds the string denoting the latest_pull_message field in the database.
+	FieldLatestPullMessage = "latest_pull_message"
 	// FieldNextPullBeginAt holds the string denoting the next_pull_begin_at field in the database.
 	FieldNextPullBeginAt = "next_pull_begin_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -85,6 +89,8 @@ var Columns = []string{
 	FieldPullInterval,
 	FieldHideItems,
 	FieldLatestPullAt,
+	FieldLatestPullStatus,
+	FieldLatestPullMessage,
 	FieldNextPullBeginAt,
 	FieldUpdatedAt,
 	FieldCreatedAt,
@@ -135,6 +141,30 @@ func StatusValidator(s Status) error {
 		return nil
 	default:
 		return fmt.Errorf("feedconfig: invalid enum value for status field: %q", s)
+	}
+}
+
+// LatestPullStatus defines the type for the "latest_pull_status" enum field.
+type LatestPullStatus string
+
+// LatestPullStatus values.
+const (
+	LatestPullStatusProcessing LatestPullStatus = "processing"
+	LatestPullStatusSuccess    LatestPullStatus = "success"
+	LatestPullStatusFailed     LatestPullStatus = "failed"
+)
+
+func (lps LatestPullStatus) String() string {
+	return string(lps)
+}
+
+// LatestPullStatusValidator is a validator for the "latest_pull_status" field enum values. It is called by the builders before save.
+func LatestPullStatusValidator(lps LatestPullStatus) error {
+	switch lps {
+	case LatestPullStatusProcessing, LatestPullStatusSuccess, LatestPullStatusFailed:
+		return nil
+	default:
+		return fmt.Errorf("feedconfig: invalid enum value for latest_pull_status field: %q", lps)
 	}
 }
 
@@ -194,6 +224,16 @@ func ByHideItems(opts ...sql.OrderTermOption) OrderOption {
 // ByLatestPullAt orders the results by the latest_pull_at field.
 func ByLatestPullAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLatestPullAt, opts...).ToFunc()
+}
+
+// ByLatestPullStatus orders the results by the latest_pull_status field.
+func ByLatestPullStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLatestPullStatus, opts...).ToFunc()
+}
+
+// ByLatestPullMessage orders the results by the latest_pull_message field.
+func ByLatestPullMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLatestPullMessage, opts...).ToFunc()
 }
 
 // ByNextPullBeginAt orders the results by the next_pull_begin_at field.

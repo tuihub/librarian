@@ -181,6 +181,12 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v1.FeedConfig) *modelyesod.
 		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = DurationPBToDuration((*source).PullInterval)
+		var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
+		if (*source).LatestPullStatus != nil {
+			modelyesodFeedConfigPullStatus = ToBizFeedConfigPullStatus(*(*source).LatestPullStatus)
+		}
+		modelyesodFeedConfig.LatestPullStatus = modelyesodFeedConfigPullStatus
+		modelyesodFeedConfig.LatestPullMessage = PtrToString((*source).LatestPullMessage)
 		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
@@ -691,8 +697,11 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v1.Fe
 		v1FeedConfig.Status = ToPBFeedConfigStatus((*source).Status)
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
 		v1FeedConfig.Category = (*source).Category
-		v1FeedConfig.LatestUpdateTime = ToPBTime((*source).LatestUpdateTime)
 		v1FeedConfig.HideItems = (*source).HideItems
+		v1FeedConfig.LatestPullTime = ToPBTime((*source).LatestPullTime)
+		v1FeedConfig.LatestPullStatus = ToPBFeedConfigPullStatus((*source).LatestPullStatus)
+		pString := (*source).LatestPullMessage
+		v1FeedConfig.LatestPullMessage = &pString
 		pV1FeedConfig = &v1FeedConfig
 	}
 	return pV1FeedConfig

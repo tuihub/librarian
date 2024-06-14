@@ -40,6 +40,10 @@ type FeedConfig struct {
 	HideItems bool `json:"hide_items,omitempty"`
 	// LatestPullAt holds the value of the "latest_pull_at" field.
 	LatestPullAt time.Time `json:"latest_pull_at,omitempty"`
+	// LatestPullStatus holds the value of the "latest_pull_status" field.
+	LatestPullStatus feedconfig.LatestPullStatus `json:"latest_pull_status,omitempty"`
+	// LatestPullMessage holds the value of the "latest_pull_message" field.
+	LatestPullMessage string `json:"latest_pull_message,omitempty"`
 	// NextPullBeginAt holds the value of the "next_pull_begin_at" field.
 	NextPullBeginAt time.Time `json:"next_pull_begin_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -105,7 +109,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus, feedconfig.FieldCategory:
+		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus, feedconfig.FieldCategory, feedconfig.FieldLatestPullStatus, feedconfig.FieldLatestPullMessage:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -189,6 +193,18 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field latest_pull_at", values[i])
 			} else if value.Valid {
 				fc.LatestPullAt = value.Time
+			}
+		case feedconfig.FieldLatestPullStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field latest_pull_status", values[i])
+			} else if value.Valid {
+				fc.LatestPullStatus = feedconfig.LatestPullStatus(value.String)
+			}
+		case feedconfig.FieldLatestPullMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field latest_pull_message", values[i])
+			} else if value.Valid {
+				fc.LatestPullMessage = value.String
 			}
 		case feedconfig.FieldNextPullBeginAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -288,6 +304,12 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("latest_pull_at=")
 	builder.WriteString(fc.LatestPullAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("latest_pull_status=")
+	builder.WriteString(fmt.Sprintf("%v", fc.LatestPullStatus))
+	builder.WriteString(", ")
+	builder.WriteString("latest_pull_message=")
+	builder.WriteString(fc.LatestPullMessage)
 	builder.WriteString(", ")
 	builder.WriteString("next_pull_begin_at=")
 	builder.WriteString(fc.NextPullBeginAt.Format(time.ANSIC))

@@ -7526,6 +7526,8 @@ type FeedConfigMutation struct {
 	addpull_interval     *time.Duration
 	hide_items           *bool
 	latest_pull_at       *time.Time
+	latest_pull_status   *feedconfig.LatestPullStatus
+	latest_pull_message  *string
 	next_pull_begin_at   *time.Time
 	updated_at           *time.Time
 	created_at           *time.Time
@@ -8046,6 +8048,78 @@ func (m *FeedConfigMutation) ResetLatestPullAt() {
 	m.latest_pull_at = nil
 }
 
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (m *FeedConfigMutation) SetLatestPullStatus(fps feedconfig.LatestPullStatus) {
+	m.latest_pull_status = &fps
+}
+
+// LatestPullStatus returns the value of the "latest_pull_status" field in the mutation.
+func (m *FeedConfigMutation) LatestPullStatus() (r feedconfig.LatestPullStatus, exists bool) {
+	v := m.latest_pull_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLatestPullStatus returns the old "latest_pull_status" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldLatestPullStatus(ctx context.Context) (v feedconfig.LatestPullStatus, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLatestPullStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLatestPullStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLatestPullStatus: %w", err)
+	}
+	return oldValue.LatestPullStatus, nil
+}
+
+// ResetLatestPullStatus resets all changes to the "latest_pull_status" field.
+func (m *FeedConfigMutation) ResetLatestPullStatus() {
+	m.latest_pull_status = nil
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (m *FeedConfigMutation) SetLatestPullMessage(s string) {
+	m.latest_pull_message = &s
+}
+
+// LatestPullMessage returns the value of the "latest_pull_message" field in the mutation.
+func (m *FeedConfigMutation) LatestPullMessage() (r string, exists bool) {
+	v := m.latest_pull_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLatestPullMessage returns the old "latest_pull_message" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldLatestPullMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLatestPullMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLatestPullMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLatestPullMessage: %w", err)
+	}
+	return oldValue.LatestPullMessage, nil
+}
+
+// ResetLatestPullMessage resets all changes to the "latest_pull_message" field.
+func (m *FeedConfigMutation) ResetLatestPullMessage() {
+	m.latest_pull_message = nil
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (m *FeedConfigMutation) SetNextPullBeginAt(t time.Time) {
 	m.next_pull_begin_at = &t
@@ -8321,7 +8395,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 15)
 	if m.owner != nil {
 		fields = append(fields, feedconfig.FieldUserFeedConfig)
 	}
@@ -8351,6 +8425,12 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.latest_pull_at != nil {
 		fields = append(fields, feedconfig.FieldLatestPullAt)
+	}
+	if m.latest_pull_status != nil {
+		fields = append(fields, feedconfig.FieldLatestPullStatus)
+	}
+	if m.latest_pull_message != nil {
+		fields = append(fields, feedconfig.FieldLatestPullMessage)
 	}
 	if m.next_pull_begin_at != nil {
 		fields = append(fields, feedconfig.FieldNextPullBeginAt)
@@ -8389,6 +8469,10 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.HideItems()
 	case feedconfig.FieldLatestPullAt:
 		return m.LatestPullAt()
+	case feedconfig.FieldLatestPullStatus:
+		return m.LatestPullStatus()
+	case feedconfig.FieldLatestPullMessage:
+		return m.LatestPullMessage()
 	case feedconfig.FieldNextPullBeginAt:
 		return m.NextPullBeginAt()
 	case feedconfig.FieldUpdatedAt:
@@ -8424,6 +8508,10 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldHideItems(ctx)
 	case feedconfig.FieldLatestPullAt:
 		return m.OldLatestPullAt(ctx)
+	case feedconfig.FieldLatestPullStatus:
+		return m.OldLatestPullStatus(ctx)
+	case feedconfig.FieldLatestPullMessage:
+		return m.OldLatestPullMessage(ctx)
 	case feedconfig.FieldNextPullBeginAt:
 		return m.OldNextPullBeginAt(ctx)
 	case feedconfig.FieldUpdatedAt:
@@ -8508,6 +8596,20 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetLatestPullAt(v)
+		return nil
+	case feedconfig.FieldLatestPullStatus:
+		v, ok := value.(feedconfig.LatestPullStatus)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLatestPullStatus(v)
+		return nil
+	case feedconfig.FieldLatestPullMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLatestPullMessage(v)
 		return nil
 	case feedconfig.FieldNextPullBeginAt:
 		v, ok := value.(time.Time)
@@ -8635,6 +8737,12 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldLatestPullAt:
 		m.ResetLatestPullAt()
+		return nil
+	case feedconfig.FieldLatestPullStatus:
+		m.ResetLatestPullStatus()
+		return nil
+	case feedconfig.FieldLatestPullMessage:
+		m.ResetLatestPullMessage()
 		return nil
 	case feedconfig.FieldNextPullBeginAt:
 		m.ResetNextPullBeginAt()

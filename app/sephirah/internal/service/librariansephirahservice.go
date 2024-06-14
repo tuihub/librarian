@@ -94,5 +94,6 @@ func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context
 		CurrentTime:           timestamppb.New(time.Now()),
 		FeatureSummary:        converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
 		ServerInstanceSummary: s.info,
+		StatusReport:          nil,
 	}, nil
 }

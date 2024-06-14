@@ -104,6 +104,11 @@ func LatestPullAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullAt, v))
 }
 
+// LatestPullMessage applies equality check predicate on the "latest_pull_message" field. It's identical to LatestPullMessageEQ.
+func LatestPullMessage(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullMessage, v))
+}
+
 // NextPullBeginAt applies equality check predicate on the "next_pull_begin_at" field. It's identical to NextPullBeginAtEQ.
 func NextPullBeginAt(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldNextPullBeginAt, v))
@@ -585,6 +590,91 @@ func LatestPullAtLT(v time.Time) predicate.FeedConfig {
 // LatestPullAtLTE applies the LTE predicate on the "latest_pull_at" field.
 func LatestPullAtLTE(v time.Time) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldLTE(FieldLatestPullAt, v))
+}
+
+// LatestPullStatusEQ applies the EQ predicate on the "latest_pull_status" field.
+func LatestPullStatusEQ(v LatestPullStatus) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullStatus, v))
+}
+
+// LatestPullStatusNEQ applies the NEQ predicate on the "latest_pull_status" field.
+func LatestPullStatusNEQ(v LatestPullStatus) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldLatestPullStatus, v))
+}
+
+// LatestPullStatusIn applies the In predicate on the "latest_pull_status" field.
+func LatestPullStatusIn(vs ...LatestPullStatus) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldLatestPullStatus, vs...))
+}
+
+// LatestPullStatusNotIn applies the NotIn predicate on the "latest_pull_status" field.
+func LatestPullStatusNotIn(vs ...LatestPullStatus) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldLatestPullStatus, vs...))
+}
+
+// LatestPullMessageEQ applies the EQ predicate on the "latest_pull_message" field.
+func LatestPullMessageEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageNEQ applies the NEQ predicate on the "latest_pull_message" field.
+func LatestPullMessageNEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageIn applies the In predicate on the "latest_pull_message" field.
+func LatestPullMessageIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldLatestPullMessage, vs...))
+}
+
+// LatestPullMessageNotIn applies the NotIn predicate on the "latest_pull_message" field.
+func LatestPullMessageNotIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldLatestPullMessage, vs...))
+}
+
+// LatestPullMessageGT applies the GT predicate on the "latest_pull_message" field.
+func LatestPullMessageGT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageGTE applies the GTE predicate on the "latest_pull_message" field.
+func LatestPullMessageGTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageLT applies the LT predicate on the "latest_pull_message" field.
+func LatestPullMessageLT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageLTE applies the LTE predicate on the "latest_pull_message" field.
+func LatestPullMessageLTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageContains applies the Contains predicate on the "latest_pull_message" field.
+func LatestPullMessageContains(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContains(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageHasPrefix applies the HasPrefix predicate on the "latest_pull_message" field.
+func LatestPullMessageHasPrefix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasPrefix(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageHasSuffix applies the HasSuffix predicate on the "latest_pull_message" field.
+func LatestPullMessageHasSuffix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasSuffix(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageEqualFold applies the EqualFold predicate on the "latest_pull_message" field.
+func LatestPullMessageEqualFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEqualFold(FieldLatestPullMessage, v))
+}
+
+// LatestPullMessageContainsFold applies the ContainsFold predicate on the "latest_pull_message" field.
+func LatestPullMessageContainsFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContainsFold(FieldLatestPullMessage, v))
 }
 
 // NextPullBeginAtEQ applies the EQ predicate on the "next_pull_begin_at" field.

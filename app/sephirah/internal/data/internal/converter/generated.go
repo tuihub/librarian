@@ -194,7 +194,9 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
-		modelyesodFeedConfig.LatestUpdateTime = TimeToTime((*source).LatestPullAt)
+		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
+		modelyesodFeedConfig.LatestPullStatus = ToBizFeedConfigPullStatus((*source).LatestPullStatus)
+		modelyesodFeedConfig.LatestPullMessage = (*source).LatestPullMessage
 		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}

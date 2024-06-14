@@ -97,6 +97,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBEnclosure(*modelfeed.Enclosure) *librarian.FeedEnclosure
 	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBFeedConfigStatus
+	// goverter:map LatestPullStatus | ToPBFeedConfigPullStatus
 	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
 	// goverter:matchIgnoreCase
 	// goverter:map FeedConfig Config
@@ -279,4 +280,21 @@ func ToPBPorterConnectionStatus(s modeltiphereth.PorterConnectionStatus) pb.Port
 	default:
 		return pb.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
+}
+
+func ToPBFeedConfigPullStatus(s modelyesod.FeedConfigPullStatus) *pb.FeedConfigPullStatus {
+	var status pb.FeedConfigPullStatus
+	switch s {
+	case modelyesod.FeedConfigPullStatusUnspecified:
+		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
+	case modelyesod.FeedConfigPullStatusProcessing:
+		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING
+	case modelyesod.FeedConfigPullStatusSuccess:
+		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS
+	case modelyesod.FeedConfigPullStatusFailed:
+		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED
+	default:
+		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
+	}
+	return &status
 }

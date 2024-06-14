@@ -36,6 +36,9 @@ func (FeedConfig) Fields() []ent.Field {
 			Default(false),
 		field.Time("latest_pull_at").
 			Default(time.UnixMicro(0)),
+		field.Enum("latest_pull_status").
+			Values("processing", "success", "failed"),
+		field.String("latest_pull_message"),
 		field.Time("next_pull_begin_at").
 			Default(time.UnixMicro(0)),
 		field.Time("updated_at").

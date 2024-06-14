@@ -36,6 +36,7 @@ import (
 // goverter:extend ToBizAccountAppRelationType
 // goverter:extend ToBizSystemType
 // goverter:extend ToBizPorterConnectionStatus
+// goverter:extend ToBizFeedConfigPullStatus
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	// goverter:matchIgnoreCase
@@ -76,7 +77,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
 
 	// goverter:matchIgnoreCase
-	// goverter:ignore LatestUpdateTime
+	// goverter:ignore LatestPullTime
+	// goverter:useZeroValueOnPointerInconsistency
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
@@ -297,5 +299,18 @@ func ToBizPorterConnectionStatus(s pb.PorterConnectionStatus) modeltiphereth.Por
 		return modeltiphereth.PorterConnectionStatusActivationFailed
 	default:
 		return modeltiphereth.PorterConnectionStatusUnspecified
+	}
+}
+
+func ToBizFeedConfigPullStatus(s pb.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus {
+	switch s {
+	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED:
+		return modelyesod.FeedConfigPullStatusUnspecified
+	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS:
+		return modelyesod.FeedConfigPullStatusSuccess
+	case pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED:
+		return modelyesod.FeedConfigPullStatusFailed
+	default:
+		return modelyesod.FeedConfigPullStatusUnspecified
 	}
 }

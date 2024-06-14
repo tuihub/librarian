@@ -102,6 +102,18 @@ func (fcc *FeedConfigCreate) SetNillableLatestPullAt(t *time.Time) *FeedConfigCr
 	return fcc
 }
 
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (fcc *FeedConfigCreate) SetLatestPullStatus(fps feedconfig.LatestPullStatus) *FeedConfigCreate {
+	fcc.mutation.SetLatestPullStatus(fps)
+	return fcc
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (fcc *FeedConfigCreate) SetLatestPullMessage(s string) *FeedConfigCreate {
+	fcc.mutation.SetLatestPullMessage(s)
+	return fcc
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (fcc *FeedConfigCreate) SetNextPullBeginAt(t time.Time) *FeedConfigCreate {
 	fcc.mutation.SetNextPullBeginAt(t)
@@ -289,6 +301,17 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.LatestPullAt(); !ok {
 		return &ValidationError{Name: "latest_pull_at", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_at"`)}
 	}
+	if _, ok := fcc.mutation.LatestPullStatus(); !ok {
+		return &ValidationError{Name: "latest_pull_status", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_status"`)}
+	}
+	if v, ok := fcc.mutation.LatestPullStatus(); ok {
+		if err := feedconfig.LatestPullStatusValidator(v); err != nil {
+			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
+		}
+	}
+	if _, ok := fcc.mutation.LatestPullMessage(); !ok {
+		return &ValidationError{Name: "latest_pull_message", err: errors.New(`ent: missing required field "FeedConfig.latest_pull_message"`)}
+	}
 	if _, ok := fcc.mutation.NextPullBeginAt(); !ok {
 		return &ValidationError{Name: "next_pull_begin_at", err: errors.New(`ent: missing required field "FeedConfig.next_pull_begin_at"`)}
 	}
@@ -369,6 +392,14 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.LatestPullAt(); ok {
 		_spec.SetField(feedconfig.FieldLatestPullAt, field.TypeTime, value)
 		_node.LatestPullAt = value
+	}
+	if value, ok := fcc.mutation.LatestPullStatus(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullStatus, field.TypeEnum, value)
+		_node.LatestPullStatus = value
+	}
+	if value, ok := fcc.mutation.LatestPullMessage(); ok {
+		_spec.SetField(feedconfig.FieldLatestPullMessage, field.TypeString, value)
+		_node.LatestPullMessage = value
 	}
 	if value, ok := fcc.mutation.NextPullBeginAt(); ok {
 		_spec.SetField(feedconfig.FieldNextPullBeginAt, field.TypeTime, value)
@@ -615,6 +646,30 @@ func (u *FeedConfigUpsert) UpdateLatestPullAt() *FeedConfigUpsert {
 	return u
 }
 
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (u *FeedConfigUpsert) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldLatestPullStatus, v)
+	return u
+}
+
+// UpdateLatestPullStatus sets the "latest_pull_status" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateLatestPullStatus() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldLatestPullStatus)
+	return u
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (u *FeedConfigUpsert) SetLatestPullMessage(v string) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldLatestPullMessage, v)
+	return u
+}
+
+// UpdateLatestPullMessage sets the "latest_pull_message" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateLatestPullMessage() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldLatestPullMessage)
+	return u
+}
+
 // SetNextPullBeginAt sets the "next_pull_begin_at" field.
 func (u *FeedConfigUpsert) SetNextPullBeginAt(v time.Time) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldNextPullBeginAt, v)
@@ -850,6 +905,34 @@ func (u *FeedConfigUpsertOne) SetLatestPullAt(v time.Time) *FeedConfigUpsertOne 
 func (u *FeedConfigUpsertOne) UpdateLatestPullAt() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateLatestPullAt()
+	})
+}
+
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (u *FeedConfigUpsertOne) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetLatestPullStatus(v)
+	})
+}
+
+// UpdateLatestPullStatus sets the "latest_pull_status" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateLatestPullStatus() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateLatestPullStatus()
+	})
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (u *FeedConfigUpsertOne) SetLatestPullMessage(v string) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetLatestPullMessage(v)
+	})
+}
+
+// UpdateLatestPullMessage sets the "latest_pull_message" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateLatestPullMessage() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateLatestPullMessage()
 	})
 }
 
@@ -1260,6 +1343,34 @@ func (u *FeedConfigUpsertBulk) SetLatestPullAt(v time.Time) *FeedConfigUpsertBul
 func (u *FeedConfigUpsertBulk) UpdateLatestPullAt() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateLatestPullAt()
+	})
+}
+
+// SetLatestPullStatus sets the "latest_pull_status" field.
+func (u *FeedConfigUpsertBulk) SetLatestPullStatus(v feedconfig.LatestPullStatus) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetLatestPullStatus(v)
+	})
+}
+
+// UpdateLatestPullStatus sets the "latest_pull_status" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateLatestPullStatus() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateLatestPullStatus()
+	})
+}
+
+// SetLatestPullMessage sets the "latest_pull_message" field.
+func (u *FeedConfigUpsertBulk) SetLatestPullMessage(v string) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetLatestPullMessage(v)
+	})
+}
+
+// UpdateLatestPullMessage sets the "latest_pull_message" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateLatestPullMessage() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateLatestPullMessage()
 	})
 }
 
