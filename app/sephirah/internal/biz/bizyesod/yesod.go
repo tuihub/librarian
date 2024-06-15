@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
@@ -62,7 +61,7 @@ type Yesod struct {
 	// mapper   mapper.LibrarianMapperServiceClient
 	searcher     *client.Searcher
 	pullFeed     *libmq.Topic[modelyesod.PullFeed]
-	systemNotify *libmq.Topic[modelangela.SystemNotify]
+	systemNotify *libmq.Topic[modelnetzach.SystemNotify]
 	feedOwner    *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
 }
 
@@ -73,7 +72,7 @@ func NewYesod(
 	// mClient mapper.LibrarianMapperServiceClient,
 	sClient *client.Searcher,
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
-	systemNotify *libmq.Topic[modelangela.SystemNotify],
+	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 	feedOwner *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User],
 ) (*Yesod, error) {
 	y := &Yesod{
@@ -102,23 +101,23 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 	}
 	var errRes error
 	for _, c := range configs {
-		doNotify := func() *modelangela.SystemNotify {
+		doNotify := func() *modelnetzach.SystemNotify {
 			var owner *modeltiphereth.User
 			owner, err = y.feedOwner.GetWithFallBack(ctx, *c, nil)
 			if err != nil {
 				return nil
 			}
-			un := modelangela.NewUserNotify(
+			un := modelnetzach.NewUserNotify(
 				owner.ID,
 				modelnetzach.SystemNotificationLevelOngoing,
-				fmt.Sprintf("Scheduled Server Task: Update Feed %s", c.Name),
+				fmt.Sprintf("%s: Update Feed %s", modelnetzach.SystemNotifyTitleCronJob, c.Name),
 				"Queued",
 			)
 			un.Notification.ID, err = y.searcher.NewID(ctx)
 			if err != nil {
 				return nil
 			}
-			err = y.systemNotify.Publish(ctx, un)
+			err = y.systemNotify.PublishFallsLocalCall(ctx, un)
 			if err != nil {
 				return nil
 			}

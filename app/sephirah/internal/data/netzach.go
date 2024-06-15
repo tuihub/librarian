@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
@@ -15,6 +16,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model"
+
+	"entgo.io/ent/dialect/sql"
 )
 
 type netzachRepo struct {
@@ -277,6 +280,35 @@ func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.Int
 		return nil, err
 	}
 	return ids, nil
+}
+
+func (n *netzachRepo) UpsertSystemNotification(
+	ctx context.Context,
+	userID model.InternalID,
+	notification *modelnetzach.SystemNotification,
+) error {
+	old, err := n.data.db.SystemNotification.Get(ctx, notification.ID)
+	if err == nil && n != nil && len(old.Content) > 0 {
+		notification.Content = fmt.Sprintf("%s\n%s", old.Content, notification.Content)
+	}
+	q := n.data.db.SystemNotification.Create().
+		SetID(notification.ID).
+		SetType(converter.ToEntSystemNotificationType(notification.Type)).
+		SetLevel(converter.ToEntSystemNotificationLevel(notification.Level)).
+		SetStatus(converter.ToEntSystemNotificationStatus(notification.Status)).
+		SetTitle(notification.Title).
+		SetContent(notification.Content)
+	if notification.Type == modelnetzach.SystemNotificationTypeUser {
+		q.SetUserID(userID)
+	}
+	return q.OnConflict(
+		sql.ConflictColumns(systemnotification.FieldID),
+		resolveWithIgnores([]string{
+			systemnotification.FieldID,
+			systemnotification.FieldUserID,
+			systemnotification.FieldType,
+		}),
+	).Exec(ctx)
 }
 
 func (n *netzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {

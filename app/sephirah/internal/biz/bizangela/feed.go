@@ -23,7 +23,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
 	notify *libmq.Topic[modelangela.NotifyRouter],
 	parse *libmq.Topic[modelangela.ParseFeedItemDigest],
-	systemNotify *libmq.Topic[modelangela.SystemNotify],
+	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 ) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",

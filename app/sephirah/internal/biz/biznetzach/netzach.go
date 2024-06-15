@@ -10,11 +10,18 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
+	"github.com/google/wire"
+)
+
+var ProviderSet = wire.NewSet(
+	NewNetzach,
+	NewSystemNotificationTopic,
 )
 
 type NetzachRepo interface {
@@ -30,6 +37,8 @@ type NetzachRepo interface {
 		[]*modelnetzach.NotifyFlow, int64, error)
 	GetNotifyFlow(context.Context, model.InternalID) (*modelnetzach.NotifyFlow, error)
 	GetNotifyFlowIDsWithFeed(context.Context, model.InternalID) ([]model.InternalID, error)
+
+	UpsertSystemNotification(context.Context, model.InternalID, *modelnetzach.SystemNotification) error
 	ListSystemNotifications(context.Context, model.Paging, *model.InternalID, []modelnetzach.SystemNotificationType,
 		[]modelnetzach.SystemNotificationLevel, []modelnetzach.SystemNotificationStatus) (
 		[]*modelnetzach.SystemNotification, int64, error)
@@ -48,10 +57,15 @@ func NewNetzach(
 	repo NetzachRepo,
 	supv *supervisor.Supervisor,
 	sClient *client.Searcher,
+	mq *libmq.MQ,
 	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
-) *Netzach {
+	systemNotification *libmq.Topic[modelnetzach.SystemNotify],
+) (*Netzach, error) {
+	if err := mq.RegisterTopic(systemNotification); err != nil {
+		return nil, err
+	}
 	y := &Netzach{
 		repo,
 		supv,
@@ -60,7 +74,7 @@ func NewNetzach(
 		notifyFlowCache,
 		notifyTargetCache,
 	}
-	return y
+	return y, nil
 }
 
 func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.NotifyTarget) (

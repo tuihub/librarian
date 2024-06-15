@@ -8,6 +8,13 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+
+	"github.com/google/wire"
+)
+
+var ProviderSet = wire.NewSet(
+	NewBinah,
+	NewControlBlock,
 )
 
 type Binah struct {

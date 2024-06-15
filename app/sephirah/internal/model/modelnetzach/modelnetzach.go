@@ -92,3 +92,51 @@ const (
 	SystemNotificationStatusRead
 	SystemNotificationStatusDismissed
 )
+
+type SystemNotify struct {
+	UserID       model.InternalID
+	Notification SystemNotification
+}
+
+const (
+	SystemNotifyTitleCronJob = "Server Scheduled Task"
+)
+
+func NewSystemNotify(
+	level SystemNotificationLevel,
+	title string,
+	content string,
+) SystemNotify {
+	return SystemNotify{
+		UserID: 0,
+		Notification: SystemNotification{
+			ID:         0,
+			Type:       SystemNotificationTypeSystem,
+			Level:      level,
+			Status:     SystemNotificationStatusUnread,
+			Title:      title,
+			Content:    content,
+			CreateTime: time.Now(),
+		},
+	}
+}
+
+func NewUserNotify(
+	userID model.InternalID,
+	level SystemNotificationLevel,
+	title string,
+	content string,
+) SystemNotify {
+	return SystemNotify{
+		UserID: userID,
+		Notification: SystemNotification{
+			ID:         0,
+			Type:       SystemNotificationTypeUser,
+			Level:      level,
+			Status:     SystemNotificationStatusUnread,
+			Title:      title,
+			Content:    content,
+			CreateTime: time.Now(),
+		},
+	}
+}

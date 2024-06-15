@@ -1,8 +1,6 @@
 package modelangela
 
 import (
-	"time"
-
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model"
@@ -39,48 +37,4 @@ type ParseFeedItemDigest struct {
 
 type UpdateAppInfoIndex struct {
 	IDs []model.InternalID
-}
-
-type SystemNotify struct {
-	UserID       model.InternalID
-	Notification modelnetzach.SystemNotification
-}
-
-func NewSystemNotify(
-	level modelnetzach.SystemNotificationLevel,
-	title string,
-	content string,
-) SystemNotify {
-	return SystemNotify{
-		UserID: 0,
-		Notification: modelnetzach.SystemNotification{
-			ID:         0,
-			Type:       modelnetzach.SystemNotificationTypeSystem,
-			Level:      level,
-			Status:     modelnetzach.SystemNotificationStatusUnread,
-			Title:      title,
-			Content:    content,
-			CreateTime: time.Now(),
-		},
-	}
-}
-
-func NewUserNotify(
-	userID model.InternalID,
-	level modelnetzach.SystemNotificationLevel,
-	title string,
-	content string,
-) SystemNotify {
-	return SystemNotify{
-		UserID: userID,
-		Notification: modelnetzach.SystemNotification{
-			ID:         0,
-			Type:       modelnetzach.SystemNotificationTypeUser,
-			Level:      level,
-			Status:     modelnetzach.SystemNotificationStatusUnread,
-			Title:      title,
-			Content:    content,
-			CreateTime: time.Now(),
-		},
-	}
 }

@@ -3,7 +3,7 @@ package modelyesod
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -71,7 +71,7 @@ type PullFeed struct {
 	InternalID   model.InternalID
 	URL          string
 	Source       string
-	SystemNotify *modelangela.SystemNotify
+	SystemNotify *modelnetzach.SystemNotify
 }
 
 type GroupFeedItemsBy int
