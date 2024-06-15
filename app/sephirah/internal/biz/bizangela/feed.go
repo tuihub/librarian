@@ -28,10 +28,6 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 	return libmq.NewTopic[modelyesod.PullFeed](
 		"PullFeed",
 		func(ctx context.Context, p *modelyesod.PullFeed) error {
-			if !a.supv.CheckFeedSource(p.Source) {
-				return nil
-			}
-
 			// Prepare for updating feed pull status
 			fc := new(modelyesod.FeedConfig)
 			fc.ID = p.InternalID
@@ -42,15 +38,23 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 				_ = a.repo.UpdateFeedPullStatus(ctx, fc)
 				if p.SystemNotify != nil {
 					un := *p.SystemNotify
-					if fc.LatestPullStatus == modelyesod.FeedConfigPullStatusSuccess {
+					if fc.LatestPullMessage == "" {
 						un.Notification.Level = modelnetzach.SystemNotificationLevelInfo
+					} else if fc.LatestPullStatus == modelyesod.FeedConfigPullStatusSuccess {
+						un.Notification.Level = modelnetzach.SystemNotificationLevelWarning
 					} else {
 						un.Notification.Level = modelnetzach.SystemNotificationLevelError
-						un.Notification.Content = fc.LatestPullMessage
 					}
+					un.Notification.Content = fc.LatestPullMessage
 					_ = systemNotify.PublishFallsLocalCall(ctx, un)
 				}
 			}()
+
+			// Check porter availability
+			if !a.supv.CheckFeedSource(p.Source) {
+				fc.LatestPullMessage = fmt.Sprintf("Pull %s feature not activate", p.Source)
+				return nil
+			}
 
 			// Pull feed and upsert
 			resp, err := a.porter.PullFeed(
@@ -99,19 +103,25 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			fc.LatestPullStatus = modelyesod.FeedConfigPullStatusSuccess
 
-			// Send to notify router
+			// Queue ParseFeedItemDigest and NotifyRouter
 			newItems := make([]*modelfeed.Item, 0, len(newItemGUIDs))
 			for _, item := range feed.Items {
 				if slices.Contains(newItemGUIDs, item.GUID) {
 					newItems = append(newItems, item)
-					_ = parse.Publish(ctx, modelangela.ParseFeedItemDigest{ID: item.ID})
+					err = parse.Publish(ctx, modelangela.ParseFeedItemDigest{ID: item.ID})
 				}
 			}
+			if err != nil {
+				fc.LatestPullMessage = fmt.Sprintf("Queue ParseFeedItemDigest failed: %s", err.Error())
+			}
 			if len(newItems) > 0 {
-				_ = notify.Publish(ctx, modelangela.NotifyRouter{
+				err = notify.Publish(ctx, modelangela.NotifyRouter{
 					FeedID:   feed.ID,
 					Messages: newItems,
 				})
+				if err != nil {
+					fc.LatestPullMessage = fmt.Sprintf("Queue NotifyRouter failed: %s", err.Error())
+				}
 			}
 			return nil
 		},

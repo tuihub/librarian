@@ -103,6 +103,8 @@ linters-settings:
         # Whether to skip (*x).method() calls where x is a pointer receiver.
         # Default: true
         skipRecvDeref: false
+    disabled-checks:
+      - ifElseChain # too much false positives
 
   gomnd:
     # List of function patterns to exclude from analysis.

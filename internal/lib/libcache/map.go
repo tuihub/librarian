@@ -83,7 +83,7 @@ func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K,
 	if err == nil {
 		return res, nil
 	}
-	if fallBackFunc != nil { //nolint:gocritic // no need
+	if fallBackFunc != nil {
 		res, err = fallBackFunc(ctx, key)
 		if err != nil {
 			return nil, err

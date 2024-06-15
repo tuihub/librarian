@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
@@ -318,6 +319,10 @@ func (a *angelaRepo) UpsertSystemNotification(
 	userID model.InternalID,
 	notification *modelnetzach.SystemNotification,
 ) error {
+	n, err := a.data.db.SystemNotification.Get(ctx, notification.ID)
+	if err == nil && n != nil && len(n.Content) > 0 {
+		notification.Content = fmt.Sprintf("%s\n%s", n.Content, notification.Content)
+	}
 	q := a.data.db.SystemNotification.Create().
 		SetID(notification.ID).
 		SetType(converter.ToEntSystemNotificationType(notification.Type)).

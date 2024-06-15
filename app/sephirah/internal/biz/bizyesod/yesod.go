@@ -112,7 +112,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 				owner.ID,
 				modelnetzach.SystemNotificationLevelOngoing,
 				fmt.Sprintf("Scheduled Server Task: Update Feed %s", c.Name),
-				"",
+				"Queued",
 			)
 			un.Notification.ID, err = y.searcher.NewID(ctx)
 			if err != nil {

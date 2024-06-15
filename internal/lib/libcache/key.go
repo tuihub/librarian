@@ -74,7 +74,7 @@ func (k *Key[T]) GetWithFallBack(ctx context.Context, fallBackFunc fallBackFunc[
 	if err == nil {
 		return res, nil
 	}
-	if fallBackFunc != nil { //nolint:gocritic // no need
+	if fallBackFunc != nil {
 		res, err = fallBackFunc(ctx)
 		if err != nil {
 			return nil, err
