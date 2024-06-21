@@ -310,6 +310,15 @@ func (c *toBizConverterImpl) ToBizFeedItemCollection(source *ent.FeedItemCollect
 		modelyesodFeedItemCollection.Name = (*source).Name
 		modelyesodFeedItemCollection.Description = (*source).Description
 		modelyesodFeedItemCollection.Category = (*source).Category
+		modelyesodFeedItemCollection.SourceFeed = c.modelInternalIDToModelInternalID((*source).SourceFeed)
+		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
+		if (*source).Actions != nil {
+			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pModeltipherethFeatureRequestList[i] = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
+			}
+		}
+		modelyesodFeedItemCollection.Actions = pModeltipherethFeatureRequestList
 		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
 	}
 	return pModelyesodFeedItemCollection
@@ -476,6 +485,7 @@ func (c *toBizConverterImpl) ToBizSystemNotification(source *ent.SystemNotificat
 		modelnetzachSystemNotification.Title = (*source).Title
 		modelnetzachSystemNotification.Content = (*source).Content
 		modelnetzachSystemNotification.CreateTime = TimeToTime((*source).CreatedAt)
+		modelnetzachSystemNotification.UpdateTime = TimeToTime((*source).UpdatedAt)
 		pModelnetzachSystemNotification = &modelnetzachSystemNotification
 	}
 	return pModelnetzachSystemNotification
@@ -668,62 +678,77 @@ func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfee
 	}
 	return pModelfeedPerson
 }
+func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureFlag(source *modeltiphereth.FeatureFlag) *modeltiphereth.FeatureFlag {
+	var pModeltipherethFeatureFlag *modeltiphereth.FeatureFlag
+	if source != nil {
+		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
+		modeltipherethFeatureFlag.ID = (*source).ID
+		modeltipherethFeatureFlag.Region = (*source).Region
+		modeltipherethFeatureFlag.Name = (*source).Name
+		modeltipherethFeatureFlag.Description = (*source).Description
+		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
+		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
+	}
+	return pModeltipherethFeatureFlag
+}
+func (c *toBizConverterImpl) pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
+	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
+	if source != nil {
+		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
+		modeltipherethFeatureRequest.ID = (*source).ID
+		modeltipherethFeatureRequest.Region = (*source).Region
+		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
+		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
+	}
+	return pModeltipherethFeatureRequest
+}
 func (c *toBizConverterImpl) pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
 	if source != nil {
 		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
-		var pModeltipherethSupportedAccountList []*modeltiphereth.SupportedAccount
-		if (*source).SupportedAccounts != nil {
-			pModeltipherethSupportedAccountList = make([]*modeltiphereth.SupportedAccount, len((*source).SupportedAccounts))
-			for i := 0; i < len((*source).SupportedAccounts); i++ {
-				pModeltipherethSupportedAccountList[i] = c.pModeltipherethSupportedAccountToPModeltipherethSupportedAccount((*source).SupportedAccounts[i])
+		var pModeltipherethFeatureFlagList []*modeltiphereth.FeatureFlag
+		if (*source).AccountPlatforms != nil {
+			pModeltipherethFeatureFlagList = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
+			for i := 0; i < len((*source).AccountPlatforms); i++ {
+				pModeltipherethFeatureFlagList[i] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAccounts = pModeltipherethSupportedAccountList
-		var stringList []string
-		if (*source).SupportedAppInfoSources != nil {
-			stringList = make([]string, len((*source).SupportedAppInfoSources))
-			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
-				stringList[j] = (*source).SupportedAppInfoSources[j]
+		modeltipherethPorterFeatureSummary.AccountPlatforms = pModeltipherethFeatureFlagList
+		var pModeltipherethFeatureFlagList2 []*modeltiphereth.FeatureFlag
+		if (*source).AppInfoSources != nil {
+			pModeltipherethFeatureFlagList2 = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
+			for j := 0; j < len((*source).AppInfoSources); j++ {
+				pModeltipherethFeatureFlagList2[j] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAppInfoSources = stringList
-		var stringList2 []string
-		if (*source).SupportedFeedSources != nil {
-			stringList2 = make([]string, len((*source).SupportedFeedSources))
-			for k := 0; k < len((*source).SupportedFeedSources); k++ {
-				stringList2[k] = (*source).SupportedFeedSources[k]
+		modeltipherethPorterFeatureSummary.AppInfoSources = pModeltipherethFeatureFlagList2
+		var pModeltipherethFeatureFlagList3 []*modeltiphereth.FeatureFlag
+		if (*source).FeedSources != nil {
+			pModeltipherethFeatureFlagList3 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
+			for k := 0; k < len((*source).FeedSources); k++ {
+				pModeltipherethFeatureFlagList3[k] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedSources[k])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedFeedSources = stringList2
-		var stringList3 []string
-		if (*source).SupportedNotifyDestinations != nil {
-			stringList3 = make([]string, len((*source).SupportedNotifyDestinations))
-			for l := 0; l < len((*source).SupportedNotifyDestinations); l++ {
-				stringList3[l] = (*source).SupportedNotifyDestinations[l]
+		modeltipherethPorterFeatureSummary.FeedSources = pModeltipherethFeatureFlagList3
+		var pModeltipherethFeatureFlagList4 []*modeltiphereth.FeatureFlag
+		if (*source).NotifyDestinations != nil {
+			pModeltipherethFeatureFlagList4 = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
+			for l := 0; l < len((*source).NotifyDestinations); l++ {
+				pModeltipherethFeatureFlagList4[l] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedNotifyDestinations = stringList3
+		modeltipherethPorterFeatureSummary.NotifyDestinations = pModeltipherethFeatureFlagList4
+		var pModeltipherethFeatureFlagList5 []*modeltiphereth.FeatureFlag
+		if (*source).FeedItemActions != nil {
+			pModeltipherethFeatureFlagList5 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
+			for m := 0; m < len((*source).FeedItemActions); m++ {
+				pModeltipherethFeatureFlagList5[m] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedItemActions[m])
+			}
+		}
+		modeltipherethPorterFeatureSummary.FeedItemActions = pModeltipherethFeatureFlagList5
 		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
 	}
 	return pModeltipherethPorterFeatureSummary
-}
-func (c *toBizConverterImpl) pModeltipherethSupportedAccountToPModeltipherethSupportedAccount(source *modeltiphereth.SupportedAccount) *modeltiphereth.SupportedAccount {
-	var pModeltipherethSupportedAccount *modeltiphereth.SupportedAccount
-	if source != nil {
-		var modeltipherethSupportedAccount modeltiphereth.SupportedAccount
-		modeltipherethSupportedAccount.Platform = (*source).Platform
-		var modelAccountAppRelationTypeList []model.AccountAppRelationType
-		if (*source).AppRelationTypes != nil {
-			modelAccountAppRelationTypeList = make([]model.AccountAppRelationType, len((*source).AppRelationTypes))
-			for i := 0; i < len((*source).AppRelationTypes); i++ {
-				modelAccountAppRelationTypeList[i] = model.AccountAppRelationType((*source).AppRelationTypes[i])
-			}
-		}
-		modeltipherethSupportedAccount.AppRelationTypes = modelAccountAppRelationTypeList
-		pModeltipherethSupportedAccount = &modeltipherethSupportedAccount
-	}
-	return pModeltipherethSupportedAccount
 }
 func (c *toBizConverterImpl) timeTimeToPTimeTime(source time.Time) *time.Time {
 	timeTime := TimeToTime(source)

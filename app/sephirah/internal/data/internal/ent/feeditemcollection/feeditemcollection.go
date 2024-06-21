@@ -20,6 +20,10 @@ const (
 	FieldDescription = "description"
 	// FieldCategory holds the string denoting the category field in the database.
 	FieldCategory = "category"
+	// FieldSourceFeed holds the string denoting the source_feed field in the database.
+	FieldSourceFeed = "source_feed"
+	// FieldActions holds the string denoting the actions field in the database.
+	FieldActions = "actions"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -59,6 +63,8 @@ var Columns = []string{
 	FieldName,
 	FieldDescription,
 	FieldCategory,
+	FieldSourceFeed,
+	FieldActions,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -120,6 +126,11 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 // ByCategory orders the results by the category field.
 func ByCategory(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCategory, opts...).ToFunc()
+}
+
+// BySourceFeed orders the results by the source_feed field.
+func BySourceFeed(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceFeed, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

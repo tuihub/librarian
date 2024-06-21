@@ -141,6 +141,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map CreatedAt CreateTime
+	// goverter:map UpdatedAt UpdateTime
 	ToBizSystemNotification(*ent.SystemNotification) *modelnetzach.SystemNotification
 	ToBizSystemNotificationList([]*ent.SystemNotification) []*modelnetzach.SystemNotification
 	// goverter:enum:unknown SystemNotificationTypeUnspecified

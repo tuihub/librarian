@@ -118,13 +118,7 @@ func ToPBNotifyTargetList(a []*modelnetzach.NotifyTarget) []*pb.NotifyTarget {
 	return toPB.ToPBNotifyTargetList(a)
 }
 func ToPBNotifyFlow(a *modelnetzach.NotifyFlow) *pb.NotifyFlow {
-	res := toPB.ToPBNotifyFlow(a)
-	for i := range a.Sources {
-		res.Sources[i].Source = &pb.NotifyFlowSource_FeedConfigId{
-			FeedConfigId: ToPBInternalID(a.Sources[i].FeedConfigID),
-		}
-	}
-	return res
+	return toPB.ToPBNotifyFlow(a)
 }
 func ToPBNotifyFlowList(a []*modelnetzach.NotifyFlow) []*pb.NotifyFlow {
 	res := make([]*pb.NotifyFlow, 0, len(a))
@@ -200,11 +194,7 @@ func ToBizNotifyTargetStatusList(a []pb.NotifyTargetStatus) []modelnetzach.Notif
 	return toBiz.ToBizNotifyTargetStatusList(a)
 }
 func ToBizNotifyFlow(a *pb.NotifyFlow) *modelnetzach.NotifyFlow {
-	res := toBiz.ToBizNotifyFlow(a)
-	for i := range a.GetSources() {
-		res.Sources[i].FeedConfigID = ToBizInternalID(a.GetSources()[i].GetFeedConfigId())
-	}
-	return res
+	return toBiz.ToBizNotifyFlow(a)
 }
 func ToBizFileMetadata(a *pb.FileMetadata) *modelbinah.FileMetadata {
 	return toBiz.ToBizFileMetadata(a)

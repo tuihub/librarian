@@ -10,12 +10,14 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -71,6 +73,39 @@ func (ficu *FeedItemCollectionUpdate) SetNillableCategory(s *string) *FeedItemCo
 	if s != nil {
 		ficu.SetCategory(*s)
 	}
+	return ficu
+}
+
+// SetSourceFeed sets the "source_feed" field.
+func (ficu *FeedItemCollectionUpdate) SetSourceFeed(mi model.InternalID) *FeedItemCollectionUpdate {
+	ficu.mutation.ResetSourceFeed()
+	ficu.mutation.SetSourceFeed(mi)
+	return ficu
+}
+
+// SetNillableSourceFeed sets the "source_feed" field if the given value is not nil.
+func (ficu *FeedItemCollectionUpdate) SetNillableSourceFeed(mi *model.InternalID) *FeedItemCollectionUpdate {
+	if mi != nil {
+		ficu.SetSourceFeed(*mi)
+	}
+	return ficu
+}
+
+// AddSourceFeed adds mi to the "source_feed" field.
+func (ficu *FeedItemCollectionUpdate) AddSourceFeed(mi model.InternalID) *FeedItemCollectionUpdate {
+	ficu.mutation.AddSourceFeed(mi)
+	return ficu
+}
+
+// SetActions sets the "actions" field.
+func (ficu *FeedItemCollectionUpdate) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpdate {
+	ficu.mutation.SetActions(mr)
+	return ficu
+}
+
+// AppendActions appends mr to the "actions" field.
+func (ficu *FeedItemCollectionUpdate) AppendActions(mr []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpdate {
+	ficu.mutation.AppendActions(mr)
 	return ficu
 }
 
@@ -252,6 +287,20 @@ func (ficu *FeedItemCollectionUpdate) sqlSave(ctx context.Context) (n int, err e
 	}
 	if value, ok := ficu.mutation.Category(); ok {
 		_spec.SetField(feeditemcollection.FieldCategory, field.TypeString, value)
+	}
+	if value, ok := ficu.mutation.SourceFeed(); ok {
+		_spec.SetField(feeditemcollection.FieldSourceFeed, field.TypeInt64, value)
+	}
+	if value, ok := ficu.mutation.AddedSourceFeed(); ok {
+		_spec.AddField(feeditemcollection.FieldSourceFeed, field.TypeInt64, value)
+	}
+	if value, ok := ficu.mutation.Actions(); ok {
+		_spec.SetField(feeditemcollection.FieldActions, field.TypeJSON, value)
+	}
+	if value, ok := ficu.mutation.AppendedActions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, feeditemcollection.FieldActions, value)
+		})
 	}
 	if value, ok := ficu.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldUpdatedAt, field.TypeTime, value)
@@ -437,6 +486,39 @@ func (ficuo *FeedItemCollectionUpdateOne) SetNillableCategory(s *string) *FeedIt
 	if s != nil {
 		ficuo.SetCategory(*s)
 	}
+	return ficuo
+}
+
+// SetSourceFeed sets the "source_feed" field.
+func (ficuo *FeedItemCollectionUpdateOne) SetSourceFeed(mi model.InternalID) *FeedItemCollectionUpdateOne {
+	ficuo.mutation.ResetSourceFeed()
+	ficuo.mutation.SetSourceFeed(mi)
+	return ficuo
+}
+
+// SetNillableSourceFeed sets the "source_feed" field if the given value is not nil.
+func (ficuo *FeedItemCollectionUpdateOne) SetNillableSourceFeed(mi *model.InternalID) *FeedItemCollectionUpdateOne {
+	if mi != nil {
+		ficuo.SetSourceFeed(*mi)
+	}
+	return ficuo
+}
+
+// AddSourceFeed adds mi to the "source_feed" field.
+func (ficuo *FeedItemCollectionUpdateOne) AddSourceFeed(mi model.InternalID) *FeedItemCollectionUpdateOne {
+	ficuo.mutation.AddSourceFeed(mi)
+	return ficuo
+}
+
+// SetActions sets the "actions" field.
+func (ficuo *FeedItemCollectionUpdateOne) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpdateOne {
+	ficuo.mutation.SetActions(mr)
+	return ficuo
+}
+
+// AppendActions appends mr to the "actions" field.
+func (ficuo *FeedItemCollectionUpdateOne) AppendActions(mr []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpdateOne {
+	ficuo.mutation.AppendActions(mr)
 	return ficuo
 }
 
@@ -648,6 +730,20 @@ func (ficuo *FeedItemCollectionUpdateOne) sqlSave(ctx context.Context) (_node *F
 	}
 	if value, ok := ficuo.mutation.Category(); ok {
 		_spec.SetField(feeditemcollection.FieldCategory, field.TypeString, value)
+	}
+	if value, ok := ficuo.mutation.SourceFeed(); ok {
+		_spec.SetField(feeditemcollection.FieldSourceFeed, field.TypeInt64, value)
+	}
+	if value, ok := ficuo.mutation.AddedSourceFeed(); ok {
+		_spec.AddField(feeditemcollection.FieldSourceFeed, field.TypeInt64, value)
+	}
+	if value, ok := ficuo.mutation.Actions(); ok {
+		_spec.SetField(feeditemcollection.FieldActions, field.TypeJSON, value)
+	}
+	if value, ok := ficuo.mutation.AppendedActions(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, feeditemcollection.FieldActions, value)
+		})
 	}
 	if value, ok := ficuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldUpdatedAt, field.TypeTime, value)

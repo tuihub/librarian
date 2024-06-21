@@ -30,6 +30,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
 	// goverter:matchIgnoreCase
 	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
+	// goverter:matchIgnoreCase
+	ToBizFeatureFlag(*librarian.FeatureFlag) *modeltiphereth.FeatureFlag
+	// goverter:matchIgnoreCase
+	ToBizFeatureRequest(*librarian.FeatureRequest) *modeltiphereth.FeatureRequest
 	// goverter:enum:unknown AccountAppRelationTypeUnspecified
 	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED AccountAppRelationTypeUnspecified
 	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN AccountAppRelationTypeOwner
@@ -130,7 +134,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND NotifyFlowStatusSuspend
 	ToBizNotifyFlowStatus(pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus
 	// goverter:matchIgnoreCase
-	// goverter:ignore FeedConfigID
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget
@@ -155,7 +158,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED SystemNotificationStatusUnspecified
 	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD SystemNotificationStatusUnread
 	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ SystemNotificationStatusRead
-	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS SystemNotificationStatusDismissed
+	// goverter:enum:map SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED SystemNotificationStatusDismissed
 	ToBizSystemNotificationStatus(pb.SystemNotificationStatus) modelnetzach.SystemNotificationStatus
 	ToBizSystemNotificationStatusList([]pb.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus
 

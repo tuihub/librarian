@@ -33,33 +33,33 @@ func (s *Supervisor) summarize( //nolint:gocognit // how?
 		if feat == nil {
 			continue
 		}
-		for _, account := range feat.SupportedAccounts {
-			if supportedAccountPlatforms[account.Platform] {
+		for _, account := range feat.AccountPlatforms {
+			if supportedAccountPlatforms[account.ID] {
 				continue
 			}
-			res.SupportedAccountPlatforms = append(res.SupportedAccountPlatforms, account.Platform)
-			supportedAccountPlatforms[account.Platform] = true
+			res.AccountPlatforms = append(res.AccountPlatforms, account)
+			supportedAccountPlatforms[account.ID] = true
 		}
-		for _, appSource := range feat.SupportedAppInfoSources {
-			if supportedAppSources[appSource] {
+		for _, appSource := range feat.AppInfoSources {
+			if supportedAppSources[appSource.ID] {
 				continue
 			}
-			res.SupportedAppInfoSources = append(res.SupportedAppInfoSources, appSource)
-			supportedAppSources[appSource] = true
+			res.AppInfoSources = append(res.AppInfoSources, appSource)
+			supportedAppSources[appSource.ID] = true
 		}
-		for _, feedSource := range feat.SupportedFeedSources {
-			if supportedFeedSources[feedSource] {
+		for _, feedSource := range feat.FeedSources {
+			if supportedFeedSources[feedSource.ID] {
 				continue
 			}
-			res.SupportedFeedSources = append(res.SupportedFeedSources, feedSource)
-			supportedFeedSources[feedSource] = true
+			res.FeedSources = append(res.FeedSources, feedSource)
+			supportedFeedSources[feedSource.ID] = true
 		}
-		for _, notifyDestination := range feat.SupportedNotifyDestinations {
-			if supportedNotifyDestinations[notifyDestination] {
+		for _, notifyDestination := range feat.NotifyDestinations {
+			if supportedNotifyDestinations[notifyDestination.ID] {
 				continue
 			}
-			res.SupportedNotifyDestinations = append(res.SupportedNotifyDestinations, notifyDestination)
-			supportedNotifyDestinations[notifyDestination] = true
+			res.NotifyDestinations = append(res.NotifyDestinations, notifyDestination)
+			supportedNotifyDestinations[notifyDestination.ID] = true
 		}
 	}
 	return res

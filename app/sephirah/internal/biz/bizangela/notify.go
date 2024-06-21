@@ -45,7 +45,7 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 				}
 				var messages []*modelfeed.Item
 				for _, source := range flow.Sources {
-					if source.FeedConfigID == r.FeedID {
+					if source.SourceID == r.FeedID {
 						messages = applyFilter(r.Messages, source.Filter.IncludeKeywords, source.Filter.ExcludeKeywords)
 					}
 				}

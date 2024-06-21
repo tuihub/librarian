@@ -16,8 +16,8 @@ type NotifyFlow struct {
 }
 
 type NotifyFlowSource struct {
-	FeedConfigID model.InternalID
-	Filter       *NotifyFilter
+	SourceID model.InternalID
+	Filter   *NotifyFilter
 }
 
 type NotifyFlowTarget struct {
@@ -64,6 +64,7 @@ type SystemNotification struct {
 	Title      string
 	Content    string
 	CreateTime time.Time
+	UpdateTime time.Time
 }
 
 type SystemNotificationType int
@@ -117,6 +118,7 @@ func NewSystemNotify(
 			Title:      title,
 			Content:    content,
 			CreateTime: time.Now(),
+			UpdateTime: time.Now(),
 		},
 	}
 }
@@ -137,6 +139,7 @@ func NewUserNotify(
 			Title:      title,
 			Content:    content,
 			CreateTime: time.Now(),
+			UpdateTime: time.Now(),
 		},
 	}
 }

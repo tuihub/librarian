@@ -3,6 +3,9 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -19,6 +22,8 @@ func (FeedItemCollection) Fields() []ent.Field {
 		field.String("name"),
 		field.String("description"),
 		field.String("category"),
+		field.Int64("source_feed").GoType(model.InternalID(0)),
+		field.JSON("actions", []*modeltiphereth.FeatureRequest{}),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

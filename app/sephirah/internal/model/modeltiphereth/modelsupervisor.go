@@ -16,14 +16,25 @@ type PorterInstance struct {
 }
 
 type PorterFeatureSummary struct {
-	SupportedAccounts           []*SupportedAccount `json:"supported_accounts"`
-	SupportedAppInfoSources     []string            `json:"supported_app_info_sources"`
-	SupportedFeedSources        []string            `json:"supported_feed_sources"`
-	SupportedNotifyDestinations []string            `json:"supported_notify_destinations"`
+	AccountPlatforms   []*FeatureFlag `json:"account_platforms"`
+	AppInfoSources     []*FeatureFlag `json:"app_info_sources"`
+	FeedSources        []*FeatureFlag `json:"feed_sources"`
+	NotifyDestinations []*FeatureFlag `json:"notify_destinations"`
+	FeedItemActions    []*FeatureFlag `json:"feed_item_actions"`
 }
-type SupportedAccount struct {
-	Platform         string                         `json:"platform"`
-	AppRelationTypes []model.AccountAppRelationType `json:"app_relation_types"`
+
+type FeatureFlag struct {
+	ID               string `json:"id"`
+	Region           string `json:"region"`
+	Name             string `json:"name"`
+	Description      string `json:"description"`
+	ConfigJSONSchema string `json:"config_json_schema"`
+}
+
+type FeatureRequest struct {
+	ID         string `json:"id"`
+	Region     string `json:"region"`
+	ConfigJSON string `json:"config_json"`
 }
 
 type PorterInstancePrivilege struct {
@@ -39,10 +50,11 @@ const (
 )
 
 type ServerFeatureSummary struct {
-	SupportedAccountPlatforms   []string
-	SupportedAppInfoSources     []string
-	SupportedFeedSources        []string
-	SupportedNotifyDestinations []string
+	AccountPlatforms   []*FeatureFlag
+	AppInfoSources     []*FeatureFlag
+	FeedSources        []*FeatureFlag
+	NotifyDestinations []*FeatureFlag
+	FeedItemActions    []*FeatureFlag
 }
 
 type PorterConnectionStatus int

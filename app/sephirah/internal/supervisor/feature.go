@@ -7,8 +7,8 @@ import (
 )
 
 func (s *Supervisor) CheckAccountPlatform(platform string) bool {
-	for _, p := range s.featureSummary.SupportedAccountPlatforms {
-		if p == platform {
+	for _, p := range s.featureSummary.AccountPlatforms {
+		if p.ID == platform {
 			return true
 		}
 	}
@@ -17,8 +17,8 @@ func (s *Supervisor) CheckAccountPlatform(platform string) bool {
 
 func (s *Supervisor) CallAccountPlatform(ctx context.Context, platform string) context.Context {
 	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.SupportedAccounts {
-			if a.Platform == platform {
+		for _, a := range i.FeatureSummary.AccountPlatforms {
+			if a.ID == platform {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
@@ -27,8 +27,8 @@ func (s *Supervisor) CallAccountPlatform(ctx context.Context, platform string) c
 }
 
 func (s *Supervisor) CheckAppInfoSource(source string) bool {
-	for _, p := range s.featureSummary.SupportedAppInfoSources {
-		if p == source {
+	for _, p := range s.featureSummary.AppInfoSources {
+		if p.ID == source {
 			return true
 		}
 	}
@@ -37,8 +37,8 @@ func (s *Supervisor) CheckAppInfoSource(source string) bool {
 
 func (s *Supervisor) CallAppInfoSource(ctx context.Context, source string) context.Context {
 	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.SupportedAppInfoSources {
-			if a == source {
+		for _, a := range i.FeatureSummary.AppInfoSources {
+			if a.ID == source {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
@@ -47,8 +47,8 @@ func (s *Supervisor) CallAppInfoSource(ctx context.Context, source string) conte
 }
 
 func (s *Supervisor) CheckFeedSource(source string) bool {
-	for _, p := range s.featureSummary.SupportedFeedSources {
-		if p == source {
+	for _, p := range s.featureSummary.FeedSources {
+		if p.ID == source {
 			return true
 		}
 	}
@@ -57,8 +57,8 @@ func (s *Supervisor) CheckFeedSource(source string) bool {
 
 func (s *Supervisor) CallFeedSource(ctx context.Context, source string) context.Context {
 	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.SupportedFeedSources {
-			if a == source {
+		for _, a := range i.FeatureSummary.FeedSources {
+			if a.ID == source {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
@@ -67,8 +67,8 @@ func (s *Supervisor) CallFeedSource(ctx context.Context, source string) context.
 }
 
 func (s *Supervisor) CheckNotifyDestination(destination string) bool {
-	for _, p := range s.featureSummary.SupportedNotifyDestinations {
-		if p == destination {
+	for _, p := range s.featureSummary.NotifyDestinations {
+		if p.ID == destination {
 			return true
 		}
 	}
@@ -77,8 +77,8 @@ func (s *Supervisor) CheckNotifyDestination(destination string) bool {
 
 func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination string) context.Context {
 	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.SupportedNotifyDestinations {
-			if a == destination {
+		for _, a := range i.FeatureSummary.NotifyDestinations {
+			if a.ID == destination {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}

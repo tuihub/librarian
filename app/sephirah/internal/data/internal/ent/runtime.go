@@ -176,13 +176,13 @@ func init() {
 	feeditemcollectionFields := schema.FeedItemCollection{}.Fields()
 	_ = feeditemcollectionFields
 	// feeditemcollectionDescUpdatedAt is the schema descriptor for updated_at field.
-	feeditemcollectionDescUpdatedAt := feeditemcollectionFields[4].Descriptor()
+	feeditemcollectionDescUpdatedAt := feeditemcollectionFields[6].Descriptor()
 	// feeditemcollection.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	feeditemcollection.DefaultUpdatedAt = feeditemcollectionDescUpdatedAt.Default.(func() time.Time)
 	// feeditemcollection.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feeditemcollection.UpdateDefaultUpdatedAt = feeditemcollectionDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// feeditemcollectionDescCreatedAt is the schema descriptor for created_at field.
-	feeditemcollectionDescCreatedAt := feeditemcollectionFields[5].Descriptor()
+	feeditemcollectionDescCreatedAt := feeditemcollectionFields[7].Descriptor()
 	// feeditemcollection.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feeditemcollection.DefaultCreatedAt = feeditemcollectionDescCreatedAt.Default.(func() time.Time)
 	fileFields := schema.File{}.Fields()

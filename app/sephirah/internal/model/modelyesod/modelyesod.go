@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -89,4 +90,6 @@ type FeedItemCollection struct {
 	Name        string
 	Description string
 	Category    string
+	SourceFeed  model.InternalID
+	Actions     []*modeltiphereth.FeatureRequest
 }

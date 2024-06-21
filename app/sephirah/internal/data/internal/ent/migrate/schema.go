@@ -338,6 +338,8 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
 		{Name: "category", Type: field.TypeString},
+		{Name: "source_feed", Type: field.TypeInt64},
+		{Name: "actions", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "user_feed_item_collection", Type: field.TypeInt64},
@@ -350,7 +352,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_item_collections_users_feed_item_collection",
-				Columns:    []*schema.Column{FeedItemCollectionsColumns[6]},
+				Columns:    []*schema.Column{FeedItemCollectionsColumns[8]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

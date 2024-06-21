@@ -10668,6 +10668,10 @@ type FeedItemCollectionMutation struct {
 	name                 *string
 	description          *string
 	category             *string
+	source_feed          *model.InternalID
+	addsource_feed       *model.InternalID
+	actions              *[]*modeltiphereth.FeatureRequest
+	appendactions        []*modeltiphereth.FeatureRequest
 	updated_at           *time.Time
 	created_at           *time.Time
 	clearedFields        map[string]struct{}
@@ -10894,6 +10898,113 @@ func (m *FeedItemCollectionMutation) OldCategory(ctx context.Context) (v string,
 // ResetCategory resets all changes to the "category" field.
 func (m *FeedItemCollectionMutation) ResetCategory() {
 	m.category = nil
+}
+
+// SetSourceFeed sets the "source_feed" field.
+func (m *FeedItemCollectionMutation) SetSourceFeed(mi model.InternalID) {
+	m.source_feed = &mi
+	m.addsource_feed = nil
+}
+
+// SourceFeed returns the value of the "source_feed" field in the mutation.
+func (m *FeedItemCollectionMutation) SourceFeed() (r model.InternalID, exists bool) {
+	v := m.source_feed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceFeed returns the old "source_feed" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldSourceFeed(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceFeed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceFeed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceFeed: %w", err)
+	}
+	return oldValue.SourceFeed, nil
+}
+
+// AddSourceFeed adds mi to the "source_feed" field.
+func (m *FeedItemCollectionMutation) AddSourceFeed(mi model.InternalID) {
+	if m.addsource_feed != nil {
+		*m.addsource_feed += mi
+	} else {
+		m.addsource_feed = &mi
+	}
+}
+
+// AddedSourceFeed returns the value that was added to the "source_feed" field in this mutation.
+func (m *FeedItemCollectionMutation) AddedSourceFeed() (r model.InternalID, exists bool) {
+	v := m.addsource_feed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSourceFeed resets all changes to the "source_feed" field.
+func (m *FeedItemCollectionMutation) ResetSourceFeed() {
+	m.source_feed = nil
+	m.addsource_feed = nil
+}
+
+// SetActions sets the "actions" field.
+func (m *FeedItemCollectionMutation) SetActions(mr []*modeltiphereth.FeatureRequest) {
+	m.actions = &mr
+	m.appendactions = nil
+}
+
+// Actions returns the value of the "actions" field in the mutation.
+func (m *FeedItemCollectionMutation) Actions() (r []*modeltiphereth.FeatureRequest, exists bool) {
+	v := m.actions
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActions returns the old "actions" field's value of the FeedItemCollection entity.
+// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedItemCollectionMutation) OldActions(ctx context.Context) (v []*modeltiphereth.FeatureRequest, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActions is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActions requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActions: %w", err)
+	}
+	return oldValue.Actions, nil
+}
+
+// AppendActions adds mr to the "actions" field.
+func (m *FeedItemCollectionMutation) AppendActions(mr []*modeltiphereth.FeatureRequest) {
+	m.appendactions = append(m.appendactions, mr...)
+}
+
+// AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
+func (m *FeedItemCollectionMutation) AppendedActions() ([]*modeltiphereth.FeatureRequest, bool) {
+	if len(m.appendactions) == 0 {
+		return nil, false
+	}
+	return m.appendactions, true
+}
+
+// ResetActions resets all changes to the "actions" field.
+func (m *FeedItemCollectionMutation) ResetActions() {
+	m.actions = nil
+	m.appendactions = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -11149,7 +11260,7 @@ func (m *FeedItemCollectionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedItemCollectionMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 7)
 	if m.name != nil {
 		fields = append(fields, feeditemcollection.FieldName)
 	}
@@ -11158,6 +11269,12 @@ func (m *FeedItemCollectionMutation) Fields() []string {
 	}
 	if m.category != nil {
 		fields = append(fields, feeditemcollection.FieldCategory)
+	}
+	if m.source_feed != nil {
+		fields = append(fields, feeditemcollection.FieldSourceFeed)
+	}
+	if m.actions != nil {
+		fields = append(fields, feeditemcollection.FieldActions)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, feeditemcollection.FieldUpdatedAt)
@@ -11179,6 +11296,10 @@ func (m *FeedItemCollectionMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case feeditemcollection.FieldCategory:
 		return m.Category()
+	case feeditemcollection.FieldSourceFeed:
+		return m.SourceFeed()
+	case feeditemcollection.FieldActions:
+		return m.Actions()
 	case feeditemcollection.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case feeditemcollection.FieldCreatedAt:
@@ -11198,6 +11319,10 @@ func (m *FeedItemCollectionMutation) OldField(ctx context.Context, name string) 
 		return m.OldDescription(ctx)
 	case feeditemcollection.FieldCategory:
 		return m.OldCategory(ctx)
+	case feeditemcollection.FieldSourceFeed:
+		return m.OldSourceFeed(ctx)
+	case feeditemcollection.FieldActions:
+		return m.OldActions(ctx)
 	case feeditemcollection.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case feeditemcollection.FieldCreatedAt:
@@ -11232,6 +11357,20 @@ func (m *FeedItemCollectionMutation) SetField(name string, value ent.Value) erro
 		}
 		m.SetCategory(v)
 		return nil
+	case feeditemcollection.FieldSourceFeed:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceFeed(v)
+		return nil
+	case feeditemcollection.FieldActions:
+		v, ok := value.([]*modeltiphereth.FeatureRequest)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActions(v)
+		return nil
 	case feeditemcollection.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -11253,13 +11392,21 @@ func (m *FeedItemCollectionMutation) SetField(name string, value ent.Value) erro
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *FeedItemCollectionMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addsource_feed != nil {
+		fields = append(fields, feeditemcollection.FieldSourceFeed)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *FeedItemCollectionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case feeditemcollection.FieldSourceFeed:
+		return m.AddedSourceFeed()
+	}
 	return nil, false
 }
 
@@ -11268,6 +11415,13 @@ func (m *FeedItemCollectionMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedItemCollectionMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case feeditemcollection.FieldSourceFeed:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSourceFeed(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FeedItemCollection numeric field %s", name)
 }
@@ -11303,6 +11457,12 @@ func (m *FeedItemCollectionMutation) ResetField(name string) error {
 		return nil
 	case feeditemcollection.FieldCategory:
 		m.ResetCategory()
+		return nil
+	case feeditemcollection.FieldSourceFeed:
+		m.ResetSourceFeed()
+		return nil
+	case feeditemcollection.FieldActions:
+		m.ResetActions()
 		return nil
 	case feeditemcollection.FieldUpdatedAt:
 		m.ResetUpdatedAt()

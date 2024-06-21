@@ -168,9 +168,10 @@ func (g *Gebura) SearchNewAppInfos(
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	if len(sourceFilter) == 0 {
-		sourceFilter = g.supv.GetFeatureSummary().SupportedAppInfoSources
-	}
+	//TODO: fix
+	// if len(sourceFilter) == 0 {
+	// sourceFilter = g.supv.GetFeatureSummary().AppInfoSources
+	//}
 	if len(sourceFilter) == 0 {
 		return nil, 0, pb.ErrorErrorReasonBadRequest("no available info source")
 	}

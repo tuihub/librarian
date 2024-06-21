@@ -209,7 +209,7 @@ func (s *Supervisor) enablePorterInstance(ctx context.Context, instance *modelti
 	}
 	_, err := s.porter.EnablePorter(client.WithPorterAddress(ctx, instance.Address), &porter.EnablePorterRequest{
 		SephirahId:   0,
-		RefreshToken: "",
+		RefreshToken: nil,
 	})
 	if err != nil {
 		var refreshToken string
@@ -226,7 +226,7 @@ func (s *Supervisor) enablePorterInstance(ctx context.Context, instance *modelti
 		}
 		_, err = s.porter.EnablePorter(client.WithPorterAddress(ctx, instance.Address), &porter.EnablePorterRequest{
 			SephirahId:   0,
-			RefreshToken: refreshToken,
+			RefreshToken: &refreshToken,
 		})
 	}
 	return err

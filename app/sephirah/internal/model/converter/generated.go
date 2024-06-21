@@ -193,6 +193,30 @@ func (c *toBizConverterImpl) ToBizDeviceInfo(source *v11.DeviceInfo) *modeltiphe
 	}
 	return pModeltipherethDeviceInfo
 }
+func (c *toBizConverterImpl) ToBizFeatureFlag(source *v1.FeatureFlag) *modeltiphereth.FeatureFlag {
+	var pModeltipherethFeatureFlag *modeltiphereth.FeatureFlag
+	if source != nil {
+		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
+		modeltipherethFeatureFlag.ID = (*source).Id
+		modeltipherethFeatureFlag.Region = (*source).Region
+		modeltipherethFeatureFlag.Name = (*source).Name
+		modeltipherethFeatureFlag.Description = (*source).Description
+		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
+		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
+	}
+	return pModeltipherethFeatureFlag
+}
+func (c *toBizConverterImpl) ToBizFeatureRequest(source *v1.FeatureRequest) *modeltiphereth.FeatureRequest {
+	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
+	if source != nil {
+		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
+		modeltipherethFeatureRequest.ID = (*source).Id
+		modeltipherethFeatureRequest.Region = (*source).Region
+		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJson
+		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
+	}
+	return pModeltipherethFeatureRequest
+}
 func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
@@ -264,6 +288,15 @@ func (c *toBizConverterImpl) ToBizFeedItemCollection(source *v11.FeedItemCollect
 		modelyesodFeedItemCollection.Name = (*source).Name
 		modelyesodFeedItemCollection.Description = (*source).Description
 		modelyesodFeedItemCollection.Category = (*source).Category
+		modelyesodFeedItemCollection.SourceFeed = ToBizInternalID((*source).SourceFeed)
+		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
+		if (*source).Actions != nil {
+			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pModeltipherethFeatureRequestList[i] = c.ToBizFeatureRequest((*source).Actions[i])
+			}
+		}
+		modelyesodFeedItemCollection.Actions = pModeltipherethFeatureRequestList
 		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
 	}
 	return pModelyesodFeedItemCollection
@@ -368,6 +401,7 @@ func (c *toBizConverterImpl) ToBizNotifyFlowSource(source *v11.NotifyFlowSource)
 	var pModelnetzachNotifyFlowSource *modelnetzach.NotifyFlowSource
 	if source != nil {
 		var modelnetzachNotifyFlowSource modelnetzach.NotifyFlowSource
+		modelnetzachNotifyFlowSource.SourceID = ToBizInternalID((*source).SourceId)
 		modelnetzachNotifyFlowSource.Filter = c.ToBizNotifyFilter((*source).Filter)
 		pModelnetzachNotifyFlowSource = &modelnetzachNotifyFlowSource
 	}
@@ -440,38 +474,46 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
 	if source != nil {
 		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
-		var pModeltipherethSupportedAccountList []*modeltiphereth.SupportedAccount
-		if (*source).SupportedAccounts != nil {
-			pModeltipherethSupportedAccountList = make([]*modeltiphereth.SupportedAccount, len((*source).SupportedAccounts))
-			for i := 0; i < len((*source).SupportedAccounts); i++ {
-				pModeltipherethSupportedAccountList[i] = c.pV1PorterFeatureSummary_AccountToPModeltipherethSupportedAccount((*source).SupportedAccounts[i])
+		var pModeltipherethFeatureFlagList []*modeltiphereth.FeatureFlag
+		if (*source).AccountPlatforms != nil {
+			pModeltipherethFeatureFlagList = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
+			for i := 0; i < len((*source).AccountPlatforms); i++ {
+				pModeltipherethFeatureFlagList[i] = c.ToBizFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAccounts = pModeltipherethSupportedAccountList
-		var stringList []string
-		if (*source).SupportedAppInfoSources != nil {
-			stringList = make([]string, len((*source).SupportedAppInfoSources))
-			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
-				stringList[j] = (*source).SupportedAppInfoSources[j]
+		modeltipherethPorterFeatureSummary.AccountPlatforms = pModeltipherethFeatureFlagList
+		var pModeltipherethFeatureFlagList2 []*modeltiphereth.FeatureFlag
+		if (*source).AppInfoSources != nil {
+			pModeltipherethFeatureFlagList2 = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
+			for j := 0; j < len((*source).AppInfoSources); j++ {
+				pModeltipherethFeatureFlagList2[j] = c.ToBizFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedAppInfoSources = stringList
-		var stringList2 []string
-		if (*source).SupportedFeedSources != nil {
-			stringList2 = make([]string, len((*source).SupportedFeedSources))
-			for k := 0; k < len((*source).SupportedFeedSources); k++ {
-				stringList2[k] = (*source).SupportedFeedSources[k]
+		modeltipherethPorterFeatureSummary.AppInfoSources = pModeltipherethFeatureFlagList2
+		var pModeltipherethFeatureFlagList3 []*modeltiphereth.FeatureFlag
+		if (*source).FeedSources != nil {
+			pModeltipherethFeatureFlagList3 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
+			for k := 0; k < len((*source).FeedSources); k++ {
+				pModeltipherethFeatureFlagList3[k] = c.ToBizFeatureFlag((*source).FeedSources[k])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedFeedSources = stringList2
-		var stringList3 []string
-		if (*source).SupportedNotifyDestinations != nil {
-			stringList3 = make([]string, len((*source).SupportedNotifyDestinations))
-			for l := 0; l < len((*source).SupportedNotifyDestinations); l++ {
-				stringList3[l] = (*source).SupportedNotifyDestinations[l]
+		modeltipherethPorterFeatureSummary.FeedSources = pModeltipherethFeatureFlagList3
+		var pModeltipherethFeatureFlagList4 []*modeltiphereth.FeatureFlag
+		if (*source).NotifyDestinations != nil {
+			pModeltipherethFeatureFlagList4 = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
+			for l := 0; l < len((*source).NotifyDestinations); l++ {
+				pModeltipherethFeatureFlagList4[l] = c.ToBizFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
-		modeltipherethPorterFeatureSummary.SupportedNotifyDestinations = stringList3
+		modeltipherethPorterFeatureSummary.NotifyDestinations = pModeltipherethFeatureFlagList4
+		var pModeltipherethFeatureFlagList5 []*modeltiphereth.FeatureFlag
+		if (*source).FeedItemActions != nil {
+			pModeltipherethFeatureFlagList5 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
+			for m := 0; m < len((*source).FeedItemActions); m++ {
+				pModeltipherethFeatureFlagList5[m] = c.ToBizFeatureFlag((*source).FeedItemActions[m])
+			}
+		}
+		modeltipherethPorterFeatureSummary.FeedItemActions = pModeltipherethFeatureFlagList5
 		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
 	}
 	return pModeltipherethPorterFeatureSummary
@@ -516,7 +558,7 @@ func (c *toBizConverterImpl) ToBizSystemNotificationLevelList(source []v11.Syste
 func (c *toBizConverterImpl) ToBizSystemNotificationStatus(source v11.SystemNotificationStatus) modelnetzach.SystemNotificationStatus {
 	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
 	switch source {
-	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS:
+	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusDismissed
 	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusRead
@@ -659,23 +701,6 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 		}
 	}
 	return libauthUserTypeList
-}
-func (c *toBizConverterImpl) pV1PorterFeatureSummary_AccountToPModeltipherethSupportedAccount(source *v12.PorterFeatureSummary_Account) *modeltiphereth.SupportedAccount {
-	var pModeltipherethSupportedAccount *modeltiphereth.SupportedAccount
-	if source != nil {
-		var modeltipherethSupportedAccount modeltiphereth.SupportedAccount
-		modeltipherethSupportedAccount.Platform = (*source).Platform
-		var modelAccountAppRelationTypeList []model.AccountAppRelationType
-		if (*source).AppRelationTypes != nil {
-			modelAccountAppRelationTypeList = make([]model.AccountAppRelationType, len((*source).AppRelationTypes))
-			for i := 0; i < len((*source).AppRelationTypes); i++ {
-				modelAccountAppRelationTypeList[i] = c.ToBizAccountAppRelationType((*source).AppRelationTypes[i])
-			}
-		}
-		modeltipherethSupportedAccount.AppRelationTypes = modelAccountAppRelationTypeList
-		pModeltipherethSupportedAccount = &modeltipherethSupportedAccount
-	}
-	return pModeltipherethSupportedAccount
 }
 
 type toPBConverterImpl struct{}
@@ -902,6 +927,30 @@ func (c *toPBConverterImpl) ToPBEnclosure(source *modelfeed.Enclosure) *v1.FeedE
 	}
 	return pV1FeedEnclosure
 }
+func (c *toPBConverterImpl) ToPBFeatureFlag(source *modeltiphereth.FeatureFlag) *v1.FeatureFlag {
+	var pV1FeatureFlag *v1.FeatureFlag
+	if source != nil {
+		var v1FeatureFlag v1.FeatureFlag
+		v1FeatureFlag.Id = (*source).ID
+		v1FeatureFlag.Region = (*source).Region
+		v1FeatureFlag.Name = (*source).Name
+		v1FeatureFlag.Description = (*source).Description
+		v1FeatureFlag.ConfigJsonSchema = (*source).ConfigJSONSchema
+		pV1FeatureFlag = &v1FeatureFlag
+	}
+	return pV1FeatureFlag
+}
+func (c *toPBConverterImpl) ToPBFeatureRequest(source *modeltiphereth.FeatureRequest) *v1.FeatureRequest {
+	var pV1FeatureRequest *v1.FeatureRequest
+	if source != nil {
+		var v1FeatureRequest v1.FeatureRequest
+		v1FeatureRequest.Id = (*source).ID
+		v1FeatureRequest.Region = (*source).Region
+		v1FeatureRequest.ConfigJson = (*source).ConfigJSON
+		pV1FeatureRequest = &v1FeatureRequest
+	}
+	return pV1FeatureRequest
+}
 func (c *toPBConverterImpl) ToPBFeed(source *modelfeed.Feed) *v1.Feed {
 	var pV1Feed *v1.Feed
 	if source != nil {
@@ -1015,6 +1064,15 @@ func (c *toPBConverterImpl) ToPBFeedItemCollection(source *modelyesod.FeedItemCo
 		v1FeedItemCollection.Name = (*source).Name
 		v1FeedItemCollection.Description = (*source).Description
 		v1FeedItemCollection.Category = (*source).Category
+		v1FeedItemCollection.SourceFeed = ToPBInternalID((*source).SourceFeed)
+		var pV1FeatureRequestList []*v1.FeatureRequest
+		if (*source).Actions != nil {
+			pV1FeatureRequestList = make([]*v1.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pV1FeatureRequestList[i] = c.ToPBFeatureRequest((*source).Actions[i])
+			}
+		}
+		v1FeedItemCollection.Actions = pV1FeatureRequestList
 		pV1FeedItemCollection = &v1FeedItemCollection
 	}
 	return pV1FeedItemCollection
@@ -1149,6 +1207,7 @@ func (c *toPBConverterImpl) ToPBNotifyFlowSource(source *modelnetzach.NotifyFlow
 	if source != nil {
 		var v1NotifyFlowSource v11.NotifyFlowSource
 		v1NotifyFlowSource.Filter = c.pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
+		v1NotifyFlowSource.SourceId = ToPBInternalID((*source).SourceID)
 		pV1NotifyFlowSource = &v1NotifyFlowSource
 	}
 	return pV1NotifyFlowSource
@@ -1262,38 +1321,46 @@ func (c *toPBConverterImpl) ToPBServerFeatureSummary(source *modeltiphereth.Serv
 	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
 	if source != nil {
 		var v1ServerFeatureSummary v11.ServerFeatureSummary
-		var stringList []string
-		if (*source).SupportedAccountPlatforms != nil {
-			stringList = make([]string, len((*source).SupportedAccountPlatforms))
-			for i := 0; i < len((*source).SupportedAccountPlatforms); i++ {
-				stringList[i] = (*source).SupportedAccountPlatforms[i]
+		var pV1FeatureFlagList []*v1.FeatureFlag
+		if (*source).AccountPlatforms != nil {
+			pV1FeatureFlagList = make([]*v1.FeatureFlag, len((*source).AccountPlatforms))
+			for i := 0; i < len((*source).AccountPlatforms); i++ {
+				pV1FeatureFlagList[i] = c.ToPBFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
-		v1ServerFeatureSummary.SupportedAccountPlatforms = stringList
-		var stringList2 []string
-		if (*source).SupportedAppInfoSources != nil {
-			stringList2 = make([]string, len((*source).SupportedAppInfoSources))
-			for j := 0; j < len((*source).SupportedAppInfoSources); j++ {
-				stringList2[j] = (*source).SupportedAppInfoSources[j]
+		v1ServerFeatureSummary.AccountPlatforms = pV1FeatureFlagList
+		var pV1FeatureFlagList2 []*v1.FeatureFlag
+		if (*source).AppInfoSources != nil {
+			pV1FeatureFlagList2 = make([]*v1.FeatureFlag, len((*source).AppInfoSources))
+			for j := 0; j < len((*source).AppInfoSources); j++ {
+				pV1FeatureFlagList2[j] = c.ToPBFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
-		v1ServerFeatureSummary.SupportedAppInfoSources = stringList2
-		var stringList3 []string
-		if (*source).SupportedFeedSources != nil {
-			stringList3 = make([]string, len((*source).SupportedFeedSources))
-			for k := 0; k < len((*source).SupportedFeedSources); k++ {
-				stringList3[k] = (*source).SupportedFeedSources[k]
+		v1ServerFeatureSummary.AppInfoSources = pV1FeatureFlagList2
+		var pV1FeatureFlagList3 []*v1.FeatureFlag
+		if (*source).FeedSources != nil {
+			pV1FeatureFlagList3 = make([]*v1.FeatureFlag, len((*source).FeedSources))
+			for k := 0; k < len((*source).FeedSources); k++ {
+				pV1FeatureFlagList3[k] = c.ToPBFeatureFlag((*source).FeedSources[k])
 			}
 		}
-		v1ServerFeatureSummary.SupportedFeedSources = stringList3
-		var stringList4 []string
-		if (*source).SupportedNotifyDestinations != nil {
-			stringList4 = make([]string, len((*source).SupportedNotifyDestinations))
-			for l := 0; l < len((*source).SupportedNotifyDestinations); l++ {
-				stringList4[l] = (*source).SupportedNotifyDestinations[l]
+		v1ServerFeatureSummary.FeedSources = pV1FeatureFlagList3
+		var pV1FeatureFlagList4 []*v1.FeatureFlag
+		if (*source).NotifyDestinations != nil {
+			pV1FeatureFlagList4 = make([]*v1.FeatureFlag, len((*source).NotifyDestinations))
+			for l := 0; l < len((*source).NotifyDestinations); l++ {
+				pV1FeatureFlagList4[l] = c.ToPBFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
-		v1ServerFeatureSummary.SupportedNotifyDestinations = stringList4
+		v1ServerFeatureSummary.NotifyDestinations = pV1FeatureFlagList4
+		var pV1FeatureFlagList5 []*v1.FeatureFlag
+		if (*source).FeedItemActions != nil {
+			pV1FeatureFlagList5 = make([]*v1.FeatureFlag, len((*source).FeedItemActions))
+			for m := 0; m < len((*source).FeedItemActions); m++ {
+				pV1FeatureFlagList5[m] = c.ToPBFeatureFlag((*source).FeedItemActions[m])
+			}
+		}
+		v1ServerFeatureSummary.FeedItemActions = pV1FeatureFlagList5
 		pV1ServerFeatureSummary = &v1ServerFeatureSummary
 	}
 	return pV1ServerFeatureSummary
@@ -1307,8 +1374,9 @@ func (c *toPBConverterImpl) ToPBSystemNotification(source *modelnetzach.SystemNo
 		v1SystemNotification.Level = c.ToPBSystemNotificationLevel((*source).Level)
 		v1SystemNotification.Status = c.ToPBSystemNotificationStatus((*source).Status)
 		v1SystemNotification.Title = (*source).Title
-		v1SystemNotification.Message = (*source).Content
+		v1SystemNotification.Content = (*source).Content
 		v1SystemNotification.CreateTime = ToPBTime((*source).CreateTime)
+		v1SystemNotification.UpdateTime = ToPBTime((*source).UpdateTime)
 		pV1SystemNotification = &v1SystemNotification
 	}
 	return pV1SystemNotification
@@ -1345,7 +1413,7 @@ func (c *toPBConverterImpl) ToPBSystemNotificationStatus(source modelnetzach.Sys
 	var v1SystemNotificationStatus v11.SystemNotificationStatus
 	switch source {
 	case modelnetzach.SystemNotificationStatusDismissed:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS
+		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED
 	case modelnetzach.SystemNotificationStatusRead:
 		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
 	case modelnetzach.SystemNotificationStatusUnread:

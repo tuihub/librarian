@@ -136,7 +136,7 @@ func (g *Gebura) UnAssignApp(ctx context.Context, appID model.InternalID) *error
 //			})
 //		}
 //		packages[i].Source = modelgebura.AppPackageSourceSentinel
-//		packages[i].FeedConfigID = r.sourceID
+//		packages[i].SourceID = r.sourceID
 //	}
 //	if len(vl) > 0 {
 //		// if _, err = r.g.mapper.InsertVertex(ctx, &mapper.InsertVertexRequest{VertexList: vl}); err != nil {

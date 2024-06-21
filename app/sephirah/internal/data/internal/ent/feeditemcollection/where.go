@@ -71,6 +71,12 @@ func Category(v string) predicate.FeedItemCollection {
 	return predicate.FeedItemCollection(sql.FieldEQ(FieldCategory, v))
 }
 
+// SourceFeed applies equality check predicate on the "source_feed" field. It's identical to SourceFeedEQ.
+func SourceFeed(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldEQ(FieldSourceFeed, vc))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.FeedItemCollection {
 	return predicate.FeedItemCollection(sql.FieldEQ(FieldUpdatedAt, v))
@@ -274,6 +280,60 @@ func CategoryEqualFold(v string) predicate.FeedItemCollection {
 // CategoryContainsFold applies the ContainsFold predicate on the "category" field.
 func CategoryContainsFold(v string) predicate.FeedItemCollection {
 	return predicate.FeedItemCollection(sql.FieldContainsFold(FieldCategory, v))
+}
+
+// SourceFeedEQ applies the EQ predicate on the "source_feed" field.
+func SourceFeedEQ(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldEQ(FieldSourceFeed, vc))
+}
+
+// SourceFeedNEQ applies the NEQ predicate on the "source_feed" field.
+func SourceFeedNEQ(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldNEQ(FieldSourceFeed, vc))
+}
+
+// SourceFeedIn applies the In predicate on the "source_feed" field.
+func SourceFeedIn(vs ...model.InternalID) predicate.FeedItemCollection {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedItemCollection(sql.FieldIn(FieldSourceFeed, v...))
+}
+
+// SourceFeedNotIn applies the NotIn predicate on the "source_feed" field.
+func SourceFeedNotIn(vs ...model.InternalID) predicate.FeedItemCollection {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.FeedItemCollection(sql.FieldNotIn(FieldSourceFeed, v...))
+}
+
+// SourceFeedGT applies the GT predicate on the "source_feed" field.
+func SourceFeedGT(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldGT(FieldSourceFeed, vc))
+}
+
+// SourceFeedGTE applies the GTE predicate on the "source_feed" field.
+func SourceFeedGTE(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldGTE(FieldSourceFeed, vc))
+}
+
+// SourceFeedLT applies the LT predicate on the "source_feed" field.
+func SourceFeedLT(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldLT(FieldSourceFeed, vc))
+}
+
+// SourceFeedLTE applies the LTE predicate on the "source_feed" field.
+func SourceFeedLTE(v model.InternalID) predicate.FeedItemCollection {
+	vc := int64(v)
+	return predicate.FeedItemCollection(sql.FieldLTE(FieldSourceFeed, vc))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

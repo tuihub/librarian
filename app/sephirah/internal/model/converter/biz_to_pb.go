@@ -28,6 +28,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 	ToPBServerFeatureSummary(*modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary
+	// goverter:matchIgnoreCase
+	ToPBFeatureFlag(*modeltiphereth.FeatureFlag) *librarian.FeatureFlag
+	// goverter:matchIgnoreCase
+	ToPBFeatureRequest(*modeltiphereth.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:matchIgnoreCase
 	// goverter:map ID DeviceId
@@ -158,14 +162,12 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map NotifyFlowStatusSuspend NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	ToPBNotifyFlowStatus(modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus
 	// goverter:matchIgnoreCase
-	// goverter:ignore Source
 	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
 	// goverter:matchIgnoreCase
 	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
 	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
 
 	// goverter:matchIgnoreCase
-	// goverter:map Content Message
 	ToPBSystemNotification(*modelnetzach.SystemNotification) *pb.SystemNotification
 	ToPBSystemNotificationList([]*modelnetzach.SystemNotification) []*pb.SystemNotification
 	// goverter:enum:unknown SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
@@ -184,7 +186,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemNotificationStatusUnspecified SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
 	// goverter:enum:map SystemNotificationStatusUnread SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
 	// goverter:enum:map SystemNotificationStatusRead SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
-	// goverter:enum:map SystemNotificationStatusDismissed SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISS
+	// goverter:enum:map SystemNotificationStatusDismissed SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED
 	ToPBSystemNotificationStatus(modelnetzach.SystemNotificationStatus) pb.SystemNotificationStatus
 }
 
