@@ -217,6 +217,25 @@ func (c *toBizConverterImpl) ToBizFeatureRequest(source *v1.FeatureRequest) *mod
 	}
 	return pModeltipherethFeatureRequest
 }
+func (c *toBizConverterImpl) ToBizFeedActionSet(source *v11.FeedActionSet) *modelyesod.FeedActionSet {
+	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
+	if source != nil {
+		var modelyesodFeedActionSet modelyesod.FeedActionSet
+		modelyesodFeedActionSet.ID = ToBizInternalID((*source).Id)
+		modelyesodFeedActionSet.Name = (*source).Name
+		modelyesodFeedActionSet.Description = (*source).Description
+		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
+		if (*source).Actions != nil {
+			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pModeltipherethFeatureRequestList[i] = c.ToBizFeatureRequest((*source).Actions[i])
+			}
+		}
+		modelyesodFeedActionSet.Actions = pModeltipherethFeatureRequestList
+		pModelyesodFeedActionSet = &modelyesodFeedActionSet
+	}
+	return pModelyesodFeedActionSet
+}
 func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
@@ -965,6 +984,35 @@ func (c *toPBConverterImpl) ToPBFeed(source *modelfeed.Feed) *v1.Feed {
 		pV1Feed = &v1Feed
 	}
 	return pV1Feed
+}
+func (c *toPBConverterImpl) ToPBFeedActionSet(source *modelyesod.FeedActionSet) *v11.FeedActionSet {
+	var pV1FeedActionSet *v11.FeedActionSet
+	if source != nil {
+		var v1FeedActionSet v11.FeedActionSet
+		v1FeedActionSet.Id = ToPBInternalID((*source).ID)
+		v1FeedActionSet.Name = (*source).Name
+		v1FeedActionSet.Description = (*source).Description
+		var pV1FeatureRequestList []*v1.FeatureRequest
+		if (*source).Actions != nil {
+			pV1FeatureRequestList = make([]*v1.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pV1FeatureRequestList[i] = c.ToPBFeatureRequest((*source).Actions[i])
+			}
+		}
+		v1FeedActionSet.Actions = pV1FeatureRequestList
+		pV1FeedActionSet = &v1FeedActionSet
+	}
+	return pV1FeedActionSet
+}
+func (c *toPBConverterImpl) ToPBFeedActionSetList(source []*modelyesod.FeedActionSet) []*v11.FeedActionSet {
+	var pV1FeedActionSetList []*v11.FeedActionSet
+	if source != nil {
+		pV1FeedActionSetList = make([]*v11.FeedActionSet, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1FeedActionSetList[i] = c.ToPBFeedActionSet(source[i])
+		}
+	}
+	return pV1FeedActionSetList
 }
 func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.FeedConfig {
 	var pV1FeedConfig *v11.FeedConfig

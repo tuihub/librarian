@@ -54,6 +54,46 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 		FeedsWithConfig: converter.ToPBFeedWithConfigList(feeds),
 	}, nil
 }
+func (s *LibrarianSephirahServiceService) CreateFeedActionSet(
+	ctx context.Context,
+	req *pb.CreateFeedActionSetRequest,
+) (*pb.CreateFeedActionSetResponse, error) {
+	id, err := s.y.CreateFeedActionSet(ctx, converter.ToBizFeedActionSet(req.GetActionSet()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreateFeedActionSetResponse{
+		Id: converter.ToPBInternalID(id),
+	}, nil
+}
+func (s *LibrarianSephirahServiceService) UpdateFeedActionSet(
+	ctx context.Context,
+	req *pb.UpdateFeedActionSetRequest,
+) (*pb.UpdateFeedActionSetResponse, error) {
+	err := s.y.UpdateFeedActionSet(ctx, converter.ToBizFeedActionSet(req.GetActionSet()))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.UpdateFeedActionSetResponse{}, nil
+}
+func (s *LibrarianSephirahServiceService) ListFeedActionSets(
+	ctx context.Context,
+	req *pb.ListFeedActionSetsRequest,
+) (*pb.ListFeedActionSetsResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	actions, total, err := s.y.ListFeedActionSets(ctx,
+		model.ToBizPaging(req.GetPaging()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListFeedActionSetsResponse{
+		Paging:     &librarian.PagingResponse{TotalSize: int64(total)},
+		ActionSets: converter.ToPBFeedActionSetList(actions),
+	}, nil
+}
 func (s *LibrarianSephirahServiceService) ListFeedCategories(
 	ctx context.Context,
 	req *pb.ListFeedCategoriesRequest,

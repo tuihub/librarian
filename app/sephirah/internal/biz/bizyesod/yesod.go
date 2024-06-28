@@ -53,6 +53,9 @@ type YesodRepo interface {
 	ListFeedItemsInCollection(context.Context, model.InternalID, model.Paging, []model.InternalID, []string,
 		[]string, []string, *model.TimeRange) ([]*modelyesod.FeedItemDigest, int, error)
 	GetFeedOwner(context.Context, model.InternalID) (*modeltiphereth.User, error)
+	CreateFeedActionSet(context.Context, model.InternalID, *modelyesod.FeedActionSet) error
+	UpdateFeedActionSet(context.Context, model.InternalID, *modelyesod.FeedActionSet) error
+	ListFeedActionSets(context.Context, model.InternalID, model.Paging) ([]*modelyesod.FeedActionSet, int, error)
 }
 
 type Yesod struct {

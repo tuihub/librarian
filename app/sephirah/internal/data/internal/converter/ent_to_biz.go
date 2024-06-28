@@ -114,6 +114,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedConfigPullStatus(feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus
 
 	// goverter:matchIgnoreCase
+	ToBizFeedActionSet(*ent.FeedActionSet) *modelyesod.FeedActionSet
+	ToBizFeedActionSetList([]*ent.FeedActionSet) []*modelyesod.FeedActionSet
+
+	// goverter:matchIgnoreCase
 	// goverter:ignore Items
 	// goverter:ignore FeedType
 	// goverter:ignore FeedVersion

@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
@@ -43,7 +44,8 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 		SetPullInterval(c.PullInterval).
 		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(c.LatestPullStatus)).
 		SetLatestPullMessage("").
-		SetHideItems(c.HideItems)
+		SetHideItems(c.HideItems).
+		AddFeedActionSetIDs(c.ActionSets...)
 	return q.Exec(ctx)
 }
 
@@ -73,6 +75,9 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 	}
 	if c.PullInterval > 0 {
 		q.SetPullInterval(c.PullInterval).SetNextPullBeginAt(time.Now())
+	}
+	if c.ActionSets != nil {
+		q.ClearFeedActionSet().AddFeedActionSetIDs(c.ActionSets...)
 	}
 	q.SetHideItems(c.HideItems)
 	return q.Exec(ctx)
@@ -521,4 +526,52 @@ func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*mod
 		return nil, err
 	}
 	return converter.ToBizUser(only), nil
+}
+
+func (y *yesodRepo) CreateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
+	return y.data.db.FeedActionSet.Create().
+		SetOwnerID(id).
+		SetID(set.ID).
+		SetName(set.Name).
+		SetDescription(set.Description).
+		SetActions(set.Actions).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
+	return y.data.db.FeedActionSet.UpdateOneID(set.ID).
+		Where(feedactionset.HasOwnerWith(user.IDEQ(id))).
+		SetName(set.Name).
+		SetDescription(set.Description).
+		SetActions(set.Actions).
+		Exec(ctx)
+}
+
+func (y *yesodRepo) ListFeedActionSets(ctx context.Context, id model.InternalID, paging model.Paging) ([]*modelyesod.FeedActionSet, int, error) {
+	var res []*modelyesod.FeedActionSet
+	var total int
+	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		u, err := tx.User.Get(ctx, id)
+		if err != nil {
+			return err
+		}
+		q := tx.User.QueryFeedActionSet(u)
+		total, err = q.Count(ctx)
+		if err != nil {
+			return err
+		}
+		sets, err := q.
+			Limit(paging.ToLimit()).
+			Offset(paging.ToOffset()).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		res = converter.ToBizFeedActionSetList(sets)
+		return nil
+	})
+	if err != nil {
+		return nil, 0, err
+	}
+	return res, total, nil
 }

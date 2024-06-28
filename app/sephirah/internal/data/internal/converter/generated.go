@@ -200,6 +200,35 @@ func (c *toBizConverterImpl) ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	}
 	return pModelfeedFeed
 }
+func (c *toBizConverterImpl) ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
+	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
+	if source != nil {
+		var modelyesodFeedActionSet modelyesod.FeedActionSet
+		modelyesodFeedActionSet.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelyesodFeedActionSet.Name = (*source).Name
+		modelyesodFeedActionSet.Description = (*source).Description
+		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
+		if (*source).Actions != nil {
+			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			for i := 0; i < len((*source).Actions); i++ {
+				pModeltipherethFeatureRequestList[i] = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
+			}
+		}
+		modelyesodFeedActionSet.Actions = pModeltipherethFeatureRequestList
+		pModelyesodFeedActionSet = &modelyesodFeedActionSet
+	}
+	return pModelyesodFeedActionSet
+}
+func (c *toBizConverterImpl) ToBizFeedActionSetList(source []*ent.FeedActionSet) []*modelyesod.FeedActionSet {
+	var pModelyesodFeedActionSetList []*modelyesod.FeedActionSet
+	if source != nil {
+		pModelyesodFeedActionSetList = make([]*modelyesod.FeedActionSet, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelyesodFeedActionSetList[i] = c.ToBizFeedActionSet(source[i])
+		}
+	}
+	return pModelyesodFeedActionSetList
+}
 func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
@@ -681,6 +710,17 @@ func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureF
 		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
 	}
 	return pModeltipherethFeatureFlag
+}
+func (c *toBizConverterImpl) pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
+	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
+	if source != nil {
+		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
+		modeltipherethFeatureRequest.ID = (*source).ID
+		modeltipherethFeatureRequest.Region = (*source).Region
+		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
+		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
+	}
+	return pModeltipherethFeatureRequest
 }
 func (c *toBizConverterImpl) pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary

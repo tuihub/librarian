@@ -90,6 +90,9 @@ func ToPBEnclosure(a *modelfeed.Enclosure) *librarian.FeedEnclosure {
 func ToPBFeedConfig(a *modelyesod.FeedConfig) *pb.FeedConfig {
 	return toPB.ToPBFeedConfig(a)
 }
+func ToPBFeedActionSetList(a []*modelyesod.FeedActionSet) []*pb.FeedActionSet {
+	return toPB.ToPBFeedActionSetList(a)
+}
 func ToPBFeedWithConfig(a *modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig {
 	return toPB.ToPBFeedWithConfig(a)
 }
@@ -183,6 +186,9 @@ func ToBizFeedConfigStatusList(a []pb.FeedConfigStatus) []modelyesod.FeedConfigS
 }
 func ToBizFeedItemCollection(a *pb.FeedItemCollection) *modelyesod.FeedItemCollection {
 	return toBiz.ToBizFeedItemCollection(a)
+}
+func ToBizFeedActionSet(a *pb.FeedActionSet) *modelyesod.FeedActionSet {
+	return toBiz.ToBizFeedActionSet(a)
 }
 func ToBizTimeRange(a *librarian.TimeRange) *model.TimeRange {
 	return toBiz.ToBizTimeRange(a)

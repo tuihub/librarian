@@ -100,6 +100,9 @@ func ToBizFeedConfig(a *ent.FeedConfig) *modelyesod.FeedConfig {
 func ToBizFeedConfigList(a []*ent.FeedConfig) []*modelyesod.FeedConfig {
 	return toBiz.ToBizFeedConfigList(a)
 }
+func ToBizFeedActionSetList(a []*ent.FeedActionSet) []*modelyesod.FeedActionSet {
+	return toBiz.ToBizFeedActionSetList(a)
+}
 func ToBizFeed(a *ent.Feed) *modelfeed.Feed {
 	return toBiz.ToBizFeed(a)
 }

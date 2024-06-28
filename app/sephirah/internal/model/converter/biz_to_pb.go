@@ -142,6 +142,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
 	// goverter:matchIgnoreCase
+	ToPBFeedActionSet(*modelyesod.FeedActionSet) *pb.FeedActionSet
+	ToPBFeedActionSetList([]*modelyesod.FeedActionSet) []*pb.FeedActionSet
+
+	// goverter:matchIgnoreCase
 	ToPBFeedItemCollection(*modelyesod.FeedItemCollection) *pb.FeedItemCollection
 	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*pb.FeedItemCollection
 

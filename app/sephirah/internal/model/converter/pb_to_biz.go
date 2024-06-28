@@ -116,6 +116,9 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
 	// goverter:matchIgnoreCase
+	ToBizFeedActionSet(*pb.FeedActionSet) *modelyesod.FeedActionSet
+
+	// goverter:matchIgnoreCase
 	ToBizFeedItemCollection(*pb.FeedItemCollection) *modelyesod.FeedItemCollection
 
 	// goverter:matchIgnoreCase
