@@ -13,7 +13,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -133,6 +135,18 @@ func init() {
 	feedDescCreatedAt := feedFields[8].Descriptor()
 	// feed.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feed.DefaultCreatedAt = feedDescCreatedAt.Default.(func() time.Time)
+	feedactionsetFields := schema.FeedActionSet{}.Fields()
+	_ = feedactionsetFields
+	// feedactionsetDescUpdatedAt is the schema descriptor for updated_at field.
+	feedactionsetDescUpdatedAt := feedactionsetFields[4].Descriptor()
+	// feedactionset.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	feedactionset.DefaultUpdatedAt = feedactionsetDescUpdatedAt.Default.(func() time.Time)
+	// feedactionset.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	feedactionset.UpdateDefaultUpdatedAt = feedactionsetDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// feedactionsetDescCreatedAt is the schema descriptor for created_at field.
+	feedactionsetDescCreatedAt := feedactionsetFields[5].Descriptor()
+	// feedactionset.DefaultCreatedAt holds the default value on creation for the created_at field.
+	feedactionset.DefaultCreatedAt = feedactionsetDescCreatedAt.Default.(func() time.Time)
 	feedconfigFields := schema.FeedConfig{}.Fields()
 	_ = feedconfigFields
 	// feedconfigDescHideItems is the schema descriptor for hide_items field.
@@ -157,6 +171,18 @@ func init() {
 	feedconfigDescCreatedAt := feedconfigFields[15].Descriptor()
 	// feedconfig.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feedconfig.DefaultCreatedAt = feedconfigDescCreatedAt.Default.(func() time.Time)
+	feedconfigactionFields := schema.FeedConfigAction{}.Fields()
+	_ = feedconfigactionFields
+	// feedconfigactionDescUpdatedAt is the schema descriptor for updated_at field.
+	feedconfigactionDescUpdatedAt := feedconfigactionFields[3].Descriptor()
+	// feedconfigaction.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	feedconfigaction.DefaultUpdatedAt = feedconfigactionDescUpdatedAt.Default.(func() time.Time)
+	// feedconfigaction.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	feedconfigaction.UpdateDefaultUpdatedAt = feedconfigactionDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// feedconfigactionDescCreatedAt is the schema descriptor for created_at field.
+	feedconfigactionDescCreatedAt := feedconfigactionFields[4].Descriptor()
+	// feedconfigaction.DefaultCreatedAt holds the default value on creation for the created_at field.
+	feedconfigaction.DefaultCreatedAt = feedconfigactionDescCreatedAt.Default.(func() time.Time)
 	feeditemFields := schema.FeedItem{}.Fields()
 	_ = feeditemFields
 	// feeditemDescReadCount is the schema descriptor for read_count field.
@@ -176,13 +202,13 @@ func init() {
 	feeditemcollectionFields := schema.FeedItemCollection{}.Fields()
 	_ = feeditemcollectionFields
 	// feeditemcollectionDescUpdatedAt is the schema descriptor for updated_at field.
-	feeditemcollectionDescUpdatedAt := feeditemcollectionFields[6].Descriptor()
+	feeditemcollectionDescUpdatedAt := feeditemcollectionFields[4].Descriptor()
 	// feeditemcollection.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	feeditemcollection.DefaultUpdatedAt = feeditemcollectionDescUpdatedAt.Default.(func() time.Time)
 	// feeditemcollection.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	feeditemcollection.UpdateDefaultUpdatedAt = feeditemcollectionDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// feeditemcollectionDescCreatedAt is the schema descriptor for created_at field.
-	feeditemcollectionDescCreatedAt := feeditemcollectionFields[7].Descriptor()
+	feeditemcollectionDescCreatedAt := feeditemcollectionFields[5].Descriptor()
 	// feeditemcollection.DefaultCreatedAt holds the default value on creation for the created_at field.
 	feeditemcollection.DefaultCreatedAt = feeditemcollectionDescCreatedAt.Default.(func() time.Time)
 	fileFields := schema.File{}.Fields()

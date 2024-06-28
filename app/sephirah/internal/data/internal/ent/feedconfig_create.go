@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -205,6 +207,36 @@ func (fcc *FeedConfigCreate) AddNotifySource(n ...*NotifySource) *FeedConfigCrea
 		ids[i] = n[i].ID
 	}
 	return fcc.AddNotifySourceIDs(ids...)
+}
+
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (fcc *FeedConfigCreate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigCreate {
+	fcc.mutation.AddFeedActionSetIDs(ids...)
+	return fcc
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (fcc *FeedConfigCreate) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigCreate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcc.AddFeedActionSetIDs(ids...)
+}
+
+// AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
+func (fcc *FeedConfigCreate) AddFeedConfigActionIDs(ids ...int) *FeedConfigCreate {
+	fcc.mutation.AddFeedConfigActionIDs(ids...)
+	return fcc
+}
+
+// AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
+func (fcc *FeedConfigCreate) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigCreate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcc.AddFeedConfigActionIDs(ids...)
 }
 
 // Mutation returns the FeedConfigMutation object of the builder.
@@ -455,6 +487,42 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fcc.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &FeedConfigActionCreate{config: fcc.config, mutation: newFeedConfigActionMutation(fcc.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := fcc.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -168,6 +169,21 @@ func (uc *UserCreate) AddFeedConfig(f ...*FeedConfig) *UserCreate {
 		ids[i] = f[i].ID
 	}
 	return uc.AddFeedConfigIDs(ids...)
+}
+
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (uc *UserCreate) AddFeedActionSetIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddFeedActionSetIDs(ids...)
+	return uc
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (uc *UserCreate) AddFeedActionSet(f ...*FeedActionSet) *UserCreate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uc.AddFeedActionSetIDs(ids...)
 }
 
 // AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
@@ -539,6 +555,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

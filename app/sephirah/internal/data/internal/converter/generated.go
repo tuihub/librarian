@@ -310,15 +310,6 @@ func (c *toBizConverterImpl) ToBizFeedItemCollection(source *ent.FeedItemCollect
 		modelyesodFeedItemCollection.Name = (*source).Name
 		modelyesodFeedItemCollection.Description = (*source).Description
 		modelyesodFeedItemCollection.Category = (*source).Category
-		modelyesodFeedItemCollection.SourceFeed = c.modelInternalIDToModelInternalID((*source).SourceFeed)
-		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
-		if (*source).Actions != nil {
-			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
-			for i := 0; i < len((*source).Actions); i++ {
-				pModeltipherethFeatureRequestList[i] = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
-			}
-		}
-		modelyesodFeedItemCollection.Actions = pModeltipherethFeatureRequestList
 		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
 	}
 	return pModelyesodFeedItemCollection
@@ -690,17 +681,6 @@ func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureF
 		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
 	}
 	return pModeltipherethFeatureFlag
-}
-func (c *toBizConverterImpl) pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
-	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
-	if source != nil {
-		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
-		modeltipherethFeatureRequest.ID = (*source).ID
-		modeltipherethFeatureRequest.Region = (*source).Region
-		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
-		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
-	}
-	return pModeltipherethFeatureRequest
 }
 func (c *toBizConverterImpl) pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary

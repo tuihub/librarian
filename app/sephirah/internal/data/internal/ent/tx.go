@@ -28,8 +28,12 @@ type Tx struct {
 	DeviceInfo *DeviceInfoClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
+	// FeedActionSet is the client for interacting with the FeedActionSet builders.
+	FeedActionSet *FeedActionSetClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
 	FeedConfig *FeedConfigClient
+	// FeedConfigAction is the client for interacting with the FeedConfigAction builders.
+	FeedConfigAction *FeedConfigActionClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
 	// FeedItemCollection is the client for interacting with the FeedItemCollection builders.
@@ -201,7 +205,9 @@ func (tx *Tx) init() {
 	tx.AppInstRunTime = NewAppInstRunTimeClient(tx.config)
 	tx.DeviceInfo = NewDeviceInfoClient(tx.config)
 	tx.Feed = NewFeedClient(tx.config)
+	tx.FeedActionSet = NewFeedActionSetClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
+	tx.FeedConfigAction = NewFeedConfigActionClient(tx.config)
 	tx.FeedItem = NewFeedItemClient(tx.config)
 	tx.FeedItemCollection = NewFeedItemCollectionClient(tx.config)
 	tx.File = NewFileClient(tx.config)

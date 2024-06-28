@@ -866,6 +866,52 @@ func HasNotifySourceWith(preds ...predicate.NotifySource) predicate.FeedConfig {
 	})
 }
 
+// HasFeedActionSet applies the HasEdge predicate on the "feed_action_set" edge.
+func HasFeedActionSet() predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, FeedActionSetTable, FeedActionSetPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedActionSetWith applies the HasEdge predicate on the "feed_action_set" edge with a given conditions (other predicates).
+func HasFeedActionSetWith(preds ...predicate.FeedActionSet) predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := newFeedActionSetStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasFeedConfigAction applies the HasEdge predicate on the "feed_config_action" edge.
+func HasFeedConfigAction() predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, FeedConfigActionTable, FeedConfigActionColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedConfigActionWith applies the HasEdge predicate on the "feed_config_action" edge with a given conditions (other predicates).
+func HasFeedConfigActionWith(preds ...predicate.FeedConfigAction) predicate.FeedConfig {
+	return predicate.FeedConfig(func(s *sql.Selector) {
+		step := newFeedConfigActionStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.FeedConfig) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.AndPredicates(predicates...))

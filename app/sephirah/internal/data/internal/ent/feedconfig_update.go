@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -293,6 +295,36 @@ func (fcu *FeedConfigUpdate) AddNotifySource(n ...*NotifySource) *FeedConfigUpda
 	return fcu.AddNotifySourceIDs(ids...)
 }
 
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (fcu *FeedConfigUpdate) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.AddFeedActionSetIDs(ids...)
+	return fcu
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (fcu *FeedConfigUpdate) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.AddFeedActionSetIDs(ids...)
+}
+
+// AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
+func (fcu *FeedConfigUpdate) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
+	fcu.mutation.AddFeedConfigActionIDs(ids...)
+	return fcu
+}
+
+// AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
+func (fcu *FeedConfigUpdate) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.AddFeedConfigActionIDs(ids...)
+}
+
 // Mutation returns the FeedConfigMutation object of the builder.
 func (fcu *FeedConfigUpdate) Mutation() *FeedConfigMutation {
 	return fcu.mutation
@@ -329,6 +361,48 @@ func (fcu *FeedConfigUpdate) RemoveNotifySource(n ...*NotifySource) *FeedConfigU
 		ids[i] = n[i].ID
 	}
 	return fcu.RemoveNotifySourceIDs(ids...)
+}
+
+// ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
+func (fcu *FeedConfigUpdate) ClearFeedActionSet() *FeedConfigUpdate {
+	fcu.mutation.ClearFeedActionSet()
+	return fcu
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
+func (fcu *FeedConfigUpdate) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdate {
+	fcu.mutation.RemoveFeedActionSetIDs(ids...)
+	return fcu
+}
+
+// RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
+func (fcu *FeedConfigUpdate) RemoveFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.RemoveFeedActionSetIDs(ids...)
+}
+
+// ClearFeedConfigAction clears all "feed_config_action" edges to the FeedConfigAction entity.
+func (fcu *FeedConfigUpdate) ClearFeedConfigAction() *FeedConfigUpdate {
+	fcu.mutation.ClearFeedConfigAction()
+	return fcu
+}
+
+// RemoveFeedConfigActionIDs removes the "feed_config_action" edge to FeedConfigAction entities by IDs.
+func (fcu *FeedConfigUpdate) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdate {
+	fcu.mutation.RemoveFeedConfigActionIDs(ids...)
+	return fcu
+}
+
+// RemoveFeedConfigAction removes "feed_config_action" edges to FeedConfigAction entities.
+func (fcu *FeedConfigUpdate) RemoveFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdate {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcu.RemoveFeedConfigActionIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -541,6 +615,108 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if fcu.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !fcu.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &FeedConfigActionCreate{config: fcu.config, mutation: newFeedConfigActionMutation(fcu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if fcu.mutation.FeedConfigActionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !fcu.mutation.FeedConfigActionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcu.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -829,6 +1005,36 @@ func (fcuo *FeedConfigUpdateOne) AddNotifySource(n ...*NotifySource) *FeedConfig
 	return fcuo.AddNotifySourceIDs(ids...)
 }
 
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (fcuo *FeedConfigUpdateOne) AddFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.AddFeedActionSetIDs(ids...)
+	return fcuo
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (fcuo *FeedConfigUpdateOne) AddFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.AddFeedActionSetIDs(ids...)
+}
+
+// AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by IDs.
+func (fcuo *FeedConfigUpdateOne) AddFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
+	fcuo.mutation.AddFeedConfigActionIDs(ids...)
+	return fcuo
+}
+
+// AddFeedConfigAction adds the "feed_config_action" edges to the FeedConfigAction entity.
+func (fcuo *FeedConfigUpdateOne) AddFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.AddFeedConfigActionIDs(ids...)
+}
+
 // Mutation returns the FeedConfigMutation object of the builder.
 func (fcuo *FeedConfigUpdateOne) Mutation() *FeedConfigMutation {
 	return fcuo.mutation
@@ -865,6 +1071,48 @@ func (fcuo *FeedConfigUpdateOne) RemoveNotifySource(n ...*NotifySource) *FeedCon
 		ids[i] = n[i].ID
 	}
 	return fcuo.RemoveNotifySourceIDs(ids...)
+}
+
+// ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
+func (fcuo *FeedConfigUpdateOne) ClearFeedActionSet() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearFeedActionSet()
+	return fcuo
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
+func (fcuo *FeedConfigUpdateOne) RemoveFeedActionSetIDs(ids ...model.InternalID) *FeedConfigUpdateOne {
+	fcuo.mutation.RemoveFeedActionSetIDs(ids...)
+	return fcuo
+}
+
+// RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
+func (fcuo *FeedConfigUpdateOne) RemoveFeedActionSet(f ...*FeedActionSet) *FeedConfigUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.RemoveFeedActionSetIDs(ids...)
+}
+
+// ClearFeedConfigAction clears all "feed_config_action" edges to the FeedConfigAction entity.
+func (fcuo *FeedConfigUpdateOne) ClearFeedConfigAction() *FeedConfigUpdateOne {
+	fcuo.mutation.ClearFeedConfigAction()
+	return fcuo
+}
+
+// RemoveFeedConfigActionIDs removes the "feed_config_action" edge to FeedConfigAction entities by IDs.
+func (fcuo *FeedConfigUpdateOne) RemoveFeedConfigActionIDs(ids ...int) *FeedConfigUpdateOne {
+	fcuo.mutation.RemoveFeedConfigActionIDs(ids...)
+	return fcuo
+}
+
+// RemoveFeedConfigAction removes "feed_config_action" edges to FeedConfigAction entities.
+func (fcuo *FeedConfigUpdateOne) RemoveFeedConfigAction(f ...*FeedConfigAction) *FeedConfigUpdateOne {
+	ids := make([]int, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return fcuo.RemoveFeedConfigActionIDs(ids...)
 }
 
 // Where appends a list predicates to the FeedConfigUpdate builder.
@@ -1107,6 +1355,108 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(notifysource.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if fcuo.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !fcuo.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   feedconfig.FeedActionSetTable,
+			Columns: feedconfig.FeedActionSetPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &FeedConfigActionCreate{config: fcuo.config, mutation: newFeedConfigActionMutation(fcuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if fcuo.mutation.FeedConfigActionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.RemovedFeedConfigActionIDs(); len(nodes) > 0 && !fcuo.mutation.FeedConfigActionCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := fcuo.mutation.FeedConfigActionIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   feedconfig.FeedConfigActionTable,
+			Columns: []string{feedconfig.FeedConfigActionColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedconfigaction.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

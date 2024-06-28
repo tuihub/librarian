@@ -19,7 +19,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -59,7 +61,9 @@ const (
 	TypeAppInstRunTime     = "AppInstRunTime"
 	TypeDeviceInfo         = "DeviceInfo"
 	TypeFeed               = "Feed"
+	TypeFeedActionSet      = "FeedActionSet"
 	TypeFeedConfig         = "FeedConfig"
+	TypeFeedConfigAction   = "FeedConfigAction"
 	TypeFeedItem           = "FeedItem"
 	TypeFeedItemCollection = "FeedItemCollection"
 	TypeFile               = "File"
@@ -7511,39 +7515,761 @@ func (m *FeedMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Feed edge %s", name)
 }
 
+// FeedActionSetMutation represents an operation that mutates the FeedActionSet nodes in the graph.
+type FeedActionSetMutation struct {
+	config
+	op                 Op
+	typ                string
+	id                 *model.InternalID
+	name               *string
+	description        *string
+	actions            *[]*modeltiphereth.FeatureRequest
+	appendactions      []*modeltiphereth.FeatureRequest
+	updated_at         *time.Time
+	created_at         *time.Time
+	clearedFields      map[string]struct{}
+	owner              *model.InternalID
+	clearedowner       bool
+	feed_config        map[model.InternalID]struct{}
+	removedfeed_config map[model.InternalID]struct{}
+	clearedfeed_config bool
+	done               bool
+	oldValue           func(context.Context) (*FeedActionSet, error)
+	predicates         []predicate.FeedActionSet
+}
+
+var _ ent.Mutation = (*FeedActionSetMutation)(nil)
+
+// feedactionsetOption allows management of the mutation configuration using functional options.
+type feedactionsetOption func(*FeedActionSetMutation)
+
+// newFeedActionSetMutation creates new mutation for the FeedActionSet entity.
+func newFeedActionSetMutation(c config, op Op, opts ...feedactionsetOption) *FeedActionSetMutation {
+	m := &FeedActionSetMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFeedActionSet,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFeedActionSetID sets the ID field of the mutation.
+func withFeedActionSetID(id model.InternalID) feedactionsetOption {
+	return func(m *FeedActionSetMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FeedActionSet
+		)
+		m.oldValue = func(ctx context.Context) (*FeedActionSet, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FeedActionSet.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFeedActionSet sets the old FeedActionSet of the mutation.
+func withFeedActionSet(node *FeedActionSet) feedactionsetOption {
+	return func(m *FeedActionSetMutation) {
+		m.oldValue = func(context.Context) (*FeedActionSet, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FeedActionSetMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FeedActionSetMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of FeedActionSet entities.
+func (m *FeedActionSetMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FeedActionSetMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FeedActionSetMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FeedActionSet.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetName sets the "name" field.
+func (m *FeedActionSetMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *FeedActionSetMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the FeedActionSet entity.
+// If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedActionSetMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *FeedActionSetMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *FeedActionSetMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *FeedActionSetMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the FeedActionSet entity.
+// If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedActionSetMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *FeedActionSetMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetActions sets the "actions" field.
+func (m *FeedActionSetMutation) SetActions(mr []*modeltiphereth.FeatureRequest) {
+	m.actions = &mr
+	m.appendactions = nil
+}
+
+// Actions returns the value of the "actions" field in the mutation.
+func (m *FeedActionSetMutation) Actions() (r []*modeltiphereth.FeatureRequest, exists bool) {
+	v := m.actions
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActions returns the old "actions" field's value of the FeedActionSet entity.
+// If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modeltiphereth.FeatureRequest, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActions is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActions requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActions: %w", err)
+	}
+	return oldValue.Actions, nil
+}
+
+// AppendActions adds mr to the "actions" field.
+func (m *FeedActionSetMutation) AppendActions(mr []*modeltiphereth.FeatureRequest) {
+	m.appendactions = append(m.appendactions, mr...)
+}
+
+// AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
+func (m *FeedActionSetMutation) AppendedActions() ([]*modeltiphereth.FeatureRequest, bool) {
+	if len(m.appendactions) == 0 {
+		return nil, false
+	}
+	return m.appendactions, true
+}
+
+// ResetActions resets all changes to the "actions" field.
+func (m *FeedActionSetMutation) ResetActions() {
+	m.actions = nil
+	m.appendactions = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *FeedActionSetMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *FeedActionSetMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the FeedActionSet entity.
+// If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedActionSetMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *FeedActionSetMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *FeedActionSetMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *FeedActionSetMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the FeedActionSet entity.
+// If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedActionSetMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *FeedActionSetMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *FeedActionSetMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *FeedActionSetMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *FeedActionSetMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *FeedActionSetMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *FeedActionSetMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *FeedActionSetMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
+// AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by ids.
+func (m *FeedActionSetMutation) AddFeedConfigIDs(ids ...model.InternalID) {
+	if m.feed_config == nil {
+		m.feed_config = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_config[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
+func (m *FeedActionSetMutation) ClearFeedConfig() {
+	m.clearedfeed_config = true
+}
+
+// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
+func (m *FeedActionSetMutation) FeedConfigCleared() bool {
+	return m.clearedfeed_config
+}
+
+// RemoveFeedConfigIDs removes the "feed_config" edge to the FeedConfig entity by IDs.
+func (m *FeedActionSetMutation) RemoveFeedConfigIDs(ids ...model.InternalID) {
+	if m.removedfeed_config == nil {
+		m.removedfeed_config = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_config, ids[i])
+		m.removedfeed_config[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedConfig returns the removed IDs of the "feed_config" edge to the FeedConfig entity.
+func (m *FeedActionSetMutation) RemovedFeedConfigIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
+func (m *FeedActionSetMutation) FeedConfigIDs() (ids []model.InternalID) {
+	for id := range m.feed_config {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedConfig resets all changes to the "feed_config" edge.
+func (m *FeedActionSetMutation) ResetFeedConfig() {
+	m.feed_config = nil
+	m.clearedfeed_config = false
+	m.removedfeed_config = nil
+}
+
+// Where appends a list predicates to the FeedActionSetMutation builder.
+func (m *FeedActionSetMutation) Where(ps ...predicate.FeedActionSet) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FeedActionSetMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FeedActionSetMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FeedActionSet, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FeedActionSetMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FeedActionSetMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FeedActionSet).
+func (m *FeedActionSetMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FeedActionSetMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.name != nil {
+		fields = append(fields, feedactionset.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, feedactionset.FieldDescription)
+	}
+	if m.actions != nil {
+		fields = append(fields, feedactionset.FieldActions)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, feedactionset.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, feedactionset.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FeedActionSetMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case feedactionset.FieldName:
+		return m.Name()
+	case feedactionset.FieldDescription:
+		return m.Description()
+	case feedactionset.FieldActions:
+		return m.Actions()
+	case feedactionset.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case feedactionset.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FeedActionSetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case feedactionset.FieldName:
+		return m.OldName(ctx)
+	case feedactionset.FieldDescription:
+		return m.OldDescription(ctx)
+	case feedactionset.FieldActions:
+		return m.OldActions(ctx)
+	case feedactionset.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case feedactionset.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown FeedActionSet field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedActionSetMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case feedactionset.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case feedactionset.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case feedactionset.FieldActions:
+		v, ok := value.([]*modeltiphereth.FeatureRequest)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActions(v)
+		return nil
+	case feedactionset.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case feedactionset.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FeedActionSet field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FeedActionSetMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FeedActionSetMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedActionSetMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown FeedActionSet numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FeedActionSetMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FeedActionSetMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FeedActionSetMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FeedActionSet nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FeedActionSetMutation) ResetField(name string) error {
+	switch name {
+	case feedactionset.FieldName:
+		m.ResetName()
+		return nil
+	case feedactionset.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case feedactionset.FieldActions:
+		m.ResetActions()
+		return nil
+	case feedactionset.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case feedactionset.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedActionSet field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FeedActionSetMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.owner != nil {
+		edges = append(edges, feedactionset.EdgeOwner)
+	}
+	if m.feed_config != nil {
+		edges = append(edges, feedactionset.EdgeFeedConfig)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FeedActionSetMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feedactionset.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	case feedactionset.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.feed_config))
+		for id := range m.feed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FeedActionSetMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.removedfeed_config != nil {
+		edges = append(edges, feedactionset.EdgeFeedConfig)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FeedActionSetMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case feedactionset.EdgeFeedConfig:
+		ids := make([]ent.Value, 0, len(m.removedfeed_config))
+		for id := range m.removedfeed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FeedActionSetMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedowner {
+		edges = append(edges, feedactionset.EdgeOwner)
+	}
+	if m.clearedfeed_config {
+		edges = append(edges, feedactionset.EdgeFeedConfig)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FeedActionSetMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feedactionset.EdgeOwner:
+		return m.clearedowner
+	case feedactionset.EdgeFeedConfig:
+		return m.clearedfeed_config
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FeedActionSetMutation) ClearEdge(name string) error {
+	switch name {
+	case feedactionset.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedActionSet unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FeedActionSetMutation) ResetEdge(name string) error {
+	switch name {
+	case feedactionset.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	case feedactionset.EdgeFeedConfig:
+		m.ResetFeedConfig()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedActionSet edge %s", name)
+}
+
 // FeedConfigMutation represents an operation that mutates the FeedConfig nodes in the graph.
 type FeedConfigMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *model.InternalID
-	name                 *string
-	feed_url             *string
-	author_account       *model.InternalID
-	addauthor_account    *model.InternalID
-	source               *string
-	status               *feedconfig.Status
-	category             *string
-	pull_interval        *time.Duration
-	addpull_interval     *time.Duration
-	hide_items           *bool
-	latest_pull_at       *time.Time
-	latest_pull_status   *feedconfig.LatestPullStatus
-	latest_pull_message  *string
-	next_pull_begin_at   *time.Time
-	updated_at           *time.Time
-	created_at           *time.Time
-	clearedFields        map[string]struct{}
-	owner                *model.InternalID
-	clearedowner         bool
-	feed                 *model.InternalID
-	clearedfeed          bool
-	notify_source        map[model.InternalID]struct{}
-	removednotify_source map[model.InternalID]struct{}
-	clearednotify_source bool
-	done                 bool
-	oldValue             func(context.Context) (*FeedConfig, error)
-	predicates           []predicate.FeedConfig
+	op                        Op
+	typ                       string
+	id                        *model.InternalID
+	name                      *string
+	feed_url                  *string
+	author_account            *model.InternalID
+	addauthor_account         *model.InternalID
+	source                    *string
+	status                    *feedconfig.Status
+	category                  *string
+	pull_interval             *time.Duration
+	addpull_interval          *time.Duration
+	hide_items                *bool
+	latest_pull_at            *time.Time
+	latest_pull_status        *feedconfig.LatestPullStatus
+	latest_pull_message       *string
+	next_pull_begin_at        *time.Time
+	updated_at                *time.Time
+	created_at                *time.Time
+	clearedFields             map[string]struct{}
+	owner                     *model.InternalID
+	clearedowner              bool
+	feed                      *model.InternalID
+	clearedfeed               bool
+	notify_source             map[model.InternalID]struct{}
+	removednotify_source      map[model.InternalID]struct{}
+	clearednotify_source      bool
+	feed_action_set           map[model.InternalID]struct{}
+	removedfeed_action_set    map[model.InternalID]struct{}
+	clearedfeed_action_set    bool
+	feed_config_action        map[int]struct{}
+	removedfeed_config_action map[int]struct{}
+	clearedfeed_config_action bool
+	done                      bool
+	oldValue                  func(context.Context) (*FeedConfig, error)
+	predicates                []predicate.FeedConfig
 }
 
 var _ ent.Mutation = (*FeedConfigMutation)(nil)
@@ -8363,6 +9089,114 @@ func (m *FeedConfigMutation) ResetNotifySource() {
 	m.removednotify_source = nil
 }
 
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by ids.
+func (m *FeedConfigMutation) AddFeedActionSetIDs(ids ...model.InternalID) {
+	if m.feed_action_set == nil {
+		m.feed_action_set = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_action_set[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedActionSet clears the "feed_action_set" edge to the FeedActionSet entity.
+func (m *FeedConfigMutation) ClearFeedActionSet() {
+	m.clearedfeed_action_set = true
+}
+
+// FeedActionSetCleared reports if the "feed_action_set" edge to the FeedActionSet entity was cleared.
+func (m *FeedConfigMutation) FeedActionSetCleared() bool {
+	return m.clearedfeed_action_set
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (m *FeedConfigMutation) RemoveFeedActionSetIDs(ids ...model.InternalID) {
+	if m.removedfeed_action_set == nil {
+		m.removedfeed_action_set = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_action_set, ids[i])
+		m.removedfeed_action_set[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedActionSet returns the removed IDs of the "feed_action_set" edge to the FeedActionSet entity.
+func (m *FeedConfigMutation) RemovedFeedActionSetIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_action_set {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedActionSetIDs returns the "feed_action_set" edge IDs in the mutation.
+func (m *FeedConfigMutation) FeedActionSetIDs() (ids []model.InternalID) {
+	for id := range m.feed_action_set {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedActionSet resets all changes to the "feed_action_set" edge.
+func (m *FeedConfigMutation) ResetFeedActionSet() {
+	m.feed_action_set = nil
+	m.clearedfeed_action_set = false
+	m.removedfeed_action_set = nil
+}
+
+// AddFeedConfigActionIDs adds the "feed_config_action" edge to the FeedConfigAction entity by ids.
+func (m *FeedConfigMutation) AddFeedConfigActionIDs(ids ...int) {
+	if m.feed_config_action == nil {
+		m.feed_config_action = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.feed_config_action[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedConfigAction clears the "feed_config_action" edge to the FeedConfigAction entity.
+func (m *FeedConfigMutation) ClearFeedConfigAction() {
+	m.clearedfeed_config_action = true
+}
+
+// FeedConfigActionCleared reports if the "feed_config_action" edge to the FeedConfigAction entity was cleared.
+func (m *FeedConfigMutation) FeedConfigActionCleared() bool {
+	return m.clearedfeed_config_action
+}
+
+// RemoveFeedConfigActionIDs removes the "feed_config_action" edge to the FeedConfigAction entity by IDs.
+func (m *FeedConfigMutation) RemoveFeedConfigActionIDs(ids ...int) {
+	if m.removedfeed_config_action == nil {
+		m.removedfeed_config_action = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_config_action, ids[i])
+		m.removedfeed_config_action[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedConfigAction returns the removed IDs of the "feed_config_action" edge to the FeedConfigAction entity.
+func (m *FeedConfigMutation) RemovedFeedConfigActionIDs() (ids []int) {
+	for id := range m.removedfeed_config_action {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedConfigActionIDs returns the "feed_config_action" edge IDs in the mutation.
+func (m *FeedConfigMutation) FeedConfigActionIDs() (ids []int) {
+	for id := range m.feed_config_action {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedConfigAction resets all changes to the "feed_config_action" edge.
+func (m *FeedConfigMutation) ResetFeedConfigAction() {
+	m.feed_config_action = nil
+	m.clearedfeed_config_action = false
+	m.removedfeed_config_action = nil
+}
+
 // Where appends a list predicates to the FeedConfigMutation builder.
 func (m *FeedConfigMutation) Where(ps ...predicate.FeedConfig) {
 	m.predicates = append(m.predicates, ps...)
@@ -8761,7 +9595,7 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FeedConfigMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.owner != nil {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
@@ -8770,6 +9604,12 @@ func (m *FeedConfigMutation) AddedEdges() []string {
 	}
 	if m.notify_source != nil {
 		edges = append(edges, feedconfig.EdgeNotifySource)
+	}
+	if m.feed_action_set != nil {
+		edges = append(edges, feedconfig.EdgeFeedActionSet)
+	}
+	if m.feed_config_action != nil {
+		edges = append(edges, feedconfig.EdgeFeedConfigAction)
 	}
 	return edges
 }
@@ -8792,15 +9632,33 @@ func (m *FeedConfigMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case feedconfig.EdgeFeedActionSet:
+		ids := make([]ent.Value, 0, len(m.feed_action_set))
+		for id := range m.feed_action_set {
+			ids = append(ids, id)
+		}
+		return ids
+	case feedconfig.EdgeFeedConfigAction:
+		ids := make([]ent.Value, 0, len(m.feed_config_action))
+		for id := range m.feed_config_action {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FeedConfigMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.removednotify_source != nil {
 		edges = append(edges, feedconfig.EdgeNotifySource)
+	}
+	if m.removedfeed_action_set != nil {
+		edges = append(edges, feedconfig.EdgeFeedActionSet)
+	}
+	if m.removedfeed_config_action != nil {
+		edges = append(edges, feedconfig.EdgeFeedConfigAction)
 	}
 	return edges
 }
@@ -8815,13 +9673,25 @@ func (m *FeedConfigMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case feedconfig.EdgeFeedActionSet:
+		ids := make([]ent.Value, 0, len(m.removedfeed_action_set))
+		for id := range m.removedfeed_action_set {
+			ids = append(ids, id)
+		}
+		return ids
+	case feedconfig.EdgeFeedConfigAction:
+		ids := make([]ent.Value, 0, len(m.removedfeed_config_action))
+		for id := range m.removedfeed_config_action {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FeedConfigMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.clearedowner {
 		edges = append(edges, feedconfig.EdgeOwner)
 	}
@@ -8830,6 +9700,12 @@ func (m *FeedConfigMutation) ClearedEdges() []string {
 	}
 	if m.clearednotify_source {
 		edges = append(edges, feedconfig.EdgeNotifySource)
+	}
+	if m.clearedfeed_action_set {
+		edges = append(edges, feedconfig.EdgeFeedActionSet)
+	}
+	if m.clearedfeed_config_action {
+		edges = append(edges, feedconfig.EdgeFeedConfigAction)
 	}
 	return edges
 }
@@ -8844,6 +9720,10 @@ func (m *FeedConfigMutation) EdgeCleared(name string) bool {
 		return m.clearedfeed
 	case feedconfig.EdgeNotifySource:
 		return m.clearednotify_source
+	case feedconfig.EdgeFeedActionSet:
+		return m.clearedfeed_action_set
+	case feedconfig.EdgeFeedConfigAction:
+		return m.clearedfeed_config_action
 	}
 	return false
 }
@@ -8875,8 +9755,692 @@ func (m *FeedConfigMutation) ResetEdge(name string) error {
 	case feedconfig.EdgeNotifySource:
 		m.ResetNotifySource()
 		return nil
+	case feedconfig.EdgeFeedActionSet:
+		m.ResetFeedActionSet()
+		return nil
+	case feedconfig.EdgeFeedConfigAction:
+		m.ResetFeedConfigAction()
+		return nil
 	}
 	return fmt.Errorf("unknown FeedConfig edge %s", name)
+}
+
+// FeedConfigActionMutation represents an operation that mutates the FeedConfigAction nodes in the graph.
+type FeedConfigActionMutation struct {
+	config
+	op                     Op
+	typ                    string
+	id                     *int
+	index                  *int64
+	addindex               *int64
+	updated_at             *time.Time
+	created_at             *time.Time
+	clearedFields          map[string]struct{}
+	feed_config            *model.InternalID
+	clearedfeed_config     bool
+	feed_action_set        *model.InternalID
+	clearedfeed_action_set bool
+	done                   bool
+	oldValue               func(context.Context) (*FeedConfigAction, error)
+	predicates             []predicate.FeedConfigAction
+}
+
+var _ ent.Mutation = (*FeedConfigActionMutation)(nil)
+
+// feedconfigactionOption allows management of the mutation configuration using functional options.
+type feedconfigactionOption func(*FeedConfigActionMutation)
+
+// newFeedConfigActionMutation creates new mutation for the FeedConfigAction entity.
+func newFeedConfigActionMutation(c config, op Op, opts ...feedconfigactionOption) *FeedConfigActionMutation {
+	m := &FeedConfigActionMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeFeedConfigAction,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withFeedConfigActionID sets the ID field of the mutation.
+func withFeedConfigActionID(id int) feedconfigactionOption {
+	return func(m *FeedConfigActionMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *FeedConfigAction
+		)
+		m.oldValue = func(ctx context.Context) (*FeedConfigAction, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().FeedConfigAction.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withFeedConfigAction sets the old FeedConfigAction of the mutation.
+func withFeedConfigAction(node *FeedConfigAction) feedconfigactionOption {
+	return func(m *FeedConfigActionMutation) {
+		m.oldValue = func(context.Context) (*FeedConfigAction, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m FeedConfigActionMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m FeedConfigActionMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *FeedConfigActionMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *FeedConfigActionMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().FeedConfigAction.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetFeedConfigID sets the "feed_config_id" field.
+func (m *FeedConfigActionMutation) SetFeedConfigID(mi model.InternalID) {
+	m.feed_config = &mi
+}
+
+// FeedConfigID returns the value of the "feed_config_id" field in the mutation.
+func (m *FeedConfigActionMutation) FeedConfigID() (r model.InternalID, exists bool) {
+	v := m.feed_config
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFeedConfigID returns the old "feed_config_id" field's value of the FeedConfigAction entity.
+// If the FeedConfigAction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigActionMutation) OldFeedConfigID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFeedConfigID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFeedConfigID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFeedConfigID: %w", err)
+	}
+	return oldValue.FeedConfigID, nil
+}
+
+// ResetFeedConfigID resets all changes to the "feed_config_id" field.
+func (m *FeedConfigActionMutation) ResetFeedConfigID() {
+	m.feed_config = nil
+}
+
+// SetFeedActionSetID sets the "feed_action_set_id" field.
+func (m *FeedConfigActionMutation) SetFeedActionSetID(mi model.InternalID) {
+	m.feed_action_set = &mi
+}
+
+// FeedActionSetID returns the value of the "feed_action_set_id" field in the mutation.
+func (m *FeedConfigActionMutation) FeedActionSetID() (r model.InternalID, exists bool) {
+	v := m.feed_action_set
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFeedActionSetID returns the old "feed_action_set_id" field's value of the FeedConfigAction entity.
+// If the FeedConfigAction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigActionMutation) OldFeedActionSetID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFeedActionSetID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFeedActionSetID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFeedActionSetID: %w", err)
+	}
+	return oldValue.FeedActionSetID, nil
+}
+
+// ResetFeedActionSetID resets all changes to the "feed_action_set_id" field.
+func (m *FeedConfigActionMutation) ResetFeedActionSetID() {
+	m.feed_action_set = nil
+}
+
+// SetIndex sets the "index" field.
+func (m *FeedConfigActionMutation) SetIndex(i int64) {
+	m.index = &i
+	m.addindex = nil
+}
+
+// Index returns the value of the "index" field in the mutation.
+func (m *FeedConfigActionMutation) Index() (r int64, exists bool) {
+	v := m.index
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIndex returns the old "index" field's value of the FeedConfigAction entity.
+// If the FeedConfigAction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigActionMutation) OldIndex(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIndex is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIndex requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIndex: %w", err)
+	}
+	return oldValue.Index, nil
+}
+
+// AddIndex adds i to the "index" field.
+func (m *FeedConfigActionMutation) AddIndex(i int64) {
+	if m.addindex != nil {
+		*m.addindex += i
+	} else {
+		m.addindex = &i
+	}
+}
+
+// AddedIndex returns the value that was added to the "index" field in this mutation.
+func (m *FeedConfigActionMutation) AddedIndex() (r int64, exists bool) {
+	v := m.addindex
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIndex resets all changes to the "index" field.
+func (m *FeedConfigActionMutation) ResetIndex() {
+	m.index = nil
+	m.addindex = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *FeedConfigActionMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *FeedConfigActionMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the FeedConfigAction entity.
+// If the FeedConfigAction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigActionMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *FeedConfigActionMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *FeedConfigActionMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *FeedConfigActionMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the FeedConfigAction entity.
+// If the FeedConfigAction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigActionMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *FeedConfigActionMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// ClearFeedConfig clears the "feed_config" edge to the FeedConfig entity.
+func (m *FeedConfigActionMutation) ClearFeedConfig() {
+	m.clearedfeed_config = true
+	m.clearedFields[feedconfigaction.FieldFeedConfigID] = struct{}{}
+}
+
+// FeedConfigCleared reports if the "feed_config" edge to the FeedConfig entity was cleared.
+func (m *FeedConfigActionMutation) FeedConfigCleared() bool {
+	return m.clearedfeed_config
+}
+
+// FeedConfigIDs returns the "feed_config" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedConfigID instead. It exists only for internal usage by the builders.
+func (m *FeedConfigActionMutation) FeedConfigIDs() (ids []model.InternalID) {
+	if id := m.feed_config; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFeedConfig resets all changes to the "feed_config" edge.
+func (m *FeedConfigActionMutation) ResetFeedConfig() {
+	m.feed_config = nil
+	m.clearedfeed_config = false
+}
+
+// ClearFeedActionSet clears the "feed_action_set" edge to the FeedActionSet entity.
+func (m *FeedConfigActionMutation) ClearFeedActionSet() {
+	m.clearedfeed_action_set = true
+	m.clearedFields[feedconfigaction.FieldFeedActionSetID] = struct{}{}
+}
+
+// FeedActionSetCleared reports if the "feed_action_set" edge to the FeedActionSet entity was cleared.
+func (m *FeedConfigActionMutation) FeedActionSetCleared() bool {
+	return m.clearedfeed_action_set
+}
+
+// FeedActionSetIDs returns the "feed_action_set" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// FeedActionSetID instead. It exists only for internal usage by the builders.
+func (m *FeedConfigActionMutation) FeedActionSetIDs() (ids []model.InternalID) {
+	if id := m.feed_action_set; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetFeedActionSet resets all changes to the "feed_action_set" edge.
+func (m *FeedConfigActionMutation) ResetFeedActionSet() {
+	m.feed_action_set = nil
+	m.clearedfeed_action_set = false
+}
+
+// Where appends a list predicates to the FeedConfigActionMutation builder.
+func (m *FeedConfigActionMutation) Where(ps ...predicate.FeedConfigAction) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the FeedConfigActionMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *FeedConfigActionMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.FeedConfigAction, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *FeedConfigActionMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *FeedConfigActionMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (FeedConfigAction).
+func (m *FeedConfigActionMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *FeedConfigActionMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.feed_config != nil {
+		fields = append(fields, feedconfigaction.FieldFeedConfigID)
+	}
+	if m.feed_action_set != nil {
+		fields = append(fields, feedconfigaction.FieldFeedActionSetID)
+	}
+	if m.index != nil {
+		fields = append(fields, feedconfigaction.FieldIndex)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, feedconfigaction.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, feedconfigaction.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *FeedConfigActionMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case feedconfigaction.FieldFeedConfigID:
+		return m.FeedConfigID()
+	case feedconfigaction.FieldFeedActionSetID:
+		return m.FeedActionSetID()
+	case feedconfigaction.FieldIndex:
+		return m.Index()
+	case feedconfigaction.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case feedconfigaction.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *FeedConfigActionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case feedconfigaction.FieldFeedConfigID:
+		return m.OldFeedConfigID(ctx)
+	case feedconfigaction.FieldFeedActionSetID:
+		return m.OldFeedActionSetID(ctx)
+	case feedconfigaction.FieldIndex:
+		return m.OldIndex(ctx)
+	case feedconfigaction.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case feedconfigaction.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown FeedConfigAction field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedConfigActionMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case feedconfigaction.FieldFeedConfigID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFeedConfigID(v)
+		return nil
+	case feedconfigaction.FieldFeedActionSetID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFeedActionSetID(v)
+		return nil
+	case feedconfigaction.FieldIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIndex(v)
+		return nil
+	case feedconfigaction.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case feedconfigaction.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FeedConfigAction field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *FeedConfigActionMutation) AddedFields() []string {
+	var fields []string
+	if m.addindex != nil {
+		fields = append(fields, feedconfigaction.FieldIndex)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *FeedConfigActionMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case feedconfigaction.FieldIndex:
+		return m.AddedIndex()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *FeedConfigActionMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case feedconfigaction.FieldIndex:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIndex(v)
+		return nil
+	}
+	return fmt.Errorf("unknown FeedConfigAction numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *FeedConfigActionMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *FeedConfigActionMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *FeedConfigActionMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown FeedConfigAction nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *FeedConfigActionMutation) ResetField(name string) error {
+	switch name {
+	case feedconfigaction.FieldFeedConfigID:
+		m.ResetFeedConfigID()
+		return nil
+	case feedconfigaction.FieldFeedActionSetID:
+		m.ResetFeedActionSetID()
+		return nil
+	case feedconfigaction.FieldIndex:
+		m.ResetIndex()
+		return nil
+	case feedconfigaction.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case feedconfigaction.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedConfigAction field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *FeedConfigActionMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.feed_config != nil {
+		edges = append(edges, feedconfigaction.EdgeFeedConfig)
+	}
+	if m.feed_action_set != nil {
+		edges = append(edges, feedconfigaction.EdgeFeedActionSet)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *FeedConfigActionMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case feedconfigaction.EdgeFeedConfig:
+		if id := m.feed_config; id != nil {
+			return []ent.Value{*id}
+		}
+	case feedconfigaction.EdgeFeedActionSet:
+		if id := m.feed_action_set; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *FeedConfigActionMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *FeedConfigActionMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *FeedConfigActionMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedfeed_config {
+		edges = append(edges, feedconfigaction.EdgeFeedConfig)
+	}
+	if m.clearedfeed_action_set {
+		edges = append(edges, feedconfigaction.EdgeFeedActionSet)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *FeedConfigActionMutation) EdgeCleared(name string) bool {
+	switch name {
+	case feedconfigaction.EdgeFeedConfig:
+		return m.clearedfeed_config
+	case feedconfigaction.EdgeFeedActionSet:
+		return m.clearedfeed_action_set
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *FeedConfigActionMutation) ClearEdge(name string) error {
+	switch name {
+	case feedconfigaction.EdgeFeedConfig:
+		m.ClearFeedConfig()
+		return nil
+	case feedconfigaction.EdgeFeedActionSet:
+		m.ClearFeedActionSet()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedConfigAction unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *FeedConfigActionMutation) ResetEdge(name string) error {
+	switch name {
+	case feedconfigaction.EdgeFeedConfig:
+		m.ResetFeedConfig()
+		return nil
+	case feedconfigaction.EdgeFeedActionSet:
+		m.ResetFeedActionSet()
+		return nil
+	}
+	return fmt.Errorf("unknown FeedConfigAction edge %s", name)
 }
 
 // FeedItemMutation represents an operation that mutates the FeedItem nodes in the graph.
@@ -10668,10 +12232,6 @@ type FeedItemCollectionMutation struct {
 	name                 *string
 	description          *string
 	category             *string
-	source_feed          *model.InternalID
-	addsource_feed       *model.InternalID
-	actions              *[]*modeltiphereth.FeatureRequest
-	appendactions        []*modeltiphereth.FeatureRequest
 	updated_at           *time.Time
 	created_at           *time.Time
 	clearedFields        map[string]struct{}
@@ -10898,113 +12458,6 @@ func (m *FeedItemCollectionMutation) OldCategory(ctx context.Context) (v string,
 // ResetCategory resets all changes to the "category" field.
 func (m *FeedItemCollectionMutation) ResetCategory() {
 	m.category = nil
-}
-
-// SetSourceFeed sets the "source_feed" field.
-func (m *FeedItemCollectionMutation) SetSourceFeed(mi model.InternalID) {
-	m.source_feed = &mi
-	m.addsource_feed = nil
-}
-
-// SourceFeed returns the value of the "source_feed" field in the mutation.
-func (m *FeedItemCollectionMutation) SourceFeed() (r model.InternalID, exists bool) {
-	v := m.source_feed
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSourceFeed returns the old "source_feed" field's value of the FeedItemCollection entity.
-// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemCollectionMutation) OldSourceFeed(ctx context.Context) (v model.InternalID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSourceFeed is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSourceFeed requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSourceFeed: %w", err)
-	}
-	return oldValue.SourceFeed, nil
-}
-
-// AddSourceFeed adds mi to the "source_feed" field.
-func (m *FeedItemCollectionMutation) AddSourceFeed(mi model.InternalID) {
-	if m.addsource_feed != nil {
-		*m.addsource_feed += mi
-	} else {
-		m.addsource_feed = &mi
-	}
-}
-
-// AddedSourceFeed returns the value that was added to the "source_feed" field in this mutation.
-func (m *FeedItemCollectionMutation) AddedSourceFeed() (r model.InternalID, exists bool) {
-	v := m.addsource_feed
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetSourceFeed resets all changes to the "source_feed" field.
-func (m *FeedItemCollectionMutation) ResetSourceFeed() {
-	m.source_feed = nil
-	m.addsource_feed = nil
-}
-
-// SetActions sets the "actions" field.
-func (m *FeedItemCollectionMutation) SetActions(mr []*modeltiphereth.FeatureRequest) {
-	m.actions = &mr
-	m.appendactions = nil
-}
-
-// Actions returns the value of the "actions" field in the mutation.
-func (m *FeedItemCollectionMutation) Actions() (r []*modeltiphereth.FeatureRequest, exists bool) {
-	v := m.actions
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldActions returns the old "actions" field's value of the FeedItemCollection entity.
-// If the FeedItemCollection object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedItemCollectionMutation) OldActions(ctx context.Context) (v []*modeltiphereth.FeatureRequest, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldActions is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldActions requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldActions: %w", err)
-	}
-	return oldValue.Actions, nil
-}
-
-// AppendActions adds mr to the "actions" field.
-func (m *FeedItemCollectionMutation) AppendActions(mr []*modeltiphereth.FeatureRequest) {
-	m.appendactions = append(m.appendactions, mr...)
-}
-
-// AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
-func (m *FeedItemCollectionMutation) AppendedActions() ([]*modeltiphereth.FeatureRequest, bool) {
-	if len(m.appendactions) == 0 {
-		return nil, false
-	}
-	return m.appendactions, true
-}
-
-// ResetActions resets all changes to the "actions" field.
-func (m *FeedItemCollectionMutation) ResetActions() {
-	m.actions = nil
-	m.appendactions = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -11260,7 +12713,7 @@ func (m *FeedItemCollectionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedItemCollectionMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 5)
 	if m.name != nil {
 		fields = append(fields, feeditemcollection.FieldName)
 	}
@@ -11269,12 +12722,6 @@ func (m *FeedItemCollectionMutation) Fields() []string {
 	}
 	if m.category != nil {
 		fields = append(fields, feeditemcollection.FieldCategory)
-	}
-	if m.source_feed != nil {
-		fields = append(fields, feeditemcollection.FieldSourceFeed)
-	}
-	if m.actions != nil {
-		fields = append(fields, feeditemcollection.FieldActions)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, feeditemcollection.FieldUpdatedAt)
@@ -11296,10 +12743,6 @@ func (m *FeedItemCollectionMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case feeditemcollection.FieldCategory:
 		return m.Category()
-	case feeditemcollection.FieldSourceFeed:
-		return m.SourceFeed()
-	case feeditemcollection.FieldActions:
-		return m.Actions()
 	case feeditemcollection.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case feeditemcollection.FieldCreatedAt:
@@ -11319,10 +12762,6 @@ func (m *FeedItemCollectionMutation) OldField(ctx context.Context, name string) 
 		return m.OldDescription(ctx)
 	case feeditemcollection.FieldCategory:
 		return m.OldCategory(ctx)
-	case feeditemcollection.FieldSourceFeed:
-		return m.OldSourceFeed(ctx)
-	case feeditemcollection.FieldActions:
-		return m.OldActions(ctx)
 	case feeditemcollection.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case feeditemcollection.FieldCreatedAt:
@@ -11357,20 +12796,6 @@ func (m *FeedItemCollectionMutation) SetField(name string, value ent.Value) erro
 		}
 		m.SetCategory(v)
 		return nil
-	case feeditemcollection.FieldSourceFeed:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSourceFeed(v)
-		return nil
-	case feeditemcollection.FieldActions:
-		v, ok := value.([]*modeltiphereth.FeatureRequest)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetActions(v)
-		return nil
 	case feeditemcollection.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -11392,21 +12817,13 @@ func (m *FeedItemCollectionMutation) SetField(name string, value ent.Value) erro
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *FeedItemCollectionMutation) AddedFields() []string {
-	var fields []string
-	if m.addsource_feed != nil {
-		fields = append(fields, feeditemcollection.FieldSourceFeed)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *FeedItemCollectionMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case feeditemcollection.FieldSourceFeed:
-		return m.AddedSourceFeed()
-	}
 	return nil, false
 }
 
@@ -11415,13 +12832,6 @@ func (m *FeedItemCollectionMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedItemCollectionMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case feeditemcollection.FieldSourceFeed:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSourceFeed(v)
-		return nil
 	}
 	return fmt.Errorf("unknown FeedItemCollection numeric field %s", name)
 }
@@ -11457,12 +12867,6 @@ func (m *FeedItemCollectionMutation) ResetField(name string) error {
 		return nil
 	case feeditemcollection.FieldCategory:
 		m.ResetCategory()
-		return nil
-	case feeditemcollection.FieldSourceFeed:
-		m.ResetSourceFeed()
-		return nil
-	case feeditemcollection.FieldActions:
-		m.ResetActions()
 		return nil
 	case feeditemcollection.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -20051,6 +21455,9 @@ type UserMutation struct {
 	feed_config                 map[model.InternalID]struct{}
 	removedfeed_config          map[model.InternalID]struct{}
 	clearedfeed_config          bool
+	feed_action_set             map[model.InternalID]struct{}
+	removedfeed_action_set      map[model.InternalID]struct{}
+	clearedfeed_action_set      bool
 	feed_item_collection        map[model.InternalID]struct{}
 	removedfeed_item_collection map[model.InternalID]struct{}
 	clearedfeed_item_collection bool
@@ -20676,6 +22083,60 @@ func (m *UserMutation) ResetFeedConfig() {
 	m.feed_config = nil
 	m.clearedfeed_config = false
 	m.removedfeed_config = nil
+}
+
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by ids.
+func (m *UserMutation) AddFeedActionSetIDs(ids ...model.InternalID) {
+	if m.feed_action_set == nil {
+		m.feed_action_set = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.feed_action_set[ids[i]] = struct{}{}
+	}
+}
+
+// ClearFeedActionSet clears the "feed_action_set" edge to the FeedActionSet entity.
+func (m *UserMutation) ClearFeedActionSet() {
+	m.clearedfeed_action_set = true
+}
+
+// FeedActionSetCleared reports if the "feed_action_set" edge to the FeedActionSet entity was cleared.
+func (m *UserMutation) FeedActionSetCleared() bool {
+	return m.clearedfeed_action_set
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (m *UserMutation) RemoveFeedActionSetIDs(ids ...model.InternalID) {
+	if m.removedfeed_action_set == nil {
+		m.removedfeed_action_set = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.feed_action_set, ids[i])
+		m.removedfeed_action_set[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedFeedActionSet returns the removed IDs of the "feed_action_set" edge to the FeedActionSet entity.
+func (m *UserMutation) RemovedFeedActionSetIDs() (ids []model.InternalID) {
+	for id := range m.removedfeed_action_set {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// FeedActionSetIDs returns the "feed_action_set" edge IDs in the mutation.
+func (m *UserMutation) FeedActionSetIDs() (ids []model.InternalID) {
+	for id := range m.feed_action_set {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetFeedActionSet resets all changes to the "feed_action_set" edge.
+func (m *UserMutation) ResetFeedActionSet() {
+	m.feed_action_set = nil
+	m.clearedfeed_action_set = false
+	m.removedfeed_action_set = nil
 }
 
 // AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by ids.
@@ -21475,7 +22936,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -21490,6 +22951,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.feed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.feed_action_set != nil {
+		edges = append(edges, user.EdgeFeedActionSet)
 	}
 	if m.feed_item_collection != nil {
 		edges = append(edges, user.EdgeFeedItemCollection)
@@ -21558,6 +23022,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 	case user.EdgeFeedConfig:
 		ids := make([]ent.Value, 0, len(m.feed_config))
 		for id := range m.feed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeFeedActionSet:
+		ids := make([]ent.Value, 0, len(m.feed_action_set))
+		for id := range m.feed_action_set {
 			ids = append(ids, id)
 		}
 		return ids
@@ -21631,7 +23101,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -21646,6 +23116,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedfeed_config != nil {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.removedfeed_action_set != nil {
+		edges = append(edges, user.EdgeFeedActionSet)
 	}
 	if m.removedfeed_item_collection != nil {
 		edges = append(edges, user.EdgeFeedItemCollection)
@@ -21711,6 +23184,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 	case user.EdgeFeedConfig:
 		ids := make([]ent.Value, 0, len(m.removedfeed_config))
 		for id := range m.removedfeed_config {
+			ids = append(ids, id)
+		}
+		return ids
+	case user.EdgeFeedActionSet:
+		ids := make([]ent.Value, 0, len(m.removedfeed_action_set))
+		for id := range m.removedfeed_action_set {
 			ids = append(ids, id)
 		}
 		return ids
@@ -21780,7 +23259,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 16)
+	edges := make([]string, 0, 17)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -21795,6 +23274,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.clearedfeed_config {
 		edges = append(edges, user.EdgeFeedConfig)
+	}
+	if m.clearedfeed_action_set {
+		edges = append(edges, user.EdgeFeedActionSet)
 	}
 	if m.clearedfeed_item_collection {
 		edges = append(edges, user.EdgeFeedItemCollection)
@@ -21846,6 +23328,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.clearedapp_inst
 	case user.EdgeFeedConfig:
 		return m.clearedfeed_config
+	case user.EdgeFeedActionSet:
+		return m.clearedfeed_action_set
 	case user.EdgeFeedItemCollection:
 		return m.clearedfeed_item_collection
 	case user.EdgeNotifySource:
@@ -21901,6 +23385,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeFeedConfig:
 		m.ResetFeedConfig()
+		return nil
+	case user.EdgeFeedActionSet:
+		m.ResetFeedActionSet()
 		return nil
 	case user.EdgeFeedItemCollection:
 		m.ResetFeedItemCollection()

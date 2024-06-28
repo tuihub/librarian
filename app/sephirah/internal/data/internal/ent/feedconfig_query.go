@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -22,13 +24,15 @@ import (
 // FeedConfigQuery is the builder for querying FeedConfig entities.
 type FeedConfigQuery struct {
 	config
-	ctx              *QueryContext
-	order            []feedconfig.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.FeedConfig
-	withOwner        *UserQuery
-	withFeed         *FeedQuery
-	withNotifySource *NotifySourceQuery
+	ctx                  *QueryContext
+	order                []feedconfig.OrderOption
+	inters               []Interceptor
+	predicates           []predicate.FeedConfig
+	withOwner            *UserQuery
+	withFeed             *FeedQuery
+	withNotifySource     *NotifySourceQuery
+	withFeedActionSet    *FeedActionSetQuery
+	withFeedConfigAction *FeedConfigActionQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -124,6 +128,50 @@ func (fcq *FeedConfigQuery) QueryNotifySource() *NotifySourceQuery {
 			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, selector),
 			sqlgraph.To(notifysource.Table, notifysource.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, feedconfig.NotifySourceTable, feedconfig.NotifySourceColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFeedActionSet chains the current query on the "feed_action_set" edge.
+func (fcq *FeedConfigQuery) QueryFeedActionSet() *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: fcq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fcq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fcq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, selector),
+			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, feedconfig.FeedActionSetTable, feedconfig.FeedActionSetPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFeedConfigAction chains the current query on the "feed_config_action" edge.
+func (fcq *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
+	query := (&FeedConfigActionClient{config: fcq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := fcq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := fcq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, selector),
+			sqlgraph.To(feedconfigaction.Table, feedconfigaction.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, feedconfig.FeedConfigActionTable, feedconfig.FeedConfigActionColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fcq.driver.Dialect(), step)
 		return fromU, nil
@@ -318,14 +366,16 @@ func (fcq *FeedConfigQuery) Clone() *FeedConfigQuery {
 		return nil
 	}
 	return &FeedConfigQuery{
-		config:           fcq.config,
-		ctx:              fcq.ctx.Clone(),
-		order:            append([]feedconfig.OrderOption{}, fcq.order...),
-		inters:           append([]Interceptor{}, fcq.inters...),
-		predicates:       append([]predicate.FeedConfig{}, fcq.predicates...),
-		withOwner:        fcq.withOwner.Clone(),
-		withFeed:         fcq.withFeed.Clone(),
-		withNotifySource: fcq.withNotifySource.Clone(),
+		config:               fcq.config,
+		ctx:                  fcq.ctx.Clone(),
+		order:                append([]feedconfig.OrderOption{}, fcq.order...),
+		inters:               append([]Interceptor{}, fcq.inters...),
+		predicates:           append([]predicate.FeedConfig{}, fcq.predicates...),
+		withOwner:            fcq.withOwner.Clone(),
+		withFeed:             fcq.withFeed.Clone(),
+		withNotifySource:     fcq.withNotifySource.Clone(),
+		withFeedActionSet:    fcq.withFeedActionSet.Clone(),
+		withFeedConfigAction: fcq.withFeedConfigAction.Clone(),
 		// clone intermediate query.
 		sql:  fcq.sql.Clone(),
 		path: fcq.path,
@@ -362,6 +412,28 @@ func (fcq *FeedConfigQuery) WithNotifySource(opts ...func(*NotifySourceQuery)) *
 		opt(query)
 	}
 	fcq.withNotifySource = query
+	return fcq
+}
+
+// WithFeedActionSet tells the query-builder to eager-load the nodes that are connected to
+// the "feed_action_set" edge. The optional arguments are used to configure the query builder of the edge.
+func (fcq *FeedConfigQuery) WithFeedActionSet(opts ...func(*FeedActionSetQuery)) *FeedConfigQuery {
+	query := (&FeedActionSetClient{config: fcq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fcq.withFeedActionSet = query
+	return fcq
+}
+
+// WithFeedConfigAction tells the query-builder to eager-load the nodes that are connected to
+// the "feed_config_action" edge. The optional arguments are used to configure the query builder of the edge.
+func (fcq *FeedConfigQuery) WithFeedConfigAction(opts ...func(*FeedConfigActionQuery)) *FeedConfigQuery {
+	query := (&FeedConfigActionClient{config: fcq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	fcq.withFeedConfigAction = query
 	return fcq
 }
 
@@ -443,10 +515,12 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	var (
 		nodes       = []*FeedConfig{}
 		_spec       = fcq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [5]bool{
 			fcq.withOwner != nil,
 			fcq.withFeed != nil,
 			fcq.withNotifySource != nil,
+			fcq.withFeedActionSet != nil,
+			fcq.withFeedConfigAction != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -483,6 +557,22 @@ func (fcq *FeedConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 		if err := fcq.loadNotifySource(ctx, query, nodes,
 			func(n *FeedConfig) { n.Edges.NotifySource = []*NotifySource{} },
 			func(n *FeedConfig, e *NotifySource) { n.Edges.NotifySource = append(n.Edges.NotifySource, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := fcq.withFeedActionSet; query != nil {
+		if err := fcq.loadFeedActionSet(ctx, query, nodes,
+			func(n *FeedConfig) { n.Edges.FeedActionSet = []*FeedActionSet{} },
+			func(n *FeedConfig, e *FeedActionSet) { n.Edges.FeedActionSet = append(n.Edges.FeedActionSet, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := fcq.withFeedConfigAction; query != nil {
+		if err := fcq.loadFeedConfigAction(ctx, query, nodes,
+			func(n *FeedConfig) { n.Edges.FeedConfigAction = []*FeedConfigAction{} },
+			func(n *FeedConfig, e *FeedConfigAction) {
+				n.Edges.FeedConfigAction = append(n.Edges.FeedConfigAction, e)
+			}); err != nil {
 			return nil, err
 		}
 	}
@@ -562,6 +652,97 @@ func (fcq *FeedConfigQuery) loadNotifySource(ctx context.Context, query *NotifyS
 	}
 	query.Where(predicate.NotifySource(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(feedconfig.NotifySourceColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.FeedConfigID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "feed_config_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (fcq *FeedConfigQuery) loadFeedActionSet(ctx context.Context, query *FeedActionSetQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedActionSet)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*FeedConfig)
+	nids := make(map[model.InternalID]map[*FeedConfig]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(feedconfig.FeedActionSetTable)
+		s.Join(joinT).On(s.C(feedactionset.FieldID), joinT.C(feedconfig.FeedActionSetPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(feedconfig.FeedActionSetPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(feedconfig.FeedActionSetPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*FeedConfig]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*FeedActionSet](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "feed_action_set" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (fcq *FeedConfigQuery) loadFeedConfigAction(ctx context.Context, query *FeedConfigActionQuery, nodes []*FeedConfig, init func(*FeedConfig), assign func(*FeedConfig, *FeedConfigAction)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*FeedConfig)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(feedconfigaction.FieldFeedConfigID)
+	}
+	query.Where(predicate.FeedConfigAction(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(feedconfig.FeedConfigActionColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

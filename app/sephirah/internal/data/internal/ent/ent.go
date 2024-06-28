@@ -20,7 +20,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -105,7 +107,9 @@ func checkColumn(table, column string) error {
 			appinstruntime.Table:     appinstruntime.ValidColumn,
 			deviceinfo.Table:         deviceinfo.ValidColumn,
 			feed.Table:               feed.ValidColumn,
+			feedactionset.Table:      feedactionset.ValidColumn,
 			feedconfig.Table:         feedconfig.ValidColumn,
+			feedconfigaction.Table:   feedconfigaction.ValidColumn,
 			feeditem.Table:           feeditem.ValidColumn,
 			feeditemcollection.Table: feeditemcollection.ValidColumn,
 			file.Table:               file.ValidColumn,

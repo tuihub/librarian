@@ -441,6 +441,29 @@ func HasFeedConfigWith(preds ...predicate.FeedConfig) predicate.User {
 	})
 }
 
+// HasFeedActionSet applies the HasEdge predicate on the "feed_action_set" edge.
+func HasFeedActionSet() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, FeedActionSetTable, FeedActionSetColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasFeedActionSetWith applies the HasEdge predicate on the "feed_action_set" edge with a given conditions (other predicates).
+func HasFeedActionSetWith(preds ...predicate.FeedActionSet) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newFeedActionSetStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasFeedItemCollection applies the HasEdge predicate on the "feed_item_collection" edge.
 func HasFeedItemCollection() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

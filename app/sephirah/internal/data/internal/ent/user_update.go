@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -192,6 +193,21 @@ func (uu *UserUpdate) AddFeedConfig(f ...*FeedConfig) *UserUpdate {
 		ids[i] = f[i].ID
 	}
 	return uu.AddFeedConfigIDs(ids...)
+}
+
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (uu *UserUpdate) AddFeedActionSetIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddFeedActionSetIDs(ids...)
+	return uu
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (uu *UserUpdate) AddFeedActionSet(f ...*FeedActionSet) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.AddFeedActionSetIDs(ids...)
 }
 
 // AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
@@ -463,6 +479,27 @@ func (uu *UserUpdate) RemoveFeedConfig(f ...*FeedConfig) *UserUpdate {
 		ids[i] = f[i].ID
 	}
 	return uu.RemoveFeedConfigIDs(ids...)
+}
+
+// ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
+func (uu *UserUpdate) ClearFeedActionSet() *UserUpdate {
+	uu.mutation.ClearFeedActionSet()
+	return uu
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
+func (uu *UserUpdate) RemoveFeedActionSetIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveFeedActionSetIDs(ids...)
+	return uu
+}
+
+// RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
+func (uu *UserUpdate) RemoveFeedActionSet(f ...*FeedActionSet) *UserUpdate {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uu.RemoveFeedActionSetIDs(ids...)
 }
 
 // ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
@@ -983,6 +1020,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uu.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !uu.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1652,6 +1734,21 @@ func (uuo *UserUpdateOne) AddFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 	return uuo.AddFeedConfigIDs(ids...)
 }
 
+// AddFeedActionSetIDs adds the "feed_action_set" edge to the FeedActionSet entity by IDs.
+func (uuo *UserUpdateOne) AddFeedActionSetIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddFeedActionSetIDs(ids...)
+	return uuo
+}
+
+// AddFeedActionSet adds the "feed_action_set" edges to the FeedActionSet entity.
+func (uuo *UserUpdateOne) AddFeedActionSet(f ...*FeedActionSet) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.AddFeedActionSetIDs(ids...)
+}
+
 // AddFeedItemCollectionIDs adds the "feed_item_collection" edge to the FeedItemCollection entity by IDs.
 func (uuo *UserUpdateOne) AddFeedItemCollectionIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddFeedItemCollectionIDs(ids...)
@@ -1921,6 +2018,27 @@ func (uuo *UserUpdateOne) RemoveFeedConfig(f ...*FeedConfig) *UserUpdateOne {
 		ids[i] = f[i].ID
 	}
 	return uuo.RemoveFeedConfigIDs(ids...)
+}
+
+// ClearFeedActionSet clears all "feed_action_set" edges to the FeedActionSet entity.
+func (uuo *UserUpdateOne) ClearFeedActionSet() *UserUpdateOne {
+	uuo.mutation.ClearFeedActionSet()
+	return uuo
+}
+
+// RemoveFeedActionSetIDs removes the "feed_action_set" edge to FeedActionSet entities by IDs.
+func (uuo *UserUpdateOne) RemoveFeedActionSetIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveFeedActionSetIDs(ids...)
+	return uuo
+}
+
+// RemoveFeedActionSet removes "feed_action_set" edges to FeedActionSet entities.
+func (uuo *UserUpdateOne) RemoveFeedActionSet(f ...*FeedActionSet) *UserUpdateOne {
+	ids := make([]model.InternalID, len(f))
+	for i := range f {
+		ids[i] = f[i].ID
+	}
+	return uuo.RemoveFeedActionSetIDs(ids...)
 }
 
 // ClearFeedItemCollection clears all "feed_item_collection" edges to the FeedItemCollection entity.
@@ -2471,6 +2589,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(feedconfig.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedFeedActionSetIDs(); len(nodes) > 0 && !uuo.mutation.FeedActionSetCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.FeedActionSetIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.FeedActionSetTable,
+			Columns: []string{user.FeedActionSetColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(feedactionset.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

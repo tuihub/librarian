@@ -37,6 +37,8 @@ const (
 	EdgeAppInst = "app_inst"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
+	// EdgeFeedActionSet holds the string denoting the feed_action_set edge name in mutations.
+	EdgeFeedActionSet = "feed_action_set"
 	// EdgeFeedItemCollection holds the string denoting the feed_item_collection edge name in mutations.
 	EdgeFeedItemCollection = "feed_item_collection"
 	// EdgeNotifySource holds the string denoting the notify_source edge name in mutations.
@@ -94,6 +96,13 @@ const (
 	FeedConfigInverseTable = "feed_configs"
 	// FeedConfigColumn is the table column denoting the feed_config relation/edge.
 	FeedConfigColumn = "user_feed_config"
+	// FeedActionSetTable is the table that holds the feed_action_set relation/edge.
+	FeedActionSetTable = "feed_action_sets"
+	// FeedActionSetInverseTable is the table name for the FeedActionSet entity.
+	// It exists in this package in order to avoid circular dependency with the "feedactionset" package.
+	FeedActionSetInverseTable = "feed_action_sets"
+	// FeedActionSetColumn is the table column denoting the feed_action_set relation/edge.
+	FeedActionSetColumn = "user_feed_action_set"
 	// FeedItemCollectionTable is the table that holds the feed_item_collection relation/edge.
 	FeedItemCollectionTable = "feed_item_collections"
 	// FeedItemCollectionInverseTable is the table name for the FeedItemCollection entity.
@@ -370,6 +379,20 @@ func ByFeedConfig(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByFeedActionSetCount orders the results by feed_action_set count.
+func ByFeedActionSetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedActionSetStep(), opts...)
+	}
+}
+
+// ByFeedActionSet orders the results by feed_action_set terms.
+func ByFeedActionSet(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedActionSetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByFeedItemCollectionCount orders the results by feed_item_collection count.
 func ByFeedItemCollectionCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -549,6 +572,13 @@ func newFeedConfigStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FeedConfigInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FeedConfigTable, FeedConfigColumn),
+	)
+}
+func newFeedActionSetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedActionSetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, FeedActionSetTable, FeedActionSetColumn),
 	)
 }
 func newFeedItemCollectionStep() *sqlgraph.Step {

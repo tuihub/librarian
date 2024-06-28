@@ -24,7 +24,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinstruntime"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -64,8 +66,12 @@ type Client struct {
 	DeviceInfo *DeviceInfoClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
+	// FeedActionSet is the client for interacting with the FeedActionSet builders.
+	FeedActionSet *FeedActionSetClient
 	// FeedConfig is the client for interacting with the FeedConfig builders.
 	FeedConfig *FeedConfigClient
+	// FeedConfigAction is the client for interacting with the FeedConfigAction builders.
+	FeedConfigAction *FeedConfigActionClient
 	// FeedItem is the client for interacting with the FeedItem builders.
 	FeedItem *FeedItemClient
 	// FeedItemCollection is the client for interacting with the FeedItemCollection builders.
@@ -117,7 +123,9 @@ func (c *Client) init() {
 	c.AppInstRunTime = NewAppInstRunTimeClient(c.config)
 	c.DeviceInfo = NewDeviceInfoClient(c.config)
 	c.Feed = NewFeedClient(c.config)
+	c.FeedActionSet = NewFeedActionSetClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
+	c.FeedConfigAction = NewFeedConfigActionClient(c.config)
 	c.FeedItem = NewFeedItemClient(c.config)
 	c.FeedItemCollection = NewFeedItemCollectionClient(c.config)
 	c.File = NewFileClient(c.config)
@@ -234,7 +242,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
 		DeviceInfo:         NewDeviceInfoClient(cfg),
 		Feed:               NewFeedClient(cfg),
+		FeedActionSet:      NewFeedActionSetClient(cfg),
 		FeedConfig:         NewFeedConfigClient(cfg),
+		FeedConfigAction:   NewFeedConfigActionClient(cfg),
 		FeedItem:           NewFeedItemClient(cfg),
 		FeedItemCollection: NewFeedItemCollectionClient(cfg),
 		File:               NewFileClient(cfg),
@@ -278,7 +288,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
 		DeviceInfo:         NewDeviceInfoClient(cfg),
 		Feed:               NewFeedClient(cfg),
+		FeedActionSet:      NewFeedActionSetClient(cfg),
 		FeedConfig:         NewFeedConfigClient(cfg),
+		FeedConfigAction:   NewFeedConfigActionClient(cfg),
 		FeedItem:           NewFeedItemClient(cfg),
 		FeedItemCollection: NewFeedItemCollectionClient(cfg),
 		File:               NewFileClient(cfg),
@@ -325,10 +337,11 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
-		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
-		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.SystemNotification,
-		c.Tag, c.User, c.UserDevice, c.UserSession,
+		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
+		c.PorterInstance, c.PorterPrivilege, c.SystemNotification, c.Tag, c.User,
+		c.UserDevice, c.UserSession,
 	} {
 		n.Use(hooks...)
 	}
@@ -339,10 +352,11 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedConfig, c.FeedItem, c.FeedItemCollection, c.File,
-		c.Image, c.NotifyFlow, c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource,
-		c.NotifyTarget, c.PorterInstance, c.PorterPrivilege, c.SystemNotification,
-		c.Tag, c.User, c.UserDevice, c.UserSession,
+		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
+		c.PorterInstance, c.PorterPrivilege, c.SystemNotification, c.Tag, c.User,
+		c.UserDevice, c.UserSession,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -367,8 +381,12 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.DeviceInfo.mutate(ctx, m)
 	case *FeedMutation:
 		return c.Feed.mutate(ctx, m)
+	case *FeedActionSetMutation:
+		return c.FeedActionSet.mutate(ctx, m)
 	case *FeedConfigMutation:
 		return c.FeedConfig.mutate(ctx, m)
+	case *FeedConfigActionMutation:
+		return c.FeedConfigAction.mutate(ctx, m)
 	case *FeedItemMutation:
 		return c.FeedItem.mutate(ctx, m)
 	case *FeedItemCollectionMutation:
@@ -1742,6 +1760,171 @@ func (c *FeedClient) mutate(ctx context.Context, m *FeedMutation) (Value, error)
 	}
 }
 
+// FeedActionSetClient is a client for the FeedActionSet schema.
+type FeedActionSetClient struct {
+	config
+}
+
+// NewFeedActionSetClient returns a client for the FeedActionSet from the given config.
+func NewFeedActionSetClient(c config) *FeedActionSetClient {
+	return &FeedActionSetClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feedactionset.Hooks(f(g(h())))`.
+func (c *FeedActionSetClient) Use(hooks ...Hook) {
+	c.hooks.FeedActionSet = append(c.hooks.FeedActionSet, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feedactionset.Intercept(f(g(h())))`.
+func (c *FeedActionSetClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedActionSet = append(c.inters.FeedActionSet, interceptors...)
+}
+
+// Create returns a builder for creating a FeedActionSet entity.
+func (c *FeedActionSetClient) Create() *FeedActionSetCreate {
+	mutation := newFeedActionSetMutation(c.config, OpCreate)
+	return &FeedActionSetCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedActionSet entities.
+func (c *FeedActionSetClient) CreateBulk(builders ...*FeedActionSetCreate) *FeedActionSetCreateBulk {
+	return &FeedActionSetCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedActionSetClient) MapCreateBulk(slice any, setFunc func(*FeedActionSetCreate, int)) *FeedActionSetCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedActionSetCreateBulk{err: fmt.Errorf("calling to FeedActionSetClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedActionSetCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FeedActionSetCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedActionSet.
+func (c *FeedActionSetClient) Update() *FeedActionSetUpdate {
+	mutation := newFeedActionSetMutation(c.config, OpUpdate)
+	return &FeedActionSetUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedActionSetClient) UpdateOne(fas *FeedActionSet) *FeedActionSetUpdateOne {
+	mutation := newFeedActionSetMutation(c.config, OpUpdateOne, withFeedActionSet(fas))
+	return &FeedActionSetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedActionSetClient) UpdateOneID(id model.InternalID) *FeedActionSetUpdateOne {
+	mutation := newFeedActionSetMutation(c.config, OpUpdateOne, withFeedActionSetID(id))
+	return &FeedActionSetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedActionSet.
+func (c *FeedActionSetClient) Delete() *FeedActionSetDelete {
+	mutation := newFeedActionSetMutation(c.config, OpDelete)
+	return &FeedActionSetDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedActionSetClient) DeleteOne(fas *FeedActionSet) *FeedActionSetDeleteOne {
+	return c.DeleteOneID(fas.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedActionSetClient) DeleteOneID(id model.InternalID) *FeedActionSetDeleteOne {
+	builder := c.Delete().Where(feedactionset.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedActionSetDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedActionSet.
+func (c *FeedActionSetClient) Query() *FeedActionSetQuery {
+	return &FeedActionSetQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeedActionSet},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedActionSet entity by its id.
+func (c *FeedActionSetClient) Get(ctx context.Context, id model.InternalID) (*FeedActionSet, error) {
+	return c.Query().Where(feedactionset.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedActionSetClient) GetX(ctx context.Context, id model.InternalID) *FeedActionSet {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryOwner queries the owner edge of a FeedActionSet.
+func (c *FeedActionSetClient) QueryOwner(fas *FeedActionSet) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fas.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedactionset.Table, feedactionset.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, feedactionset.OwnerTable, feedactionset.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(fas.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedConfig queries the feed_config edge of a FeedActionSet.
+func (c *FeedActionSetClient) QueryFeedConfig(fas *FeedActionSet) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fas.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedactionset.Table, feedactionset.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, feedactionset.FeedConfigTable, feedactionset.FeedConfigPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(fas.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FeedActionSetClient) Hooks() []Hook {
+	return c.hooks.FeedActionSet
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedActionSetClient) Interceptors() []Interceptor {
+	return c.inters.FeedActionSet
+}
+
+func (c *FeedActionSetClient) mutate(ctx context.Context, m *FeedActionSetMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedActionSetCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedActionSetUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedActionSetUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedActionSetDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedActionSet mutation op: %q", m.Op())
+	}
+}
+
 // FeedConfigClient is a client for the FeedConfig schema.
 type FeedConfigClient struct {
 	config
@@ -1898,6 +2081,38 @@ func (c *FeedConfigClient) QueryNotifySource(fc *FeedConfig) *NotifySourceQuery 
 	return query
 }
 
+// QueryFeedActionSet queries the feed_action_set edge of a FeedConfig.
+func (c *FeedConfigClient) QueryFeedActionSet(fc *FeedConfig) *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
+			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, feedconfig.FeedActionSetTable, feedconfig.FeedActionSetPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedConfigAction queries the feed_config_action edge of a FeedConfig.
+func (c *FeedConfigClient) QueryFeedConfigAction(fc *FeedConfig) *FeedConfigActionQuery {
+	query := (&FeedConfigActionClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfig.Table, feedconfig.FieldID, id),
+			sqlgraph.To(feedconfigaction.Table, feedconfigaction.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, feedconfig.FeedConfigActionTable, feedconfig.FeedConfigActionColumn),
+		)
+		fromV = sqlgraph.Neighbors(fc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *FeedConfigClient) Hooks() []Hook {
 	return c.hooks.FeedConfig
@@ -1920,6 +2135,171 @@ func (c *FeedConfigClient) mutate(ctx context.Context, m *FeedConfigMutation) (V
 		return (&FeedConfigDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown FeedConfig mutation op: %q", m.Op())
+	}
+}
+
+// FeedConfigActionClient is a client for the FeedConfigAction schema.
+type FeedConfigActionClient struct {
+	config
+}
+
+// NewFeedConfigActionClient returns a client for the FeedConfigAction from the given config.
+func NewFeedConfigActionClient(c config) *FeedConfigActionClient {
+	return &FeedConfigActionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `feedconfigaction.Hooks(f(g(h())))`.
+func (c *FeedConfigActionClient) Use(hooks ...Hook) {
+	c.hooks.FeedConfigAction = append(c.hooks.FeedConfigAction, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `feedconfigaction.Intercept(f(g(h())))`.
+func (c *FeedConfigActionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.FeedConfigAction = append(c.inters.FeedConfigAction, interceptors...)
+}
+
+// Create returns a builder for creating a FeedConfigAction entity.
+func (c *FeedConfigActionClient) Create() *FeedConfigActionCreate {
+	mutation := newFeedConfigActionMutation(c.config, OpCreate)
+	return &FeedConfigActionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of FeedConfigAction entities.
+func (c *FeedConfigActionClient) CreateBulk(builders ...*FeedConfigActionCreate) *FeedConfigActionCreateBulk {
+	return &FeedConfigActionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *FeedConfigActionClient) MapCreateBulk(slice any, setFunc func(*FeedConfigActionCreate, int)) *FeedConfigActionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &FeedConfigActionCreateBulk{err: fmt.Errorf("calling to FeedConfigActionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*FeedConfigActionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &FeedConfigActionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for FeedConfigAction.
+func (c *FeedConfigActionClient) Update() *FeedConfigActionUpdate {
+	mutation := newFeedConfigActionMutation(c.config, OpUpdate)
+	return &FeedConfigActionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *FeedConfigActionClient) UpdateOne(fca *FeedConfigAction) *FeedConfigActionUpdateOne {
+	mutation := newFeedConfigActionMutation(c.config, OpUpdateOne, withFeedConfigAction(fca))
+	return &FeedConfigActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *FeedConfigActionClient) UpdateOneID(id int) *FeedConfigActionUpdateOne {
+	mutation := newFeedConfigActionMutation(c.config, OpUpdateOne, withFeedConfigActionID(id))
+	return &FeedConfigActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for FeedConfigAction.
+func (c *FeedConfigActionClient) Delete() *FeedConfigActionDelete {
+	mutation := newFeedConfigActionMutation(c.config, OpDelete)
+	return &FeedConfigActionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *FeedConfigActionClient) DeleteOne(fca *FeedConfigAction) *FeedConfigActionDeleteOne {
+	return c.DeleteOneID(fca.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *FeedConfigActionClient) DeleteOneID(id int) *FeedConfigActionDeleteOne {
+	builder := c.Delete().Where(feedconfigaction.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &FeedConfigActionDeleteOne{builder}
+}
+
+// Query returns a query builder for FeedConfigAction.
+func (c *FeedConfigActionClient) Query() *FeedConfigActionQuery {
+	return &FeedConfigActionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeFeedConfigAction},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a FeedConfigAction entity by its id.
+func (c *FeedConfigActionClient) Get(ctx context.Context, id int) (*FeedConfigAction, error) {
+	return c.Query().Where(feedconfigaction.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *FeedConfigActionClient) GetX(ctx context.Context, id int) *FeedConfigAction {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryFeedConfig queries the feed_config edge of a FeedConfigAction.
+func (c *FeedConfigActionClient) QueryFeedConfig(fca *FeedConfigAction) *FeedConfigQuery {
+	query := (&FeedConfigClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fca.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfigaction.Table, feedconfigaction.FieldID, id),
+			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, feedconfigaction.FeedConfigTable, feedconfigaction.FeedConfigColumn),
+		)
+		fromV = sqlgraph.Neighbors(fca.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryFeedActionSet queries the feed_action_set edge of a FeedConfigAction.
+func (c *FeedConfigActionClient) QueryFeedActionSet(fca *FeedConfigAction) *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := fca.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(feedconfigaction.Table, feedconfigaction.FieldID, id),
+			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, feedconfigaction.FeedActionSetTable, feedconfigaction.FeedActionSetColumn),
+		)
+		fromV = sqlgraph.Neighbors(fca.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *FeedConfigActionClient) Hooks() []Hook {
+	return c.hooks.FeedConfigAction
+}
+
+// Interceptors returns the client interceptors.
+func (c *FeedConfigActionClient) Interceptors() []Interceptor {
+	return c.inters.FeedConfigAction
+}
+
+func (c *FeedConfigActionClient) mutate(ctx context.Context, m *FeedConfigActionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&FeedConfigActionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&FeedConfigActionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&FeedConfigActionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&FeedConfigActionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown FeedConfigAction mutation op: %q", m.Op())
 	}
 }
 
@@ -4272,6 +4652,22 @@ func (c *UserClient) QueryFeedConfig(u *User) *FeedConfigQuery {
 	return query
 }
 
+// QueryFeedActionSet queries the feed_action_set edge of a User.
+func (c *UserClient) QueryFeedActionSet(u *User) *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedActionSetTable, user.FeedActionSetColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryFeedItemCollection queries the feed_item_collection edge of a User.
 func (c *UserClient) QueryFeedItemCollection(u *User) *FeedItemCollectionQuery {
 	query := (&FeedItemCollectionClient{config: c.config}).Query()
@@ -4791,16 +5187,16 @@ func (c *UserSessionClient) mutate(ctx context.Context, m *UserSessionMutation) 
 type (
 	hooks struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
-		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
-		PorterPrivilege, SystemNotification, Tag, User, UserDevice,
-		UserSession []ent.Hook
+		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
+		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		NotifyTarget, PorterInstance, PorterPrivilege, SystemNotification, Tag, User,
+		UserDevice, UserSession []ent.Hook
 	}
 	inters struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedConfig, FeedItem, FeedItemCollection, File, Image, NotifyFlow,
-		NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget, PorterInstance,
-		PorterPrivilege, SystemNotification, Tag, User, UserDevice,
-		UserSession []ent.Interceptor
+		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
+		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		NotifyTarget, PorterInstance, PorterPrivilege, SystemNotification, Tag, User,
+		UserDevice, UserSession []ent.Interceptor
 	}
 )

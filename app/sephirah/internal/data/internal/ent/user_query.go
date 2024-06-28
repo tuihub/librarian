@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinst"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/file"
@@ -42,6 +43,7 @@ type UserQuery struct {
 	withApp                *AppQuery
 	withAppInst            *AppInstQuery
 	withFeedConfig         *FeedConfigQuery
+	withFeedActionSet      *FeedActionSetQuery
 	withFeedItemCollection *FeedItemCollectionQuery
 	withNotifySource       *NotifySourceQuery
 	withNotifyTarget       *NotifyTargetQuery
@@ -193,6 +195,28 @@ func (uq *UserQuery) QueryFeedConfig() *FeedConfigQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(feedconfig.Table, feedconfig.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedConfigTable, user.FeedConfigColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryFeedActionSet chains the current query on the "feed_action_set" edge.
+func (uq *UserQuery) QueryFeedActionSet() *FeedActionSetQuery {
+	query := (&FeedActionSetClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(feedactionset.Table, feedactionset.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.FeedActionSetTable, user.FeedActionSetColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -639,6 +663,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withApp:                uq.withApp.Clone(),
 		withAppInst:            uq.withAppInst.Clone(),
 		withFeedConfig:         uq.withFeedConfig.Clone(),
+		withFeedActionSet:      uq.withFeedActionSet.Clone(),
 		withFeedItemCollection: uq.withFeedItemCollection.Clone(),
 		withNotifySource:       uq.withNotifySource.Clone(),
 		withNotifyTarget:       uq.withNotifyTarget.Clone(),
@@ -708,6 +733,17 @@ func (uq *UserQuery) WithFeedConfig(opts ...func(*FeedConfigQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withFeedConfig = query
+	return uq
+}
+
+// WithFeedActionSet tells the query-builder to eager-load the nodes that are connected to
+// the "feed_action_set" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithFeedActionSet(opts ...func(*FeedActionSetQuery)) *UserQuery {
+	query := (&FeedActionSetClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withFeedActionSet = query
 	return uq
 }
 
@@ -911,12 +947,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [16]bool{
+		loadedTypes = [17]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withApp != nil,
 			uq.withAppInst != nil,
 			uq.withFeedConfig != nil,
+			uq.withFeedActionSet != nil,
 			uq.withFeedItemCollection != nil,
 			uq.withNotifySource != nil,
 			uq.withNotifyTarget != nil,
@@ -986,6 +1023,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadFeedConfig(ctx, query, nodes,
 			func(n *User) { n.Edges.FeedConfig = []*FeedConfig{} },
 			func(n *User, e *FeedConfig) { n.Edges.FeedConfig = append(n.Edges.FeedConfig, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withFeedActionSet; query != nil {
+		if err := uq.loadFeedActionSet(ctx, query, nodes,
+			func(n *User) { n.Edges.FeedActionSet = []*FeedActionSet{} },
+			func(n *User, e *FeedActionSet) { n.Edges.FeedActionSet = append(n.Edges.FeedActionSet, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1249,6 +1293,37 @@ func (uq *UserQuery) loadFeedConfig(ctx context.Context, query *FeedConfigQuery,
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_feed_config" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadFeedActionSet(ctx context.Context, query *FeedActionSetQuery, nodes []*User, init func(*User), assign func(*User, *FeedActionSet)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.FeedActionSet(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.FeedActionSetColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_feed_action_set
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_feed_action_set" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_feed_action_set" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

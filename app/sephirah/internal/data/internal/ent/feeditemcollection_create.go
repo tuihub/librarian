@@ -15,7 +15,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -42,18 +41,6 @@ func (ficc *FeedItemCollectionCreate) SetDescription(s string) *FeedItemCollecti
 // SetCategory sets the "category" field.
 func (ficc *FeedItemCollectionCreate) SetCategory(s string) *FeedItemCollectionCreate {
 	ficc.mutation.SetCategory(s)
-	return ficc
-}
-
-// SetSourceFeed sets the "source_feed" field.
-func (ficc *FeedItemCollectionCreate) SetSourceFeed(mi model.InternalID) *FeedItemCollectionCreate {
-	ficc.mutation.SetSourceFeed(mi)
-	return ficc
-}
-
-// SetActions sets the "actions" field.
-func (ficc *FeedItemCollectionCreate) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedItemCollectionCreate {
-	ficc.mutation.SetActions(mr)
 	return ficc
 }
 
@@ -188,12 +175,6 @@ func (ficc *FeedItemCollectionCreate) check() error {
 	if _, ok := ficc.mutation.Category(); !ok {
 		return &ValidationError{Name: "category", err: errors.New(`ent: missing required field "FeedItemCollection.category"`)}
 	}
-	if _, ok := ficc.mutation.SourceFeed(); !ok {
-		return &ValidationError{Name: "source_feed", err: errors.New(`ent: missing required field "FeedItemCollection.source_feed"`)}
-	}
-	if _, ok := ficc.mutation.Actions(); !ok {
-		return &ValidationError{Name: "actions", err: errors.New(`ent: missing required field "FeedItemCollection.actions"`)}
-	}
 	if _, ok := ficc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "FeedItemCollection.updated_at"`)}
 	}
@@ -247,14 +228,6 @@ func (ficc *FeedItemCollectionCreate) createSpec() (*FeedItemCollection, *sqlgra
 	if value, ok := ficc.mutation.Category(); ok {
 		_spec.SetField(feeditemcollection.FieldCategory, field.TypeString, value)
 		_node.Category = value
-	}
-	if value, ok := ficc.mutation.SourceFeed(); ok {
-		_spec.SetField(feeditemcollection.FieldSourceFeed, field.TypeInt64, value)
-		_node.SourceFeed = value
-	}
-	if value, ok := ficc.mutation.Actions(); ok {
-		_spec.SetField(feeditemcollection.FieldActions, field.TypeJSON, value)
-		_node.Actions = value
 	}
 	if value, ok := ficc.mutation.UpdatedAt(); ok {
 		_spec.SetField(feeditemcollection.FieldUpdatedAt, field.TypeTime, value)
@@ -401,36 +374,6 @@ func (u *FeedItemCollectionUpsert) UpdateCategory() *FeedItemCollectionUpsert {
 	return u
 }
 
-// SetSourceFeed sets the "source_feed" field.
-func (u *FeedItemCollectionUpsert) SetSourceFeed(v model.InternalID) *FeedItemCollectionUpsert {
-	u.Set(feeditemcollection.FieldSourceFeed, v)
-	return u
-}
-
-// UpdateSourceFeed sets the "source_feed" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsert) UpdateSourceFeed() *FeedItemCollectionUpsert {
-	u.SetExcluded(feeditemcollection.FieldSourceFeed)
-	return u
-}
-
-// AddSourceFeed adds v to the "source_feed" field.
-func (u *FeedItemCollectionUpsert) AddSourceFeed(v model.InternalID) *FeedItemCollectionUpsert {
-	u.Add(feeditemcollection.FieldSourceFeed, v)
-	return u
-}
-
-// SetActions sets the "actions" field.
-func (u *FeedItemCollectionUpsert) SetActions(v []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpsert {
-	u.Set(feeditemcollection.FieldActions, v)
-	return u
-}
-
-// UpdateActions sets the "actions" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsert) UpdateActions() *FeedItemCollectionUpsert {
-	u.SetExcluded(feeditemcollection.FieldActions)
-	return u
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (u *FeedItemCollectionUpsert) SetUpdatedAt(v time.Time) *FeedItemCollectionUpsert {
 	u.Set(feeditemcollection.FieldUpdatedAt, v)
@@ -542,41 +485,6 @@ func (u *FeedItemCollectionUpsertOne) SetCategory(v string) *FeedItemCollectionU
 func (u *FeedItemCollectionUpsertOne) UpdateCategory() *FeedItemCollectionUpsertOne {
 	return u.Update(func(s *FeedItemCollectionUpsert) {
 		s.UpdateCategory()
-	})
-}
-
-// SetSourceFeed sets the "source_feed" field.
-func (u *FeedItemCollectionUpsertOne) SetSourceFeed(v model.InternalID) *FeedItemCollectionUpsertOne {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.SetSourceFeed(v)
-	})
-}
-
-// AddSourceFeed adds v to the "source_feed" field.
-func (u *FeedItemCollectionUpsertOne) AddSourceFeed(v model.InternalID) *FeedItemCollectionUpsertOne {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.AddSourceFeed(v)
-	})
-}
-
-// UpdateSourceFeed sets the "source_feed" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsertOne) UpdateSourceFeed() *FeedItemCollectionUpsertOne {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.UpdateSourceFeed()
-	})
-}
-
-// SetActions sets the "actions" field.
-func (u *FeedItemCollectionUpsertOne) SetActions(v []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpsertOne {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.SetActions(v)
-	})
-}
-
-// UpdateActions sets the "actions" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsertOne) UpdateActions() *FeedItemCollectionUpsertOne {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.UpdateActions()
 	})
 }
 
@@ -861,41 +769,6 @@ func (u *FeedItemCollectionUpsertBulk) SetCategory(v string) *FeedItemCollection
 func (u *FeedItemCollectionUpsertBulk) UpdateCategory() *FeedItemCollectionUpsertBulk {
 	return u.Update(func(s *FeedItemCollectionUpsert) {
 		s.UpdateCategory()
-	})
-}
-
-// SetSourceFeed sets the "source_feed" field.
-func (u *FeedItemCollectionUpsertBulk) SetSourceFeed(v model.InternalID) *FeedItemCollectionUpsertBulk {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.SetSourceFeed(v)
-	})
-}
-
-// AddSourceFeed adds v to the "source_feed" field.
-func (u *FeedItemCollectionUpsertBulk) AddSourceFeed(v model.InternalID) *FeedItemCollectionUpsertBulk {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.AddSourceFeed(v)
-	})
-}
-
-// UpdateSourceFeed sets the "source_feed" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsertBulk) UpdateSourceFeed() *FeedItemCollectionUpsertBulk {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.UpdateSourceFeed()
-	})
-}
-
-// SetActions sets the "actions" field.
-func (u *FeedItemCollectionUpsertBulk) SetActions(v []*modeltiphereth.FeatureRequest) *FeedItemCollectionUpsertBulk {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.SetActions(v)
-	})
-}
-
-// UpdateActions sets the "actions" field to the value that was provided on create.
-func (u *FeedItemCollectionUpsertBulk) UpdateActions() *FeedItemCollectionUpsertBulk {
-	return u.Update(func(s *FeedItemCollectionUpsert) {
-		s.UpdateActions()
 	})
 }
 

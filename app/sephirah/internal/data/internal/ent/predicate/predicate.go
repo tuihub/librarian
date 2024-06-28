@@ -30,8 +30,14 @@ type DeviceInfo func(*sql.Selector)
 // Feed is the predicate function for feed builders.
 type Feed func(*sql.Selector)
 
+// FeedActionSet is the predicate function for feedactionset builders.
+type FeedActionSet func(*sql.Selector)
+
 // FeedConfig is the predicate function for feedconfig builders.
 type FeedConfig func(*sql.Selector)
+
+// FeedConfigAction is the predicate function for feedconfigaction builders.
+type FeedConfigAction func(*sql.Selector)
 
 // FeedItem is the predicate function for feeditem builders.
 type FeedItem func(*sql.Selector)

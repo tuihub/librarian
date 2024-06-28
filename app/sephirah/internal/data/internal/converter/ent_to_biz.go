@@ -100,6 +100,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:matchIgnoreCase
 	// goverter:map LatestPullAt LatestPullTime
+	// goverter:ignore ActionSets
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
 	ToBizFeedConfigList([]*ent.FeedConfig) []*modelyesod.FeedConfig
 	// goverter:enum:unknown FeedConfigStatusUnspecified

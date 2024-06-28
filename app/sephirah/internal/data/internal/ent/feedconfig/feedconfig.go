@@ -51,6 +51,10 @@ const (
 	EdgeFeed = "feed"
 	// EdgeNotifySource holds the string denoting the notify_source edge name in mutations.
 	EdgeNotifySource = "notify_source"
+	// EdgeFeedActionSet holds the string denoting the feed_action_set edge name in mutations.
+	EdgeFeedActionSet = "feed_action_set"
+	// EdgeFeedConfigAction holds the string denoting the feed_config_action edge name in mutations.
+	EdgeFeedConfigAction = "feed_config_action"
 	// Table holds the table name of the feedconfig in the database.
 	Table = "feed_configs"
 	// OwnerTable is the table that holds the owner relation/edge.
@@ -74,6 +78,18 @@ const (
 	NotifySourceInverseTable = "notify_sources"
 	// NotifySourceColumn is the table column denoting the notify_source relation/edge.
 	NotifySourceColumn = "feed_config_id"
+	// FeedActionSetTable is the table that holds the feed_action_set relation/edge. The primary key declared below.
+	FeedActionSetTable = "feed_config_actions"
+	// FeedActionSetInverseTable is the table name for the FeedActionSet entity.
+	// It exists in this package in order to avoid circular dependency with the "feedactionset" package.
+	FeedActionSetInverseTable = "feed_action_sets"
+	// FeedConfigActionTable is the table that holds the feed_config_action relation/edge.
+	FeedConfigActionTable = "feed_config_actions"
+	// FeedConfigActionInverseTable is the table name for the FeedConfigAction entity.
+	// It exists in this package in order to avoid circular dependency with the "feedconfigaction" package.
+	FeedConfigActionInverseTable = "feed_config_actions"
+	// FeedConfigActionColumn is the table column denoting the feed_config_action relation/edge.
+	FeedConfigActionColumn = "feed_config_id"
 )
 
 // Columns holds all SQL columns for feedconfig fields.
@@ -95,6 +111,12 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
+
+var (
+	// FeedActionSetPrimaryKey and FeedActionSetColumn2 are the table columns denoting the
+	// primary key for the feed_action_set relation (M2M).
+	FeedActionSetPrimaryKey = []string{"feed_config_id", "feed_action_set_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -278,6 +300,34 @@ func ByNotifySource(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newNotifySourceStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByFeedActionSetCount orders the results by feed_action_set count.
+func ByFeedActionSetCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedActionSetStep(), opts...)
+	}
+}
+
+// ByFeedActionSet orders the results by feed_action_set terms.
+func ByFeedActionSet(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedActionSetStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByFeedConfigActionCount orders the results by feed_config_action count.
+func ByFeedConfigActionCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newFeedConfigActionStep(), opts...)
+	}
+}
+
+// ByFeedConfigAction orders the results by feed_config_action terms.
+func ByFeedConfigAction(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newFeedConfigActionStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newOwnerStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -297,5 +347,19 @@ func newNotifySourceStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(NotifySourceInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, NotifySourceTable, NotifySourceColumn),
+	)
+}
+func newFeedActionSetStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedActionSetInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, false, FeedActionSetTable, FeedActionSetPrimaryKey...),
+	)
+}
+func newFeedConfigActionStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(FeedConfigActionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, FeedConfigActionTable, FeedConfigActionColumn),
 	)
 }

@@ -30,6 +30,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			LatestPullTime:    nil,
 			LatestPullStatus:  nil,
 			LatestPullMessage: nil,
+			ActionSets:        nil,
 		},
 	}); err != nil {
 		log.Fatal(err)
@@ -52,6 +53,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 			LatestPullTime:    nil,
 			LatestPullStatus:  nil,
 			LatestPullMessage: nil,
+			ActionSets:        nil,
 		},
 	}); err != nil {
 		log.Fatal(err)

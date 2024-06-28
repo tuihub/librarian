@@ -39,6 +39,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("app", App.Type),
 		edge.To("app_inst", AppInst.Type),
 		edge.To("feed_config", FeedConfig.Type),
+		edge.To("feed_action_set", FeedActionSet.Type),
 		edge.To("feed_item_collection", FeedItemCollection.Type),
 		edge.To("notify_source", NotifySource.Type),
 		edge.To("notify_target", NotifyTarget.Type),

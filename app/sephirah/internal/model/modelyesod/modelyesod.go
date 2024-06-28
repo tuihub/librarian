@@ -42,6 +42,7 @@ type FeedConfig struct {
 	LatestPullStatus  FeedConfigPullStatus
 	LatestPullMessage string
 	HideItems         bool
+	ActionSets        []model.InternalID
 }
 
 type FeedConfigStatus int
@@ -90,6 +91,11 @@ type FeedItemCollection struct {
 	Name        string
 	Description string
 	Category    string
-	SourceFeed  model.InternalID
+}
+
+type FeedActionSet struct {
+	ID          model.InternalID
+	Name        string
+	Description string
 	Actions     []*modeltiphereth.FeatureRequest
 }

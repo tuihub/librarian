@@ -236,6 +236,7 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		modelyesodFeedConfig.LatestPullStatus = modelyesodFeedConfigPullStatus
 		modelyesodFeedConfig.LatestPullMessage = PtrToString((*source).LatestPullMessage)
 		modelyesodFeedConfig.HideItems = (*source).HideItems
+		modelyesodFeedConfig.ActionSets = c.ToBizInternalIDList((*source).ActionSets)
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
@@ -288,15 +289,6 @@ func (c *toBizConverterImpl) ToBizFeedItemCollection(source *v11.FeedItemCollect
 		modelyesodFeedItemCollection.Name = (*source).Name
 		modelyesodFeedItemCollection.Description = (*source).Description
 		modelyesodFeedItemCollection.Category = (*source).Category
-		modelyesodFeedItemCollection.SourceFeed = ToBizInternalID((*source).SourceFeed)
-		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
-		if (*source).Actions != nil {
-			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
-			for i := 0; i < len((*source).Actions); i++ {
-				pModeltipherethFeatureRequestList[i] = c.ToBizFeatureRequest((*source).Actions[i])
-			}
-		}
-		modelyesodFeedItemCollection.Actions = pModeltipherethFeatureRequestList
 		pModelyesodFeedItemCollection = &modelyesodFeedItemCollection
 	}
 	return pModelyesodFeedItemCollection
@@ -991,6 +983,7 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		v1FeedConfig.LatestPullStatus = ToPBFeedConfigPullStatus((*source).LatestPullStatus)
 		pString := (*source).LatestPullMessage
 		v1FeedConfig.LatestPullMessage = &pString
+		v1FeedConfig.ActionSets = c.ToPBInternalIDList((*source).ActionSets)
 		pV1FeedConfig = &v1FeedConfig
 	}
 	return pV1FeedConfig
@@ -1064,15 +1057,6 @@ func (c *toPBConverterImpl) ToPBFeedItemCollection(source *modelyesod.FeedItemCo
 		v1FeedItemCollection.Name = (*source).Name
 		v1FeedItemCollection.Description = (*source).Description
 		v1FeedItemCollection.Category = (*source).Category
-		v1FeedItemCollection.SourceFeed = ToPBInternalID((*source).SourceFeed)
-		var pV1FeatureRequestList []*v1.FeatureRequest
-		if (*source).Actions != nil {
-			pV1FeatureRequestList = make([]*v1.FeatureRequest, len((*source).Actions))
-			for i := 0; i < len((*source).Actions); i++ {
-				pV1FeatureRequestList[i] = c.ToPBFeatureRequest((*source).Actions[i])
-			}
-		}
-		v1FeedItemCollection.Actions = pV1FeatureRequestList
 		pV1FeedItemCollection = &v1FeedItemCollection
 	}
 	return pV1FeedItemCollection

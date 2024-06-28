@@ -67,5 +67,7 @@ func (FeedConfig) Edges() []ent.Edge {
 		edge.To("feed", Feed.Type).
 			Unique(),
 		edge.To("notify_source", NotifySource.Type),
+		edge.To("feed_action_set", FeedActionSet.Type).
+			Through("feed_config_action", FeedConfigAction.Type),
 	}
 }

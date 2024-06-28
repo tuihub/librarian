@@ -238,6 +238,30 @@ var (
 			},
 		},
 	}
+	// FeedActionSetsColumns holds the columns for the "feed_action_sets" table.
+	FeedActionSetsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "actions", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_feed_action_set", Type: field.TypeInt64},
+	}
+	// FeedActionSetsTable holds the schema information for the "feed_action_sets" table.
+	FeedActionSetsTable = &schema.Table{
+		Name:       "feed_action_sets",
+		Columns:    FeedActionSetsColumns,
+		PrimaryKey: []*schema.Column{FeedActionSetsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feed_action_sets_users_feed_action_set",
+				Columns:    []*schema.Column{FeedActionSetsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// FeedConfigsColumns holds the columns for the "feed_configs" table.
 	FeedConfigsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -280,6 +304,42 @@ var (
 				Name:    "feedconfig_category",
 				Unique:  false,
 				Columns: []*schema.Column{FeedConfigsColumns[6]},
+			},
+		},
+	}
+	// FeedConfigActionsColumns holds the columns for the "feed_config_actions" table.
+	FeedConfigActionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "index", Type: field.TypeInt64},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "feed_config_id", Type: field.TypeInt64},
+		{Name: "feed_action_set_id", Type: field.TypeInt64},
+	}
+	// FeedConfigActionsTable holds the schema information for the "feed_config_actions" table.
+	FeedConfigActionsTable = &schema.Table{
+		Name:       "feed_config_actions",
+		Columns:    FeedConfigActionsColumns,
+		PrimaryKey: []*schema.Column{FeedConfigActionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "feed_config_actions_feed_configs_feed_config",
+				Columns:    []*schema.Column{FeedConfigActionsColumns[4]},
+				RefColumns: []*schema.Column{FeedConfigsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "feed_config_actions_feed_action_sets_feed_action_set",
+				Columns:    []*schema.Column{FeedConfigActionsColumns[5]},
+				RefColumns: []*schema.Column{FeedActionSetsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "feedconfigaction_feed_config_id_feed_action_set_id",
+				Unique:  true,
+				Columns: []*schema.Column{FeedConfigActionsColumns[4], FeedConfigActionsColumns[5]},
 			},
 		},
 	}
@@ -338,8 +398,6 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
 		{Name: "category", Type: field.TypeString},
-		{Name: "source_feed", Type: field.TypeInt64},
-		{Name: "actions", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "user_feed_item_collection", Type: field.TypeInt64},
@@ -352,7 +410,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_item_collections_users_feed_item_collection",
-				Columns:    []*schema.Column{FeedItemCollectionsColumns[8]},
+				Columns:    []*schema.Column{FeedItemCollectionsColumns[6]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -846,7 +904,9 @@ var (
 		AppInstRunTimesTable,
 		DeviceInfosTable,
 		FeedsTable,
+		FeedActionSetsTable,
 		FeedConfigsTable,
+		FeedConfigActionsTable,
 		FeedItemsTable,
 		FeedItemCollectionsTable,
 		FilesTable,
@@ -877,7 +937,10 @@ func init() {
 	AppInfosTable.ForeignKeys[0].RefTable = AppInfosTable
 	AppInstsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
+	FeedActionSetsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
+	FeedConfigActionsTable.ForeignKeys[0].RefTable = FeedConfigsTable
+	FeedConfigActionsTable.ForeignKeys[1].RefTable = FeedActionSetsTable
 	FeedItemsTable.ForeignKeys[0].RefTable = FeedsTable
 	FeedItemCollectionsTable.ForeignKeys[0].RefTable = UsersTable
 	FilesTable.ForeignKeys[0].RefTable = UsersTable

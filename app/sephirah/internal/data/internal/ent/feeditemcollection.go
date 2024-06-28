@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -12,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -27,10 +25,6 @@ type FeedItemCollection struct {
 	Description string `json:"description,omitempty"`
 	// Category holds the value of the "category" field.
 	Category string `json:"category,omitempty"`
-	// SourceFeed holds the value of the "source_feed" field.
-	SourceFeed model.InternalID `json:"source_feed,omitempty"`
-	// Actions holds the value of the "actions" field.
-	Actions []*modeltiphereth.FeatureRequest `json:"actions,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -89,9 +83,7 @@ func (*FeedItemCollection) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case feeditemcollection.FieldActions:
-			values[i] = new([]byte)
-		case feeditemcollection.FieldID, feeditemcollection.FieldSourceFeed:
+		case feeditemcollection.FieldID:
 			values[i] = new(sql.NullInt64)
 		case feeditemcollection.FieldName, feeditemcollection.FieldDescription, feeditemcollection.FieldCategory:
 			values[i] = new(sql.NullString)
@@ -137,20 +129,6 @@ func (fic *FeedItemCollection) assignValues(columns []string, values []any) erro
 				return fmt.Errorf("unexpected type %T for field category", values[i])
 			} else if value.Valid {
 				fic.Category = value.String
-			}
-		case feeditemcollection.FieldSourceFeed:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field source_feed", values[i])
-			} else if value.Valid {
-				fic.SourceFeed = model.InternalID(value.Int64)
-			}
-		case feeditemcollection.FieldActions:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field actions", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &fic.Actions); err != nil {
-					return fmt.Errorf("unmarshal field actions: %w", err)
-				}
 			}
 		case feeditemcollection.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -230,12 +208,6 @@ func (fic *FeedItemCollection) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("category=")
 	builder.WriteString(fic.Category)
-	builder.WriteString(", ")
-	builder.WriteString("source_feed=")
-	builder.WriteString(fmt.Sprintf("%v", fic.SourceFeed))
-	builder.WriteString(", ")
-	builder.WriteString("actions=")
-	builder.WriteString(fmt.Sprintf("%v", fic.Actions))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(fic.UpdatedAt.Format(time.ANSIC))

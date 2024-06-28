@@ -64,9 +64,13 @@ type FeedConfigEdges struct {
 	Feed *Feed `json:"feed,omitempty"`
 	// NotifySource holds the value of the notify_source edge.
 	NotifySource []*NotifySource `json:"notify_source,omitempty"`
+	// FeedActionSet holds the value of the feed_action_set edge.
+	FeedActionSet []*FeedActionSet `json:"feed_action_set,omitempty"`
+	// FeedConfigAction holds the value of the feed_config_action edge.
+	FeedConfigAction []*FeedConfigAction `json:"feed_config_action,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [5]bool
 }
 
 // OwnerOrErr returns the Owner value or an error if the edge
@@ -98,6 +102,24 @@ func (e FeedConfigEdges) NotifySourceOrErr() ([]*NotifySource, error) {
 		return e.NotifySource, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_source"}
+}
+
+// FeedActionSetOrErr returns the FeedActionSet value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedConfigEdges) FeedActionSetOrErr() ([]*FeedActionSet, error) {
+	if e.loadedTypes[3] {
+		return e.FeedActionSet, nil
+	}
+	return nil, &NotLoadedError{edge: "feed_action_set"}
+}
+
+// FeedConfigActionOrErr returns the FeedConfigAction value or an error if the edge
+// was not loaded in eager-loading.
+func (e FeedConfigEdges) FeedConfigActionOrErr() ([]*FeedConfigAction, error) {
+	if e.loadedTypes[4] {
+		return e.FeedConfigAction, nil
+	}
+	return nil, &NotLoadedError{edge: "feed_config_action"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -250,6 +272,16 @@ func (fc *FeedConfig) QueryFeed() *FeedQuery {
 // QueryNotifySource queries the "notify_source" edge of the FeedConfig entity.
 func (fc *FeedConfig) QueryNotifySource() *NotifySourceQuery {
 	return NewFeedConfigClient(fc.config).QueryNotifySource(fc)
+}
+
+// QueryFeedActionSet queries the "feed_action_set" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryFeedActionSet() *FeedActionSetQuery {
+	return NewFeedConfigClient(fc.config).QueryFeedActionSet(fc)
+}
+
+// QueryFeedConfigAction queries the "feed_config_action" edge of the FeedConfig entity.
+func (fc *FeedConfig) QueryFeedConfigAction() *FeedConfigActionQuery {
+	return NewFeedConfigClient(fc.config).QueryFeedConfigAction(fc)
 }
 
 // Update returns a builder for updating this FeedConfig.
