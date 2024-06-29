@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
@@ -248,7 +249,9 @@ func (a *angelaRepo) UpsertFeedItems(
 			SetGUID(item.GUID).
 			SetImage(item.Image).
 			SetEnclosures(item.Enclosures).
-			SetPublishPlatform(item.PublishPlatform)
+			SetPublishPlatform(item.PublishPlatform).
+			SetDigestDescription(item.DigestDescription).
+			SetDigestImages(item.DigestImages)
 		if item.PublishedParsed != nil {
 			il[i].SetPublishedParsed(*item.PublishedParsed)
 		} else {
@@ -303,10 +306,12 @@ func (a *angelaRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*mod
 	return converter.ToBizFeedItem(item), nil
 }
 
-func (a *angelaRepo) UpdateFeedItemDigest(ctx context.Context, item *modelfeed.Item) error {
-	err := a.data.db.FeedItem.UpdateOneID(item.ID).
-		SetDigestDescription(item.DigestDescription).
-		SetDigestImages(item.DigestImages).
-		Exec(ctx)
-	return err
+func (a *angelaRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([]*modelyesod.FeedActionSet, error) {
+	actions, err := a.data.db.FeedActionSet.Query().
+		Where(feedactionset.HasFeedConfigWith(feedconfig.IDEQ(id))).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizFeedActionSetList(actions), nil
 }

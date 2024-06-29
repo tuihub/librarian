@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -20,6 +21,7 @@ import (
 
 // goverter:converter
 // goverter:output:file ./generated.go
+// goverter:matchIgnoreCase
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
 // goverter:extend ToBizInternalID
 // goverter:extend ToBizTime
@@ -28,11 +30,8 @@ import (
 // goverter:extend DurationPBToDuration
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
-	// goverter:matchIgnoreCase
 	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
-	// goverter:matchIgnoreCase
 	ToBizFeatureFlag(*librarian.FeatureFlag) *modeltiphereth.FeatureFlag
-	// goverter:matchIgnoreCase
 	ToBizFeatureRequest(*librarian.FeatureRequest) *modeltiphereth.FeatureRequest
 	// goverter:enum:unknown AccountAppRelationTypeUnspecified
 	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED AccountAppRelationTypeUnspecified
@@ -41,7 +40,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	ToBizInternalIDList([]*librarian.InternalID) []model.InternalID
 
-	// goverter:matchIgnoreCase
 	// goverter:map DeviceId ID
 	ToBizDeviceInfo(*pb.DeviceInfo) *modeltiphereth.DeviceInfo
 	// goverter:enum:unknown SystemTypeUnspecified
@@ -53,7 +51,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemType_SYSTEM_TYPE_MACOS SystemTypeMacOS
 	// goverter:enum:map SystemType_SYSTEM_TYPE_LINUX SystemTypeLinux
 	ToBizSystemType(pb.SystemType) modeltiphereth.SystemType
-	// goverter:matchIgnoreCase
 	ToBizUser(*pb.User) *modeltiphereth.User
 	// goverter:enum:unknown UserTypeUnspecified
 	// goverter:enum:map UserType_USER_TYPE_UNSPECIFIED UserTypeUnspecified
@@ -70,24 +67,18 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
 	ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus
 
-	// goverter:matchIgnoreCase
 	ToBizPorterPrivilege(*pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime
 	ToBizAppInfo(*librarian.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*librarian.AppInfo) []*modelgebura.AppInfo
-	// goverter:matchIgnoreCase
 	ToBizAppInfoDetail(*librarian.AppInfoDetails) *modelgebura.AppInfoDetails
 	ToBizAppTypeList([]librarian.AppType) []modelgebura.AppType
-	// goverter:matchIgnoreCase
 	ToBizAppInfoID(*librarian.AppInfoID) *modelgebura.AppInfoID
 	ToBizAppInfoIDList([]*librarian.AppInfoID) []*modelgebura.AppInfoID
 
-	// goverter:matchIgnoreCase
 	ToBizApp(*pb.App) *modelgebura.App
-	// goverter:matchIgnoreCase
 	ToBizAppBinary(*pb.AppBinary) *modelgebura.AppBinary
 	ToBizAppBinaryList([]*pb.AppBinary) []*modelgebura.AppBinary
 	// goverter:enum:unknown AppTypeUnspecified
@@ -95,10 +86,12 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppType_APP_TYPE_GAME AppTypeGame
 	ToBizAppType(librarian.AppType) modelgebura.AppType
 
-	// goverter:matchIgnoreCase
 	ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
 
-	// goverter:matchIgnoreCase
+	// goverter:ignore DigestDescription
+	// goverter:ignore DigestImages
+	ToBizFeedItem(*librarian.FeedItem) *modelfeed.Item
+
 	// goverter:ignore LatestPullTime
 	// goverter:useZeroValueOnPointerInconsistency
 	ToBizFeedConfig(*pb.FeedConfig) *modelyesod.FeedConfig
@@ -115,13 +108,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizFeedConfigPullStatus(pb.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus
 	ToBizFeedConfigStatusList([]pb.FeedConfigStatus) []modelyesod.FeedConfigStatus
 
-	// goverter:matchIgnoreCase
 	ToBizFeedActionSet(*pb.FeedActionSet) *modelyesod.FeedActionSet
 
-	// goverter:matchIgnoreCase
 	ToBizFeedItemCollection(*pb.FeedItemCollection) *modelyesod.FeedItemCollection
 
-	// goverter:matchIgnoreCase
 	ToBizNotifyTarget(*pb.NotifyTarget) *modelnetzach.NotifyTarget
 	// goverter:enum:unknown NotifyTargetStatusUnspecified
 	// goverter:enum:map NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED NotifyTargetStatusUnspecified
@@ -129,18 +119,14 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND NotifyTargetStatusSuspend
 	ToBizNotifyTargetStatus(pb.NotifyTargetStatus) modelnetzach.NotifyTargetStatus
 	ToBizNotifyTargetStatusList([]pb.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus
-	// goverter:matchIgnoreCase
 	ToBizNotifyFlow(*pb.NotifyFlow) *modelnetzach.NotifyFlow
 	// goverter:enum:unknown NotifyFlowStatusUnspecified
 	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED NotifyFlowStatusUnspecified
 	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE NotifyFlowStatusActive
 	// goverter:enum:map NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND NotifyFlowStatusSuspend
 	ToBizNotifyFlowStatus(pb.NotifyFlowStatus) modelnetzach.NotifyFlowStatus
-	// goverter:matchIgnoreCase
 	ToBizNotifyFlowSource(*pb.NotifyFlowSource) *modelnetzach.NotifyFlowSource
-	// goverter:matchIgnoreCase
 	ToBizNotifyFlowTarget(*pb.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget
-	// goverter:matchIgnoreCase
 	ToBizNotifyFilter(*pb.NotifyFilter) *modelnetzach.NotifyFilter
 
 	// goverter:enum:unknown SystemNotificationTypeUnspecified
@@ -165,7 +151,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizSystemNotificationStatus(pb.SystemNotificationStatus) modelnetzach.SystemNotificationStatus
 	ToBizSystemNotificationStatusList([]pb.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus
 
-	// goverter:matchIgnoreCase
 	ToBizFileMetadata(*pb.FileMetadata) *modelbinah.FileMetadata
 	// goverter:enum:unknown FileTypeUnspecified
 	// goverter:enum:map FileType_FILE_TYPE_UNSPECIFIED FileTypeUnspecified

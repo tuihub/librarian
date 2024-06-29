@@ -19,6 +19,7 @@ import (
 
 // goverter:converter
 // goverter:output:file ./generated.go
+// goverter:matchIgnoreCase
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
 // goverter:extend ToPBInternalID
 // goverter:extend ToPBTime
@@ -28,12 +29,9 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 	ToPBServerFeatureSummary(*modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary
-	// goverter:matchIgnoreCase
 	ToPBFeatureFlag(*modeltiphereth.FeatureFlag) *librarian.FeatureFlag
-	// goverter:matchIgnoreCase
 	ToPBFeatureRequest(*modeltiphereth.FeatureRequest) *librarian.FeatureRequest
 
-	// goverter:matchIgnoreCase
 	// goverter:map ID DeviceId
 	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
 	ToPBDeviceInfoList([]*modeltiphereth.DeviceInfo) []*pb.DeviceInfo
@@ -47,13 +45,11 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeLinux SystemType_SYSTEM_TYPE_LINUX
 	ToPBSystemType(modeltiphereth.SystemType) pb.SystemType
 
-	// goverter:matchIgnoreCase
 	// goverter:map CreateAt CreateTime
 	// goverter:map ExpireAt ExpireTime
 	ToPBUserSession(*modeltiphereth.UserSession) *pb.UserSession
 	ToPBUserSessionList([]*modeltiphereth.UserSession) []*pb.UserSession
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore Password
 	ToPBUser(*modeltiphereth.User) *pb.User
 	ToPBUserList([]*modeltiphereth.User) []*pb.User
@@ -70,11 +66,9 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserStatusBlocked UserStatus_USER_STATUS_BLOCKED
 	ToPBUserStatus(modeltiphereth.UserStatus) pb.UserStatus
 
-	// goverter:matchIgnoreCase
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
 	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
 
-	// goverter:matchIgnoreCase
 	// goverter:map Status | ToPBPorterStatus
 	// goverter:ignore FeatureSummary
 	ToPBPorter(*modeltiphereth.PorterInstance) *pb.Porter
@@ -87,14 +81,11 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusActivationFailed PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
 	ToPBPorterConnectionStatus(modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore AltNames
 	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo
-	// goverter:matchIgnoreCase
 	// goverter:ignore ImageUrls
 	ToPBAppInfoDetail(*modelgebura.AppInfoDetails) *librarian.AppInfoDetails
 	ToPBAppInfoList([]*modelgebura.AppInfo) []*librarian.AppInfo
-	// goverter:matchIgnoreCase
 	// goverter:ignore AltNames
 	ToPBAppInfoMixed(*modelgebura.AppInfoMixed) *librarian.AppInfoMixed
 	ToPBAppInfoMixedList([]*modelgebura.AppInfoMixed) []*librarian.AppInfoMixed
@@ -103,29 +94,21 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppTypeGame AppType_APP_TYPE_GAME
 	ToPBAppType(modelgebura.AppType) librarian.AppType
 
-	// goverter:matchIgnoreCase
 	ToPBApp(*modelgebura.App) *pb.App
 	ToPBAppList([]*modelgebura.App) []*pb.App
-	// goverter:matchIgnoreCase
 	// goverter:ignore Id
 	// goverter:ignore TokenServerUrl
 	// goverter:ignore Chunks
 	ToPBAppBinary(*modelgebura.AppBinary) *pb.AppBinary
 
-	// goverter:matchIgnoreCase
 	ToPBAppInst(*modelgebura.AppInst) *pb.AppInst
 	ToPBAppInstList([]*modelgebura.AppInst) []*pb.AppInst
 
-	// goverter:matchIgnoreCase
 	ToPBFeed(*modelfeed.Feed) *librarian.Feed
-	// goverter:matchIgnoreCase
 	ToPBFeedItem(*modelfeed.Item) *librarian.FeedItem
 	ToPBFeedItemList([]*modelfeed.Item) []*librarian.FeedItem
-	// goverter:matchIgnoreCase
 	ToPBFeedImage(*modelfeed.Image) *librarian.FeedImage
-	// goverter:matchIgnoreCase
 	ToPBEnclosure(*modelfeed.Enclosure) *librarian.FeedEnclosure
-	// goverter:matchIgnoreCase
 	// goverter:map LatestPullStatus | ToPBFeedConfigPullStatus
 	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
 	// goverter:enum:unknown FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
@@ -133,23 +116,18 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map FeedConfigStatusActive FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
 	// goverter:enum:map FeedConfigStatusSuspend FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
 	ToPBFeedConfigStatus(modelyesod.FeedConfigStatus) pb.FeedConfigStatus
-	// goverter:matchIgnoreCase
 	// goverter:map FeedConfig Config
 	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig
 	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*pb.ListFeedConfigsResponse_FeedWithConfig
-	// goverter:matchIgnoreCase
 	ToPBFeedItemDigest(*modelyesod.FeedItemDigest) *pb.FeedItemDigest
 	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
 
-	// goverter:matchIgnoreCase
 	ToPBFeedActionSet(*modelyesod.FeedActionSet) *pb.FeedActionSet
 	ToPBFeedActionSetList([]*modelyesod.FeedActionSet) []*pb.FeedActionSet
 
-	// goverter:matchIgnoreCase
 	ToPBFeedItemCollection(*modelyesod.FeedItemCollection) *pb.FeedItemCollection
 	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*pb.FeedItemCollection
 
-	// goverter:matchIgnoreCase
 	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
 	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
 	// goverter:enum:unknown NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
@@ -158,20 +136,16 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map NotifyTargetStatusSuspend NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
 	ToPBNotifyTargetStatus(modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus
 
-	// goverter:matchIgnoreCase
 	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *pb.NotifyFlow
 	// goverter:enum:unknown NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyFlowStatusUnspecified NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyFlowStatusActive NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
 	// goverter:enum:map NotifyFlowStatusSuspend NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	ToPBNotifyFlowStatus(modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus
-	// goverter:matchIgnoreCase
 	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
-	// goverter:matchIgnoreCase
 	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
 	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
 
-	// goverter:matchIgnoreCase
 	ToPBSystemNotification(*modelnetzach.SystemNotification) *pb.SystemNotification
 	ToPBSystemNotificationList([]*modelnetzach.SystemNotification) []*pb.SystemNotification
 	// goverter:enum:unknown SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED

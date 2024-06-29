@@ -31,8 +31,10 @@ type NotifyPush struct {
 	Messages []*modelfeed.Item
 }
 
-type ParseFeedItemDigest struct {
-	ID model.InternalID
+type FeedItemPostprocess struct {
+	FeedID       model.InternalID
+	ItemID       model.InternalID
+	SystemNotify *modelnetzach.SystemNotify
 }
 
 type UpdateAppInfoIndex struct {

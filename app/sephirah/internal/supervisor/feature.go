@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 )
 
 func (s *Supervisor) CheckAccountPlatform(platform string) bool {
@@ -79,6 +80,26 @@ func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination stri
 	for _, i := range s.aliveInstances {
 		for _, a := range i.FeatureSummary.NotifyDestinations {
 			if a.ID == destination {
+				return client.WithPorterName(ctx, i.GlobalName)
+			}
+		}
+	}
+	return client.WithPorterFastFail(ctx)
+}
+
+func (s *Supervisor) CheckFeedItemAction(request *modeltiphereth.FeatureRequest) bool {
+	for _, p := range s.featureSummary.FeedItemActions {
+		if p.Match(request) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Supervisor) CallFeedItemAction(ctx context.Context, request *modeltiphereth.FeatureRequest) context.Context {
+	for _, i := range s.aliveInstances {
+		for _, a := range i.FeatureSummary.FeedItemActions {
+			if a.Match(request) {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}

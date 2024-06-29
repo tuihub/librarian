@@ -62,10 +62,11 @@ type Yesod struct {
 	repo YesodRepo
 	supv *supervisor.Supervisor
 	// mapper   mapper.LibrarianMapperServiceClient
-	searcher     *client.Searcher
-	pullFeed     *libmq.Topic[modelyesod.PullFeed]
-	systemNotify *libmq.Topic[modelnetzach.SystemNotify]
-	feedOwner    *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
+	searcher           *client.Searcher
+	pullFeed           *libmq.Topic[modelyesod.PullFeed]
+	systemNotify       *libmq.Topic[modelnetzach.SystemNotify]
+	feedOwner          *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
+	builtinFeedActions []*modeltiphereth.FeatureFlag
 }
 
 func NewYesod(
@@ -78,20 +79,29 @@ func NewYesod(
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 	feedOwner *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User],
 ) (*Yesod, error) {
+	builtinFeedActions, err := getBuiltinActionFeatureFlags()
+	if err != nil {
+		return nil, err
+	}
 	y := &Yesod{
 		repo: repo,
 		supv: supv,
 		//mapper:   mClient,
-		searcher:     sClient,
-		pullFeed:     pullFeed,
-		systemNotify: systemNotify,
-		feedOwner:    feedOwner,
+		searcher:           sClient,
+		pullFeed:           pullFeed,
+		systemNotify:       systemNotify,
+		feedOwner:          feedOwner,
+		builtinFeedActions: builtinFeedActions,
 	}
-	err := cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:gomnd // hard code min interval
+	err = cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:gomnd // hard code min interval
 	if err != nil {
 		return nil, err
 	}
 	return y, nil
+}
+
+func (y *Yesod) GetBuiltInFeedActions() []*modeltiphereth.FeatureFlag {
+	return y.builtinFeedActions
 }
 
 func (y *Yesod) PullFeeds(ctx context.Context) error {

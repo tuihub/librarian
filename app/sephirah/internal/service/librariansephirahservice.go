@@ -82,6 +82,8 @@ func NewLibrarianSephirahServiceService(
 
 func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context,
 	_ *pb.GetServerInformationRequest) (*pb.GetServerInformationResponse, error) {
+	featureSummary := s.s.GetFeatureSummary()
+	featureSummary.FeedItemActions = append(featureSummary.FeedItemActions, s.y.GetBuiltInFeedActions()...)
 	return &pb.GetServerInformationResponse{
 		ServerBinarySummary: &pb.ServerBinarySummary{
 			SourceCodeAddress: s.app.SourceCodeAddress,
@@ -92,7 +94,7 @@ func (s *LibrarianSephirahServiceService) GetServerInformation(_ context.Context
 			Version: s.app.ProtoVersion,
 		},
 		CurrentTime:           timestamppb.New(time.Now()),
-		FeatureSummary:        converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary()),
+		FeatureSummary:        converter.ToPBServerFeatureSummary(featureSummary),
 		ServerInstanceSummary: s.info,
 		StatusReport:          nil,
 	}, nil

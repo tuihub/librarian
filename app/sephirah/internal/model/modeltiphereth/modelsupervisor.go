@@ -31,6 +31,10 @@ type FeatureFlag struct {
 	ConfigJSONSchema string `json:"config_json_schema"`
 }
 
+func (f *FeatureFlag) Match(request *FeatureRequest) bool {
+	return f.ID == request.ID && f.Region == request.Region
+}
+
 type FeatureRequest struct {
 	ID         string `json:"id"`
 	Region     string `json:"region"`

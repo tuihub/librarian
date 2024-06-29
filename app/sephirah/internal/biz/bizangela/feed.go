@@ -3,26 +3,26 @@ package bizangela
 import (
 	"context"
 	"fmt"
-	"net/url"
 	"sort"
-	"strings"
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
-	"github.com/PuerkitoBio/goquery"
 	"golang.org/x/exp/slices"
 )
 
 func NewPullFeedTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
-	notify *libmq.Topic[modelangela.NotifyRouter],
-	parse *libmq.Topic[modelangela.ParseFeedItemDigest],
+	parse *libmq.Topic[modelangela.FeedItemPostprocess],
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 ) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
@@ -77,15 +77,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			for i, item := range feed.Items {
 				item.ID = ids[i]
-				// generate publish_platform
-				if len(item.Link) > 0 {
-					var linkParsed *url.URL
-					linkParsed, err = url.Parse(item.Link)
-					if err == nil {
-						item.PublishPlatform = linkParsed.Host
-					}
-				}
-				// generate published_parsed
+				// generate published_parsed, used for sorting
 				if item.PublishedParsed == nil {
 					t := time.Now()
 					item.PublishedParsed = &t
@@ -103,80 +95,83 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			fc.LatestPullStatus = modelyesod.FeedConfigPullStatusSuccess
 
-			// Queue ParseFeedItemDigest and NotifyRouter
-			newItems := make([]*modelfeed.Item, 0, len(newItemGUIDs))
+			// Queue FeedItemPostprocess
 			for _, item := range feed.Items {
 				if slices.Contains(newItemGUIDs, item.GUID) {
-					newItems = append(newItems, item)
-					err = parse.Publish(ctx, modelangela.ParseFeedItemDigest{ID: item.ID})
+					err = parse.Publish(ctx, modelangela.FeedItemPostprocess{
+						FeedID:       feed.ID,
+						ItemID:       item.ID,
+						SystemNotify: p.SystemNotify,
+					})
 				}
 			}
 			if err != nil {
-				fc.LatestPullMessage = fmt.Sprintf("Queue ParseFeedItemDigest failed: %s", err.Error())
-			}
-			if len(newItems) > 0 {
-				err = notify.Publish(ctx, modelangela.NotifyRouter{
-					FeedID:   feed.ID,
-					Messages: newItems,
-				})
-				if err != nil {
-					fc.LatestPullMessage = fmt.Sprintf("Queue NotifyRouter failed: %s", err.Error())
-				}
+				fc.LatestPullMessage = fmt.Sprintf("Queue FeedItemPostprocess failed: %s", err.Error())
 			}
 			return nil
 		},
 	)
 }
 
-func NewParseFeedItemDigestTopic( //nolint:gocognit // TODO
+func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
-) *libmq.Topic[modelangela.ParseFeedItemDigest] {
-	return libmq.NewTopic[modelangela.ParseFeedItemDigest](
-		"ParseFeedItemDigest",
-		func(ctx context.Context, p *modelangela.ParseFeedItemDigest) error {
-			const maxImgNum = 9
-			const maxDescLen = 128
-			item, err := a.repo.GetFeedItem(ctx, p.ID)
+	notify *libmq.Topic[modelangela.NotifyRouter],
+) *libmq.Topic[modelangela.FeedItemPostprocess] {
+	return libmq.NewTopic[modelangela.FeedItemPostprocess](
+		"FeedItemPostprocess",
+		func(ctx context.Context, p *modelangela.FeedItemPostprocess) error {
+			item, err := a.repo.GetFeedItem(ctx, p.ItemID)
 			if err != nil {
 				return err
 			}
-			content := item.Content
-			if len(content) == 0 {
-				content = item.Description
-			}
-			doc, err := goquery.NewDocumentFromReader(strings.NewReader(content))
+			actionSets, err := a.repo.GetFeedActions(ctx, p.FeedID)
 			if err != nil {
 				return err
 			}
-			digestDesc := doc.Text()
-			digestDesc = strings.ReplaceAll(digestDesc, " ", "")
-			digestDesc = strings.ReplaceAll(digestDesc, "\n", "")
-			digestDescRune := []rune(digestDesc)
-			if len(digestDescRune) > maxDescLen {
-				digestDescRune = digestDescRune[:maxDescLen]
+			builtin := bizyesod.GetBuiltinActionMap(ctx)
+			item, err = bizyesod.RequiredStartAction(ctx, item)
+			if err != nil {
+				return err
 			}
-			digestDesc = string(digestDescRune)
-			item.DigestDescription = digestDesc
-
-			for i, n := range doc.Find("img").Nodes {
-				if i == maxImgNum {
-					break
-				}
-				image := new(modelfeed.Image)
-				for _, attr := range n.Attr {
-					if attr.Key == "src" {
-						image.URL = attr.Val
+			for _, actions := range actionSets {
+				for _, action := range actions.Actions {
+					var config modeltiphereth.FeatureRequest
+					err = libcodec.Unmarshal(libcodec.JSON, []byte(action.ConfigJSON), &config)
+					if f, ok := builtin[action.ID]; ok {
+						if err != nil {
+							return err
+						}
+						item, err = f(ctx, config, item)
+						if err != nil {
+							return err
+						}
+					} else if a.supv.CheckFeedItemAction(action) {
+						var resp *porter.ExecFeedItemActionResponse
+						resp, err = a.porter.ExecFeedItemAction(
+							a.supv.CallFeedItemAction(ctx, action),
+							&porter.ExecFeedItemActionRequest{
+								Action: converter.ToPBFeatureRequest(action),
+								Item:   converter.ToPBFeedItem(item),
+							})
+						if err != nil {
+							return err
+						}
+						item = converter.ToBizFeedItem(resp.GetItem())
 					}
-					if attr.Key == "alt" {
-						image.Title = attr.Val
-					}
 				}
-				item.DigestImages = append(item.DigestImages, image)
 			}
-			err = a.repo.UpdateFeedItemDigest(ctx, item)
+			item, err = bizyesod.RequiredEndAction(ctx, item)
 			if err != nil {
 				return err
 			}
+			_, err = a.repo.UpsertFeedItems(ctx, []*modelfeed.Item{item}, p.FeedID)
+			if err != nil {
+				return err
+			}
+			_ = notify.Publish(ctx, modelangela.NotifyRouter{
+				FeedID:   p.FeedID,
+				Messages: []*modelfeed.Item{item},
+			})
 			return nil
 		},
 	)

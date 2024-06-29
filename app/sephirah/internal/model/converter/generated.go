@@ -15,6 +15,8 @@ import (
 	v12 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	"time"
 )
 
 type toBizConverterImpl struct{}
@@ -299,6 +301,43 @@ func (c *toBizConverterImpl) ToBizFeedConfigStatusList(source []v11.FeedConfigSt
 		}
 	}
 	return modelyesodFeedConfigStatusList
+}
+func (c *toBizConverterImpl) ToBizFeedItem(source *v1.FeedItem) *modelfeed.Item {
+	var pModelfeedItem *modelfeed.Item
+	if source != nil {
+		var modelfeedItem modelfeed.Item
+		modelfeedItem.ID = ToBizInternalID((*source).Id)
+		modelfeedItem.Title = (*source).Title
+		modelfeedItem.Description = (*source).Description
+		modelfeedItem.Content = (*source).Content
+		modelfeedItem.Link = (*source).Link
+		modelfeedItem.Updated = (*source).Updated
+		modelfeedItem.UpdatedParsed = c.pTimestamppbTimestampToPTimeTime((*source).UpdatedParsed)
+		modelfeedItem.Published = (*source).Published
+		modelfeedItem.PublishedParsed = c.pTimestamppbTimestampToPTimeTime((*source).PublishedParsed)
+		var pModelfeedPersonList []*modelfeed.Person
+		if (*source).Authors != nil {
+			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
+			for i := 0; i < len((*source).Authors); i++ {
+				pModelfeedPersonList[i] = c.pV1FeedPersonToPModelfeedPerson((*source).Authors[i])
+			}
+		}
+		modelfeedItem.Authors = pModelfeedPersonList
+		modelfeedItem.GUID = (*source).Guid
+		modelfeedItem.Image = c.pV1FeedImageToPModelfeedImage((*source).Image)
+		var pModelfeedEnclosureList []*modelfeed.Enclosure
+		if (*source).Enclosures != nil {
+			pModelfeedEnclosureList = make([]*modelfeed.Enclosure, len((*source).Enclosures))
+			for j := 0; j < len((*source).Enclosures); j++ {
+				pModelfeedEnclosureList[j] = c.pV1FeedEnclosureToPModelfeedEnclosure((*source).Enclosures[j])
+			}
+		}
+		modelfeedItem.Enclosures = pModelfeedEnclosureList
+		modelfeedItem.PublishPlatform = (*source).PublishPlatform
+		modelfeedItem.ReadCount = (*source).ReadCount
+		pModelfeedItem = &modelfeedItem
+	}
+	return pModelfeedItem
 }
 func (c *toBizConverterImpl) ToBizFeedItemCollection(source *v11.FeedItemCollection) *modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
@@ -712,6 +751,46 @@ func (c *toBizConverterImpl) ToLibAuthUserTypeList(source []v11.UserType) []liba
 		}
 	}
 	return libauthUserTypeList
+}
+func (c *toBizConverterImpl) pTimestamppbTimestampToPTimeTime(source *timestamppb.Timestamp) *time.Time {
+	var pTimeTime *time.Time
+	if source != nil {
+		var timeTime time.Time
+		_ = (*source)
+		pTimeTime = &timeTime
+	}
+	return pTimeTime
+}
+func (c *toBizConverterImpl) pV1FeedEnclosureToPModelfeedEnclosure(source *v1.FeedEnclosure) *modelfeed.Enclosure {
+	var pModelfeedEnclosure *modelfeed.Enclosure
+	if source != nil {
+		var modelfeedEnclosure modelfeed.Enclosure
+		modelfeedEnclosure.URL = (*source).Url
+		modelfeedEnclosure.Length = (*source).Length
+		modelfeedEnclosure.Type = (*source).Type
+		pModelfeedEnclosure = &modelfeedEnclosure
+	}
+	return pModelfeedEnclosure
+}
+func (c *toBizConverterImpl) pV1FeedImageToPModelfeedImage(source *v1.FeedImage) *modelfeed.Image {
+	var pModelfeedImage *modelfeed.Image
+	if source != nil {
+		var modelfeedImage modelfeed.Image
+		modelfeedImage.URL = (*source).Url
+		modelfeedImage.Title = (*source).Title
+		pModelfeedImage = &modelfeedImage
+	}
+	return pModelfeedImage
+}
+func (c *toBizConverterImpl) pV1FeedPersonToPModelfeedPerson(source *v1.FeedPerson) *modelfeed.Person {
+	var pModelfeedPerson *modelfeed.Person
+	if source != nil {
+		var modelfeedPerson modelfeed.Person
+		modelfeedPerson.Name = (*source).Name
+		modelfeedPerson.Email = (*source).Email
+		pModelfeedPerson = &modelfeedPerson
+	}
+	return pModelfeedPerson
 }
 
 type toPBConverterImpl struct{}

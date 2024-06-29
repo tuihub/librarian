@@ -31,7 +31,7 @@ var ProviderSet = wire.NewSet(
 	NewFeedToNotifyFlowCache,
 	NewNotifyFlowCache,
 	NewNotifyTargetCache,
-	NewParseFeedItemDigestTopic,
+	NewFeedItemPostprocessTopic,
 	NewUpdateAppInfoIndexTopic,
 )
 
@@ -56,7 +56,7 @@ type AngelaRepo interface {
 	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
 	UpdateFeedPullStatus(context.Context, *modelyesod.FeedConfig) error
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
-	UpdateFeedItemDigest(context.Context, *modelfeed.Item) error
+	GetFeedActions(context.Context, model.InternalID) ([]*modelyesod.FeedActionSet, error)
 }
 
 func NewAngelaBase(
@@ -85,7 +85,7 @@ func NewAngela(
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	notifyRouter *libmq.Topic[modelangela.NotifyRouter],
 	notifyPush *libmq.Topic[modelangela.NotifyPush],
-	parseFeedItem *libmq.Topic[modelangela.ParseFeedItemDigest],
+	itemPostprocess *libmq.Topic[modelangela.FeedItemPostprocess],
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
 ) (*Angela, error) {
 	if err := mq.RegisterTopic(pullAccountInfo); err != nil {
@@ -106,7 +106,7 @@ func NewAngela(
 	if err := mq.RegisterTopic(notifyPush); err != nil {
 		return nil, err
 	}
-	if err := mq.RegisterTopic(parseFeedItem); err != nil {
+	if err := mq.RegisterTopic(itemPostprocess); err != nil {
 		return nil, err
 	}
 	if err := mq.RegisterTopic(updateAppIndex); err != nil {

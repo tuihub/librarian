@@ -24,6 +24,9 @@ var toBiz = &toBizConverterImpl{} //nolint:gochecknoglobals // checked
 func ToPBServerFeatureSummary(a *modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary {
 	return toPB.ToPBServerFeatureSummary(a)
 }
+func ToPBFeatureRequest(a *modeltiphereth.FeatureRequest) *librarian.FeatureRequest {
+	return toPB.ToPBFeatureRequest(a)
+}
 func ToPBDeviceInfo(a *modeltiphereth.DeviceInfo) *pb.DeviceInfo {
 	return toPB.ToPBDeviceInfo(a)
 }
@@ -177,6 +180,9 @@ func ToBizAppBinaryList(a []*pb.AppBinary) []*modelgebura.AppBinary {
 }
 func ToBizAppInst(a *pb.AppInst) *modelgebura.AppInst {
 	return toBiz.ToBizAppInst(a)
+}
+func ToBizFeedItem(a *librarian.FeedItem) *modelfeed.Item {
+	return toBiz.ToBizFeedItem(a)
 }
 func ToBizFeedConfig(a *pb.FeedConfig) *modelyesod.FeedConfig {
 	return toBiz.ToBizFeedConfig(a)
