@@ -6,6 +6,14 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 )
 
+func TestGetSimpleKeywordFilterActionConfigSchema(t *testing.T) {
+	s, err := modelyesod.GetSimpleKeywordFilterActionConfigSchema()
+	t.Log(s)
+	if err != nil {
+		t.Errorf("GetSimpleKeywordFilterActionConfigSchema() error = %v", err)
+	}
+}
+
 func TestGetKeywordFilterActionConfigSchema(t *testing.T) {
 	s, err := modelyesod.GetKeywordFilterActionConfigSchema()
 	t.Log(s)

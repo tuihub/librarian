@@ -137,13 +137,16 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 				for _, action := range actions.Actions {
 					var config modeltiphereth.FeatureRequest
 					err = libcodec.Unmarshal(libcodec.JSON, []byte(action.ConfigJSON), &config)
-					if f, ok := builtin[action.ID]; ok {
-						if err != nil {
-							return err
-						}
+					if err != nil {
+						return err
+					}
+					if f, ok := builtin[action.ID]; ok { //nolint:nestif // TODO
 						item, err = f(ctx, config, item)
 						if err != nil {
 							return err
+						}
+						if item == nil {
+							return nil
 						}
 					} else if a.supv.CheckFeedItemAction(action) {
 						var resp *porter.ExecFeedItemActionResponse
@@ -152,9 +155,13 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 							&porter.ExecFeedItemActionRequest{
 								Action: converter.ToPBFeatureRequest(action),
 								Item:   converter.ToPBFeedItem(item),
-							})
+							},
+						)
 						if err != nil {
 							return err
+						}
+						if resp.GetItem() != nil {
+							return nil
 						}
 						item = converter.ToBizFeedItem(resp.GetItem())
 					}

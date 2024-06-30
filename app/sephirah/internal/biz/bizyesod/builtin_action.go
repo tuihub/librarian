@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 
 	"github.com/PuerkitoBio/goquery"
@@ -14,6 +15,7 @@ import (
 
 const maxImgNum = 9
 const maxDescLen = 128
+const simpleKeywordFilterActionID = "simple_keyword_filter"
 const keywordFilterActionID = "keyword_filter"
 const descriptionGeneratorActionID = "description_generator"
 
@@ -25,12 +27,17 @@ func GetBuiltinActionMap(
 	ctx context.Context,
 ) map[string]func(context.Context, modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
 	return map[string]func(context.Context, modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
+		simpleKeywordFilterActionID:  simpleKeywordFilterAction,
 		keywordFilterActionID:        keywordFilterAction,
 		descriptionGeneratorActionID: descriptionGeneratorAction,
 	}
 }
 
 func getBuiltinActionFeatureFlags() ([]*modeltiphereth.FeatureFlag, error) {
+	simple, err := modelyesod.GetSimpleKeywordFilterActionConfigSchema()
+	if err != nil {
+		return nil, err
+	}
 	keyword, err := modelyesod.GetKeywordFilterActionConfigSchema()
 	if err != nil {
 		return nil, err
@@ -40,6 +47,13 @@ func getBuiltinActionFeatureFlags() ([]*modeltiphereth.FeatureFlag, error) {
 		return nil, err
 	}
 	return []*modeltiphereth.FeatureFlag{
+		{
+			ID:               simpleKeywordFilterActionID,
+			Region:           "",
+			Name:             "Simple Keyword Filter",
+			Description:      "Filter feed item by keyword",
+			ConfigJSONSchema: simple,
+		},
 		{
 			ID:               keywordFilterActionID,
 			Region:           "",
@@ -104,6 +118,38 @@ func parseDigestAction(_ context.Context, item *modelfeed.Item) (*modelfeed.Item
 			}
 		}
 		item.DigestImages = append(item.DigestImages, image)
+	}
+	return item, nil
+}
+
+func simpleKeywordFilterAction(
+	_ context.Context,
+	request modeltiphereth.FeatureRequest,
+	item *modelfeed.Item,
+) (*modelfeed.Item, error) {
+	config := new(modelyesod.SimpleKeywordFilterActionConfig)
+	if err := libcodec.Unmarshal(libcodec.JSON, []byte(request.ConfigJSON), config); err != nil {
+		return nil, err
+	}
+	for _, titleInclude := range config.TitleInclude {
+		if !strings.Contains(item.Title, titleInclude) {
+			return nil, nil //nolint:nilnil // return nil to skip this item
+		}
+	}
+	for _, titleExclude := range config.TitleExclude {
+		if strings.Contains(item.Title, titleExclude) {
+			return nil, nil //nolint:nilnil // return nil to skip this item
+		}
+	}
+	for _, contentInclude := range config.ContentInclude {
+		if !strings.Contains(item.Content, contentInclude) {
+			return nil, nil //nolint:nilnil // return nil to skip this item
+		}
+	}
+	for _, contentExclude := range config.ContentExclude {
+		if strings.Contains(item.Content, contentExclude) {
+			return nil, nil //nolint:nilnil // return nil to skip this item
+		}
 	}
 	return item, nil
 }

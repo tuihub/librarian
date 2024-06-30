@@ -2,19 +2,23 @@ package modelyesod
 
 import "github.com/invopop/jsonschema"
 
+type SimpleKeywordFilterActionConfig struct {
+	TitleInclude   []string `json:"title_include"   jsonschema:"title=Title include"`
+	TitleExclude   []string `json:"title_exclude"   jsonschema:"title=Title exclude"`
+	ContentInclude []string `json:"content_include" jsonschema:"title=Content include"`
+	ContentExclude []string `json:"content_exclude" jsonschema:"title=Content exclude"`
+}
+
+func GetSimpleKeywordFilterActionConfigSchema() (string, error) {
+	return reflectJSONSchema(new(SimpleKeywordFilterActionConfig))
+}
+
 type KeywordFilterActionConfig struct {
 	OrList []*KeywordFilterAndList `json:"or_list" jsonschema:"title=OR list"`
 }
 
 func GetKeywordFilterActionConfigSchema() (string, error) {
-	r := new(jsonschema.Reflector)
-	r.ExpandedStruct = true
-	r.DoNotReference = true
-	j, err := r.Reflect(new(KeywordFilterActionConfig)).MarshalJSON()
-	if err != nil {
-		return "", err
-	}
-	return string(j), nil
+	return reflectJSONSchema(new(KeywordFilterActionConfig))
 }
 
 type KeywordFilterAndList struct {
@@ -52,10 +56,14 @@ const (
 type DescriptionGeneratorActionConfig struct{}
 
 func GetDescriptionGeneratorActionConfigSchema() (string, error) {
+	return reflectJSONSchema(new(DescriptionGeneratorActionConfig))
+}
+
+func reflectJSONSchema(v interface{}) (string, error) {
 	r := new(jsonschema.Reflector)
 	r.ExpandedStruct = true
 	r.DoNotReference = true
-	j, err := r.Reflect(new(DescriptionGeneratorActionConfig)).MarshalJSON()
+	j, err := r.Reflect(v).MarshalJSON()
 	if err != nil {
 		return "", err
 	}

@@ -32,55 +32,80 @@ func NewYesodRepo(data *Data) bizyesod.YesodRepo {
 }
 
 func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID, c *modelyesod.FeedConfig) error {
-	q := y.data.db.FeedConfig.Create().
-		SetOwnerID(owner).
-		SetID(c.ID).
-		SetName(c.Name).
-		SetFeedURL(c.FeedURL).
-		SetCategory(c.Category).
-		SetAuthorAccount(c.AuthorAccount).
-		SetSource(c.Source).
-		SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
-		SetPullInterval(c.PullInterval).
-		SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(c.LatestPullStatus)).
-		SetLatestPullMessage("").
-		SetHideItems(c.HideItems).
-		AddFeedActionSetIDs(c.ActionSets...)
-	return q.Exec(ctx)
+	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		err := tx.FeedConfig.Create().
+			SetOwnerID(owner).
+			SetID(c.ID).
+			SetName(c.Name).
+			SetFeedURL(c.FeedURL).
+			SetCategory(c.Category).
+			SetAuthorAccount(c.AuthorAccount).
+			SetSource(c.Source).
+			SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
+			SetPullInterval(c.PullInterval).
+			SetLatestPullStatus(converter.ToEntFeedConfigLatestPullStatus(c.LatestPullStatus)).
+			SetLatestPullMessage("").
+			SetHideItems(c.HideItems).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		actionCreate := make([]*ent.FeedConfigActionCreate, len(c.ActionSets))
+		for i, action := range c.ActionSets {
+			actionCreate[i] = tx.FeedConfigAction.Create().
+				SetFeedConfigID(c.ID).
+				SetFeedActionSetID(action).
+				SetIndex(int64(i))
+		}
+		return tx.FeedConfigAction.CreateBulk(actionCreate...).Exec(ctx)
+	})
 }
 
 func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalID, c *modelyesod.FeedConfig) error {
-	q := y.data.db.FeedConfig.Update().
-		Where(
-			feedconfig.IDEQ(c.ID),
-			feedconfig.HasOwnerWith(user.IDEQ(userID)),
-		)
-	if len(c.Name) > 0 {
-		q.SetName(c.Name)
-	}
-	if len(c.FeedURL) > 0 {
-		q.SetFeedURL(c.FeedURL)
-	}
-	if len(c.Category) > 0 {
-		q.SetCategory(c.Category)
-	}
-	if c.AuthorAccount > 0 {
-		q.SetAuthorAccount(c.AuthorAccount)
-	}
-	if len(c.Source) > 0 {
-		q.SetSource(c.Source)
-	}
-	if c.Status != modelyesod.FeedConfigStatusUnspecified {
-		q.SetStatus(converter.ToEntFeedConfigStatus(c.Status))
-	}
-	if c.PullInterval > 0 {
-		q.SetPullInterval(c.PullInterval).SetNextPullBeginAt(time.Now())
-	}
-	if c.ActionSets != nil {
-		q.ClearFeedActionSet().AddFeedActionSetIDs(c.ActionSets...)
-	}
-	q.SetHideItems(c.HideItems)
-	return q.Exec(ctx)
+	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.FeedConfig.Update().
+			Where(
+				feedconfig.IDEQ(c.ID),
+				feedconfig.HasOwnerWith(user.IDEQ(userID)),
+			)
+		if len(c.Name) > 0 {
+			q.SetName(c.Name)
+		}
+		if len(c.FeedURL) > 0 {
+			q.SetFeedURL(c.FeedURL)
+		}
+		if len(c.Category) > 0 {
+			q.SetCategory(c.Category)
+		}
+		if c.AuthorAccount > 0 {
+			q.SetAuthorAccount(c.AuthorAccount)
+		}
+		if len(c.Source) > 0 {
+			q.SetSource(c.Source)
+		}
+		if c.Status != modelyesod.FeedConfigStatusUnspecified {
+			q.SetStatus(converter.ToEntFeedConfigStatus(c.Status))
+		}
+		if c.PullInterval > 0 {
+			q.SetPullInterval(c.PullInterval).SetNextPullBeginAt(time.Now())
+		}
+		if c.ActionSets != nil {
+			q.ClearFeedActionSet()
+		}
+		q.SetHideItems(c.HideItems)
+		err := q.Exec(ctx)
+		if err != nil {
+			return err
+		}
+		actionCreate := make([]*ent.FeedConfigActionCreate, len(c.ActionSets))
+		for i, action := range c.ActionSets {
+			actionCreate[i] = tx.FeedConfigAction.Create().
+				SetFeedConfigID(c.ID).
+				SetFeedActionSetID(action).
+				SetIndex(int64(i))
+		}
+		return tx.FeedConfigAction.CreateBulk(actionCreate...).Exec(ctx)
+	})
 }
 
 // UpdateFeedConfigAsInQueue set SetNextPullBeginAt to one day later to avoid repeat queue.
@@ -117,7 +142,7 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	return converter.ToBizFeedConfigList(feedConfigs), nil
 }
 
-func (y *yesodRepo) ListFeedConfigs(
+func (y *yesodRepo) ListFeedConfigs( //nolint:gocognit //TODO
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -158,12 +183,19 @@ func (y *yesodRepo) ListFeedConfigs(
 			Limit(paging.ToLimit()).
 			Offset(paging.ToOffset()).
 			WithFeed().
+			WithFeedActionSet().
 			All(ctx)
 		if err != nil {
 			return err
 		}
 		res = make([]*modelyesod.FeedWithConfig, 0, len(configs))
 		for _, config := range configs {
+			feedConfig := converter.ToBizFeedConfig(config)
+			actionSets := make([]model.InternalID, 0, len(config.Edges.FeedActionSet))
+			for _, actionSet := range config.Edges.FeedActionSet {
+				actionSets = append(actionSets, actionSet.ID)
+			}
+			feedConfig.ActionSets = actionSets
 			res = append(res, &modelyesod.FeedWithConfig{
 				FeedConfig: converter.ToBizFeedConfig(config),
 				Feed:       converter.ToBizFeed(config.Edges.Feed),

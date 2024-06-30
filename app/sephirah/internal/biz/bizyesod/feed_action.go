@@ -20,6 +20,9 @@ func (y *Yesod) CreateFeedActionSet(
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
+	if len(set.Actions) == 0 {
+		return 0, pb.ErrorErrorReasonBadRequest("actions is empty")
+	}
 	id, err := y.searcher.NewID(ctx)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -36,6 +39,9 @@ func (y *Yesod) UpdateFeedActionSet(ctx context.Context, set *modelyesod.FeedAct
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
+	}
+	if len(set.Actions) == 0 {
+		return pb.ErrorErrorReasonBadRequest("actions is empty")
 	}
 	err := y.repo.UpdateFeedActionSet(ctx, claims.UserID, set)
 	if err != nil {
