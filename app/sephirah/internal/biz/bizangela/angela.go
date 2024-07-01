@@ -53,7 +53,8 @@ type AngelaRepo interface {
 	UpsertAppInfos(context.Context, []*modelgebura.AppInfo) error
 	AccountPurchaseAppInfos(context.Context, model.InternalID, []model.InternalID) error
 	UpsertFeed(context.Context, *modelfeed.Feed) error
-	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
+	CheckNewFeedItems(context.Context, []*modelfeed.Item, model.InternalID) ([]string, error)
+	UpsertFeedItems(context.Context, []*modelfeed.Item, model.InternalID) error
 	UpdateFeedPullStatus(context.Context, *modelyesod.FeedConfig) error
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
 	GetFeedActions(context.Context, model.InternalID) ([]*modelyesod.FeedActionSet, error)

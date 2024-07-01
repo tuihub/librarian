@@ -33,7 +33,7 @@ type NotifyPush struct {
 
 type FeedItemPostprocess struct {
 	FeedID       model.InternalID
-	ItemID       model.InternalID
+	Item         *modelfeed.Item
 	SystemNotify *modelnetzach.SystemNotify
 }
 

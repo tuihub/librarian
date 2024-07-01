@@ -217,11 +217,7 @@ func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	})
 }
 
-func (a *angelaRepo) UpsertFeedItems(
-	ctx context.Context,
-	items []*modelfeed.Item,
-	feedID model.InternalID,
-) ([]string, error) {
+func (a *angelaRepo) CheckNewFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) ([]string, error) {
 	guids := make([]string, 0, len(items))
 	for _, item := range items {
 		guids = append(guids, item.GUID)
@@ -233,6 +229,24 @@ func (a *angelaRepo) UpsertFeedItems(
 	if err != nil {
 		return nil, err
 	}
+	existItemMap := make(map[string]bool)
+	res := make([]string, 0, len(items)-len(existItems))
+	for _, item := range existItems {
+		existItemMap[item.GUID] = true
+	}
+	for _, item := range items {
+		if _, exist := existItemMap[item.GUID]; !exist {
+			res = append(res, item.GUID)
+		}
+	}
+	return res, nil
+}
+
+func (a *angelaRepo) UpsertFeedItems(
+	ctx context.Context,
+	items []*modelfeed.Item,
+	feedID model.InternalID,
+) error {
 	il := make([]*ent.FeedItemCreate, len(items))
 	for i, item := range items {
 		il[i] = a.data.db.FeedItem.Create().
@@ -258,7 +272,7 @@ func (a *angelaRepo) UpsertFeedItems(
 			il[i].SetPublishedParsed(time.Now())
 		}
 	}
-	err = a.data.db.FeedItem.CreateBulk(il...).
+	return a.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
 			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
 			//
@@ -269,20 +283,6 @@ func (a *angelaRepo) UpsertFeedItems(
 			// }),
 			sql.DoNothing(),
 		).Exec(ctx)
-	if err != nil {
-		return nil, err
-	}
-	existItemMap := make(map[string]bool)
-	res := make([]string, 0, len(items)-len(existItems))
-	for _, item := range existItems {
-		existItemMap[item.GUID] = true
-	}
-	for _, item := range items {
-		if _, exist := existItemMap[item.GUID]; !exist {
-			res = append(res, item.GUID)
-		}
-	}
-	return res, nil
 }
 
 func (a *angelaRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {

@@ -10,9 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
-	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -88,7 +86,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 				fc.LatestPullMessage = fmt.Sprintf("UpsertFeed failed: %s", err.Error())
 				return err
 			}
-			newItemGUIDs, err := a.repo.UpsertFeedItems(ctx, feed.Items, feed.ID)
+			newItemGUIDs, err := a.repo.CheckNewFeedItems(ctx, feed.Items, feed.ID)
 			if err != nil {
 				fc.LatestPullMessage = fmt.Sprintf("UpsertFeedItems failed: %s", err.Error())
 				return err
@@ -100,7 +98,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 				if slices.Contains(newItemGUIDs, item.GUID) {
 					err = parse.Publish(ctx, modelangela.FeedItemPostprocess{
 						FeedID:       feed.ID,
-						ItemID:       item.ID,
+						Item:         item,
 						SystemNotify: p.SystemNotify,
 					})
 				}
@@ -116,36 +114,55 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 	a *AngelaBase,
 	notify *libmq.Topic[modelangela.NotifyRouter],
+	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 ) *libmq.Topic[modelangela.FeedItemPostprocess] {
 	return libmq.NewTopic[modelangela.FeedItemPostprocess](
 		"FeedItemPostprocess",
 		func(ctx context.Context, p *modelangela.FeedItemPostprocess) error {
-			item, err := a.repo.GetFeedItem(ctx, p.ItemID)
-			if err != nil {
-				return err
+			notifyMsg := p.SystemNotify
+			if notifyMsg == nil {
+				notifyMsg = new(modelnetzach.SystemNotify)
 			}
+			notifyMsg.Notification.Content = ""
+			notifyMsg.Notification.Level = modelnetzach.SystemNotificationLevelError
+			defer func() {
+				if p.SystemNotify != nil && len(p.SystemNotify.Notification.Content) > 0 {
+					p.SystemNotify.Notification.Content = fmt.Sprintf(
+						"[%d] %s",
+						p.Item.ID,
+						p.SystemNotify.Notification.Content,
+					)
+					_ = systemNotify.PublishFallsLocalCall(ctx, *p.SystemNotify)
+				}
+			}()
+
+			item := p.Item
 			actionSets, err := a.repo.GetFeedActions(ctx, p.FeedID)
 			if err != nil {
+				notifyMsg.Notification.Content = fmt.Sprintf("GetFeedActions failed: %s", err.Error())
 				return err
 			}
 			builtin := bizyesod.GetBuiltinActionMap(ctx)
 			item, err = bizyesod.RequiredStartAction(ctx, item)
 			if err != nil {
+				notifyMsg.Notification.Content = fmt.Sprintf("RequiredStartAction failed: %s", err.Error())
 				return err
 			}
 			for _, actions := range actionSets {
 				for _, action := range actions.Actions {
-					var config modeltiphereth.FeatureRequest
-					err = libcodec.Unmarshal(libcodec.JSON, []byte(action.ConfigJSON), &config)
 					if err != nil {
+						notifyMsg.Notification.Content = fmt.Sprintf("%s Unmarshal failed: %s", action.ID, err.Error())
 						return err
 					}
 					if f, ok := builtin[action.ID]; ok { //nolint:nestif // TODO
-						item, err = f(ctx, config, item)
+						item, err = f(ctx, action, item)
 						if err != nil {
+							notifyMsg.Notification.Content = fmt.Sprintf("%s Exec failed: %s", action.ID, err.Error())
 							return err
 						}
 						if item == nil {
+							notifyMsg.Notification.Content = fmt.Sprintf("%s Filtered", action.ID)
+							notifyMsg.Notification.Level = modelnetzach.SystemNotificationLevelWarning
 							return nil
 						}
 					} else if a.supv.CheckFeedItemAction(action) {
@@ -158,9 +175,12 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 							},
 						)
 						if err != nil {
+							notifyMsg.Notification.Content = fmt.Sprintf("%s Exec failed: %s", action.ID, err.Error())
 							return err
 						}
 						if resp.GetItem() != nil {
+							notifyMsg.Notification.Content = fmt.Sprintf("%s Filtered", action.ID)
+							notifyMsg.Notification.Level = modelnetzach.SystemNotificationLevelWarning
 							return nil
 						}
 						item = converter.ToBizFeedItem(resp.GetItem())
@@ -169,10 +189,12 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 			}
 			item, err = bizyesod.RequiredEndAction(ctx, item)
 			if err != nil {
+				notifyMsg.Notification.Content = fmt.Sprintf("RequiredEndAction failed: %s", err.Error())
 				return err
 			}
-			_, err = a.repo.UpsertFeedItems(ctx, []*modelfeed.Item{item}, p.FeedID)
+			err = a.repo.UpsertFeedItems(ctx, []*modelfeed.Item{item}, p.FeedID)
 			if err != nil {
+				notifyMsg.Notification.Content = fmt.Sprintf("UpsertFeedItems failed: %s", err.Error())
 				return err
 			}
 			_ = notify.Publish(ctx, modelangela.NotifyRouter{

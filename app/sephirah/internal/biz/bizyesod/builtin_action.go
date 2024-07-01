@@ -25,8 +25,8 @@ func RequiredStartAction(ctx context.Context, item *modelfeed.Item) (*modelfeed.
 
 func GetBuiltinActionMap(
 	ctx context.Context,
-) map[string]func(context.Context, modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
-	return map[string]func(context.Context, modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
+) map[string]func(context.Context, *modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
+	return map[string]func(context.Context, *modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
 		simpleKeywordFilterActionID:  simpleKeywordFilterAction,
 		keywordFilterActionID:        keywordFilterAction,
 		descriptionGeneratorActionID: descriptionGeneratorAction,
@@ -124,7 +124,7 @@ func parseDigestAction(_ context.Context, item *modelfeed.Item) (*modelfeed.Item
 
 func simpleKeywordFilterAction(
 	_ context.Context,
-	request modeltiphereth.FeatureRequest,
+	request *modeltiphereth.FeatureRequest,
 	item *modelfeed.Item,
 ) (*modelfeed.Item, error) {
 	config := new(modelyesod.SimpleKeywordFilterActionConfig)
@@ -154,12 +154,12 @@ func simpleKeywordFilterAction(
 	return item, nil
 }
 
-func keywordFilterAction(ctx context.Context, _ modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func keywordFilterAction(ctx context.Context, _ *modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
 	// TODO: impl
 	return item, nil
 }
 
-func descriptionGeneratorAction(_ context.Context, _ modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func descriptionGeneratorAction(_ context.Context, _ *modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
 	if len(item.Description) > 0 {
 		return item, nil
 	}

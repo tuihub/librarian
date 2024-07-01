@@ -3,10 +3,10 @@ package modelyesod
 import "github.com/invopop/jsonschema"
 
 type SimpleKeywordFilterActionConfig struct {
-	TitleInclude   []string `json:"title_include"   jsonschema:"title=Title include"`
-	TitleExclude   []string `json:"title_exclude"   jsonschema:"title=Title exclude"`
-	ContentInclude []string `json:"content_include" jsonschema:"title=Content include"`
-	ContentExclude []string `json:"content_exclude" jsonschema:"title=Content exclude"`
+	TitleInclude   []string `json:"title_include,omitempty"   jsonschema:"title=Title include"`
+	TitleExclude   []string `json:"title_exclude,omitempty"   jsonschema:"title=Title exclude"`
+	ContentInclude []string `json:"content_include,omitempty" jsonschema:"title=Content include"`
+	ContentExclude []string `json:"content_exclude,omitempty" jsonschema:"title=Content exclude"`
 }
 
 func GetSimpleKeywordFilterActionConfigSchema() (string, error) {

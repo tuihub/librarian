@@ -103,7 +103,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	map4 := bizangela.NewNotifyTargetCache(netzachRepo, store)
 	topic5 := bizangela.NewNotifyPushTopic(angelaBase, map4)
 	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map2, map3, topic5)
-	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6)
+	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
 	topic8 := bizangela.NewPullFeedTopic(angelaBase, topic7, topic)
 	angela, err := bizangela.NewAngela(libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
 	if err != nil {

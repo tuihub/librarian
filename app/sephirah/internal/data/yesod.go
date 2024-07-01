@@ -197,7 +197,7 @@ func (y *yesodRepo) ListFeedConfigs( //nolint:gocognit //TODO
 			}
 			feedConfig.ActionSets = actionSets
 			res = append(res, &modelyesod.FeedWithConfig{
-				FeedConfig: converter.ToBizFeedConfig(config),
+				FeedConfig: feedConfig,
 				Feed:       converter.ToBizFeed(config.Edges.Feed),
 			})
 		}
