@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.2.10](https://github.com/tuihub/librarian/compare/v0.2.9...v0.2.10) (2024-07-10)
+
+
+### Features
+
+* add built-in metrics ([291db25](https://github.com/tuihub/librarian/commit/291db255a35fcbff1213e4a267ea1b8addc33104))
+* add independent otel support ([b5850e5](https://github.com/tuihub/librarian/commit/b5850e5beb066b2391926d59b5ad35a9fd1b30ed))
+* add stdout logger ([b0427ef](https://github.com/tuihub/librarian/commit/b0427ef41b8199b78005dc7936cfe7b2641df3b6))
+* impl `CreateFeedActionSet` `UpdateFeedActionSet` `ListFeedActionSets` ([f6f0de8](https://github.com/tuihub/librarian/commit/f6f0de8f1b690a87dd71db5b8affe6ad9703d416))
+* impl builtin actions ([d2c8949](https://github.com/tuihub/librarian/commit/d2c8949b5e9277a0c6bc26bde27b56b5f621c9b5))
+* impl feed pull state ([8592902](https://github.com/tuihub/librarian/commit/8592902d73434983b8150c795f0d01309a19f763))
+* impl porter states notification ([c66f20c](https://github.com/tuihub/librarian/commit/c66f20c1c101b25da4d3d19aca6672e7fac56f5d))
+* impl system notification ([d527588](https://github.com/tuihub/librarian/commit/d527588eca7df66ac103e2115e3ae29bb4a178b7))
+* upgrade goverter to 1.4.0 ([0ad9821](https://github.com/tuihub/librarian/commit/0ad982116ec4e5d893ddd9671aecfedbb8e84319))
+* upgrade proto to v0.4.12 ([6945d99](https://github.com/tuihub/librarian/commit/6945d997454b064f919f040b52921f124f14b6ba))
+* upgrade proto to v0.4.13 ([1c2f081](https://github.com/tuihub/librarian/commit/1c2f0815aa3ceccad505417ecf32e66ae4125320))
+* upgrade proto to v0.4.14 ([3da81e0](https://github.com/tuihub/librarian/commit/3da81e0607c421609f82370c44b76623072b4bbf))
+* upgrade proto to v0.4.8 ([c3cefe9](https://github.com/tuihub/librarian/commit/c3cefe99a860e7430eb427acfa3b16228a1d1700))
+* **yesod:** impl feed item collection api ([6c8e4eb](https://github.com/tuihub/librarian/commit/6c8e4ebdb0ffda0c8a5ade4bfd4a9676acacfc5e))
+
+
+### Bug Fixes
+
+* adjust magic numbers ([63c1689](https://github.com/tuihub/librarian/commit/63c1689b57089b04c46d609db16ff2a5f37ca3fe))
+* improve feed states notification ([e9e2d34](https://github.com/tuihub/librarian/commit/e9e2d34b2540bf63f3f50afa120698df0dce605a))
+* system notification tested ([f90ca07](https://github.com/tuihub/librarian/commit/f90ca07d32ee2b8bedac68ac552d5a8d1f3f8501))
+* upgrade proto ([ac502f4](https://github.com/tuihub/librarian/commit/ac502f4afb914be64730a7816819dac461d07e46))
+* **yesod:** add simple keyword filter ([0576ac4](https://github.com/tuihub/librarian/commit/0576ac4859892b2b9159122f55d29a2c290ae6f4))
+* **yesod:** tested pull feed ([e3cb3c2](https://github.com/tuihub/librarian/commit/e3cb3c20bc97b80d6cdf05ea2030a4b7506b7037))
+
 ## [0.2.9](https://github.com/tuihub/librarian/compare/v0.2.8...v0.2.9) (2024-03-15)
 
 
