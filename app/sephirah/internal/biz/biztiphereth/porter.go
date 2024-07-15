@@ -80,16 +80,16 @@ func (t *Tiphereth) UpdatePorterStatus(
 	return nil
 }
 
-func (t *Tiphereth) UpdatePorterPrivilege(
+func (t *Tiphereth) UpdatePorterContext(
 	ctx context.Context,
 	id model.InternalID,
-	privilege *modeltiphereth.PorterInstancePrivilege,
+	context *modeltiphereth.PorterInstanceContext,
 ) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx, libauth.UserTypeNormal)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	err := t.repo.UpdatePorterPrivilege(ctx, claims.UserID, id, privilege)
+	err := t.repo.UpdatePorterContext(ctx, claims.UserID, id, context)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

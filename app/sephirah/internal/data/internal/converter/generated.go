@@ -235,10 +235,9 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod
 		var modelyesodFeedConfig modelyesod.FeedConfig
 		modelyesodFeedConfig.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
-		modelyesodFeedConfig.FeedURL = (*source).FeedURL
+		modelyesodFeedConfig.Description = (*source).Description
+		modelyesodFeedConfig.Source = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Source)
 		modelyesodFeedConfig.Category = (*source).Category
-		modelyesodFeedConfig.AuthorAccount = c.modelInternalIDToModelInternalID((*source).AuthorAccount)
-		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = c.ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
 		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
@@ -428,9 +427,8 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = c.modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = (*source).Destination
+		modelnetzachNotifyTarget.Destination = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Destination)
 		modelnetzachNotifyTarget.Status = c.ToBizNotifyTargetStatus((*source).Status)
-		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
 	return pModelnetzachNotifyTarget
@@ -707,6 +705,7 @@ func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureF
 		modeltipherethFeatureFlag.Name = (*source).Name
 		modeltipherethFeatureFlag.Description = (*source).Description
 		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
+		modeltipherethFeatureFlag.RequireContext = (*source).RequireContext
 		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
 	}
 	return pModeltipherethFeatureFlag
@@ -718,6 +717,7 @@ func (c *toBizConverterImpl) pModeltipherethFeatureRequestToPModeltipherethFeatu
 		modeltipherethFeatureRequest.ID = (*source).ID
 		modeltipherethFeatureRequest.Region = (*source).Region
 		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
+		modeltipherethFeatureRequest.ContextID = c.modelInternalIDToModelInternalID((*source).ContextID)
 		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
 	}
 	return pModeltipherethFeatureRequest

@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -29,20 +30,6 @@ type NotifyTargetUpdate struct {
 // Where appends a list predicates to the NotifyTargetUpdate builder.
 func (ntu *NotifyTargetUpdate) Where(ps ...predicate.NotifyTarget) *NotifyTargetUpdate {
 	ntu.mutation.Where(ps...)
-	return ntu
-}
-
-// SetToken sets the "token" field.
-func (ntu *NotifyTargetUpdate) SetToken(s string) *NotifyTargetUpdate {
-	ntu.mutation.SetToken(s)
-	return ntu
-}
-
-// SetNillableToken sets the "token" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableToken(s *string) *NotifyTargetUpdate {
-	if s != nil {
-		ntu.SetToken(*s)
-	}
 	return ntu
 }
 
@@ -75,16 +62,8 @@ func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUp
 }
 
 // SetDestination sets the "destination" field.
-func (ntu *NotifyTargetUpdate) SetDestination(s string) *NotifyTargetUpdate {
-	ntu.mutation.SetDestination(s)
-	return ntu
-}
-
-// SetNillableDestination sets the "destination" field if the given value is not nil.
-func (ntu *NotifyTargetUpdate) SetNillableDestination(s *string) *NotifyTargetUpdate {
-	if s != nil {
-		ntu.SetDestination(*s)
-	}
+func (ntu *NotifyTargetUpdate) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetUpdate {
+	ntu.mutation.SetDestination(mr)
 	return ntu
 }
 
@@ -277,9 +256,6 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := ntu.mutation.Token(); ok {
-		_spec.SetField(notifytarget.FieldToken, field.TypeString, value)
-	}
 	if value, ok := ntu.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 	}
@@ -287,7 +263,7 @@ func (ntu *NotifyTargetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := ntu.mutation.Destination(); ok {
-		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
+		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 	}
 	if value, ok := ntu.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)
@@ -449,20 +425,6 @@ type NotifyTargetUpdateOne struct {
 	mutation *NotifyTargetMutation
 }
 
-// SetToken sets the "token" field.
-func (ntuo *NotifyTargetUpdateOne) SetToken(s string) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetToken(s)
-	return ntuo
-}
-
-// SetNillableToken sets the "token" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableToken(s *string) *NotifyTargetUpdateOne {
-	if s != nil {
-		ntuo.SetToken(*s)
-	}
-	return ntuo
-}
-
 // SetName sets the "name" field.
 func (ntuo *NotifyTargetUpdateOne) SetName(s string) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetName(s)
@@ -492,16 +454,8 @@ func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTarg
 }
 
 // SetDestination sets the "destination" field.
-func (ntuo *NotifyTargetUpdateOne) SetDestination(s string) *NotifyTargetUpdateOne {
-	ntuo.mutation.SetDestination(s)
-	return ntuo
-}
-
-// SetNillableDestination sets the "destination" field if the given value is not nil.
-func (ntuo *NotifyTargetUpdateOne) SetNillableDestination(s *string) *NotifyTargetUpdateOne {
-	if s != nil {
-		ntuo.SetDestination(*s)
-	}
+func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetUpdateOne {
+	ntuo.mutation.SetDestination(mr)
 	return ntuo
 }
 
@@ -724,9 +678,6 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 			}
 		}
 	}
-	if value, ok := ntuo.mutation.Token(); ok {
-		_spec.SetField(notifytarget.FieldToken, field.TypeString, value)
-	}
 	if value, ok := ntuo.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 	}
@@ -734,7 +685,7 @@ func (ntuo *NotifyTargetUpdateOne) sqlSave(ctx context.Context) (_node *NotifyTa
 		_spec.SetField(notifytarget.FieldDescription, field.TypeString, value)
 	}
 	if value, ok := ntuo.mutation.Destination(); ok {
-		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
+		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 	}
 	if value, ok := ntuo.mutation.Status(); ok {
 		_spec.SetField(notifytarget.FieldStatus, field.TypeEnum, value)

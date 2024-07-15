@@ -50,7 +50,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 
 			// Check porter availability
 			if !a.supv.CheckFeedSource(p.Source) {
-				fc.LatestPullMessage = fmt.Sprintf("Pull %s feature not activate", p.Source)
+				fc.LatestPullMessage = fmt.Sprintf("Pull %s feature not activate", p.Source.ID)
 				return nil
 			}
 
@@ -58,8 +58,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			resp, err := a.porter.PullFeed(
 				a.supv.CallFeedSource(ctx, p.Source),
 				&porter.PullFeedRequest{
-					Source:    p.Source,
-					ChannelId: p.URL,
+					Source: converter.ToPBFeatureRequest(p.Source),
 				},
 			)
 			if err != nil {

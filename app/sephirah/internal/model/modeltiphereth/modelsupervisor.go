@@ -29,6 +29,7 @@ type FeatureFlag struct {
 	Name             string `json:"name"`
 	Description      string `json:"description"`
 	ConfigJSONSchema string `json:"config_json_schema"`
+	RequireContext   bool   `json:"require_context"`
 }
 
 func (f *FeatureFlag) Match(request *FeatureRequest) bool {
@@ -36,13 +37,16 @@ func (f *FeatureFlag) Match(request *FeatureRequest) bool {
 }
 
 type FeatureRequest struct {
-	ID         string `json:"id"`
-	Region     string `json:"region"`
-	ConfigJSON string `json:"config_json"`
+	ID         string           `json:"id"`
+	Region     string           `json:"region"`
+	ConfigJSON string           `json:"config_json"`
+	ContextID  model.InternalID `json:"context_id"`
 }
 
-type PorterInstancePrivilege struct {
-	All bool `json:"all"`
+type PorterInstanceContext struct {
+	ID          model.InternalID
+	PorterID    model.InternalID
+	ContextJSON string
 }
 
 type PorterInstanceStatus int

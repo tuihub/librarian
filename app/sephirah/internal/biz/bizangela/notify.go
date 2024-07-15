@@ -90,10 +90,8 @@ func NewNotifyPushTopic(
 			_, err = a.porter.PushFeedItems(
 				a.supv.CallNotifyDestination(ctx, target.Destination),
 				&porter.PushFeedItemsRequest{
-					Destination: target.Destination,
-					ChannelId:   p.Target.ChannelID,
+					Destination: converter.ToPBFeatureRequest(target.Destination),
 					Items:       converter.ToPBFeedItemList(p.Messages),
-					Token:       target.Token,
 				},
 			)
 			if err != nil {

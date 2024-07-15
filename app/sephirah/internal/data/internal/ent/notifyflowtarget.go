@@ -25,8 +25,6 @@ type NotifyFlowTarget struct {
 	NotifyFlowID model.InternalID `json:"notify_flow_id,omitempty"`
 	// NotifyTargetID holds the value of the "notify_target_id" field.
 	NotifyTargetID model.InternalID `json:"notify_target_id,omitempty"`
-	// ChannelID holds the value of the "channel_id" field.
-	ChannelID string `json:"channel_id,omitempty"`
 	// FilterIncludeKeywords holds the value of the "filter_include_keywords" field.
 	FilterIncludeKeywords []string `json:"filter_include_keywords,omitempty"`
 	// FilterExcludeKeywords holds the value of the "filter_exclude_keywords" field.
@@ -83,8 +81,6 @@ func (*NotifyFlowTarget) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case notifyflowtarget.FieldID, notifyflowtarget.FieldNotifyFlowID, notifyflowtarget.FieldNotifyTargetID:
 			values[i] = new(sql.NullInt64)
-		case notifyflowtarget.FieldChannelID:
-			values[i] = new(sql.NullString)
 		case notifyflowtarget.FieldUpdatedAt, notifyflowtarget.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
@@ -119,12 +115,6 @@ func (nft *NotifyFlowTarget) assignValues(columns []string, values []any) error 
 				return fmt.Errorf("unexpected type %T for field notify_target_id", values[i])
 			} else if value.Valid {
 				nft.NotifyTargetID = model.InternalID(value.Int64)
-			}
-		case notifyflowtarget.FieldChannelID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field channel_id", values[i])
-			} else if value.Valid {
-				nft.ChannelID = value.String
 			}
 		case notifyflowtarget.FieldFilterIncludeKeywords:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -205,9 +195,6 @@ func (nft *NotifyFlowTarget) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("notify_target_id=")
 	builder.WriteString(fmt.Sprintf("%v", nft.NotifyTargetID))
-	builder.WriteString(", ")
-	builder.WriteString("channel_id=")
-	builder.WriteString(nft.ChannelID)
 	builder.WriteString(", ")
 	builder.WriteString("filter_include_keywords=")
 	builder.WriteString(fmt.Sprintf("%v", nft.FilterIncludeKeywords))

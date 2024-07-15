@@ -38,10 +38,10 @@ type TipherethRepo interface {
 	UpsertPorters(context.Context, []*modeltiphereth.PorterInstance) error
 	ListPorters(context.Context, model.Paging) ([]*modeltiphereth.PorterInstance, int64, error)
 	UpdatePorterStatus(context.Context, model.InternalID, modeltiphereth.PorterInstanceStatus) error
-	UpdatePorterPrivilege(context.Context, model.InternalID, model.InternalID,
-		*modeltiphereth.PorterInstancePrivilege) error
-	FetchPorterPrivilege(context.Context, model.InternalID, model.InternalID) (
-		*modeltiphereth.PorterInstancePrivilege, error)
+	UpdatePorterContext(context.Context, model.InternalID, model.InternalID,
+		*modeltiphereth.PorterInstanceContext) error
+	FetchPorterContext(context.Context, model.InternalID, model.InternalID) (
+		*modeltiphereth.PorterInstanceContext, error)
 	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
 	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
 	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error

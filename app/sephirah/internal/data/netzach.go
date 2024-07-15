@@ -36,7 +36,6 @@ func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalI
 		SetID(t.ID).
 		SetName(t.Name).
 		SetDescription(t.Description).
-		SetToken(t.Token).
 		SetDestination(t.Destination).
 		SetStatus(converter.ToEntNotifyTargetStatus(t.Status))
 	return q.Exec(ctx)
@@ -57,10 +56,7 @@ func (n *netzachRepo) UpdateNotifyTarget(
 	if len(t.Description) > 0 {
 		q.SetDescription(t.Description)
 	}
-	if len(t.Token) > 0 {
-		q.SetToken(t.Token)
-	}
-	if len(t.Destination) > 0 {
+	if t.Destination != nil {
 		q.SetDestination(t.Destination)
 	}
 	if t.Status != modelnetzach.NotifyTargetStatusUnspecified {
@@ -82,9 +78,6 @@ func (n *netzachRepo) ListNotifyTargets(
 	)
 	if len(ids) > 0 {
 		q.Where(notifytarget.IDIn(ids...))
-	}
-	if len(destinations) > 0 {
-		q.Where(notifytarget.DestinationIn(destinations...))
 	}
 	if len(statuses) > 0 {
 		q.Where(notifytarget.StatusIn(converter.ToEntNotifyTargetStatusList(statuses)...))
@@ -140,7 +133,6 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 			flowTargets[i] = tx.NotifyFlowTarget.Create().
 				SetNotifyFlowID(f.ID).
 				SetNotifyTargetID(target.TargetID).
-				SetChannelID(target.ChannelID).
 				SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
 				SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
 		}
@@ -208,7 +200,6 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 				flowTargets[i] = tx.NotifyFlowTarget.Create().
 					SetNotifyFlowID(f.ID).
 					SetNotifyTargetID(target.TargetID).
-					SetChannelID(target.ChannelID).
 					SetFilterExcludeKeywords(target.Filter.ExcludeKeywords).
 					SetFilterIncludeKeywords(target.Filter.IncludeKeywords)
 			}

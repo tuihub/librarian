@@ -151,8 +151,8 @@ func ToLibAuthUserTypeList(a []pb.UserType) []libauth.UserType {
 func ToBizUserStatusList(a []pb.UserStatus) []modeltiphereth.UserStatus {
 	return toBiz.ToBizUserStatusList(a)
 }
-func ToBizPorterPrivilege(a *pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege {
-	return toBiz.ToBizPorterPrivilege(a)
+func ToBizPorterContext(a *pb.PorterContext) *modeltiphereth.PorterInstanceContext {
+	return toBiz.ToBizPorterContext(a)
 }
 func ToBizDeviceInfo(a *pb.DeviceInfo) *modeltiphereth.DeviceInfo {
 	return toBiz.ToBizDeviceInfo(a)

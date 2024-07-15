@@ -67,20 +67,14 @@ func Name(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldName, v))
 }
 
+// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
+func Description(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldDescription, v))
+}
+
 // FeedURL applies equality check predicate on the "feed_url" field. It's identical to FeedURLEQ.
 func FeedURL(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldFeedURL, v))
-}
-
-// AuthorAccount applies equality check predicate on the "author_account" field. It's identical to AuthorAccountEQ.
-func AuthorAccount(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, vc))
-}
-
-// Source applies equality check predicate on the "source" field. It's identical to SourceEQ.
-func Source(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldSource, v))
 }
 
 // Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
@@ -219,6 +213,71 @@ func NameContainsFold(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldContainsFold(FieldName, v))
 }
 
+// DescriptionEQ applies the EQ predicate on the "description" field.
+func DescriptionEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEQ(FieldDescription, v))
+}
+
+// DescriptionNEQ applies the NEQ predicate on the "description" field.
+func DescriptionNEQ(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNEQ(FieldDescription, v))
+}
+
+// DescriptionIn applies the In predicate on the "description" field.
+func DescriptionIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldIn(FieldDescription, vs...))
+}
+
+// DescriptionNotIn applies the NotIn predicate on the "description" field.
+func DescriptionNotIn(vs ...string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldNotIn(FieldDescription, vs...))
+}
+
+// DescriptionGT applies the GT predicate on the "description" field.
+func DescriptionGT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGT(FieldDescription, v))
+}
+
+// DescriptionGTE applies the GTE predicate on the "description" field.
+func DescriptionGTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldGTE(FieldDescription, v))
+}
+
+// DescriptionLT applies the LT predicate on the "description" field.
+func DescriptionLT(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLT(FieldDescription, v))
+}
+
+// DescriptionLTE applies the LTE predicate on the "description" field.
+func DescriptionLTE(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldLTE(FieldDescription, v))
+}
+
+// DescriptionContains applies the Contains predicate on the "description" field.
+func DescriptionContains(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContains(FieldDescription, v))
+}
+
+// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
+func DescriptionHasPrefix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasPrefix(FieldDescription, v))
+}
+
+// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
+func DescriptionHasSuffix(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
+func DescriptionEqualFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldEqualFold(FieldDescription, v))
+}
+
+// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
+func DescriptionContainsFold(v string) predicate.FeedConfig {
+	return predicate.FeedConfig(sql.FieldContainsFold(FieldDescription, v))
+}
+
 // FeedURLEQ applies the EQ predicate on the "feed_url" field.
 func FeedURLEQ(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldFeedURL, v))
@@ -282,125 +341,6 @@ func FeedURLEqualFold(v string) predicate.FeedConfig {
 // FeedURLContainsFold applies the ContainsFold predicate on the "feed_url" field.
 func FeedURLContainsFold(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldContainsFold(FieldFeedURL, v))
-}
-
-// AuthorAccountEQ applies the EQ predicate on the "author_account" field.
-func AuthorAccountEQ(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldEQ(FieldAuthorAccount, vc))
-}
-
-// AuthorAccountNEQ applies the NEQ predicate on the "author_account" field.
-func AuthorAccountNEQ(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldNEQ(FieldAuthorAccount, vc))
-}
-
-// AuthorAccountIn applies the In predicate on the "author_account" field.
-func AuthorAccountIn(vs ...model.InternalID) predicate.FeedConfig {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.FeedConfig(sql.FieldIn(FieldAuthorAccount, v...))
-}
-
-// AuthorAccountNotIn applies the NotIn predicate on the "author_account" field.
-func AuthorAccountNotIn(vs ...model.InternalID) predicate.FeedConfig {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.FeedConfig(sql.FieldNotIn(FieldAuthorAccount, v...))
-}
-
-// AuthorAccountGT applies the GT predicate on the "author_account" field.
-func AuthorAccountGT(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldGT(FieldAuthorAccount, vc))
-}
-
-// AuthorAccountGTE applies the GTE predicate on the "author_account" field.
-func AuthorAccountGTE(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldGTE(FieldAuthorAccount, vc))
-}
-
-// AuthorAccountLT applies the LT predicate on the "author_account" field.
-func AuthorAccountLT(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldLT(FieldAuthorAccount, vc))
-}
-
-// AuthorAccountLTE applies the LTE predicate on the "author_account" field.
-func AuthorAccountLTE(v model.InternalID) predicate.FeedConfig {
-	vc := int64(v)
-	return predicate.FeedConfig(sql.FieldLTE(FieldAuthorAccount, vc))
-}
-
-// SourceEQ applies the EQ predicate on the "source" field.
-func SourceEQ(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldSource, v))
-}
-
-// SourceNEQ applies the NEQ predicate on the "source" field.
-func SourceNEQ(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNEQ(FieldSource, v))
-}
-
-// SourceIn applies the In predicate on the "source" field.
-func SourceIn(vs ...string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldIn(FieldSource, vs...))
-}
-
-// SourceNotIn applies the NotIn predicate on the "source" field.
-func SourceNotIn(vs ...string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNotIn(FieldSource, vs...))
-}
-
-// SourceGT applies the GT predicate on the "source" field.
-func SourceGT(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGT(FieldSource, v))
-}
-
-// SourceGTE applies the GTE predicate on the "source" field.
-func SourceGTE(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGTE(FieldSource, v))
-}
-
-// SourceLT applies the LT predicate on the "source" field.
-func SourceLT(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLT(FieldSource, v))
-}
-
-// SourceLTE applies the LTE predicate on the "source" field.
-func SourceLTE(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLTE(FieldSource, v))
-}
-
-// SourceContains applies the Contains predicate on the "source" field.
-func SourceContains(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldContains(FieldSource, v))
-}
-
-// SourceHasPrefix applies the HasPrefix predicate on the "source" field.
-func SourceHasPrefix(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldHasPrefix(FieldSource, v))
-}
-
-// SourceHasSuffix applies the HasSuffix predicate on the "source" field.
-func SourceHasSuffix(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldHasSuffix(FieldSource, v))
-}
-
-// SourceEqualFold applies the EqualFold predicate on the "source" field.
-func SourceEqualFold(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEqualFold(FieldSource, v))
-}
-
-// SourceContainsFold applies the ContainsFold predicate on the "source" field.
-func SourceContainsFold(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldContainsFold(FieldSource, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

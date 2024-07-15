@@ -66,11 +66,11 @@ type NotifySource func(*sql.Selector)
 // NotifyTarget is the predicate function for notifytarget builders.
 type NotifyTarget func(*sql.Selector)
 
+// PorterContext is the predicate function for portercontext builders.
+type PorterContext func(*sql.Selector)
+
 // PorterInstance is the predicate function for porterinstance builders.
 type PorterInstance func(*sql.Selector)
-
-// PorterPrivilege is the predicate function for porterprivilege builders.
-type PorterPrivilege func(*sql.Selector)
 
 // SystemNotification is the predicate function for systemnotification builders.
 type SystemNotification func(*sql.Selector)

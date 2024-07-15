@@ -18,6 +18,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -62,6 +63,20 @@ func (fcu *FeedConfigUpdate) SetNillableName(s *string) *FeedConfigUpdate {
 	return fcu
 }
 
+// SetDescription sets the "description" field.
+func (fcu *FeedConfigUpdate) SetDescription(s string) *FeedConfigUpdate {
+	fcu.mutation.SetDescription(s)
+	return fcu
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fcu *FeedConfigUpdate) SetNillableDescription(s *string) *FeedConfigUpdate {
+	if s != nil {
+		fcu.SetDescription(*s)
+	}
+	return fcu
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (fcu *FeedConfigUpdate) SetFeedURL(s string) *FeedConfigUpdate {
 	fcu.mutation.SetFeedURL(s)
@@ -76,38 +91,9 @@ func (fcu *FeedConfigUpdate) SetNillableFeedURL(s *string) *FeedConfigUpdate {
 	return fcu
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (fcu *FeedConfigUpdate) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.ResetAuthorAccount()
-	fcu.mutation.SetAuthorAccount(mi)
-	return fcu
-}
-
-// SetNillableAuthorAccount sets the "author_account" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableAuthorAccount(mi *model.InternalID) *FeedConfigUpdate {
-	if mi != nil {
-		fcu.SetAuthorAccount(*mi)
-	}
-	return fcu
-}
-
-// AddAuthorAccount adds mi to the "author_account" field.
-func (fcu *FeedConfigUpdate) AddAuthorAccount(mi model.InternalID) *FeedConfigUpdate {
-	fcu.mutation.AddAuthorAccount(mi)
-	return fcu
-}
-
 // SetSource sets the "source" field.
-func (fcu *FeedConfigUpdate) SetSource(s string) *FeedConfigUpdate {
-	fcu.mutation.SetSource(s)
-	return fcu
-}
-
-// SetNillableSource sets the "source" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableSource(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetSource(*s)
-	}
+func (fcu *FeedConfigUpdate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigUpdate {
+	fcu.mutation.SetSource(mr)
 	return fcu
 }
 
@@ -474,17 +460,14 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.Name(); ok {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 	}
+	if value, ok := fcu.mutation.Description(); ok {
+		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
+	}
 	if value, ok := fcu.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.AuthorAccount(); ok {
-		_spec.SetField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
-	}
-	if value, ok := fcu.mutation.AddedAuthorAccount(); ok {
-		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
-	}
 	if value, ok := fcu.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 	}
 	if value, ok := fcu.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)
@@ -772,6 +755,20 @@ func (fcuo *FeedConfigUpdateOne) SetNillableName(s *string) *FeedConfigUpdateOne
 	return fcuo
 }
 
+// SetDescription sets the "description" field.
+func (fcuo *FeedConfigUpdateOne) SetDescription(s string) *FeedConfigUpdateOne {
+	fcuo.mutation.SetDescription(s)
+	return fcuo
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (fcuo *FeedConfigUpdateOne) SetNillableDescription(s *string) *FeedConfigUpdateOne {
+	if s != nil {
+		fcuo.SetDescription(*s)
+	}
+	return fcuo
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (fcuo *FeedConfigUpdateOne) SetFeedURL(s string) *FeedConfigUpdateOne {
 	fcuo.mutation.SetFeedURL(s)
@@ -786,38 +783,9 @@ func (fcuo *FeedConfigUpdateOne) SetNillableFeedURL(s *string) *FeedConfigUpdate
 	return fcuo
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (fcuo *FeedConfigUpdateOne) SetAuthorAccount(mi model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.ResetAuthorAccount()
-	fcuo.mutation.SetAuthorAccount(mi)
-	return fcuo
-}
-
-// SetNillableAuthorAccount sets the "author_account" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableAuthorAccount(mi *model.InternalID) *FeedConfigUpdateOne {
-	if mi != nil {
-		fcuo.SetAuthorAccount(*mi)
-	}
-	return fcuo
-}
-
-// AddAuthorAccount adds mi to the "author_account" field.
-func (fcuo *FeedConfigUpdateOne) AddAuthorAccount(mi model.InternalID) *FeedConfigUpdateOne {
-	fcuo.mutation.AddAuthorAccount(mi)
-	return fcuo
-}
-
 // SetSource sets the "source" field.
-func (fcuo *FeedConfigUpdateOne) SetSource(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetSource(s)
-	return fcuo
-}
-
-// SetNillableSource sets the "source" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableSource(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetSource(*s)
-	}
+func (fcuo *FeedConfigUpdateOne) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigUpdateOne {
+	fcuo.mutation.SetSource(mr)
 	return fcuo
 }
 
@@ -1214,17 +1182,14 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	if value, ok := fcuo.mutation.Name(); ok {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 	}
+	if value, ok := fcuo.mutation.Description(); ok {
+		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
+	}
 	if value, ok := fcuo.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
 	}
-	if value, ok := fcuo.mutation.AuthorAccount(); ok {
-		_spec.SetField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
-	}
-	if value, ok := fcuo.mutation.AddedAuthorAccount(); ok {
-		_spec.AddField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
-	}
 	if value, ok := fcuo.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 	}
 	if value, ok := fcuo.mutation.Status(); ok {
 		_spec.SetField(feedconfig.FieldStatus, field.TypeEnum, value)

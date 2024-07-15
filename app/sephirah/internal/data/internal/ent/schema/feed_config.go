@@ -3,6 +3,7 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
@@ -23,10 +24,9 @@ func (FeedConfig) Fields() []ent.Field {
 		field.Int64("user_feed_config").
 			GoType(model.InternalID(0)),
 		field.String("name"),
+		field.String("description"),
 		field.String("feed_url"),
-		field.Int64("author_account").
-			GoType(model.InternalID(0)),
-		field.String("source"),
+		field.JSON("source", new(modeltiphereth.FeatureRequest)),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.String("category"),

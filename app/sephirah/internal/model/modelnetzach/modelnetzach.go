@@ -3,6 +3,7 @@ package modelnetzach
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -21,9 +22,8 @@ type NotifyFlowSource struct {
 }
 
 type NotifyFlowTarget struct {
-	TargetID  model.InternalID
-	Filter    *NotifyFilter
-	ChannelID string
+	TargetID model.InternalID
+	Filter   *NotifyFilter
 }
 
 type NotifyFlowStatus int
@@ -38,9 +38,8 @@ type NotifyTarget struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Destination string
+	Destination *modeltiphereth.FeatureRequest
 	Status      NotifyTargetStatus
-	Token       string
 }
 
 type NotifyTargetStatus int

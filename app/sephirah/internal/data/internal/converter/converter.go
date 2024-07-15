@@ -144,7 +144,6 @@ func ToBizNotifyFlow(a *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 					ExcludeKeywords: target.FilterExcludeKeywords,
 					IncludeKeywords: target.FilterIncludeKeywords,
 				},
-				ChannelID: target.ChannelID,
 			})
 		}
 		res.Targets = targets

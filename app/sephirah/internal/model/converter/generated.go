@@ -204,6 +204,7 @@ func (c *toBizConverterImpl) ToBizFeatureFlag(source *v1.FeatureFlag) *modeltiph
 		modeltipherethFeatureFlag.Name = (*source).Name
 		modeltipherethFeatureFlag.Description = (*source).Description
 		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
+		modeltipherethFeatureFlag.RequireContext = (*source).RequireContext
 		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
 	}
 	return pModeltipherethFeatureFlag
@@ -215,6 +216,7 @@ func (c *toBizConverterImpl) ToBizFeatureRequest(source *v1.FeatureRequest) *mod
 		modeltipherethFeatureRequest.ID = (*source).Id
 		modeltipherethFeatureRequest.Region = (*source).Region
 		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJson
+		modeltipherethFeatureRequest.ContextID = ToBizInternalID((*source).ContextId)
 		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
 	}
 	return pModeltipherethFeatureRequest
@@ -244,10 +246,10 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		var modelyesodFeedConfig modelyesod.FeedConfig
 		modelyesodFeedConfig.ID = ToBizInternalID((*source).Id)
 		modelyesodFeedConfig.Name = (*source).Name
-		modelyesodFeedConfig.FeedURL = (*source).FeedUrl
+		modelyesodFeedConfig.Description = (*source).Description
+		modelyesodFeedConfig.Source = c.ToBizFeatureRequest((*source).Source)
+		modelyesodFeedConfig.ActionSets = c.ToBizInternalIDList((*source).ActionSets)
 		modelyesodFeedConfig.Category = (*source).Category
-		modelyesodFeedConfig.AuthorAccount = ToBizInternalID((*source).AuthorAccount)
-		modelyesodFeedConfig.Source = (*source).Source
 		modelyesodFeedConfig.Status = c.ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = DurationPBToDuration((*source).PullInterval)
 		var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
@@ -257,7 +259,6 @@ func (c *toBizConverterImpl) ToBizFeedConfig(source *v11.FeedConfig) *modelyesod
 		modelyesodFeedConfig.LatestPullStatus = modelyesodFeedConfigPullStatus
 		modelyesodFeedConfig.LatestPullMessage = PtrToString((*source).LatestPullMessage)
 		modelyesodFeedConfig.HideItems = (*source).HideItems
-		modelyesodFeedConfig.ActionSets = c.ToBizInternalIDList((*source).ActionSets)
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
@@ -477,7 +478,6 @@ func (c *toBizConverterImpl) ToBizNotifyFlowTarget(source *v11.NotifyFlowTarget)
 		var modelnetzachNotifyFlowTarget modelnetzach.NotifyFlowTarget
 		modelnetzachNotifyFlowTarget.TargetID = ToBizInternalID((*source).TargetId)
 		modelnetzachNotifyFlowTarget.Filter = c.ToBizNotifyFilter((*source).Filter)
-		modelnetzachNotifyFlowTarget.ChannelID = (*source).ChannelId
 		pModelnetzachNotifyFlowTarget = &modelnetzachNotifyFlowTarget
 	}
 	return pModelnetzachNotifyFlowTarget
@@ -489,9 +489,8 @@ func (c *toBizConverterImpl) ToBizNotifyTarget(source *v11.NotifyTarget) *modeln
 		modelnetzachNotifyTarget.ID = ToBizInternalID((*source).Id)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = (*source).Destination
+		modelnetzachNotifyTarget.Destination = c.ToBizFeatureRequest((*source).Destination)
 		modelnetzachNotifyTarget.Status = c.ToBizNotifyTargetStatus((*source).Status)
-		modelnetzachNotifyTarget.Token = (*source).Token
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
 	return pModelnetzachNotifyTarget
@@ -519,6 +518,17 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTarg
 		}
 	}
 	return modelnetzachNotifyTargetStatusList
+}
+func (c *toBizConverterImpl) ToBizPorterContext(source *v11.PorterContext) *modeltiphereth.PorterInstanceContext {
+	var pModeltipherethPorterInstanceContext *modeltiphereth.PorterInstanceContext
+	if source != nil {
+		var modeltipherethPorterInstanceContext modeltiphereth.PorterInstanceContext
+		modeltipherethPorterInstanceContext.ID = ToBizInternalID((*source).Id)
+		modeltipherethPorterInstanceContext.PorterID = ToBizInternalID((*source).PorterId)
+		modeltipherethPorterInstanceContext.ContextJSON = PtrToString((*source).ContextJson)
+		pModeltipherethPorterInstanceContext = &modeltipherethPorterInstanceContext
+	}
+	return pModeltipherethPorterInstanceContext
 }
 func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
@@ -567,15 +577,6 @@ func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeature
 		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
 	}
 	return pModeltipherethPorterFeatureSummary
-}
-func (c *toBizConverterImpl) ToBizPorterPrivilege(source *v11.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege {
-	var pModeltipherethPorterInstancePrivilege *modeltiphereth.PorterInstancePrivilege
-	if source != nil {
-		var modeltipherethPorterInstancePrivilege modeltiphereth.PorterInstancePrivilege
-		modeltipherethPorterInstancePrivilege.All = (*source).All
-		pModeltipherethPorterInstancePrivilege = &modeltipherethPorterInstancePrivilege
-	}
-	return pModeltipherethPorterInstancePrivilege
 }
 func (c *toBizConverterImpl) ToBizSystemNotificationLevel(source v11.SystemNotificationLevel) modelnetzach.SystemNotificationLevel {
 	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
@@ -1026,6 +1027,7 @@ func (c *toPBConverterImpl) ToPBFeatureFlag(source *modeltiphereth.FeatureFlag) 
 		v1FeatureFlag.Name = (*source).Name
 		v1FeatureFlag.Description = (*source).Description
 		v1FeatureFlag.ConfigJsonSchema = (*source).ConfigJSONSchema
+		v1FeatureFlag.RequireContext = (*source).RequireContext
 		pV1FeatureFlag = &v1FeatureFlag
 	}
 	return pV1FeatureFlag
@@ -1037,6 +1039,7 @@ func (c *toPBConverterImpl) ToPBFeatureRequest(source *modeltiphereth.FeatureReq
 		v1FeatureRequest.Id = (*source).ID
 		v1FeatureRequest.Region = (*source).Region
 		v1FeatureRequest.ConfigJson = (*source).ConfigJSON
+		v1FeatureRequest.ContextId = ToPBInternalID((*source).ContextID)
 		pV1FeatureRequest = &v1FeatureRequest
 	}
 	return pV1FeatureRequest
@@ -1099,9 +1102,9 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		var v1FeedConfig v11.FeedConfig
 		v1FeedConfig.Id = ToPBInternalID((*source).ID)
 		v1FeedConfig.Name = (*source).Name
-		v1FeedConfig.FeedUrl = (*source).FeedURL
-		v1FeedConfig.AuthorAccount = ToPBInternalID((*source).AuthorAccount)
-		v1FeedConfig.Source = (*source).Source
+		v1FeedConfig.Description = (*source).Description
+		v1FeedConfig.Source = c.ToPBFeatureRequest((*source).Source)
+		v1FeedConfig.ActionSets = c.ToPBInternalIDList((*source).ActionSets)
 		v1FeedConfig.Status = c.ToPBFeedConfigStatus((*source).Status)
 		v1FeedConfig.PullInterval = ToPBDuration((*source).PullInterval)
 		v1FeedConfig.Category = (*source).Category
@@ -1110,7 +1113,6 @@ func (c *toPBConverterImpl) ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.F
 		v1FeedConfig.LatestPullStatus = ToPBFeedConfigPullStatus((*source).LatestPullStatus)
 		pString := (*source).LatestPullMessage
 		v1FeedConfig.LatestPullMessage = &pString
-		v1FeedConfig.ActionSets = c.ToPBInternalIDList((*source).ActionSets)
 		pV1FeedConfig = &v1FeedConfig
 	}
 	return pV1FeedConfig
@@ -1343,7 +1345,6 @@ func (c *toPBConverterImpl) ToPBNotifyFlowTarget(source *modelnetzach.NotifyFlow
 		var v1NotifyFlowTarget v11.NotifyFlowTarget
 		v1NotifyFlowTarget.Filter = c.pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
 		v1NotifyFlowTarget.TargetId = ToPBInternalID((*source).TargetID)
-		v1NotifyFlowTarget.ChannelId = (*source).ChannelID
 		pV1NotifyFlowTarget = &v1NotifyFlowTarget
 	}
 	return pV1NotifyFlowTarget
@@ -1355,9 +1356,8 @@ func (c *toPBConverterImpl) ToPBNotifyTarget(source *modelnetzach.NotifyTarget) 
 		v1NotifyTarget.Id = ToPBInternalID((*source).ID)
 		v1NotifyTarget.Name = (*source).Name
 		v1NotifyTarget.Description = (*source).Description
-		v1NotifyTarget.Destination = (*source).Destination
+		v1NotifyTarget.Destination = c.ToPBFeatureRequest((*source).Destination)
 		v1NotifyTarget.Status = c.ToPBNotifyTargetStatus((*source).Status)
-		v1NotifyTarget.Token = (*source).Token
 		pV1NotifyTarget = &v1NotifyTarget
 	}
 	return pV1NotifyTarget

@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -17,10 +19,9 @@ type NotifyTarget struct {
 func (NotifyTarget) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.String("token"),
 		field.String("name"),
 		field.String("description"),
-		field.String("destination"),
+		field.JSON("destination", new(modeltiphereth.FeatureRequest)),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.Time("updated_at").

@@ -249,6 +249,18 @@ func (f NotifyTargetFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.NotifyTargetMutation", m)
 }
 
+// The PorterContextFunc type is an adapter to allow the use of ordinary
+// function as PorterContext mutator.
+type PorterContextFunc func(context.Context, *ent.PorterContextMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f PorterContextFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.PorterContextMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterContextMutation", m)
+}
+
 // The PorterInstanceFunc type is an adapter to allow the use of ordinary
 // function as PorterInstance mutator.
 type PorterInstanceFunc func(context.Context, *ent.PorterInstanceMutation) (ent.Value, error)
@@ -259,18 +271,6 @@ func (f PorterInstanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterInstanceMutation", m)
-}
-
-// The PorterPrivilegeFunc type is an adapter to allow the use of ordinary
-// function as PorterPrivilege mutator.
-type PorterPrivilegeFunc func(context.Context, *ent.PorterPrivilegeMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f PorterPrivilegeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.PorterPrivilegeMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterPrivilegeMutation", m)
 }
 
 // The SystemNotificationFunc type is an adapter to allow the use of ordinary

@@ -138,7 +138,6 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 		}
 		err = y.pullFeed.Publish(ctx, modelyesod.PullFeed{
 			InternalID:   c.ID,
-			URL:          c.FeedURL,
 			Source:       c.Source,
 			SystemNotify: doNotify(),
 		})

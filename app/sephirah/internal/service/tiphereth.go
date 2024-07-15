@@ -47,17 +47,17 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 		RefreshToken: string(refreshToken),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) GainUserPrivilege(ctx context.Context, req *pb.GainUserPrivilegeRequest) (
-	*pb.GainUserPrivilegeResponse, error,
+func (s *LibrarianSephirahServiceService) AcquireUserToken(ctx context.Context, req *pb.AcquireUserTokenRequest) (
+	*pb.AcquireUserTokenResponse, error,
 ) {
 	if req.GetUserId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	token, err := s.t.GainUserPrivilege(ctx, converter.ToBizInternalID(req.GetUserId()))
+	token, err := s.t.AcquireUserToken(ctx, converter.ToBizInternalID(req.GetUserId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GainUserPrivilegeResponse{
+	return &pb.AcquireUserTokenResponse{
 		AccessToken: string(token),
 	}, nil
 }
@@ -286,18 +286,18 @@ func (s *LibrarianSephirahServiceService) UpdatePorterStatus(ctx context.Context
 	return &pb.UpdatePorterStatusResponse{}, nil
 }
 
-func (s *LibrarianSephirahServiceService) UpdatePorterPrivilege(
+func (s *LibrarianSephirahServiceService) UpdatePorterContext(
 	ctx context.Context,
-	req *pb.UpdatePorterPrivilegeRequest,
-) (*pb.UpdatePorterPrivilegeResponse, error) {
-	if req.GetPorterId() == nil || req.GetPrivilege() == nil {
+	req *pb.UpdatePorterContextRequest,
+) (*pb.UpdatePorterContextResponse, error) {
+	if req.GetPorterId() == nil || req.GetContext() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	if err := s.t.UpdatePorterPrivilege(ctx,
+	if err := s.t.UpdatePorterContext(ctx,
 		converter.ToBizInternalID(req.GetPorterId()),
-		converter.ToBizPorterPrivilege(req.GetPrivilege()),
+		converter.ToBizPorterContext(req.GetContext()),
 	); err != nil {
 		return nil, err
 	}
-	return &pb.UpdatePorterPrivilegeResponse{}, nil
+	return &pb.UpdatePorterContextResponse{}, nil
 }

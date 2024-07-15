@@ -68,11 +68,6 @@ func NotifyTargetID(v model.InternalID) predicate.NotifyFlowTarget {
 	return predicate.NotifyFlowTarget(sql.FieldEQ(FieldNotifyTargetID, vc))
 }
 
-// ChannelID applies equality check predicate on the "channel_id" field. It's identical to ChannelIDEQ.
-func ChannelID(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldEQ(FieldChannelID, v))
-}
-
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.NotifyFlowTarget {
 	return predicate.NotifyFlowTarget(sql.FieldEQ(FieldUpdatedAt, v))
@@ -141,71 +136,6 @@ func NotifyTargetIDNotIn(vs ...model.InternalID) predicate.NotifyFlowTarget {
 		v[i] = int64(vs[i])
 	}
 	return predicate.NotifyFlowTarget(sql.FieldNotIn(FieldNotifyTargetID, v...))
-}
-
-// ChannelIDEQ applies the EQ predicate on the "channel_id" field.
-func ChannelIDEQ(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldEQ(FieldChannelID, v))
-}
-
-// ChannelIDNEQ applies the NEQ predicate on the "channel_id" field.
-func ChannelIDNEQ(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldNEQ(FieldChannelID, v))
-}
-
-// ChannelIDIn applies the In predicate on the "channel_id" field.
-func ChannelIDIn(vs ...string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldIn(FieldChannelID, vs...))
-}
-
-// ChannelIDNotIn applies the NotIn predicate on the "channel_id" field.
-func ChannelIDNotIn(vs ...string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldNotIn(FieldChannelID, vs...))
-}
-
-// ChannelIDGT applies the GT predicate on the "channel_id" field.
-func ChannelIDGT(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldGT(FieldChannelID, v))
-}
-
-// ChannelIDGTE applies the GTE predicate on the "channel_id" field.
-func ChannelIDGTE(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldGTE(FieldChannelID, v))
-}
-
-// ChannelIDLT applies the LT predicate on the "channel_id" field.
-func ChannelIDLT(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldLT(FieldChannelID, v))
-}
-
-// ChannelIDLTE applies the LTE predicate on the "channel_id" field.
-func ChannelIDLTE(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldLTE(FieldChannelID, v))
-}
-
-// ChannelIDContains applies the Contains predicate on the "channel_id" field.
-func ChannelIDContains(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldContains(FieldChannelID, v))
-}
-
-// ChannelIDHasPrefix applies the HasPrefix predicate on the "channel_id" field.
-func ChannelIDHasPrefix(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldHasPrefix(FieldChannelID, v))
-}
-
-// ChannelIDHasSuffix applies the HasSuffix predicate on the "channel_id" field.
-func ChannelIDHasSuffix(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldHasSuffix(FieldChannelID, v))
-}
-
-// ChannelIDEqualFold applies the EqualFold predicate on the "channel_id" field.
-func ChannelIDEqualFold(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldEqualFold(FieldChannelID, v))
-}
-
-// ChannelIDContainsFold applies the ContainsFold predicate on the "channel_id" field.
-func ChannelIDContainsFold(v string) predicate.NotifyFlowTarget {
-	return predicate.NotifyFlowTarget(sql.FieldContainsFold(FieldChannelID, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

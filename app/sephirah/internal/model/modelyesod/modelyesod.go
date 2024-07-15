@@ -32,17 +32,16 @@ type FeedWithConfig struct {
 type FeedConfig struct {
 	ID                model.InternalID
 	Name              string
-	FeedURL           string
+	Description       string
+	Source            *modeltiphereth.FeatureRequest
+	ActionSets        []model.InternalID
 	Category          string
-	AuthorAccount     model.InternalID
-	Source            string
 	Status            FeedConfigStatus
 	PullInterval      time.Duration
 	LatestPullTime    time.Time
 	LatestPullStatus  FeedConfigPullStatus
 	LatestPullMessage string
 	HideItems         bool
-	ActionSets        []model.InternalID
 }
 
 type FeedConfigStatus int
@@ -71,8 +70,7 @@ const (
 
 type PullFeed struct {
 	InternalID   model.InternalID
-	URL          string
-	Source       string
+	Source       *modeltiphereth.FeatureRequest
 	SystemNotify *modelnetzach.SystemNotify
 }
 

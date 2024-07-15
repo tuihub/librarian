@@ -9,8 +9,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
@@ -399,30 +399,30 @@ func (t tipherethRepo) UpdatePorterStatus(
 		Exec(ctx)
 }
 
-func (t tipherethRepo) UpdatePorterPrivilege(
+func (t tipherethRepo) UpdatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
 	porterID model.InternalID,
-	privilege *modeltiphereth.PorterInstancePrivilege,
+	context *modeltiphereth.PorterInstanceContext,
 ) error {
-	return t.data.db.PorterPrivilege.Update().Where(
-		porterprivilege.PorterIDEQ(porterID),
-		porterprivilege.UserID(userID),
+	return t.data.db.PorterContext.Update().Where(
+		portercontext.PorterIDEQ(porterID),
+		portercontext.UserID(userID),
 	).
-		SetPrivilege(privilege).
+		SetContext(context).
 		Exec(ctx)
 }
-func (t tipherethRepo) FetchPorterPrivilege(
+func (t tipherethRepo) FetchPorterContext(
 	ctx context.Context,
 	porterID model.InternalID,
 	userID model.InternalID,
-) (*modeltiphereth.PorterInstancePrivilege, error) {
-	res, err := t.data.db.PorterPrivilege.Query().Where(
-		porterprivilege.PorterIDEQ(porterID),
-		porterprivilege.UserID(userID),
+) (*modeltiphereth.PorterInstanceContext, error) {
+	res, err := t.data.db.PorterContext.Query().Where(
+		portercontext.PorterIDEQ(porterID),
+		portercontext.UserID(userID),
 	).Only(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return res.Privilege, nil
+	return res.Context, nil
 }

@@ -36,8 +36,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -90,10 +90,10 @@ type Client struct {
 	NotifySource *NotifySourceClient
 	// NotifyTarget is the client for interacting with the NotifyTarget builders.
 	NotifyTarget *NotifyTargetClient
+	// PorterContext is the client for interacting with the PorterContext builders.
+	PorterContext *PorterContextClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
-	// PorterPrivilege is the client for interacting with the PorterPrivilege builders.
-	PorterPrivilege *PorterPrivilegeClient
 	// SystemNotification is the client for interacting with the SystemNotification builders.
 	SystemNotification *SystemNotificationClient
 	// Tag is the client for interacting with the Tag builders.
@@ -135,8 +135,8 @@ func (c *Client) init() {
 	c.NotifyFlowTarget = NewNotifyFlowTargetClient(c.config)
 	c.NotifySource = NewNotifySourceClient(c.config)
 	c.NotifyTarget = NewNotifyTargetClient(c.config)
+	c.PorterContext = NewPorterContextClient(c.config)
 	c.PorterInstance = NewPorterInstanceClient(c.config)
-	c.PorterPrivilege = NewPorterPrivilegeClient(c.config)
 	c.SystemNotification = NewSystemNotificationClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -254,8 +254,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
 		NotifySource:       NewNotifySourceClient(cfg),
 		NotifyTarget:       NewNotifyTargetClient(cfg),
+		PorterContext:      NewPorterContextClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
-		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
 		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
@@ -300,8 +300,8 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
 		NotifySource:       NewNotifySourceClient(cfg),
 		NotifyTarget:       NewNotifyTargetClient(cfg),
+		PorterContext:      NewPorterContextClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
-		PorterPrivilege:    NewPorterPrivilegeClient(cfg),
 		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
@@ -340,7 +340,7 @@ func (c *Client) Use(hooks ...Hook) {
 		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
 		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterInstance, c.PorterPrivilege, c.SystemNotification, c.Tag, c.User,
+		c.PorterContext, c.PorterInstance, c.SystemNotification, c.Tag, c.User,
 		c.UserDevice, c.UserSession,
 	} {
 		n.Use(hooks...)
@@ -355,7 +355,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
 		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterInstance, c.PorterPrivilege, c.SystemNotification, c.Tag, c.User,
+		c.PorterContext, c.PorterInstance, c.SystemNotification, c.Tag, c.User,
 		c.UserDevice, c.UserSession,
 	} {
 		n.Intercept(interceptors...)
@@ -405,10 +405,10 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.NotifySource.mutate(ctx, m)
 	case *NotifyTargetMutation:
 		return c.NotifyTarget.mutate(ctx, m)
+	case *PorterContextMutation:
+		return c.PorterContext.mutate(ctx, m)
 	case *PorterInstanceMutation:
 		return c.PorterInstance.mutate(ctx, m)
-	case *PorterPrivilegeMutation:
-		return c.PorterPrivilege.mutate(ctx, m)
 	case *SystemNotificationMutation:
 		return c.SystemNotification.mutate(ctx, m)
 	case *TagMutation:
@@ -3916,6 +3916,139 @@ func (c *NotifyTargetClient) mutate(ctx context.Context, m *NotifyTargetMutation
 	}
 }
 
+// PorterContextClient is a client for the PorterContext schema.
+type PorterContextClient struct {
+	config
+}
+
+// NewPorterContextClient returns a client for the PorterContext from the given config.
+func NewPorterContextClient(c config) *PorterContextClient {
+	return &PorterContextClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `portercontext.Hooks(f(g(h())))`.
+func (c *PorterContextClient) Use(hooks ...Hook) {
+	c.hooks.PorterContext = append(c.hooks.PorterContext, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `portercontext.Intercept(f(g(h())))`.
+func (c *PorterContextClient) Intercept(interceptors ...Interceptor) {
+	c.inters.PorterContext = append(c.inters.PorterContext, interceptors...)
+}
+
+// Create returns a builder for creating a PorterContext entity.
+func (c *PorterContextClient) Create() *PorterContextCreate {
+	mutation := newPorterContextMutation(c.config, OpCreate)
+	return &PorterContextCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of PorterContext entities.
+func (c *PorterContextClient) CreateBulk(builders ...*PorterContextCreate) *PorterContextCreateBulk {
+	return &PorterContextCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *PorterContextClient) MapCreateBulk(slice any, setFunc func(*PorterContextCreate, int)) *PorterContextCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &PorterContextCreateBulk{err: fmt.Errorf("calling to PorterContextClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*PorterContextCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &PorterContextCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for PorterContext.
+func (c *PorterContextClient) Update() *PorterContextUpdate {
+	mutation := newPorterContextMutation(c.config, OpUpdate)
+	return &PorterContextUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *PorterContextClient) UpdateOne(pc *PorterContext) *PorterContextUpdateOne {
+	mutation := newPorterContextMutation(c.config, OpUpdateOne, withPorterContext(pc))
+	return &PorterContextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *PorterContextClient) UpdateOneID(id model.InternalID) *PorterContextUpdateOne {
+	mutation := newPorterContextMutation(c.config, OpUpdateOne, withPorterContextID(id))
+	return &PorterContextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for PorterContext.
+func (c *PorterContextClient) Delete() *PorterContextDelete {
+	mutation := newPorterContextMutation(c.config, OpDelete)
+	return &PorterContextDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *PorterContextClient) DeleteOne(pc *PorterContext) *PorterContextDeleteOne {
+	return c.DeleteOneID(pc.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *PorterContextClient) DeleteOneID(id model.InternalID) *PorterContextDeleteOne {
+	builder := c.Delete().Where(portercontext.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &PorterContextDeleteOne{builder}
+}
+
+// Query returns a query builder for PorterContext.
+func (c *PorterContextClient) Query() *PorterContextQuery {
+	return &PorterContextQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypePorterContext},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a PorterContext entity by its id.
+func (c *PorterContextClient) Get(ctx context.Context, id model.InternalID) (*PorterContext, error) {
+	return c.Query().Where(portercontext.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *PorterContextClient) GetX(ctx context.Context, id model.InternalID) *PorterContext {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *PorterContextClient) Hooks() []Hook {
+	return c.hooks.PorterContext
+}
+
+// Interceptors returns the client interceptors.
+func (c *PorterContextClient) Interceptors() []Interceptor {
+	return c.inters.PorterContext
+}
+
+func (c *PorterContextClient) mutate(ctx context.Context, m *PorterContextMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&PorterContextCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&PorterContextUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&PorterContextUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&PorterContextDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown PorterContext mutation op: %q", m.Op())
+	}
+}
+
 // PorterInstanceClient is a client for the PorterInstance schema.
 type PorterInstanceClient struct {
 	config
@@ -4046,139 +4179,6 @@ func (c *PorterInstanceClient) mutate(ctx context.Context, m *PorterInstanceMuta
 		return (&PorterInstanceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown PorterInstance mutation op: %q", m.Op())
-	}
-}
-
-// PorterPrivilegeClient is a client for the PorterPrivilege schema.
-type PorterPrivilegeClient struct {
-	config
-}
-
-// NewPorterPrivilegeClient returns a client for the PorterPrivilege from the given config.
-func NewPorterPrivilegeClient(c config) *PorterPrivilegeClient {
-	return &PorterPrivilegeClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `porterprivilege.Hooks(f(g(h())))`.
-func (c *PorterPrivilegeClient) Use(hooks ...Hook) {
-	c.hooks.PorterPrivilege = append(c.hooks.PorterPrivilege, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `porterprivilege.Intercept(f(g(h())))`.
-func (c *PorterPrivilegeClient) Intercept(interceptors ...Interceptor) {
-	c.inters.PorterPrivilege = append(c.inters.PorterPrivilege, interceptors...)
-}
-
-// Create returns a builder for creating a PorterPrivilege entity.
-func (c *PorterPrivilegeClient) Create() *PorterPrivilegeCreate {
-	mutation := newPorterPrivilegeMutation(c.config, OpCreate)
-	return &PorterPrivilegeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of PorterPrivilege entities.
-func (c *PorterPrivilegeClient) CreateBulk(builders ...*PorterPrivilegeCreate) *PorterPrivilegeCreateBulk {
-	return &PorterPrivilegeCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *PorterPrivilegeClient) MapCreateBulk(slice any, setFunc func(*PorterPrivilegeCreate, int)) *PorterPrivilegeCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &PorterPrivilegeCreateBulk{err: fmt.Errorf("calling to PorterPrivilegeClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*PorterPrivilegeCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &PorterPrivilegeCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for PorterPrivilege.
-func (c *PorterPrivilegeClient) Update() *PorterPrivilegeUpdate {
-	mutation := newPorterPrivilegeMutation(c.config, OpUpdate)
-	return &PorterPrivilegeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *PorterPrivilegeClient) UpdateOne(pp *PorterPrivilege) *PorterPrivilegeUpdateOne {
-	mutation := newPorterPrivilegeMutation(c.config, OpUpdateOne, withPorterPrivilege(pp))
-	return &PorterPrivilegeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *PorterPrivilegeClient) UpdateOneID(id int) *PorterPrivilegeUpdateOne {
-	mutation := newPorterPrivilegeMutation(c.config, OpUpdateOne, withPorterPrivilegeID(id))
-	return &PorterPrivilegeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for PorterPrivilege.
-func (c *PorterPrivilegeClient) Delete() *PorterPrivilegeDelete {
-	mutation := newPorterPrivilegeMutation(c.config, OpDelete)
-	return &PorterPrivilegeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *PorterPrivilegeClient) DeleteOne(pp *PorterPrivilege) *PorterPrivilegeDeleteOne {
-	return c.DeleteOneID(pp.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *PorterPrivilegeClient) DeleteOneID(id int) *PorterPrivilegeDeleteOne {
-	builder := c.Delete().Where(porterprivilege.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &PorterPrivilegeDeleteOne{builder}
-}
-
-// Query returns a query builder for PorterPrivilege.
-func (c *PorterPrivilegeClient) Query() *PorterPrivilegeQuery {
-	return &PorterPrivilegeQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypePorterPrivilege},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a PorterPrivilege entity by its id.
-func (c *PorterPrivilegeClient) Get(ctx context.Context, id int) (*PorterPrivilege, error) {
-	return c.Query().Where(porterprivilege.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *PorterPrivilegeClient) GetX(ctx context.Context, id int) *PorterPrivilege {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *PorterPrivilegeClient) Hooks() []Hook {
-	return c.hooks.PorterPrivilege
-}
-
-// Interceptors returns the client interceptors.
-func (c *PorterPrivilegeClient) Interceptors() []Interceptor {
-	return c.inters.PorterPrivilege
-}
-
-func (c *PorterPrivilegeClient) mutate(ctx context.Context, m *PorterPrivilegeMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&PorterPrivilegeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&PorterPrivilegeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&PorterPrivilegeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&PorterPrivilegeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown PorterPrivilege mutation op: %q", m.Op())
 	}
 }
 
@@ -5189,14 +5189,14 @@ type (
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
 		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterInstance, PorterPrivilege, SystemNotification, Tag, User,
+		NotifyTarget, PorterContext, PorterInstance, SystemNotification, Tag, User,
 		UserDevice, UserSession []ent.Hook
 	}
 	inters struct {
 		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
 		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterInstance, PorterPrivilege, SystemNotification, Tag, User,
+		NotifyTarget, PorterContext, PorterInstance, SystemNotification, Tag, User,
 		UserDevice, UserSession []ent.Interceptor
 	}
 )

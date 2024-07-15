@@ -37,12 +37,6 @@ func (nftc *NotifyFlowTargetCreate) SetNotifyTargetID(mi model.InternalID) *Noti
 	return nftc
 }
 
-// SetChannelID sets the "channel_id" field.
-func (nftc *NotifyFlowTargetCreate) SetChannelID(s string) *NotifyFlowTargetCreate {
-	nftc.mutation.SetChannelID(s)
-	return nftc
-}
-
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
 func (nftc *NotifyFlowTargetCreate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetCreate {
 	nftc.mutation.SetFilterIncludeKeywords(s)
@@ -146,9 +140,6 @@ func (nftc *NotifyFlowTargetCreate) check() error {
 	if _, ok := nftc.mutation.NotifyTargetID(); !ok {
 		return &ValidationError{Name: "notify_target_id", err: errors.New(`ent: missing required field "NotifyFlowTarget.notify_target_id"`)}
 	}
-	if _, ok := nftc.mutation.ChannelID(); !ok {
-		return &ValidationError{Name: "channel_id", err: errors.New(`ent: missing required field "NotifyFlowTarget.channel_id"`)}
-	}
 	if _, ok := nftc.mutation.FilterIncludeKeywords(); !ok {
 		return &ValidationError{Name: "filter_include_keywords", err: errors.New(`ent: missing required field "NotifyFlowTarget.filter_include_keywords"`)}
 	}
@@ -194,10 +185,6 @@ func (nftc *NotifyFlowTargetCreate) createSpec() (*NotifyFlowTarget, *sqlgraph.C
 		_spec = sqlgraph.NewCreateSpec(notifyflowtarget.Table, sqlgraph.NewFieldSpec(notifyflowtarget.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = nftc.conflict
-	if value, ok := nftc.mutation.ChannelID(); ok {
-		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
-		_node.ChannelID = value
-	}
 	if value, ok := nftc.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
 		_node.FilterIncludeKeywords = value
@@ -324,18 +311,6 @@ func (u *NotifyFlowTargetUpsert) UpdateNotifyTargetID() *NotifyFlowTargetUpsert 
 	return u
 }
 
-// SetChannelID sets the "channel_id" field.
-func (u *NotifyFlowTargetUpsert) SetChannelID(v string) *NotifyFlowTargetUpsert {
-	u.Set(notifyflowtarget.FieldChannelID, v)
-	return u
-}
-
-// UpdateChannelID sets the "channel_id" field to the value that was provided on create.
-func (u *NotifyFlowTargetUpsert) UpdateChannelID() *NotifyFlowTargetUpsert {
-	u.SetExcluded(notifyflowtarget.FieldChannelID)
-	return u
-}
-
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
 func (u *NotifyFlowTargetUpsert) SetFilterIncludeKeywords(v []string) *NotifyFlowTargetUpsert {
 	u.Set(notifyflowtarget.FieldFilterIncludeKeywords, v)
@@ -449,20 +424,6 @@ func (u *NotifyFlowTargetUpsertOne) SetNotifyTargetID(v model.InternalID) *Notif
 func (u *NotifyFlowTargetUpsertOne) UpdateNotifyTargetID() *NotifyFlowTargetUpsertOne {
 	return u.Update(func(s *NotifyFlowTargetUpsert) {
 		s.UpdateNotifyTargetID()
-	})
-}
-
-// SetChannelID sets the "channel_id" field.
-func (u *NotifyFlowTargetUpsertOne) SetChannelID(v string) *NotifyFlowTargetUpsertOne {
-	return u.Update(func(s *NotifyFlowTargetUpsert) {
-		s.SetChannelID(v)
-	})
-}
-
-// UpdateChannelID sets the "channel_id" field to the value that was provided on create.
-func (u *NotifyFlowTargetUpsertOne) UpdateChannelID() *NotifyFlowTargetUpsertOne {
-	return u.Update(func(s *NotifyFlowTargetUpsert) {
-		s.UpdateChannelID()
 	})
 }
 
@@ -751,20 +712,6 @@ func (u *NotifyFlowTargetUpsertBulk) SetNotifyTargetID(v model.InternalID) *Noti
 func (u *NotifyFlowTargetUpsertBulk) UpdateNotifyTargetID() *NotifyFlowTargetUpsertBulk {
 	return u.Update(func(s *NotifyFlowTargetUpsert) {
 		s.UpdateNotifyTargetID()
-	})
-}
-
-// SetChannelID sets the "channel_id" field.
-func (u *NotifyFlowTargetUpsertBulk) SetChannelID(v string) *NotifyFlowTargetUpsertBulk {
-	return u.Update(func(s *NotifyFlowTargetUpsert) {
-		s.SetChannelID(v)
-	})
-}
-
-// UpdateChannelID sets the "channel_id" field to the value that was provided on create.
-func (u *NotifyFlowTargetUpsertBulk) UpdateChannelID() *NotifyFlowTargetUpsertBulk {
-	return u.Update(func(s *NotifyFlowTargetUpsert) {
-		s.UpdateChannelID()
 	})
 }
 

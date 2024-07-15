@@ -18,8 +18,6 @@ const (
 	FieldNotifyFlowID = "notify_flow_id"
 	// FieldNotifyTargetID holds the string denoting the notify_target_id field in the database.
 	FieldNotifyTargetID = "notify_target_id"
-	// FieldChannelID holds the string denoting the channel_id field in the database.
-	FieldChannelID = "channel_id"
 	// FieldFilterIncludeKeywords holds the string denoting the filter_include_keywords field in the database.
 	FieldFilterIncludeKeywords = "filter_include_keywords"
 	// FieldFilterExcludeKeywords holds the string denoting the filter_exclude_keywords field in the database.
@@ -55,7 +53,6 @@ var Columns = []string{
 	FieldID,
 	FieldNotifyFlowID,
 	FieldNotifyTargetID,
-	FieldChannelID,
 	FieldFilterIncludeKeywords,
 	FieldFilterExcludeKeywords,
 	FieldUpdatedAt,
@@ -97,11 +94,6 @@ func ByNotifyFlowID(opts ...sql.OrderTermOption) OrderOption {
 // ByNotifyTargetID orders the results by the notify_target_id field.
 func ByNotifyTargetID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNotifyTargetID, opts...).ToFunc()
-}
-
-// ByChannelID orders the results by the channel_id field.
-func ByChannelID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldChannelID, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

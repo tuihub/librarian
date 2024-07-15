@@ -1,3 +1,4 @@
+//nolint:dupl // TODO
 package schema
 
 import (

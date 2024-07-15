@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -12,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -24,12 +26,12 @@ type FeedConfig struct {
 	UserFeedConfig model.InternalID `json:"user_feed_config,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
 	// FeedURL holds the value of the "feed_url" field.
 	FeedURL string `json:"feed_url,omitempty"`
-	// AuthorAccount holds the value of the "author_account" field.
-	AuthorAccount model.InternalID `json:"author_account,omitempty"`
 	// Source holds the value of the "source" field.
-	Source string `json:"source,omitempty"`
+	Source *modeltiphereth.FeatureRequest `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// Category holds the value of the "category" field.
@@ -127,11 +129,13 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case feedconfig.FieldSource:
+			values[i] = new([]byte)
 		case feedconfig.FieldHideItems:
 			values[i] = new(sql.NullBool)
-		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldAuthorAccount, feedconfig.FieldPullInterval:
+		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldName, feedconfig.FieldFeedURL, feedconfig.FieldSource, feedconfig.FieldStatus, feedconfig.FieldCategory, feedconfig.FieldLatestPullStatus, feedconfig.FieldLatestPullMessage:
+		case feedconfig.FieldName, feedconfig.FieldDescription, feedconfig.FieldFeedURL, feedconfig.FieldStatus, feedconfig.FieldCategory, feedconfig.FieldLatestPullStatus, feedconfig.FieldLatestPullMessage:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -168,23 +172,25 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fc.Name = value.String
 			}
+		case feedconfig.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				fc.Description = value.String
+			}
 		case feedconfig.FieldFeedURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field feed_url", values[i])
 			} else if value.Valid {
 				fc.FeedURL = value.String
 			}
-		case feedconfig.FieldAuthorAccount:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field author_account", values[i])
-			} else if value.Valid {
-				fc.AuthorAccount = model.InternalID(value.Int64)
-			}
 		case feedconfig.FieldSource:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field source", values[i])
-			} else if value.Valid {
-				fc.Source = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &fc.Source); err != nil {
+					return fmt.Errorf("unmarshal field source: %w", err)
+				}
 			}
 		case feedconfig.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -313,14 +319,14 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString("name=")
 	builder.WriteString(fc.Name)
 	builder.WriteString(", ")
+	builder.WriteString("description=")
+	builder.WriteString(fc.Description)
+	builder.WriteString(", ")
 	builder.WriteString("feed_url=")
 	builder.WriteString(fc.FeedURL)
 	builder.WriteString(", ")
-	builder.WriteString("author_account=")
-	builder.WriteString(fmt.Sprintf("%v", fc.AuthorAccount))
-	builder.WriteString(", ")
 	builder.WriteString("source=")
-	builder.WriteString(fc.Source)
+	builder.WriteString(fmt.Sprintf("%v", fc.Source))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", fc.Status))

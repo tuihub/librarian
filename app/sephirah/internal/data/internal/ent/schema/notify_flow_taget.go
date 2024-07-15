@@ -1,3 +1,4 @@
+//nolint:dupl // TODO
 package schema
 
 import (
@@ -21,7 +22,6 @@ func (NotifyFlowTarget) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("notify_flow_id").GoType(model.InternalID(0)),
 		field.Int64("notify_target_id").GoType(model.InternalID(0)),
-		field.String("channel_id"),
 		field.JSON("filter_include_keywords", []string{}),
 		field.JSON("filter_exclude_keywords", []string{}),
 		field.Time("updated_at").

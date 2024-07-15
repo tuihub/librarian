@@ -169,7 +169,7 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) GainUserPrivilege(
+func (t *Tiphereth) AcquireUserToken(
 	ctx context.Context,
 	userID model.InternalID,
 ) (modeltiphereth.AccessToken, *errors.Error) {
@@ -177,13 +177,7 @@ func (t *Tiphereth) GainUserPrivilege(
 	if claims == nil || claims.PorterID != 0 {
 		return "", bizutils.NoPermissionError()
 	}
-	privilege, err := t.repo.FetchPorterPrivilege(ctx, claims.UserID, userID)
-	if err != nil {
-		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	if !privilege.All {
-		return "", bizutils.NoPermissionError()
-	}
+	// TODO
 	accessToken, err := t.auth.GenerateToken(
 		userID,
 		claims.UserID,

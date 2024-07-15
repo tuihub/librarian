@@ -15,8 +15,6 @@ const (
 	Label = "notify_target"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldToken holds the string denoting the token field in the database.
-	FieldToken = "token"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
@@ -61,7 +59,6 @@ const (
 // Columns holds all SQL columns for notifytarget fields.
 var Columns = []string{
 	FieldID,
-	FieldToken,
 	FieldName,
 	FieldDescription,
 	FieldDestination,
@@ -137,11 +134,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByToken orders the results by the token field.
-func ByToken(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldToken, opts...).ToFunc()
-}
-
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
@@ -150,11 +142,6 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
-}
-
-// ByDestination orders the results by the destination field.
-func ByDestination(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDestination, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

@@ -18,11 +18,15 @@ func (c *Client) TestYesod(ctx context.Context) {
 	var feedConfigID, feedItemID int64
 	if resp, err := c.cli.CreateFeedConfig(ctx, &pb.CreateFeedConfigRequest{
 		Config: &pb.FeedConfig{
-			Id:                nil,
-			Name:              "",
-			FeedUrl:           feedURL,
-			AuthorAccount:     nil,
-			Source:            "rss",
+			Id:          nil,
+			Name:        "",
+			Description: feedURL,
+			Source: &librarian.FeatureRequest{
+				Id:         "rss",
+				Region:     "",
+				ConfigJson: "",
+				ContextId:  nil,
+			},
 			Status:            pb.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND,
 			PullInterval:      durationpb.New(time.Hour),
 			Category:          "",
@@ -42,10 +46,15 @@ func (c *Client) TestYesod(ctx context.Context) {
 			Id: &librarian.InternalID{
 				Id: feedConfigID,
 			},
-			Name:              "",
-			FeedUrl:           feedURL,
-			AuthorAccount:     nil,
-			Source:            "rss",
+			Name:        "",
+			Description: feedURL,
+			Source: &librarian.FeatureRequest{
+				Id:         "rss",
+				Region:     "",
+				ConfigJson: "",
+				ContextId:  nil,
+			},
+			ActionSets:        nil,
 			Status:            pb.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE,
 			PullInterval:      durationpb.New(time.Hour),
 			Category:          "",
@@ -53,7 +62,6 @@ func (c *Client) TestYesod(ctx context.Context) {
 			LatestPullTime:    nil,
 			LatestPullStatus:  nil,
 			LatestPullMessage: nil,
-			ActionSets:        nil,
 		},
 	}); err != nil {
 		log.Fatal(err)

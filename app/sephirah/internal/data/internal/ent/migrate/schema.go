@@ -266,9 +266,9 @@ var (
 	FeedConfigsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
 		{Name: "feed_url", Type: field.TypeString},
-		{Name: "author_account", Type: field.TypeInt64},
-		{Name: "source", Type: field.TypeString},
+		{Name: "source", Type: field.TypeJSON},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "category", Type: field.TypeString},
 		{Name: "pull_interval", Type: field.TypeInt64},
@@ -298,7 +298,7 @@ var (
 			{
 				Name:    "feedconfig_user_feed_config_feed_url",
 				Unique:  true,
-				Columns: []*schema.Column{FeedConfigsColumns[15], FeedConfigsColumns[2]},
+				Columns: []*schema.Column{FeedConfigsColumns[15], FeedConfigsColumns[3]},
 			},
 			{
 				Name:    "feedconfig_category",
@@ -543,7 +543,6 @@ var (
 	// NotifyFlowTargetsColumns holds the columns for the "notify_flow_targets" table.
 	NotifyFlowTargetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "channel_id", Type: field.TypeString},
 		{Name: "filter_include_keywords", Type: field.TypeJSON},
 		{Name: "filter_exclude_keywords", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
@@ -559,13 +558,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "notify_flow_targets_notify_flows_notify_flow",
-				Columns:    []*schema.Column{NotifyFlowTargetsColumns[6]},
+				Columns:    []*schema.Column{NotifyFlowTargetsColumns[5]},
 				RefColumns: []*schema.Column{NotifyFlowsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "notify_flow_targets_notify_targets_notify_target",
-				Columns:    []*schema.Column{NotifyFlowTargetsColumns[7]},
+				Columns:    []*schema.Column{NotifyFlowTargetsColumns[6]},
 				RefColumns: []*schema.Column{NotifyTargetsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -574,7 +573,7 @@ var (
 			{
 				Name:    "notifyflowtarget_notify_flow_id_notify_target_id",
 				Unique:  true,
-				Columns: []*schema.Column{NotifyFlowTargetsColumns[6], NotifyFlowTargetsColumns[7]},
+				Columns: []*schema.Column{NotifyFlowTargetsColumns[5], NotifyFlowTargetsColumns[6]},
 			},
 		},
 	}
@@ -616,10 +615,9 @@ var (
 	// NotifyTargetsColumns holds the columns for the "notify_targets" table.
 	NotifyTargetsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "token", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
-		{Name: "destination", Type: field.TypeString},
+		{Name: "destination", Type: field.TypeJSON},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
@@ -633,9 +631,31 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "notify_targets_users_notify_target",
-				Columns:    []*schema.Column{NotifyTargetsColumns[8]},
+				Columns:    []*schema.Column{NotifyTargetsColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
+			},
+		},
+	}
+	// PorterContextsColumns holds the columns for the "porter_contexts" table.
+	PorterContextsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "porter_id", Type: field.TypeInt64},
+		{Name: "context", Type: field.TypeJSON},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// PorterContextsTable holds the schema information for the "porter_contexts" table.
+	PorterContextsTable = &schema.Table{
+		Name:       "porter_contexts",
+		Columns:    PorterContextsColumns,
+		PrimaryKey: []*schema.Column{PorterContextsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "portercontext_user_id_porter_id",
+				Unique:  true,
+				Columns: []*schema.Column{PorterContextsColumns[1], PorterContextsColumns[2]},
 			},
 		},
 	}
@@ -661,28 +681,6 @@ var (
 				Name:    "porterinstance_address",
 				Unique:  true,
 				Columns: []*schema.Column{PorterInstancesColumns[4]},
-			},
-		},
-	}
-	// PorterPrivilegesColumns holds the columns for the "porter_privileges" table.
-	PorterPrivilegesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "porter_id", Type: field.TypeInt64},
-		{Name: "privilege", Type: field.TypeJSON},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "created_at", Type: field.TypeTime},
-	}
-	// PorterPrivilegesTable holds the schema information for the "porter_privileges" table.
-	PorterPrivilegesTable = &schema.Table{
-		Name:       "porter_privileges",
-		Columns:    PorterPrivilegesColumns,
-		PrimaryKey: []*schema.Column{PorterPrivilegesColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "porterprivilege_user_id_porter_id",
-				Unique:  true,
-				Columns: []*schema.Column{PorterPrivilegesColumns[1], PorterPrivilegesColumns[2]},
 			},
 		},
 	}
@@ -916,8 +914,8 @@ var (
 		NotifyFlowTargetsTable,
 		NotifySourcesTable,
 		NotifyTargetsTable,
+		PorterContextsTable,
 		PorterInstancesTable,
-		PorterPrivilegesTable,
 		SystemNotificationsTable,
 		TagsTable,
 		UsersTable,

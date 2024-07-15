@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -40,21 +41,21 @@ func (fcc *FeedConfigCreate) SetName(s string) *FeedConfigCreate {
 	return fcc
 }
 
+// SetDescription sets the "description" field.
+func (fcc *FeedConfigCreate) SetDescription(s string) *FeedConfigCreate {
+	fcc.mutation.SetDescription(s)
+	return fcc
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (fcc *FeedConfigCreate) SetFeedURL(s string) *FeedConfigCreate {
 	fcc.mutation.SetFeedURL(s)
 	return fcc
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (fcc *FeedConfigCreate) SetAuthorAccount(mi model.InternalID) *FeedConfigCreate {
-	fcc.mutation.SetAuthorAccount(mi)
-	return fcc
-}
-
 // SetSource sets the "source" field.
-func (fcc *FeedConfigCreate) SetSource(s string) *FeedConfigCreate {
-	fcc.mutation.SetSource(s)
+func (fcc *FeedConfigCreate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigCreate {
+	fcc.mutation.SetSource(mr)
 	return fcc
 }
 
@@ -304,11 +305,11 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "FeedConfig.name"`)}
 	}
+	if _, ok := fcc.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FeedConfig.description"`)}
+	}
 	if _, ok := fcc.mutation.FeedURL(); !ok {
 		return &ValidationError{Name: "feed_url", err: errors.New(`ent: missing required field "FeedConfig.feed_url"`)}
-	}
-	if _, ok := fcc.mutation.AuthorAccount(); !ok {
-		return &ValidationError{Name: "author_account", err: errors.New(`ent: missing required field "FeedConfig.author_account"`)}
 	}
 	if _, ok := fcc.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "FeedConfig.source"`)}
@@ -393,16 +394,16 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 		_spec.SetField(feedconfig.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
+	if value, ok := fcc.mutation.Description(); ok {
+		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
+		_node.Description = value
+	}
 	if value, ok := fcc.mutation.FeedURL(); ok {
 		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
 		_node.FeedURL = value
 	}
-	if value, ok := fcc.mutation.AuthorAccount(); ok {
-		_spec.SetField(feedconfig.FieldAuthorAccount, field.TypeInt64, value)
-		_node.AuthorAccount = value
-	}
 	if value, ok := fcc.mutation.Source(); ok {
-		_spec.SetField(feedconfig.FieldSource, field.TypeString, value)
+		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 		_node.Source = value
 	}
 	if value, ok := fcc.mutation.Status(); ok {
@@ -606,6 +607,18 @@ func (u *FeedConfigUpsert) UpdateName() *FeedConfigUpsert {
 	return u
 }
 
+// SetDescription sets the "description" field.
+func (u *FeedConfigUpsert) SetDescription(v string) *FeedConfigUpsert {
+	u.Set(feedconfig.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *FeedConfigUpsert) UpdateDescription() *FeedConfigUpsert {
+	u.SetExcluded(feedconfig.FieldDescription)
+	return u
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (u *FeedConfigUpsert) SetFeedURL(v string) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldFeedURL, v)
@@ -618,26 +631,8 @@ func (u *FeedConfigUpsert) UpdateFeedURL() *FeedConfigUpsert {
 	return u
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsert) SetAuthorAccount(v model.InternalID) *FeedConfigUpsert {
-	u.Set(feedconfig.FieldAuthorAccount, v)
-	return u
-}
-
-// UpdateAuthorAccount sets the "author_account" field to the value that was provided on create.
-func (u *FeedConfigUpsert) UpdateAuthorAccount() *FeedConfigUpsert {
-	u.SetExcluded(feedconfig.FieldAuthorAccount)
-	return u
-}
-
-// AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsert) AddAuthorAccount(v model.InternalID) *FeedConfigUpsert {
-	u.Add(feedconfig.FieldAuthorAccount, v)
-	return u
-}
-
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsert) SetSource(v string) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldSource, v)
 	return u
 }
@@ -850,6 +845,20 @@ func (u *FeedConfigUpsertOne) UpdateName() *FeedConfigUpsertOne {
 	})
 }
 
+// SetDescription sets the "description" field.
+func (u *FeedConfigUpsertOne) SetDescription(v string) *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *FeedConfigUpsertOne) UpdateDescription() *FeedConfigUpsertOne {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateDescription()
+	})
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (u *FeedConfigUpsertOne) SetFeedURL(v string) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
@@ -864,29 +873,8 @@ func (u *FeedConfigUpsertOne) UpdateFeedURL() *FeedConfigUpsertOne {
 	})
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsertOne) SetAuthorAccount(v model.InternalID) *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetAuthorAccount(v)
-	})
-}
-
-// AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsertOne) AddAuthorAccount(v model.InternalID) *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.AddAuthorAccount(v)
-	})
-}
-
-// UpdateAuthorAccount sets the "author_account" field to the value that was provided on create.
-func (u *FeedConfigUpsertOne) UpdateAuthorAccount() *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateAuthorAccount()
-	})
-}
-
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertOne) SetSource(v string) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})
@@ -1288,6 +1276,20 @@ func (u *FeedConfigUpsertBulk) UpdateName() *FeedConfigUpsertBulk {
 	})
 }
 
+// SetDescription sets the "description" field.
+func (u *FeedConfigUpsertBulk) SetDescription(v string) *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *FeedConfigUpsertBulk) UpdateDescription() *FeedConfigUpsertBulk {
+	return u.Update(func(s *FeedConfigUpsert) {
+		s.UpdateDescription()
+	})
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (u *FeedConfigUpsertBulk) SetFeedURL(v string) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
@@ -1302,29 +1304,8 @@ func (u *FeedConfigUpsertBulk) UpdateFeedURL() *FeedConfigUpsertBulk {
 	})
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (u *FeedConfigUpsertBulk) SetAuthorAccount(v model.InternalID) *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetAuthorAccount(v)
-	})
-}
-
-// AddAuthorAccount adds v to the "author_account" field.
-func (u *FeedConfigUpsertBulk) AddAuthorAccount(v model.InternalID) *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.AddAuthorAccount(v)
-	})
-}
-
-// UpdateAuthorAccount sets the "author_account" field to the value that was provided on create.
-func (u *FeedConfigUpsertBulk) UpdateAuthorAccount() *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateAuthorAccount()
-	})
-}
-
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertBulk) SetSource(v string) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})

@@ -25,8 +25,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/schema"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
@@ -262,13 +262,13 @@ func init() {
 	notifyflowtargetFields := schema.NotifyFlowTarget{}.Fields()
 	_ = notifyflowtargetFields
 	// notifyflowtargetDescUpdatedAt is the schema descriptor for updated_at field.
-	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[5].Descriptor()
+	notifyflowtargetDescUpdatedAt := notifyflowtargetFields[4].Descriptor()
 	// notifyflowtarget.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	notifyflowtarget.DefaultUpdatedAt = notifyflowtargetDescUpdatedAt.Default.(func() time.Time)
 	// notifyflowtarget.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	notifyflowtarget.UpdateDefaultUpdatedAt = notifyflowtargetDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// notifyflowtargetDescCreatedAt is the schema descriptor for created_at field.
-	notifyflowtargetDescCreatedAt := notifyflowtargetFields[6].Descriptor()
+	notifyflowtargetDescCreatedAt := notifyflowtargetFields[5].Descriptor()
 	// notifyflowtarget.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifyflowtarget.DefaultCreatedAt = notifyflowtargetDescCreatedAt.Default.(func() time.Time)
 	notifysourceFields := schema.NotifySource{}.Fields()
@@ -286,15 +286,27 @@ func init() {
 	notifytargetFields := schema.NotifyTarget{}.Fields()
 	_ = notifytargetFields
 	// notifytargetDescUpdatedAt is the schema descriptor for updated_at field.
-	notifytargetDescUpdatedAt := notifytargetFields[6].Descriptor()
+	notifytargetDescUpdatedAt := notifytargetFields[5].Descriptor()
 	// notifytarget.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	notifytarget.DefaultUpdatedAt = notifytargetDescUpdatedAt.Default.(func() time.Time)
 	// notifytarget.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	notifytarget.UpdateDefaultUpdatedAt = notifytargetDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// notifytargetDescCreatedAt is the schema descriptor for created_at field.
-	notifytargetDescCreatedAt := notifytargetFields[7].Descriptor()
+	notifytargetDescCreatedAt := notifytargetFields[6].Descriptor()
 	// notifytarget.DefaultCreatedAt holds the default value on creation for the created_at field.
 	notifytarget.DefaultCreatedAt = notifytargetDescCreatedAt.Default.(func() time.Time)
+	portercontextFields := schema.PorterContext{}.Fields()
+	_ = portercontextFields
+	// portercontextDescUpdatedAt is the schema descriptor for updated_at field.
+	portercontextDescUpdatedAt := portercontextFields[4].Descriptor()
+	// portercontext.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	portercontext.DefaultUpdatedAt = portercontextDescUpdatedAt.Default.(func() time.Time)
+	// portercontext.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	portercontext.UpdateDefaultUpdatedAt = portercontextDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// portercontextDescCreatedAt is the schema descriptor for created_at field.
+	portercontextDescCreatedAt := portercontextFields[5].Descriptor()
+	// portercontext.DefaultCreatedAt holds the default value on creation for the created_at field.
+	portercontext.DefaultCreatedAt = portercontextDescCreatedAt.Default.(func() time.Time)
 	porterinstanceFields := schema.PorterInstance{}.Fields()
 	_ = porterinstanceFields
 	// porterinstanceDescUpdatedAt is the schema descriptor for updated_at field.
@@ -307,18 +319,6 @@ func init() {
 	porterinstanceDescCreatedAt := porterinstanceFields[8].Descriptor()
 	// porterinstance.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterinstance.DefaultCreatedAt = porterinstanceDescCreatedAt.Default.(func() time.Time)
-	porterprivilegeFields := schema.PorterPrivilege{}.Fields()
-	_ = porterprivilegeFields
-	// porterprivilegeDescUpdatedAt is the schema descriptor for updated_at field.
-	porterprivilegeDescUpdatedAt := porterprivilegeFields[3].Descriptor()
-	// porterprivilege.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	porterprivilege.DefaultUpdatedAt = porterprivilegeDescUpdatedAt.Default.(func() time.Time)
-	// porterprivilege.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	porterprivilege.UpdateDefaultUpdatedAt = porterprivilegeDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// porterprivilegeDescCreatedAt is the schema descriptor for created_at field.
-	porterprivilegeDescCreatedAt := porterprivilegeFields[4].Descriptor()
-	// porterprivilege.DefaultCreatedAt holds the default value on creation for the created_at field.
-	porterprivilege.DefaultCreatedAt = porterprivilegeDescCreatedAt.Default.(func() time.Time)
 	systemnotificationFields := schema.SystemNotification{}.Fields()
 	_ = systemnotificationFields
 	// systemnotificationDescUpdatedAt is the schema descriptor for updated_at field.

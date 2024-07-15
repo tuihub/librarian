@@ -37,9 +37,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 			SetOwnerID(owner).
 			SetID(c.ID).
 			SetName(c.Name).
-			SetFeedURL(c.FeedURL).
 			SetCategory(c.Category).
-			SetAuthorAccount(c.AuthorAccount).
 			SetSource(c.Source).
 			SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
 			SetPullInterval(c.PullInterval).
@@ -71,16 +69,10 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 		if len(c.Name) > 0 {
 			q.SetName(c.Name)
 		}
-		if len(c.FeedURL) > 0 {
-			q.SetFeedURL(c.FeedURL)
-		}
 		if len(c.Category) > 0 {
 			q.SetCategory(c.Category)
 		}
-		if c.AuthorAccount > 0 {
-			q.SetAuthorAccount(c.AuthorAccount)
-		}
-		if len(c.Source) > 0 {
+		if c.Source != nil {
 			q.SetSource(c.Source)
 		}
 		if c.Status != modelyesod.FeedConfigStatusUnspecified {
@@ -121,9 +113,6 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	statuses []modelyesod.FeedConfigStatus, order modelyesod.ListFeedOrder,
 	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
 	q := y.data.db.FeedConfig.Query()
-	if len(sources) > 0 {
-		q.Where(feedconfig.SourceIn(sources...))
-	}
 	if len(statuses) > 0 {
 		q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))
 	}
@@ -142,7 +131,7 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	return converter.ToBizFeedConfigList(feedConfigs), nil
 }
 
-func (y *yesodRepo) ListFeedConfigs( //nolint:gocognit //TODO
+func (y *yesodRepo) ListFeedConfigs(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -162,12 +151,6 @@ func (y *yesodRepo) ListFeedConfigs( //nolint:gocognit //TODO
 		q := tx.User.QueryFeedConfig(u)
 		if len(ids) > 0 {
 			q.Where(feedconfig.IDIn(ids...))
-		}
-		if len(authorIDs) > 0 {
-			q.Where(feedconfig.AuthorAccountIn(authorIDs...))
-		}
-		if len(sources) > 0 {
-			q.Where(feedconfig.SourceIn(sources...))
 		}
 		if len(statuses) > 0 {
 			q.Where(feedconfig.StatusIn(converter.ToEntFeedConfigStatusList(statuses)...))

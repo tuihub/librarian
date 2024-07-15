@@ -65,9 +65,9 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserStatus_USER_STATUS_UNSPECIFIED UserStatusUnspecified
 	// goverter:enum:map UserStatus_USER_STATUS_ACTIVE UserStatusActive
 	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
-	ToBizUserStatus(s pb.UserStatus) modeltiphereth.UserStatus
+	ToBizUserStatus(pb.UserStatus) modeltiphereth.UserStatus
 
-	ToBizPorterPrivilege(*pb.PorterPrivilege) *modeltiphereth.PorterInstancePrivilege
+	ToBizPorterContext(*pb.PorterContext) *modeltiphereth.PorterInstanceContext
 
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime

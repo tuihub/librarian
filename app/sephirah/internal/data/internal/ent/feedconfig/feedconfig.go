@@ -19,10 +19,10 @@ const (
 	FieldUserFeedConfig = "user_feed_config"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
 	// FieldFeedURL holds the string denoting the feed_url field in the database.
 	FieldFeedURL = "feed_url"
-	// FieldAuthorAccount holds the string denoting the author_account field in the database.
-	FieldAuthorAccount = "author_account"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -97,8 +97,8 @@ var Columns = []string{
 	FieldID,
 	FieldUserFeedConfig,
 	FieldName,
+	FieldDescription,
 	FieldFeedURL,
-	FieldAuthorAccount,
 	FieldSource,
 	FieldStatus,
 	FieldCategory,
@@ -208,19 +208,14 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
 }
 
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
 // ByFeedURL orders the results by the feed_url field.
 func ByFeedURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFeedURL, opts...).ToFunc()
-}
-
-// ByAuthorAccount orders the results by the author_account field.
-func ByAuthorAccount(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAuthorAccount, opts...).ToFunc()
-}
-
-// BySource orders the results by the source field.
-func BySource(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSource, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

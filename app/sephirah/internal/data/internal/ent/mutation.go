@@ -31,8 +31,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterprivilege"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
@@ -73,8 +73,8 @@ const (
 	TypeNotifyFlowTarget   = "NotifyFlowTarget"
 	TypeNotifySource       = "NotifySource"
 	TypeNotifyTarget       = "NotifyTarget"
+	TypePorterContext      = "PorterContext"
 	TypePorterInstance     = "PorterInstance"
-	TypePorterPrivilege    = "PorterPrivilege"
 	TypeSystemNotification = "SystemNotification"
 	TypeTag                = "Tag"
 	TypeUser               = "User"
@@ -8238,10 +8238,9 @@ type FeedConfigMutation struct {
 	typ                       string
 	id                        *model.InternalID
 	name                      *string
+	description               *string
 	feed_url                  *string
-	author_account            *model.InternalID
-	addauthor_account         *model.InternalID
-	source                    *string
+	source                    **modeltiphereth.FeatureRequest
 	status                    *feedconfig.Status
 	category                  *string
 	pull_interval             *time.Duration
@@ -8448,6 +8447,42 @@ func (m *FeedConfigMutation) ResetName() {
 	m.name = nil
 }
 
+// SetDescription sets the "description" field.
+func (m *FeedConfigMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *FeedConfigMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the FeedConfig entity.
+// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FeedConfigMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *FeedConfigMutation) ResetDescription() {
+	m.description = nil
+}
+
 // SetFeedURL sets the "feed_url" field.
 func (m *FeedConfigMutation) SetFeedURL(s string) {
 	m.feed_url = &s
@@ -8484,69 +8519,13 @@ func (m *FeedConfigMutation) ResetFeedURL() {
 	m.feed_url = nil
 }
 
-// SetAuthorAccount sets the "author_account" field.
-func (m *FeedConfigMutation) SetAuthorAccount(mi model.InternalID) {
-	m.author_account = &mi
-	m.addauthor_account = nil
-}
-
-// AuthorAccount returns the value of the "author_account" field in the mutation.
-func (m *FeedConfigMutation) AuthorAccount() (r model.InternalID, exists bool) {
-	v := m.author_account
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAuthorAccount returns the old "author_account" field's value of the FeedConfig entity.
-// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldAuthorAccount(ctx context.Context) (v model.InternalID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAuthorAccount is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAuthorAccount requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAuthorAccount: %w", err)
-	}
-	return oldValue.AuthorAccount, nil
-}
-
-// AddAuthorAccount adds mi to the "author_account" field.
-func (m *FeedConfigMutation) AddAuthorAccount(mi model.InternalID) {
-	if m.addauthor_account != nil {
-		*m.addauthor_account += mi
-	} else {
-		m.addauthor_account = &mi
-	}
-}
-
-// AddedAuthorAccount returns the value that was added to the "author_account" field in this mutation.
-func (m *FeedConfigMutation) AddedAuthorAccount() (r model.InternalID, exists bool) {
-	v := m.addauthor_account
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAuthorAccount resets all changes to the "author_account" field.
-func (m *FeedConfigMutation) ResetAuthorAccount() {
-	m.author_account = nil
-	m.addauthor_account = nil
-}
-
 // SetSource sets the "source" field.
-func (m *FeedConfigMutation) SetSource(s string) {
-	m.source = &s
+func (m *FeedConfigMutation) SetSource(mr *modeltiphereth.FeatureRequest) {
+	m.source = &mr
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *FeedConfigMutation) Source() (r string, exists bool) {
+func (m *FeedConfigMutation) Source() (r *modeltiphereth.FeatureRequest, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -8557,7 +8536,7 @@ func (m *FeedConfigMutation) Source() (r string, exists bool) {
 // OldSource returns the old "source" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldSource(ctx context.Context) (v string, err error) {
+func (m *FeedConfigMutation) OldSource(ctx context.Context) (v *modeltiphereth.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -9238,11 +9217,11 @@ func (m *FeedConfigMutation) Fields() []string {
 	if m.name != nil {
 		fields = append(fields, feedconfig.FieldName)
 	}
+	if m.description != nil {
+		fields = append(fields, feedconfig.FieldDescription)
+	}
 	if m.feed_url != nil {
 		fields = append(fields, feedconfig.FieldFeedURL)
-	}
-	if m.author_account != nil {
-		fields = append(fields, feedconfig.FieldAuthorAccount)
 	}
 	if m.source != nil {
 		fields = append(fields, feedconfig.FieldSource)
@@ -9289,10 +9268,10 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.UserFeedConfig()
 	case feedconfig.FieldName:
 		return m.Name()
+	case feedconfig.FieldDescription:
+		return m.Description()
 	case feedconfig.FieldFeedURL:
 		return m.FeedURL()
-	case feedconfig.FieldAuthorAccount:
-		return m.AuthorAccount()
 	case feedconfig.FieldSource:
 		return m.Source()
 	case feedconfig.FieldStatus:
@@ -9328,10 +9307,10 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUserFeedConfig(ctx)
 	case feedconfig.FieldName:
 		return m.OldName(ctx)
+	case feedconfig.FieldDescription:
+		return m.OldDescription(ctx)
 	case feedconfig.FieldFeedURL:
 		return m.OldFeedURL(ctx)
-	case feedconfig.FieldAuthorAccount:
-		return m.OldAuthorAccount(ctx)
 	case feedconfig.FieldSource:
 		return m.OldSource(ctx)
 	case feedconfig.FieldStatus:
@@ -9377,6 +9356,13 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
+	case feedconfig.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
 	case feedconfig.FieldFeedURL:
 		v, ok := value.(string)
 		if !ok {
@@ -9384,15 +9370,8 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetFeedURL(v)
 		return nil
-	case feedconfig.FieldAuthorAccount:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAuthorAccount(v)
-		return nil
 	case feedconfig.FieldSource:
-		v, ok := value.(string)
+		v, ok := value.(*modeltiphereth.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -9476,9 +9455,6 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *FeedConfigMutation) AddedFields() []string {
 	var fields []string
-	if m.addauthor_account != nil {
-		fields = append(fields, feedconfig.FieldAuthorAccount)
-	}
 	if m.addpull_interval != nil {
 		fields = append(fields, feedconfig.FieldPullInterval)
 	}
@@ -9490,8 +9466,6 @@ func (m *FeedConfigMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *FeedConfigMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case feedconfig.FieldAuthorAccount:
-		return m.AddedAuthorAccount()
 	case feedconfig.FieldPullInterval:
 		return m.AddedPullInterval()
 	}
@@ -9503,13 +9477,6 @@ func (m *FeedConfigMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FeedConfigMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case feedconfig.FieldAuthorAccount:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAuthorAccount(v)
-		return nil
 	case feedconfig.FieldPullInterval:
 		v, ok := value.(time.Duration)
 		if !ok {
@@ -9550,11 +9517,11 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 	case feedconfig.FieldName:
 		m.ResetName()
 		return nil
+	case feedconfig.FieldDescription:
+		m.ResetDescription()
+		return nil
 	case feedconfig.FieldFeedURL:
 		m.ResetFeedURL()
-		return nil
-	case feedconfig.FieldAuthorAccount:
-		m.ResetAuthorAccount()
 		return nil
 	case feedconfig.FieldSource:
 		m.ResetSource()
@@ -16130,7 +16097,6 @@ type NotifyFlowTargetMutation struct {
 	op                            Op
 	typ                           string
 	id                            *int
-	channel_id                    *string
 	filter_include_keywords       *[]string
 	appendfilter_include_keywords []string
 	filter_exclude_keywords       *[]string
@@ -16315,42 +16281,6 @@ func (m *NotifyFlowTargetMutation) OldNotifyTargetID(ctx context.Context) (v mod
 // ResetNotifyTargetID resets all changes to the "notify_target_id" field.
 func (m *NotifyFlowTargetMutation) ResetNotifyTargetID() {
 	m.notify_target = nil
-}
-
-// SetChannelID sets the "channel_id" field.
-func (m *NotifyFlowTargetMutation) SetChannelID(s string) {
-	m.channel_id = &s
-}
-
-// ChannelID returns the value of the "channel_id" field in the mutation.
-func (m *NotifyFlowTargetMutation) ChannelID() (r string, exists bool) {
-	v := m.channel_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldChannelID returns the old "channel_id" field's value of the NotifyFlowTarget entity.
-// If the NotifyFlowTarget object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyFlowTargetMutation) OldChannelID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldChannelID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldChannelID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldChannelID: %w", err)
-	}
-	return oldValue.ChannelID, nil
-}
-
-// ResetChannelID resets all changes to the "channel_id" field.
-func (m *NotifyFlowTargetMutation) ResetChannelID() {
-	m.channel_id = nil
 }
 
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
@@ -16615,15 +16545,12 @@ func (m *NotifyFlowTargetMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NotifyFlowTargetMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 6)
 	if m.notify_flow != nil {
 		fields = append(fields, notifyflowtarget.FieldNotifyFlowID)
 	}
 	if m.notify_target != nil {
 		fields = append(fields, notifyflowtarget.FieldNotifyTargetID)
-	}
-	if m.channel_id != nil {
-		fields = append(fields, notifyflowtarget.FieldChannelID)
 	}
 	if m.filter_include_keywords != nil {
 		fields = append(fields, notifyflowtarget.FieldFilterIncludeKeywords)
@@ -16649,8 +16576,6 @@ func (m *NotifyFlowTargetMutation) Field(name string) (ent.Value, bool) {
 		return m.NotifyFlowID()
 	case notifyflowtarget.FieldNotifyTargetID:
 		return m.NotifyTargetID()
-	case notifyflowtarget.FieldChannelID:
-		return m.ChannelID()
 	case notifyflowtarget.FieldFilterIncludeKeywords:
 		return m.FilterIncludeKeywords()
 	case notifyflowtarget.FieldFilterExcludeKeywords:
@@ -16672,8 +16597,6 @@ func (m *NotifyFlowTargetMutation) OldField(ctx context.Context, name string) (e
 		return m.OldNotifyFlowID(ctx)
 	case notifyflowtarget.FieldNotifyTargetID:
 		return m.OldNotifyTargetID(ctx)
-	case notifyflowtarget.FieldChannelID:
-		return m.OldChannelID(ctx)
 	case notifyflowtarget.FieldFilterIncludeKeywords:
 		return m.OldFilterIncludeKeywords(ctx)
 	case notifyflowtarget.FieldFilterExcludeKeywords:
@@ -16704,13 +16627,6 @@ func (m *NotifyFlowTargetMutation) SetField(name string, value ent.Value) error 
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetNotifyTargetID(v)
-		return nil
-	case notifyflowtarget.FieldChannelID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetChannelID(v)
 		return nil
 	case notifyflowtarget.FieldFilterIncludeKeywords:
 		v, ok := value.([]string)
@@ -16797,9 +16713,6 @@ func (m *NotifyFlowTargetMutation) ResetField(name string) error {
 		return nil
 	case notifyflowtarget.FieldNotifyTargetID:
 		m.ResetNotifyTargetID()
-		return nil
-	case notifyflowtarget.FieldChannelID:
-		m.ResetChannelID()
 		return nil
 	case notifyflowtarget.FieldFilterIncludeKeywords:
 		m.ResetFilterIncludeKeywords()
@@ -17780,10 +17693,9 @@ type NotifyTargetMutation struct {
 	op                        Op
 	typ                       string
 	id                        *model.InternalID
-	token                     *string
 	name                      *string
 	description               *string
-	destination               *string
+	destination               **modeltiphereth.FeatureRequest
 	status                    *notifytarget.Status
 	updated_at                *time.Time
 	created_at                *time.Time
@@ -17905,42 +17817,6 @@ func (m *NotifyTargetMutation) IDs(ctx context.Context) ([]model.InternalID, err
 	}
 }
 
-// SetToken sets the "token" field.
-func (m *NotifyTargetMutation) SetToken(s string) {
-	m.token = &s
-}
-
-// Token returns the value of the "token" field in the mutation.
-func (m *NotifyTargetMutation) Token() (r string, exists bool) {
-	v := m.token
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldToken returns the old "token" field's value of the NotifyTarget entity.
-// If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyTargetMutation) OldToken(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldToken is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldToken requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldToken: %w", err)
-	}
-	return oldValue.Token, nil
-}
-
-// ResetToken resets all changes to the "token" field.
-func (m *NotifyTargetMutation) ResetToken() {
-	m.token = nil
-}
-
 // SetName sets the "name" field.
 func (m *NotifyTargetMutation) SetName(s string) {
 	m.name = &s
@@ -18014,12 +17890,12 @@ func (m *NotifyTargetMutation) ResetDescription() {
 }
 
 // SetDestination sets the "destination" field.
-func (m *NotifyTargetMutation) SetDestination(s string) {
-	m.destination = &s
+func (m *NotifyTargetMutation) SetDestination(mr *modeltiphereth.FeatureRequest) {
+	m.destination = &mr
 }
 
 // Destination returns the value of the "destination" field in the mutation.
-func (m *NotifyTargetMutation) Destination() (r string, exists bool) {
+func (m *NotifyTargetMutation) Destination() (r *modeltiphereth.FeatureRequest, exists bool) {
 	v := m.destination
 	if v == nil {
 		return
@@ -18030,7 +17906,7 @@ func (m *NotifyTargetMutation) Destination() (r string, exists bool) {
 // OldDestination returns the old "destination" field's value of the NotifyTarget entity.
 // If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v string, err error) {
+func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v *modeltiphereth.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDestination is only allowed on UpdateOne operations")
 	}
@@ -18338,10 +18214,7 @@ func (m *NotifyTargetMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NotifyTargetMutation) Fields() []string {
-	fields := make([]string, 0, 7)
-	if m.token != nil {
-		fields = append(fields, notifytarget.FieldToken)
-	}
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, notifytarget.FieldName)
 	}
@@ -18368,8 +18241,6 @@ func (m *NotifyTargetMutation) Fields() []string {
 // schema.
 func (m *NotifyTargetMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case notifytarget.FieldToken:
-		return m.Token()
 	case notifytarget.FieldName:
 		return m.Name()
 	case notifytarget.FieldDescription:
@@ -18391,8 +18262,6 @@ func (m *NotifyTargetMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *NotifyTargetMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case notifytarget.FieldToken:
-		return m.OldToken(ctx)
 	case notifytarget.FieldName:
 		return m.OldName(ctx)
 	case notifytarget.FieldDescription:
@@ -18414,13 +18283,6 @@ func (m *NotifyTargetMutation) OldField(ctx context.Context, name string) (ent.V
 // type.
 func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case notifytarget.FieldToken:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetToken(v)
-		return nil
 	case notifytarget.FieldName:
 		v, ok := value.(string)
 		if !ok {
@@ -18436,7 +18298,7 @@ func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case notifytarget.FieldDestination:
-		v, ok := value.(string)
+		v, ok := value.(*modeltiphereth.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -18512,9 +18374,6 @@ func (m *NotifyTargetMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *NotifyTargetMutation) ResetField(name string) error {
 	switch name {
-	case notifytarget.FieldToken:
-		m.ResetToken()
-		return nil
 	case notifytarget.FieldName:
 		m.ResetName()
 		return nil
@@ -18663,6 +18522,623 @@ func (m *NotifyTargetMutation) ResetEdge(name string) error {
 		return nil
 	}
 	return fmt.Errorf("unknown NotifyTarget edge %s", name)
+}
+
+// PorterContextMutation represents an operation that mutates the PorterContext nodes in the graph.
+type PorterContextMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *model.InternalID
+	user_id       *model.InternalID
+	adduser_id    *model.InternalID
+	porter_id     *model.InternalID
+	addporter_id  *model.InternalID
+	context       **modeltiphereth.PorterInstanceContext
+	updated_at    *time.Time
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*PorterContext, error)
+	predicates    []predicate.PorterContext
+}
+
+var _ ent.Mutation = (*PorterContextMutation)(nil)
+
+// portercontextOption allows management of the mutation configuration using functional options.
+type portercontextOption func(*PorterContextMutation)
+
+// newPorterContextMutation creates new mutation for the PorterContext entity.
+func newPorterContextMutation(c config, op Op, opts ...portercontextOption) *PorterContextMutation {
+	m := &PorterContextMutation{
+		config:        c,
+		op:            op,
+		typ:           TypePorterContext,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withPorterContextID sets the ID field of the mutation.
+func withPorterContextID(id model.InternalID) portercontextOption {
+	return func(m *PorterContextMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *PorterContext
+		)
+		m.oldValue = func(ctx context.Context) (*PorterContext, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().PorterContext.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withPorterContext sets the old PorterContext of the mutation.
+func withPorterContext(node *PorterContext) portercontextOption {
+	return func(m *PorterContextMutation) {
+		m.oldValue = func(context.Context) (*PorterContext, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m PorterContextMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m PorterContextMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of PorterContext entities.
+func (m *PorterContextMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *PorterContextMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *PorterContextMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().PorterContext.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *PorterContextMutation) SetUserID(mi model.InternalID) {
+	m.user_id = &mi
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *PorterContextMutation) UserID() (r model.InternalID, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds mi to the "user_id" field.
+func (m *PorterContextMutation) AddUserID(mi model.InternalID) {
+	if m.adduser_id != nil {
+		*m.adduser_id += mi
+	} else {
+		m.adduser_id = &mi
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *PorterContextMutation) AddedUserID() (r model.InternalID, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *PorterContextMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
+}
+
+// SetPorterID sets the "porter_id" field.
+func (m *PorterContextMutation) SetPorterID(mi model.InternalID) {
+	m.porter_id = &mi
+	m.addporter_id = nil
+}
+
+// PorterID returns the value of the "porter_id" field in the mutation.
+func (m *PorterContextMutation) PorterID() (r model.InternalID, exists bool) {
+	v := m.porter_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPorterID returns the old "porter_id" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldPorterID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPorterID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPorterID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPorterID: %w", err)
+	}
+	return oldValue.PorterID, nil
+}
+
+// AddPorterID adds mi to the "porter_id" field.
+func (m *PorterContextMutation) AddPorterID(mi model.InternalID) {
+	if m.addporter_id != nil {
+		*m.addporter_id += mi
+	} else {
+		m.addporter_id = &mi
+	}
+}
+
+// AddedPorterID returns the value that was added to the "porter_id" field in this mutation.
+func (m *PorterContextMutation) AddedPorterID() (r model.InternalID, exists bool) {
+	v := m.addporter_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPorterID resets all changes to the "porter_id" field.
+func (m *PorterContextMutation) ResetPorterID() {
+	m.porter_id = nil
+	m.addporter_id = nil
+}
+
+// SetContext sets the "context" field.
+func (m *PorterContextMutation) SetContext(mic *modeltiphereth.PorterInstanceContext) {
+	m.context = &mic
+}
+
+// Context returns the value of the "context" field in the mutation.
+func (m *PorterContextMutation) Context() (r *modeltiphereth.PorterInstanceContext, exists bool) {
+	v := m.context
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContext returns the old "context" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldContext(ctx context.Context) (v *modeltiphereth.PorterInstanceContext, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContext is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContext requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContext: %w", err)
+	}
+	return oldValue.Context, nil
+}
+
+// ResetContext resets all changes to the "context" field.
+func (m *PorterContextMutation) ResetContext() {
+	m.context = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *PorterContextMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *PorterContextMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *PorterContextMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *PorterContextMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *PorterContextMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *PorterContextMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// Where appends a list predicates to the PorterContextMutation builder.
+func (m *PorterContextMutation) Where(ps ...predicate.PorterContext) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the PorterContextMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *PorterContextMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.PorterContext, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *PorterContextMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *PorterContextMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (PorterContext).
+func (m *PorterContextMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *PorterContextMutation) Fields() []string {
+	fields := make([]string, 0, 5)
+	if m.user_id != nil {
+		fields = append(fields, portercontext.FieldUserID)
+	}
+	if m.porter_id != nil {
+		fields = append(fields, portercontext.FieldPorterID)
+	}
+	if m.context != nil {
+		fields = append(fields, portercontext.FieldContext)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, portercontext.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, portercontext.FieldCreatedAt)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *PorterContextMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case portercontext.FieldUserID:
+		return m.UserID()
+	case portercontext.FieldPorterID:
+		return m.PorterID()
+	case portercontext.FieldContext:
+		return m.Context()
+	case portercontext.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case portercontext.FieldCreatedAt:
+		return m.CreatedAt()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *PorterContextMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case portercontext.FieldUserID:
+		return m.OldUserID(ctx)
+	case portercontext.FieldPorterID:
+		return m.OldPorterID(ctx)
+	case portercontext.FieldContext:
+		return m.OldContext(ctx)
+	case portercontext.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case portercontext.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	}
+	return nil, fmt.Errorf("unknown PorterContext field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterContextMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case portercontext.FieldUserID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
+	case portercontext.FieldPorterID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPorterID(v)
+		return nil
+	case portercontext.FieldContext:
+		v, ok := value.(*modeltiphereth.PorterInstanceContext)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContext(v)
+		return nil
+	case portercontext.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case portercontext.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PorterContext field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *PorterContextMutation) AddedFields() []string {
+	var fields []string
+	if m.adduser_id != nil {
+		fields = append(fields, portercontext.FieldUserID)
+	}
+	if m.addporter_id != nil {
+		fields = append(fields, portercontext.FieldPorterID)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *PorterContextMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case portercontext.FieldUserID:
+		return m.AddedUserID()
+	case portercontext.FieldPorterID:
+		return m.AddedPorterID()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *PorterContextMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case portercontext.FieldUserID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
+	case portercontext.FieldPorterID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPorterID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown PorterContext numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *PorterContextMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *PorterContextMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *PorterContextMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown PorterContext nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *PorterContextMutation) ResetField(name string) error {
+	switch name {
+	case portercontext.FieldUserID:
+		m.ResetUserID()
+		return nil
+	case portercontext.FieldPorterID:
+		m.ResetPorterID()
+		return nil
+	case portercontext.FieldContext:
+		m.ResetContext()
+		return nil
+	case portercontext.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case portercontext.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	}
+	return fmt.Errorf("unknown PorterContext field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *PorterContextMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *PorterContextMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *PorterContextMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *PorterContextMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *PorterContextMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *PorterContextMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *PorterContextMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown PorterContext unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *PorterContextMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown PorterContext edge %s", name)
 }
 
 // PorterInstanceMutation represents an operation that mutates the PorterInstance nodes in the graph.
@@ -19373,617 +19849,6 @@ func (m *PorterInstanceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PorterInstanceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown PorterInstance edge %s", name)
-}
-
-// PorterPrivilegeMutation represents an operation that mutates the PorterPrivilege nodes in the graph.
-type PorterPrivilegeMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int
-	user_id       *model.InternalID
-	adduser_id    *model.InternalID
-	porter_id     *model.InternalID
-	addporter_id  *model.InternalID
-	privilege     **modeltiphereth.PorterInstancePrivilege
-	updated_at    *time.Time
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*PorterPrivilege, error)
-	predicates    []predicate.PorterPrivilege
-}
-
-var _ ent.Mutation = (*PorterPrivilegeMutation)(nil)
-
-// porterprivilegeOption allows management of the mutation configuration using functional options.
-type porterprivilegeOption func(*PorterPrivilegeMutation)
-
-// newPorterPrivilegeMutation creates new mutation for the PorterPrivilege entity.
-func newPorterPrivilegeMutation(c config, op Op, opts ...porterprivilegeOption) *PorterPrivilegeMutation {
-	m := &PorterPrivilegeMutation{
-		config:        c,
-		op:            op,
-		typ:           TypePorterPrivilege,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withPorterPrivilegeID sets the ID field of the mutation.
-func withPorterPrivilegeID(id int) porterprivilegeOption {
-	return func(m *PorterPrivilegeMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *PorterPrivilege
-		)
-		m.oldValue = func(ctx context.Context) (*PorterPrivilege, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().PorterPrivilege.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withPorterPrivilege sets the old PorterPrivilege of the mutation.
-func withPorterPrivilege(node *PorterPrivilege) porterprivilegeOption {
-	return func(m *PorterPrivilegeMutation) {
-		m.oldValue = func(context.Context) (*PorterPrivilege, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m PorterPrivilegeMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m PorterPrivilegeMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *PorterPrivilegeMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *PorterPrivilegeMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().PorterPrivilege.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetUserID sets the "user_id" field.
-func (m *PorterPrivilegeMutation) SetUserID(mi model.InternalID) {
-	m.user_id = &mi
-	m.adduser_id = nil
-}
-
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *PorterPrivilegeMutation) UserID() (r model.InternalID, exists bool) {
-	v := m.user_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUserID returns the old "user_id" field's value of the PorterPrivilege entity.
-// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterPrivilegeMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
-	}
-	return oldValue.UserID, nil
-}
-
-// AddUserID adds mi to the "user_id" field.
-func (m *PorterPrivilegeMutation) AddUserID(mi model.InternalID) {
-	if m.adduser_id != nil {
-		*m.adduser_id += mi
-	} else {
-		m.adduser_id = &mi
-	}
-}
-
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *PorterPrivilegeMutation) AddedUserID() (r model.InternalID, exists bool) {
-	v := m.adduser_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetUserID resets all changes to the "user_id" field.
-func (m *PorterPrivilegeMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
-}
-
-// SetPorterID sets the "porter_id" field.
-func (m *PorterPrivilegeMutation) SetPorterID(mi model.InternalID) {
-	m.porter_id = &mi
-	m.addporter_id = nil
-}
-
-// PorterID returns the value of the "porter_id" field in the mutation.
-func (m *PorterPrivilegeMutation) PorterID() (r model.InternalID, exists bool) {
-	v := m.porter_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPorterID returns the old "porter_id" field's value of the PorterPrivilege entity.
-// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterPrivilegeMutation) OldPorterID(ctx context.Context) (v model.InternalID, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPorterID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPorterID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPorterID: %w", err)
-	}
-	return oldValue.PorterID, nil
-}
-
-// AddPorterID adds mi to the "porter_id" field.
-func (m *PorterPrivilegeMutation) AddPorterID(mi model.InternalID) {
-	if m.addporter_id != nil {
-		*m.addporter_id += mi
-	} else {
-		m.addporter_id = &mi
-	}
-}
-
-// AddedPorterID returns the value that was added to the "porter_id" field in this mutation.
-func (m *PorterPrivilegeMutation) AddedPorterID() (r model.InternalID, exists bool) {
-	v := m.addporter_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetPorterID resets all changes to the "porter_id" field.
-func (m *PorterPrivilegeMutation) ResetPorterID() {
-	m.porter_id = nil
-	m.addporter_id = nil
-}
-
-// SetPrivilege sets the "privilege" field.
-func (m *PorterPrivilegeMutation) SetPrivilege(mip *modeltiphereth.PorterInstancePrivilege) {
-	m.privilege = &mip
-}
-
-// Privilege returns the value of the "privilege" field in the mutation.
-func (m *PorterPrivilegeMutation) Privilege() (r *modeltiphereth.PorterInstancePrivilege, exists bool) {
-	v := m.privilege
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPrivilege returns the old "privilege" field's value of the PorterPrivilege entity.
-// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterPrivilegeMutation) OldPrivilege(ctx context.Context) (v *modeltiphereth.PorterInstancePrivilege, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPrivilege is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPrivilege requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPrivilege: %w", err)
-	}
-	return oldValue.Privilege, nil
-}
-
-// ResetPrivilege resets all changes to the "privilege" field.
-func (m *PorterPrivilegeMutation) ResetPrivilege() {
-	m.privilege = nil
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (m *PorterPrivilegeMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
-}
-
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *PorterPrivilegeMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdatedAt returns the old "updated_at" field's value of the PorterPrivilege entity.
-// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterPrivilegeMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
-	}
-	return oldValue.UpdatedAt, nil
-}
-
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *PorterPrivilegeMutation) ResetUpdatedAt() {
-	m.updated_at = nil
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (m *PorterPrivilegeMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
-}
-
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *PorterPrivilegeMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreatedAt returns the old "created_at" field's value of the PorterPrivilege entity.
-// If the PorterPrivilege object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterPrivilegeMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
-	}
-	return oldValue.CreatedAt, nil
-}
-
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *PorterPrivilegeMutation) ResetCreatedAt() {
-	m.created_at = nil
-}
-
-// Where appends a list predicates to the PorterPrivilegeMutation builder.
-func (m *PorterPrivilegeMutation) Where(ps ...predicate.PorterPrivilege) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the PorterPrivilegeMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *PorterPrivilegeMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.PorterPrivilege, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *PorterPrivilegeMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *PorterPrivilegeMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (PorterPrivilege).
-func (m *PorterPrivilegeMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *PorterPrivilegeMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.user_id != nil {
-		fields = append(fields, porterprivilege.FieldUserID)
-	}
-	if m.porter_id != nil {
-		fields = append(fields, porterprivilege.FieldPorterID)
-	}
-	if m.privilege != nil {
-		fields = append(fields, porterprivilege.FieldPrivilege)
-	}
-	if m.updated_at != nil {
-		fields = append(fields, porterprivilege.FieldUpdatedAt)
-	}
-	if m.created_at != nil {
-		fields = append(fields, porterprivilege.FieldCreatedAt)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *PorterPrivilegeMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case porterprivilege.FieldUserID:
-		return m.UserID()
-	case porterprivilege.FieldPorterID:
-		return m.PorterID()
-	case porterprivilege.FieldPrivilege:
-		return m.Privilege()
-	case porterprivilege.FieldUpdatedAt:
-		return m.UpdatedAt()
-	case porterprivilege.FieldCreatedAt:
-		return m.CreatedAt()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *PorterPrivilegeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case porterprivilege.FieldUserID:
-		return m.OldUserID(ctx)
-	case porterprivilege.FieldPorterID:
-		return m.OldPorterID(ctx)
-	case porterprivilege.FieldPrivilege:
-		return m.OldPrivilege(ctx)
-	case porterprivilege.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
-	case porterprivilege.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	}
-	return nil, fmt.Errorf("unknown PorterPrivilege field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PorterPrivilegeMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case porterprivilege.FieldUserID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUserID(v)
-		return nil
-	case porterprivilege.FieldPorterID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPorterID(v)
-		return nil
-	case porterprivilege.FieldPrivilege:
-		v, ok := value.(*modeltiphereth.PorterInstancePrivilege)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPrivilege(v)
-		return nil
-	case porterprivilege.FieldUpdatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdatedAt(v)
-		return nil
-	case porterprivilege.FieldCreatedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreatedAt(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PorterPrivilege field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *PorterPrivilegeMutation) AddedFields() []string {
-	var fields []string
-	if m.adduser_id != nil {
-		fields = append(fields, porterprivilege.FieldUserID)
-	}
-	if m.addporter_id != nil {
-		fields = append(fields, porterprivilege.FieldPorterID)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *PorterPrivilegeMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case porterprivilege.FieldUserID:
-		return m.AddedUserID()
-	case porterprivilege.FieldPorterID:
-		return m.AddedPorterID()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *PorterPrivilegeMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case porterprivilege.FieldUserID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUserID(v)
-		return nil
-	case porterprivilege.FieldPorterID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPorterID(v)
-		return nil
-	}
-	return fmt.Errorf("unknown PorterPrivilege numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *PorterPrivilegeMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *PorterPrivilegeMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *PorterPrivilegeMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown PorterPrivilege nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *PorterPrivilegeMutation) ResetField(name string) error {
-	switch name {
-	case porterprivilege.FieldUserID:
-		m.ResetUserID()
-		return nil
-	case porterprivilege.FieldPorterID:
-		m.ResetPorterID()
-		return nil
-	case porterprivilege.FieldPrivilege:
-		m.ResetPrivilege()
-		return nil
-	case porterprivilege.FieldUpdatedAt:
-		m.ResetUpdatedAt()
-		return nil
-	case porterprivilege.FieldCreatedAt:
-		m.ResetCreatedAt()
-		return nil
-	}
-	return fmt.Errorf("unknown PorterPrivilege field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *PorterPrivilegeMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *PorterPrivilegeMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *PorterPrivilegeMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *PorterPrivilegeMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *PorterPrivilegeMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *PorterPrivilegeMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *PorterPrivilegeMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown PorterPrivilege unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *PorterPrivilegeMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown PorterPrivilege edge %s", name)
 }
 
 // SystemNotificationMutation represents an operation that mutates the SystemNotification nodes in the graph.

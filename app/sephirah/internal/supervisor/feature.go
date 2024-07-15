@@ -47,19 +47,22 @@ func (s *Supervisor) CallAppInfoSource(ctx context.Context, source string) conte
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckFeedSource(source string) bool {
+func (s *Supervisor) CheckFeedSource(source *modeltiphereth.FeatureRequest) bool {
+	if source == nil {
+		return false
+	}
 	for _, p := range s.featureSummary.FeedSources {
-		if p.ID == source {
+		if p.ID == source.ID {
 			return true
 		}
 	}
 	return false
 }
 
-func (s *Supervisor) CallFeedSource(ctx context.Context, source string) context.Context {
+func (s *Supervisor) CallFeedSource(ctx context.Context, source *modeltiphereth.FeatureRequest) context.Context {
 	for _, i := range s.aliveInstances {
 		for _, a := range i.FeatureSummary.FeedSources {
-			if a.ID == source {
+			if a.ID == source.ID {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}
@@ -67,19 +70,22 @@ func (s *Supervisor) CallFeedSource(ctx context.Context, source string) context.
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckNotifyDestination(destination string) bool {
+func (s *Supervisor) CheckNotifyDestination(destination *modeltiphereth.FeatureRequest) bool {
+	if destination == nil {
+		return false
+	}
 	for _, p := range s.featureSummary.NotifyDestinations {
-		if p.ID == destination {
+		if p.ID == destination.ID {
 			return true
 		}
 	}
 	return false
 }
 
-func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination string) context.Context {
+func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination *modeltiphereth.FeatureRequest) context.Context {
 	for _, i := range s.aliveInstances {
 		for _, a := range i.FeatureSummary.NotifyDestinations {
-			if a.ID == destination {
+			if a.ID == destination.ID {
 				return client.WithPorterName(ctx, i.GlobalName)
 			}
 		}

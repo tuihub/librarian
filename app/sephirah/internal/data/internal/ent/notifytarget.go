@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -19,14 +21,12 @@ type NotifyTarget struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
-	// Token holds the value of the "token" field.
-	Token string `json:"token,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Destination holds the value of the "destination" field.
-	Destination string `json:"destination,omitempty"`
+	Destination *modeltiphereth.FeatureRequest `json:"destination,omitempty"`
 	// Status holds the value of the "status" field.
 	Status notifytarget.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -87,9 +87,11 @@ func (*NotifyTarget) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case notifytarget.FieldDestination:
+			values[i] = new([]byte)
 		case notifytarget.FieldID:
 			values[i] = new(sql.NullInt64)
-		case notifytarget.FieldToken, notifytarget.FieldName, notifytarget.FieldDescription, notifytarget.FieldDestination, notifytarget.FieldStatus:
+		case notifytarget.FieldName, notifytarget.FieldDescription, notifytarget.FieldStatus:
 			values[i] = new(sql.NullString)
 		case notifytarget.FieldUpdatedAt, notifytarget.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -116,12 +118,6 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				nt.ID = model.InternalID(value.Int64)
 			}
-		case notifytarget.FieldToken:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field token", values[i])
-			} else if value.Valid {
-				nt.Token = value.String
-			}
 		case notifytarget.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -135,10 +131,12 @@ func (nt *NotifyTarget) assignValues(columns []string, values []any) error {
 				nt.Description = value.String
 			}
 		case notifytarget.FieldDestination:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field destination", values[i])
-			} else if value.Valid {
-				nt.Destination = value.String
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &nt.Destination); err != nil {
+					return fmt.Errorf("unmarshal field destination: %w", err)
+				}
 			}
 		case notifytarget.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -216,9 +214,6 @@ func (nt *NotifyTarget) String() string {
 	var builder strings.Builder
 	builder.WriteString("NotifyTarget(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", nt.ID))
-	builder.WriteString("token=")
-	builder.WriteString(nt.Token)
-	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(nt.Name)
 	builder.WriteString(", ")
@@ -226,7 +221,7 @@ func (nt *NotifyTarget) String() string {
 	builder.WriteString(nt.Description)
 	builder.WriteString(", ")
 	builder.WriteString("destination=")
-	builder.WriteString(nt.Destination)
+	builder.WriteString(fmt.Sprintf("%v", nt.Destination))
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", nt.Status))

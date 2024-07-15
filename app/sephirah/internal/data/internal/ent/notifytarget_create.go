@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -24,12 +25,6 @@ type NotifyTargetCreate struct {
 	mutation *NotifyTargetMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetToken sets the "token" field.
-func (ntc *NotifyTargetCreate) SetToken(s string) *NotifyTargetCreate {
-	ntc.mutation.SetToken(s)
-	return ntc
 }
 
 // SetName sets the "name" field.
@@ -45,8 +40,8 @@ func (ntc *NotifyTargetCreate) SetDescription(s string) *NotifyTargetCreate {
 }
 
 // SetDestination sets the "destination" field.
-func (ntc *NotifyTargetCreate) SetDestination(s string) *NotifyTargetCreate {
-	ntc.mutation.SetDestination(s)
+func (ntc *NotifyTargetCreate) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetCreate {
+	ntc.mutation.SetDestination(mr)
 	return ntc
 }
 
@@ -178,9 +173,6 @@ func (ntc *NotifyTargetCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ntc *NotifyTargetCreate) check() error {
-	if _, ok := ntc.mutation.Token(); !ok {
-		return &ValidationError{Name: "token", err: errors.New(`ent: missing required field "NotifyTarget.token"`)}
-	}
 	if _, ok := ntc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "NotifyTarget.name"`)}
 	}
@@ -240,10 +232,6 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := ntc.mutation.Token(); ok {
-		_spec.SetField(notifytarget.FieldToken, field.TypeString, value)
-		_node.Token = value
-	}
 	if value, ok := ntc.mutation.Name(); ok {
 		_spec.SetField(notifytarget.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -253,7 +241,7 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 		_node.Description = value
 	}
 	if value, ok := ntc.mutation.Destination(); ok {
-		_spec.SetField(notifytarget.FieldDestination, field.TypeString, value)
+		_spec.SetField(notifytarget.FieldDestination, field.TypeJSON, value)
 		_node.Destination = value
 	}
 	if value, ok := ntc.mutation.Status(); ok {
@@ -328,7 +316,7 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 // of the `INSERT` statement. For example:
 //
 //	client.NotifyTarget.Create().
-//		SetToken(v).
+//		SetName(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -337,7 +325,7 @@ func (ntc *NotifyTargetCreate) createSpec() (*NotifyTarget, *sqlgraph.CreateSpec
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.NotifyTargetUpsert) {
-//			SetToken(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (ntc *NotifyTargetCreate) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertOne {
@@ -373,18 +361,6 @@ type (
 	}
 )
 
-// SetToken sets the "token" field.
-func (u *NotifyTargetUpsert) SetToken(v string) *NotifyTargetUpsert {
-	u.Set(notifytarget.FieldToken, v)
-	return u
-}
-
-// UpdateToken sets the "token" field to the value that was provided on create.
-func (u *NotifyTargetUpsert) UpdateToken() *NotifyTargetUpsert {
-	u.SetExcluded(notifytarget.FieldToken)
-	return u
-}
-
 // SetName sets the "name" field.
 func (u *NotifyTargetUpsert) SetName(v string) *NotifyTargetUpsert {
 	u.Set(notifytarget.FieldName, v)
@@ -410,7 +386,7 @@ func (u *NotifyTargetUpsert) UpdateDescription() *NotifyTargetUpsert {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsert) SetDestination(v string) *NotifyTargetUpsert {
+func (u *NotifyTargetUpsert) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsert {
 	u.Set(notifytarget.FieldDestination, v)
 	return u
 }
@@ -505,20 +481,6 @@ func (u *NotifyTargetUpsertOne) Update(set func(*NotifyTargetUpsert)) *NotifyTar
 	return u
 }
 
-// SetToken sets the "token" field.
-func (u *NotifyTargetUpsertOne) SetToken(v string) *NotifyTargetUpsertOne {
-	return u.Update(func(s *NotifyTargetUpsert) {
-		s.SetToken(v)
-	})
-}
-
-// UpdateToken sets the "token" field to the value that was provided on create.
-func (u *NotifyTargetUpsertOne) UpdateToken() *NotifyTargetUpsertOne {
-	return u.Update(func(s *NotifyTargetUpsert) {
-		s.UpdateToken()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *NotifyTargetUpsertOne) SetName(v string) *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
@@ -548,7 +510,7 @@ func (u *NotifyTargetUpsertOne) UpdateDescription() *NotifyTargetUpsertOne {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertOne) SetDestination(v string) *NotifyTargetUpsertOne {
+func (u *NotifyTargetUpsertOne) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})
@@ -738,7 +700,7 @@ func (ntcb *NotifyTargetCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.NotifyTargetUpsert) {
-//			SetToken(v+v).
+//			SetName(v+v).
 //		}).
 //		Exec(ctx)
 func (ntcb *NotifyTargetCreateBulk) OnConflict(opts ...sql.ConflictOption) *NotifyTargetUpsertBulk {
@@ -817,20 +779,6 @@ func (u *NotifyTargetUpsertBulk) Update(set func(*NotifyTargetUpsert)) *NotifyTa
 	return u
 }
 
-// SetToken sets the "token" field.
-func (u *NotifyTargetUpsertBulk) SetToken(v string) *NotifyTargetUpsertBulk {
-	return u.Update(func(s *NotifyTargetUpsert) {
-		s.SetToken(v)
-	})
-}
-
-// UpdateToken sets the "token" field to the value that was provided on create.
-func (u *NotifyTargetUpsertBulk) UpdateToken() *NotifyTargetUpsertBulk {
-	return u.Update(func(s *NotifyTargetUpsert) {
-		s.UpdateToken()
-	})
-}
-
 // SetName sets the "name" field.
 func (u *NotifyTargetUpsertBulk) SetName(v string) *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
@@ -860,7 +808,7 @@ func (u *NotifyTargetUpsertBulk) UpdateDescription() *NotifyTargetUpsertBulk {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertBulk) SetDestination(v string) *NotifyTargetUpsertBulk {
+func (u *NotifyTargetUpsertBulk) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})

@@ -372,12 +372,12 @@ func (ntq *NotifyTargetQuery) WithNotifyFlowTarget(opts ...func(*NotifyFlowTarge
 // Example:
 //
 //	var v []struct {
-//		Token string `json:"token,omitempty"`
+//		Name string `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.NotifyTarget.Query().
-//		GroupBy(notifytarget.FieldToken).
+//		GroupBy(notifytarget.FieldName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (ntq *NotifyTargetQuery) GroupBy(field string, fields ...string) *NotifyTargetGroupBy {
@@ -395,11 +395,11 @@ func (ntq *NotifyTargetQuery) GroupBy(field string, fields ...string) *NotifyTar
 // Example:
 //
 //	var v []struct {
-//		Token string `json:"token,omitempty"`
+//		Name string `json:"name,omitempty"`
 //	}
 //
 //	client.NotifyTarget.Query().
-//		Select(notifytarget.FieldToken).
+//		Select(notifytarget.FieldName).
 //		Scan(ctx, &v)
 func (ntq *NotifyTargetQuery) Select(fields ...string) *NotifyTargetSelect {
 	ntq.ctx.Fields = append(ntq.ctx.Fields, fields...)

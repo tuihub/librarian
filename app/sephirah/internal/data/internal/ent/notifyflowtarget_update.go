@@ -60,20 +60,6 @@ func (nftu *NotifyFlowTargetUpdate) SetNillableNotifyTargetID(mi *model.Internal
 	return nftu
 }
 
-// SetChannelID sets the "channel_id" field.
-func (nftu *NotifyFlowTargetUpdate) SetChannelID(s string) *NotifyFlowTargetUpdate {
-	nftu.mutation.SetChannelID(s)
-	return nftu
-}
-
-// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
-func (nftu *NotifyFlowTargetUpdate) SetNillableChannelID(s *string) *NotifyFlowTargetUpdate {
-	if s != nil {
-		nftu.SetChannelID(*s)
-	}
-	return nftu
-}
-
 // SetFilterIncludeKeywords sets the "filter_include_keywords" field.
 func (nftu *NotifyFlowTargetUpdate) SetFilterIncludeKeywords(s []string) *NotifyFlowTargetUpdate {
 	nftu.mutation.SetFilterIncludeKeywords(s)
@@ -204,9 +190,6 @@ func (nftu *NotifyFlowTargetUpdate) sqlSave(ctx context.Context) (n int, err err
 			}
 		}
 	}
-	if value, ok := nftu.mutation.ChannelID(); ok {
-		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
-	}
 	if value, ok := nftu.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
 	}
@@ -331,20 +314,6 @@ func (nftuo *NotifyFlowTargetUpdateOne) SetNotifyTargetID(mi model.InternalID) *
 func (nftuo *NotifyFlowTargetUpdateOne) SetNillableNotifyTargetID(mi *model.InternalID) *NotifyFlowTargetUpdateOne {
 	if mi != nil {
 		nftuo.SetNotifyTargetID(*mi)
-	}
-	return nftuo
-}
-
-// SetChannelID sets the "channel_id" field.
-func (nftuo *NotifyFlowTargetUpdateOne) SetChannelID(s string) *NotifyFlowTargetUpdateOne {
-	nftuo.mutation.SetChannelID(s)
-	return nftuo
-}
-
-// SetNillableChannelID sets the "channel_id" field if the given value is not nil.
-func (nftuo *NotifyFlowTargetUpdateOne) SetNillableChannelID(s *string) *NotifyFlowTargetUpdateOne {
-	if s != nil {
-		nftuo.SetChannelID(*s)
 	}
 	return nftuo
 }
@@ -508,9 +477,6 @@ func (nftuo *NotifyFlowTargetUpdateOne) sqlSave(ctx context.Context) (_node *Not
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := nftuo.mutation.ChannelID(); ok {
-		_spec.SetField(notifyflowtarget.FieldChannelID, field.TypeString, value)
 	}
 	if value, ok := nftuo.mutation.FilterIncludeKeywords(); ok {
 		_spec.SetField(notifyflowtarget.FieldFilterIncludeKeywords, field.TypeJSON, value)
