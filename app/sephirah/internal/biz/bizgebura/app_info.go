@@ -224,7 +224,7 @@ func (g *Gebura) PurchaseAppInfo(ctx context.Context, infoID *modelgebura.AppInf
 		if infoID.Internal {
 			return errors.BadRequest("app not found", "")
 		}
-		ids, err := g.searcher.NewBatchIDs(ctx2, 2) //nolint:gomnd // checked
+		ids, err := g.searcher.NewBatchIDs(ctx2, 2) //nolint:mnd // checked
 		if err != nil {
 			return err
 		}

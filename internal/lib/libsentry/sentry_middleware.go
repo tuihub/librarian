@@ -55,7 +55,7 @@ func Server(opts ...Option) middleware.Middleware { //nolint:gocognit // ignore
 		o(&options)
 	}
 	if options.Timeout == 0 {
-		options.Timeout = 2 * time.Second //nolint: gomnd // default timeout
+		options.Timeout = 2 * time.Second //nolint:mnd // default timeout
 	}
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {

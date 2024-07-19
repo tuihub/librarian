@@ -78,7 +78,7 @@ func NewChesed(
 		modelbinah.DownloadEmpty,
 		nil,
 	)
-	err := cron.BySeconds("ChesedScanImage", 60, c.ScanImage, context.Background()) //nolint:gomnd //TODO
+	err := cron.BySeconds("ChesedScanImage", 60, c.ScanImage, context.Background()) //nolint:mnd //TODO
 	if err != nil {
 		return nil, err
 	}

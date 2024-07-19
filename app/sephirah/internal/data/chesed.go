@@ -56,7 +56,7 @@ func (c chesedRepo) ListImages(ctx context.Context, userID model.InternalID, pag
 func (c chesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
 	res, err := c.data.db.Image.Query().
 		Where(image.StatusEQ(image.StatusUploaded)).
-		Limit(10). //nolint:gomnd //TODO
+		Limit(10). //nolint:mnd //TODO
 		All(ctx)
 	if err != nil {
 		return nil, err

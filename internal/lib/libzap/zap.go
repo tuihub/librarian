@@ -86,7 +86,7 @@ func New(basePath string, accessLogLevel Level) *zap.Logger {
 			Rotate: RotateOptions{
 				MaxSize:    1,
 				MaxAge:     1,
-				MaxBackups: 3, //nolint:gomnd // default settings
+				MaxBackups: 3, //nolint:mnd // default settings
 				Compress:   true,
 			},
 			LevelEnablerFunc: func(lvl Level) bool {
@@ -101,7 +101,7 @@ func New(basePath string, accessLogLevel Level) *zap.Logger {
 				Rotate: RotateOptions{
 					MaxSize:    1,
 					MaxAge:     1,
-					MaxBackups: 3, //nolint:gomnd // default settings
+					MaxBackups: 3, //nolint:mnd // default settings
 					Compress:   true,
 				},
 				LevelEnablerFunc: func(lvl Level) bool {

@@ -40,9 +40,9 @@ func NewStore(c *conf.Cache) (Store, error) {
 
 func newRistrettoCache() (Store, error) {
 	ristrettoCache, err := ristretto.NewCache(&ristretto.Config{ //nolint:exhaustruct // no need
-		NumCounters: 1000, //nolint:gomnd //TODO
-		MaxCost:     100,  //nolint:gomnd //TODO
-		BufferItems: 64,   //nolint:gomnd //TODO
+		NumCounters: 1000, //nolint:mnd //TODO
+		MaxCost:     100,  //nolint:mnd //TODO
+		BufferItems: 64,   //nolint:mnd //TODO
 	})
 	if err != nil {
 		return nil, err

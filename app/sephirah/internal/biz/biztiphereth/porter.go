@@ -16,7 +16,7 @@ import (
 func (t *Tiphereth) updatePorters(ctx context.Context) error {
 	if t.supv.KnownInstancesRequireUpdate() {
 		porters, _, err := t.repo.ListPorters(ctx, model.Paging{
-			PageSize: 1000, //nolint:gomnd // TODO
+			PageSize: 1000, //nolint:mnd // TODO
 			PageNum:  1,
 		})
 		if err != nil {

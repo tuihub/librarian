@@ -74,5 +74,5 @@ func (c *Client) WaitServerOnline(ctx context.Context) {
 
 var defaultPaging = &librarian.PagingRequest{ //nolint:gochecknoglobals // no need
 	PageNum:  1,
-	PageSize: 10, //nolint:gomnd // no need
+	PageSize: 10, //nolint:mnd // no need
 }

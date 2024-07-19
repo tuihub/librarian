@@ -89,7 +89,7 @@ func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, pagin
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*biz.SearchResult, 0, 20) //nolint:gomnd // TODO
+	res := make([]*biz.SearchResult, 0, 20) //nolint:mnd // TODO
 	for _, h := range result.Hits {
 		var str []byte
 		str, err = libcodec.Marshal(libcodec.JSON, h)

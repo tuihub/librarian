@@ -48,7 +48,7 @@ func (l *mqLogger) With(fields watermill.LogFields) watermill.LoggerAdapter {
 }
 
 func (l *mqLogger) toKeyValues(fields watermill.LogFields) []interface{} {
-	res := make([]interface{}, len(fields)*2) //nolint:gomnd //double size is correct
+	res := make([]interface{}, len(fields)*2) //nolint:mnd //double size is correct
 	i := 0
 	for k, v := range fields {
 		res[i] = k

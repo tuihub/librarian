@@ -93,7 +93,7 @@ func (c *Client) testUser(ctx context.Context) {
 	c.assertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},
 		func(resp *pb.ListUsersResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:mnd // definite
 		})
 
 	user1.Password = "user1newPass"
@@ -112,7 +112,7 @@ func (c *Client) testUser(ctx context.Context) {
 	c.assertListUser(
 		ctx, []pb.UserType{pb.UserType_USER_TYPE_NORMAL}, nil,
 		func(resp *pb.ListUsersResponse) bool {
-			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:gomnd // definite
+			return !cmp.Equal(resp.GetPaging().GetTotalSize(), 2) //nolint:mnd // definite
 		})
 	c.assertListUser(
 		ctx, nil, []pb.UserStatus{pb.UserStatus_USER_STATUS_BLOCKED},

@@ -49,7 +49,7 @@ func (g *Searcher) NewID(ctx context.Context) (int64, error) {
 
 func (g *Searcher) NewBatchIDs(ctx context.Context, num int) ([]int64, error) {
 	var res []int64
-	for i := 0; i < num; i++ {
+	for range num {
 		id, err := g.repo.NewID(ctx)
 		if err != nil {
 			return nil, err

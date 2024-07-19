@@ -63,7 +63,7 @@ func FromContext(ctx context.Context) *Claims {
 
 func RawFromContext(ctx context.Context) string {
 	if header, ok := transport.FromServerContext(ctx); ok {
-		auths := strings.SplitN(header.RequestHeader().Get("Authorization"), " ", 2) //nolint:gomnd // exactly 2
+		auths := strings.SplitN(header.RequestHeader().Get("Authorization"), " ", 2) //nolint:mnd // exactly 2
 		if len(auths) != 2 || !strings.EqualFold(auths[0], "Bearer") {
 			return ""
 		}

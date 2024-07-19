@@ -172,8 +172,8 @@ func parseHeaders(headersRaw string) (map[string]string, error) {
 	}
 	headers := strings.Split(headersRaw, ",")
 	for _, header := range headers {
-		parts := strings.SplitN(header, "=", 2) //nolint:gomnd // no need
-		if len(parts) != 2 {                    //nolint:gomnd // no need
+		parts := strings.SplitN(header, "=", 2) //nolint:mnd // no need
+		if len(parts) != 2 {                    //nolint:mnd // no need
 			return nil, errors.New("invalid header format: " + header)
 		}
 		headersMap[strings.TrimSpace(parts[0])] = strings.TrimSpace(parts[1])

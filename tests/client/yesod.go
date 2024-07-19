@@ -66,7 +66,7 @@ func (c *Client) TestYesod(ctx context.Context) {
 	}); err != nil {
 		log.Fatal(err)
 	}
-	time.Sleep(time.Minute * 2) //nolint:gomnd // waiting
+	time.Sleep(time.Minute * 2) //nolint:mnd // waiting
 	if resp, err := c.cli.ListFeedConfigs(ctx, &pb.ListFeedConfigsRequest{
 		Paging:         defaultPaging,
 		IdFilter:       nil,

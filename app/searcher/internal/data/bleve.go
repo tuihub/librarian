@@ -77,7 +77,7 @@ func (r *bleveSearcherRepo) SearchID(ctx context.Context, index biz.Index, pagin
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*biz.SearchResult, 0, 20) //nolint:gomnd // TODO
+	res := make([]*biz.SearchResult, 0, 20) //nolint:mnd // TODO
 	for _, h := range result.Hits {
 		var id int64
 		id, err = strconv.ParseInt(h.ID, 10, 64)

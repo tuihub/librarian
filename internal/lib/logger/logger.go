@@ -12,7 +12,7 @@ import (
 const DefaultCallerKey = "logger"
 
 func getCaller() string {
-	pc, _, _, _ := runtime.Caller(2) //nolint:gomnd //get external caller
+	pc, _, _, _ := runtime.Caller(2) //nolint:mnd //get external caller
 	return runtime.FuncForPC(pc).Name()
 }
 

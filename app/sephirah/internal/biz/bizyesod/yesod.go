@@ -93,7 +93,7 @@ func NewYesod(
 		feedOwner:          feedOwner,
 		builtinFeedActions: builtinFeedActions,
 	}
-	err = cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:gomnd // hard code min interval
+	err = cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:mnd // hard code min interval
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (y *Yesod) GetBuiltInFeedActions() []*modeltiphereth.FeatureFlag {
 func (y *Yesod) PullFeeds(ctx context.Context) error {
 	configs, err := y.repo.ListFeedConfigNeedPull(ctx, nil,
 		[]modelyesod.FeedConfigStatus{modelyesod.FeedConfigStatusActive},
-		modelyesod.ListFeedOrderNextPull, time.Now(), 32) //nolint:gomnd // TODO
+		modelyesod.ListFeedOrderNextPull, time.Now(), 32) //nolint:mnd // TODO
 	if err != nil {
 		logger.Errorf("%s", err.Error())
 		return err

@@ -41,7 +41,7 @@ func NewNebula(c *conf.Mapper_Data) (*norm.DB, func()) {
 		Username:        c.GetNebula().GetUsername(),
 		Password:        c.GetNebula().GetPassword(),
 		Space:           c.GetNebula().GetSpace(),
-		Timeout:         time.Second * 5, //nolint:gomnd //TODO
+		Timeout:         time.Second * 5, //nolint:mnd //TODO
 		IdleTime:        0,
 		MaxConnPoolSize: 0,
 		MinConnPoolSize: 0,
