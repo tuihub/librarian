@@ -3,7 +3,7 @@ GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 PROTO_VERSION=$(shell go list -m -f '{{.Version}}' github.com/tuihub/protos)
-GOLANG_CROSS_VERSION ?= v1.21.7
+GOLANG_CROSS_VERSION ?= latest
 SHELL:=/bin/bash
 
 ifeq ($(GOHOSTOS), windows)
