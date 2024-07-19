@@ -142,9 +142,10 @@ func searcherClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
+	app *libapp.Settings,
 ) (searcher.LibrarianSearcherServiceClient, error) {
 	if conf.GetSearcher() {
-		return client.NewSearcherClient(c)
+		return client.NewSearcherClient(c, app)
 	}
 	return inproc.Searcher, nil
 }
@@ -153,9 +154,10 @@ func minerClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,
 	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
+	app *libapp.Settings,
 ) (miner.LibrarianMinerServiceClient, error) {
 	if conf.GetMiner() {
-		return client.NewMinerClient(c)
+		return client.NewMinerClient(c, app)
 	}
 	return inproc.Miner, nil
 }

@@ -92,3 +92,8 @@ func (e emptyWatcher) Next() ([]*registry.ServiceInstance, error) {
 func (e emptyWatcher) Stop() error {
 	return nil
 }
+
+func IsEmptyDiscovery(d registry.Discovery) bool {
+	_, ok := d.(emptyDiscovery)
+	return ok
+}

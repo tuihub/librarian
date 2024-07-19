@@ -54,7 +54,7 @@ func NewSupervisor(
 		refreshMu:              sync.Mutex{},
 		featureSummary:         new(modeltiphereth.ServerFeatureSummary),
 		muFeatureSummary:       sync.RWMutex{},
-		trustedAddresses:       c.GetTrustedAddress(),
+		trustedAddresses:       c.GetTrusted(),
 		systemNotify:           systemNotify,
 	}, nil
 }
@@ -80,7 +80,9 @@ func (s *Supervisor) UpdateKnownInstances(instances []*modeltiphereth.PorterInst
 func (s *Supervisor) RefreshAliveInstances(
 	ctx context.Context,
 ) ([]*modeltiphereth.PorterInstance, error) {
-	s.refreshMu.Lock()
+	if !s.refreshMu.TryLock() {
+		return nil, errors.New("refreshing")
+	}
 	defer s.refreshMu.Unlock()
 
 	if s.knownInstances == nil {

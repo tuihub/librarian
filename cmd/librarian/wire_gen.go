@@ -60,14 +60,14 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	inprocClients := inprocgrpc.NewInprocClients(librarianSearcherServiceServer, librarianMinerServiceServer)
-	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients)
+	librarianSearcherServiceClient, err := searcherClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients, settings)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients)
+	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients, settings)
 	if err != nil {
 		cleanup3()
 		cleanup2()

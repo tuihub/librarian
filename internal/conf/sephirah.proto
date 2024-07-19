@@ -19,7 +19,8 @@ message SephirahServer {
 }
 
 message Porter {
-  repeated string trusted_address = 1;
+  repeated string address = 1;
+  repeated string trusted = 2;
 }
 
 message Sephirah {

@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -16,16 +15,23 @@ import (
 
 type Porter struct {
 	porter.LibrarianPorterServiceClient
-	checker *libapp.HealthChecker
+	checker libapp.HealthChecker
 }
 
 func NewPorter(
 	client porter.LibrarianPorterServiceClient,
 	consul *conf.Consul,
+	porter *conf.Porter,
 ) (*Porter, error) {
 	checker, err := libapp.NewHealthChecker("porter", consul)
 	if err != nil {
 		return nil, err
+	}
+	if libapp.IsEmptyHealthChecker(checker) {
+		checker, err = newStaticDiscovery(porter)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &Porter{
 		LibrarianPorterServiceClient: client,
@@ -34,24 +40,21 @@ func NewPorter(
 }
 
 func (p *Porter) GetServiceAddresses(ctx context.Context) ([]string, error) {
-	instances, err := p.checker.GetAliveInstances()
-	if err != nil {
-		return nil, err
-	}
-	res := make([]string, 0, len(instances))
-	for _, instance := range instances {
-		res = append(res, fmt.Sprintf("%s:%d", instance.Service.Address, instance.Service.Port))
-	}
-	return res, nil
+	return p.checker.GetAliveInstances()
 }
 
-func NewPorterClient(c *conf.Consul) (porter.LibrarianPorterServiceClient, error) {
+func NewPorterClient(c *conf.Consul, p *conf.Porter, app *libapp.Settings) (porter.LibrarianPorterServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
-	conn, err := grpc.DialInsecure(
-		context.Background(),
+	if libapp.IsEmptyDiscovery(r) {
+		r, err = newStaticDiscovery(p)
+		if err != nil {
+			return nil, err
+		}
+	}
+	middlewares := []grpc.ClientOption{
 		grpc.WithEndpoint("discovery:///porter"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(
@@ -59,10 +62,14 @@ func NewPorterClient(c *conf.Consul) (porter.LibrarianPorterServiceClient, error
 			newPorterAddressFilter(),
 			newPorterFastFailFilter(),
 		),
-		grpc.WithMiddleware(
-			recovery.Recovery(),
-		),
 		grpc.WithTimeout(libtime.Minute),
+	}
+	if app.EnablePanicRecovery {
+		middlewares = append(middlewares, grpc.WithMiddleware(recovery.Recovery()))
+	}
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		middlewares...,
 	)
 	cli := porter.NewLibrarianPorterServiceClient(conn)
 	return cli, err

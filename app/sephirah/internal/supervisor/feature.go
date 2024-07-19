@@ -7,6 +7,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 )
 
+// fixme: current filter methods will lead to calling disabled instances.
+
 func (s *Supervisor) CheckAccountPlatform(platform string) bool {
 	for _, p := range s.featureSummary.AccountPlatforms {
 		if p.ID == platform {

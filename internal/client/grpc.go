@@ -13,55 +13,64 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
-func NewMapperClient(c *conf.Consul) (mapper.LibrarianMapperServiceClient, error) {
+func NewMapperClient(c *conf.Consul, app *libapp.Settings) (mapper.LibrarianMapperServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
-	conn, err := grpc.DialInsecure(
-		context.Background(),
+	middlewares := []grpc.ClientOption{
 		grpc.WithEndpoint("discovery:///mapper"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
-		grpc.WithMiddleware(
-			recovery.Recovery(),
-		),
+	}
+	if app.EnablePanicRecovery {
+		middlewares = append(middlewares, grpc.WithMiddleware(recovery.Recovery()))
+	}
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		middlewares...,
 	)
 	cli := mapper.NewLibrarianMapperServiceClient(conn)
 	return cli, err
 }
 
-func NewSearcherClient(c *conf.Consul) (searcher.LibrarianSearcherServiceClient, error) {
+func NewSearcherClient(c *conf.Consul, app *libapp.Settings) (searcher.LibrarianSearcherServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
-	conn, err := grpc.DialInsecure(
-		context.Background(),
+	middlewares := []grpc.ClientOption{
 		grpc.WithEndpoint("discovery:///searcher"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
-		grpc.WithMiddleware(
-			recovery.Recovery(),
-		),
+	}
+	if app.EnablePanicRecovery {
+		middlewares = append(middlewares, grpc.WithMiddleware(recovery.Recovery()))
+	}
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		middlewares...,
 	)
 	cli := searcher.NewLibrarianSearcherServiceClient(conn)
 	return cli, err
 }
 
-func NewMinerClient(c *conf.Consul) (miner.LibrarianMinerServiceClient, error) {
+func NewMinerClient(c *conf.Consul, app *libapp.Settings) (miner.LibrarianMinerServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
-	conn, err := grpc.DialInsecure(
-		context.Background(),
-		grpc.WithEndpoint("discovery:///porter"),
+	middlewares := []grpc.ClientOption{
+		grpc.WithEndpoint("discovery:///miner"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(libapp.NewNodeFilter()),
-		grpc.WithMiddleware(
-			recovery.Recovery(),
-		),
+	}
+	if app.EnablePanicRecovery {
+		middlewares = append(middlewares, grpc.WithMiddleware(recovery.Recovery()))
+	}
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		middlewares...,
 	)
 	cli := miner.NewLibrarianMinerServiceClient(conn)
 	return cli, err

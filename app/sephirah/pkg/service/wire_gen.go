@@ -39,12 +39,12 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
-	librarianPorterServiceClient, err := client.NewPorterClient(consul)
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

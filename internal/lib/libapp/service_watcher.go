@@ -1,17 +1,23 @@
 package libapp
 
 import (
+	"fmt"
+
 	"github.com/tuihub/librarian/internal/conf"
 
 	"github.com/hashicorp/consul/api"
 )
 
-type HealthChecker struct {
+type HealthChecker interface {
+	GetAliveInstances() ([]string, error)
+}
+
+type healthChecker struct {
 	healthClient *api.Health
 	serviceName  string
 }
 
-func NewHealthChecker(serviceName string, c *conf.Consul) (*HealthChecker, error) {
+func NewHealthChecker(serviceName string, c *conf.Consul) (HealthChecker, error) {
 	config := api.DefaultConfig()
 	if c != nil {
 		config.Address = c.GetAddr()
@@ -25,7 +31,7 @@ func NewHealthChecker(serviceName string, c *conf.Consul) (*HealthChecker, error
 	_, err = client.Status().Leader()
 	if err != nil {
 		if c == nil {
-			return &HealthChecker{
+			return &healthChecker{
 				healthClient: nil,
 				serviceName:  serviceName,
 			}, nil
@@ -33,16 +39,25 @@ func NewHealthChecker(serviceName string, c *conf.Consul) (*HealthChecker, error
 		return nil, err
 	}
 
-	return &HealthChecker{
+	return &healthChecker{
 		healthClient: client.Health(),
 		serviceName:  serviceName,
 	}, nil
 }
 
-func (hc *HealthChecker) GetAliveInstances() ([]*api.ServiceEntry, error) {
+func (hc *healthChecker) GetAliveInstances() ([]string, error) {
 	if hc.healthClient == nil {
-		return []*api.ServiceEntry{}, nil
+		return []string{}, nil
 	}
 	instances, _, err := hc.healthClient.Service(hc.serviceName, "", true, nil)
-	return instances, err
+	res := make([]string, 0, len(instances))
+	for _, instance := range instances {
+		res = append(res, fmt.Sprintf("%s:%d", instance.Service.Address, instance.Service.Port))
+	}
+	return res, err
+}
+
+func IsEmptyHealthChecker(hc HealthChecker) bool {
+	h, ok := hc.(*healthChecker)
+	return !ok || h == nil || h.healthClient == nil
 }

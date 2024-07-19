@@ -53,20 +53,20 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
-	librarianPorterServiceClient, err := client.NewPorterClient(consul)
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	netzachRepo := data.NewNetzachRepo(dataData)
-	librarianSearcherServiceClient, err := client2.NewSearcherClient(consul)
+	librarianSearcherServiceClient, err := client2.NewSearcherClient(consul, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -149,7 +149,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	chesedRepo := data.NewChesedRepo(dataData)
-	librarianMinerServiceClient, err := client2.NewMinerClient(consul)
+	librarianMinerServiceClient, err := client2.NewMinerClient(consul, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
