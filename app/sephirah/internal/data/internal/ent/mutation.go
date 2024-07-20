@@ -8239,7 +8239,6 @@ type FeedConfigMutation struct {
 	id                        *model.InternalID
 	name                      *string
 	description               *string
-	feed_url                  *string
 	source                    **modeltiphereth.FeatureRequest
 	status                    *feedconfig.Status
 	category                  *string
@@ -8481,42 +8480,6 @@ func (m *FeedConfigMutation) OldDescription(ctx context.Context) (v string, err 
 // ResetDescription resets all changes to the "description" field.
 func (m *FeedConfigMutation) ResetDescription() {
 	m.description = nil
-}
-
-// SetFeedURL sets the "feed_url" field.
-func (m *FeedConfigMutation) SetFeedURL(s string) {
-	m.feed_url = &s
-}
-
-// FeedURL returns the value of the "feed_url" field in the mutation.
-func (m *FeedConfigMutation) FeedURL() (r string, exists bool) {
-	v := m.feed_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFeedURL returns the old "feed_url" field's value of the FeedConfig entity.
-// If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldFeedURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFeedURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFeedURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFeedURL: %w", err)
-	}
-	return oldValue.FeedURL, nil
-}
-
-// ResetFeedURL resets all changes to the "feed_url" field.
-func (m *FeedConfigMutation) ResetFeedURL() {
-	m.feed_url = nil
 }
 
 // SetSource sets the "source" field.
@@ -9210,7 +9173,7 @@ func (m *FeedConfigMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FeedConfigMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 14)
 	if m.owner != nil {
 		fields = append(fields, feedconfig.FieldUserFeedConfig)
 	}
@@ -9219,9 +9182,6 @@ func (m *FeedConfigMutation) Fields() []string {
 	}
 	if m.description != nil {
 		fields = append(fields, feedconfig.FieldDescription)
-	}
-	if m.feed_url != nil {
-		fields = append(fields, feedconfig.FieldFeedURL)
 	}
 	if m.source != nil {
 		fields = append(fields, feedconfig.FieldSource)
@@ -9270,8 +9230,6 @@ func (m *FeedConfigMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case feedconfig.FieldDescription:
 		return m.Description()
-	case feedconfig.FieldFeedURL:
-		return m.FeedURL()
 	case feedconfig.FieldSource:
 		return m.Source()
 	case feedconfig.FieldStatus:
@@ -9309,8 +9267,6 @@ func (m *FeedConfigMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldName(ctx)
 	case feedconfig.FieldDescription:
 		return m.OldDescription(ctx)
-	case feedconfig.FieldFeedURL:
-		return m.OldFeedURL(ctx)
 	case feedconfig.FieldSource:
 		return m.OldSource(ctx)
 	case feedconfig.FieldStatus:
@@ -9362,13 +9318,6 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDescription(v)
-		return nil
-	case feedconfig.FieldFeedURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFeedURL(v)
 		return nil
 	case feedconfig.FieldSource:
 		v, ok := value.(*modeltiphereth.FeatureRequest)
@@ -9519,9 +9468,6 @@ func (m *FeedConfigMutation) ResetField(name string) error {
 		return nil
 	case feedconfig.FieldDescription:
 		m.ResetDescription()
-		return nil
-	case feedconfig.FieldFeedURL:
-		m.ResetFeedURL()
 		return nil
 	case feedconfig.FieldSource:
 		m.ResetSource()

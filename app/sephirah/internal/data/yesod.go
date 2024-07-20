@@ -37,6 +37,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 			SetOwnerID(owner).
 			SetID(c.ID).
 			SetName(c.Name).
+			SetDescription(c.Description).
 			SetCategory(c.Category).
 			SetSource(c.Source).
 			SetStatus(converter.ToEntFeedConfigStatus(c.Status)).
@@ -68,6 +69,9 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 			)
 		if len(c.Name) > 0 {
 			q.SetName(c.Name)
+		}
+		if len(c.Description) > 0 {
+			q.SetDescription(c.Description)
 		}
 		if len(c.Category) > 0 {
 			q.SetCategory(c.Category)

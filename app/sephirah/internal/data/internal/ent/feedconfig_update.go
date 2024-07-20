@@ -77,20 +77,6 @@ func (fcu *FeedConfigUpdate) SetNillableDescription(s *string) *FeedConfigUpdate
 	return fcu
 }
 
-// SetFeedURL sets the "feed_url" field.
-func (fcu *FeedConfigUpdate) SetFeedURL(s string) *FeedConfigUpdate {
-	fcu.mutation.SetFeedURL(s)
-	return fcu
-}
-
-// SetNillableFeedURL sets the "feed_url" field if the given value is not nil.
-func (fcu *FeedConfigUpdate) SetNillableFeedURL(s *string) *FeedConfigUpdate {
-	if s != nil {
-		fcu.SetFeedURL(*s)
-	}
-	return fcu
-}
-
 // SetSource sets the "source" field.
 func (fcu *FeedConfigUpdate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigUpdate {
 	fcu.mutation.SetSource(mr)
@@ -463,9 +449,6 @@ func (fcu *FeedConfigUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fcu.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
 	}
-	if value, ok := fcu.mutation.FeedURL(); ok {
-		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
-	}
 	if value, ok := fcu.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
 	}
@@ -765,20 +748,6 @@ func (fcuo *FeedConfigUpdateOne) SetDescription(s string) *FeedConfigUpdateOne {
 func (fcuo *FeedConfigUpdateOne) SetNillableDescription(s *string) *FeedConfigUpdateOne {
 	if s != nil {
 		fcuo.SetDescription(*s)
-	}
-	return fcuo
-}
-
-// SetFeedURL sets the "feed_url" field.
-func (fcuo *FeedConfigUpdateOne) SetFeedURL(s string) *FeedConfigUpdateOne {
-	fcuo.mutation.SetFeedURL(s)
-	return fcuo
-}
-
-// SetNillableFeedURL sets the "feed_url" field if the given value is not nil.
-func (fcuo *FeedConfigUpdateOne) SetNillableFeedURL(s *string) *FeedConfigUpdateOne {
-	if s != nil {
-		fcuo.SetFeedURL(*s)
 	}
 	return fcuo
 }
@@ -1184,9 +1153,6 @@ func (fcuo *FeedConfigUpdateOne) sqlSave(ctx context.Context) (_node *FeedConfig
 	}
 	if value, ok := fcuo.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
-	}
-	if value, ok := fcuo.mutation.FeedURL(); ok {
-		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
 	}
 	if value, ok := fcuo.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)

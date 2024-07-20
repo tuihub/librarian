@@ -28,8 +28,6 @@ type FeedConfig struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
-	// FeedURL holds the value of the "feed_url" field.
-	FeedURL string `json:"feed_url,omitempty"`
 	// Source holds the value of the "source" field.
 	Source *modeltiphereth.FeatureRequest `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
@@ -135,7 +133,7 @@ func (*FeedConfig) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case feedconfig.FieldID, feedconfig.FieldUserFeedConfig, feedconfig.FieldPullInterval:
 			values[i] = new(sql.NullInt64)
-		case feedconfig.FieldName, feedconfig.FieldDescription, feedconfig.FieldFeedURL, feedconfig.FieldStatus, feedconfig.FieldCategory, feedconfig.FieldLatestPullStatus, feedconfig.FieldLatestPullMessage:
+		case feedconfig.FieldName, feedconfig.FieldDescription, feedconfig.FieldStatus, feedconfig.FieldCategory, feedconfig.FieldLatestPullStatus, feedconfig.FieldLatestPullMessage:
 			values[i] = new(sql.NullString)
 		case feedconfig.FieldLatestPullAt, feedconfig.FieldNextPullBeginAt, feedconfig.FieldUpdatedAt, feedconfig.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -177,12 +175,6 @@ func (fc *FeedConfig) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				fc.Description = value.String
-			}
-		case feedconfig.FieldFeedURL:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field feed_url", values[i])
-			} else if value.Valid {
-				fc.FeedURL = value.String
 			}
 		case feedconfig.FieldSource:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -321,9 +313,6 @@ func (fc *FeedConfig) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(fc.Description)
-	builder.WriteString(", ")
-	builder.WriteString("feed_url=")
-	builder.WriteString(fc.FeedURL)
 	builder.WriteString(", ")
 	builder.WriteString("source=")
 	builder.WriteString(fmt.Sprintf("%v", fc.Source))

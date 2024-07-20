@@ -21,8 +21,6 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
-	// FieldFeedURL holds the string denoting the feed_url field in the database.
-	FieldFeedURL = "feed_url"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -98,7 +96,6 @@ var Columns = []string{
 	FieldUserFeedConfig,
 	FieldName,
 	FieldDescription,
-	FieldFeedURL,
 	FieldSource,
 	FieldStatus,
 	FieldCategory,
@@ -211,11 +208,6 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
-}
-
-// ByFeedURL orders the results by the feed_url field.
-func ByFeedURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFeedURL, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

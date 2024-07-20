@@ -72,11 +72,6 @@ func Description(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldDescription, v))
 }
 
-// FeedURL applies equality check predicate on the "feed_url" field. It's identical to FeedURLEQ.
-func FeedURL(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldFeedURL, v))
-}
-
 // Category applies equality check predicate on the "category" field. It's identical to CategoryEQ.
 func Category(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldEQ(FieldCategory, v))
@@ -276,71 +271,6 @@ func DescriptionEqualFold(v string) predicate.FeedConfig {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.FeedConfig {
 	return predicate.FeedConfig(sql.FieldContainsFold(FieldDescription, v))
-}
-
-// FeedURLEQ applies the EQ predicate on the "feed_url" field.
-func FeedURLEQ(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEQ(FieldFeedURL, v))
-}
-
-// FeedURLNEQ applies the NEQ predicate on the "feed_url" field.
-func FeedURLNEQ(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNEQ(FieldFeedURL, v))
-}
-
-// FeedURLIn applies the In predicate on the "feed_url" field.
-func FeedURLIn(vs ...string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldIn(FieldFeedURL, vs...))
-}
-
-// FeedURLNotIn applies the NotIn predicate on the "feed_url" field.
-func FeedURLNotIn(vs ...string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldNotIn(FieldFeedURL, vs...))
-}
-
-// FeedURLGT applies the GT predicate on the "feed_url" field.
-func FeedURLGT(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGT(FieldFeedURL, v))
-}
-
-// FeedURLGTE applies the GTE predicate on the "feed_url" field.
-func FeedURLGTE(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldGTE(FieldFeedURL, v))
-}
-
-// FeedURLLT applies the LT predicate on the "feed_url" field.
-func FeedURLLT(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLT(FieldFeedURL, v))
-}
-
-// FeedURLLTE applies the LTE predicate on the "feed_url" field.
-func FeedURLLTE(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldLTE(FieldFeedURL, v))
-}
-
-// FeedURLContains applies the Contains predicate on the "feed_url" field.
-func FeedURLContains(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldContains(FieldFeedURL, v))
-}
-
-// FeedURLHasPrefix applies the HasPrefix predicate on the "feed_url" field.
-func FeedURLHasPrefix(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldHasPrefix(FieldFeedURL, v))
-}
-
-// FeedURLHasSuffix applies the HasSuffix predicate on the "feed_url" field.
-func FeedURLHasSuffix(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldHasSuffix(FieldFeedURL, v))
-}
-
-// FeedURLEqualFold applies the EqualFold predicate on the "feed_url" field.
-func FeedURLEqualFold(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldEqualFold(FieldFeedURL, v))
-}
-
-// FeedURLContainsFold applies the ContainsFold predicate on the "feed_url" field.
-func FeedURLContainsFold(v string) predicate.FeedConfig {
-	return predicate.FeedConfig(sql.FieldContainsFold(FieldFeedURL, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

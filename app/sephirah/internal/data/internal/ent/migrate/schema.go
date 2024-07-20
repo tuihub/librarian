@@ -267,7 +267,6 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
-		{Name: "feed_url", Type: field.TypeString},
 		{Name: "source", Type: field.TypeJSON},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "suspend"}},
 		{Name: "category", Type: field.TypeString},
@@ -289,21 +288,16 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "feed_configs_users_feed_config",
-				Columns:    []*schema.Column{FeedConfigsColumns[15]},
+				Columns:    []*schema.Column{FeedConfigsColumns[14]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "feedconfig_user_feed_config_feed_url",
-				Unique:  true,
-				Columns: []*schema.Column{FeedConfigsColumns[15], FeedConfigsColumns[3]},
-			},
-			{
 				Name:    "feedconfig_category",
 				Unique:  false,
-				Columns: []*schema.Column{FeedConfigsColumns[6]},
+				Columns: []*schema.Column{FeedConfigsColumns[5]},
 			},
 		},
 	}

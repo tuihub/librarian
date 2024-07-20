@@ -25,7 +25,6 @@ func (FeedConfig) Fields() []ent.Field {
 			GoType(model.InternalID(0)),
 		field.String("name"),
 		field.String("description"),
-		field.String("feed_url"),
 		field.JSON("source", new(modeltiphereth.FeatureRequest)),
 		field.Enum("status").
 			Values("active", "suspend"),
@@ -50,8 +49,6 @@ func (FeedConfig) Fields() []ent.Field {
 
 func (FeedConfig) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_feed_config", "feed_url").
-			Unique(),
 		index.Fields("category"),
 	}
 }

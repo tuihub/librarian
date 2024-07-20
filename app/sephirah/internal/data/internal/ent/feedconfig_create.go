@@ -47,12 +47,6 @@ func (fcc *FeedConfigCreate) SetDescription(s string) *FeedConfigCreate {
 	return fcc
 }
 
-// SetFeedURL sets the "feed_url" field.
-func (fcc *FeedConfigCreate) SetFeedURL(s string) *FeedConfigCreate {
-	fcc.mutation.SetFeedURL(s)
-	return fcc
-}
-
 // SetSource sets the "source" field.
 func (fcc *FeedConfigCreate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigCreate {
 	fcc.mutation.SetSource(mr)
@@ -308,9 +302,6 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "FeedConfig.description"`)}
 	}
-	if _, ok := fcc.mutation.FeedURL(); !ok {
-		return &ValidationError{Name: "feed_url", err: errors.New(`ent: missing required field "FeedConfig.feed_url"`)}
-	}
 	if _, ok := fcc.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "FeedConfig.source"`)}
 	}
@@ -397,10 +388,6 @@ func (fcc *FeedConfigCreate) createSpec() (*FeedConfig, *sqlgraph.CreateSpec) {
 	if value, ok := fcc.mutation.Description(); ok {
 		_spec.SetField(feedconfig.FieldDescription, field.TypeString, value)
 		_node.Description = value
-	}
-	if value, ok := fcc.mutation.FeedURL(); ok {
-		_spec.SetField(feedconfig.FieldFeedURL, field.TypeString, value)
-		_node.FeedURL = value
 	}
 	if value, ok := fcc.mutation.Source(); ok {
 		_spec.SetField(feedconfig.FieldSource, field.TypeJSON, value)
@@ -616,18 +603,6 @@ func (u *FeedConfigUpsert) SetDescription(v string) *FeedConfigUpsert {
 // UpdateDescription sets the "description" field to the value that was provided on create.
 func (u *FeedConfigUpsert) UpdateDescription() *FeedConfigUpsert {
 	u.SetExcluded(feedconfig.FieldDescription)
-	return u
-}
-
-// SetFeedURL sets the "feed_url" field.
-func (u *FeedConfigUpsert) SetFeedURL(v string) *FeedConfigUpsert {
-	u.Set(feedconfig.FieldFeedURL, v)
-	return u
-}
-
-// UpdateFeedURL sets the "feed_url" field to the value that was provided on create.
-func (u *FeedConfigUpsert) UpdateFeedURL() *FeedConfigUpsert {
-	u.SetExcluded(feedconfig.FieldFeedURL)
 	return u
 }
 
@@ -856,20 +831,6 @@ func (u *FeedConfigUpsertOne) SetDescription(v string) *FeedConfigUpsertOne {
 func (u *FeedConfigUpsertOne) UpdateDescription() *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateDescription()
-	})
-}
-
-// SetFeedURL sets the "feed_url" field.
-func (u *FeedConfigUpsertOne) SetFeedURL(v string) *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetFeedURL(v)
-	})
-}
-
-// UpdateFeedURL sets the "feed_url" field to the value that was provided on create.
-func (u *FeedConfigUpsertOne) UpdateFeedURL() *FeedConfigUpsertOne {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateFeedURL()
 	})
 }
 
@@ -1287,20 +1248,6 @@ func (u *FeedConfigUpsertBulk) SetDescription(v string) *FeedConfigUpsertBulk {
 func (u *FeedConfigUpsertBulk) UpdateDescription() *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.UpdateDescription()
-	})
-}
-
-// SetFeedURL sets the "feed_url" field.
-func (u *FeedConfigUpsertBulk) SetFeedURL(v string) *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.SetFeedURL(v)
-	})
-}
-
-// UpdateFeedURL sets the "feed_url" field to the value that was provided on create.
-func (u *FeedConfigUpsertBulk) UpdateFeedURL() *FeedConfigUpsertBulk {
-	return u.Update(func(s *FeedConfigUpsert) {
-		s.UpdateFeedURL()
 	})
 }
 
