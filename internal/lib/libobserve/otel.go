@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 
+	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
@@ -131,8 +132,11 @@ func newMeterProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) 
 		return nil, err
 	}
 
+	view := metrics.DefaultSecondsHistogramView(metrics.DefaultServerSecondsHistogramName)
+
 	mp := metric.NewMeterProvider(
 		metric.WithReader(metric.NewPeriodicReader(exporter)),
+		metric.WithView(view),
 	)
 	otel.SetMeterProvider(mp)
 	return mp, nil

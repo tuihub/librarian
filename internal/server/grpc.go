@@ -10,10 +10,12 @@ import (
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
+	"github.com/go-kratos/kratos/v2/middleware/metrics"
 	"github.com/go-kratos/kratos/v2/middleware/ratelimit"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"go.opentelemetry.io/otel"
 )
 
 // NewGRPCServer new a gRPC server.
@@ -28,10 +30,28 @@ func NewGRPCServer(
 	if err != nil {
 		return nil, err
 	}
+	secondsHistogram, err := metrics.DefaultSecondsHistogram(
+		otel.Meter(app.Name),
+		metrics.DefaultServerSecondsHistogramName,
+	)
+	if err != nil {
+		return nil, err
+	}
+	requestsHistogram, err := metrics.DefaultRequestsCounter(
+		otel.Meter(app.Name),
+		metrics.DefaultServerRequestsCounterName,
+	)
+	if err != nil {
+		return nil, err
+	}
 	var middlewares = []middleware.Middleware{
 		logging.Server(libapp.GetLogger()),
 		ratelimit.Server(),
 		tracing.Server(),
+		metrics.Server(
+			metrics.WithSeconds(secondsHistogram),
+			metrics.WithRequests(requestsHistogram),
+		),
 		validator,
 	}
 	if app.EnablePanicRecovery {

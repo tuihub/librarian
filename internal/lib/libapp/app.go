@@ -20,7 +20,8 @@ import (
 var ProviderSet = wire.NewSet(NewDiscovery, NewRegistrar, NewNodeFilter)
 
 type Settings struct {
-	env config.Config
+	Name string
+	env  config.Config
 	InherentSettings
 	Flags
 	Version           string
@@ -57,6 +58,7 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 		return nil, err
 	} else {
 		as = Settings{
+			name,
 			e,
 			getInherentSettings(),
 			flags,
