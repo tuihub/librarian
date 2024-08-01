@@ -1384,17 +1384,17 @@ func (c *toPBConverterImpl) ToPBNotifyTargetStatus(source modelnetzach.NotifyTar
 	}
 	return v1NotifyTargetStatus
 }
-func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstance) *v11.Porter {
+func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstanceController) *v11.Porter {
 	var pV1Porter *v11.Porter
 	if source != nil {
 		var v1Porter v11.Porter
-		v1Porter.Id = ToPBInternalID((*source).ID)
-		v1Porter.Name = (*source).Name
-		v1Porter.Version = (*source).Version
-		v1Porter.GlobalName = (*source).GlobalName
-		v1Porter.Status = ToPBPorterStatus((*source).Status)
+		v1Porter.Id = ToPBInternalID((*source).PorterInstance.ID)
+		v1Porter.Name = (*source).PorterInstance.Name
+		v1Porter.Version = (*source).PorterInstance.Version
+		v1Porter.GlobalName = (*source).PorterInstance.GlobalName
+		v1Porter.Status = ToPBPorterStatus((*source).PorterInstance.Status)
 		v1Porter.ConnectionStatus = c.ToPBPorterConnectionStatus((*source).ConnectionStatus)
-		pString := (*source).ContextJSONSchema
+		pString := (*source).PorterInstance.ContextJSONSchema
 		v1Porter.ContextJsonSchema = &pString
 		pV1Porter = &v1Porter
 	}
@@ -1418,7 +1418,7 @@ func (c *toPBConverterImpl) ToPBPorterConnectionStatus(source modeltiphereth.Por
 	}
 	return v1PorterConnectionStatus
 }
-func (c *toPBConverterImpl) ToPBPorterList(source []*modeltiphereth.PorterInstance) []*v11.Porter {
+func (c *toPBConverterImpl) ToPBPorterList(source []*modeltiphereth.PorterInstanceController) []*v11.Porter {
 	var pV1PorterList []*v11.Porter
 	if source != nil {
 		pV1PorterList = make([]*v11.Porter, len(source))

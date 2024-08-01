@@ -25,7 +25,7 @@ func NewPullAppInfoTopic(
 	return libmq.NewTopic[modelangela.PullAppInfo](
 		"PullAppInfo",
 		func(ctx context.Context, r *modelangela.PullAppInfo) error {
-			if !a.supv.CheckAppInfoSource(r.AppInfoID.Source) {
+			if !a.supv.HasAppInfoSource(r.AppInfoID.Source) {
 				return nil
 			}
 			if r.AppInfoID.Internal {
@@ -42,7 +42,7 @@ func NewPullAppInfoTopic(
 				return err
 			}
 			resp, err := a.porter.PullAppInfo(
-				a.supv.CallAppInfoSource(ctx, r.AppInfoID.Source),
+				a.supv.WithAppInfoSource(ctx, r.AppInfoID.Source),
 				&porter.PullAppInfoRequest{AppInfoId: &librarian.AppInfoID{
 					Internal:    false,
 					Source:      r.AppInfoID.Source,

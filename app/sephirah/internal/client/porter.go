@@ -58,7 +58,6 @@ func NewPorterClient(c *conf.Consul, p *conf.Porter, app *libapp.Settings) (port
 		grpc.WithEndpoint("discovery:///porter"),
 		grpc.WithDiscovery(r),
 		grpc.WithNodeFilter(
-			newPorterNameFilter(),
 			newPorterAddressFilter(),
 			newPorterFastFailFilter(),
 		),
@@ -75,50 +74,29 @@ func NewPorterClient(c *conf.Consul, p *conf.Porter, app *libapp.Settings) (port
 	return cli, err
 }
 
-type requestPorterName struct{}
 type requestPorterAddress struct{}
 type requestPorterFastFail struct{}
 
-const porterNameKey = "PorterName"
-
-func WithPorterName(ctx context.Context, name string) context.Context {
-	return context.WithValue(ctx, requestPorterName{}, name)
-}
-func WithPorterAddress(ctx context.Context, address string) context.Context {
-	return context.WithValue(ctx, requestPorterAddress{}, address)
+func WithPorterAddress(ctx context.Context, addresses []string) context.Context {
+	return context.WithValue(ctx, requestPorterAddress{}, addresses)
 }
 func WithPorterFastFail(ctx context.Context) context.Context {
 	return context.WithValue(ctx, requestPorterFastFail{}, true)
 }
 
-func newPorterNameFilter() selector.NodeFilter {
-	return func(ctx context.Context, nodes []selector.Node) []selector.Node {
-		r, ok := ctx.Value(requestPorterName{}).(string)
-		if !ok {
-			return nodes
-		}
-		newNodes := make([]selector.Node, 0)
-		for _, n := range nodes {
-			n.InitialWeight()
-			if v, exist := n.Metadata()[porterNameKey]; exist && v == r {
-				newNodes = append(newNodes, n)
-			}
-		}
-		return newNodes
-	}
-}
-
 func newPorterAddressFilter() selector.NodeFilter {
 	return func(ctx context.Context, nodes []selector.Node) []selector.Node {
-		r, ok := ctx.Value(requestPorterAddress{}).(string)
+		r, ok := ctx.Value(requestPorterAddress{}).([]string)
 		if !ok {
 			return nodes
 		}
 		newNodes := make([]selector.Node, 0)
 		for _, n := range nodes {
 			n.InitialWeight()
-			if n.Address() == r {
-				newNodes = append(newNodes, n)
+			for _, a := range r {
+				if n.Address() == a {
+					newNodes = append(newNodes, n)
+				}
 			}
 		}
 		return newNodes

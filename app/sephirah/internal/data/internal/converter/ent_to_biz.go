@@ -68,7 +68,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
 	// goverter:matchIgnoreCase
-	// goverter:ignore ConnectionStatus
 	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
 	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
 	// goverter:enum:unknown PorterInstanceStatusUnspecified

@@ -7,9 +7,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 )
 
-// fixme: current filter methods will lead to calling disabled instances.
-
-func (s *Supervisor) CheckAccountPlatform(platform string) bool {
+func (s *Supervisor) HasAccountPlatform(platform string) bool {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
 	for _, p := range s.featureSummary.AccountPlatforms {
 		if p.ID == platform {
 			return true
@@ -18,18 +18,18 @@ func (s *Supervisor) CheckAccountPlatform(platform string) bool {
 	return false
 }
 
-func (s *Supervisor) CallAccountPlatform(ctx context.Context, platform string) context.Context {
-	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.AccountPlatforms {
-			if a.ID == platform {
-				return client.WithPorterName(ctx, i.GlobalName)
-			}
-		}
+func (s *Supervisor) WithAccountPlatform(ctx context.Context, platform string) context.Context {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	if platforms := s.featureSummaryMap.AccountPlatforms.Load(platform); platforms != nil {
+		return client.WithPorterAddress(ctx, *platforms)
 	}
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckAppInfoSource(source string) bool {
+func (s *Supervisor) HasAppInfoSource(source string) bool {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
 	for _, p := range s.featureSummary.AppInfoSources {
 		if p.ID == source {
 			return true
@@ -38,18 +38,18 @@ func (s *Supervisor) CheckAppInfoSource(source string) bool {
 	return false
 }
 
-func (s *Supervisor) CallAppInfoSource(ctx context.Context, source string) context.Context {
-	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.AppInfoSources {
-			if a.ID == source {
-				return client.WithPorterName(ctx, i.GlobalName)
-			}
-		}
+func (s *Supervisor) WithAppInfoSource(ctx context.Context, source string) context.Context {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	if sources := s.featureSummaryMap.AppInfoSources.Load(source); sources != nil {
+		return client.WithPorterAddress(ctx, *sources)
 	}
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckFeedSource(source *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasFeedSource(source *modeltiphereth.FeatureRequest) bool {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
 	if source == nil {
 		return false
 	}
@@ -61,18 +61,18 @@ func (s *Supervisor) CheckFeedSource(source *modeltiphereth.FeatureRequest) bool
 	return false
 }
 
-func (s *Supervisor) CallFeedSource(ctx context.Context, source *modeltiphereth.FeatureRequest) context.Context {
-	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.FeedSources {
-			if a.ID == source.ID {
-				return client.WithPorterName(ctx, i.GlobalName)
-			}
-		}
+func (s *Supervisor) WithFeedSource(ctx context.Context, source *modeltiphereth.FeatureRequest) context.Context {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	if sources := s.featureSummaryMap.FeedSources.Load(source.ID); sources != nil {
+		return client.WithPorterAddress(ctx, *sources)
 	}
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckNotifyDestination(destination *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasNotifyDestination(destination *modeltiphereth.FeatureRequest) bool {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
 	if destination == nil {
 		return false
 	}
@@ -84,18 +84,18 @@ func (s *Supervisor) CheckNotifyDestination(destination *modeltiphereth.FeatureR
 	return false
 }
 
-func (s *Supervisor) CallNotifyDestination(ctx context.Context, destination *modeltiphereth.FeatureRequest) context.Context {
-	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.NotifyDestinations {
-			if a.ID == destination.ID {
-				return client.WithPorterName(ctx, i.GlobalName)
-			}
-		}
+func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *modeltiphereth.FeatureRequest) context.Context {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	if destinations := s.featureSummaryMap.NotifyDestinations.Load(destination.ID); destinations != nil {
+		return client.WithPorterAddress(ctx, *destinations)
 	}
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) CheckFeedItemAction(request *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasFeedItemAction(request *modeltiphereth.FeatureRequest) bool {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
 	for _, p := range s.featureSummary.FeedItemActions {
 		if p.Match(request) {
 			return true
@@ -104,13 +104,11 @@ func (s *Supervisor) CheckFeedItemAction(request *modeltiphereth.FeatureRequest)
 	return false
 }
 
-func (s *Supervisor) CallFeedItemAction(ctx context.Context, request *modeltiphereth.FeatureRequest) context.Context {
-	for _, i := range s.aliveInstances {
-		for _, a := range i.FeatureSummary.FeedItemActions {
-			if a.Match(request) {
-				return client.WithPorterName(ctx, i.GlobalName)
-			}
-		}
+func (s *Supervisor) WithFeedItemAction(ctx context.Context, request *modeltiphereth.FeatureRequest) context.Context {
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	if actions := s.featureSummaryMap.FeedItemActions.Load(request.ID); actions != nil {
+		return client.WithPorterAddress(ctx, *actions)
 	}
 	return client.WithPorterFastFail(ctx)
 }

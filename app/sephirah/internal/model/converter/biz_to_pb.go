@@ -71,8 +71,9 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:map Status | ToPBPorterStatus
 	// goverter:ignore FeatureSummary
-	ToPBPorter(*modeltiphereth.PorterInstance) *pb.Porter
-	ToPBPorterList([]*modeltiphereth.PorterInstance) []*pb.Porter
+	// goverter:autoMap PorterInstance
+	ToPBPorter(*modeltiphereth.PorterInstanceController) *pb.Porter
+	ToPBPorterList([]*modeltiphereth.PorterInstanceController) []*pb.Porter
 	// goverter:enum:unknown PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusUnspecified PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusConnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED

@@ -21,11 +21,11 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
-			if !a.supv.CheckAccountPlatform(info.Platform) {
+			if !a.supv.HasAccountPlatform(info.Platform) {
 				return nil
 			}
 			resp, err := a.porter.PullAccount(
-				a.supv.CallAccountPlatform(ctx, info.Platform),
+				a.supv.WithAccountPlatform(ctx, info.Platform),
 				&porter.PullAccountRequest{AccountId: &librarian.AccountID{
 					Platform:          info.Platform,
 					PlatformAccountId: info.PlatformAccountID,
@@ -63,12 +63,12 @@ func NewPullAccountAppInfoRelationTopic(
 	return libmq.NewTopic[modelangela.PullAccountAppInfoRelation](
 		"PullAccountAppInfoRelation",
 		func(ctx context.Context, r *modelangela.PullAccountAppInfoRelation) error {
-			if !a.supv.CheckAccountPlatform(r.Platform) {
+			if !a.supv.HasAccountPlatform(r.Platform) {
 				return nil
 			}
 			var infoList []*librarian.AppInfo
 			if resp, err := a.porter.PullAccountAppInfoRelation(
-				a.supv.CallAccountPlatform(ctx, r.Platform),
+				a.supv.WithAccountPlatform(ctx, r.Platform),
 				&porter.PullAccountAppInfoRelationRequest{
 					RelationType: librarian.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN,
 					AccountId: &librarian.AccountID{

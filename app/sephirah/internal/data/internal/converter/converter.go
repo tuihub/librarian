@@ -73,6 +73,9 @@ func ToBizAccount(a *ent.Account) *modeltiphereth.Account {
 func ToBizAccountList(a []*ent.Account) []*modeltiphereth.Account {
 	return toBiz.ToBizAccountList(a)
 }
+func ToBizPorter(a *ent.PorterInstance) *modeltiphereth.PorterInstance {
+	return toBiz.ToBizPorter(a)
+}
 func ToBizPorterList(a []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
 	return toBiz.ToBizPorterList(a)
 }

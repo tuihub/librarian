@@ -177,7 +177,7 @@ func (g *Gebura) SearchNewAppInfos(
 	}
 	var infos []*modelgebura.AppInfo
 	for _, source := range sourceFilter {
-		info, err := g.porter.SearchAppInfo(g.supv.CallAppInfoSource(ctx, source), &porter.SearchAppInfoRequest{
+		info, err := g.porter.SearchAppInfo(g.supv.WithAppInfoSource(ctx, source), &porter.SearchAppInfoRequest{
 			Name: name,
 		})
 		if err != nil {

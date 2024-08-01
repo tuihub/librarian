@@ -21,6 +21,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewTiphereth,
 	NewUserCountCache,
+	NewPorterInstanceCache,
 )
 
 type TipherethRepo interface {
@@ -37,7 +38,9 @@ type TipherethRepo interface {
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
 	UpsertPorters(context.Context, []*modeltiphereth.PorterInstance) error
 	ListPorters(context.Context, model.Paging) ([]*modeltiphereth.PorterInstance, int64, error)
-	UpdatePorterStatus(context.Context, model.InternalID, modeltiphereth.PorterInstanceStatus) error
+	FetchPorterByAddress(context.Context, string) (*modeltiphereth.PorterInstance, error)
+	UpdatePorterStatus(context.Context, model.InternalID,
+		modeltiphereth.PorterInstanceStatus) (*modeltiphereth.PorterInstance, error)
 	UpdatePorterContext(context.Context, model.InternalID, model.InternalID,
 		*modeltiphereth.PorterInstanceContext) error
 	FetchPorterContext(context.Context, model.InternalID, model.InternalID) (
@@ -58,9 +61,10 @@ type Tiphereth struct {
 	repo TipherethRepo
 	supv *supervisor.Supervisor
 	// mapper      mapper.LibrarianMapperServiceClient
-	searcher       *client.Searcher
-	pullAccount    *libmq.Topic[modeltiphereth.PullAccountInfo]
-	userCountCache *libcache.Key[modeltiphereth.UserCount]
+	searcher            *client.Searcher
+	pullAccount         *libmq.Topic[modeltiphereth.PullAccountInfo]
+	userCountCache      *libcache.Key[modeltiphereth.UserCount]
+	porterInstanceCache *libcache.Map[string, modeltiphereth.PorterInstance]
 }
 
 func NewTiphereth(
@@ -73,6 +77,7 @@ func NewTiphereth(
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 	cron *libcron.Cron,
 	userCountCache *libcache.Key[modeltiphereth.UserCount],
+	porterInstanceCache *libcache.Map[string, modeltiphereth.PorterInstance],
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
 		app:  app,
@@ -80,13 +85,14 @@ func NewTiphereth(
 		repo: repo,
 		supv: supv,
 		//mapper:      mClient,
-		searcher:       sClient,
-		pullAccount:    pullAccount,
-		userCountCache: userCountCache,
+		searcher:            sClient,
+		pullAccount:         pullAccount,
+		userCountCache:      userCountCache,
+		porterInstanceCache: porterInstanceCache,
 	}
-	err := cron.BySeconds(
+	err := cron.Duration(
 		"TipherethUpdatePorter",
-		updatePorterInterval,
+		supv.GetHeartbeatInterval(),
 		t.updatePorters, context.Background(),
 	)
 	if err != nil {
@@ -96,9 +102,8 @@ func NewTiphereth(
 }
 
 const (
-	updatePorterInterval = 10
-	demoAdminUserName    = "admin"
-	demoAdminPassword    = "admin"
+	demoAdminUserName = "admin"
+	demoAdminPassword = "admin"
 )
 
 func (t *Tiphereth) CreateConfiguredAdmin() {
@@ -158,6 +163,23 @@ func NewUserCountCache(
 				return nil, err
 			}
 			return &modeltiphereth.UserCount{Count: res}, nil
+		},
+		libcache.WithExpiration(libtime.SevenDays),
+	)
+}
+
+func NewPorterInstanceCache(
+	t TipherethRepo,
+	store libcache.Store,
+) *libcache.Map[string, modeltiphereth.PorterInstance] {
+	return libcache.NewMap[string, modeltiphereth.PorterInstance](
+		store,
+		"PorterInstanceCache",
+		func(s string) string {
+			return s
+		},
+		func(ctx context.Context, s string) (*modeltiphereth.PorterInstance, error) {
+			return t.FetchPorterByAddress(ctx, s)
 		},
 		libcache.WithExpiration(libtime.SevenDays),
 	)

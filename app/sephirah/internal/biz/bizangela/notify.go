@@ -81,14 +81,14 @@ func NewNotifyPushTopic(
 			if err != nil {
 				return err
 			}
-			if !a.supv.CheckNotifyDestination(target.Destination) {
+			if !a.supv.HasNotifyDestination(target.Destination) {
 				return nil
 			}
 			if target.Status != modelnetzach.NotifyTargetStatusActive {
 				return nil
 			}
 			_, err = a.porter.PushFeedItems(
-				a.supv.CallNotifyDestination(ctx, target.Destination),
+				a.supv.WithNotifyDestination(ctx, target.Destination),
 				&porter.PushFeedItemsRequest{
 					Destination: converter.ToPBFeatureRequest(target.Destination),
 					Items:       converter.ToPBFeedItemList(p.Messages),

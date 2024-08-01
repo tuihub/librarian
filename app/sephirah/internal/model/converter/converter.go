@@ -48,7 +48,7 @@ func ToPBAccount(a *modeltiphereth.Account) *librarian.Account {
 func ToPBAccountList(a []*modeltiphereth.Account) []*librarian.Account {
 	return toPB.ToPBAccountList(a)
 }
-func ToPBPorterList(a []*modeltiphereth.PorterInstance) []*pb.Porter {
+func ToPBPorterList(a []*modeltiphereth.PorterInstanceController) []*pb.Porter {
 	return toPB.ToPBPorterList(a)
 }
 func ToPBAppInfo(a *modelgebura.AppInfo) *librarian.AppInfo {

@@ -74,7 +74,15 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	}
 	searcher := client.NewSearcher(librarianSearcherServiceClient)
 	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, searcher)
-	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libauthAuth, clientPorter, topic)
+	tipherethRepo := data.NewTipherethRepo(dataData)
+	store, err := libcache.NewStore(cache)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libauthAuth, clientPorter, topic, libcacheMap)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -87,22 +95,16 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	store, err := libcache.NewStore(cache)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	libcacheMap := bizangela.NewAppInfoCache(geburaRepo, store)
+	map2 := bizangela.NewAppInfoCache(geburaRepo, store)
 	libmqTopic := bizangela.NewUpdateAppInfoIndexTopic(angelaBase)
-	topic2 := bizangela.NewPullAppInfoTopic(angelaBase, libcacheMap, libmqTopic)
+	topic2 := bizangela.NewPullAppInfoTopic(angelaBase, map2, libmqTopic)
 	topic3 := bizangela.NewPullAccountAppInfoRelationTopic(angelaBase, topic2)
 	topic4 := bizangela.NewPullAccountTopic(angelaBase, topic3)
-	map2 := bizangela.NewNotifyFlowCache(netzachRepo, store)
-	map3 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
-	map4 := bizangela.NewNotifyTargetCache(netzachRepo, store)
-	topic5 := bizangela.NewNotifyPushTopic(angelaBase, map4)
-	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map2, map3, topic5)
+	map3 := bizangela.NewNotifyFlowCache(netzachRepo, store)
+	map4 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
+	map5 := bizangela.NewNotifyTargetCache(netzachRepo, store)
+	topic5 := bizangela.NewNotifyPushTopic(angelaBase, map5)
+	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map3, map4, topic5)
 	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
 	topic8 := bizangela.NewPullFeedTopic(angelaBase, topic7, topic)
 	angela, err := bizangela.NewAngela(libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
@@ -111,7 +113,6 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	tipherethRepo := data.NewTipherethRepo(dataData)
 	cron, err := libcron.NewCron()
 	if err != nil {
 		cleanup2()
@@ -119,13 +120,13 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
-	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, searcher, topic4, cron, key)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, searcher, topic4, cron, key, libcacheMap)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, libcacheMap)
+	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map2)
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()
@@ -135,14 +136,14 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth, librarianSearcherServiceClient)
 	yesodRepo := data.NewYesodRepo(dataData)
-	map5 := bizyesod.NewFeedOwnerCache(yesodRepo, store)
-	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, searcher, topic8, topic, map5)
+	map6 := bizyesod.NewFeedOwnerCache(yesodRepo, store)
+	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, searcher, topic8, topic, map6)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, libmqMQ, map3, map2, map4, topic)
+	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, libmqMQ, map4, map3, map5, topic)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -155,15 +156,15 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	map6 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map6)
+	map7 := bizchesed.NewImageCache(store)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map7)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v, sephirahServer)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v, sephirahServer, store)
 	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup2()

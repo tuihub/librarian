@@ -1,60 +1,100 @@
 package supervisor
 
-import "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+import (
+	"context"
+
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/lib/libtype"
+)
 
 func (s *Supervisor) GetFeatureSummary() *modeltiphereth.ServerFeatureSummary {
-	s.muFeatureSummary.RLock()
-	defer s.muFeatureSummary.RUnlock()
+	s.featureSummaryRWMu.RLock()
+	defer s.featureSummaryRWMu.RUnlock()
+	featureSummary := new(modeltiphereth.ServerFeatureSummary)
+	if s.featureSummary != nil {
+		_ = libtype.DeepCopyStruct(s.featureSummary, &featureSummary)
+	}
 	return s.featureSummary
 }
 
-func (s *Supervisor) updateFeatureSummary() {
-	s.muFeatureSummary.Lock()
-	defer s.muFeatureSummary.Unlock()
-	features := make([]*modeltiphereth.PorterFeatureSummary, 0, len(s.aliveInstances))
-	for _, instance := range s.aliveInstances {
-		if s.knownInstances[instance.Address] != nil &&
-			s.knownInstances[instance.Address].Status == modeltiphereth.PorterInstanceStatusActive {
-			features = append(features, instance.FeatureSummary)
+func (s *Supervisor) updateFeatureSummary(ctx context.Context) {
+	var instances []*modeltiphereth.PorterInstance
+	s.instanceController.Range(func(key string, controller modeltiphereth.PorterInstanceController) bool {
+		ins, err := s.instanceCache.Get(ctx, key)
+		if err == nil && ins != nil && ins.Status == modeltiphereth.PorterInstanceStatusActive {
+			instances = append(instances, ins)
 		}
-	}
-	s.featureSummary = s.summarize(features)
+		return true
+	})
+
+	featureSummary, featureSummaryMap := summarize(instances)
+
+	s.featureSummaryRWMu.Lock()
+	defer s.featureSummaryRWMu.Unlock()
+	s.featureSummary = featureSummary
+	s.featureSummaryMap = featureSummaryMap
 }
 
-func (s *Supervisor) summarize( //nolint:gocognit // how?
-	features []*modeltiphereth.PorterFeatureSummary,
-) *modeltiphereth.ServerFeatureSummary {
+func summarize( //nolint:gocognit // how?
+	instances []*modeltiphereth.PorterInstance,
+) (*modeltiphereth.ServerFeatureSummary, *modeltiphereth.ServerFeatureSummaryMap) {
 	res := new(modeltiphereth.ServerFeatureSummary)
+	resMap := modeltiphereth.NewServerFeatureSummaryMap()
+
 	supportedAccountPlatforms := make(map[string]bool)
 	supportedAppSources := make(map[string]bool)
 	supportedFeedSources := make(map[string]bool)
 	supportedNotifyDestinations := make(map[string]bool)
-	for _, feat := range features {
-		if feat == nil {
+	for _, ins := range instances {
+		if ins == nil {
 			continue
 		}
-		for _, account := range feat.AccountPlatforms {
+		for _, account := range ins.FeatureSummary.AccountPlatforms {
+			a := resMap.AccountPlatforms.Load(ins.Address)
+			if a == nil {
+				a = &[]string{}
+			}
+			*a = append(*a, account.ID)
+			resMap.AccountPlatforms.Store(ins.Address, *a)
 			if supportedAccountPlatforms[account.ID] {
 				continue
 			}
 			res.AccountPlatforms = append(res.AccountPlatforms, account)
 			supportedAccountPlatforms[account.ID] = true
 		}
-		for _, appSource := range feat.AppInfoSources {
+		for _, appSource := range ins.FeatureSummary.AppInfoSources {
+			a := resMap.AppInfoSources.Load(ins.Address)
+			if a == nil {
+				a = &[]string{}
+			}
+			*a = append(*a, appSource.ID)
+			resMap.AppInfoSources.Store(ins.Address, *a)
 			if supportedAppSources[appSource.ID] {
 				continue
 			}
 			res.AppInfoSources = append(res.AppInfoSources, appSource)
 			supportedAppSources[appSource.ID] = true
 		}
-		for _, feedSource := range feat.FeedSources {
+		for _, feedSource := range ins.FeatureSummary.FeedSources {
+			a := resMap.FeedSources.Load(ins.Address)
+			if a == nil {
+				a = &[]string{}
+			}
+			*a = append(*a, feedSource.ID)
+			resMap.FeedSources.Store(ins.Address, *a)
 			if supportedFeedSources[feedSource.ID] {
 				continue
 			}
 			res.FeedSources = append(res.FeedSources, feedSource)
 			supportedFeedSources[feedSource.ID] = true
 		}
-		for _, notifyDestination := range feat.NotifyDestinations {
+		for _, notifyDestination := range ins.FeatureSummary.NotifyDestinations {
+			a := resMap.NotifyDestinations.Load(ins.Address)
+			if a == nil {
+				a = &[]string{}
+			}
+			*a = append(*a, notifyDestination.ID)
+			resMap.NotifyDestinations.Store(ins.Address, *a)
 			if supportedNotifyDestinations[notifyDestination.ID] {
 				continue
 			}
@@ -62,5 +102,5 @@ func (s *Supervisor) summarize( //nolint:gocognit // how?
 			supportedNotifyDestinations[notifyDestination.ID] = true
 		}
 	}
-	return res
+	return res, resMap
 }

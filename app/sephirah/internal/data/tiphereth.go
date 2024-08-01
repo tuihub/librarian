@@ -365,6 +365,7 @@ func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modeltiphereth.P
 			resolveWithIgnores([]string{
 				porterinstance.FieldID,
 				porterinstance.FieldStatus,
+				porterinstance.FieldStatus,
 			}),
 		).
 		Exec(ctx)
@@ -393,10 +394,26 @@ func (t tipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
 	status modeltiphereth.PorterInstanceStatus,
-) error {
-	return t.data.db.PorterInstance.UpdateOneID(id).
-		SetStatus(converter.ToEntPorterInstanceStatus(status)).
-		Exec(ctx)
+) (*modeltiphereth.PorterInstance, error) {
+	pi, err := t.data.db.PorterInstance.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	err = pi.Update().SetStatus(converter.ToEntPorterInstanceStatus(status)).Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizPorter(pi), nil
+}
+
+func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modeltiphereth.PorterInstance, error) {
+	p, err := t.data.db.PorterInstance.Query().Where(
+		porterinstance.AddressEQ(address),
+	).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizPorter(p), nil
 }
 
 func (t tipherethRepo) UpdatePorterContext(

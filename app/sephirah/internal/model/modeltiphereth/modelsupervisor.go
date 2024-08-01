@@ -1,8 +1,17 @@
 package modeltiphereth
 
 import (
+	"time"
+
+	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/model"
 )
+
+type PorterInstanceController struct {
+	PorterInstance
+	ConnectionStatus PorterConnectionStatus
+	LastHeartbeat    time.Time
+}
 
 type PorterInstance struct {
 	ID                model.InternalID
@@ -13,7 +22,6 @@ type PorterInstance struct {
 	Region            string
 	FeatureSummary    *PorterFeatureSummary
 	Status            PorterInstanceStatus
-	ConnectionStatus  PorterConnectionStatus
 	ContextJSONSchema string
 }
 
@@ -75,3 +83,21 @@ const (
 	PorterConnectionStatusActive
 	PorterConnectionStatusActivationFailed
 )
+
+type ServerFeatureSummaryMap struct {
+	AccountPlatforms   *libtype.SyncMap[[]string]
+	AppInfoSources     *libtype.SyncMap[[]string]
+	FeedSources        *libtype.SyncMap[[]string]
+	NotifyDestinations *libtype.SyncMap[[]string]
+	FeedItemActions    *libtype.SyncMap[[]string]
+}
+
+func NewServerFeatureSummaryMap() *ServerFeatureSummaryMap {
+	return &ServerFeatureSummaryMap{
+		AccountPlatforms:   libtype.NewSyncMap[[]string](),
+		AppInfoSources:     libtype.NewSyncMap[[]string](),
+		FeedSources:        libtype.NewSyncMap[[]string](),
+		NotifyDestinations: libtype.NewSyncMap[[]string](),
+		FeedItemActions:    libtype.NewSyncMap[[]string](),
+	}
+}

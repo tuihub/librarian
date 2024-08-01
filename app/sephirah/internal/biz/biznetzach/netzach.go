@@ -83,7 +83,7 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
-	if !n.supv.CheckNotifyDestination(target.Destination) {
+	if !n.supv.HasNotifyDestination(target.Destination) {
 		return 0, bizutils.UnsupportedFeatureError()
 	}
 	if target == nil {
@@ -106,7 +106,7 @@ func (n *Netzach) UpdateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if !n.supv.CheckNotifyDestination(target.Destination) {
+	if !n.supv.HasNotifyDestination(target.Destination) {
 		return bizutils.UnsupportedFeatureError()
 	}
 	err := n.repo.UpdateNotifyTarget(ctx, claims.UserID, target)

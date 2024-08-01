@@ -256,14 +256,19 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 	if req.GetPaging() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	res, total, err := s.t.ListPorters(ctx,
+	porters, total, err := s.t.ListPorters(ctx,
 		model.ToBizPaging(req.GetPaging()),
 	)
 	if err != nil {
 		return nil, err
 	}
+	res := make([]*modeltiphereth.PorterInstanceController, len(porters))
 	for i := range res {
-		res[i].ConnectionStatus = s.s.GetInstanceConnectionStatus(ctx, res[i].Address)
+		res[i] = &modeltiphereth.PorterInstanceController{
+			PorterInstance:   *porters[i],
+			ConnectionStatus: s.s.GetInstanceConnectionStatus(ctx, porters[i].Address),
+			LastHeartbeat:    time.Time{},
+		}
 	}
 	return &pb.ListPortersResponse{
 		Paging:  &librarian.PagingResponse{TotalSize: total},

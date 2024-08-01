@@ -14,17 +14,6 @@ import (
 )
 
 func (t *Tiphereth) updatePorters(ctx context.Context) error {
-	if t.supv.KnownInstancesRequireUpdate() {
-		porters, _, err := t.repo.ListPorters(ctx, model.Paging{
-			PageSize: 1000, //nolint:mnd // TODO
-			PageNum:  1,
-		})
-		if err != nil {
-			logger.Errorf("list porters failed: %s", err.Error())
-			return err
-		}
-		t.supv.UpdateKnownInstances(porters)
-	}
 	newPorters, err := t.supv.RefreshAliveInstances(ctx)
 	if err != nil {
 		logger.Errorf("refresh alive instances failed: %s", err.Error())
@@ -72,11 +61,11 @@ func (t *Tiphereth) UpdatePorterStatus(
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
-	err := t.repo.UpdatePorterStatus(ctx, id, status)
+	pi, err := t.repo.UpdatePorterStatus(ctx, id, status)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	t.supv.KnownInstancesOutdated()
+	_ = t.porterInstanceCache.Delete(ctx, pi.Address)
 	return nil
 }
 

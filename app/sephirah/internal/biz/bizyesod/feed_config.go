@@ -17,7 +17,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
-	if !y.supv.CheckFeedSource(config.Source) {
+	if !y.supv.HasFeedSource(config.Source) {
 		return 0, bizutils.UnsupportedFeatureError()
 	}
 	id, err := y.searcher.NewID(ctx)
@@ -46,7 +46,7 @@ func (y *Yesod) UpdateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if !y.supv.CheckFeedSource(config.Source) {
+	if !y.supv.HasFeedSource(config.Source) {
 		return bizutils.UnsupportedFeatureError()
 	}
 	err := y.repo.UpdateFeedConfig(ctx, claims.UserID, config)

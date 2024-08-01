@@ -49,14 +49,14 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}()
 
 			// Check porter availability
-			if !a.supv.CheckFeedSource(p.Source) {
+			if !a.supv.HasFeedSource(p.Source) {
 				fc.LatestPullMessage = fmt.Sprintf("Pull %s feature not activate", p.Source.ID)
 				return nil
 			}
 
 			// Pull feed and upsert
 			resp, err := a.porter.PullFeed(
-				a.supv.CallFeedSource(ctx, p.Source),
+				a.supv.WithFeedSource(ctx, p.Source),
 				&porter.PullFeedRequest{
 					Source: converter.ToPBFeatureRequest(p.Source),
 				},
@@ -164,10 +164,10 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 							notifyMsg.Notification.Level = modelnetzach.SystemNotificationLevelWarning
 							return nil
 						}
-					} else if a.supv.CheckFeedItemAction(action) {
+					} else if a.supv.HasFeedItemAction(action) {
 						var resp *porter.ExecFeedItemActionResponse
 						resp, err = a.porter.ExecFeedItemAction(
-							a.supv.CallFeedItemAction(ctx, action),
+							a.supv.WithFeedItemAction(ctx, action),
 							&porter.ExecFeedItemActionRequest{
 								Action: converter.ToPBFeatureRequest(action),
 								Item:   converter.ToPBFeedItem(item),
