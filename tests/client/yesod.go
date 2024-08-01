@@ -70,8 +70,6 @@ func (c *Client) TestYesod(ctx context.Context) {
 	if resp, err := c.cli.ListFeedConfigs(ctx, &pb.ListFeedConfigsRequest{
 		Paging:         defaultPaging,
 		IdFilter:       nil,
-		AuthorIdFilter: nil,
-		SourceFilter:   nil,
 		StatusFilter:   nil,
 		CategoryFilter: nil,
 	}); err != nil {

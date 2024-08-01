@@ -22,8 +22,12 @@ const (
 	FieldGlobalName = "global_name"
 	// FieldAddress holds the string denoting the address field in the database.
 	FieldAddress = "address"
+	// FieldRegion holds the string denoting the region field in the database.
+	FieldRegion = "region"
 	// FieldFeatureSummary holds the string denoting the feature_summary field in the database.
 	FieldFeatureSummary = "feature_summary"
+	// FieldContextJSONSchema holds the string denoting the context_json_schema field in the database.
+	FieldContextJSONSchema = "context_json_schema"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -41,7 +45,9 @@ var Columns = []string{
 	FieldVersion,
 	FieldGlobalName,
 	FieldAddress,
+	FieldRegion,
 	FieldFeatureSummary,
+	FieldContextJSONSchema,
 	FieldStatus,
 	FieldUpdatedAt,
 	FieldCreatedAt,
@@ -115,6 +121,16 @@ func ByGlobalName(opts ...sql.OrderTermOption) OrderOption {
 // ByAddress orders the results by the address field.
 func ByAddress(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAddress, opts...).ToFunc()
+}
+
+// ByRegion orders the results by the region field.
+func ByRegion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRegion, opts...).ToFunc()
+}
+
+// ByContextJSONSchema orders the results by the context_json_schema field.
+func ByContextJSONSchema(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldContextJSONSchema, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

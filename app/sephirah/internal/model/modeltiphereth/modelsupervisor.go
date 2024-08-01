@@ -5,14 +5,16 @@ import (
 )
 
 type PorterInstance struct {
-	ID               model.InternalID
-	Name             string
-	Version          string
-	GlobalName       string
-	Address          string
-	FeatureSummary   *PorterFeatureSummary
-	Status           PorterInstanceStatus
-	ConnectionStatus PorterConnectionStatus
+	ID                model.InternalID
+	Name              string
+	Version           string
+	GlobalName        string
+	Address           string
+	Region            string
+	FeatureSummary    *PorterFeatureSummary
+	Status            PorterInstanceStatus
+	ConnectionStatus  PorterConnectionStatus
+	ContextJSONSchema string
 }
 
 type PorterFeatureSummary struct {
@@ -25,7 +27,6 @@ type PorterFeatureSummary struct {
 
 type FeatureFlag struct {
 	ID               string `json:"id"`
-	Region           string `json:"region"`
 	Name             string `json:"name"`
 	Description      string `json:"description"`
 	ConfigJSONSchema string `json:"config_json_schema"`
@@ -33,7 +34,7 @@ type FeatureFlag struct {
 }
 
 func (f *FeatureFlag) Match(request *FeatureRequest) bool {
-	return f.ID == request.ID && f.Region == request.Region
+	return f.ID == request.ID
 }
 
 type FeatureRequest struct {

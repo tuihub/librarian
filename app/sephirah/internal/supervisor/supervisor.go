@@ -190,14 +190,16 @@ func (s *Supervisor) evaluatePorterInstance(
 	} else {
 		// new instance
 		ins = &modeltiphereth.PorterInstance{
-			ID:               0,
-			Name:             info.GetName(),
-			Version:          info.GetVersion(),
-			GlobalName:       info.GetGlobalName(),
-			Address:          address,
-			FeatureSummary:   feature,
-			Status:           modeltiphereth.PorterInstanceStatusUnspecified,
-			ConnectionStatus: modeltiphereth.PorterConnectionStatusConnected,
+			ID:                0,
+			Name:              info.GetName(),
+			Version:           info.GetVersion(),
+			GlobalName:        info.GetGlobalName(),
+			Address:           address,
+			Region:            info.GetRegion(),
+			FeatureSummary:    feature,
+			Status:            modeltiphereth.PorterInstanceStatusUnspecified,
+			ConnectionStatus:  modeltiphereth.PorterConnectionStatusConnected,
+			ContextJSONSchema: info.GetContextJsonSchema(),
 		}
 	}
 	// new instance or feature changed

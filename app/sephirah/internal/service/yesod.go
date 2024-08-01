@@ -41,8 +41,6 @@ func (s *LibrarianSephirahServiceService) ListFeedConfigs(
 	feeds, total, err := s.y.ListFeeds(ctx,
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
-		converter.ToBizInternalIDList(req.GetAuthorIdFilter()),
-		req.GetSourceFilter(),
 		converter.ToBizFeedConfigStatusList(req.GetStatusFilter()),
 		req.GetCategoryFilter(),
 	)

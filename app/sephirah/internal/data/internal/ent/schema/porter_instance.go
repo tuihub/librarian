@@ -21,7 +21,9 @@ func (PorterInstance) Fields() []ent.Field {
 		field.String("version"),
 		field.String("global_name"),
 		field.String("address"),
+		field.String("region"),
 		field.JSON("feature_summary", new(modeltiphereth.PorterFeatureSummary)),
+		field.String("context_json_schema"),
 		field.Enum("status").
 			Values("active", "blocked"),
 		field.Time("updated_at").

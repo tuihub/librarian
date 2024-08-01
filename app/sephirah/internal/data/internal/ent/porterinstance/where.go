@@ -75,6 +75,16 @@ func Address(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldAddress, v))
 }
 
+// Region applies equality check predicate on the "region" field. It's identical to RegionEQ.
+func Region(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldRegion, v))
+}
+
+// ContextJSONSchema applies equality check predicate on the "context_json_schema" field. It's identical to ContextJSONSchemaEQ.
+func ContextJSONSchema(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldContextJSONSchema, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldUpdatedAt, v))
@@ -343,6 +353,136 @@ func AddressEqualFold(v string) predicate.PorterInstance {
 // AddressContainsFold applies the ContainsFold predicate on the "address" field.
 func AddressContainsFold(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldContainsFold(FieldAddress, v))
+}
+
+// RegionEQ applies the EQ predicate on the "region" field.
+func RegionEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldRegion, v))
+}
+
+// RegionNEQ applies the NEQ predicate on the "region" field.
+func RegionNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldRegion, v))
+}
+
+// RegionIn applies the In predicate on the "region" field.
+func RegionIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldRegion, vs...))
+}
+
+// RegionNotIn applies the NotIn predicate on the "region" field.
+func RegionNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldRegion, vs...))
+}
+
+// RegionGT applies the GT predicate on the "region" field.
+func RegionGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldRegion, v))
+}
+
+// RegionGTE applies the GTE predicate on the "region" field.
+func RegionGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldRegion, v))
+}
+
+// RegionLT applies the LT predicate on the "region" field.
+func RegionLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldRegion, v))
+}
+
+// RegionLTE applies the LTE predicate on the "region" field.
+func RegionLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldRegion, v))
+}
+
+// RegionContains applies the Contains predicate on the "region" field.
+func RegionContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldRegion, v))
+}
+
+// RegionHasPrefix applies the HasPrefix predicate on the "region" field.
+func RegionHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldRegion, v))
+}
+
+// RegionHasSuffix applies the HasSuffix predicate on the "region" field.
+func RegionHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldRegion, v))
+}
+
+// RegionEqualFold applies the EqualFold predicate on the "region" field.
+func RegionEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldRegion, v))
+}
+
+// RegionContainsFold applies the ContainsFold predicate on the "region" field.
+func RegionContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldRegion, v))
+}
+
+// ContextJSONSchemaEQ applies the EQ predicate on the "context_json_schema" field.
+func ContextJSONSchemaEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaNEQ applies the NEQ predicate on the "context_json_schema" field.
+func ContextJSONSchemaNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaIn applies the In predicate on the "context_json_schema" field.
+func ContextJSONSchemaIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldContextJSONSchema, vs...))
+}
+
+// ContextJSONSchemaNotIn applies the NotIn predicate on the "context_json_schema" field.
+func ContextJSONSchemaNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldContextJSONSchema, vs...))
+}
+
+// ContextJSONSchemaGT applies the GT predicate on the "context_json_schema" field.
+func ContextJSONSchemaGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaGTE applies the GTE predicate on the "context_json_schema" field.
+func ContextJSONSchemaGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaLT applies the LT predicate on the "context_json_schema" field.
+func ContextJSONSchemaLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaLTE applies the LTE predicate on the "context_json_schema" field.
+func ContextJSONSchemaLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaContains applies the Contains predicate on the "context_json_schema" field.
+func ContextJSONSchemaContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaHasPrefix applies the HasPrefix predicate on the "context_json_schema" field.
+func ContextJSONSchemaHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaHasSuffix applies the HasSuffix predicate on the "context_json_schema" field.
+func ContextJSONSchemaHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaEqualFold applies the EqualFold predicate on the "context_json_schema" field.
+func ContextJSONSchemaEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldContextJSONSchema, v))
+}
+
+// ContextJSONSchemaContainsFold applies the ContainsFold predicate on the "context_json_schema" field.
+func ContextJSONSchemaContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldContextJSONSchema, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

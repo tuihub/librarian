@@ -200,7 +200,6 @@ func (c *toBizConverterImpl) ToBizFeatureFlag(source *v1.FeatureFlag) *modeltiph
 	if source != nil {
 		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
 		modeltipherethFeatureFlag.ID = (*source).Id
-		modeltipherethFeatureFlag.Region = (*source).Region
 		modeltipherethFeatureFlag.Name = (*source).Name
 		modeltipherethFeatureFlag.Description = (*source).Description
 		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
@@ -1023,7 +1022,6 @@ func (c *toPBConverterImpl) ToPBFeatureFlag(source *modeltiphereth.FeatureFlag) 
 	if source != nil {
 		var v1FeatureFlag v1.FeatureFlag
 		v1FeatureFlag.Id = (*source).ID
-		v1FeatureFlag.Region = (*source).Region
 		v1FeatureFlag.Name = (*source).Name
 		v1FeatureFlag.Description = (*source).Description
 		v1FeatureFlag.ConfigJsonSchema = (*source).ConfigJSONSchema
@@ -1396,6 +1394,8 @@ func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstance) *v
 		v1Porter.GlobalName = (*source).GlobalName
 		v1Porter.Status = ToPBPorterStatus((*source).Status)
 		v1Porter.ConnectionStatus = c.ToPBPorterConnectionStatus((*source).ConnectionStatus)
+		pString := (*source).ContextJSONSchema
+		v1Porter.ContextJsonSchema = &pString
 		pV1Porter = &v1Porter
 	}
 	return pV1Porter

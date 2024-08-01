@@ -28,8 +28,12 @@ type PorterInstance struct {
 	GlobalName string `json:"global_name,omitempty"`
 	// Address holds the value of the "address" field.
 	Address string `json:"address,omitempty"`
+	// Region holds the value of the "region" field.
+	Region string `json:"region,omitempty"`
 	// FeatureSummary holds the value of the "feature_summary" field.
 	FeatureSummary *modeltiphereth.PorterFeatureSummary `json:"feature_summary,omitempty"`
+	// ContextJSONSchema holds the value of the "context_json_schema" field.
+	ContextJSONSchema string `json:"context_json_schema,omitempty"`
 	// Status holds the value of the "status" field.
 	Status porterinstance.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -48,7 +52,7 @@ func (*PorterInstance) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case porterinstance.FieldID:
 			values[i] = new(sql.NullInt64)
-		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldStatus:
+		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldRegion, porterinstance.FieldContextJSONSchema, porterinstance.FieldStatus:
 			values[i] = new(sql.NullString)
 		case porterinstance.FieldUpdatedAt, porterinstance.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -97,6 +101,12 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pi.Address = value.String
 			}
+		case porterinstance.FieldRegion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field region", values[i])
+			} else if value.Valid {
+				pi.Region = value.String
+			}
 		case porterinstance.FieldFeatureSummary:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field feature_summary", values[i])
@@ -104,6 +114,12 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &pi.FeatureSummary); err != nil {
 					return fmt.Errorf("unmarshal field feature_summary: %w", err)
 				}
+			}
+		case porterinstance.FieldContextJSONSchema:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field context_json_schema", values[i])
+			} else if value.Valid {
+				pi.ContextJSONSchema = value.String
 			}
 		case porterinstance.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -171,8 +187,14 @@ func (pi *PorterInstance) String() string {
 	builder.WriteString("address=")
 	builder.WriteString(pi.Address)
 	builder.WriteString(", ")
+	builder.WriteString("region=")
+	builder.WriteString(pi.Region)
+	builder.WriteString(", ")
 	builder.WriteString("feature_summary=")
 	builder.WriteString(fmt.Sprintf("%v", pi.FeatureSummary))
+	builder.WriteString(", ")
+	builder.WriteString("context_json_schema=")
+	builder.WriteString(pi.ContextJSONSchema)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", pi.Status))

@@ -464,8 +464,10 @@ func (c *toBizConverterImpl) ToBizPorter(source *ent.PorterInstance) *modeltiphe
 		modeltipherethPorterInstance.Version = (*source).Version
 		modeltipherethPorterInstance.GlobalName = (*source).GlobalName
 		modeltipherethPorterInstance.Address = (*source).Address
+		modeltipherethPorterInstance.Region = (*source).Region
 		modeltipherethPorterInstance.FeatureSummary = c.pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary((*source).FeatureSummary)
 		modeltipherethPorterInstance.Status = c.ToBizPorterStatus((*source).Status)
+		modeltipherethPorterInstance.ContextJSONSchema = (*source).ContextJSONSchema
 		pModeltipherethPorterInstance = &modeltipherethPorterInstance
 	}
 	return pModeltipherethPorterInstance
@@ -701,7 +703,6 @@ func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureF
 	if source != nil {
 		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
 		modeltipherethFeatureFlag.ID = (*source).ID
-		modeltipherethFeatureFlag.Region = (*source).Region
 		modeltipherethFeatureFlag.Name = (*source).Name
 		modeltipherethFeatureFlag.Description = (*source).Description
 		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema

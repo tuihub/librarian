@@ -32,7 +32,6 @@ func (s *LibrarianSephirahServiceService) ListNotifyTargets(ctx context.Context,
 	t, total, err := s.n.ListNotifyTargets(ctx,
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
-		req.GetDestinationFilter(),
 		converter.ToBizNotifyTargetStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {

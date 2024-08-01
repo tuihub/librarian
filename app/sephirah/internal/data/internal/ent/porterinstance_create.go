@@ -48,9 +48,21 @@ func (pic *PorterInstanceCreate) SetAddress(s string) *PorterInstanceCreate {
 	return pic
 }
 
+// SetRegion sets the "region" field.
+func (pic *PorterInstanceCreate) SetRegion(s string) *PorterInstanceCreate {
+	pic.mutation.SetRegion(s)
+	return pic
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceCreate {
 	pic.mutation.SetFeatureSummary(mfs)
+	return pic
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (pic *PorterInstanceCreate) SetContextJSONSchema(s string) *PorterInstanceCreate {
+	pic.mutation.SetContextJSONSchema(s)
 	return pic
 }
 
@@ -153,8 +165,14 @@ func (pic *PorterInstanceCreate) check() error {
 	if _, ok := pic.mutation.Address(); !ok {
 		return &ValidationError{Name: "address", err: errors.New(`ent: missing required field "PorterInstance.address"`)}
 	}
+	if _, ok := pic.mutation.Region(); !ok {
+		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "PorterInstance.region"`)}
+	}
 	if _, ok := pic.mutation.FeatureSummary(); !ok {
 		return &ValidationError{Name: "feature_summary", err: errors.New(`ent: missing required field "PorterInstance.feature_summary"`)}
+	}
+	if _, ok := pic.mutation.ContextJSONSchema(); !ok {
+		return &ValidationError{Name: "context_json_schema", err: errors.New(`ent: missing required field "PorterInstance.context_json_schema"`)}
 	}
 	if _, ok := pic.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "PorterInstance.status"`)}
@@ -219,9 +237,17 @@ func (pic *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.Create
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 		_node.Address = value
 	}
+	if value, ok := pic.mutation.Region(); ok {
+		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
+		_node.Region = value
+	}
 	if value, ok := pic.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
 		_node.FeatureSummary = value
+	}
+	if value, ok := pic.mutation.ContextJSONSchema(); ok {
+		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
+		_node.ContextJSONSchema = value
 	}
 	if value, ok := pic.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
@@ -335,6 +361,18 @@ func (u *PorterInstanceUpsert) UpdateAddress() *PorterInstanceUpsert {
 	return u
 }
 
+// SetRegion sets the "region" field.
+func (u *PorterInstanceUpsert) SetRegion(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldRegion, v)
+	return u
+}
+
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateRegion() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldRegion)
+	return u
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (u *PorterInstanceUpsert) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsert {
 	u.Set(porterinstance.FieldFeatureSummary, v)
@@ -344,6 +382,18 @@ func (u *PorterInstanceUpsert) SetFeatureSummary(v *modeltiphereth.PorterFeature
 // UpdateFeatureSummary sets the "feature_summary" field to the value that was provided on create.
 func (u *PorterInstanceUpsert) UpdateFeatureSummary() *PorterInstanceUpsert {
 	u.SetExcluded(porterinstance.FieldFeatureSummary)
+	return u
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (u *PorterInstanceUpsert) SetContextJSONSchema(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldContextJSONSchema, v)
+	return u
+}
+
+// UpdateContextJSONSchema sets the "context_json_schema" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateContextJSONSchema() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldContextJSONSchema)
 	return u
 }
 
@@ -487,6 +537,20 @@ func (u *PorterInstanceUpsertOne) UpdateAddress() *PorterInstanceUpsertOne {
 	})
 }
 
+// SetRegion sets the "region" field.
+func (u *PorterInstanceUpsertOne) SetRegion(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetRegion(v)
+	})
+}
+
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateRegion() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateRegion()
+	})
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
@@ -498,6 +562,20 @@ func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modeltiphereth.PorterFeat
 func (u *PorterInstanceUpsertOne) UpdateFeatureSummary() *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.UpdateFeatureSummary()
+	})
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (u *PorterInstanceUpsertOne) SetContextJSONSchema(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetContextJSONSchema(v)
+	})
+}
+
+// UpdateContextJSONSchema sets the "context_json_schema" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateContextJSONSchema() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateContextJSONSchema()
 	})
 }
 
@@ -813,6 +891,20 @@ func (u *PorterInstanceUpsertBulk) UpdateAddress() *PorterInstanceUpsertBulk {
 	})
 }
 
+// SetRegion sets the "region" field.
+func (u *PorterInstanceUpsertBulk) SetRegion(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetRegion(v)
+	})
+}
+
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateRegion() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateRegion()
+	})
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
@@ -824,6 +916,20 @@ func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modeltiphereth.PorterFea
 func (u *PorterInstanceUpsertBulk) UpdateFeatureSummary() *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.UpdateFeatureSummary()
+	})
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (u *PorterInstanceUpsertBulk) SetContextJSONSchema(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetContextJSONSchema(v)
+	})
+}
+
+// UpdateContextJSONSchema sets the "context_json_schema" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateContextJSONSchema() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateContextJSONSchema()
 	})
 }
 

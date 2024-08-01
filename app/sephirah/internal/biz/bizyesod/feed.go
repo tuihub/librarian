@@ -18,8 +18,6 @@ func (y *Yesod) ListFeeds(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
-	authorIDs []model.InternalID,
-	sources []string,
 	statuses []modelyesod.FeedConfigStatus,
 	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, *errors.Error) {
@@ -27,7 +25,7 @@ func (y *Yesod) ListFeeds(
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	feeds, i, err := y.repo.ListFeedConfigs(ctx, claims.UserID, paging, ids, authorIDs, sources, statuses, categories)
+	feeds, i, err := y.repo.ListFeedConfigs(ctx, claims.UserID, paging, ids, statuses, categories)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

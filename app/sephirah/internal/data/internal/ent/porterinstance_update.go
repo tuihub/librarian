@@ -85,9 +85,37 @@ func (piu *PorterInstanceUpdate) SetNillableAddress(s *string) *PorterInstanceUp
 	return piu
 }
 
+// SetRegion sets the "region" field.
+func (piu *PorterInstanceUpdate) SetRegion(s string) *PorterInstanceUpdate {
+	piu.mutation.SetRegion(s)
+	return piu
+}
+
+// SetNillableRegion sets the "region" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableRegion(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetRegion(*s)
+	}
+	return piu
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdate {
 	piu.mutation.SetFeatureSummary(mfs)
+	return piu
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (piu *PorterInstanceUpdate) SetContextJSONSchema(s string) *PorterInstanceUpdate {
+	piu.mutation.SetContextJSONSchema(s)
+	return piu
+}
+
+// SetNillableContextJSONSchema sets the "context_json_schema" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableContextJSONSchema(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetContextJSONSchema(*s)
+	}
 	return piu
 }
 
@@ -200,8 +228,14 @@ func (piu *PorterInstanceUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if value, ok := piu.mutation.Address(); ok {
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 	}
+	if value, ok := piu.mutation.Region(); ok {
+		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
+	}
 	if value, ok := piu.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
+	}
+	if value, ok := piu.mutation.ContextJSONSchema(); ok {
+		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
 	}
 	if value, ok := piu.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
@@ -288,9 +322,37 @@ func (piuo *PorterInstanceUpdateOne) SetNillableAddress(s *string) *PorterInstan
 	return piuo
 }
 
+// SetRegion sets the "region" field.
+func (piuo *PorterInstanceUpdateOne) SetRegion(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetRegion(s)
+	return piuo
+}
+
+// SetNillableRegion sets the "region" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableRegion(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetRegion(*s)
+	}
+	return piuo
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdateOne {
 	piuo.mutation.SetFeatureSummary(mfs)
+	return piuo
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (piuo *PorterInstanceUpdateOne) SetContextJSONSchema(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetContextJSONSchema(s)
+	return piuo
+}
+
+// SetNillableContextJSONSchema sets the "context_json_schema" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableContextJSONSchema(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetContextJSONSchema(*s)
+	}
 	return piuo
 }
 
@@ -433,8 +495,14 @@ func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *Porter
 	if value, ok := piuo.mutation.Address(); ok {
 		_spec.SetField(porterinstance.FieldAddress, field.TypeString, value)
 	}
+	if value, ok := piuo.mutation.Region(); ok {
+		_spec.SetField(porterinstance.FieldRegion, field.TypeString, value)
+	}
 	if value, ok := piuo.mutation.FeatureSummary(); ok {
 		_spec.SetField(porterinstance.FieldFeatureSummary, field.TypeJSON, value)
+	}
+	if value, ok := piuo.mutation.ContextJSONSchema(); ok {
+		_spec.SetField(porterinstance.FieldContextJSONSchema, field.TypeString, value)
 	}
 	if value, ok := piuo.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)

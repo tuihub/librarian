@@ -19090,21 +19090,23 @@ func (m *PorterContextMutation) ResetEdge(name string) error {
 // PorterInstanceMutation represents an operation that mutates the PorterInstance nodes in the graph.
 type PorterInstanceMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *model.InternalID
-	name            *string
-	version         *string
-	global_name     *string
-	address         *string
-	feature_summary **modeltiphereth.PorterFeatureSummary
-	status          *porterinstance.Status
-	updated_at      *time.Time
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*PorterInstance, error)
-	predicates      []predicate.PorterInstance
+	op                  Op
+	typ                 string
+	id                  *model.InternalID
+	name                *string
+	version             *string
+	global_name         *string
+	address             *string
+	region              *string
+	feature_summary     **modeltiphereth.PorterFeatureSummary
+	context_json_schema *string
+	status              *porterinstance.Status
+	updated_at          *time.Time
+	created_at          *time.Time
+	clearedFields       map[string]struct{}
+	done                bool
+	oldValue            func(context.Context) (*PorterInstance, error)
+	predicates          []predicate.PorterInstance
 }
 
 var _ ent.Mutation = (*PorterInstanceMutation)(nil)
@@ -19355,6 +19357,42 @@ func (m *PorterInstanceMutation) ResetAddress() {
 	m.address = nil
 }
 
+// SetRegion sets the "region" field.
+func (m *PorterInstanceMutation) SetRegion(s string) {
+	m.region = &s
+}
+
+// Region returns the value of the "region" field in the mutation.
+func (m *PorterInstanceMutation) Region() (r string, exists bool) {
+	v := m.region
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRegion returns the old "region" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldRegion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRegion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRegion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRegion: %w", err)
+	}
+	return oldValue.Region, nil
+}
+
+// ResetRegion resets all changes to the "region" field.
+func (m *PorterInstanceMutation) ResetRegion() {
+	m.region = nil
+}
+
 // SetFeatureSummary sets the "feature_summary" field.
 func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) {
 	m.feature_summary = &mfs
@@ -19389,6 +19427,42 @@ func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *mode
 // ResetFeatureSummary resets all changes to the "feature_summary" field.
 func (m *PorterInstanceMutation) ResetFeatureSummary() {
 	m.feature_summary = nil
+}
+
+// SetContextJSONSchema sets the "context_json_schema" field.
+func (m *PorterInstanceMutation) SetContextJSONSchema(s string) {
+	m.context_json_schema = &s
+}
+
+// ContextJSONSchema returns the value of the "context_json_schema" field in the mutation.
+func (m *PorterInstanceMutation) ContextJSONSchema() (r string, exists bool) {
+	v := m.context_json_schema
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldContextJSONSchema returns the old "context_json_schema" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldContextJSONSchema(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldContextJSONSchema is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldContextJSONSchema requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldContextJSONSchema: %w", err)
+	}
+	return oldValue.ContextJSONSchema, nil
+}
+
+// ResetContextJSONSchema resets all changes to the "context_json_schema" field.
+func (m *PorterInstanceMutation) ResetContextJSONSchema() {
+	m.context_json_schema = nil
 }
 
 // SetStatus sets the "status" field.
@@ -19533,7 +19607,7 @@ func (m *PorterInstanceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PorterInstanceMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 10)
 	if m.name != nil {
 		fields = append(fields, porterinstance.FieldName)
 	}
@@ -19546,8 +19620,14 @@ func (m *PorterInstanceMutation) Fields() []string {
 	if m.address != nil {
 		fields = append(fields, porterinstance.FieldAddress)
 	}
+	if m.region != nil {
+		fields = append(fields, porterinstance.FieldRegion)
+	}
 	if m.feature_summary != nil {
 		fields = append(fields, porterinstance.FieldFeatureSummary)
+	}
+	if m.context_json_schema != nil {
+		fields = append(fields, porterinstance.FieldContextJSONSchema)
 	}
 	if m.status != nil {
 		fields = append(fields, porterinstance.FieldStatus)
@@ -19574,8 +19654,12 @@ func (m *PorterInstanceMutation) Field(name string) (ent.Value, bool) {
 		return m.GlobalName()
 	case porterinstance.FieldAddress:
 		return m.Address()
+	case porterinstance.FieldRegion:
+		return m.Region()
 	case porterinstance.FieldFeatureSummary:
 		return m.FeatureSummary()
+	case porterinstance.FieldContextJSONSchema:
+		return m.ContextJSONSchema()
 	case porterinstance.FieldStatus:
 		return m.Status()
 	case porterinstance.FieldUpdatedAt:
@@ -19599,8 +19683,12 @@ func (m *PorterInstanceMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldGlobalName(ctx)
 	case porterinstance.FieldAddress:
 		return m.OldAddress(ctx)
+	case porterinstance.FieldRegion:
+		return m.OldRegion(ctx)
 	case porterinstance.FieldFeatureSummary:
 		return m.OldFeatureSummary(ctx)
+	case porterinstance.FieldContextJSONSchema:
+		return m.OldContextJSONSchema(ctx)
 	case porterinstance.FieldStatus:
 		return m.OldStatus(ctx)
 	case porterinstance.FieldUpdatedAt:
@@ -19644,12 +19732,26 @@ func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAddress(v)
 		return nil
+	case porterinstance.FieldRegion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRegion(v)
+		return nil
 	case porterinstance.FieldFeatureSummary:
 		v, ok := value.(*modeltiphereth.PorterFeatureSummary)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFeatureSummary(v)
+		return nil
+	case porterinstance.FieldContextJSONSchema:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetContextJSONSchema(v)
 		return nil
 	case porterinstance.FieldStatus:
 		v, ok := value.(porterinstance.Status)
@@ -19733,8 +19835,14 @@ func (m *PorterInstanceMutation) ResetField(name string) error {
 	case porterinstance.FieldAddress:
 		m.ResetAddress()
 		return nil
+	case porterinstance.FieldRegion:
+		m.ResetRegion()
+		return nil
 	case porterinstance.FieldFeatureSummary:
 		m.ResetFeatureSummary()
+		return nil
+	case porterinstance.FieldContextJSONSchema:
+		m.ResetContextJSONSchema()
 		return nil
 	case porterinstance.FieldStatus:
 		m.ResetStatus()

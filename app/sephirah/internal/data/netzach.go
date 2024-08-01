@@ -70,7 +70,6 @@ func (n *netzachRepo) ListNotifyTargets(
 	paging model.Paging,
 	userID model.InternalID,
 	ids []model.InternalID,
-	destinations []string,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, error) {
 	q := n.data.db.NotifyTarget.Query().Where(

@@ -49,21 +49,18 @@ func getBuiltinActionFeatureFlags() ([]*modeltiphereth.FeatureFlag, error) {
 	return []*modeltiphereth.FeatureFlag{
 		{
 			ID:               simpleKeywordFilterActionID,
-			Region:           "",
 			Name:             "Simple Keyword Filter",
 			Description:      "Filter feed item by keyword",
 			ConfigJSONSchema: simple,
 		},
 		{
 			ID:               keywordFilterActionID,
-			Region:           "",
 			Name:             "Keyword Filter",
 			Description:      "Filter feed item by keyword",
 			ConfigJSONSchema: keyword,
 		},
 		{
 			ID:               descriptionGeneratorActionID,
-			Region:           "",
 			Name:             "Description Generator",
 			Description:      "Generate description from content",
 			ConfigJSONSchema: desc,

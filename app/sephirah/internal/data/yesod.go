@@ -140,8 +140,6 @@ func (y *yesodRepo) ListFeedConfigs(
 	userID model.InternalID,
 	paging model.Paging,
 	ids []model.InternalID,
-	authorIDs []model.InternalID,
-	sources []string,
 	statuses []modelyesod.FeedConfigStatus,
 	categories []string,
 ) ([]*modelyesod.FeedWithConfig, int, error) {

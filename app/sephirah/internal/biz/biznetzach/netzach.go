@@ -28,7 +28,7 @@ type NetzachRepo interface {
 	CreateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
 	UpdateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
 	ListNotifyTargets(context.Context, model.Paging, model.InternalID, []model.InternalID,
-		[]string, []modelnetzach.NotifyTargetStatus) (
+		[]modelnetzach.NotifyTargetStatus) (
 		[]*modelnetzach.NotifyTarget, int64, error)
 	GetNotifyTarget(context.Context, model.InternalID) (*modelnetzach.NotifyTarget, error)
 	CreateNotifyFlow(context.Context, model.InternalID, *modelnetzach.NotifyFlow) error
@@ -124,14 +124,13 @@ func (n *Netzach) ListNotifyTargets(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
-	destinations []string,
 	statuses []modelnetzach.NotifyTargetStatus,
 ) ([]*modelnetzach.NotifyTarget, int64, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.UserID, ids, destinations, statuses)
+	targets, total, err := n.repo.ListNotifyTargets(ctx, paging, claims.UserID, ids, statuses)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
