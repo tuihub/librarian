@@ -5,9 +5,7 @@ package modelfeed
 
 import v1 "github.com/tuihub/protos/pkg/librarian/v1"
 
-type ConverterImpl struct{}
-
-func (c *ConverterImpl) FromPBFeed(source *v1.Feed) *Feed {
+func FromPBFeed(source *v1.Feed) *Feed {
 	var pModelfeedFeed *Feed
 	if source != nil {
 		var modelfeedFeed Feed
@@ -15,22 +13,20 @@ func (c *ConverterImpl) FromPBFeed(source *v1.Feed) *Feed {
 		modelfeedFeed.Title = (*source).Title
 		modelfeedFeed.Description = (*source).Description
 		modelfeedFeed.Link = (*source).Link
-		var pModelfeedPersonList []*Person
 		if (*source).Authors != nil {
-			pModelfeedPersonList = make([]*Person, len((*source).Authors))
+			modelfeedFeed.Authors = make([]*Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pModelfeedPersonList[i] = c.pV1FeedPersonToPModelfeedPerson((*source).Authors[i])
+				modelfeedFeed.Authors[i] = pV1FeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		modelfeedFeed.Authors = pModelfeedPersonList
 		modelfeedFeed.Language = (*source).Language
-		modelfeedFeed.Image = c.FromPBFeedImage((*source).Image)
-		modelfeedFeed.Items = c.FromPBFeedItemList((*source).Items)
+		modelfeedFeed.Image = FromPBFeedImage((*source).Image)
+		modelfeedFeed.Items = FromPBFeedItemList((*source).Items)
 		pModelfeedFeed = &modelfeedFeed
 	}
 	return pModelfeedFeed
 }
-func (c *ConverterImpl) FromPBFeedEnclosure(source *v1.FeedEnclosure) *Enclosure {
+func FromPBFeedEnclosure(source *v1.FeedEnclosure) *Enclosure {
 	var pModelfeedEnclosure *Enclosure
 	if source != nil {
 		var modelfeedEnclosure Enclosure
@@ -41,7 +37,7 @@ func (c *ConverterImpl) FromPBFeedEnclosure(source *v1.FeedEnclosure) *Enclosure
 	}
 	return pModelfeedEnclosure
 }
-func (c *ConverterImpl) FromPBFeedImage(source *v1.FeedImage) *Image {
+func FromPBFeedImage(source *v1.FeedImage) *Image {
 	var pModelfeedImage *Image
 	if source != nil {
 		var modelfeedImage Image
@@ -51,7 +47,7 @@ func (c *ConverterImpl) FromPBFeedImage(source *v1.FeedImage) *Image {
 	}
 	return pModelfeedImage
 }
-func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
+func FromPBFeedItem(source *v1.FeedItem) *Item {
 	var pModelfeedItem *Item
 	if source != nil {
 		var modelfeedItem Item
@@ -64,71 +60,63 @@ func (c *ConverterImpl) FromPBFeedItem(source *v1.FeedItem) *Item {
 		modelfeedItem.UpdatedParsed = FromPBTime((*source).UpdatedParsed)
 		modelfeedItem.Published = (*source).Published
 		modelfeedItem.PublishedParsed = FromPBTime((*source).PublishedParsed)
-		var pModelfeedPersonList []*Person
 		if (*source).Authors != nil {
-			pModelfeedPersonList = make([]*Person, len((*source).Authors))
+			modelfeedItem.Authors = make([]*Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pModelfeedPersonList[i] = c.pV1FeedPersonToPModelfeedPerson((*source).Authors[i])
+				modelfeedItem.Authors[i] = pV1FeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		modelfeedItem.Authors = pModelfeedPersonList
 		modelfeedItem.GUID = (*source).Guid
-		modelfeedItem.Image = c.FromPBFeedImage((*source).Image)
-		var pModelfeedEnclosureList []*Enclosure
+		modelfeedItem.Image = FromPBFeedImage((*source).Image)
 		if (*source).Enclosures != nil {
-			pModelfeedEnclosureList = make([]*Enclosure, len((*source).Enclosures))
+			modelfeedItem.Enclosures = make([]*Enclosure, len((*source).Enclosures))
 			for j := 0; j < len((*source).Enclosures); j++ {
-				pModelfeedEnclosureList[j] = c.FromPBFeedEnclosure((*source).Enclosures[j])
+				modelfeedItem.Enclosures[j] = FromPBFeedEnclosure((*source).Enclosures[j])
 			}
 		}
-		modelfeedItem.Enclosures = pModelfeedEnclosureList
 		modelfeedItem.PublishPlatform = (*source).PublishPlatform
 		modelfeedItem.ReadCount = (*source).ReadCount
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem
 }
-func (c *ConverterImpl) FromPBFeedItemList(source []*v1.FeedItem) []*Item {
+func FromPBFeedItemList(source []*v1.FeedItem) []*Item {
 	var pModelfeedItemList []*Item
 	if source != nil {
 		pModelfeedItemList = make([]*Item, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelfeedItemList[i] = c.FromPBFeedItem(source[i])
+			pModelfeedItemList[i] = FromPBFeedItem(source[i])
 		}
 	}
 	return pModelfeedItemList
 }
-func (c *ConverterImpl) ToPBFeed(source *Feed) *v1.Feed {
+func ToPBFeed(source *Feed) *v1.Feed {
 	var pV1Feed *v1.Feed
 	if source != nil {
 		var v1Feed v1.Feed
-		v1Feed.Id = c.modelfeedFeedToPV1InternalID((*source))
+		v1Feed.Id = modelfeedFeedToPV1InternalID((*source))
 		v1Feed.Title = (*source).Title
 		v1Feed.Link = (*source).Link
 		v1Feed.Description = (*source).Description
-		var pV1FeedItemList []*v1.FeedItem
 		if (*source).Items != nil {
-			pV1FeedItemList = make([]*v1.FeedItem, len((*source).Items))
+			v1Feed.Items = make([]*v1.FeedItem, len((*source).Items))
 			for i := 0; i < len((*source).Items); i++ {
-				pV1FeedItemList[i] = c.ToPBFeedItem((*source).Items[i])
+				v1Feed.Items[i] = ToPBFeedItem((*source).Items[i])
 			}
 		}
-		v1Feed.Items = pV1FeedItemList
 		v1Feed.Language = (*source).Language
-		v1Feed.Image = c.ToPBFeedImage((*source).Image)
-		var pV1FeedPersonList []*v1.FeedPerson
+		v1Feed.Image = ToPBFeedImage((*source).Image)
 		if (*source).Authors != nil {
-			pV1FeedPersonList = make([]*v1.FeedPerson, len((*source).Authors))
+			v1Feed.Authors = make([]*v1.FeedPerson, len((*source).Authors))
 			for j := 0; j < len((*source).Authors); j++ {
-				pV1FeedPersonList[j] = c.pModelfeedPersonToPV1FeedPerson((*source).Authors[j])
+				v1Feed.Authors[j] = pModelfeedPersonToPV1FeedPerson((*source).Authors[j])
 			}
 		}
-		v1Feed.Authors = pV1FeedPersonList
 		pV1Feed = &v1Feed
 	}
 	return pV1Feed
 }
-func (c *ConverterImpl) ToPBFeedEnclosure(source *Enclosure) *v1.FeedEnclosure {
+func ToPBFeedEnclosure(source *Enclosure) *v1.FeedEnclosure {
 	var pV1FeedEnclosure *v1.FeedEnclosure
 	if source != nil {
 		var v1FeedEnclosure v1.FeedEnclosure
@@ -139,7 +127,7 @@ func (c *ConverterImpl) ToPBFeedEnclosure(source *Enclosure) *v1.FeedEnclosure {
 	}
 	return pV1FeedEnclosure
 }
-func (c *ConverterImpl) ToPBFeedImage(source *Image) *v1.FeedImage {
+func ToPBFeedImage(source *Image) *v1.FeedImage {
 	var pV1FeedImage *v1.FeedImage
 	if source != nil {
 		var v1FeedImage v1.FeedImage
@@ -149,52 +137,48 @@ func (c *ConverterImpl) ToPBFeedImage(source *Image) *v1.FeedImage {
 	}
 	return pV1FeedImage
 }
-func (c *ConverterImpl) ToPBFeedInternalID(source Feed) v1.InternalID {
+func ToPBFeedInternalID(source Feed) v1.InternalID {
 	var v1InternalID v1.InternalID
 	v1InternalID.Id = int64(source.ID)
 	return v1InternalID
 }
-func (c *ConverterImpl) ToPBFeedItem(source *Item) *v1.FeedItem {
+func ToPBFeedItem(source *Item) *v1.FeedItem {
 	var pV1FeedItem *v1.FeedItem
 	if source != nil {
 		var v1FeedItem v1.FeedItem
 		v1FeedItem.Title = (*source).Title
-		var pV1FeedPersonList []*v1.FeedPerson
 		if (*source).Authors != nil {
-			pV1FeedPersonList = make([]*v1.FeedPerson, len((*source).Authors))
+			v1FeedItem.Authors = make([]*v1.FeedPerson, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pV1FeedPersonList[i] = c.pModelfeedPersonToPV1FeedPerson((*source).Authors[i])
+				v1FeedItem.Authors[i] = pModelfeedPersonToPV1FeedPerson((*source).Authors[i])
 			}
 		}
-		v1FeedItem.Authors = pV1FeedPersonList
 		v1FeedItem.Description = (*source).Description
 		v1FeedItem.Content = (*source).Content
 		v1FeedItem.Guid = (*source).GUID
 		v1FeedItem.Link = (*source).Link
-		v1FeedItem.Image = c.ToPBFeedImage((*source).Image)
+		v1FeedItem.Image = ToPBFeedImage((*source).Image)
 		v1FeedItem.Published = (*source).Published
 		v1FeedItem.PublishedParsed = ToPBTime((*source).PublishedParsed)
 		v1FeedItem.Updated = (*source).Updated
 		v1FeedItem.UpdatedParsed = ToPBTime((*source).UpdatedParsed)
-		var pV1FeedEnclosureList []*v1.FeedEnclosure
 		if (*source).Enclosures != nil {
-			pV1FeedEnclosureList = make([]*v1.FeedEnclosure, len((*source).Enclosures))
+			v1FeedItem.Enclosures = make([]*v1.FeedEnclosure, len((*source).Enclosures))
 			for j := 0; j < len((*source).Enclosures); j++ {
-				pV1FeedEnclosureList[j] = c.ToPBFeedEnclosure((*source).Enclosures[j])
+				v1FeedItem.Enclosures[j] = ToPBFeedEnclosure((*source).Enclosures[j])
 			}
 		}
-		v1FeedItem.Enclosures = pV1FeedEnclosureList
 		v1FeedItem.PublishPlatform = (*source).PublishPlatform
 		v1FeedItem.ReadCount = (*source).ReadCount
 		pV1FeedItem = &v1FeedItem
 	}
 	return pV1FeedItem
 }
-func (c *ConverterImpl) modelfeedFeedToPV1InternalID(source Feed) *v1.InternalID {
-	v1InternalID := c.ToPBFeedInternalID(source)
+func modelfeedFeedToPV1InternalID(source Feed) *v1.InternalID {
+	v1InternalID := ToPBFeedInternalID(source)
 	return &v1InternalID
 }
-func (c *ConverterImpl) pModelfeedPersonToPV1FeedPerson(source *Person) *v1.FeedPerson {
+func pModelfeedPersonToPV1FeedPerson(source *Person) *v1.FeedPerson {
 	var pV1FeedPerson *v1.FeedPerson
 	if source != nil {
 		var v1FeedPerson v1.FeedPerson
@@ -204,7 +188,7 @@ func (c *ConverterImpl) pModelfeedPersonToPV1FeedPerson(source *Person) *v1.Feed
 	}
 	return pV1FeedPerson
 }
-func (c *ConverterImpl) pV1FeedPersonToPModelfeedPerson(source *v1.FeedPerson) *Person {
+func pV1FeedPersonToPModelfeedPerson(source *v1.FeedPerson) *Person {
 	var pModelfeedPerson *Person
 	if source != nil {
 		var modelfeedPerson Person

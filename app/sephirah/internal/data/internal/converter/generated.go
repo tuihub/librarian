@@ -26,9 +26,7 @@ import (
 	"time"
 )
 
-type toBizConverterImpl struct{}
-
-func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *modeltiphereth.Account {
+func ToBizAccount(source *ent.Account) *modeltiphereth.Account {
 	var pModeltipherethAccount *modeltiphereth.Account
 	if source != nil {
 		var modeltipherethAccount modeltiphereth.Account
@@ -43,17 +41,17 @@ func (c *toBizConverterImpl) ToBizAccount(source *ent.Account) *modeltiphereth.A
 	}
 	return pModeltipherethAccount
 }
-func (c *toBizConverterImpl) ToBizAccountList(source []*ent.Account) []*modeltiphereth.Account {
+func ToBizAccountList(source []*ent.Account) []*modeltiphereth.Account {
 	var pModeltipherethAccountList []*modeltiphereth.Account
 	if source != nil {
 		pModeltipherethAccountList = make([]*modeltiphereth.Account, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethAccountList[i] = c.ToBizAccount(source[i])
+			pModeltipherethAccountList[i] = ToBizAccount(source[i])
 		}
 	}
 	return pModeltipherethAccountList
 }
-func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
+func ToBizApp(source *ent.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
@@ -65,84 +63,82 @@ func (c *toBizConverterImpl) ToBizApp(source *ent.App) *modelgebura.App {
 	}
 	return pModelgeburaApp
 }
-func (c *toBizConverterImpl) ToBizAppBinary(source ent.AppBinary) modelgebura.AppBinary {
+func ToBizAppBinary(source ent.AppBinary) modelgebura.AppBinary {
 	var modelgeburaAppBinary modelgebura.AppBinary
 	modelgeburaAppBinary.Name = source.Name
 	modelgeburaAppBinary.SizeBytes = source.SizeBytes
 	modelgeburaAppBinary.PublicURL = source.PublicURL
-	var byteList []uint8
 	if source.Sha256 != nil {
-		byteList = make([]uint8, len(source.Sha256))
+		modelgeburaAppBinary.Sha256 = make([]uint8, len(source.Sha256))
 		for i := 0; i < len(source.Sha256); i++ {
-			byteList[i] = source.Sha256[i]
+			modelgeburaAppBinary.Sha256[i] = source.Sha256[i]
 		}
 	}
-	modelgeburaAppBinary.Sha256 = byteList
 	return modelgeburaAppBinary
 }
-func (c *toBizConverterImpl) ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
+func ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
 	var pModelgeburaAppInfo *modelgebura.AppInfo
 	if source != nil {
 		var modelgeburaAppInfo modelgebura.AppInfo
-		modelgeburaAppInfo.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppInfo.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaAppInfo.Internal = (*source).Internal
 		modelgeburaAppInfo.Source = (*source).Source
 		modelgeburaAppInfo.SourceAppID = (*source).SourceAppID
 		modelgeburaAppInfo.SourceURL = (*source).SourceURL
 		modelgeburaAppInfo.Name = (*source).Name
-		modelgeburaAppInfo.Type = c.ToBizAppType((*source).Type)
+		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
 		modelgeburaAppInfo.ShortDescription = (*source).ShortDescription
 		modelgeburaAppInfo.IconImageURL = (*source).IconImageURL
 		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageURL
 		modelgeburaAppInfo.CoverImageURL = (*source).CoverImageURL
-		modelgeburaAppInfo.Details = c.entAppInfoToPModelgeburaAppInfoDetails((*source))
+		modelgeburaAppInfo.Details = entAppInfoToPModelgeburaAppInfoDetails((*source))
 		modelgeburaAppInfo.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
 		pModelgeburaAppInfo = &modelgeburaAppInfo
 	}
 	return pModelgeburaAppInfo
 }
-func (c *toBizConverterImpl) ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
+func ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
 	var pModelgeburaAppInfoList []*modelgebura.AppInfo
 	if source != nil {
 		pModelgeburaAppInfoList = make([]*modelgebura.AppInfo, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelgeburaAppInfoList[i] = c.ToBizAppInfo(source[i])
+			pModelgeburaAppInfoList[i] = ToBizAppInfo(source[i])
 		}
 	}
 	return pModelgeburaAppInfoList
 }
-func (c *toBizConverterImpl) ToBizAppInst(source *ent.AppInst) *modelgebura.AppInst {
+func ToBizAppInst(source *ent.AppInst) *modelgebura.AppInst {
 	var pModelgeburaAppInst *modelgebura.AppInst
 	if source != nil {
 		var modelgeburaAppInst modelgebura.AppInst
-		modelgeburaAppInst.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaAppInst.AppID = c.modelInternalIDToModelInternalID((*source).AppID)
-		modelgeburaAppInst.DeviceID = c.modelInternalIDToModelInternalID((*source).DeviceID)
+		modelgeburaAppInst.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppInst.AppID = modelInternalIDToModelInternalID((*source).AppID)
+		modelgeburaAppInst.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
 		pModelgeburaAppInst = &modelgeburaAppInst
 	}
 	return pModelgeburaAppInst
 }
-func (c *toBizConverterImpl) ToBizAppInstList(source []*ent.AppInst) []*modelgebura.AppInst {
+func ToBizAppInstList(source []*ent.AppInst) []*modelgebura.AppInst {
 	var pModelgeburaAppInstList []*modelgebura.AppInst
 	if source != nil {
 		pModelgeburaAppInstList = make([]*modelgebura.AppInst, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelgeburaAppInstList[i] = c.ToBizAppInst(source[i])
+			pModelgeburaAppInstList[i] = ToBizAppInst(source[i])
 		}
 	}
 	return pModelgeburaAppInstList
 }
-func (c *toBizConverterImpl) ToBizAppList(source []*ent.App) []*modelgebura.App {
+func ToBizAppList(source []*ent.App) []*modelgebura.App {
 	var pModelgeburaAppList []*modelgebura.App
 	if source != nil {
 		pModelgeburaAppList = make([]*modelgebura.App, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelgeburaAppList[i] = c.ToBizApp(source[i])
+			pModelgeburaAppList[i] = ToBizApp(source[i])
 		}
 	}
 	return pModelgeburaAppList
 }
-func (c *toBizConverterImpl) ToBizAppType(source appinfo.Type) modelgebura.AppType {
+func ToBizAppType(source appinfo.Type) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
 	switch source {
 	case appinfo.TypeGame:
@@ -154,13 +150,13 @@ func (c *toBizConverterImpl) ToBizAppType(source appinfo.Type) modelgebura.AppTy
 	}
 	return modelgeburaAppType
 }
-func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
+func ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphereth.DeviceInfo {
 	var pModeltipherethDeviceInfo *modeltiphereth.DeviceInfo
 	if source != nil {
 		var modeltipherethDeviceInfo modeltiphereth.DeviceInfo
-		modeltipherethDeviceInfo.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethDeviceInfo.ID = modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
-		modeltipherethDeviceInfo.SystemType = c.ToBizSystemType((*source).SystemType)
+		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
 		modeltipherethDeviceInfo.SystemVersion = (*source).SystemVersion
 		modeltipherethDeviceInfo.ClientName = (*source).ClientName
 		modeltipherethDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
@@ -169,97 +165,93 @@ func (c *toBizConverterImpl) ToBizDeviceInfo(source *ent.DeviceInfo) *modeltiphe
 	}
 	return pModeltipherethDeviceInfo
 }
-func (c *toBizConverterImpl) ToBizDeviceInfoList(source []*ent.DeviceInfo) []*modeltiphereth.DeviceInfo {
+func ToBizDeviceInfoList(source []*ent.DeviceInfo) []*modeltiphereth.DeviceInfo {
 	var pModeltipherethDeviceInfoList []*modeltiphereth.DeviceInfo
 	if source != nil {
 		pModeltipherethDeviceInfoList = make([]*modeltiphereth.DeviceInfo, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethDeviceInfoList[i] = c.ToBizDeviceInfo(source[i])
+			pModeltipherethDeviceInfoList[i] = ToBizDeviceInfo(source[i])
 		}
 	}
 	return pModeltipherethDeviceInfoList
 }
-func (c *toBizConverterImpl) ToBizFeed(source *ent.Feed) *modelfeed.Feed {
+func ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	var pModelfeedFeed *modelfeed.Feed
 	if source != nil {
 		var modelfeedFeed modelfeed.Feed
-		modelfeedFeed.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelfeedFeed.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelfeedFeed.Title = (*source).Title
 		modelfeedFeed.Description = (*source).Description
 		modelfeedFeed.Link = (*source).Link
-		var pModelfeedPersonList []*modelfeed.Person
 		if (*source).Authors != nil {
-			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
+			modelfeedFeed.Authors = make([]*modelfeed.Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pModelfeedPersonList[i] = c.pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
+				modelfeedFeed.Authors[i] = pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		modelfeedFeed.Authors = pModelfeedPersonList
 		modelfeedFeed.Language = (*source).Language
-		modelfeedFeed.Image = c.pModelfeedImageToPModelfeedImage((*source).Image)
+		modelfeedFeed.Image = pModelfeedImageToPModelfeedImage((*source).Image)
 		pModelfeedFeed = &modelfeedFeed
 	}
 	return pModelfeedFeed
 }
-func (c *toBizConverterImpl) ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
+func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
 	if source != nil {
 		var modelyesodFeedActionSet modelyesod.FeedActionSet
-		modelyesodFeedActionSet.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelyesodFeedActionSet.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
-		var pModeltipherethFeatureRequestList []*modeltiphereth.FeatureRequest
 		if (*source).Actions != nil {
-			pModeltipherethFeatureRequestList = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
-				pModeltipherethFeatureRequestList[i] = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
+				modelyesodFeedActionSet.Actions[i] = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
 			}
 		}
-		modelyesodFeedActionSet.Actions = pModeltipherethFeatureRequestList
 		pModelyesodFeedActionSet = &modelyesodFeedActionSet
 	}
 	return pModelyesodFeedActionSet
 }
-func (c *toBizConverterImpl) ToBizFeedActionSetList(source []*ent.FeedActionSet) []*modelyesod.FeedActionSet {
+func ToBizFeedActionSetList(source []*ent.FeedActionSet) []*modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSetList []*modelyesod.FeedActionSet
 	if source != nil {
 		pModelyesodFeedActionSetList = make([]*modelyesod.FeedActionSet, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelyesodFeedActionSetList[i] = c.ToBizFeedActionSet(source[i])
+			pModelyesodFeedActionSetList[i] = ToBizFeedActionSet(source[i])
 		}
 	}
 	return pModelyesodFeedActionSetList
 }
-func (c *toBizConverterImpl) ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
+func ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
-		modelyesodFeedConfig.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelyesodFeedConfig.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.Description = (*source).Description
-		modelyesodFeedConfig.Source = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Source)
+		modelyesodFeedConfig.Source = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Source)
 		modelyesodFeedConfig.Category = (*source).Category
-		modelyesodFeedConfig.Status = c.ToBizFeedConfigStatus((*source).Status)
+		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
 		modelyesodFeedConfig.LatestPullTime = TimeToTime((*source).LatestPullAt)
-		modelyesodFeedConfig.LatestPullStatus = c.ToBizFeedConfigPullStatus((*source).LatestPullStatus)
+		modelyesodFeedConfig.LatestPullStatus = ToBizFeedConfigPullStatus((*source).LatestPullStatus)
 		modelyesodFeedConfig.LatestPullMessage = (*source).LatestPullMessage
 		modelyesodFeedConfig.HideItems = (*source).HideItems
 		pModelyesodFeedConfig = &modelyesodFeedConfig
 	}
 	return pModelyesodFeedConfig
 }
-func (c *toBizConverterImpl) ToBizFeedConfigList(source []*ent.FeedConfig) []*modelyesod.FeedConfig {
+func ToBizFeedConfigList(source []*ent.FeedConfig) []*modelyesod.FeedConfig {
 	var pModelyesodFeedConfigList []*modelyesod.FeedConfig
 	if source != nil {
 		pModelyesodFeedConfigList = make([]*modelyesod.FeedConfig, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelyesodFeedConfigList[i] = c.ToBizFeedConfig(source[i])
+			pModelyesodFeedConfigList[i] = ToBizFeedConfig(source[i])
 		}
 	}
 	return pModelyesodFeedConfigList
 }
-func (c *toBizConverterImpl) ToBizFeedConfigPullStatus(source feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
+func ToBizFeedConfigPullStatus(source feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus {
 	var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
 	switch source {
 	case feedconfig.LatestPullStatusFailed:
@@ -273,7 +265,7 @@ func (c *toBizConverterImpl) ToBizFeedConfigPullStatus(source feedconfig.LatestP
 	}
 	return modelyesodFeedConfigPullStatus
 }
-func (c *toBizConverterImpl) ToBizFeedConfigStatus(source feedconfig.Status) modelyesod.FeedConfigStatus {
+func ToBizFeedConfigStatus(source feedconfig.Status) modelyesod.FeedConfigStatus {
 	var modelyesodFeedConfigStatus modelyesod.FeedConfigStatus
 	switch source {
 	case feedconfig.StatusActive:
@@ -285,11 +277,11 @@ func (c *toBizConverterImpl) ToBizFeedConfigStatus(source feedconfig.Status) mod
 	}
 	return modelyesodFeedConfigStatus
 }
-func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
+func ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item {
 	var pModelfeedItem *modelfeed.Item
 	if source != nil {
 		var modelfeedItem modelfeed.Item
-		modelfeedItem.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelfeedItem.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelfeedItem.Title = (*source).Title
 		modelfeedItem.Description = (*source).Description
 		modelfeedItem.Content = (*source).Content
@@ -297,45 +289,39 @@ func (c *toBizConverterImpl) ToBizFeedItem(source *ent.FeedItem) *modelfeed.Item
 		modelfeedItem.Updated = (*source).Updated
 		modelfeedItem.UpdatedParsed = TimeToTimePtr((*source).UpdatedParsed)
 		modelfeedItem.Published = (*source).Published
-		modelfeedItem.PublishedParsed = c.timeTimeToPTimeTime((*source).PublishedParsed)
-		var pModelfeedPersonList []*modelfeed.Person
+		modelfeedItem.PublishedParsed = timeTimeToPTimeTime((*source).PublishedParsed)
 		if (*source).Authors != nil {
-			pModelfeedPersonList = make([]*modelfeed.Person, len((*source).Authors))
+			modelfeedItem.Authors = make([]*modelfeed.Person, len((*source).Authors))
 			for i := 0; i < len((*source).Authors); i++ {
-				pModelfeedPersonList[i] = c.pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
+				modelfeedItem.Authors[i] = pModelfeedPersonToPModelfeedPerson((*source).Authors[i])
 			}
 		}
-		modelfeedItem.Authors = pModelfeedPersonList
 		modelfeedItem.GUID = (*source).GUID
-		modelfeedItem.Image = c.pModelfeedImageToPModelfeedImage((*source).Image)
-		var pModelfeedEnclosureList []*modelfeed.Enclosure
+		modelfeedItem.Image = pModelfeedImageToPModelfeedImage((*source).Image)
 		if (*source).Enclosures != nil {
-			pModelfeedEnclosureList = make([]*modelfeed.Enclosure, len((*source).Enclosures))
+			modelfeedItem.Enclosures = make([]*modelfeed.Enclosure, len((*source).Enclosures))
 			for j := 0; j < len((*source).Enclosures); j++ {
-				pModelfeedEnclosureList[j] = c.pModelfeedEnclosureToPModelfeedEnclosure((*source).Enclosures[j])
+				modelfeedItem.Enclosures[j] = pModelfeedEnclosureToPModelfeedEnclosure((*source).Enclosures[j])
 			}
 		}
-		modelfeedItem.Enclosures = pModelfeedEnclosureList
 		modelfeedItem.PublishPlatform = (*source).PublishPlatform
 		modelfeedItem.ReadCount = (*source).ReadCount
 		modelfeedItem.DigestDescription = (*source).DigestDescription
-		var pModelfeedImageList []*modelfeed.Image
 		if (*source).DigestImages != nil {
-			pModelfeedImageList = make([]*modelfeed.Image, len((*source).DigestImages))
+			modelfeedItem.DigestImages = make([]*modelfeed.Image, len((*source).DigestImages))
 			for k := 0; k < len((*source).DigestImages); k++ {
-				pModelfeedImageList[k] = c.pModelfeedImageToPModelfeedImage((*source).DigestImages[k])
+				modelfeedItem.DigestImages[k] = pModelfeedImageToPModelfeedImage((*source).DigestImages[k])
 			}
 		}
-		modelfeedItem.DigestImages = pModelfeedImageList
 		pModelfeedItem = &modelfeedItem
 	}
 	return pModelfeedItem
 }
-func (c *toBizConverterImpl) ToBizFeedItemCollection(source *ent.FeedItemCollection) *modelyesod.FeedItemCollection {
+func ToBizFeedItemCollection(source *ent.FeedItemCollection) *modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
 	if source != nil {
 		var modelyesodFeedItemCollection modelyesod.FeedItemCollection
-		modelyesodFeedItemCollection.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelyesodFeedItemCollection.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedItemCollection.Name = (*source).Name
 		modelyesodFeedItemCollection.Description = (*source).Description
 		modelyesodFeedItemCollection.Category = (*source).Category
@@ -343,49 +329,49 @@ func (c *toBizConverterImpl) ToBizFeedItemCollection(source *ent.FeedItemCollect
 	}
 	return pModelyesodFeedItemCollection
 }
-func (c *toBizConverterImpl) ToBizFeedItemCollectionList(source []*ent.FeedItemCollection) []*modelyesod.FeedItemCollection {
+func ToBizFeedItemCollectionList(source []*ent.FeedItemCollection) []*modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollectionList []*modelyesod.FeedItemCollection
 	if source != nil {
 		pModelyesodFeedItemCollectionList = make([]*modelyesod.FeedItemCollection, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelyesodFeedItemCollectionList[i] = c.ToBizFeedItemCollection(source[i])
+			pModelyesodFeedItemCollectionList[i] = ToBizFeedItemCollection(source[i])
 		}
 	}
 	return pModelyesodFeedItemCollectionList
 }
-func (c *toBizConverterImpl) ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
+func ToBizFeedItemList(source []*ent.FeedItem) []*modelfeed.Item {
 	var pModelfeedItemList []*modelfeed.Item
 	if source != nil {
 		pModelfeedItemList = make([]*modelfeed.Item, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelfeedItemList[i] = c.ToBizFeedItem(source[i])
+			pModelfeedItemList[i] = ToBizFeedItem(source[i])
 		}
 	}
 	return pModelfeedItemList
 }
-func (c *toBizConverterImpl) ToBizImage(source *ent.Image) *modelchesed.Image {
+func ToBizImage(source *ent.Image) *modelchesed.Image {
 	var pModelchesedImage *modelchesed.Image
 	if source != nil {
 		var modelchesedImage modelchesed.Image
-		modelchesedImage.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelchesedImage.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelchesedImage.Name = (*source).Name
 		modelchesedImage.Description = (*source).Description
-		modelchesedImage.Status = c.ToBizImageStatus((*source).Status)
+		modelchesedImage.Status = ToBizImageStatus((*source).Status)
 		pModelchesedImage = &modelchesedImage
 	}
 	return pModelchesedImage
 }
-func (c *toBizConverterImpl) ToBizImageList(source []*ent.Image) []*modelchesed.Image {
+func ToBizImageList(source []*ent.Image) []*modelchesed.Image {
 	var pModelchesedImageList []*modelchesed.Image
 	if source != nil {
 		pModelchesedImageList = make([]*modelchesed.Image, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelchesedImageList[i] = c.ToBizImage(source[i])
+			pModelchesedImageList[i] = ToBizImage(source[i])
 		}
 	}
 	return pModelchesedImageList
 }
-func (c *toBizConverterImpl) ToBizImageStatus(source image.Status) modelchesed.ImageStatus {
+func ToBizImageStatus(source image.Status) modelchesed.ImageStatus {
 	var modelchesedImageStatus modelchesed.ImageStatus
 	switch source {
 	case image.StatusScanned:
@@ -397,19 +383,19 @@ func (c *toBizConverterImpl) ToBizImageStatus(source image.Status) modelchesed.I
 	}
 	return modelchesedImageStatus
 }
-func (c *toBizConverterImpl) ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
+func ToBizNotifyFlow(source *ent.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
 		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
-		modelnetzachNotifyFlow.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelnetzachNotifyFlow.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyFlow.Name = (*source).Name
 		modelnetzachNotifyFlow.Description = (*source).Description
-		modelnetzachNotifyFlow.Status = c.ToBizNotifyFlowStatus((*source).Status)
+		modelnetzachNotifyFlow.Status = ToBizNotifyFlowStatus((*source).Status)
 		pModelnetzachNotifyFlow = &modelnetzachNotifyFlow
 	}
 	return pModelnetzachNotifyFlow
 }
-func (c *toBizConverterImpl) ToBizNotifyFlowStatus(source notifyflow.Status) modelnetzach.NotifyFlowStatus {
+func ToBizNotifyFlowStatus(source notifyflow.Status) modelnetzach.NotifyFlowStatus {
 	var modelnetzachNotifyFlowStatus modelnetzach.NotifyFlowStatus
 	switch source {
 	case notifyflow.StatusActive:
@@ -421,30 +407,30 @@ func (c *toBizConverterImpl) ToBizNotifyFlowStatus(source notifyflow.Status) mod
 	}
 	return modelnetzachNotifyFlowStatus
 }
-func (c *toBizConverterImpl) ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
+func ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
 	if source != nil {
 		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
-		modelnetzachNotifyTarget.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modelnetzachNotifyTarget.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = c.pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Destination)
-		modelnetzachNotifyTarget.Status = c.ToBizNotifyTargetStatus((*source).Status)
+		modelnetzachNotifyTarget.Destination = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Destination)
+		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
 	return pModelnetzachNotifyTarget
 }
-func (c *toBizConverterImpl) ToBizNotifyTargetList(source []*ent.NotifyTarget) []*modelnetzach.NotifyTarget {
+func ToBizNotifyTargetList(source []*ent.NotifyTarget) []*modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTargetList []*modelnetzach.NotifyTarget
 	if source != nil {
 		pModelnetzachNotifyTargetList = make([]*modelnetzach.NotifyTarget, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelnetzachNotifyTargetList[i] = c.ToBizNotifyTarget(source[i])
+			pModelnetzachNotifyTargetList[i] = ToBizNotifyTarget(source[i])
 		}
 	}
 	return pModelnetzachNotifyTargetList
 }
-func (c *toBizConverterImpl) ToBizNotifyTargetStatus(source notifytarget.Status) modelnetzach.NotifyTargetStatus {
+func ToBizNotifyTargetStatus(source notifytarget.Status) modelnetzach.NotifyTargetStatus {
 	var modelnetzachNotifyTargetStatus modelnetzach.NotifyTargetStatus
 	switch source {
 	case notifytarget.StatusActive:
@@ -456,49 +442,49 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatus(source notifytarget.Status)
 	}
 	return modelnetzachNotifyTargetStatus
 }
-func (c *toBizConverterImpl) ToBizPorter(source *ent.PorterInstance) *modeltiphereth.PorterInstance {
+func ToBizPorter(source *ent.PorterInstance) *modeltiphereth.PorterInstance {
 	var pModeltipherethPorterInstance *modeltiphereth.PorterInstance
 	if source != nil {
 		var modeltipherethPorterInstance modeltiphereth.PorterInstance
-		modeltipherethPorterInstance.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethPorterInstance.ID = modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethPorterInstance.Name = (*source).Name
 		modeltipherethPorterInstance.Version = (*source).Version
 		modeltipherethPorterInstance.GlobalName = (*source).GlobalName
 		modeltipherethPorterInstance.Address = (*source).Address
 		modeltipherethPorterInstance.Region = (*source).Region
-		modeltipherethPorterInstance.FeatureSummary = c.pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary((*source).FeatureSummary)
-		modeltipherethPorterInstance.Status = c.ToBizPorterStatus((*source).Status)
+		modeltipherethPorterInstance.FeatureSummary = pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary((*source).FeatureSummary)
+		modeltipherethPorterInstance.Status = ToBizPorterStatus((*source).Status)
 		modeltipherethPorterInstance.ContextJSONSchema = (*source).ContextJSONSchema
 		pModeltipherethPorterInstance = &modeltipherethPorterInstance
 	}
 	return pModeltipherethPorterInstance
 }
-func (c *toBizConverterImpl) ToBizPorterContext(source *ent.PorterContext) *modeltiphereth.PorterContext {
+func ToBizPorterContext(source *ent.PorterContext) *modeltiphereth.PorterContext {
 	var pModeltipherethPorterContext *modeltiphereth.PorterContext
 	if source != nil {
 		var modeltipherethPorterContext modeltiphereth.PorterContext
-		modeltipherethPorterContext.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethPorterContext.ID = modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethPorterContext.GlobalName = (*source).GlobalName
 		modeltipherethPorterContext.Region = (*source).Region
 		modeltipherethPorterContext.ContextJSON = (*source).ContextJSON
 		modeltipherethPorterContext.Name = (*source).Name
 		modeltipherethPorterContext.Description = (*source).Description
-		modeltipherethPorterContext.Status = c.ToBizPorterContextStatus((*source).Status)
+		modeltipherethPorterContext.Status = ToBizPorterContextStatus((*source).Status)
 		pModeltipherethPorterContext = &modeltipherethPorterContext
 	}
 	return pModeltipherethPorterContext
 }
-func (c *toBizConverterImpl) ToBizPorterContextList(source []*ent.PorterContext) []*modeltiphereth.PorterContext {
+func ToBizPorterContextList(source []*ent.PorterContext) []*modeltiphereth.PorterContext {
 	var pModeltipherethPorterContextList []*modeltiphereth.PorterContext
 	if source != nil {
 		pModeltipherethPorterContextList = make([]*modeltiphereth.PorterContext, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethPorterContextList[i] = c.ToBizPorterContext(source[i])
+			pModeltipherethPorterContextList[i] = ToBizPorterContext(source[i])
 		}
 	}
 	return pModeltipherethPorterContextList
 }
-func (c *toBizConverterImpl) ToBizPorterContextStatus(source portercontext.Status) modeltiphereth.PorterContextStatus {
+func ToBizPorterContextStatus(source portercontext.Status) modeltiphereth.PorterContextStatus {
 	var modeltipherethPorterContextStatus modeltiphereth.PorterContextStatus
 	switch source {
 	case portercontext.StatusActive:
@@ -510,17 +496,17 @@ func (c *toBizConverterImpl) ToBizPorterContextStatus(source portercontext.Statu
 	}
 	return modeltipherethPorterContextStatus
 }
-func (c *toBizConverterImpl) ToBizPorterList(source []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
+func ToBizPorterList(source []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
 	var pModeltipherethPorterInstanceList []*modeltiphereth.PorterInstance
 	if source != nil {
 		pModeltipherethPorterInstanceList = make([]*modeltiphereth.PorterInstance, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethPorterInstanceList[i] = c.ToBizPorter(source[i])
+			pModeltipherethPorterInstanceList[i] = ToBizPorter(source[i])
 		}
 	}
 	return pModeltipherethPorterInstanceList
 }
-func (c *toBizConverterImpl) ToBizPorterStatus(source porterinstance.Status) modeltiphereth.PorterInstanceStatus {
+func ToBizPorterStatus(source porterinstance.Status) modeltiphereth.PorterInstanceStatus {
 	var modeltipherethPorterInstanceStatus modeltiphereth.PorterInstanceStatus
 	switch source {
 	case porterinstance.StatusActive:
@@ -532,14 +518,14 @@ func (c *toBizConverterImpl) ToBizPorterStatus(source porterinstance.Status) mod
 	}
 	return modeltipherethPorterInstanceStatus
 }
-func (c *toBizConverterImpl) ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
+func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotification *modelnetzach.SystemNotification
 	if source != nil {
 		var modelnetzachSystemNotification modelnetzach.SystemNotification
-		modelnetzachSystemNotification.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modelnetzachSystemNotification.Type = c.ToBizSystemNotificationType((*source).Type)
-		modelnetzachSystemNotification.Level = c.ToBizSystemNotificationLevel((*source).Level)
-		modelnetzachSystemNotification.Status = c.ToBizSystemNotificationStatus((*source).Status)
+		modelnetzachSystemNotification.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelnetzachSystemNotification.Type = ToBizSystemNotificationType((*source).Type)
+		modelnetzachSystemNotification.Level = ToBizSystemNotificationLevel((*source).Level)
+		modelnetzachSystemNotification.Status = ToBizSystemNotificationStatus((*source).Status)
 		modelnetzachSystemNotification.Title = (*source).Title
 		modelnetzachSystemNotification.Content = (*source).Content
 		modelnetzachSystemNotification.CreateTime = TimeToTime((*source).CreatedAt)
@@ -548,7 +534,7 @@ func (c *toBizConverterImpl) ToBizSystemNotification(source *ent.SystemNotificat
 	}
 	return pModelnetzachSystemNotification
 }
-func (c *toBizConverterImpl) ToBizSystemNotificationLevel(source systemnotification.Level) modelnetzach.SystemNotificationLevel {
+func ToBizSystemNotificationLevel(source systemnotification.Level) modelnetzach.SystemNotificationLevel {
 	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
 	switch source {
 	case systemnotification.LevelError:
@@ -564,17 +550,17 @@ func (c *toBizConverterImpl) ToBizSystemNotificationLevel(source systemnotificat
 	}
 	return modelnetzachSystemNotificationLevel
 }
-func (c *toBizConverterImpl) ToBizSystemNotificationList(source []*ent.SystemNotification) []*modelnetzach.SystemNotification {
+func ToBizSystemNotificationList(source []*ent.SystemNotification) []*modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotificationList []*modelnetzach.SystemNotification
 	if source != nil {
 		pModelnetzachSystemNotificationList = make([]*modelnetzach.SystemNotification, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelnetzachSystemNotificationList[i] = c.ToBizSystemNotification(source[i])
+			pModelnetzachSystemNotificationList[i] = ToBizSystemNotification(source[i])
 		}
 	}
 	return pModelnetzachSystemNotificationList
 }
-func (c *toBizConverterImpl) ToBizSystemNotificationStatus(source systemnotification.Status) modelnetzach.SystemNotificationStatus {
+func ToBizSystemNotificationStatus(source systemnotification.Status) modelnetzach.SystemNotificationStatus {
 	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
 	switch source {
 	case systemnotification.StatusDismissed:
@@ -588,7 +574,7 @@ func (c *toBizConverterImpl) ToBizSystemNotificationStatus(source systemnotifica
 	}
 	return modelnetzachSystemNotificationStatus
 }
-func (c *toBizConverterImpl) ToBizSystemNotificationType(source systemnotification.Type) modelnetzach.SystemNotificationType {
+func ToBizSystemNotificationType(source systemnotification.Type) modelnetzach.SystemNotificationType {
 	var modelnetzachSystemNotificationType modelnetzach.SystemNotificationType
 	switch source {
 	case systemnotification.TypeSystem:
@@ -600,7 +586,7 @@ func (c *toBizConverterImpl) ToBizSystemNotificationType(source systemnotificati
 	}
 	return modelnetzachSystemNotificationType
 }
-func (c *toBizConverterImpl) ToBizSystemType(source deviceinfo.SystemType) modeltiphereth.SystemType {
+func ToBizSystemType(source deviceinfo.SystemType) modeltiphereth.SystemType {
 	var modeltipherethSystemType modeltiphereth.SystemType
 	switch source {
 	case deviceinfo.SystemTypeAndroid:
@@ -622,34 +608,34 @@ func (c *toBizConverterImpl) ToBizSystemType(source deviceinfo.SystemType) model
 	}
 	return modeltipherethSystemType
 }
-func (c *toBizConverterImpl) ToBizUser(source *ent.User) *modeltiphereth.User {
+func ToBizUser(source *ent.User) *modeltiphereth.User {
 	var pModeltipherethUser *modeltiphereth.User
 	if source != nil {
 		var modeltipherethUser modeltiphereth.User
-		modeltipherethUser.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethUser.ID = modelInternalIDToModelInternalID((*source).ID)
 		modeltipherethUser.UserName = (*source).Username
-		modeltipherethUser.Type = c.ToLibAuthUserType((*source).Type)
-		modeltipherethUser.Status = c.ToBizUserStatus((*source).Status)
+		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
+		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
 		pModeltipherethUser = &modeltipherethUser
 	}
 	return pModeltipherethUser
 }
-func (c *toBizConverterImpl) ToBizUserList(source []*ent.User) []*modeltiphereth.User {
+func ToBizUserList(source []*ent.User) []*modeltiphereth.User {
 	var pModeltipherethUserList []*modeltiphereth.User
 	if source != nil {
 		pModeltipherethUserList = make([]*modeltiphereth.User, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethUserList[i] = c.ToBizUser(source[i])
+			pModeltipherethUserList[i] = ToBizUser(source[i])
 		}
 	}
 	return pModeltipherethUserList
 }
-func (c *toBizConverterImpl) ToBizUserSession(source *ent.UserSession) *modeltiphereth.UserSession {
+func ToBizUserSession(source *ent.UserSession) *modeltiphereth.UserSession {
 	var pModeltipherethUserSession *modeltiphereth.UserSession
 	if source != nil {
 		var modeltipherethUserSession modeltiphereth.UserSession
-		modeltipherethUserSession.ID = c.modelInternalIDToModelInternalID((*source).ID)
-		modeltipherethUserSession.UserID = c.modelInternalIDToModelInternalID((*source).UserID)
+		modeltipherethUserSession.ID = modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethUserSession.UserID = modelInternalIDToModelInternalID((*source).UserID)
 		modeltipherethUserSession.RefreshToken = (*source).RefreshToken
 		modeltipherethUserSession.CreateAt = TimeToTime((*source).CreatedAt)
 		modeltipherethUserSession.ExpireAt = TimeToTime((*source).ExpireAt)
@@ -657,17 +643,17 @@ func (c *toBizConverterImpl) ToBizUserSession(source *ent.UserSession) *modeltip
 	}
 	return pModeltipherethUserSession
 }
-func (c *toBizConverterImpl) ToBizUserSessionList(source []*ent.UserSession) []*modeltiphereth.UserSession {
+func ToBizUserSessionList(source []*ent.UserSession) []*modeltiphereth.UserSession {
 	var pModeltipherethUserSessionList []*modeltiphereth.UserSession
 	if source != nil {
 		pModeltipherethUserSessionList = make([]*modeltiphereth.UserSession, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethUserSessionList[i] = c.ToBizUserSession(source[i])
+			pModeltipherethUserSessionList[i] = ToBizUserSession(source[i])
 		}
 	}
 	return pModeltipherethUserSessionList
 }
-func (c *toBizConverterImpl) ToBizUserStatus(source user.Status) modeltiphereth.UserStatus {
+func ToBizUserStatus(source user.Status) modeltiphereth.UserStatus {
 	var modeltipherethUserStatus modeltiphereth.UserStatus
 	switch source {
 	case user.StatusActive:
@@ -679,7 +665,7 @@ func (c *toBizConverterImpl) ToBizUserStatus(source user.Status) modeltiphereth.
 	}
 	return modeltipherethUserStatus
 }
-func (c *toBizConverterImpl) ToLibAuthUserType(source user.Type) libauth.UserType {
+func ToLibAuthUserType(source user.Type) libauth.UserType {
 	var libauthUserType libauth.UserType
 	switch source {
 	case user.TypeAdmin:
@@ -693,7 +679,7 @@ func (c *toBizConverterImpl) ToLibAuthUserType(source user.Type) libauth.UserTyp
 	}
 	return libauthUserType
 }
-func (c *toBizConverterImpl) entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.AppInfoDetails {
+func entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.AppInfoDetails {
 	var modelgeburaAppInfoDetails modelgebura.AppInfoDetails
 	modelgeburaAppInfoDetails.Description = source.Description
 	modelgeburaAppInfoDetails.ReleaseDate = source.ReleaseDate
@@ -702,10 +688,10 @@ func (c *toBizConverterImpl) entAppInfoToPModelgeburaAppInfoDetails(source ent.A
 	modelgeburaAppInfoDetails.Version = source.Version
 	return &modelgeburaAppInfoDetails
 }
-func (c *toBizConverterImpl) modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
+func modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
 	return model.InternalID(source)
 }
-func (c *toBizConverterImpl) pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
+func pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
 	var pModelfeedEnclosure *modelfeed.Enclosure
 	if source != nil {
 		var modelfeedEnclosure modelfeed.Enclosure
@@ -716,7 +702,7 @@ func (c *toBizConverterImpl) pModelfeedEnclosureToPModelfeedEnclosure(source *mo
 	}
 	return pModelfeedEnclosure
 }
-func (c *toBizConverterImpl) pModelfeedImageToPModelfeedImage(source *modelfeed.Image) *modelfeed.Image {
+func pModelfeedImageToPModelfeedImage(source *modelfeed.Image) *modelfeed.Image {
 	var pModelfeedImage *modelfeed.Image
 	if source != nil {
 		var modelfeedImage modelfeed.Image
@@ -726,7 +712,7 @@ func (c *toBizConverterImpl) pModelfeedImageToPModelfeedImage(source *modelfeed.
 	}
 	return pModelfeedImage
 }
-func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfeed.Person) *modelfeed.Person {
+func pModelfeedPersonToPModelfeedPerson(source *modelfeed.Person) *modelfeed.Person {
 	var pModelfeedPerson *modelfeed.Person
 	if source != nil {
 		var modelfeedPerson modelfeed.Person
@@ -736,7 +722,7 @@ func (c *toBizConverterImpl) pModelfeedPersonToPModelfeedPerson(source *modelfee
 	}
 	return pModelfeedPerson
 }
-func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureFlag(source *modeltiphereth.FeatureFlag) *modeltiphereth.FeatureFlag {
+func pModeltipherethFeatureFlagToPModeltipherethFeatureFlag(source *modeltiphereth.FeatureFlag) *modeltiphereth.FeatureFlag {
 	var pModeltipherethFeatureFlag *modeltiphereth.FeatureFlag
 	if source != nil {
 		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
@@ -749,74 +735,61 @@ func (c *toBizConverterImpl) pModeltipherethFeatureFlagToPModeltipherethFeatureF
 	}
 	return pModeltipherethFeatureFlag
 }
-func (c *toBizConverterImpl) pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
+func pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
 	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
 	if source != nil {
 		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
 		modeltipherethFeatureRequest.ID = (*source).ID
 		modeltipherethFeatureRequest.Region = (*source).Region
 		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
-		modeltipherethFeatureRequest.ContextID = c.modelInternalIDToModelInternalID((*source).ContextID)
+		modeltipherethFeatureRequest.ContextID = modelInternalIDToModelInternalID((*source).ContextID)
 		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
 	}
 	return pModeltipherethFeatureRequest
 }
-func (c *toBizConverterImpl) pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
+func pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
 	if source != nil {
 		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
-		var pModeltipherethFeatureFlagList []*modeltiphereth.FeatureFlag
 		if (*source).AccountPlatforms != nil {
-			pModeltipherethFeatureFlagList = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
+			modeltipherethPorterFeatureSummary.AccountPlatforms = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
-				pModeltipherethFeatureFlagList[i] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AccountPlatforms[i])
+				modeltipherethPorterFeatureSummary.AccountPlatforms[i] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
-		modeltipherethPorterFeatureSummary.AccountPlatforms = pModeltipherethFeatureFlagList
-		var pModeltipherethFeatureFlagList2 []*modeltiphereth.FeatureFlag
 		if (*source).AppInfoSources != nil {
-			pModeltipherethFeatureFlagList2 = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
+			modeltipherethPorterFeatureSummary.AppInfoSources = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
-				pModeltipherethFeatureFlagList2[j] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AppInfoSources[j])
+				modeltipherethPorterFeatureSummary.AppInfoSources[j] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
-		modeltipherethPorterFeatureSummary.AppInfoSources = pModeltipherethFeatureFlagList2
-		var pModeltipherethFeatureFlagList3 []*modeltiphereth.FeatureFlag
 		if (*source).FeedSources != nil {
-			pModeltipherethFeatureFlagList3 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
+			modeltipherethPorterFeatureSummary.FeedSources = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
-				pModeltipherethFeatureFlagList3[k] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedSources[k])
+				modeltipherethPorterFeatureSummary.FeedSources[k] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedSources[k])
 			}
 		}
-		modeltipherethPorterFeatureSummary.FeedSources = pModeltipherethFeatureFlagList3
-		var pModeltipherethFeatureFlagList4 []*modeltiphereth.FeatureFlag
 		if (*source).NotifyDestinations != nil {
-			pModeltipherethFeatureFlagList4 = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
+			modeltipherethPorterFeatureSummary.NotifyDestinations = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
-				pModeltipherethFeatureFlagList4[l] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).NotifyDestinations[l])
+				modeltipherethPorterFeatureSummary.NotifyDestinations[l] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
-		modeltipherethPorterFeatureSummary.NotifyDestinations = pModeltipherethFeatureFlagList4
-		var pModeltipherethFeatureFlagList5 []*modeltiphereth.FeatureFlag
 		if (*source).FeedItemActions != nil {
-			pModeltipherethFeatureFlagList5 = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
+			modeltipherethPorterFeatureSummary.FeedItemActions = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
-				pModeltipherethFeatureFlagList5[m] = c.pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedItemActions[m])
+				modeltipherethPorterFeatureSummary.FeedItemActions[m] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
-		modeltipherethPorterFeatureSummary.FeedItemActions = pModeltipherethFeatureFlagList5
 		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
 	}
 	return pModeltipherethPorterFeatureSummary
 }
-func (c *toBizConverterImpl) timeTimeToPTimeTime(source time.Time) *time.Time {
+func timeTimeToPTimeTime(source time.Time) *time.Time {
 	timeTime := TimeToTime(source)
 	return &timeTime
 }
-
-type toEntConverterImpl struct{}
-
-func (c *toEntConverterImpl) ToEntAppInfo(source modelgebura.AppInfo) ent.AppInfo {
+func ToEntAppInfo(source modelgebura.AppInfo) ent.AppInfo {
 	var entAppInfo ent.AppInfo
 	entAppInfo.ID = model.InternalID(source.ID)
 	entAppInfo.Internal = source.Internal
@@ -830,11 +803,9 @@ func (c *toEntConverterImpl) ToEntAppInfo(source modelgebura.AppInfo) ent.AppInf
 	if source.Details != nil {
 		pString = &source.Details.Description
 	}
-	var xstring string
 	if pString != nil {
-		xstring = *pString
+		entAppInfo.Description = *pString
 	}
-	entAppInfo.Description = xstring
 	entAppInfo.IconImageURL = source.IconImageURL
 	entAppInfo.BackgroundImageURL = source.BackgroundImageURL
 	entAppInfo.CoverImageURL = source.CoverImageURL
@@ -842,41 +813,69 @@ func (c *toEntConverterImpl) ToEntAppInfo(source modelgebura.AppInfo) ent.AppInf
 	if source.Details != nil {
 		pString2 = &source.Details.ReleaseDate
 	}
-	var xstring2 string
 	if pString2 != nil {
-		xstring2 = *pString2
+		entAppInfo.ReleaseDate = *pString2
 	}
-	entAppInfo.ReleaseDate = xstring2
 	var pString3 *string
 	if source.Details != nil {
 		pString3 = &source.Details.Developer
 	}
-	var xstring3 string
 	if pString3 != nil {
-		xstring3 = *pString3
+		entAppInfo.Developer = *pString3
 	}
-	entAppInfo.Developer = xstring3
 	var pString4 *string
 	if source.Details != nil {
 		pString4 = &source.Details.Publisher
 	}
-	var xstring4 string
 	if pString4 != nil {
-		xstring4 = *pString4
+		entAppInfo.Publisher = *pString4
 	}
-	entAppInfo.Publisher = xstring4
 	var pString5 *string
 	if source.Details != nil {
 		pString5 = &source.Details.Version
 	}
-	var xstring5 string
 	if pString5 != nil {
-		xstring5 = *pString5
+		entAppInfo.Version = *pString5
 	}
-	entAppInfo.Version = xstring5
 	return entAppInfo
 }
-func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
+func ToEntAppType(source modelgebura.AppType) appinfo.Type {
+	var appinfoType appinfo.Type
+	switch source {
+	case modelgebura.AppTypeGame:
+		appinfoType = appinfo.TypeGame
+	case modelgebura.AppTypeUnspecified: // ignored
+	default: // ignored
+	}
+	return appinfoType
+}
+func ToEntFeedConfigLatestPullStatus(source modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus {
+	var feedconfigLatestPullStatus feedconfig.LatestPullStatus
+	switch source {
+	case modelyesod.FeedConfigPullStatusFailed:
+		feedconfigLatestPullStatus = feedconfig.LatestPullStatusFailed
+	case modelyesod.FeedConfigPullStatusProcessing:
+		feedconfigLatestPullStatus = feedconfig.LatestPullStatusProcessing
+	case modelyesod.FeedConfigPullStatusSuccess:
+		feedconfigLatestPullStatus = feedconfig.LatestPullStatusSuccess
+	case modelyesod.FeedConfigPullStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return feedconfigLatestPullStatus
+}
+func ToEntFeedConfigStatus(source modelyesod.FeedConfigStatus) feedconfig.Status {
+	var feedconfigStatus feedconfig.Status
+	switch source {
+	case modelyesod.FeedConfigStatusActive:
+		feedconfigStatus = feedconfig.StatusActive
+	case modelyesod.FeedConfigStatusSuspend:
+		feedconfigStatus = feedconfig.StatusSuspend
+	case modelyesod.FeedConfigStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return feedconfigStatus
+}
+func ToEntFeedConfigStatusList(source []modelyesod.FeedConfigStatus) []feedconfig.Status {
 	var feedconfigStatusList []feedconfig.Status
 	if source != nil {
 		feedconfigStatusList = make([]feedconfig.Status, len(source))
@@ -886,7 +885,43 @@ func (c *toEntConverterImpl) ToEntFeedConfigStatusList(source []modelyesod.FeedC
 	}
 	return feedconfigStatusList
 }
-func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
+func ToEntImageStatus(source modelchesed.ImageStatus) image.Status {
+	var imageStatus image.Status
+	switch source {
+	case modelchesed.ImageStatusScanned:
+		imageStatus = image.StatusScanned
+	case modelchesed.ImageStatusUnspecified: // ignored
+	case modelchesed.ImageStatusUploaded:
+		imageStatus = image.StatusUploaded
+	default: // ignored
+	}
+	return imageStatus
+}
+func ToEntNotifySourceStatus(source modelnetzach.NotifyFlowStatus) notifyflow.Status {
+	var notifyflowStatus notifyflow.Status
+	switch source {
+	case modelnetzach.NotifyFlowStatusActive:
+		notifyflowStatus = notifyflow.StatusActive
+	case modelnetzach.NotifyFlowStatusSuspend:
+		notifyflowStatus = notifyflow.StatusSuspend
+	case modelnetzach.NotifyFlowStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return notifyflowStatus
+}
+func ToEntNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) notifytarget.Status {
+	var notifytargetStatus notifytarget.Status
+	switch source {
+	case modelnetzach.NotifyTargetStatusActive:
+		notifytargetStatus = notifytarget.StatusActive
+	case modelnetzach.NotifyTargetStatusSuspend:
+		notifytargetStatus = notifytarget.StatusSuspend
+	case modelnetzach.NotifyTargetStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return notifytargetStatus
+}
+func ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []notifytarget.Status {
 	var notifytargetStatusList []notifytarget.Status
 	if source != nil {
 		notifytargetStatusList = make([]notifytarget.Status, len(source))
@@ -896,7 +931,7 @@ func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.N
 	}
 	return notifytargetStatusList
 }
-func (c *toEntConverterImpl) ToEntPorterContextStatus(source modeltiphereth.PorterContextStatus) portercontext.Status {
+func ToEntPorterContextStatus(source modeltiphereth.PorterContextStatus) portercontext.Status {
 	var portercontextStatus portercontext.Status
 	switch source {
 	case modeltiphereth.PorterContextStatusActive:
@@ -908,7 +943,35 @@ func (c *toEntConverterImpl) ToEntPorterContextStatus(source modeltiphereth.Port
 	}
 	return portercontextStatus
 }
-func (c *toEntConverterImpl) ToEntSystemNotificationLevelList(source []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
+func ToEntPorterInstanceStatus(source modeltiphereth.PorterInstanceStatus) porterinstance.Status {
+	var porterinstanceStatus porterinstance.Status
+	switch source {
+	case modeltiphereth.PorterInstanceStatusActive:
+		porterinstanceStatus = porterinstance.StatusActive
+	case modeltiphereth.PorterInstanceStatusBlocked:
+		porterinstanceStatus = porterinstance.StatusBlocked
+	case modeltiphereth.PorterInstanceStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return porterinstanceStatus
+}
+func ToEntSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) systemnotification.Level {
+	var systemnotificationLevel systemnotification.Level
+	switch source {
+	case modelnetzach.SystemNotificationLevelError:
+		systemnotificationLevel = systemnotification.LevelError
+	case modelnetzach.SystemNotificationLevelInfo:
+		systemnotificationLevel = systemnotification.LevelInfo
+	case modelnetzach.SystemNotificationLevelOngoing:
+		systemnotificationLevel = systemnotification.LevelOngoing
+	case modelnetzach.SystemNotificationLevelUnspecified: // ignored
+	case modelnetzach.SystemNotificationLevelWarning:
+		systemnotificationLevel = systemnotification.LevelWarn
+	default: // ignored
+	}
+	return systemnotificationLevel
+}
+func ToEntSystemNotificationLevelList(source []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
 	var systemnotificationLevelList []systemnotification.Level
 	if source != nil {
 		systemnotificationLevelList = make([]systemnotification.Level, len(source))
@@ -918,7 +981,21 @@ func (c *toEntConverterImpl) ToEntSystemNotificationLevelList(source []modelnetz
 	}
 	return systemnotificationLevelList
 }
-func (c *toEntConverterImpl) ToEntSystemNotificationStatusList(source []modelnetzach.SystemNotificationStatus) []systemnotification.Status {
+func ToEntSystemNotificationStatus(source modelnetzach.SystemNotificationStatus) systemnotification.Status {
+	var systemnotificationStatus systemnotification.Status
+	switch source {
+	case modelnetzach.SystemNotificationStatusDismissed:
+		systemnotificationStatus = systemnotification.StatusDismissed
+	case modelnetzach.SystemNotificationStatusRead:
+		systemnotificationStatus = systemnotification.StatusRead
+	case modelnetzach.SystemNotificationStatusUnread:
+		systemnotificationStatus = systemnotification.StatusUnread
+	case modelnetzach.SystemNotificationStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return systemnotificationStatus
+}
+func ToEntSystemNotificationStatusList(source []modelnetzach.SystemNotificationStatus) []systemnotification.Status {
 	var systemnotificationStatusList []systemnotification.Status
 	if source != nil {
 		systemnotificationStatusList = make([]systemnotification.Status, len(source))
@@ -928,7 +1005,19 @@ func (c *toEntConverterImpl) ToEntSystemNotificationStatusList(source []modelnet
 	}
 	return systemnotificationStatusList
 }
-func (c *toEntConverterImpl) ToEntSystemNotificationTypeList(source []modelnetzach.SystemNotificationType) []systemnotification.Type {
+func ToEntSystemNotificationType(source modelnetzach.SystemNotificationType) systemnotification.Type {
+	var systemnotificationType systemnotification.Type
+	switch source {
+	case modelnetzach.SystemNotificationTypeSystem:
+		systemnotificationType = systemnotification.TypeSystem
+	case modelnetzach.SystemNotificationTypeUnspecified: // ignored
+	case modelnetzach.SystemNotificationTypeUser:
+		systemnotificationType = systemnotification.TypeUser
+	default: // ignored
+	}
+	return systemnotificationType
+}
+func ToEntSystemNotificationTypeList(source []modelnetzach.SystemNotificationType) []systemnotification.Type {
 	var systemnotificationTypeList []systemnotification.Type
 	if source != nil {
 		systemnotificationTypeList = make([]systemnotification.Type, len(source))
@@ -938,7 +1027,39 @@ func (c *toEntConverterImpl) ToEntSystemNotificationTypeList(source []modelnetza
 	}
 	return systemnotificationTypeList
 }
-func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
+func ToEntSystemType(source modeltiphereth.SystemType) deviceinfo.SystemType {
+	var deviceinfoSystemType deviceinfo.SystemType
+	switch source {
+	case modeltiphereth.SystemTypeAndroid:
+		deviceinfoSystemType = deviceinfo.SystemTypeAndroid
+	case modeltiphereth.SystemTypeIOS:
+		deviceinfoSystemType = deviceinfo.SystemTypeIos
+	case modeltiphereth.SystemTypeLinux:
+		deviceinfoSystemType = deviceinfo.SystemTypeLinux
+	case modeltiphereth.SystemTypeMacOS:
+		deviceinfoSystemType = deviceinfo.SystemTypeMacos
+	case modeltiphereth.SystemTypeUnspecified: // ignored
+	case modeltiphereth.SystemTypeWeb:
+		deviceinfoSystemType = deviceinfo.SystemTypeWeb
+	case modeltiphereth.SystemTypeWindows:
+		deviceinfoSystemType = deviceinfo.SystemTypeWindows
+	default: // ignored
+	}
+	return deviceinfoSystemType
+}
+func ToEntUserStatus(source modeltiphereth.UserStatus) user.Status {
+	var userStatus user.Status
+	switch source {
+	case modeltiphereth.UserStatusActive:
+		userStatus = user.StatusActive
+	case modeltiphereth.UserStatusBlocked:
+		userStatus = user.StatusBlocked
+	case modeltiphereth.UserStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return userStatus
+}
+func ToEntUserStatusList(source []modeltiphereth.UserStatus) []user.Status {
 	var userStatusList []user.Status
 	if source != nil {
 		userStatusList = make([]user.Status, len(source))
@@ -948,7 +1069,22 @@ func (c *toEntConverterImpl) ToEntUserStatusList(source []modeltiphereth.UserSta
 	}
 	return userStatusList
 }
-func (c *toEntConverterImpl) ToEntUserTypeList(source []libauth.UserType) []user.Type {
+func ToEntUserType(source libauth.UserType) user.Type {
+	var userType user.Type
+	switch source {
+	case libauth.UserTypeAdmin:
+		userType = user.TypeAdmin
+	case libauth.UserTypeNormal:
+		userType = user.TypeNormal
+	case libauth.UserTypePorter: // ignored
+	case libauth.UserTypeSentinel:
+		userType = user.TypeSentinel
+	case libauth.UserTypeUnspecified: // ignored
+	default: // ignored
+	}
+	return userType
+}
+func ToEntUserTypeList(source []libauth.UserType) []user.Type {
 	var userTypeList []user.Type
 	if source != nil {
 		userTypeList = make([]user.Type, len(source))

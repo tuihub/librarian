@@ -110,7 +110,7 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 			SetOwnerID(userID).
 			SetName(f.Name).
 			SetDescription(f.Description).
-			SetStatus(converter.ToEntNotifySourceSource(f.Status)).
+			SetStatus(converter.ToEntNotifySourceStatus(f.Status)).
 			Exec(ctx)
 		if err != nil {
 			return err
@@ -208,7 +208,7 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 			}
 		}
 		if f.Status != modelnetzach.NotifyFlowStatusUnspecified {
-			q.SetStatus(converter.ToEntNotifySourceSource(f.Status))
+			q.SetStatus(converter.ToEntNotifySourceStatus(f.Status))
 		}
 		return q.Exec(ctx)
 	})
@@ -245,7 +245,7 @@ func (n *netzachRepo) ListNotifyFlows(
 	}
 	res := make([]*modelnetzach.NotifyFlow, len(flows))
 	for i := range flows {
-		res[i] = converter.ToBizNotifyFlow(flows[i])
+		res[i] = converter.ToBizNotifyFlowExtend(flows[i])
 	}
 	return res, int64(total), nil
 }
@@ -259,7 +259,7 @@ func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*
 	if err != nil {
 		return nil, err
 	}
-	return converter.ToBizNotifyFlow(res), nil
+	return converter.ToBizNotifyFlowExtend(res), nil
 }
 
 func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {

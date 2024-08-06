@@ -65,7 +65,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 				fc.LatestPullMessage = fmt.Sprintf("PullFeed failed: %s", err.Error())
 				return err
 			}
-			feed := modelfeed.NewConverter().FromPBFeed(resp.GetData())
+			feed := modelfeed.FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
 			ids, err := a.searcher.NewBatchIDs(ctx, len(feed.Items))
 			if err != nil {

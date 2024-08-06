@@ -1,4 +1,8 @@
+//go:build !goverter
+
 package modelfeed
+
+//go:generate go run github.com/jmattheis/goverter/cmd/goverter gen .
 
 import (
 	"time"
@@ -10,31 +14,28 @@ import (
 )
 
 // goverter:converter
+// goverter:output:format function
 // goverter:output:file ./generated.go
 // goverter:output:package github.com/tuihub/librarian/internal/model/modelfeed
+// goverter:matchIgnoreCase
+// goverter:ignoreUnexported
 // goverter:extend FromPBInternalID
 type Converter interface {
-	// goverter:matchIgnoreCase
 	// goverter:map . Id
 	ToPBFeed(*Feed) *librarian.Feed
 	// goverter:map ID Id
 	ToPBFeedInternalID(Feed) librarian.InternalID
-	// goverter:matchIgnoreCase
 	// goverter:ignore Id
 	// goverter:map UpdatedParsed | ToPBTime
 	// goverter:map PublishedParsed | ToPBTime
 	ToPBFeedItem(*Item) *librarian.FeedItem
-	// goverter:matchIgnoreCase
 	ToPBFeedImage(*Image) *librarian.FeedImage
-	// goverter:matchIgnoreCase
 	ToPBFeedEnclosure(*Enclosure) *librarian.FeedEnclosure
 
-	// goverter:matchIgnoreCase
 	// goverter:map Id ID
 	// goverter:ignore FeedType
 	// goverter:ignore FeedVersion
 	FromPBFeed(*librarian.Feed) *Feed
-	// goverter:matchIgnoreCase
 	// goverter:map Id ID
 	// goverter:map UpdatedParsed | FromPBTime
 	// goverter:map PublishedParsed | FromPBTime
@@ -42,9 +43,7 @@ type Converter interface {
 	// goverter:ignore DigestImages
 	FromPBFeedItem(*librarian.FeedItem) *Item
 	FromPBFeedItemList([]*librarian.FeedItem) []*Item
-	// goverter:matchIgnoreCase
 	FromPBFeedImage(*librarian.FeedImage) *Image
-	// goverter:matchIgnoreCase
 	FromPBFeedEnclosure(*librarian.FeedEnclosure) *Enclosure
 }
 

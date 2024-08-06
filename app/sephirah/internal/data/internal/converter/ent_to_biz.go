@@ -24,9 +24,11 @@ import (
 )
 
 // goverter:converter
-// goverter:matchIgnoreCase
+// goverter:output:format function
 // goverter:output:file ./generated.go
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
+// goverter:matchIgnoreCase
+// goverter:ignoreUnexported
 // goverter:enum:exclude time:Duration
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr

@@ -18,9 +18,11 @@ import (
 )
 
 // goverter:converter
+// goverter:output:format function
 // goverter:output:file ./generated.go
-// goverter:matchIgnoreCase
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
+// goverter:matchIgnoreCase
+// goverter:ignoreUnexported
 // goverter:extend ToPBInternalID
 // goverter:extend ToPBTime
 // goverter:extend ToPBTimePtr

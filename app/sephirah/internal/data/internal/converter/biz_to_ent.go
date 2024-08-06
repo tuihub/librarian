@@ -21,20 +21,42 @@ import (
 )
 
 // goverter:converter
+// goverter:output:format function
 // goverter:output:file ./generated.go
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
-// goverter:extend ToEntUserType
-// goverter:extend ToEntUserStatus
-// goverter:extend ToEntAppType
-// goverter:extend ToEntFeedConfigStatus
-// goverter:extend ToEntNotifyTargetStatus
-// goverter:extend ToEntSystemType
-// goverter:extend ToEntSystemNotificationType
-// goverter:extend ToEntSystemNotificationLevel
-// goverter:extend ToEntSystemNotificationStatus
+// goverter:matchIgnoreCase
+// goverter:ignoreUnexported
 type toEntConverter interface { //nolint:unused // used by generator
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map UserTypeUnspecified @ignore
+	// goverter:enum:map UserTypeAdmin TypeAdmin
+	// goverter:enum:map UserTypeNormal TypeNormal
+	// goverter:enum:map UserTypeSentinel TypeSentinel
+	// goverter:enum:map UserTypePorter @ignore
+	ToEntUserType(libauth.UserType) user.Type
 	ToEntUserTypeList([]libauth.UserType) []user.Type
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map UserStatusUnspecified @ignore
+	// goverter:enum:map UserStatusActive StatusActive
+	// goverter:enum:map UserStatusBlocked StatusBlocked
+	ToEntUserStatus(modeltiphereth.UserStatus) user.Status
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map SystemTypeUnspecified @ignore
+	// goverter:enum:map SystemTypeIOS SystemTypeIos
+	// goverter:enum:map SystemTypeAndroid SystemTypeAndroid
+	// goverter:enum:map SystemTypeWindows SystemTypeWindows
+	// goverter:enum:map SystemTypeMacOS SystemTypeMacos
+	// goverter:enum:map SystemTypeLinux SystemTypeLinux
+	// goverter:enum:map SystemTypeWeb SystemTypeWeb
+	ToEntSystemType(modeltiphereth.SystemType) deviceinfo.SystemType
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map PorterInstanceStatusUnspecified @ignore
+	// goverter:enum:map PorterInstanceStatusActive StatusActive
+	// goverter:enum:map PorterInstanceStatusBlocked StatusBlocked
+	ToEntPorterInstanceStatus(modeltiphereth.PorterInstanceStatus) porterinstance.Status
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map PorterContextStatusUnspecified @ignore
@@ -48,199 +70,65 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:ignore CreatedAt
 	// goverter:ignore UpdatedAt
 	ToEntAppInfo(modelgebura.AppInfo) ent.AppInfo
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map AppTypeUnspecified @ignore
+	// goverter:enum:map AppTypeGame TypeGame
+	ToEntAppType(modelgebura.AppType) appinfo.Type
 
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map FeedConfigStatusUnspecified @ignore
+	// goverter:enum:map FeedConfigStatusActive StatusActive
+	// goverter:enum:map FeedConfigStatusSuspend StatusSuspend
+	ToEntFeedConfigStatus(modelyesod.FeedConfigStatus) feedconfig.Status
 	ToEntFeedConfigStatusList([]modelyesod.FeedConfigStatus) []feedconfig.Status
 
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map FeedConfigPullStatusUnspecified @ignore
+	// goverter:enum:map FeedConfigPullStatusProcessing LatestPullStatusProcessing
+	// goverter:enum:map FeedConfigPullStatusSuccess LatestPullStatusSuccess
+	// goverter:enum:map FeedConfigPullStatusFailed LatestPullStatusFailed
+	ToEntFeedConfigLatestPullStatus(modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map NotifyFlowStatusUnspecified @ignore
+	// goverter:enum:map NotifyFlowStatusActive StatusActive
+	// goverter:enum:map NotifyFlowStatusSuspend StatusSuspend
+	ToEntNotifySourceStatus(modelnetzach.NotifyFlowStatus) notifyflow.Status
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map NotifyTargetStatusUnspecified @ignore
+	// goverter:enum:map NotifyTargetStatusActive StatusActive
+	// goverter:enum:map NotifyTargetStatusSuspend StatusSuspend
+	ToEntNotifyTargetStatus(modelnetzach.NotifyTargetStatus) notifytarget.Status
 	ToEntNotifyTargetStatusList([]modelnetzach.NotifyTargetStatus) []notifytarget.Status
 
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map SystemNotificationTypeUnspecified @ignore
+	// goverter:enum:map SystemNotificationTypeSystem TypeSystem
+	// goverter:enum:map SystemNotificationTypeUser TypeUser
+	ToEntSystemNotificationType(modelnetzach.SystemNotificationType) systemnotification.Type
 	ToEntSystemNotificationTypeList([]modelnetzach.SystemNotificationType) []systemnotification.Type
 
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map SystemNotificationLevelUnspecified @ignore
+	// goverter:enum:map SystemNotificationLevelInfo LevelInfo
+	// goverter:enum:map SystemNotificationLevelWarning LevelWarn
+	// goverter:enum:map SystemNotificationLevelError LevelError
+	// goverter:enum:map SystemNotificationLevelOngoing LevelOngoing
+	ToEntSystemNotificationLevel(modelnetzach.SystemNotificationLevel) systemnotification.Level
 	ToEntSystemNotificationLevelList([]modelnetzach.SystemNotificationLevel) []systemnotification.Level
 
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map SystemNotificationStatusUnspecified @ignore
+	// goverter:enum:map SystemNotificationStatusUnread StatusUnread
+	// goverter:enum:map SystemNotificationStatusRead StatusRead
+	// goverter:enum:map SystemNotificationStatusDismissed StatusDismissed
+	ToEntSystemNotificationStatus(modelnetzach.SystemNotificationStatus) systemnotification.Status
 	ToEntSystemNotificationStatusList([]modelnetzach.SystemNotificationStatus) []systemnotification.Status
-}
 
-func ToEntUserType(t libauth.UserType) user.Type {
-	switch t {
-	case libauth.UserTypeUnspecified:
-		return ""
-	case libauth.UserTypeAdmin:
-		return user.TypeAdmin
-	case libauth.UserTypeNormal:
-		return user.TypeNormal
-	case libauth.UserTypeSentinel:
-		return user.TypeSentinel
-	default:
-		return ""
-	}
-}
-
-func ToEntUserStatus(s modeltiphereth.UserStatus) user.Status {
-	switch s {
-	case modeltiphereth.UserStatusUnspecified:
-		return ""
-	case modeltiphereth.UserStatusActive:
-		return user.StatusActive
-	case modeltiphereth.UserStatusBlocked:
-		return user.StatusBlocked
-	default:
-		return ""
-	}
-}
-
-func ToEntPorterInstanceStatus(s modeltiphereth.PorterInstanceStatus) porterinstance.Status {
-	switch s {
-	case modeltiphereth.PorterInstanceStatusUnspecified:
-		return ""
-	case modeltiphereth.PorterInstanceStatusActive:
-		return porterinstance.StatusActive
-	case modeltiphereth.PorterInstanceStatusBlocked:
-		return porterinstance.StatusBlocked
-	default:
-		return ""
-	}
-}
-
-func ToEntAppType(t modelgebura.AppType) appinfo.Type {
-	switch t {
-	case modelgebura.AppTypeUnspecified:
-		return appinfo.TypeUnknown
-	case modelgebura.AppTypeGame:
-		return appinfo.TypeGame
-	default:
-		return appinfo.TypeUnknown
-	}
-}
-
-func ToEntFeedConfigStatus(s modelyesod.FeedConfigStatus) feedconfig.Status {
-	switch s {
-	case modelyesod.FeedConfigStatusUnspecified:
-		return ""
-	case modelyesod.FeedConfigStatusActive:
-		return feedconfig.StatusActive
-	case modelyesod.FeedConfigStatusSuspend:
-		return feedconfig.StatusSuspend
-	default:
-		return ""
-	}
-}
-
-func ToEntNotifyTargetStatus(s modelnetzach.NotifyTargetStatus) notifytarget.Status {
-	switch s {
-	case modelnetzach.NotifyTargetStatusUnspecified:
-		return ""
-	case modelnetzach.NotifyTargetStatusActive:
-		return notifytarget.StatusActive
-	case modelnetzach.NotifyTargetStatusSuspend:
-		return notifytarget.StatusSuspend
-	default:
-		return ""
-	}
-}
-
-func ToEntNotifySourceSource(s modelnetzach.NotifyFlowStatus) notifyflow.Status {
-	switch s {
-	case modelnetzach.NotifyFlowStatusUnspecified:
-		return ""
-	case modelnetzach.NotifyFlowStatusActive:
-		return notifyflow.StatusActive
-	case modelnetzach.NotifyFlowStatusSuspend:
-		return notifyflow.StatusSuspend
-	default:
-		return ""
-	}
-}
-
-func ToEntImageStatus(s modelchesed.ImageStatus) image.Status {
-	switch s {
-	case modelchesed.ImageStatusUnspecified:
-		return ""
-	case modelchesed.ImageStatusUploaded:
-		return image.StatusUploaded
-	case modelchesed.ImageStatusScanned:
-		return image.StatusScanned
-	default:
-		return ""
-	}
-}
-
-func ToEntSystemType(s modeltiphereth.SystemType) deviceinfo.SystemType {
-	switch s {
-	case modeltiphereth.SystemTypeUnspecified:
-		return deviceinfo.SystemTypeUnknown
-	case modeltiphereth.SystemTypeIOS:
-		return deviceinfo.SystemTypeIos
-	case modeltiphereth.SystemTypeAndroid:
-		return deviceinfo.SystemTypeAndroid
-	case modeltiphereth.SystemTypeWindows:
-		return deviceinfo.SystemTypeWindows
-	case modeltiphereth.SystemTypeMacOS:
-		return deviceinfo.SystemTypeMacos
-	case modeltiphereth.SystemTypeLinux:
-		return deviceinfo.SystemTypeLinux
-	case modeltiphereth.SystemTypeWeb:
-		return deviceinfo.SystemTypeWeb
-	default:
-		return deviceinfo.SystemTypeUnknown
-	}
-}
-
-func ToEntSystemNotificationType(t modelnetzach.SystemNotificationType) systemnotification.Type {
-	switch t {
-	case modelnetzach.SystemNotificationTypeUnspecified:
-		return ""
-	case modelnetzach.SystemNotificationTypeSystem:
-		return systemnotification.TypeSystem
-	case modelnetzach.SystemNotificationTypeUser:
-		return systemnotification.TypeUser
-	default:
-		return ""
-	}
-}
-
-func ToEntSystemNotificationLevel(l modelnetzach.SystemNotificationLevel) systemnotification.Level {
-	switch l {
-	case modelnetzach.SystemNotificationLevelUnspecified:
-		return ""
-	case modelnetzach.SystemNotificationLevelInfo:
-		return systemnotification.LevelInfo
-	case modelnetzach.SystemNotificationLevelWarning:
-		return systemnotification.LevelWarn
-	case modelnetzach.SystemNotificationLevelError:
-		return systemnotification.LevelError
-	case modelnetzach.SystemNotificationLevelOngoing:
-		return systemnotification.LevelOngoing
-	default:
-		return ""
-	}
-}
-
-func ToEntSystemNotificationStatus(s modelnetzach.SystemNotificationStatus) systemnotification.Status {
-	switch s {
-	case modelnetzach.SystemNotificationStatusUnspecified:
-		return ""
-	case modelnetzach.SystemNotificationStatusUnread:
-		return systemnotification.StatusUnread
-	case modelnetzach.SystemNotificationStatusRead:
-		return systemnotification.StatusRead
-	case modelnetzach.SystemNotificationStatusDismissed:
-		return systemnotification.StatusDismissed
-	default:
-		return ""
-	}
-}
-
-func ToEntFeedConfigLatestPullStatus(s modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus {
-	switch s {
-	case modelyesod.FeedConfigPullStatusUnspecified:
-		return ""
-	case modelyesod.FeedConfigPullStatusProcessing:
-		return feedconfig.LatestPullStatusProcessing
-	case modelyesod.FeedConfigPullStatusSuccess:
-		return feedconfig.LatestPullStatusSuccess
-	case modelyesod.FeedConfigPullStatusFailed:
-		return feedconfig.LatestPullStatusFailed
-	default:
-		return ""
-	}
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map ImageStatusUnspecified @ignore
+	// goverter:enum:map ImageStatusUploaded StatusUploaded
+	// goverter:enum:map ImageStatusScanned StatusScanned
+	ToEntImageStatus(modelchesed.ImageStatus) image.Status
 }
