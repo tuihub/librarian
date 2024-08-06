@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -24,21 +24,39 @@ type PorterContextCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetUserID sets the "user_id" field.
-func (pcc *PorterContextCreate) SetUserID(mi model.InternalID) *PorterContextCreate {
-	pcc.mutation.SetUserID(mi)
+// SetGlobalName sets the "global_name" field.
+func (pcc *PorterContextCreate) SetGlobalName(s string) *PorterContextCreate {
+	pcc.mutation.SetGlobalName(s)
 	return pcc
 }
 
-// SetPorterID sets the "porter_id" field.
-func (pcc *PorterContextCreate) SetPorterID(mi model.InternalID) *PorterContextCreate {
-	pcc.mutation.SetPorterID(mi)
+// SetRegion sets the "region" field.
+func (pcc *PorterContextCreate) SetRegion(s string) *PorterContextCreate {
+	pcc.mutation.SetRegion(s)
 	return pcc
 }
 
-// SetContext sets the "context" field.
-func (pcc *PorterContextCreate) SetContext(mic *modeltiphereth.PorterInstanceContext) *PorterContextCreate {
-	pcc.mutation.SetContext(mic)
+// SetContextJSON sets the "context_json" field.
+func (pcc *PorterContextCreate) SetContextJSON(s string) *PorterContextCreate {
+	pcc.mutation.SetContextJSON(s)
+	return pcc
+}
+
+// SetName sets the "name" field.
+func (pcc *PorterContextCreate) SetName(s string) *PorterContextCreate {
+	pcc.mutation.SetName(s)
+	return pcc
+}
+
+// SetDescription sets the "description" field.
+func (pcc *PorterContextCreate) SetDescription(s string) *PorterContextCreate {
+	pcc.mutation.SetDescription(s)
+	return pcc
+}
+
+// SetStatus sets the "status" field.
+func (pcc *PorterContextCreate) SetStatus(po portercontext.Status) *PorterContextCreate {
+	pcc.mutation.SetStatus(po)
 	return pcc
 }
 
@@ -74,6 +92,17 @@ func (pcc *PorterContextCreate) SetNillableCreatedAt(t *time.Time) *PorterContex
 func (pcc *PorterContextCreate) SetID(mi model.InternalID) *PorterContextCreate {
 	pcc.mutation.SetID(mi)
 	return pcc
+}
+
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (pcc *PorterContextCreate) SetOwnerID(id model.InternalID) *PorterContextCreate {
+	pcc.mutation.SetOwnerID(id)
+	return pcc
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (pcc *PorterContextCreate) SetOwner(u *User) *PorterContextCreate {
+	return pcc.SetOwnerID(u.ID)
 }
 
 // Mutation returns the PorterContextMutation object of the builder.
@@ -123,20 +152,37 @@ func (pcc *PorterContextCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (pcc *PorterContextCreate) check() error {
-	if _, ok := pcc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "PorterContext.user_id"`)}
+	if _, ok := pcc.mutation.GlobalName(); !ok {
+		return &ValidationError{Name: "global_name", err: errors.New(`ent: missing required field "PorterContext.global_name"`)}
 	}
-	if _, ok := pcc.mutation.PorterID(); !ok {
-		return &ValidationError{Name: "porter_id", err: errors.New(`ent: missing required field "PorterContext.porter_id"`)}
+	if _, ok := pcc.mutation.Region(); !ok {
+		return &ValidationError{Name: "region", err: errors.New(`ent: missing required field "PorterContext.region"`)}
 	}
-	if _, ok := pcc.mutation.Context(); !ok {
-		return &ValidationError{Name: "context", err: errors.New(`ent: missing required field "PorterContext.context"`)}
+	if _, ok := pcc.mutation.ContextJSON(); !ok {
+		return &ValidationError{Name: "context_json", err: errors.New(`ent: missing required field "PorterContext.context_json"`)}
+	}
+	if _, ok := pcc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "PorterContext.name"`)}
+	}
+	if _, ok := pcc.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "PorterContext.description"`)}
+	}
+	if _, ok := pcc.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "PorterContext.status"`)}
+	}
+	if v, ok := pcc.mutation.Status(); ok {
+		if err := portercontext.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
+		}
 	}
 	if _, ok := pcc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PorterContext.updated_at"`)}
 	}
 	if _, ok := pcc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "PorterContext.created_at"`)}
+	}
+	if _, ok := pcc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "PorterContext.owner"`)}
 	}
 	return nil
 }
@@ -171,17 +217,29 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := pcc.mutation.UserID(); ok {
-		_spec.SetField(portercontext.FieldUserID, field.TypeInt64, value)
-		_node.UserID = value
+	if value, ok := pcc.mutation.GlobalName(); ok {
+		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
+		_node.GlobalName = value
 	}
-	if value, ok := pcc.mutation.PorterID(); ok {
-		_spec.SetField(portercontext.FieldPorterID, field.TypeInt64, value)
-		_node.PorterID = value
+	if value, ok := pcc.mutation.Region(); ok {
+		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
+		_node.Region = value
 	}
-	if value, ok := pcc.mutation.Context(); ok {
-		_spec.SetField(portercontext.FieldContext, field.TypeJSON, value)
-		_node.Context = value
+	if value, ok := pcc.mutation.ContextJSON(); ok {
+		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
+		_node.ContextJSON = value
+	}
+	if value, ok := pcc.mutation.Name(); ok {
+		_spec.SetField(portercontext.FieldName, field.TypeString, value)
+		_node.Name = value
+	}
+	if value, ok := pcc.mutation.Description(); ok {
+		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
+		_node.Description = value
+	}
+	if value, ok := pcc.mutation.Status(); ok {
+		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
+		_node.Status = value
 	}
 	if value, ok := pcc.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
@@ -191,6 +249,23 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := pcc.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   portercontext.OwnerTable,
+			Columns: []string{portercontext.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.user_porter_context = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -198,7 +273,7 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 // of the `INSERT` statement. For example:
 //
 //	client.PorterContext.Create().
-//		SetUserID(v).
+//		SetGlobalName(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -207,7 +282,7 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.PorterContextUpsert) {
-//			SetUserID(v+v).
+//			SetGlobalName(v+v).
 //		}).
 //		Exec(ctx)
 func (pcc *PorterContextCreate) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertOne {
@@ -243,51 +318,75 @@ type (
 	}
 )
 
-// SetUserID sets the "user_id" field.
-func (u *PorterContextUpsert) SetUserID(v model.InternalID) *PorterContextUpsert {
-	u.Set(portercontext.FieldUserID, v)
+// SetGlobalName sets the "global_name" field.
+func (u *PorterContextUpsert) SetGlobalName(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldGlobalName, v)
 	return u
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *PorterContextUpsert) UpdateUserID() *PorterContextUpsert {
-	u.SetExcluded(portercontext.FieldUserID)
+// UpdateGlobalName sets the "global_name" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateGlobalName() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldGlobalName)
 	return u
 }
 
-// AddUserID adds v to the "user_id" field.
-func (u *PorterContextUpsert) AddUserID(v model.InternalID) *PorterContextUpsert {
-	u.Add(portercontext.FieldUserID, v)
+// SetRegion sets the "region" field.
+func (u *PorterContextUpsert) SetRegion(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldRegion, v)
 	return u
 }
 
-// SetPorterID sets the "porter_id" field.
-func (u *PorterContextUpsert) SetPorterID(v model.InternalID) *PorterContextUpsert {
-	u.Set(portercontext.FieldPorterID, v)
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateRegion() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldRegion)
 	return u
 }
 
-// UpdatePorterID sets the "porter_id" field to the value that was provided on create.
-func (u *PorterContextUpsert) UpdatePorterID() *PorterContextUpsert {
-	u.SetExcluded(portercontext.FieldPorterID)
+// SetContextJSON sets the "context_json" field.
+func (u *PorterContextUpsert) SetContextJSON(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldContextJSON, v)
 	return u
 }
 
-// AddPorterID adds v to the "porter_id" field.
-func (u *PorterContextUpsert) AddPorterID(v model.InternalID) *PorterContextUpsert {
-	u.Add(portercontext.FieldPorterID, v)
+// UpdateContextJSON sets the "context_json" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateContextJSON() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldContextJSON)
 	return u
 }
 
-// SetContext sets the "context" field.
-func (u *PorterContextUpsert) SetContext(v *modeltiphereth.PorterInstanceContext) *PorterContextUpsert {
-	u.Set(portercontext.FieldContext, v)
+// SetName sets the "name" field.
+func (u *PorterContextUpsert) SetName(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldName, v)
 	return u
 }
 
-// UpdateContext sets the "context" field to the value that was provided on create.
-func (u *PorterContextUpsert) UpdateContext() *PorterContextUpsert {
-	u.SetExcluded(portercontext.FieldContext)
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateName() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldName)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *PorterContextUpsert) SetDescription(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateDescription() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldDescription)
+	return u
+}
+
+// SetStatus sets the "status" field.
+func (u *PorterContextUpsert) SetStatus(v portercontext.Status) *PorterContextUpsert {
+	u.Set(portercontext.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateStatus() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldStatus)
 	return u
 }
 
@@ -363,59 +462,87 @@ func (u *PorterContextUpsertOne) Update(set func(*PorterContextUpsert)) *PorterC
 	return u
 }
 
-// SetUserID sets the "user_id" field.
-func (u *PorterContextUpsertOne) SetUserID(v model.InternalID) *PorterContextUpsertOne {
+// SetGlobalName sets the "global_name" field.
+func (u *PorterContextUpsertOne) SetGlobalName(v string) *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetUserID(v)
+		s.SetGlobalName(v)
 	})
 }
 
-// AddUserID adds v to the "user_id" field.
-func (u *PorterContextUpsertOne) AddUserID(v model.InternalID) *PorterContextUpsertOne {
+// UpdateGlobalName sets the "global_name" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateGlobalName() *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.AddUserID(v)
+		s.UpdateGlobalName()
 	})
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *PorterContextUpsertOne) UpdateUserID() *PorterContextUpsertOne {
+// SetRegion sets the "region" field.
+func (u *PorterContextUpsertOne) SetRegion(v string) *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdateUserID()
+		s.SetRegion(v)
 	})
 }
 
-// SetPorterID sets the "porter_id" field.
-func (u *PorterContextUpsertOne) SetPorterID(v model.InternalID) *PorterContextUpsertOne {
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateRegion() *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetPorterID(v)
+		s.UpdateRegion()
 	})
 }
 
-// AddPorterID adds v to the "porter_id" field.
-func (u *PorterContextUpsertOne) AddPorterID(v model.InternalID) *PorterContextUpsertOne {
+// SetContextJSON sets the "context_json" field.
+func (u *PorterContextUpsertOne) SetContextJSON(v string) *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.AddPorterID(v)
+		s.SetContextJSON(v)
 	})
 }
 
-// UpdatePorterID sets the "porter_id" field to the value that was provided on create.
-func (u *PorterContextUpsertOne) UpdatePorterID() *PorterContextUpsertOne {
+// UpdateContextJSON sets the "context_json" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateContextJSON() *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdatePorterID()
+		s.UpdateContextJSON()
 	})
 }
 
-// SetContext sets the "context" field.
-func (u *PorterContextUpsertOne) SetContext(v *modeltiphereth.PorterInstanceContext) *PorterContextUpsertOne {
+// SetName sets the "name" field.
+func (u *PorterContextUpsertOne) SetName(v string) *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetContext(v)
+		s.SetName(v)
 	})
 }
 
-// UpdateContext sets the "context" field to the value that was provided on create.
-func (u *PorterContextUpsertOne) UpdateContext() *PorterContextUpsertOne {
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateName() *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdateContext()
+		s.UpdateName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *PorterContextUpsertOne) SetDescription(v string) *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateDescription() *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *PorterContextUpsertOne) SetStatus(v portercontext.Status) *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateStatus() *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateStatus()
 	})
 }
 
@@ -582,7 +709,7 @@ func (pccb *PorterContextCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.PorterContextUpsert) {
-//			SetUserID(v+v).
+//			SetGlobalName(v+v).
 //		}).
 //		Exec(ctx)
 func (pccb *PorterContextCreateBulk) OnConflict(opts ...sql.ConflictOption) *PorterContextUpsertBulk {
@@ -661,59 +788,87 @@ func (u *PorterContextUpsertBulk) Update(set func(*PorterContextUpsert)) *Porter
 	return u
 }
 
-// SetUserID sets the "user_id" field.
-func (u *PorterContextUpsertBulk) SetUserID(v model.InternalID) *PorterContextUpsertBulk {
+// SetGlobalName sets the "global_name" field.
+func (u *PorterContextUpsertBulk) SetGlobalName(v string) *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetUserID(v)
+		s.SetGlobalName(v)
 	})
 }
 
-// AddUserID adds v to the "user_id" field.
-func (u *PorterContextUpsertBulk) AddUserID(v model.InternalID) *PorterContextUpsertBulk {
+// UpdateGlobalName sets the "global_name" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateGlobalName() *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.AddUserID(v)
+		s.UpdateGlobalName()
 	})
 }
 
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *PorterContextUpsertBulk) UpdateUserID() *PorterContextUpsertBulk {
+// SetRegion sets the "region" field.
+func (u *PorterContextUpsertBulk) SetRegion(v string) *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdateUserID()
+		s.SetRegion(v)
 	})
 }
 
-// SetPorterID sets the "porter_id" field.
-func (u *PorterContextUpsertBulk) SetPorterID(v model.InternalID) *PorterContextUpsertBulk {
+// UpdateRegion sets the "region" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateRegion() *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetPorterID(v)
+		s.UpdateRegion()
 	})
 }
 
-// AddPorterID adds v to the "porter_id" field.
-func (u *PorterContextUpsertBulk) AddPorterID(v model.InternalID) *PorterContextUpsertBulk {
+// SetContextJSON sets the "context_json" field.
+func (u *PorterContextUpsertBulk) SetContextJSON(v string) *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.AddPorterID(v)
+		s.SetContextJSON(v)
 	})
 }
 
-// UpdatePorterID sets the "porter_id" field to the value that was provided on create.
-func (u *PorterContextUpsertBulk) UpdatePorterID() *PorterContextUpsertBulk {
+// UpdateContextJSON sets the "context_json" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateContextJSON() *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdatePorterID()
+		s.UpdateContextJSON()
 	})
 }
 
-// SetContext sets the "context" field.
-func (u *PorterContextUpsertBulk) SetContext(v *modeltiphereth.PorterInstanceContext) *PorterContextUpsertBulk {
+// SetName sets the "name" field.
+func (u *PorterContextUpsertBulk) SetName(v string) *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.SetContext(v)
+		s.SetName(v)
 	})
 }
 
-// UpdateContext sets the "context" field to the value that was provided on create.
-func (u *PorterContextUpsertBulk) UpdateContext() *PorterContextUpsertBulk {
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateName() *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
-		s.UpdateContext()
+		s.UpdateName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *PorterContextUpsertBulk) SetDescription(v string) *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateDescription() *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetStatus sets the "status" field.
+func (u *PorterContextUpsertBulk) SetStatus(v portercontext.Status) *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateStatus() *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateStatus()
 	})
 }
 

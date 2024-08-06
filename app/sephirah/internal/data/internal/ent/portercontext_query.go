@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -22,6 +23,8 @@ type PorterContextQuery struct {
 	order      []portercontext.OrderOption
 	inters     []Interceptor
 	predicates []predicate.PorterContext
+	withOwner  *UserQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +59,28 @@ func (pcq *PorterContextQuery) Unique(unique bool) *PorterContextQuery {
 func (pcq *PorterContextQuery) Order(o ...portercontext.OrderOption) *PorterContextQuery {
 	pcq.order = append(pcq.order, o...)
 	return pcq
+}
+
+// QueryOwner chains the current query on the "owner" edge.
+func (pcq *PorterContextQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: pcq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := pcq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := pcq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(portercontext.Table, portercontext.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, portercontext.OwnerTable, portercontext.OwnerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(pcq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first PorterContext entity from the query.
@@ -250,10 +275,22 @@ func (pcq *PorterContextQuery) Clone() *PorterContextQuery {
 		order:      append([]portercontext.OrderOption{}, pcq.order...),
 		inters:     append([]Interceptor{}, pcq.inters...),
 		predicates: append([]predicate.PorterContext{}, pcq.predicates...),
+		withOwner:  pcq.withOwner.Clone(),
 		// clone intermediate query.
 		sql:  pcq.sql.Clone(),
 		path: pcq.path,
 	}
+}
+
+// WithOwner tells the query-builder to eager-load the nodes that are connected to
+// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
+func (pcq *PorterContextQuery) WithOwner(opts ...func(*UserQuery)) *PorterContextQuery {
+	query := (&UserClient{config: pcq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	pcq.withOwner = query
+	return pcq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -262,12 +299,12 @@ func (pcq *PorterContextQuery) Clone() *PorterContextQuery {
 // Example:
 //
 //	var v []struct {
-//		UserID model.InternalID `json:"user_id,omitempty"`
+//		GlobalName string `json:"global_name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.PorterContext.Query().
-//		GroupBy(portercontext.FieldUserID).
+//		GroupBy(portercontext.FieldGlobalName).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (pcq *PorterContextQuery) GroupBy(field string, fields ...string) *PorterContextGroupBy {
@@ -285,11 +322,11 @@ func (pcq *PorterContextQuery) GroupBy(field string, fields ...string) *PorterCo
 // Example:
 //
 //	var v []struct {
-//		UserID model.InternalID `json:"user_id,omitempty"`
+//		GlobalName string `json:"global_name,omitempty"`
 //	}
 //
 //	client.PorterContext.Query().
-//		Select(portercontext.FieldUserID).
+//		Select(portercontext.FieldGlobalName).
 //		Scan(ctx, &v)
 func (pcq *PorterContextQuery) Select(fields ...string) *PorterContextSelect {
 	pcq.ctx.Fields = append(pcq.ctx.Fields, fields...)
@@ -332,15 +369,26 @@ func (pcq *PorterContextQuery) prepareQuery(ctx context.Context) error {
 
 func (pcq *PorterContextQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*PorterContext, error) {
 	var (
-		nodes = []*PorterContext{}
-		_spec = pcq.querySpec()
+		nodes       = []*PorterContext{}
+		withFKs     = pcq.withFKs
+		_spec       = pcq.querySpec()
+		loadedTypes = [1]bool{
+			pcq.withOwner != nil,
+		}
 	)
+	if pcq.withOwner != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, portercontext.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*PorterContext).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &PorterContext{config: pcq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +400,46 @@ func (pcq *PorterContextQuery) sqlAll(ctx context.Context, hooks ...queryHook) (
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := pcq.withOwner; query != nil {
+		if err := pcq.loadOwner(ctx, query, nodes, nil,
+			func(n *PorterContext, e *User) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (pcq *PorterContextQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*PorterContext, init func(*PorterContext), assign func(*PorterContext, *User)) error {
+	ids := make([]model.InternalID, 0, len(nodes))
+	nodeids := make(map[model.InternalID][]*PorterContext)
+	for i := range nodes {
+		if nodes[i].user_porter_context == nil {
+			continue
+		}
+		fk := *nodes[i].user_porter_context
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(user.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "user_porter_context" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (pcq *PorterContextQuery) sqlCount(ctx context.Context) (int, error) {

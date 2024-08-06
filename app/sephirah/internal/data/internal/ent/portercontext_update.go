@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -30,51 +30,87 @@ func (pcu *PorterContextUpdate) Where(ps ...predicate.PorterContext) *PorterCont
 	return pcu
 }
 
-// SetUserID sets the "user_id" field.
-func (pcu *PorterContextUpdate) SetUserID(mi model.InternalID) *PorterContextUpdate {
-	pcu.mutation.ResetUserID()
-	pcu.mutation.SetUserID(mi)
+// SetGlobalName sets the "global_name" field.
+func (pcu *PorterContextUpdate) SetGlobalName(s string) *PorterContextUpdate {
+	pcu.mutation.SetGlobalName(s)
 	return pcu
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillableUserID(mi *model.InternalID) *PorterContextUpdate {
-	if mi != nil {
-		pcu.SetUserID(*mi)
+// SetNillableGlobalName sets the "global_name" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableGlobalName(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetGlobalName(*s)
 	}
 	return pcu
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (pcu *PorterContextUpdate) AddUserID(mi model.InternalID) *PorterContextUpdate {
-	pcu.mutation.AddUserID(mi)
+// SetRegion sets the "region" field.
+func (pcu *PorterContextUpdate) SetRegion(s string) *PorterContextUpdate {
+	pcu.mutation.SetRegion(s)
 	return pcu
 }
 
-// SetPorterID sets the "porter_id" field.
-func (pcu *PorterContextUpdate) SetPorterID(mi model.InternalID) *PorterContextUpdate {
-	pcu.mutation.ResetPorterID()
-	pcu.mutation.SetPorterID(mi)
-	return pcu
-}
-
-// SetNillablePorterID sets the "porter_id" field if the given value is not nil.
-func (pcu *PorterContextUpdate) SetNillablePorterID(mi *model.InternalID) *PorterContextUpdate {
-	if mi != nil {
-		pcu.SetPorterID(*mi)
+// SetNillableRegion sets the "region" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableRegion(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetRegion(*s)
 	}
 	return pcu
 }
 
-// AddPorterID adds mi to the "porter_id" field.
-func (pcu *PorterContextUpdate) AddPorterID(mi model.InternalID) *PorterContextUpdate {
-	pcu.mutation.AddPorterID(mi)
+// SetContextJSON sets the "context_json" field.
+func (pcu *PorterContextUpdate) SetContextJSON(s string) *PorterContextUpdate {
+	pcu.mutation.SetContextJSON(s)
 	return pcu
 }
 
-// SetContext sets the "context" field.
-func (pcu *PorterContextUpdate) SetContext(mic *modeltiphereth.PorterInstanceContext) *PorterContextUpdate {
-	pcu.mutation.SetContext(mic)
+// SetNillableContextJSON sets the "context_json" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableContextJSON(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetContextJSON(*s)
+	}
+	return pcu
+}
+
+// SetName sets the "name" field.
+func (pcu *PorterContextUpdate) SetName(s string) *PorterContextUpdate {
+	pcu.mutation.SetName(s)
+	return pcu
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableName(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetName(*s)
+	}
+	return pcu
+}
+
+// SetDescription sets the "description" field.
+func (pcu *PorterContextUpdate) SetDescription(s string) *PorterContextUpdate {
+	pcu.mutation.SetDescription(s)
+	return pcu
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableDescription(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetDescription(*s)
+	}
+	return pcu
+}
+
+// SetStatus sets the "status" field.
+func (pcu *PorterContextUpdate) SetStatus(po portercontext.Status) *PorterContextUpdate {
+	pcu.mutation.SetStatus(po)
+	return pcu
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableStatus(po *portercontext.Status) *PorterContextUpdate {
+	if po != nil {
+		pcu.SetStatus(*po)
+	}
 	return pcu
 }
 
@@ -98,9 +134,26 @@ func (pcu *PorterContextUpdate) SetNillableCreatedAt(t *time.Time) *PorterContex
 	return pcu
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (pcu *PorterContextUpdate) SetOwnerID(id model.InternalID) *PorterContextUpdate {
+	pcu.mutation.SetOwnerID(id)
+	return pcu
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (pcu *PorterContextUpdate) SetOwner(u *User) *PorterContextUpdate {
+	return pcu.SetOwnerID(u.ID)
+}
+
 // Mutation returns the PorterContextMutation object of the builder.
 func (pcu *PorterContextUpdate) Mutation() *PorterContextMutation {
 	return pcu.mutation
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (pcu *PorterContextUpdate) ClearOwner() *PorterContextUpdate {
+	pcu.mutation.ClearOwner()
+	return pcu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -139,7 +192,23 @@ func (pcu *PorterContextUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pcu *PorterContextUpdate) check() error {
+	if v, ok := pcu.mutation.Status(); ok {
+		if err := portercontext.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
+		}
+	}
+	if _, ok := pcu.mutation.OwnerID(); pcu.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
+	}
+	return nil
+}
+
 func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := pcu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(portercontext.Table, portercontext.Columns, sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64))
 	if ps := pcu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -148,26 +217,58 @@ func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) 
 			}
 		}
 	}
-	if value, ok := pcu.mutation.UserID(); ok {
-		_spec.SetField(portercontext.FieldUserID, field.TypeInt64, value)
+	if value, ok := pcu.mutation.GlobalName(); ok {
+		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.AddedUserID(); ok {
-		_spec.AddField(portercontext.FieldUserID, field.TypeInt64, value)
+	if value, ok := pcu.mutation.Region(); ok {
+		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.PorterID(); ok {
-		_spec.SetField(portercontext.FieldPorterID, field.TypeInt64, value)
+	if value, ok := pcu.mutation.ContextJSON(); ok {
+		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.AddedPorterID(); ok {
-		_spec.AddField(portercontext.FieldPorterID, field.TypeInt64, value)
+	if value, ok := pcu.mutation.Name(); ok {
+		_spec.SetField(portercontext.FieldName, field.TypeString, value)
 	}
-	if value, ok := pcu.mutation.Context(); ok {
-		_spec.SetField(portercontext.FieldContext, field.TypeJSON, value)
+	if value, ok := pcu.mutation.Description(); ok {
+		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := pcu.mutation.Status(); ok {
+		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := pcu.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := pcu.mutation.CreatedAt(); ok {
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
+	}
+	if pcu.mutation.OwnerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   portercontext.OwnerTable,
+			Columns: []string{portercontext.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pcu.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   portercontext.OwnerTable,
+			Columns: []string{portercontext.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, pcu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -189,51 +290,87 @@ type PorterContextUpdateOne struct {
 	mutation *PorterContextMutation
 }
 
-// SetUserID sets the "user_id" field.
-func (pcuo *PorterContextUpdateOne) SetUserID(mi model.InternalID) *PorterContextUpdateOne {
-	pcuo.mutation.ResetUserID()
-	pcuo.mutation.SetUserID(mi)
+// SetGlobalName sets the "global_name" field.
+func (pcuo *PorterContextUpdateOne) SetGlobalName(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetGlobalName(s)
 	return pcuo
 }
 
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillableUserID(mi *model.InternalID) *PorterContextUpdateOne {
-	if mi != nil {
-		pcuo.SetUserID(*mi)
+// SetNillableGlobalName sets the "global_name" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableGlobalName(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetGlobalName(*s)
 	}
 	return pcuo
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (pcuo *PorterContextUpdateOne) AddUserID(mi model.InternalID) *PorterContextUpdateOne {
-	pcuo.mutation.AddUserID(mi)
+// SetRegion sets the "region" field.
+func (pcuo *PorterContextUpdateOne) SetRegion(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetRegion(s)
 	return pcuo
 }
 
-// SetPorterID sets the "porter_id" field.
-func (pcuo *PorterContextUpdateOne) SetPorterID(mi model.InternalID) *PorterContextUpdateOne {
-	pcuo.mutation.ResetPorterID()
-	pcuo.mutation.SetPorterID(mi)
-	return pcuo
-}
-
-// SetNillablePorterID sets the "porter_id" field if the given value is not nil.
-func (pcuo *PorterContextUpdateOne) SetNillablePorterID(mi *model.InternalID) *PorterContextUpdateOne {
-	if mi != nil {
-		pcuo.SetPorterID(*mi)
+// SetNillableRegion sets the "region" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableRegion(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetRegion(*s)
 	}
 	return pcuo
 }
 
-// AddPorterID adds mi to the "porter_id" field.
-func (pcuo *PorterContextUpdateOne) AddPorterID(mi model.InternalID) *PorterContextUpdateOne {
-	pcuo.mutation.AddPorterID(mi)
+// SetContextJSON sets the "context_json" field.
+func (pcuo *PorterContextUpdateOne) SetContextJSON(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetContextJSON(s)
 	return pcuo
 }
 
-// SetContext sets the "context" field.
-func (pcuo *PorterContextUpdateOne) SetContext(mic *modeltiphereth.PorterInstanceContext) *PorterContextUpdateOne {
-	pcuo.mutation.SetContext(mic)
+// SetNillableContextJSON sets the "context_json" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableContextJSON(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetContextJSON(*s)
+	}
+	return pcuo
+}
+
+// SetName sets the "name" field.
+func (pcuo *PorterContextUpdateOne) SetName(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetName(s)
+	return pcuo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableName(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetName(*s)
+	}
+	return pcuo
+}
+
+// SetDescription sets the "description" field.
+func (pcuo *PorterContextUpdateOne) SetDescription(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetDescription(s)
+	return pcuo
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableDescription(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetDescription(*s)
+	}
+	return pcuo
+}
+
+// SetStatus sets the "status" field.
+func (pcuo *PorterContextUpdateOne) SetStatus(po portercontext.Status) *PorterContextUpdateOne {
+	pcuo.mutation.SetStatus(po)
+	return pcuo
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableStatus(po *portercontext.Status) *PorterContextUpdateOne {
+	if po != nil {
+		pcuo.SetStatus(*po)
+	}
 	return pcuo
 }
 
@@ -257,9 +394,26 @@ func (pcuo *PorterContextUpdateOne) SetNillableCreatedAt(t *time.Time) *PorterCo
 	return pcuo
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by ID.
+func (pcuo *PorterContextUpdateOne) SetOwnerID(id model.InternalID) *PorterContextUpdateOne {
+	pcuo.mutation.SetOwnerID(id)
+	return pcuo
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (pcuo *PorterContextUpdateOne) SetOwner(u *User) *PorterContextUpdateOne {
+	return pcuo.SetOwnerID(u.ID)
+}
+
 // Mutation returns the PorterContextMutation object of the builder.
 func (pcuo *PorterContextUpdateOne) Mutation() *PorterContextMutation {
 	return pcuo.mutation
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (pcuo *PorterContextUpdateOne) ClearOwner() *PorterContextUpdateOne {
+	pcuo.mutation.ClearOwner()
+	return pcuo
 }
 
 // Where appends a list predicates to the PorterContextUpdate builder.
@@ -311,7 +465,23 @@ func (pcuo *PorterContextUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pcuo *PorterContextUpdateOne) check() error {
+	if v, ok := pcuo.mutation.Status(); ok {
+		if err := portercontext.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
+		}
+	}
+	if _, ok := pcuo.mutation.OwnerID(); pcuo.mutation.OwnerCleared() && !ok {
+		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
+	}
+	return nil
+}
+
 func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterContext, err error) {
+	if err := pcuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(portercontext.Table, portercontext.Columns, sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64))
 	id, ok := pcuo.mutation.ID()
 	if !ok {
@@ -337,26 +507,58 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 			}
 		}
 	}
-	if value, ok := pcuo.mutation.UserID(); ok {
-		_spec.SetField(portercontext.FieldUserID, field.TypeInt64, value)
+	if value, ok := pcuo.mutation.GlobalName(); ok {
+		_spec.SetField(portercontext.FieldGlobalName, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.AddedUserID(); ok {
-		_spec.AddField(portercontext.FieldUserID, field.TypeInt64, value)
+	if value, ok := pcuo.mutation.Region(); ok {
+		_spec.SetField(portercontext.FieldRegion, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.PorterID(); ok {
-		_spec.SetField(portercontext.FieldPorterID, field.TypeInt64, value)
+	if value, ok := pcuo.mutation.ContextJSON(); ok {
+		_spec.SetField(portercontext.FieldContextJSON, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.AddedPorterID(); ok {
-		_spec.AddField(portercontext.FieldPorterID, field.TypeInt64, value)
+	if value, ok := pcuo.mutation.Name(); ok {
+		_spec.SetField(portercontext.FieldName, field.TypeString, value)
 	}
-	if value, ok := pcuo.mutation.Context(); ok {
-		_spec.SetField(portercontext.FieldContext, field.TypeJSON, value)
+	if value, ok := pcuo.mutation.Description(); ok {
+		_spec.SetField(portercontext.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := pcuo.mutation.Status(); ok {
+		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 	}
 	if value, ok := pcuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := pcuo.mutation.CreatedAt(); ok {
 		_spec.SetField(portercontext.FieldCreatedAt, field.TypeTime, value)
+	}
+	if pcuo.mutation.OwnerCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   portercontext.OwnerTable,
+			Columns: []string{portercontext.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := pcuo.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   portercontext.OwnerTable,
+			Columns: []string{portercontext.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &PorterContext{config: pcuo.config}
 	_spec.Assign = _node.assignValues

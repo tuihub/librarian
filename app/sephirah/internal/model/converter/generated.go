@@ -518,16 +518,54 @@ func (c *toBizConverterImpl) ToBizNotifyTargetStatusList(source []v11.NotifyTarg
 	}
 	return modelnetzachNotifyTargetStatusList
 }
-func (c *toBizConverterImpl) ToBizPorterContext(source *v11.PorterContext) *modeltiphereth.PorterInstanceContext {
-	var pModeltipherethPorterInstanceContext *modeltiphereth.PorterInstanceContext
+func (c *toBizConverterImpl) ToBizPorterContext(source *v11.PorterContext) *modeltiphereth.PorterContext {
+	var pModeltipherethPorterContext *modeltiphereth.PorterContext
 	if source != nil {
-		var modeltipherethPorterInstanceContext modeltiphereth.PorterInstanceContext
-		modeltipherethPorterInstanceContext.ID = ToBizInternalID((*source).Id)
-		modeltipherethPorterInstanceContext.PorterID = ToBizInternalID((*source).PorterId)
-		modeltipherethPorterInstanceContext.ContextJSON = PtrToString((*source).ContextJson)
-		pModeltipherethPorterInstanceContext = &modeltipherethPorterInstanceContext
+		var modeltipherethPorterContext modeltiphereth.PorterContext
+		modeltipherethPorterContext.ID = ToBizInternalID((*source).Id)
+		modeltipherethPorterContext.GlobalName = (*source).GlobalName
+		modeltipherethPorterContext.Region = (*source).Region
+		modeltipherethPorterContext.ContextJSON = (*source).ContextJson
+		modeltipherethPorterContext.Name = (*source).Name
+		modeltipherethPorterContext.Description = (*source).Description
+		modeltipherethPorterContext.Status = c.ToBizPorterContextStatus((*source).Status)
+		modeltipherethPorterContext.HandleStatus = c.ToBizPorterContextHandleStatus((*source).HandleStatus)
+		modeltipherethPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
+		pModeltipherethPorterContext = &modeltipherethPorterContext
 	}
-	return pModeltipherethPorterInstanceContext
+	return pModeltipherethPorterContext
+}
+func (c *toBizConverterImpl) ToBizPorterContextHandleStatus(source v11.PorterContextHandleStatus) modeltiphereth.PorterContextHandleStatus {
+	var modeltipherethPorterContextHandleStatus modeltiphereth.PorterContextHandleStatus
+	switch source {
+	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusActive
+	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusBlocked
+	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusDowngraded
+	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusQueueing
+	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusUnspecified
+	default:
+		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusUnspecified
+	}
+	return modeltipherethPorterContextHandleStatus
+}
+func (c *toBizConverterImpl) ToBizPorterContextStatus(source v11.PorterContextStatus) modeltiphereth.PorterContextStatus {
+	var modeltipherethPorterContextStatus modeltiphereth.PorterContextStatus
+	switch source {
+	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusActive
+	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusDisabled
+	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+	default:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+	}
+	return modeltipherethPorterContextStatus
 }
 func (c *toBizConverterImpl) ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
 	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
@@ -1396,6 +1434,7 @@ func (c *toPBConverterImpl) ToPBPorter(source *modeltiphereth.PorterInstanceCont
 		v1Porter.ConnectionStatus = c.ToPBPorterConnectionStatus((*source).ConnectionStatus)
 		pString := (*source).PorterInstance.ContextJSONSchema
 		v1Porter.ContextJsonSchema = &pString
+		v1Porter.ConnectionStatusMessage = (*source).ConnectionStatusMessage
 		pV1Porter = &v1Porter
 	}
 	return pV1Porter
@@ -1411,12 +1450,73 @@ func (c *toPBConverterImpl) ToPBPorterConnectionStatus(source modeltiphereth.Por
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
 	case modeltiphereth.PorterConnectionStatusDisconnected:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
+	case modeltiphereth.PorterConnectionStatusDowngraded:
+		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
 	case modeltiphereth.PorterConnectionStatusUnspecified:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	default:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
 	return v1PorterConnectionStatus
+}
+func (c *toPBConverterImpl) ToPBPorterContext(source *modeltiphereth.PorterContext) *v11.PorterContext {
+	var pV1PorterContext *v11.PorterContext
+	if source != nil {
+		var v1PorterContext v11.PorterContext
+		v1PorterContext.Id = ToPBInternalID((*source).ID)
+		v1PorterContext.GlobalName = (*source).GlobalName
+		v1PorterContext.Region = (*source).Region
+		v1PorterContext.ContextJson = (*source).ContextJSON
+		v1PorterContext.Name = (*source).Name
+		v1PorterContext.Description = (*source).Description
+		v1PorterContext.Status = c.ToPBPorterContextStatus((*source).Status)
+		v1PorterContext.HandleStatus = c.ToPBPorterContextHandleStatus((*source).HandleStatus)
+		v1PorterContext.HandleStatusMessage = (*source).HandleStatusMessage
+		pV1PorterContext = &v1PorterContext
+	}
+	return pV1PorterContext
+}
+func (c *toPBConverterImpl) ToPBPorterContextHandleStatus(source modeltiphereth.PorterContextHandleStatus) v11.PorterContextHandleStatus {
+	var v1PorterContextHandleStatus v11.PorterContextHandleStatus
+	switch source {
+	case modeltiphereth.PorterContextHandleStatusActive:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
+	case modeltiphereth.PorterContextHandleStatusBlocked:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
+	case modeltiphereth.PorterContextHandleStatusDowngraded:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
+	case modeltiphereth.PorterContextHandleStatusQueueing:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
+	case modeltiphereth.PorterContextHandleStatusUnspecified:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+	default:
+		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+	}
+	return v1PorterContextHandleStatus
+}
+func (c *toPBConverterImpl) ToPBPorterContextList(source []*modeltiphereth.PorterContext) []*v11.PorterContext {
+	var pV1PorterContextList []*v11.PorterContext
+	if source != nil {
+		pV1PorterContextList = make([]*v11.PorterContext, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1PorterContextList[i] = c.ToPBPorterContext(source[i])
+		}
+	}
+	return pV1PorterContextList
+}
+func (c *toPBConverterImpl) ToPBPorterContextStatus(source modeltiphereth.PorterContextStatus) v11.PorterContextStatus {
+	var v1PorterContextStatus v11.PorterContextStatus
+	switch source {
+	case modeltiphereth.PorterContextStatusActive:
+		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
+	case modeltiphereth.PorterContextStatusDisabled:
+		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
+	case modeltiphereth.PorterContextStatusUnspecified:
+		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+	default:
+		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+	}
+	return v1PorterContextStatus
 }
 func (c *toPBConverterImpl) ToPBPorterList(source []*modeltiphereth.PorterInstanceController) []*v11.Porter {
 	var pV1PorterList []*v11.Porter

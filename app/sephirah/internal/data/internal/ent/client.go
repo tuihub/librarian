@@ -4024,6 +4024,22 @@ func (c *PorterContextClient) GetX(ctx context.Context, id model.InternalID) *Po
 	return obj
 }
 
+// QueryOwner queries the owner edge of a PorterContext.
+func (c *PorterContextClient) QueryOwner(pc *PorterContext) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := pc.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(portercontext.Table, portercontext.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, portercontext.OwnerTable, portercontext.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(pc.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *PorterContextClient) Hooks() []Hook {
 	return c.hooks.PorterContext
@@ -4789,6 +4805,22 @@ func (c *UserClient) QueryTag(u *User) *TagQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(tag.Table, tag.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.TagTable, user.TagColumn),
+		)
+		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryPorterContext queries the porter_context edge of a User.
+func (c *UserClient) QueryPorterContext(u *User) *PorterContextQuery {
+	query := (&PorterContextClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := u.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, id),
+			sqlgraph.To(portercontext.Table, portercontext.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PorterContextTable, user.PorterContextColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil

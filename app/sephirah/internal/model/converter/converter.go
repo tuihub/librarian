@@ -51,6 +51,9 @@ func ToPBAccountList(a []*modeltiphereth.Account) []*librarian.Account {
 func ToPBPorterList(a []*modeltiphereth.PorterInstanceController) []*pb.Porter {
 	return toPB.ToPBPorterList(a)
 }
+func ToPBPorterContextList(a []*modeltiphereth.PorterContext) []*pb.PorterContext {
+	return toPB.ToPBPorterContextList(a)
+}
 func ToPBAppInfo(a *modelgebura.AppInfo) *librarian.AppInfo {
 	return toPB.ToPBAppInfo(a)
 }
@@ -151,7 +154,7 @@ func ToLibAuthUserTypeList(a []pb.UserType) []libauth.UserType {
 func ToBizUserStatusList(a []pb.UserStatus) []modeltiphereth.UserStatus {
 	return toBiz.ToBizUserStatusList(a)
 }
-func ToBizPorterContext(a *pb.PorterContext) *modeltiphereth.PorterInstanceContext {
+func ToBizPorterContext(a *pb.PorterContext) *modeltiphereth.PorterContext {
 	return toBiz.ToBizPorterContext(a)
 }
 func ToBizDeviceInfo(a *pb.DeviceInfo) *modeltiphereth.DeviceInfo {

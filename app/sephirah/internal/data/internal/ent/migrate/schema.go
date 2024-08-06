@@ -634,20 +634,32 @@ var (
 	// PorterContextsColumns holds the columns for the "porter_contexts" table.
 	PorterContextsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "porter_id", Type: field.TypeInt64},
-		{Name: "context", Type: field.TypeJSON},
+		{Name: "global_name", Type: field.TypeString},
+		{Name: "region", Type: field.TypeString},
+		{Name: "context_json", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "disabled"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "user_porter_context", Type: field.TypeInt64},
 	}
 	// PorterContextsTable holds the schema information for the "porter_contexts" table.
 	PorterContextsTable = &schema.Table{
 		Name:       "porter_contexts",
 		Columns:    PorterContextsColumns,
 		PrimaryKey: []*schema.Column{PorterContextsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "porter_contexts_users_porter_context",
+				Columns:    []*schema.Column{PorterContextsColumns[9]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "portercontext_user_id_porter_id",
+				Name:    "portercontext_global_name_region",
 				Unique:  true,
 				Columns: []*schema.Column{PorterContextsColumns[1], PorterContextsColumns[2]},
 			},
@@ -949,6 +961,7 @@ func init() {
 	NotifySourcesTable.ForeignKeys[1].RefTable = FeedItemCollectionsTable
 	NotifySourcesTable.ForeignKeys[2].RefTable = UsersTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
+	PorterContextsTable.ForeignKeys[0].RefTable = UsersTable
 	TagsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
 	UserDevicesTable.ForeignKeys[0].RefTable = DeviceInfosTable

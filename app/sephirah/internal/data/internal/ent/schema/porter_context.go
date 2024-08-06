@@ -3,10 +3,8 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/internal/model"
-
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -18,9 +16,13 @@ type PorterContext struct {
 func (PorterContext) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.Int64("user_id").GoType(model.InternalID(0)),
-		field.Int64("porter_id").GoType(model.InternalID(0)),
-		field.JSON("context", new(modeltiphereth.PorterInstanceContext)),
+		field.String("global_name"),
+		field.String("region"),
+		field.String("context_json"),
+		field.String("name"),
+		field.String("description"),
+		field.Enum("status").
+			Values("active", "disabled"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -30,7 +32,16 @@ func (PorterContext) Fields() []ent.Field {
 
 func (PorterContext) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_id", "porter_id").
+		index.Fields("global_name", "region").
+			Unique(),
+	}
+}
+
+func (PorterContext) Edges() []ent.Edge {
+	return []ent.Edge{
+		edge.From("owner", User.Type).
+			Ref("porter_context").
+			Required().
 			Unique(),
 	}
 }

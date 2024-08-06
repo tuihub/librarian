@@ -67,7 +67,19 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
 	ToBizUserStatus(pb.UserStatus) modeltiphereth.UserStatus
 
-	ToBizPorterContext(*pb.PorterContext) *modeltiphereth.PorterInstanceContext
+	ToBizPorterContext(*pb.PorterContext) *modeltiphereth.PorterContext
+	// goverter:enum:unknown PorterContextStatusUnspecified
+	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED PorterContextStatusUnspecified
+	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE PorterContextStatusActive
+	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED PorterContextStatusDisabled
+	ToBizPorterContextStatus(pb.PorterContextStatus) modeltiphereth.PorterContextStatus
+	// goverter:enum:unknown PorterContextHandleStatusUnspecified
+	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED PorterContextHandleStatusUnspecified
+	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE PorterContextHandleStatusActive
+	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED PorterContextHandleStatusDowngraded
+	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING PorterContextHandleStatusQueueing
+	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED PorterContextHandleStatusBlocked
+	ToBizPorterContextHandleStatus(pb.PorterContextHandleStatus) modeltiphereth.PorterContextHandleStatus
 
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime

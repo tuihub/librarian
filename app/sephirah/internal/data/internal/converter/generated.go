@@ -11,6 +11,7 @@ import (
 	image "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	notifyflow "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	notifytarget "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	portercontext "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	porterinstance "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	systemnotification "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	user "github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -472,6 +473,43 @@ func (c *toBizConverterImpl) ToBizPorter(source *ent.PorterInstance) *modeltiphe
 	}
 	return pModeltipherethPorterInstance
 }
+func (c *toBizConverterImpl) ToBizPorterContext(source *ent.PorterContext) *modeltiphereth.PorterContext {
+	var pModeltipherethPorterContext *modeltiphereth.PorterContext
+	if source != nil {
+		var modeltipherethPorterContext modeltiphereth.PorterContext
+		modeltipherethPorterContext.ID = c.modelInternalIDToModelInternalID((*source).ID)
+		modeltipherethPorterContext.GlobalName = (*source).GlobalName
+		modeltipherethPorterContext.Region = (*source).Region
+		modeltipherethPorterContext.ContextJSON = (*source).ContextJSON
+		modeltipherethPorterContext.Name = (*source).Name
+		modeltipherethPorterContext.Description = (*source).Description
+		modeltipherethPorterContext.Status = c.ToBizPorterContextStatus((*source).Status)
+		pModeltipherethPorterContext = &modeltipherethPorterContext
+	}
+	return pModeltipherethPorterContext
+}
+func (c *toBizConverterImpl) ToBizPorterContextList(source []*ent.PorterContext) []*modeltiphereth.PorterContext {
+	var pModeltipherethPorterContextList []*modeltiphereth.PorterContext
+	if source != nil {
+		pModeltipherethPorterContextList = make([]*modeltiphereth.PorterContext, len(source))
+		for i := 0; i < len(source); i++ {
+			pModeltipherethPorterContextList[i] = c.ToBizPorterContext(source[i])
+		}
+	}
+	return pModeltipherethPorterContextList
+}
+func (c *toBizConverterImpl) ToBizPorterContextStatus(source portercontext.Status) modeltiphereth.PorterContextStatus {
+	var modeltipherethPorterContextStatus modeltiphereth.PorterContextStatus
+	switch source {
+	case portercontext.StatusActive:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusActive
+	case portercontext.StatusDisabled:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusDisabled
+	default:
+		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+	}
+	return modeltipherethPorterContextStatus
+}
 func (c *toBizConverterImpl) ToBizPorterList(source []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
 	var pModeltipherethPorterInstanceList []*modeltiphereth.PorterInstance
 	if source != nil {
@@ -857,6 +895,18 @@ func (c *toEntConverterImpl) ToEntNotifyTargetStatusList(source []modelnetzach.N
 		}
 	}
 	return notifytargetStatusList
+}
+func (c *toEntConverterImpl) ToEntPorterContextStatus(source modeltiphereth.PorterContextStatus) portercontext.Status {
+	var portercontextStatus portercontext.Status
+	switch source {
+	case modeltiphereth.PorterContextStatusActive:
+		portercontextStatus = portercontext.StatusActive
+	case modeltiphereth.PorterContextStatusDisabled:
+		portercontextStatus = portercontext.StatusDisabled
+	case modeltiphereth.PorterContextStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return portercontextStatus
 }
 func (c *toEntConverterImpl) ToEntSystemNotificationLevelList(source []modelnetzach.SystemNotificationLevel) []systemnotification.Level {
 	var systemnotificationLevelList []systemnotification.Level

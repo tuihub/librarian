@@ -69,16 +69,44 @@ func (t *Tiphereth) UpdatePorterStatus(
 	return nil
 }
 
+func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modeltiphereth.PorterContext) (model.InternalID, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return 0, bizutils.NoPermissionError()
+	}
+	id, err := t.searcher.NewID(ctx)
+	if err != nil {
+		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	context.ID = id
+	err = t.repo.CreatePorterContext(ctx, claims.UserID, context)
+	if err != nil {
+		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return id, nil
+}
+
+func (t *Tiphereth) ListPorterContexts(ctx context.Context, paging model.Paging) ([]*modeltiphereth.PorterContext, int64, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
+	}
+	contexts, total, err := t.repo.ListPorterContexts(ctx, claims.UserID, paging)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return contexts, total, nil
+}
+
 func (t *Tiphereth) UpdatePorterContext(
 	ctx context.Context,
-	id model.InternalID,
-	context *modeltiphereth.PorterInstanceContext,
+	context *modeltiphereth.PorterContext,
 ) *errors.Error {
-	claims := libauth.FromContextAssertUserType(ctx, libauth.UserTypeNormal)
+	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	err := t.repo.UpdatePorterContext(ctx, claims.UserID, id, context)
+	err := t.repo.UpdatePorterContext(ctx, claims.UserID, context)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

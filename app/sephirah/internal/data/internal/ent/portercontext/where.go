@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -55,16 +56,29 @@ func IDLTE(id model.InternalID) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldLTE(FieldID, id))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldEQ(FieldUserID, vc))
+// GlobalName applies equality check predicate on the "global_name" field. It's identical to GlobalNameEQ.
+func GlobalName(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldGlobalName, v))
 }
 
-// PorterID applies equality check predicate on the "porter_id" field. It's identical to PorterIDEQ.
-func PorterID(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldEQ(FieldPorterID, vc))
+// Region applies equality check predicate on the "region" field. It's identical to RegionEQ.
+func Region(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldRegion, v))
+}
+
+// ContextJSON applies equality check predicate on the "context_json" field. It's identical to ContextJSONEQ.
+func ContextJSON(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldContextJSON, v))
+}
+
+// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
+func Name(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldName, v))
+}
+
+// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
+func Description(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldDescription, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -77,112 +91,349 @@ func CreatedAt(v time.Time) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldEQ(FieldUserID, vc))
+// GlobalNameEQ applies the EQ predicate on the "global_name" field.
+func GlobalNameEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldGlobalName, v))
 }
 
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldNEQ(FieldUserID, vc))
+// GlobalNameNEQ applies the NEQ predicate on the "global_name" field.
+func GlobalNameNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldGlobalName, v))
 }
 
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...model.InternalID) predicate.PorterContext {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.PorterContext(sql.FieldIn(FieldUserID, v...))
+// GlobalNameIn applies the In predicate on the "global_name" field.
+func GlobalNameIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldGlobalName, vs...))
 }
 
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...model.InternalID) predicate.PorterContext {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.PorterContext(sql.FieldNotIn(FieldUserID, v...))
+// GlobalNameNotIn applies the NotIn predicate on the "global_name" field.
+func GlobalNameNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldGlobalName, vs...))
 }
 
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldGT(FieldUserID, vc))
+// GlobalNameGT applies the GT predicate on the "global_name" field.
+func GlobalNameGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldGlobalName, v))
 }
 
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldGTE(FieldUserID, vc))
+// GlobalNameGTE applies the GTE predicate on the "global_name" field.
+func GlobalNameGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldGlobalName, v))
 }
 
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldLT(FieldUserID, vc))
+// GlobalNameLT applies the LT predicate on the "global_name" field.
+func GlobalNameLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldGlobalName, v))
 }
 
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldLTE(FieldUserID, vc))
+// GlobalNameLTE applies the LTE predicate on the "global_name" field.
+func GlobalNameLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldGlobalName, v))
 }
 
-// PorterIDEQ applies the EQ predicate on the "porter_id" field.
-func PorterIDEQ(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldEQ(FieldPorterID, vc))
+// GlobalNameContains applies the Contains predicate on the "global_name" field.
+func GlobalNameContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldGlobalName, v))
 }
 
-// PorterIDNEQ applies the NEQ predicate on the "porter_id" field.
-func PorterIDNEQ(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldNEQ(FieldPorterID, vc))
+// GlobalNameHasPrefix applies the HasPrefix predicate on the "global_name" field.
+func GlobalNameHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldGlobalName, v))
 }
 
-// PorterIDIn applies the In predicate on the "porter_id" field.
-func PorterIDIn(vs ...model.InternalID) predicate.PorterContext {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.PorterContext(sql.FieldIn(FieldPorterID, v...))
+// GlobalNameHasSuffix applies the HasSuffix predicate on the "global_name" field.
+func GlobalNameHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldGlobalName, v))
 }
 
-// PorterIDNotIn applies the NotIn predicate on the "porter_id" field.
-func PorterIDNotIn(vs ...model.InternalID) predicate.PorterContext {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.PorterContext(sql.FieldNotIn(FieldPorterID, v...))
+// GlobalNameEqualFold applies the EqualFold predicate on the "global_name" field.
+func GlobalNameEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldGlobalName, v))
 }
 
-// PorterIDGT applies the GT predicate on the "porter_id" field.
-func PorterIDGT(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldGT(FieldPorterID, vc))
+// GlobalNameContainsFold applies the ContainsFold predicate on the "global_name" field.
+func GlobalNameContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldGlobalName, v))
 }
 
-// PorterIDGTE applies the GTE predicate on the "porter_id" field.
-func PorterIDGTE(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldGTE(FieldPorterID, vc))
+// RegionEQ applies the EQ predicate on the "region" field.
+func RegionEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldRegion, v))
 }
 
-// PorterIDLT applies the LT predicate on the "porter_id" field.
-func PorterIDLT(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldLT(FieldPorterID, vc))
+// RegionNEQ applies the NEQ predicate on the "region" field.
+func RegionNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldRegion, v))
 }
 
-// PorterIDLTE applies the LTE predicate on the "porter_id" field.
-func PorterIDLTE(v model.InternalID) predicate.PorterContext {
-	vc := int64(v)
-	return predicate.PorterContext(sql.FieldLTE(FieldPorterID, vc))
+// RegionIn applies the In predicate on the "region" field.
+func RegionIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldRegion, vs...))
+}
+
+// RegionNotIn applies the NotIn predicate on the "region" field.
+func RegionNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldRegion, vs...))
+}
+
+// RegionGT applies the GT predicate on the "region" field.
+func RegionGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldRegion, v))
+}
+
+// RegionGTE applies the GTE predicate on the "region" field.
+func RegionGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldRegion, v))
+}
+
+// RegionLT applies the LT predicate on the "region" field.
+func RegionLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldRegion, v))
+}
+
+// RegionLTE applies the LTE predicate on the "region" field.
+func RegionLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldRegion, v))
+}
+
+// RegionContains applies the Contains predicate on the "region" field.
+func RegionContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldRegion, v))
+}
+
+// RegionHasPrefix applies the HasPrefix predicate on the "region" field.
+func RegionHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldRegion, v))
+}
+
+// RegionHasSuffix applies the HasSuffix predicate on the "region" field.
+func RegionHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldRegion, v))
+}
+
+// RegionEqualFold applies the EqualFold predicate on the "region" field.
+func RegionEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldRegion, v))
+}
+
+// RegionContainsFold applies the ContainsFold predicate on the "region" field.
+func RegionContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldRegion, v))
+}
+
+// ContextJSONEQ applies the EQ predicate on the "context_json" field.
+func ContextJSONEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldContextJSON, v))
+}
+
+// ContextJSONNEQ applies the NEQ predicate on the "context_json" field.
+func ContextJSONNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldContextJSON, v))
+}
+
+// ContextJSONIn applies the In predicate on the "context_json" field.
+func ContextJSONIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldContextJSON, vs...))
+}
+
+// ContextJSONNotIn applies the NotIn predicate on the "context_json" field.
+func ContextJSONNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldContextJSON, vs...))
+}
+
+// ContextJSONGT applies the GT predicate on the "context_json" field.
+func ContextJSONGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldContextJSON, v))
+}
+
+// ContextJSONGTE applies the GTE predicate on the "context_json" field.
+func ContextJSONGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldContextJSON, v))
+}
+
+// ContextJSONLT applies the LT predicate on the "context_json" field.
+func ContextJSONLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldContextJSON, v))
+}
+
+// ContextJSONLTE applies the LTE predicate on the "context_json" field.
+func ContextJSONLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldContextJSON, v))
+}
+
+// ContextJSONContains applies the Contains predicate on the "context_json" field.
+func ContextJSONContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldContextJSON, v))
+}
+
+// ContextJSONHasPrefix applies the HasPrefix predicate on the "context_json" field.
+func ContextJSONHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldContextJSON, v))
+}
+
+// ContextJSONHasSuffix applies the HasSuffix predicate on the "context_json" field.
+func ContextJSONHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldContextJSON, v))
+}
+
+// ContextJSONEqualFold applies the EqualFold predicate on the "context_json" field.
+func ContextJSONEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldContextJSON, v))
+}
+
+// ContextJSONContainsFold applies the ContainsFold predicate on the "context_json" field.
+func ContextJSONContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldContextJSON, v))
+}
+
+// NameEQ applies the EQ predicate on the "name" field.
+func NameEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldName, v))
+}
+
+// NameNEQ applies the NEQ predicate on the "name" field.
+func NameNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldName, v))
+}
+
+// NameIn applies the In predicate on the "name" field.
+func NameIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldName, vs...))
+}
+
+// NameNotIn applies the NotIn predicate on the "name" field.
+func NameNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldName, vs...))
+}
+
+// NameGT applies the GT predicate on the "name" field.
+func NameGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldName, v))
+}
+
+// NameGTE applies the GTE predicate on the "name" field.
+func NameGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldName, v))
+}
+
+// NameLT applies the LT predicate on the "name" field.
+func NameLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldName, v))
+}
+
+// NameLTE applies the LTE predicate on the "name" field.
+func NameLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldName, v))
+}
+
+// NameContains applies the Contains predicate on the "name" field.
+func NameContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldName, v))
+}
+
+// NameHasPrefix applies the HasPrefix predicate on the "name" field.
+func NameHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldName, v))
+}
+
+// NameHasSuffix applies the HasSuffix predicate on the "name" field.
+func NameHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameEqualFold applies the EqualFold predicate on the "name" field.
+func NameEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldName, v))
+}
+
+// NameContainsFold applies the ContainsFold predicate on the "name" field.
+func NameContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldName, v))
+}
+
+// DescriptionEQ applies the EQ predicate on the "description" field.
+func DescriptionEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldDescription, v))
+}
+
+// DescriptionNEQ applies the NEQ predicate on the "description" field.
+func DescriptionNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldDescription, v))
+}
+
+// DescriptionIn applies the In predicate on the "description" field.
+func DescriptionIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldDescription, vs...))
+}
+
+// DescriptionNotIn applies the NotIn predicate on the "description" field.
+func DescriptionNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldDescription, vs...))
+}
+
+// DescriptionGT applies the GT predicate on the "description" field.
+func DescriptionGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldDescription, v))
+}
+
+// DescriptionGTE applies the GTE predicate on the "description" field.
+func DescriptionGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldDescription, v))
+}
+
+// DescriptionLT applies the LT predicate on the "description" field.
+func DescriptionLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldDescription, v))
+}
+
+// DescriptionLTE applies the LTE predicate on the "description" field.
+func DescriptionLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldDescription, v))
+}
+
+// DescriptionContains applies the Contains predicate on the "description" field.
+func DescriptionContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldDescription, v))
+}
+
+// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
+func DescriptionHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldDescription, v))
+}
+
+// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
+func DescriptionHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
+func DescriptionEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldDescription, v))
+}
+
+// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
+func DescriptionContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v Status) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldStatus, v))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v Status) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldStatus, v))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...Status) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldStatus, vs...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...Status) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldStatus, vs...))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -263,6 +514,29 @@ func CreatedAtLT(v time.Time) predicate.PorterContext {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasOwner applies the HasEdge predicate on the "owner" edge.
+func HasOwner() predicate.PorterContext {
+	return predicate.PorterContext(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
+func HasOwnerWith(preds ...predicate.User) predicate.PorterContext {
+	return predicate.PorterContext(func(s *sql.Selector) {
+		step := newOwnerStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

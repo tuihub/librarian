@@ -24,6 +24,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
@@ -304,6 +305,21 @@ func (uc *UserCreate) AddTag(t ...*Tag) *UserCreate {
 		ids[i] = t[i].ID
 	}
 	return uc.AddTagIDs(ids...)
+}
+
+// AddPorterContextIDs adds the "porter_context" edge to the PorterContext entity by IDs.
+func (uc *UserCreate) AddPorterContextIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddPorterContextIDs(ids...)
+	return uc
+}
+
+// AddPorterContext adds the "porter_context" edges to the PorterContext entity.
+func (uc *UserCreate) AddPorterContext(p ...*PorterContext) *UserCreate {
+	ids := make([]model.InternalID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uc.AddPorterContextIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -703,6 +719,22 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := uc.mutation.PorterContextIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

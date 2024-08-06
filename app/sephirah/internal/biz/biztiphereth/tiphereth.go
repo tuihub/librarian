@@ -41,10 +41,9 @@ type TipherethRepo interface {
 	FetchPorterByAddress(context.Context, string) (*modeltiphereth.PorterInstance, error)
 	UpdatePorterStatus(context.Context, model.InternalID,
 		modeltiphereth.PorterInstanceStatus) (*modeltiphereth.PorterInstance, error)
-	UpdatePorterContext(context.Context, model.InternalID, model.InternalID,
-		*modeltiphereth.PorterInstanceContext) error
-	FetchPorterContext(context.Context, model.InternalID, model.InternalID) (
-		*modeltiphereth.PorterInstanceContext, error)
+	CreatePorterContext(context.Context, model.InternalID, *modeltiphereth.PorterContext) error
+	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modeltiphereth.PorterContext, int64, error)
+	UpdatePorterContext(context.Context, model.InternalID, *modeltiphereth.PorterContext) error
 	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
 	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
 	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error

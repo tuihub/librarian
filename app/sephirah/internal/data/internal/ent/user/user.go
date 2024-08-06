@@ -55,6 +55,8 @@ const (
 	EdgeDeviceInfo = "device_info"
 	// EdgeTag holds the string denoting the tag edge name in mutations.
 	EdgeTag = "tag"
+	// EdgePorterContext holds the string denoting the porter_context edge name in mutations.
+	EdgePorterContext = "porter_context"
 	// EdgeCreator holds the string denoting the creator edge name in mutations.
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
@@ -157,6 +159,13 @@ const (
 	TagInverseTable = "tags"
 	// TagColumn is the table column denoting the tag relation/edge.
 	TagColumn = "user_tag"
+	// PorterContextTable is the table that holds the porter_context relation/edge.
+	PorterContextTable = "porter_contexts"
+	// PorterContextInverseTable is the table name for the PorterContext entity.
+	// It exists in this package in order to avoid circular dependency with the "portercontext" package.
+	PorterContextInverseTable = "porter_contexts"
+	// PorterContextColumn is the table column denoting the porter_context relation/edge.
+	PorterContextColumn = "user_porter_context"
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.
@@ -505,6 +514,20 @@ func ByTag(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
+// ByPorterContextCount orders the results by porter_context count.
+func ByPorterContextCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPorterContextStep(), opts...)
+	}
+}
+
+// ByPorterContext orders the results by porter_context terms.
+func ByPorterContext(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPorterContextStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
 // ByCreatorField orders the results by creator field.
 func ByCreatorField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -635,6 +658,13 @@ func newTagStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(TagInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, TagTable, TagColumn),
+	)
+}
+func newPorterContextStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PorterContextInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, PorterContextTable, PorterContextColumn),
 	)
 }
 func newCreatorStep() *sqlgraph.Step {

@@ -648,6 +648,29 @@ func HasTagWith(preds ...predicate.Tag) predicate.User {
 	})
 }
 
+// HasPorterContext applies the HasEdge predicate on the "porter_context" edge.
+func HasPorterContext() predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, PorterContextTable, PorterContextColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasPorterContextWith applies the HasEdge predicate on the "porter_context" edge with a given conditions (other predicates).
+func HasPorterContextWith(preds ...predicate.PorterContext) predicate.User {
+	return predicate.User(func(s *sql.Selector) {
+		step := newPorterContextStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // HasCreator applies the HasEdge predicate on the "creator" edge.
 func HasCreator() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

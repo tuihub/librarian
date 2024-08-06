@@ -18476,14 +18476,17 @@ type PorterContextMutation struct {
 	op            Op
 	typ           string
 	id            *model.InternalID
-	user_id       *model.InternalID
-	adduser_id    *model.InternalID
-	porter_id     *model.InternalID
-	addporter_id  *model.InternalID
-	context       **modeltiphereth.PorterInstanceContext
+	global_name   *string
+	region        *string
+	context_json  *string
+	name          *string
+	description   *string
+	status        *portercontext.Status
 	updated_at    *time.Time
 	created_at    *time.Time
 	clearedFields map[string]struct{}
+	owner         *model.InternalID
+	clearedowner  bool
 	done          bool
 	oldValue      func(context.Context) (*PorterContext, error)
 	predicates    []predicate.PorterContext
@@ -18593,152 +18596,220 @@ func (m *PorterContextMutation) IDs(ctx context.Context) ([]model.InternalID, er
 	}
 }
 
-// SetUserID sets the "user_id" field.
-func (m *PorterContextMutation) SetUserID(mi model.InternalID) {
-	m.user_id = &mi
-	m.adduser_id = nil
+// SetGlobalName sets the "global_name" field.
+func (m *PorterContextMutation) SetGlobalName(s string) {
+	m.global_name = &s
 }
 
-// UserID returns the value of the "user_id" field in the mutation.
-func (m *PorterContextMutation) UserID() (r model.InternalID, exists bool) {
-	v := m.user_id
+// GlobalName returns the value of the "global_name" field in the mutation.
+func (m *PorterContextMutation) GlobalName() (r string, exists bool) {
+	v := m.global_name
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUserID returns the old "user_id" field's value of the PorterContext entity.
+// OldGlobalName returns the old "global_name" field's value of the PorterContext entity.
 // If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterContextMutation) OldUserID(ctx context.Context) (v model.InternalID, err error) {
+func (m *PorterContextMutation) OldGlobalName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+		return v, errors.New("OldGlobalName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUserID requires an ID field in the mutation")
+		return v, errors.New("OldGlobalName requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+		return v, fmt.Errorf("querying old value for OldGlobalName: %w", err)
 	}
-	return oldValue.UserID, nil
+	return oldValue.GlobalName, nil
 }
 
-// AddUserID adds mi to the "user_id" field.
-func (m *PorterContextMutation) AddUserID(mi model.InternalID) {
-	if m.adduser_id != nil {
-		*m.adduser_id += mi
-	} else {
-		m.adduser_id = &mi
-	}
+// ResetGlobalName resets all changes to the "global_name" field.
+func (m *PorterContextMutation) ResetGlobalName() {
+	m.global_name = nil
 }
 
-// AddedUserID returns the value that was added to the "user_id" field in this mutation.
-func (m *PorterContextMutation) AddedUserID() (r model.InternalID, exists bool) {
-	v := m.adduser_id
+// SetRegion sets the "region" field.
+func (m *PorterContextMutation) SetRegion(s string) {
+	m.region = &s
+}
+
+// Region returns the value of the "region" field in the mutation.
+func (m *PorterContextMutation) Region() (r string, exists bool) {
+	v := m.region
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUserID resets all changes to the "user_id" field.
-func (m *PorterContextMutation) ResetUserID() {
-	m.user_id = nil
-	m.adduser_id = nil
-}
-
-// SetPorterID sets the "porter_id" field.
-func (m *PorterContextMutation) SetPorterID(mi model.InternalID) {
-	m.porter_id = &mi
-	m.addporter_id = nil
-}
-
-// PorterID returns the value of the "porter_id" field in the mutation.
-func (m *PorterContextMutation) PorterID() (r model.InternalID, exists bool) {
-	v := m.porter_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPorterID returns the old "porter_id" field's value of the PorterContext entity.
+// OldRegion returns the old "region" field's value of the PorterContext entity.
 // If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterContextMutation) OldPorterID(ctx context.Context) (v model.InternalID, err error) {
+func (m *PorterContextMutation) OldRegion(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPorterID is only allowed on UpdateOne operations")
+		return v, errors.New("OldRegion is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPorterID requires an ID field in the mutation")
+		return v, errors.New("OldRegion requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPorterID: %w", err)
+		return v, fmt.Errorf("querying old value for OldRegion: %w", err)
 	}
-	return oldValue.PorterID, nil
+	return oldValue.Region, nil
 }
 
-// AddPorterID adds mi to the "porter_id" field.
-func (m *PorterContextMutation) AddPorterID(mi model.InternalID) {
-	if m.addporter_id != nil {
-		*m.addporter_id += mi
-	} else {
-		m.addporter_id = &mi
-	}
+// ResetRegion resets all changes to the "region" field.
+func (m *PorterContextMutation) ResetRegion() {
+	m.region = nil
 }
 
-// AddedPorterID returns the value that was added to the "porter_id" field in this mutation.
-func (m *PorterContextMutation) AddedPorterID() (r model.InternalID, exists bool) {
-	v := m.addporter_id
+// SetContextJSON sets the "context_json" field.
+func (m *PorterContextMutation) SetContextJSON(s string) {
+	m.context_json = &s
+}
+
+// ContextJSON returns the value of the "context_json" field in the mutation.
+func (m *PorterContextMutation) ContextJSON() (r string, exists bool) {
+	v := m.context_json
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetPorterID resets all changes to the "porter_id" field.
-func (m *PorterContextMutation) ResetPorterID() {
-	m.porter_id = nil
-	m.addporter_id = nil
-}
-
-// SetContext sets the "context" field.
-func (m *PorterContextMutation) SetContext(mic *modeltiphereth.PorterInstanceContext) {
-	m.context = &mic
-}
-
-// Context returns the value of the "context" field in the mutation.
-func (m *PorterContextMutation) Context() (r *modeltiphereth.PorterInstanceContext, exists bool) {
-	v := m.context
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldContext returns the old "context" field's value of the PorterContext entity.
+// OldContextJSON returns the old "context_json" field's value of the PorterContext entity.
 // If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterContextMutation) OldContext(ctx context.Context) (v *modeltiphereth.PorterInstanceContext, err error) {
+func (m *PorterContextMutation) OldContextJSON(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldContext is only allowed on UpdateOne operations")
+		return v, errors.New("OldContextJSON is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldContext requires an ID field in the mutation")
+		return v, errors.New("OldContextJSON requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldContext: %w", err)
+		return v, fmt.Errorf("querying old value for OldContextJSON: %w", err)
 	}
-	return oldValue.Context, nil
+	return oldValue.ContextJSON, nil
 }
 
-// ResetContext resets all changes to the "context" field.
-func (m *PorterContextMutation) ResetContext() {
-	m.context = nil
+// ResetContextJSON resets all changes to the "context_json" field.
+func (m *PorterContextMutation) ResetContextJSON() {
+	m.context_json = nil
+}
+
+// SetName sets the "name" field.
+func (m *PorterContextMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *PorterContextMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *PorterContextMutation) ResetName() {
+	m.name = nil
+}
+
+// SetDescription sets the "description" field.
+func (m *PorterContextMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *PorterContextMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *PorterContextMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *PorterContextMutation) SetStatus(po portercontext.Status) {
+	m.status = &po
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *PorterContextMutation) Status() (r portercontext.Status, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldStatus(ctx context.Context) (v portercontext.Status, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *PorterContextMutation) ResetStatus() {
+	m.status = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -18813,6 +18884,45 @@ func (m *PorterContextMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// SetOwnerID sets the "owner" edge to the User entity by id.
+func (m *PorterContextMutation) SetOwnerID(id model.InternalID) {
+	m.owner = &id
+}
+
+// ClearOwner clears the "owner" edge to the User entity.
+func (m *PorterContextMutation) ClearOwner() {
+	m.clearedowner = true
+}
+
+// OwnerCleared reports if the "owner" edge to the User entity was cleared.
+func (m *PorterContextMutation) OwnerCleared() bool {
+	return m.clearedowner
+}
+
+// OwnerID returns the "owner" edge ID in the mutation.
+func (m *PorterContextMutation) OwnerID() (id model.InternalID, exists bool) {
+	if m.owner != nil {
+		return *m.owner, true
+	}
+	return
+}
+
+// OwnerIDs returns the "owner" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// OwnerID instead. It exists only for internal usage by the builders.
+func (m *PorterContextMutation) OwnerIDs() (ids []model.InternalID) {
+	if id := m.owner; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetOwner resets all changes to the "owner" edge.
+func (m *PorterContextMutation) ResetOwner() {
+	m.owner = nil
+	m.clearedowner = false
+}
+
 // Where appends a list predicates to the PorterContextMutation builder.
 func (m *PorterContextMutation) Where(ps ...predicate.PorterContext) {
 	m.predicates = append(m.predicates, ps...)
@@ -18847,15 +18957,24 @@ func (m *PorterContextMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PorterContextMutation) Fields() []string {
-	fields := make([]string, 0, 5)
-	if m.user_id != nil {
-		fields = append(fields, portercontext.FieldUserID)
+	fields := make([]string, 0, 8)
+	if m.global_name != nil {
+		fields = append(fields, portercontext.FieldGlobalName)
 	}
-	if m.porter_id != nil {
-		fields = append(fields, portercontext.FieldPorterID)
+	if m.region != nil {
+		fields = append(fields, portercontext.FieldRegion)
 	}
-	if m.context != nil {
-		fields = append(fields, portercontext.FieldContext)
+	if m.context_json != nil {
+		fields = append(fields, portercontext.FieldContextJSON)
+	}
+	if m.name != nil {
+		fields = append(fields, portercontext.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, portercontext.FieldDescription)
+	}
+	if m.status != nil {
+		fields = append(fields, portercontext.FieldStatus)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, portercontext.FieldUpdatedAt)
@@ -18871,12 +18990,18 @@ func (m *PorterContextMutation) Fields() []string {
 // schema.
 func (m *PorterContextMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case portercontext.FieldUserID:
-		return m.UserID()
-	case portercontext.FieldPorterID:
-		return m.PorterID()
-	case portercontext.FieldContext:
-		return m.Context()
+	case portercontext.FieldGlobalName:
+		return m.GlobalName()
+	case portercontext.FieldRegion:
+		return m.Region()
+	case portercontext.FieldContextJSON:
+		return m.ContextJSON()
+	case portercontext.FieldName:
+		return m.Name()
+	case portercontext.FieldDescription:
+		return m.Description()
+	case portercontext.FieldStatus:
+		return m.Status()
 	case portercontext.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case portercontext.FieldCreatedAt:
@@ -18890,12 +19015,18 @@ func (m *PorterContextMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *PorterContextMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case portercontext.FieldUserID:
-		return m.OldUserID(ctx)
-	case portercontext.FieldPorterID:
-		return m.OldPorterID(ctx)
-	case portercontext.FieldContext:
-		return m.OldContext(ctx)
+	case portercontext.FieldGlobalName:
+		return m.OldGlobalName(ctx)
+	case portercontext.FieldRegion:
+		return m.OldRegion(ctx)
+	case portercontext.FieldContextJSON:
+		return m.OldContextJSON(ctx)
+	case portercontext.FieldName:
+		return m.OldName(ctx)
+	case portercontext.FieldDescription:
+		return m.OldDescription(ctx)
+	case portercontext.FieldStatus:
+		return m.OldStatus(ctx)
 	case portercontext.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case portercontext.FieldCreatedAt:
@@ -18909,26 +19040,47 @@ func (m *PorterContextMutation) OldField(ctx context.Context, name string) (ent.
 // type.
 func (m *PorterContextMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case portercontext.FieldUserID:
-		v, ok := value.(model.InternalID)
+	case portercontext.FieldGlobalName:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUserID(v)
+		m.SetGlobalName(v)
 		return nil
-	case portercontext.FieldPorterID:
-		v, ok := value.(model.InternalID)
+	case portercontext.FieldRegion:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetPorterID(v)
+		m.SetRegion(v)
 		return nil
-	case portercontext.FieldContext:
-		v, ok := value.(*modeltiphereth.PorterInstanceContext)
+	case portercontext.FieldContextJSON:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetContext(v)
+		m.SetContextJSON(v)
+		return nil
+	case portercontext.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case portercontext.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case portercontext.FieldStatus:
+		v, ok := value.(portercontext.Status)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
 		return nil
 	case portercontext.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -18951,26 +19103,13 @@ func (m *PorterContextMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *PorterContextMutation) AddedFields() []string {
-	var fields []string
-	if m.adduser_id != nil {
-		fields = append(fields, portercontext.FieldUserID)
-	}
-	if m.addporter_id != nil {
-		fields = append(fields, portercontext.FieldPorterID)
-	}
-	return fields
+	return nil
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *PorterContextMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case portercontext.FieldUserID:
-		return m.AddedUserID()
-	case portercontext.FieldPorterID:
-		return m.AddedPorterID()
-	}
 	return nil, false
 }
 
@@ -18979,20 +19118,6 @@ func (m *PorterContextMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *PorterContextMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case portercontext.FieldUserID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUserID(v)
-		return nil
-	case portercontext.FieldPorterID:
-		v, ok := value.(model.InternalID)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPorterID(v)
-		return nil
 	}
 	return fmt.Errorf("unknown PorterContext numeric field %s", name)
 }
@@ -19020,14 +19145,23 @@ func (m *PorterContextMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *PorterContextMutation) ResetField(name string) error {
 	switch name {
-	case portercontext.FieldUserID:
-		m.ResetUserID()
+	case portercontext.FieldGlobalName:
+		m.ResetGlobalName()
 		return nil
-	case portercontext.FieldPorterID:
-		m.ResetPorterID()
+	case portercontext.FieldRegion:
+		m.ResetRegion()
 		return nil
-	case portercontext.FieldContext:
-		m.ResetContext()
+	case portercontext.FieldContextJSON:
+		m.ResetContextJSON()
+		return nil
+	case portercontext.FieldName:
+		m.ResetName()
+		return nil
+	case portercontext.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case portercontext.FieldStatus:
+		m.ResetStatus()
 		return nil
 	case portercontext.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -19041,19 +19175,28 @@ func (m *PorterContextMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *PorterContextMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.owner != nil {
+		edges = append(edges, portercontext.EdgeOwner)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *PorterContextMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case portercontext.EdgeOwner:
+		if id := m.owner; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *PorterContextMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -19065,25 +19208,42 @@ func (m *PorterContextMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *PorterContextMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 1)
+	if m.clearedowner {
+		edges = append(edges, portercontext.EdgeOwner)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *PorterContextMutation) EdgeCleared(name string) bool {
+	switch name {
+	case portercontext.EdgeOwner:
+		return m.clearedowner
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *PorterContextMutation) ClearEdge(name string) error {
+	switch name {
+	case portercontext.EdgeOwner:
+		m.ClearOwner()
+		return nil
+	}
 	return fmt.Errorf("unknown PorterContext unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *PorterContextMutation) ResetEdge(name string) error {
+	switch name {
+	case portercontext.EdgeOwner:
+		m.ResetOwner()
+		return nil
+	}
 	return fmt.Errorf("unknown PorterContext edge %s", name)
 }
 
@@ -21401,6 +21561,9 @@ type UserMutation struct {
 	tag                         map[model.InternalID]struct{}
 	removedtag                  map[model.InternalID]struct{}
 	clearedtag                  bool
+	porter_context              map[model.InternalID]struct{}
+	removedporter_context       map[model.InternalID]struct{}
+	clearedporter_context       bool
 	creator                     *model.InternalID
 	clearedcreator              bool
 	created_user                map[model.InternalID]struct{}
@@ -22490,6 +22653,60 @@ func (m *UserMutation) ResetTag() {
 	m.removedtag = nil
 }
 
+// AddPorterContextIDs adds the "porter_context" edge to the PorterContext entity by ids.
+func (m *UserMutation) AddPorterContextIDs(ids ...model.InternalID) {
+	if m.porter_context == nil {
+		m.porter_context = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.porter_context[ids[i]] = struct{}{}
+	}
+}
+
+// ClearPorterContext clears the "porter_context" edge to the PorterContext entity.
+func (m *UserMutation) ClearPorterContext() {
+	m.clearedporter_context = true
+}
+
+// PorterContextCleared reports if the "porter_context" edge to the PorterContext entity was cleared.
+func (m *UserMutation) PorterContextCleared() bool {
+	return m.clearedporter_context
+}
+
+// RemovePorterContextIDs removes the "porter_context" edge to the PorterContext entity by IDs.
+func (m *UserMutation) RemovePorterContextIDs(ids ...model.InternalID) {
+	if m.removedporter_context == nil {
+		m.removedporter_context = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.porter_context, ids[i])
+		m.removedporter_context[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedPorterContext returns the removed IDs of the "porter_context" edge to the PorterContext entity.
+func (m *UserMutation) RemovedPorterContextIDs() (ids []model.InternalID) {
+	for id := range m.removedporter_context {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// PorterContextIDs returns the "porter_context" edge IDs in the mutation.
+func (m *UserMutation) PorterContextIDs() (ids []model.InternalID) {
+	for id := range m.porter_context {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetPorterContext resets all changes to the "porter_context" edge.
+func (m *UserMutation) ResetPorterContext() {
+	m.porter_context = nil
+	m.clearedporter_context = false
+	m.removedporter_context = nil
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by id.
 func (m *UserMutation) SetCreatorID(id model.InternalID) {
 	m.creator = &id
@@ -22855,7 +23072,7 @@ func (m *UserMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *UserMutation) AddedEdges() []string {
-	edges := make([]string, 0, 17)
+	edges := make([]string, 0, 18)
 	if m.bind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -22897,6 +23114,9 @@ func (m *UserMutation) AddedEdges() []string {
 	}
 	if m.tag != nil {
 		edges = append(edges, user.EdgeTag)
+	}
+	if m.porter_context != nil {
+		edges = append(edges, user.EdgePorterContext)
 	}
 	if m.creator != nil {
 		edges = append(edges, user.EdgeCreator)
@@ -22998,6 +23218,12 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgePorterContext:
+		ids := make([]ent.Value, 0, len(m.porter_context))
+		for id := range m.porter_context {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreator:
 		if id := m.creator; id != nil {
 			return []ent.Value{*id}
@@ -23020,7 +23246,7 @@ func (m *UserMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *UserMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 17)
+	edges := make([]string, 0, 18)
 	if m.removedbind_account != nil {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -23062,6 +23288,9 @@ func (m *UserMutation) RemovedEdges() []string {
 	}
 	if m.removedtag != nil {
 		edges = append(edges, user.EdgeTag)
+	}
+	if m.removedporter_context != nil {
+		edges = append(edges, user.EdgePorterContext)
 	}
 	if m.removedcreated_user != nil {
 		edges = append(edges, user.EdgeCreatedUser)
@@ -23160,6 +23389,12 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case user.EdgePorterContext:
+		ids := make([]ent.Value, 0, len(m.removedporter_context))
+		for id := range m.removedporter_context {
+			ids = append(ids, id)
+		}
+		return ids
 	case user.EdgeCreatedUser:
 		ids := make([]ent.Value, 0, len(m.removedcreated_user))
 		for id := range m.removedcreated_user {
@@ -23178,7 +23413,7 @@ func (m *UserMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *UserMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 17)
+	edges := make([]string, 0, 18)
 	if m.clearedbind_account {
 		edges = append(edges, user.EdgeBindAccount)
 	}
@@ -23220,6 +23455,9 @@ func (m *UserMutation) ClearedEdges() []string {
 	}
 	if m.clearedtag {
 		edges = append(edges, user.EdgeTag)
+	}
+	if m.clearedporter_context {
+		edges = append(edges, user.EdgePorterContext)
 	}
 	if m.clearedcreator {
 		edges = append(edges, user.EdgeCreator)
@@ -23265,6 +23503,8 @@ func (m *UserMutation) EdgeCleared(name string) bool {
 		return m.cleareddevice_info
 	case user.EdgeTag:
 		return m.clearedtag
+	case user.EdgePorterContext:
+		return m.clearedporter_context
 	case user.EdgeCreator:
 		return m.clearedcreator
 	case user.EdgeCreatedUser:
@@ -23331,6 +23571,9 @@ func (m *UserMutation) ResetEdge(name string) error {
 		return nil
 	case user.EdgeTag:
 		m.ResetTag()
+		return nil
+	case user.EdgePorterContext:
+		m.ResetPorterContext()
 		return nil
 	case user.EdgeCreator:
 		m.ResetCreator()

@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -34,6 +35,12 @@ import (
 type toEntConverter interface { //nolint:unused // used by generator
 	ToEntUserTypeList([]libauth.UserType) []user.Type
 	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map PorterContextStatusUnspecified @ignore
+	// goverter:enum:map PorterContextStatusActive StatusActive
+	// goverter:enum:map PorterContextStatusDisabled StatusDisabled
+	ToEntPorterContextStatus(modeltiphereth.PorterContextStatus) portercontext.Status
 
 	// goverter:autoMap Details
 	// goverter:useZeroValueOnPointerInconsistency

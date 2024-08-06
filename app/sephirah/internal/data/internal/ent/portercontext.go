@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -11,7 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -20,17 +19,47 @@ type PorterContext struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID model.InternalID `json:"user_id,omitempty"`
-	// PorterID holds the value of the "porter_id" field.
-	PorterID model.InternalID `json:"porter_id,omitempty"`
-	// Context holds the value of the "context" field.
-	Context *modeltiphereth.PorterInstanceContext `json:"context,omitempty"`
+	// GlobalName holds the value of the "global_name" field.
+	GlobalName string `json:"global_name,omitempty"`
+	// Region holds the value of the "region" field.
+	Region string `json:"region,omitempty"`
+	// ContextJSON holds the value of the "context_json" field.
+	ContextJSON string `json:"context_json,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
+	// Status holds the value of the "status" field.
+	Status portercontext.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
-	selectValues sql.SelectValues
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the PorterContextQuery when eager-loading is set.
+	Edges               PorterContextEdges `json:"edges"`
+	user_porter_context *model.InternalID
+	selectValues        sql.SelectValues
+}
+
+// PorterContextEdges holds the relations/edges for other nodes in the graph.
+type PorterContextEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *User `json:"owner,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// OwnerOrErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e PorterContextEdges) OwnerOrErr() (*User, error) {
+	if e.Owner != nil {
+		return e.Owner, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: user.Label}
+	}
+	return nil, &NotLoadedError{edge: "owner"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,12 +67,14 @@ func (*PorterContext) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case portercontext.FieldContext:
-			values[i] = new([]byte)
-		case portercontext.FieldID, portercontext.FieldUserID, portercontext.FieldPorterID:
+		case portercontext.FieldID:
 			values[i] = new(sql.NullInt64)
+		case portercontext.FieldGlobalName, portercontext.FieldRegion, portercontext.FieldContextJSON, portercontext.FieldName, portercontext.FieldDescription, portercontext.FieldStatus:
+			values[i] = new(sql.NullString)
 		case portercontext.FieldUpdatedAt, portercontext.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case portercontext.ForeignKeys[0]: // user_porter_context
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -65,25 +96,41 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pc.ID = model.InternalID(value.Int64)
 			}
-		case portercontext.FieldUserID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+		case portercontext.FieldGlobalName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field global_name", values[i])
 			} else if value.Valid {
-				pc.UserID = model.InternalID(value.Int64)
+				pc.GlobalName = value.String
 			}
-		case portercontext.FieldPorterID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field porter_id", values[i])
+		case portercontext.FieldRegion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field region", values[i])
 			} else if value.Valid {
-				pc.PorterID = model.InternalID(value.Int64)
+				pc.Region = value.String
 			}
-		case portercontext.FieldContext:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field context", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &pc.Context); err != nil {
-					return fmt.Errorf("unmarshal field context: %w", err)
-				}
+		case portercontext.FieldContextJSON:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field context_json", values[i])
+			} else if value.Valid {
+				pc.ContextJSON = value.String
+			}
+		case portercontext.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				pc.Name = value.String
+			}
+		case portercontext.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				pc.Description = value.String
+			}
+		case portercontext.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				pc.Status = portercontext.Status(value.String)
 			}
 		case portercontext.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -97,6 +144,13 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pc.CreatedAt = value.Time
 			}
+		case portercontext.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field user_porter_context", values[i])
+			} else if value.Valid {
+				pc.user_porter_context = new(model.InternalID)
+				*pc.user_porter_context = model.InternalID(value.Int64)
+			}
 		default:
 			pc.selectValues.Set(columns[i], values[i])
 		}
@@ -108,6 +162,11 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (pc *PorterContext) Value(name string) (ent.Value, error) {
 	return pc.selectValues.Get(name)
+}
+
+// QueryOwner queries the "owner" edge of the PorterContext entity.
+func (pc *PorterContext) QueryOwner() *UserQuery {
+	return NewPorterContextClient(pc.config).QueryOwner(pc)
 }
 
 // Update returns a builder for updating this PorterContext.
@@ -133,14 +192,23 @@ func (pc *PorterContext) String() string {
 	var builder strings.Builder
 	builder.WriteString("PorterContext(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", pc.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", pc.UserID))
+	builder.WriteString("global_name=")
+	builder.WriteString(pc.GlobalName)
 	builder.WriteString(", ")
-	builder.WriteString("porter_id=")
-	builder.WriteString(fmt.Sprintf("%v", pc.PorterID))
+	builder.WriteString("region=")
+	builder.WriteString(pc.Region)
 	builder.WriteString(", ")
-	builder.WriteString("context=")
-	builder.WriteString(fmt.Sprintf("%v", pc.Context))
+	builder.WriteString("context_json=")
+	builder.WriteString(pc.ContextJSON)
+	builder.WriteString(", ")
+	builder.WriteString("name=")
+	builder.WriteString(pc.Name)
+	builder.WriteString(", ")
+	builder.WriteString("description=")
+	builder.WriteString(pc.Description)
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", pc.Status))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(pc.UpdatedAt.Format(time.ANSIC))

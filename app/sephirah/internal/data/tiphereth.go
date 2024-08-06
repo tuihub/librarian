@@ -416,30 +416,56 @@ func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string)
 	return converter.ToBizPorter(p), nil
 }
 
+func (t tipherethRepo) CreatePorterContext(
+	ctx context.Context,
+	userID model.InternalID,
+	context *modeltiphereth.PorterContext,
+) error {
+	return t.data.db.PorterContext.Create().
+		SetOwnerID(userID).
+		SetGlobalName(context.GlobalName).
+		SetRegion(context.Region).
+		SetContextJSON(context.ContextJSON).
+		SetName(context.Name).
+		SetDescription(context.Description).
+		SetStatus(converter.ToEntPorterContextStatus(context.Status)).
+		Exec(ctx)
+}
+
+func (t tipherethRepo) ListPorterContexts(
+	ctx context.Context,
+	userID model.InternalID,
+	paging model.Paging,
+) ([]*modeltiphereth.PorterContext, int64, error) {
+	q := t.data.db.PorterContext.Query().Where(
+		portercontext.HasOwnerWith(user.IDEQ(userID)),
+	)
+	count, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	p, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizPorterContextList(p), int64(count), nil
+}
+
 func (t tipherethRepo) UpdatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
-	porterID model.InternalID,
-	context *modeltiphereth.PorterInstanceContext,
+	context *modeltiphereth.PorterContext,
 ) error {
 	return t.data.db.PorterContext.Update().Where(
-		portercontext.PorterIDEQ(porterID),
-		portercontext.UserID(userID),
+		portercontext.IDEQ(context.ID),
+		portercontext.HasOwnerWith(user.IDEQ(userID)),
 	).
-		SetContext(context).
+		SetContextJSON(context.ContextJSON).
+		SetName(context.Name).
+		SetDescription(context.Description).
+		SetStatus(converter.ToEntPorterContextStatus(context.Status)).
 		Exec(ctx)
-}
-func (t tipherethRepo) FetchPorterContext(
-	ctx context.Context,
-	porterID model.InternalID,
-	userID model.InternalID,
-) (*modeltiphereth.PorterInstanceContext, error) {
-	res, err := t.data.db.PorterContext.Query().Where(
-		portercontext.PorterIDEQ(porterID),
-		portercontext.UserID(userID),
-	).Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return res.Context, nil
 }

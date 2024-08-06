@@ -49,6 +49,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("device_info", DeviceInfo.Type).
 			Through("user_device", UserDevice.Type),
 		edge.To("tag", Tag.Type),
+		edge.To("porter_context", PorterContext.Type),
 		edge.To("created_user", User.Type).
 			From("creator").
 			Unique().

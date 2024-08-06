@@ -9,8 +9,9 @@ import (
 
 type PorterInstanceController struct {
 	PorterInstance
-	ConnectionStatus PorterConnectionStatus
-	LastHeartbeat    time.Time
+	ConnectionStatus        PorterConnectionStatus
+	ConnectionStatusMessage string
+	LastHeartbeat           time.Time
 }
 
 type PorterInstance struct {
@@ -52,12 +53,6 @@ type FeatureRequest struct {
 	ContextID  model.InternalID `json:"context_id"`
 }
 
-type PorterInstanceContext struct {
-	ID          model.InternalID
-	PorterID    model.InternalID
-	ContextJSON string
-}
-
 type PorterInstanceStatus int
 
 const (
@@ -82,6 +77,37 @@ const (
 	PorterConnectionStatusDisconnected
 	PorterConnectionStatusActive
 	PorterConnectionStatusActivationFailed
+	PorterConnectionStatusDowngraded
+)
+
+type PorterContext struct {
+	ID                  model.InternalID
+	GlobalName          string
+	Region              string
+	ContextJSON         string
+	Name                string
+	Description         string
+	Status              PorterContextStatus
+	HandleStatus        PorterContextHandleStatus
+	HandleStatusMessage string
+}
+
+type PorterContextStatus int
+
+const (
+	PorterContextStatusUnspecified PorterContextStatus = iota
+	PorterContextStatusActive
+	PorterContextStatusDisabled
+)
+
+type PorterContextHandleStatus int
+
+const (
+	PorterContextHandleStatusUnspecified PorterContextHandleStatus = iota
+	PorterContextHandleStatusActive
+	PorterContextHandleStatusDowngraded
+	PorterContextHandleStatusQueueing
+	PorterContextHandleStatusBlocked
 )
 
 type ServerFeatureSummaryMap struct {

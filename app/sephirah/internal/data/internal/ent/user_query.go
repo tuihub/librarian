@@ -24,6 +24,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -52,6 +53,7 @@ type UserQuery struct {
 	withFile               *FileQuery
 	withDeviceInfo         *DeviceInfoQuery
 	withTag                *TagQuery
+	withPorterContext      *PorterContextQuery
 	withCreator            *UserQuery
 	withCreatedUser        *UserQuery
 	withUserDevice         *UserDeviceQuery
@@ -400,6 +402,28 @@ func (uq *UserQuery) QueryTag() *TagQuery {
 	return query
 }
 
+// QueryPorterContext chains the current query on the "porter_context" edge.
+func (uq *UserQuery) QueryPorterContext() *PorterContextQuery {
+	query := (&PorterContextClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(portercontext.Table, portercontext.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.PorterContextTable, user.PorterContextColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // QueryCreator chains the current query on the "creator" edge.
 func (uq *UserQuery) QueryCreator() *UserQuery {
 	query := (&UserClient{config: uq.config}).Query()
@@ -672,6 +696,7 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withFile:               uq.withFile.Clone(),
 		withDeviceInfo:         uq.withDeviceInfo.Clone(),
 		withTag:                uq.withTag.Clone(),
+		withPorterContext:      uq.withPorterContext.Clone(),
 		withCreator:            uq.withCreator.Clone(),
 		withCreatedUser:        uq.withCreatedUser.Clone(),
 		withUserDevice:         uq.withUserDevice.Clone(),
@@ -835,6 +860,17 @@ func (uq *UserQuery) WithTag(opts ...func(*TagQuery)) *UserQuery {
 	return uq
 }
 
+// WithPorterContext tells the query-builder to eager-load the nodes that are connected to
+// the "porter_context" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithPorterContext(opts ...func(*PorterContextQuery)) *UserQuery {
+	query := (&PorterContextClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withPorterContext = query
+	return uq
+}
+
 // WithCreator tells the query-builder to eager-load the nodes that are connected to
 // the "creator" edge. The optional arguments are used to configure the query builder of the edge.
 func (uq *UserQuery) WithCreator(opts ...func(*UserQuery)) *UserQuery {
@@ -947,7 +983,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		nodes       = []*User{}
 		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [17]bool{
+		loadedTypes = [18]bool{
 			uq.withBindAccount != nil,
 			uq.withPurchasedApp != nil,
 			uq.withApp != nil,
@@ -962,6 +998,7 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withFile != nil,
 			uq.withDeviceInfo != nil,
 			uq.withTag != nil,
+			uq.withPorterContext != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
 			uq.withUserDevice != nil,
@@ -1088,6 +1125,13 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadTag(ctx, query, nodes,
 			func(n *User) { n.Edges.Tag = []*Tag{} },
 			func(n *User, e *Tag) { n.Edges.Tag = append(n.Edges.Tag, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := uq.withPorterContext; query != nil {
+		if err := uq.loadPorterContext(ctx, query, nodes,
+			func(n *User) { n.Edges.PorterContext = []*PorterContext{} },
+			func(n *User, e *PorterContext) { n.Edges.PorterContext = append(n.Edges.PorterContext, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1601,6 +1645,37 @@ func (uq *UserQuery) loadTag(ctx context.Context, query *TagQuery, nodes []*User
 		node, ok := nodeids[fk]
 		if !ok {
 			return fmt.Errorf(`unexpected referenced foreign-key "user_tag" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (uq *UserQuery) loadPorterContext(ctx context.Context, query *PorterContextQuery, nodes []*User, init func(*User), assign func(*User, *PorterContext)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	query.withFKs = true
+	query.Where(predicate.PorterContext(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.PorterContextColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.user_porter_context
+		if fk == nil {
+			return fmt.Errorf(`foreign-key "user_porter_context" is nil for node %v`, n.ID)
+		}
+		node, ok := nodeids[*fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "user_porter_context" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
 	}

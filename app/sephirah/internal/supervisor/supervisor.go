@@ -77,15 +77,11 @@ func (s *Supervisor) GetHeartbeatInterval() time.Duration {
 	return defaultHeartbeatInterval
 }
 
-func (s *Supervisor) GetInstanceConnectionStatus(
+func (s *Supervisor) GetInstanceController(
 	ctx context.Context,
 	address string,
-) modeltiphereth.PorterConnectionStatus {
-	value := s.instanceController.Load(address)
-	if value == nil {
-		return modeltiphereth.PorterConnectionStatusDisconnected
-	}
-	return value.ConnectionStatus
+) *modeltiphereth.PorterInstanceController {
+	return s.instanceController.Load(address)
 }
 
 func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
@@ -141,9 +137,10 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 				newInstancesMu.Unlock()
 			}
 			s.instanceController.Store(address, modeltiphereth.PorterInstanceController{
-				PorterInstance:   *ins,
-				ConnectionStatus: modeltiphereth.PorterConnectionStatusConnected,
-				LastHeartbeat:    time.Now(),
+				PorterInstance:          *ins,
+				ConnectionStatus:        modeltiphereth.PorterConnectionStatusConnected,
+				ConnectionStatusMessage: "",
+				LastHeartbeat:           time.Now(),
 			})
 		}(ctx, address)
 	}
@@ -159,7 +156,8 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 		wg.Add(1)
 		go func(ctx context.Context, ins *modeltiphereth.PorterInstance) {
 			defer wg.Done()
-			err = s.enablePorterInstance(ctx, ins)
+			var resp *porter.EnablePorterResponse
+			resp, err = s.enablePorterInstance(ctx, ins)
 			if err != nil {
 				logger.Errorf("%s", err.Error())
 				hasError = true
@@ -168,14 +166,25 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 			}
 
 			now := time.Now()
-			if err != nil {
+			if resp != nil {
+				ctl.ConnectionStatusMessage = resp.GetStatusMessage()
+			} else {
+				ctl.ConnectionStatusMessage = ""
+			}
+			if err != nil { //nolint:nestif // TODO
 				if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
 					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusDisconnected
 				} else if ctl.LastHeartbeat.Add(defaultHeartbeatDowngrade).Before(now) {
-					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActivationFailed
-				} else {
+					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusDowngraded
+				} else if ctl.ConnectionStatus == modeltiphereth.PorterConnectionStatusActive {
 					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
+				} else {
+					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActivationFailed
 				}
+				if ctl.ConnectionStatusMessage != "" {
+					ctl.ConnectionStatusMessage += "\n"
+				}
+				ctl.ConnectionStatusMessage += fmt.Sprintf("Error: %s", err.Error())
 			} else {
 				ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
 				ctl.LastHeartbeat = now
@@ -259,15 +268,21 @@ func (s *Supervisor) evaluatePorterInstance(
 }
 
 // enablePorterInstance enable porter instance, can be called multiple times.
-func (s *Supervisor) enablePorterInstance(ctx context.Context, instance *modeltiphereth.PorterInstance) error {
+func (s *Supervisor) enablePorterInstance(
+	ctx context.Context,
+	instance *modeltiphereth.PorterInstance,
+) (*porter.EnablePorterResponse, error) {
 	if instance == nil {
-		return errors.New("instance is nil")
+		return nil, errors.New("instance is nil")
 	}
-	_, err := s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
+	resp, err := s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
 		SephirahId:   s.UUID,
 		RefreshToken: nil,
 	})
 	if err != nil {
+		return nil, err
+	}
+	if resp.GetNeedRefreshToken() {
 		var refreshToken string
 		refreshToken, err = s.auth.GenerateToken(
 			instance.ID,
@@ -278,12 +293,12 @@ func (s *Supervisor) enablePorterInstance(ctx context.Context, instance *modelti
 			libtime.Hour,
 		)
 		if err != nil {
-			return err
+			return resp, err
 		}
-		_, err = s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
+		resp, err = s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
 			SephirahId:   s.UUID,
 			RefreshToken: &refreshToken,
 		})
 	}
-	return err
+	return resp, err
 }

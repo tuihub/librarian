@@ -80,7 +80,23 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusDisconnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
 	// goverter:enum:map PorterConnectionStatusActive PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
 	// goverter:enum:map PorterConnectionStatusActivationFailed PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
+	// goverter:enum:map PorterConnectionStatusDowngraded PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
 	ToPBPorterConnectionStatus(modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus
+
+	ToPBPorterContext(*modeltiphereth.PorterContext) *pb.PorterContext
+	ToPBPorterContextList([]*modeltiphereth.PorterContext) []*pb.PorterContext
+	// goverter:enum:unknown PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterContextStatusUnspecified PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterContextStatusActive PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
+	// goverter:enum:map PorterContextStatusDisabled PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
+	ToPBPorterContextStatus(modeltiphereth.PorterContextStatus) pb.PorterContextStatus
+	// goverter:enum:unknown PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterContextHandleStatusUnspecified PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterContextHandleStatusActive PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
+	// goverter:enum:map PorterContextHandleStatusDowngraded PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
+	// goverter:enum:map PorterContextHandleStatusQueueing PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
+	// goverter:enum:map PorterContextHandleStatusBlocked PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
+	ToPBPorterContextHandleStatus(modeltiphereth.PorterContextHandleStatus) pb.PorterContextHandleStatus
 
 	// goverter:ignore AltNames
 	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo

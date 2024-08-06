@@ -264,10 +264,11 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 	}
 	res := make([]*modeltiphereth.PorterInstanceController, len(porters))
 	for i := range res {
-		res[i] = &modeltiphereth.PorterInstanceController{
-			PorterInstance:   *porters[i],
-			ConnectionStatus: s.s.GetInstanceConnectionStatus(ctx, porters[i].Address),
-			LastHeartbeat:    time.Time{},
+		res[i] = s.s.GetInstanceController(ctx, porters[i].Address)
+		if res[i] == nil {
+			res[i] = new(modeltiphereth.PorterInstanceController)
+			res[i].PorterInstance = *porters[i]
+			res[i].ConnectionStatus = modeltiphereth.PorterConnectionStatusDisconnected
 		}
 	}
 	return &pb.ListPortersResponse{
@@ -291,15 +292,51 @@ func (s *LibrarianSephirahServiceService) UpdatePorterStatus(ctx context.Context
 	return &pb.UpdatePorterStatusResponse{}, nil
 }
 
+func (s *LibrarianSephirahServiceService) CreatePorterContext(
+	ctx context.Context,
+	req *pb.CreatePorterContextRequest,
+) (*pb.CreatePorterContextResponse, error) {
+	if req.GetContext() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	id, err := s.t.CreatePorterContext(ctx,
+		converter.ToBizPorterContext(req.GetContext()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CreatePorterContextResponse{
+		ContextId: converter.ToPBInternalID(id),
+	}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ListPorterContexts(
+	ctx context.Context,
+	req *pb.ListPorterContextsRequest,
+) (*pb.ListPorterContextsResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	contexts, total, err := s.t.ListPorterContexts(ctx,
+		model.ToBizPaging(req.GetPaging()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListPorterContextsResponse{
+		Paging:   &librarian.PagingResponse{TotalSize: total},
+		Contexts: converter.ToPBPorterContextList(contexts),
+	}, nil
+}
+
 func (s *LibrarianSephirahServiceService) UpdatePorterContext(
 	ctx context.Context,
 	req *pb.UpdatePorterContextRequest,
 ) (*pb.UpdatePorterContextResponse, error) {
-	if req.GetPorterId() == nil || req.GetContext() == nil {
+	if req.GetContext() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	if err := s.t.UpdatePorterContext(ctx,
-		converter.ToBizInternalID(req.GetPorterId()),
 		converter.ToBizPorterContext(req.GetContext()),
 	); err != nil {
 		return nil, err

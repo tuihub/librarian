@@ -67,6 +67,8 @@ type UserEdges struct {
 	DeviceInfo []*DeviceInfo `json:"device_info,omitempty"`
 	// Tag holds the value of the tag edge.
 	Tag []*Tag `json:"tag,omitempty"`
+	// PorterContext holds the value of the porter_context edge.
+	PorterContext []*PorterContext `json:"porter_context,omitempty"`
 	// Creator holds the value of the creator edge.
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
@@ -75,7 +77,7 @@ type UserEdges struct {
 	UserDevice []*UserDevice `json:"user_device,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [17]bool
+	loadedTypes [18]bool
 }
 
 // BindAccountOrErr returns the BindAccount value or an error if the edge
@@ -204,12 +206,21 @@ func (e UserEdges) TagOrErr() ([]*Tag, error) {
 	return nil, &NotLoadedError{edge: "tag"}
 }
 
+// PorterContextOrErr returns the PorterContext value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PorterContextOrErr() ([]*PorterContext, error) {
+	if e.loadedTypes[14] {
+		return e.PorterContext, nil
+	}
+	return nil, &NotLoadedError{edge: "porter_context"}
+}
+
 // CreatorOrErr returns the Creator value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
 func (e UserEdges) CreatorOrErr() (*User, error) {
 	if e.Creator != nil {
 		return e.Creator, nil
-	} else if e.loadedTypes[14] {
+	} else if e.loadedTypes[15] {
 		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "creator"}
@@ -218,7 +229,7 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[15] {
+	if e.loadedTypes[16] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
@@ -227,7 +238,7 @@ func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
 // UserDeviceOrErr returns the UserDevice value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) UserDeviceOrErr() ([]*UserDevice, error) {
-	if e.loadedTypes[16] {
+	if e.loadedTypes[17] {
 		return e.UserDevice, nil
 	}
 	return nil, &NotLoadedError{edge: "user_device"}
@@ -391,6 +402,11 @@ func (u *User) QueryDeviceInfo() *DeviceInfoQuery {
 // QueryTag queries the "tag" edge of the User entity.
 func (u *User) QueryTag() *TagQuery {
 	return NewUserClient(u.config).QueryTag(u)
+}
+
+// QueryPorterContext queries the "porter_context" edge of the User entity.
+func (u *User) QueryPorterContext() *PorterContextQuery {
+	return NewUserClient(u.config).QueryPorterContext(u)
 }
 
 // QueryCreator queries the "creator" edge of the User entity.

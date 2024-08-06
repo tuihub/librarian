@@ -24,6 +24,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -328,6 +329,21 @@ func (uu *UserUpdate) AddTag(t ...*Tag) *UserUpdate {
 		ids[i] = t[i].ID
 	}
 	return uu.AddTagIDs(ids...)
+}
+
+// AddPorterContextIDs adds the "porter_context" edge to the PorterContext entity by IDs.
+func (uu *UserUpdate) AddPorterContextIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddPorterContextIDs(ids...)
+	return uu
+}
+
+// AddPorterContext adds the "porter_context" edges to the PorterContext entity.
+func (uu *UserUpdate) AddPorterContext(p ...*PorterContext) *UserUpdate {
+	ids := make([]model.InternalID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.AddPorterContextIDs(ids...)
 }
 
 // SetCreatorID sets the "creator" edge to the User entity by ID.
@@ -668,6 +684,27 @@ func (uu *UserUpdate) RemoveTag(t ...*Tag) *UserUpdate {
 		ids[i] = t[i].ID
 	}
 	return uu.RemoveTagIDs(ids...)
+}
+
+// ClearPorterContext clears all "porter_context" edges to the PorterContext entity.
+func (uu *UserUpdate) ClearPorterContext() *UserUpdate {
+	uu.mutation.ClearPorterContext()
+	return uu
+}
+
+// RemovePorterContextIDs removes the "porter_context" edge to PorterContext entities by IDs.
+func (uu *UserUpdate) RemovePorterContextIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemovePorterContextIDs(ids...)
+	return uu
+}
+
+// RemovePorterContext removes "porter_context" edges to PorterContext entities.
+func (uu *UserUpdate) RemovePorterContext(p ...*PorterContext) *UserUpdate {
+	ids := make([]model.InternalID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uu.RemovePorterContextIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -1444,6 +1481,51 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if uu.mutation.PorterContextCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.RemovedPorterContextIDs(); len(nodes) > 0 && !uu.mutation.PorterContextCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uu.mutation.PorterContextIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if uu.mutation.CreatorCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -1869,6 +1951,21 @@ func (uuo *UserUpdateOne) AddTag(t ...*Tag) *UserUpdateOne {
 	return uuo.AddTagIDs(ids...)
 }
 
+// AddPorterContextIDs adds the "porter_context" edge to the PorterContext entity by IDs.
+func (uuo *UserUpdateOne) AddPorterContextIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddPorterContextIDs(ids...)
+	return uuo
+}
+
+// AddPorterContext adds the "porter_context" edges to the PorterContext entity.
+func (uuo *UserUpdateOne) AddPorterContext(p ...*PorterContext) *UserUpdateOne {
+	ids := make([]model.InternalID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.AddPorterContextIDs(ids...)
+}
+
 // SetCreatorID sets the "creator" edge to the User entity by ID.
 func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
 	uuo.mutation.SetCreatorID(id)
@@ -2207,6 +2304,27 @@ func (uuo *UserUpdateOne) RemoveTag(t ...*Tag) *UserUpdateOne {
 		ids[i] = t[i].ID
 	}
 	return uuo.RemoveTagIDs(ids...)
+}
+
+// ClearPorterContext clears all "porter_context" edges to the PorterContext entity.
+func (uuo *UserUpdateOne) ClearPorterContext() *UserUpdateOne {
+	uuo.mutation.ClearPorterContext()
+	return uuo
+}
+
+// RemovePorterContextIDs removes the "porter_context" edge to PorterContext entities by IDs.
+func (uuo *UserUpdateOne) RemovePorterContextIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemovePorterContextIDs(ids...)
+	return uuo
+}
+
+// RemovePorterContext removes "porter_context" edges to PorterContext entities.
+func (uuo *UserUpdateOne) RemovePorterContext(p ...*PorterContext) *UserUpdateOne {
+	ids := make([]model.InternalID, len(p))
+	for i := range p {
+		ids[i] = p[i].ID
+	}
+	return uuo.RemovePorterContextIDs(ids...)
 }
 
 // ClearCreator clears the "creator" edge to the User entity.
@@ -3006,6 +3124,51 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(tag.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if uuo.mutation.PorterContextCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.RemovedPorterContextIDs(); len(nodes) > 0 && !uuo.mutation.PorterContextCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := uuo.mutation.PorterContextIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   user.PorterContextTable,
+			Columns: []string{user.PorterContextColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(portercontext.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

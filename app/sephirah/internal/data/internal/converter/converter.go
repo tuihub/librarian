@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
@@ -29,6 +30,9 @@ func ToEntUserTypeList(a []libauth.UserType) []user.Type {
 }
 func ToEntUserStatusList(a []modeltiphereth.UserStatus) []user.Status {
 	return toEnt.ToEntUserStatusList(a)
+}
+func ToEntPorterContextStatus(a modeltiphereth.PorterContextStatus) portercontext.Status {
+	return toEnt.ToEntPorterContextStatus(a)
 }
 func ToEntAppInfo(a modelgebura.AppInfo) ent.AppInfo {
 	return toEnt.ToEntAppInfo(a)
@@ -78,6 +82,9 @@ func ToBizPorter(a *ent.PorterInstance) *modeltiphereth.PorterInstance {
 }
 func ToBizPorterList(a []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
 	return toBiz.ToBizPorterList(a)
+}
+func ToBizPorterContextList(a []*ent.PorterContext) []*modeltiphereth.PorterContext {
+	return toBiz.ToBizPorterContextList(a)
 }
 func ToBizAppInfo(a *ent.AppInfo) *modelgebura.AppInfo {
 	return toBiz.ToBizAppInfo(a)

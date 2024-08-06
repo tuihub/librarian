@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -23,13 +24,13 @@ import (
 )
 
 // goverter:converter
+// goverter:matchIgnoreCase
 // goverter:output:file ./generated.go
 // goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter
 // goverter:enum:exclude time:Duration
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
-	// goverter:matchIgnoreCase
 	// goverter:ignore PassWord
 	ToBizUser(*ent.User) *modeltiphereth.User
 	ToBizUserList([]*ent.User) []*modeltiphereth.User
@@ -43,13 +44,11 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusBlocked UserStatusBlocked
 	ToBizUserStatus(user.Status) modeltiphereth.UserStatus
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore DeviceInfo
 	// goverter:map CreatedAt CreateAt
 	ToBizUserSession(*ent.UserSession) *modeltiphereth.UserSession
 	ToBizUserSessionList([]*ent.UserSession) []*modeltiphereth.UserSession
 
-	// goverter:matchIgnoreCase
 	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
 	ToBizDeviceInfoList([]*ent.DeviceInfo) []*modeltiphereth.DeviceInfo
 	// goverter:enum:unknown SystemTypeUnspecified
@@ -62,12 +61,10 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeLinux SystemTypeLinux
 	ToBizSystemType(deviceinfo.SystemType) modeltiphereth.SystemType
 
-	// goverter:matchIgnoreCase
 	// goverter:map UpdatedAt LatestUpdateTime
 	ToBizAccount(*ent.Account) *modeltiphereth.Account
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
-	// goverter:matchIgnoreCase
 	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
 	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
 	// goverter:enum:unknown PorterInstanceStatusUnspecified
@@ -75,7 +72,15 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusBlocked PorterInstanceStatusBlocked
 	ToBizPorterStatus(porterinstance.Status) modeltiphereth.PorterInstanceStatus
 
-	// goverter:matchIgnoreCase
+	// goverter:ignore HandleStatus
+	// goverter:ignore HandleStatusMessage
+	ToBizPorterContext(*ent.PorterContext) *modeltiphereth.PorterContext
+	ToBizPorterContextList([]*ent.PorterContext) []*modeltiphereth.PorterContext
+	// goverter:enum:unknown PorterContextStatusUnspecified
+	// goverter:enum:map StatusActive PorterContextStatusActive
+	// goverter:enum:map StatusDisabled PorterContextStatusDisabled
+	ToBizPorterContextStatus(portercontext.Status) modeltiphereth.PorterContextStatus
+
 	// goverter:map . Details
 	// goverter:map UpdatedAt LatestUpdateTime
 	// goverter:ignore BoundInternal
@@ -87,17 +92,14 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map TypeGame AppTypeGame
 	ToBizAppType(appinfo.Type) modelgebura.AppType
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore AssignedAppInfoID
 	ToBizApp(*ent.App) *modelgebura.App
 	ToBizAppList([]*ent.App) []*modelgebura.App
 	ToBizAppBinary(ent.AppBinary) modelgebura.AppBinary
 
-	// goverter:matchIgnoreCase
 	ToBizAppInst(*ent.AppInst) *modelgebura.AppInst
 	ToBizAppInstList([]*ent.AppInst) []*modelgebura.AppInst
 
-	// goverter:matchIgnoreCase
 	// goverter:map LatestPullAt LatestPullTime
 	// goverter:ignore ActionSets
 	ToBizFeedConfig(*ent.FeedConfig) *modelyesod.FeedConfig
@@ -112,20 +114,16 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map LatestPullStatusFailed FeedConfigPullStatusFailed
 	ToBizFeedConfigPullStatus(feedconfig.LatestPullStatus) modelyesod.FeedConfigPullStatus
 
-	// goverter:matchIgnoreCase
 	ToBizFeedActionSet(*ent.FeedActionSet) *modelyesod.FeedActionSet
 	ToBizFeedActionSetList([]*ent.FeedActionSet) []*modelyesod.FeedActionSet
 
-	// goverter:matchIgnoreCase
 	// goverter:ignore Items
 	// goverter:ignore FeedType
 	// goverter:ignore FeedVersion
 	ToBizFeed(*ent.Feed) *modelfeed.Feed
-	// goverter:matchIgnoreCase
 	ToBizFeedItem(*ent.FeedItem) *modelfeed.Item
 	ToBizFeedItemList([]*ent.FeedItem) []*modelfeed.Item
 
-	// goverter:matchIgnoreCase
 	ToBizFeedItemCollection(*ent.FeedItemCollection) *modelyesod.FeedItemCollection
 	ToBizFeedItemCollectionList([]*ent.FeedItemCollection) []*modelyesod.FeedItemCollection
 
@@ -143,7 +141,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusSuspend NotifyFlowStatusSuspend
 	ToBizNotifyFlowStatus(notifyflow.Status) modelnetzach.NotifyFlowStatus
 
-	// goverter:matchIgnoreCase
 	// goverter:map CreatedAt CreateTime
 	// goverter:map UpdatedAt UpdateTime
 	ToBizSystemNotification(*ent.SystemNotification) *modelnetzach.SystemNotification
