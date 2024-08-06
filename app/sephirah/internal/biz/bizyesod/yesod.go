@@ -116,7 +116,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 	for _, c := range configs {
 		doNotify := func() *modelnetzach.SystemNotify {
 			var owner *modeltiphereth.User
-			owner, err = y.feedOwner.GetWithFallBack(ctx, *c, nil)
+			owner, err = y.feedOwner.Get(ctx, *c)
 			if err != nil {
 				return nil
 			}

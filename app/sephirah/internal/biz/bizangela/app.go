@@ -32,7 +32,7 @@ func NewPullAppInfoTopic(
 				return nil
 			}
 			if !r.IgnoreRateLimit {
-				if info, err := infoCache.GetWithFallBack(ctx, r.AppInfoID, nil); err == nil &&
+				if info, err := infoCache.Get(ctx, r.AppInfoID); err == nil &&
 					info.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
 					return nil
 				}

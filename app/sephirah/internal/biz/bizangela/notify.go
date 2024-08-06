@@ -27,7 +27,7 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 	return libmq.NewTopic[modelangela.NotifyRouter](
 		"NotifyRouter",
 		func(ctx context.Context, r *modelangela.NotifyRouter) error {
-			flowIDs, err := feedToFlowMap.GetWithFallBack(ctx, r.FeedID, nil)
+			flowIDs, err := feedToFlowMap.Get(ctx, r.FeedID)
 			if err != nil {
 				return err
 			}
@@ -36,7 +36,7 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 			}
 			for _, flowID := range *flowIDs {
 				var flow *modelnetzach.NotifyFlow
-				flow, err = flowMap.GetWithFallBack(ctx, flowID, nil)
+				flow, err = flowMap.Get(ctx, flowID)
 				if err != nil {
 					return err
 				}
@@ -77,7 +77,7 @@ func NewNotifyPushTopic(
 	return libmq.NewTopic[modelangela.NotifyPush](
 		"NotifyPush",
 		func(ctx context.Context, p *modelangela.NotifyPush) error {
-			target, err := targetMap.GetWithFallBack(ctx, p.Target.TargetID, nil)
+			target, err := targetMap.Get(ctx, p.Target.TargetID)
 			if err != nil {
 				return err
 			}

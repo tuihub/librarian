@@ -3,7 +3,6 @@ package libcache
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 )
@@ -37,7 +36,7 @@ func (m *Map[K, V]) combineKeyName(key K) string {
 	return m.baseKeyName + m.keyNameFunc(key)
 }
 
-func (m *Map[K, V]) Get(ctx context.Context, key K) (*V, error) {
+func (m *Map[K, V]) get(ctx context.Context, key K) (*V, error) {
 	res := new(V)
 	value, err := m.store.Get(ctx, m.combineKeyName(key))
 	if err != nil {
@@ -57,38 +56,12 @@ func (m *Map[K, V]) Get(ctx context.Context, key K) (*V, error) {
 	return res, nil
 }
 
-func (m *Map[K, V]) GetWithTTL(ctx context.Context, key K) (*V, time.Duration, error) {
-	res := new(V)
-	value, ttl, err := m.store.GetWithTTL(ctx, m.combineKeyName(key))
-	if err != nil {
-		return nil, 0, err
-	}
-	switch v := value.(type) {
-	case []byte:
-		err = libcodec.Unmarshal(libcodec.JSON, v, res)
-	case string:
-		err = libcodec.Unmarshal(libcodec.JSON, []byte(v), res)
-	default:
-		return nil, 0, errors.New("unexpected value type")
-	}
-	if err != nil {
-		return nil, 0, err
-	}
-	return res, ttl, nil
-}
-
-func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K,
-	fallBackFunc mapFallBackFunc[K, V], options ...Option) (*V, error) {
-	res, err := m.Get(ctx, key)
+func (m *Map[K, V]) Get(ctx context.Context, key K) (*V, error) {
+	res, err := m.get(ctx, key)
 	if err == nil {
 		return res, nil
 	}
-	if fallBackFunc != nil {
-		res, err = fallBackFunc(ctx, key)
-		if err != nil {
-			return nil, err
-		}
-	} else if m.defaultFallBackFunc != nil {
+	if m.defaultFallBackFunc != nil {
 		res, err = m.defaultFallBackFunc(ctx, key)
 		if err != nil {
 			return nil, err
@@ -96,9 +69,52 @@ func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K,
 	} else {
 		return nil, err
 	}
-	_ = m.Set(ctx, key, res, options...)
+	_ = m.Set(ctx, key, res)
 	return res, nil
 }
+
+// func (m *Map[K, V]) GetWithTTL(ctx context.Context, key K) (*V, time.Duration, error) {
+//	res := new(V)
+//	value, ttl, err := m.store.GetWithTTL(ctx, m.combineKeyName(key))
+//	if err != nil {
+//		return nil, 0, err
+//	}
+//	switch v := value.(type) {
+//	case []byte:
+//		err = libcodec.Unmarshal(libcodec.JSON, v, res)
+//	case string:
+//		err = libcodec.Unmarshal(libcodec.JSON, []byte(v), res)
+//	default:
+//		return nil, 0, errors.New("unexpected value type")
+//	}
+//	if err != nil {
+//		return nil, 0, err
+//	}
+//	return res, ttl, nil
+//}
+//
+// func (m *Map[K, V]) GetWithFallBack(ctx context.Context, key K,
+//	fallBackFunc mapFallBackFunc[K, V], options ...Option) (*V, error) {
+//	res, err := m.get(ctx, key)
+//	if err == nil {
+//		return res, nil
+//	}
+//	if fallBackFunc != nil {
+//		res, err = fallBackFunc(ctx, key)
+//		if err != nil {
+//			return nil, err
+//		}
+//	} else if m.defaultFallBackFunc != nil {
+//		res, err = m.defaultFallBackFunc(ctx, key)
+//		if err != nil {
+//			return nil, err
+//		}
+//	} else {
+//		return nil, err
+//	}
+//	_ = m.Set(ctx, key, res, options...)
+//	return res, nil
+//}
 
 func (m *Map[K, V]) Set(ctx context.Context, key K, value *V, options ...Option) error {
 	b, err := libcodec.Marshal(libcodec.JSON, value)

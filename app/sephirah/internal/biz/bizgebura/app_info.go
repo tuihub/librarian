@@ -113,7 +113,7 @@ func (g *Gebura) SyncAppInfos(
 				return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 			}
 			var app *modelgebura.AppInfo
-			app, err = g.appInfoCache.GetWithFallBack(ctx, *infoID, nil)
+			app, err = g.appInfoCache.Get(ctx, *infoID)
 			if err != nil {
 				continue
 			}
