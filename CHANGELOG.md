@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-08-07)
+
+
+### Features
+
+* refactor libcache ([b186f43](https://github.com/tuihub/librarian/commit/b186f435386ccfcc85a52f450884e6c7a7119dd1))
+* refactor supervisor ([afbc8c3](https://github.com/tuihub/librarian/commit/afbc8c336befa55d71572905ba6e6f0d029e7064))
+* support use porter without consul ([30efdaf](https://github.com/tuihub/librarian/commit/30efdaf1de09b8333dcdb77b36a26f10b1a10902))
+* update kratos to v2.8.0 ([8d8d22b](https://github.com/tuihub/librarian/commit/8d8d22bcec3abb973e3489e3b5f9c7c958b698ab))
+* upgrade golangci version ([314720d](https://github.com/tuihub/librarian/commit/314720d63d5fd502b0af15f7c60faff12b4c798b))
+* upgrade goverter to v1.5.0 ([9d3835b](https://github.com/tuihub/librarian/commit/9d3835b38988de654e4d51f1851d26e926c7dd4c))
+* upgrade proto to v0.4.16 ([670e50f](https://github.com/tuihub/librarian/commit/670e50f10d34a57a1238ef7012a4576731664535))
+* upgrade proto to v0.4.17 ([180cd7e](https://github.com/tuihub/librarian/commit/180cd7e8a131f7a9524ae03cb0b129baa44e1ead))
+* upgrade proto to v0.4.18 ([326f56d](https://github.com/tuihub/librarian/commit/326f56dd6809f8323a80b54ee4c5ca69a5a049de))
+* upgrade proto to v0.4.20 ([7f5ba6d](https://github.com/tuihub/librarian/commit/7f5ba6df657a5ad69cc21ba6e30b483aa569a8a1))
+
+
+### Bug Fixes
+
+* update sync_map.go ([2ee9464](https://github.com/tuihub/librarian/commit/2ee946480b86cc404013ab2a9cdf14ff5d60842d))
+* **yesod:** fix CreateFeedConfig ([08d22e6](https://github.com/tuihub/librarian/commit/08d22e6f8a3c4cf64a5ce9b55c3d5534c5cd0d38))
+
 ## [0.2.10](https://github.com/tuihub/librarian/compare/v0.2.9...v0.2.10) (2024-07-10)
 
 
