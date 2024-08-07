@@ -21,8 +21,8 @@ func (s *Supervisor) HasAccountPlatform(platform string) bool {
 func (s *Supervisor) WithAccountPlatform(ctx context.Context, platform string) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	if platforms := s.featureSummaryMap.AccountPlatforms.Load(platform); platforms != nil {
-		return client.WithPorterAddress(ctx, *platforms)
+	if platforms, ok := s.featureSummaryMap.AccountPlatforms.Load(platform); ok {
+		return client.WithPorterAddress(ctx, platforms)
 	}
 	return client.WithPorterFastFail(ctx)
 }
@@ -41,8 +41,8 @@ func (s *Supervisor) HasAppInfoSource(source string) bool {
 func (s *Supervisor) WithAppInfoSource(ctx context.Context, source string) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	if sources := s.featureSummaryMap.AppInfoSources.Load(source); sources != nil {
-		return client.WithPorterAddress(ctx, *sources)
+	if sources, ok := s.featureSummaryMap.AppInfoSources.Load(source); ok {
+		return client.WithPorterAddress(ctx, sources)
 	}
 	return client.WithPorterFastFail(ctx)
 }
@@ -64,8 +64,8 @@ func (s *Supervisor) HasFeedSource(source *modelsupervisor.FeatureRequest) bool 
 func (s *Supervisor) WithFeedSource(ctx context.Context, source *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	if sources := s.featureSummaryMap.FeedSources.Load(source.ID); sources != nil {
-		return client.WithPorterAddress(ctx, *sources)
+	if sources, ok := s.featureSummaryMap.FeedSources.Load(source.ID); ok {
+		return client.WithPorterAddress(ctx, sources)
 	}
 	return client.WithPorterFastFail(ctx)
 }
@@ -87,8 +87,8 @@ func (s *Supervisor) HasNotifyDestination(destination *modelsupervisor.FeatureRe
 func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	if destinations := s.featureSummaryMap.NotifyDestinations.Load(destination.ID); destinations != nil {
-		return client.WithPorterAddress(ctx, *destinations)
+	if destinations, ok := s.featureSummaryMap.NotifyDestinations.Load(destination.ID); ok {
+		return client.WithPorterAddress(ctx, destinations)
 	}
 	return client.WithPorterFastFail(ctx)
 }
@@ -107,8 +107,8 @@ func (s *Supervisor) HasFeedItemAction(request *modelsupervisor.FeatureRequest) 
 func (s *Supervisor) WithFeedItemAction(ctx context.Context, request *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	if actions := s.featureSummaryMap.FeedItemActions.Load(request.ID); actions != nil {
-		return client.WithPorterAddress(ctx, *actions)
+	if actions, ok := s.featureSummaryMap.FeedItemActions.Load(request.ID); ok {
+		return client.WithPorterAddress(ctx, actions)
 	}
 	return client.WithPorterFastFail(ctx)
 }

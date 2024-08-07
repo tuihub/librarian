@@ -51,12 +51,12 @@ func summarize( //nolint:gocognit // how?
 			continue
 		}
 		for _, account := range ins.FeatureSummary.AccountPlatforms {
-			a := resMap.AccountPlatforms.Load(ins.Address)
+			a, _ := resMap.AccountPlatforms.Load(ins.Address)
 			if a == nil {
-				a = &[]string{}
+				a = []string{}
 			}
-			*a = append(*a, account.ID)
-			resMap.AccountPlatforms.Store(ins.Address, *a)
+			a = append(a, account.ID)
+			resMap.AccountPlatforms.Store(ins.Address, a)
 			if supportedAccountPlatforms[account.ID] {
 				continue
 			}
@@ -64,12 +64,12 @@ func summarize( //nolint:gocognit // how?
 			supportedAccountPlatforms[account.ID] = true
 		}
 		for _, appSource := range ins.FeatureSummary.AppInfoSources {
-			a := resMap.AppInfoSources.Load(ins.Address)
+			a, _ := resMap.AppInfoSources.Load(ins.Address)
 			if a == nil {
-				a = &[]string{}
+				a = []string{}
 			}
-			*a = append(*a, appSource.ID)
-			resMap.AppInfoSources.Store(ins.Address, *a)
+			a = append(a, appSource.ID)
+			resMap.AppInfoSources.Store(ins.Address, a)
 			if supportedAppSources[appSource.ID] {
 				continue
 			}
@@ -77,12 +77,12 @@ func summarize( //nolint:gocognit // how?
 			supportedAppSources[appSource.ID] = true
 		}
 		for _, feedSource := range ins.FeatureSummary.FeedSources {
-			a := resMap.FeedSources.Load(ins.Address)
+			a, _ := resMap.FeedSources.Load(ins.Address)
 			if a == nil {
-				a = &[]string{}
+				a = []string{}
 			}
-			*a = append(*a, feedSource.ID)
-			resMap.FeedSources.Store(ins.Address, *a)
+			a = append(a, feedSource.ID)
+			resMap.FeedSources.Store(ins.Address, a)
 			if supportedFeedSources[feedSource.ID] {
 				continue
 			}
@@ -90,12 +90,12 @@ func summarize( //nolint:gocognit // how?
 			supportedFeedSources[feedSource.ID] = true
 		}
 		for _, notifyDestination := range ins.FeatureSummary.NotifyDestinations {
-			a := resMap.NotifyDestinations.Load(ins.Address)
+			a, _ := resMap.NotifyDestinations.Load(ins.Address)
 			if a == nil {
-				a = &[]string{}
+				a = []string{}
 			}
-			*a = append(*a, notifyDestination.ID)
-			resMap.NotifyDestinations.Store(ins.Address, *a)
+			a = append(a, notifyDestination.ID)
+			resMap.NotifyDestinations.Store(ins.Address, a)
 			if supportedNotifyDestinations[notifyDestination.ID] {
 				continue
 			}

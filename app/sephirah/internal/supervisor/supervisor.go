@@ -41,7 +41,7 @@ type Supervisor struct {
 
 	refreshMu          sync.Mutex
 	trustedAddresses   []string
-	instanceController *libtype.SyncMap[modelsupervisor.PorterInstanceController]
+	instanceController *libtype.SyncMap[string, modelsupervisor.PorterInstanceController]
 	instanceCache      *libcache.Map[string, modelsupervisor.PorterInstance]
 
 	featureSummary     *modelsupervisor.ServerFeatureSummary
@@ -63,7 +63,7 @@ func NewSupervisor(
 		UUID:               int64(uuid.New().ID()),
 		porter:             porter,
 		auth:               auth,
-		instanceController: libtype.NewSyncMap[modelsupervisor.PorterInstanceController](),
+		instanceController: libtype.NewSyncMap[string, modelsupervisor.PorterInstanceController](),
 		instanceCache:      instanceCache,
 		refreshMu:          sync.Mutex{},
 		featureSummary:     new(modelsupervisor.ServerFeatureSummary),
@@ -82,7 +82,10 @@ func (s *Supervisor) GetInstanceController(
 	ctx context.Context,
 	address string,
 ) *modelsupervisor.PorterInstanceController {
-	return s.instanceController.Load(address)
+	if c, ok := s.instanceController.Load(address); ok {
+		return &c
+	}
+	return nil
 }
 
 func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
@@ -114,7 +117,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 
 	// Discover new instances and Refresh disconnected instances
 	for _, address := range discoveredAddresses {
-		if ic := s.instanceController.Load(address); ic != nil &&
+		if ic, ok := s.instanceController.Load(address); ok &&
 			ic.ConnectionStatus != modelsupervisor.PorterConnectionStatusDisconnected {
 			continue
 		}
@@ -131,7 +134,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 				return
 			}
 
-			if ic := s.instanceController.Load(address); ic == nil ||
+			if ic, ok := s.instanceController.Load(address); ok ||
 				(ic.GlobalName != ins.GlobalName || ic.BinarySummary.BuildVersion != ins.BinarySummary.Version) {
 				newInstancesMu.Lock()
 				newInstances = append(newInstances, ins)

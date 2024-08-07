@@ -119,19 +119,19 @@ type PorterGroup struct {
 }
 
 type ServerFeatureSummaryMap struct {
-	AccountPlatforms   *libtype.SyncMap[[]string]
-	AppInfoSources     *libtype.SyncMap[[]string]
-	FeedSources        *libtype.SyncMap[[]string]
-	NotifyDestinations *libtype.SyncMap[[]string]
-	FeedItemActions    *libtype.SyncMap[[]string]
+	AccountPlatforms   *libtype.SyncMap[string, []string]
+	AppInfoSources     *libtype.SyncMap[string, []string]
+	FeedSources        *libtype.SyncMap[string, []string]
+	NotifyDestinations *libtype.SyncMap[string, []string]
+	FeedItemActions    *libtype.SyncMap[string, []string]
 }
 
 func NewServerFeatureSummaryMap() *ServerFeatureSummaryMap {
 	return &ServerFeatureSummaryMap{
-		AccountPlatforms:   libtype.NewSyncMap[[]string](),
-		AppInfoSources:     libtype.NewSyncMap[[]string](),
-		FeedSources:        libtype.NewSyncMap[[]string](),
-		NotifyDestinations: libtype.NewSyncMap[[]string](),
-		FeedItemActions:    libtype.NewSyncMap[[]string](),
+		AccountPlatforms:   libtype.NewSyncMap[string, []string](),
+		AppInfoSources:     libtype.NewSyncMap[string, []string](),
+		FeedSources:        libtype.NewSyncMap[string, []string](),
+		NotifyDestinations: libtype.NewSyncMap[string, []string](),
+		FeedItemActions:    libtype.NewSyncMap[string, []string](),
 	}
 }
