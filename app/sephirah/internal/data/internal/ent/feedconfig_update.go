@@ -18,7 +18,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -78,7 +78,7 @@ func (fcu *FeedConfigUpdate) SetNillableDescription(s *string) *FeedConfigUpdate
 }
 
 // SetSource sets the "source" field.
-func (fcu *FeedConfigUpdate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigUpdate {
 	fcu.mutation.SetSource(mr)
 	return fcu
 }
@@ -753,7 +753,7 @@ func (fcuo *FeedConfigUpdateOne) SetNillableDescription(s *string) *FeedConfigUp
 }
 
 // SetSource sets the "source" field.
-func (fcuo *FeedConfigUpdateOne) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigUpdateOne {
 	fcuo.mutation.SetSource(mr)
 	return fcuo
 }

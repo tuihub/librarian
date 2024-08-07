@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -36,6 +36,30 @@ func (pic *PorterInstanceCreate) SetVersion(s string) *PorterInstanceCreate {
 	return pic
 }
 
+// SetDescription sets the "description" field.
+func (pic *PorterInstanceCreate) SetDescription(s string) *PorterInstanceCreate {
+	pic.mutation.SetDescription(s)
+	return pic
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (pic *PorterInstanceCreate) SetSourceCodeAddress(s string) *PorterInstanceCreate {
+	pic.mutation.SetSourceCodeAddress(s)
+	return pic
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (pic *PorterInstanceCreate) SetBuildVersion(s string) *PorterInstanceCreate {
+	pic.mutation.SetBuildVersion(s)
+	return pic
+}
+
+// SetBuildDate sets the "build_date" field.
+func (pic *PorterInstanceCreate) SetBuildDate(s string) *PorterInstanceCreate {
+	pic.mutation.SetBuildDate(s)
+	return pic
+}
+
 // SetGlobalName sets the "global_name" field.
 func (pic *PorterInstanceCreate) SetGlobalName(s string) *PorterInstanceCreate {
 	pic.mutation.SetGlobalName(s)
@@ -55,7 +79,7 @@ func (pic *PorterInstanceCreate) SetRegion(s string) *PorterInstanceCreate {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceCreate {
+func (pic *PorterInstanceCreate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceCreate {
 	pic.mutation.SetFeatureSummary(mfs)
 	return pic
 }
@@ -159,6 +183,18 @@ func (pic *PorterInstanceCreate) check() error {
 	if _, ok := pic.mutation.Version(); !ok {
 		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "PorterInstance.version"`)}
 	}
+	if _, ok := pic.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "PorterInstance.description"`)}
+	}
+	if _, ok := pic.mutation.SourceCodeAddress(); !ok {
+		return &ValidationError{Name: "source_code_address", err: errors.New(`ent: missing required field "PorterInstance.source_code_address"`)}
+	}
+	if _, ok := pic.mutation.BuildVersion(); !ok {
+		return &ValidationError{Name: "build_version", err: errors.New(`ent: missing required field "PorterInstance.build_version"`)}
+	}
+	if _, ok := pic.mutation.BuildDate(); !ok {
+		return &ValidationError{Name: "build_date", err: errors.New(`ent: missing required field "PorterInstance.build_date"`)}
+	}
 	if _, ok := pic.mutation.GlobalName(); !ok {
 		return &ValidationError{Name: "global_name", err: errors.New(`ent: missing required field "PorterInstance.global_name"`)}
 	}
@@ -228,6 +264,22 @@ func (pic *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.Create
 	if value, ok := pic.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
 		_node.Version = value
+	}
+	if value, ok := pic.mutation.Description(); ok {
+		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
+		_node.Description = value
+	}
+	if value, ok := pic.mutation.SourceCodeAddress(); ok {
+		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
+		_node.SourceCodeAddress = value
+	}
+	if value, ok := pic.mutation.BuildVersion(); ok {
+		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
+		_node.BuildVersion = value
+	}
+	if value, ok := pic.mutation.BuildDate(); ok {
+		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
+		_node.BuildDate = value
 	}
 	if value, ok := pic.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)
@@ -337,6 +389,54 @@ func (u *PorterInstanceUpsert) UpdateVersion() *PorterInstanceUpsert {
 	return u
 }
 
+// SetDescription sets the "description" field.
+func (u *PorterInstanceUpsert) SetDescription(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateDescription() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldDescription)
+	return u
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (u *PorterInstanceUpsert) SetSourceCodeAddress(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldSourceCodeAddress, v)
+	return u
+}
+
+// UpdateSourceCodeAddress sets the "source_code_address" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateSourceCodeAddress() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldSourceCodeAddress)
+	return u
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (u *PorterInstanceUpsert) SetBuildVersion(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldBuildVersion, v)
+	return u
+}
+
+// UpdateBuildVersion sets the "build_version" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateBuildVersion() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldBuildVersion)
+	return u
+}
+
+// SetBuildDate sets the "build_date" field.
+func (u *PorterInstanceUpsert) SetBuildDate(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldBuildDate, v)
+	return u
+}
+
+// UpdateBuildDate sets the "build_date" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateBuildDate() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldBuildDate)
+	return u
+}
+
 // SetGlobalName sets the "global_name" field.
 func (u *PorterInstanceUpsert) SetGlobalName(v string) *PorterInstanceUpsert {
 	u.Set(porterinstance.FieldGlobalName, v)
@@ -374,7 +474,7 @@ func (u *PorterInstanceUpsert) UpdateRegion() *PorterInstanceUpsert {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsert) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsert {
+func (u *PorterInstanceUpsert) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsert {
 	u.Set(porterinstance.FieldFeatureSummary, v)
 	return u
 }
@@ -509,6 +609,62 @@ func (u *PorterInstanceUpsertOne) UpdateVersion() *PorterInstanceUpsertOne {
 	})
 }
 
+// SetDescription sets the "description" field.
+func (u *PorterInstanceUpsertOne) SetDescription(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateDescription() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (u *PorterInstanceUpsertOne) SetSourceCodeAddress(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetSourceCodeAddress(v)
+	})
+}
+
+// UpdateSourceCodeAddress sets the "source_code_address" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateSourceCodeAddress() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateSourceCodeAddress()
+	})
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (u *PorterInstanceUpsertOne) SetBuildVersion(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetBuildVersion(v)
+	})
+}
+
+// UpdateBuildVersion sets the "build_version" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateBuildVersion() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateBuildVersion()
+	})
+}
+
+// SetBuildDate sets the "build_date" field.
+func (u *PorterInstanceUpsertOne) SetBuildDate(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetBuildDate(v)
+	})
+}
+
+// UpdateBuildDate sets the "build_date" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateBuildDate() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateBuildDate()
+	})
+}
+
 // SetGlobalName sets the "global_name" field.
 func (u *PorterInstanceUpsertOne) SetGlobalName(v string) *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
@@ -552,7 +708,7 @@ func (u *PorterInstanceUpsertOne) UpdateRegion() *PorterInstanceUpsertOne {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertOne {
+func (u *PorterInstanceUpsertOne) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.SetFeatureSummary(v)
 	})
@@ -863,6 +1019,62 @@ func (u *PorterInstanceUpsertBulk) UpdateVersion() *PorterInstanceUpsertBulk {
 	})
 }
 
+// SetDescription sets the "description" field.
+func (u *PorterInstanceUpsertBulk) SetDescription(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateDescription() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateDescription()
+	})
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (u *PorterInstanceUpsertBulk) SetSourceCodeAddress(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetSourceCodeAddress(v)
+	})
+}
+
+// UpdateSourceCodeAddress sets the "source_code_address" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateSourceCodeAddress() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateSourceCodeAddress()
+	})
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (u *PorterInstanceUpsertBulk) SetBuildVersion(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetBuildVersion(v)
+	})
+}
+
+// UpdateBuildVersion sets the "build_version" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateBuildVersion() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateBuildVersion()
+	})
+}
+
+// SetBuildDate sets the "build_date" field.
+func (u *PorterInstanceUpsertBulk) SetBuildDate(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetBuildDate(v)
+	})
+}
+
+// UpdateBuildDate sets the "build_date" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateBuildDate() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateBuildDate()
+	})
+}
+
 // SetGlobalName sets the "global_name" field.
 func (u *PorterInstanceUpsertBulk) SetGlobalName(v string) *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
@@ -906,7 +1118,7 @@ func (u *PorterInstanceUpsertBulk) UpdateRegion() *PorterInstanceUpsertBulk {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpsertBulk {
+func (u *PorterInstanceUpsertBulk) SetFeatureSummary(v *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.SetFeatureSummary(v)
 	})

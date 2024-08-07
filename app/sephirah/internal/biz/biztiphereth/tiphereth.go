@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -36,14 +37,14 @@ type TipherethRepo interface {
 	UnLinkAccount(context.Context, modeltiphereth.Account, model.InternalID) error
 	ListLinkAccounts(context.Context, model.InternalID) ([]*modeltiphereth.Account, error)
 	GetUser(context.Context, model.InternalID) (*modeltiphereth.User, error)
-	UpsertPorters(context.Context, []*modeltiphereth.PorterInstance) error
-	ListPorters(context.Context, model.Paging) ([]*modeltiphereth.PorterInstance, int64, error)
-	FetchPorterByAddress(context.Context, string) (*modeltiphereth.PorterInstance, error)
+	UpsertPorters(context.Context, []*modelsupervisor.PorterInstance) error
+	ListPorters(context.Context, model.Paging) ([]*modelsupervisor.PorterInstance, int64, error)
+	FetchPorterByAddress(context.Context, string) (*modelsupervisor.PorterInstance, error)
 	UpdatePorterStatus(context.Context, model.InternalID,
-		modeltiphereth.PorterInstanceStatus) (*modeltiphereth.PorterInstance, error)
-	CreatePorterContext(context.Context, model.InternalID, *modeltiphereth.PorterContext) error
-	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modeltiphereth.PorterContext, int64, error)
-	UpdatePorterContext(context.Context, model.InternalID, *modeltiphereth.PorterContext) error
+		modeltiphereth.UserStatus) (*modelsupervisor.PorterInstance, error)
+	CreatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
+	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modelsupervisor.PorterContext, int64, error)
+	UpdatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
 	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
 	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
 	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error
@@ -52,6 +53,7 @@ type TipherethRepo interface {
 	FetchUserSession(context.Context, model.InternalID, string) (*modeltiphereth.UserSession, error)
 	UpdateUserSession(context.Context, *modeltiphereth.UserSession) error
 	ListDevices(context.Context, model.InternalID) ([]*modeltiphereth.DeviceInfo, error)
+	ListPorterGroups(context.Context, []modeltiphereth.UserStatus) ([]*modelsupervisor.PorterGroup, error)
 }
 
 type Tiphereth struct {
@@ -63,7 +65,7 @@ type Tiphereth struct {
 	searcher            *client.Searcher
 	pullAccount         *libmq.Topic[modeltiphereth.PullAccountInfo]
 	userCountCache      *libcache.Key[modeltiphereth.UserCount]
-	porterInstanceCache *libcache.Map[string, modeltiphereth.PorterInstance]
+	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance]
 }
 
 func NewTiphereth(
@@ -76,7 +78,7 @@ func NewTiphereth(
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 	cron *libcron.Cron,
 	userCountCache *libcache.Key[modeltiphereth.UserCount],
-	porterInstanceCache *libcache.Map[string, modeltiphereth.PorterInstance],
+	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
 		app:  app,
@@ -170,14 +172,14 @@ func NewUserCountCache(
 func NewPorterInstanceCache(
 	t TipherethRepo,
 	store libcache.Store,
-) *libcache.Map[string, modeltiphereth.PorterInstance] {
-	return libcache.NewMap[string, modeltiphereth.PorterInstance](
+) *libcache.Map[string, modelsupervisor.PorterInstance] {
+	return libcache.NewMap[string, modelsupervisor.PorterInstance](
 		store,
 		"PorterInstanceCache",
 		func(s string) string {
 			return s
 		},
-		func(ctx context.Context, s string) (*modeltiphereth.PorterInstance, error) {
+		func(ctx context.Context, s string) (*modelsupervisor.PorterInstance, error) {
 			return t.FetchPorterByAddress(ctx, s)
 		},
 		libcache.WithExpiration(libtime.SevenDays),

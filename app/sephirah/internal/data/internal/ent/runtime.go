@@ -310,13 +310,13 @@ func init() {
 	porterinstanceFields := schema.PorterInstance{}.Fields()
 	_ = porterinstanceFields
 	// porterinstanceDescUpdatedAt is the schema descriptor for updated_at field.
-	porterinstanceDescUpdatedAt := porterinstanceFields[9].Descriptor()
+	porterinstanceDescUpdatedAt := porterinstanceFields[13].Descriptor()
 	// porterinstance.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	porterinstance.DefaultUpdatedAt = porterinstanceDescUpdatedAt.Default.(func() time.Time)
 	// porterinstance.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	porterinstance.UpdateDefaultUpdatedAt = porterinstanceDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// porterinstanceDescCreatedAt is the schema descriptor for created_at field.
-	porterinstanceDescCreatedAt := porterinstanceFields[10].Descriptor()
+	porterinstanceDescCreatedAt := porterinstanceFields[14].Descriptor()
 	// porterinstance.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterinstance.DefaultCreatedAt = porterinstanceDescCreatedAt.Default.(func() time.Time)
 	systemnotificationFields := schema.SystemNotification{}.Fields()

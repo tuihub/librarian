@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -53,16 +54,17 @@ type toEntConverter interface { //nolint:unused // used by generator
 	ToEntSystemType(modeltiphereth.SystemType) deviceinfo.SystemType
 
 	// goverter:enum:unknown @ignore
-	// goverter:enum:map PorterInstanceStatusUnspecified @ignore
-	// goverter:enum:map PorterInstanceStatusActive StatusActive
-	// goverter:enum:map PorterInstanceStatusBlocked StatusBlocked
-	ToEntPorterInstanceStatus(modeltiphereth.PorterInstanceStatus) porterinstance.Status
+	// goverter:enum:map UserStatusUnspecified @ignore
+	// goverter:enum:map UserStatusActive StatusActive
+	// goverter:enum:map UserStatusBlocked StatusBlocked
+	ToEntPorterInstanceStatus(modeltiphereth.UserStatus) porterinstance.Status
+	ToEntPorterInstanceStatusList([]modeltiphereth.UserStatus) []porterinstance.Status
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map PorterContextStatusUnspecified @ignore
 	// goverter:enum:map PorterContextStatusActive StatusActive
 	// goverter:enum:map PorterContextStatusDisabled StatusDisabled
-	ToEntPorterContextStatus(modeltiphereth.PorterContextStatus) portercontext.Status
+	ToEntPorterContextStatus(modelsupervisor.PorterContextStatus) portercontext.Status
 
 	// goverter:autoMap Details
 	// goverter:useZeroValueOnPointerInconsistency

@@ -1,8 +1,9 @@
-package modeltiphereth
+package modelsupervisor
 
 import (
 	"time"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -16,14 +17,22 @@ type PorterInstanceController struct {
 
 type PorterInstance struct {
 	ID                model.InternalID
-	Name              string
-	Version           string
+	BinarySummary     *PorterBinarySummary
 	GlobalName        string
 	Address           string
 	Region            string
 	FeatureSummary    *PorterFeatureSummary
-	Status            PorterInstanceStatus
+	Status            modeltiphereth.UserStatus
 	ContextJSONSchema string
+}
+
+type PorterBinarySummary struct {
+	Name              string
+	Version           string
+	Description       string
+	SourceCodeAddress string
+	BuildVersion      string
+	BuildDate         string
 }
 
 type PorterFeatureSummary struct {
@@ -52,14 +61,6 @@ type FeatureRequest struct {
 	ConfigJSON string           `json:"config_json"`
 	ContextID  model.InternalID `json:"context_id"`
 }
-
-type PorterInstanceStatus int
-
-const (
-	PorterInstanceStatusUnspecified PorterInstanceStatus = iota
-	PorterInstanceStatusActive
-	PorterInstanceStatusBlocked
-)
 
 type ServerFeatureSummary struct {
 	AccountPlatforms   []*FeatureFlag
@@ -109,6 +110,13 @@ const (
 	PorterContextHandleStatusQueueing
 	PorterContextHandleStatusBlocked
 )
+
+type PorterGroup struct {
+	BinarySummary     *PorterBinarySummary
+	GlobalName        string
+	Regions           []string
+	ContextJSONSchema string
+}
 
 type ServerFeatureSummaryMap struct {
 	AccountPlatforms   *libtype.SyncMap[[]string]

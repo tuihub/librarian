@@ -8,6 +8,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
@@ -66,7 +67,7 @@ type Yesod struct {
 	pullFeed           *libmq.Topic[modelyesod.PullFeed]
 	systemNotify       *libmq.Topic[modelnetzach.SystemNotify]
 	feedOwner          *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
-	builtinFeedActions []*modeltiphereth.FeatureFlag
+	builtinFeedActions []*modelsupervisor.FeatureFlag
 }
 
 func NewYesod(
@@ -100,7 +101,7 @@ func NewYesod(
 	return y, nil
 }
 
-func (y *Yesod) GetBuiltInFeedActions() []*modeltiphereth.FeatureFlag {
+func (y *Yesod) GetBuiltInFeedActions() []*modelsupervisor.FeatureFlag {
 	return y.builtinFeedActions
 }
 

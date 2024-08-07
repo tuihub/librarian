@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -33,7 +33,7 @@ type FeedConfig struct {
 	ID                model.InternalID
 	Name              string
 	Description       string
-	Source            *modeltiphereth.FeatureRequest
+	Source            *modelsupervisor.FeatureRequest
 	ActionSets        []model.InternalID
 	Category          string
 	Status            FeedConfigStatus
@@ -70,7 +70,7 @@ const (
 
 type PullFeed struct {
 	InternalID   model.InternalID
-	Source       *modeltiphereth.FeatureRequest
+	Source       *modelsupervisor.FeatureRequest
 	SystemNotify *modelnetzach.SystemNotify
 }
 
@@ -95,5 +95,5 @@ type FeedActionSet struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Actions     []*modeltiphereth.FeatureRequest
+	Actions     []*modelsupervisor.FeatureRequest
 }

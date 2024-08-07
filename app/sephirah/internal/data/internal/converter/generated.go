@@ -18,6 +18,7 @@ import (
 	modelchesed "github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	modelsupervisor "github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
@@ -203,9 +204,9 @@ func ToBizFeedActionSet(source *ent.FeedActionSet) *modelyesod.FeedActionSet {
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
 		if (*source).Actions != nil {
-			modelyesodFeedActionSet.Actions = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*modelsupervisor.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
-				modelyesodFeedActionSet.Actions[i] = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Actions[i])
+				modelyesodFeedActionSet.Actions[i] = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Actions[i])
 			}
 		}
 		pModelyesodFeedActionSet = &modelyesodFeedActionSet
@@ -229,7 +230,7 @@ func ToBizFeedConfig(source *ent.FeedConfig) *modelyesod.FeedConfig {
 		modelyesodFeedConfig.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelyesodFeedConfig.Name = (*source).Name
 		modelyesodFeedConfig.Description = (*source).Description
-		modelyesodFeedConfig.Source = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Source)
+		modelyesodFeedConfig.Source = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Source)
 		modelyesodFeedConfig.Category = (*source).Category
 		modelyesodFeedConfig.Status = ToBizFeedConfigStatus((*source).Status)
 		modelyesodFeedConfig.PullInterval = time.Duration((*source).PullInterval)
@@ -414,7 +415,7 @@ func ToBizNotifyTarget(source *ent.NotifyTarget) *modelnetzach.NotifyTarget {
 		modelnetzachNotifyTarget.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelnetzachNotifyTarget.Name = (*source).Name
 		modelnetzachNotifyTarget.Description = (*source).Description
-		modelnetzachNotifyTarget.Destination = pModeltipherethFeatureRequestToPModeltipherethFeatureRequest((*source).Destination)
+		modelnetzachNotifyTarget.Destination = pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest((*source).Destination)
 		modelnetzachNotifyTarget.Status = ToBizNotifyTargetStatus((*source).Status)
 		pModelnetzachNotifyTarget = &modelnetzachNotifyTarget
 	}
@@ -442,81 +443,80 @@ func ToBizNotifyTargetStatus(source notifytarget.Status) modelnetzach.NotifyTarg
 	}
 	return modelnetzachNotifyTargetStatus
 }
-func ToBizPorter(source *ent.PorterInstance) *modeltiphereth.PorterInstance {
-	var pModeltipherethPorterInstance *modeltiphereth.PorterInstance
+func ToBizPorter(source *ent.PorterInstance) *modelsupervisor.PorterInstance {
+	var pModelsupervisorPorterInstance *modelsupervisor.PorterInstance
 	if source != nil {
-		var modeltipherethPorterInstance modeltiphereth.PorterInstance
-		modeltipherethPorterInstance.ID = modelInternalIDToModelInternalID((*source).ID)
-		modeltipherethPorterInstance.Name = (*source).Name
-		modeltipherethPorterInstance.Version = (*source).Version
-		modeltipherethPorterInstance.GlobalName = (*source).GlobalName
-		modeltipherethPorterInstance.Address = (*source).Address
-		modeltipherethPorterInstance.Region = (*source).Region
-		modeltipherethPorterInstance.FeatureSummary = pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary((*source).FeatureSummary)
-		modeltipherethPorterInstance.Status = ToBizPorterStatus((*source).Status)
-		modeltipherethPorterInstance.ContextJSONSchema = (*source).ContextJSONSchema
-		pModeltipherethPorterInstance = &modeltipherethPorterInstance
+		var modelsupervisorPorterInstance modelsupervisor.PorterInstance
+		modelsupervisorPorterInstance.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelsupervisorPorterInstance.BinarySummary = entPorterInstanceToPModelsupervisorPorterBinarySummary((*source))
+		modelsupervisorPorterInstance.GlobalName = (*source).GlobalName
+		modelsupervisorPorterInstance.Address = (*source).Address
+		modelsupervisorPorterInstance.Region = (*source).Region
+		modelsupervisorPorterInstance.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary((*source).FeatureSummary)
+		modelsupervisorPorterInstance.Status = ToBizPorterStatus((*source).Status)
+		modelsupervisorPorterInstance.ContextJSONSchema = (*source).ContextJSONSchema
+		pModelsupervisorPorterInstance = &modelsupervisorPorterInstance
 	}
-	return pModeltipherethPorterInstance
+	return pModelsupervisorPorterInstance
 }
-func ToBizPorterContext(source *ent.PorterContext) *modeltiphereth.PorterContext {
-	var pModeltipherethPorterContext *modeltiphereth.PorterContext
+func ToBizPorterContext(source *ent.PorterContext) *modelsupervisor.PorterContext {
+	var pModelsupervisorPorterContext *modelsupervisor.PorterContext
 	if source != nil {
-		var modeltipherethPorterContext modeltiphereth.PorterContext
-		modeltipherethPorterContext.ID = modelInternalIDToModelInternalID((*source).ID)
-		modeltipherethPorterContext.GlobalName = (*source).GlobalName
-		modeltipherethPorterContext.Region = (*source).Region
-		modeltipherethPorterContext.ContextJSON = (*source).ContextJSON
-		modeltipherethPorterContext.Name = (*source).Name
-		modeltipherethPorterContext.Description = (*source).Description
-		modeltipherethPorterContext.Status = ToBizPorterContextStatus((*source).Status)
-		pModeltipherethPorterContext = &modeltipherethPorterContext
+		var modelsupervisorPorterContext modelsupervisor.PorterContext
+		modelsupervisorPorterContext.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelsupervisorPorterContext.GlobalName = (*source).GlobalName
+		modelsupervisorPorterContext.Region = (*source).Region
+		modelsupervisorPorterContext.ContextJSON = (*source).ContextJSON
+		modelsupervisorPorterContext.Name = (*source).Name
+		modelsupervisorPorterContext.Description = (*source).Description
+		modelsupervisorPorterContext.Status = ToBizPorterContextStatus((*source).Status)
+		pModelsupervisorPorterContext = &modelsupervisorPorterContext
 	}
-	return pModeltipherethPorterContext
+	return pModelsupervisorPorterContext
 }
-func ToBizPorterContextList(source []*ent.PorterContext) []*modeltiphereth.PorterContext {
-	var pModeltipherethPorterContextList []*modeltiphereth.PorterContext
+func ToBizPorterContextList(source []*ent.PorterContext) []*modelsupervisor.PorterContext {
+	var pModelsupervisorPorterContextList []*modelsupervisor.PorterContext
 	if source != nil {
-		pModeltipherethPorterContextList = make([]*modeltiphereth.PorterContext, len(source))
+		pModelsupervisorPorterContextList = make([]*modelsupervisor.PorterContext, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethPorterContextList[i] = ToBizPorterContext(source[i])
+			pModelsupervisorPorterContextList[i] = ToBizPorterContext(source[i])
 		}
 	}
-	return pModeltipherethPorterContextList
+	return pModelsupervisorPorterContextList
 }
-func ToBizPorterContextStatus(source portercontext.Status) modeltiphereth.PorterContextStatus {
-	var modeltipherethPorterContextStatus modeltiphereth.PorterContextStatus
+func ToBizPorterContextStatus(source portercontext.Status) modelsupervisor.PorterContextStatus {
+	var modelsupervisorPorterContextStatus modelsupervisor.PorterContextStatus
 	switch source {
 	case portercontext.StatusActive:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusActive
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusActive
 	case portercontext.StatusDisabled:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusDisabled
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusDisabled
 	default:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
 	}
-	return modeltipherethPorterContextStatus
+	return modelsupervisorPorterContextStatus
 }
-func ToBizPorterList(source []*ent.PorterInstance) []*modeltiphereth.PorterInstance {
-	var pModeltipherethPorterInstanceList []*modeltiphereth.PorterInstance
+func ToBizPorterList(source []*ent.PorterInstance) []*modelsupervisor.PorterInstance {
+	var pModelsupervisorPorterInstanceList []*modelsupervisor.PorterInstance
 	if source != nil {
-		pModeltipherethPorterInstanceList = make([]*modeltiphereth.PorterInstance, len(source))
+		pModelsupervisorPorterInstanceList = make([]*modelsupervisor.PorterInstance, len(source))
 		for i := 0; i < len(source); i++ {
-			pModeltipherethPorterInstanceList[i] = ToBizPorter(source[i])
+			pModelsupervisorPorterInstanceList[i] = ToBizPorter(source[i])
 		}
 	}
-	return pModeltipherethPorterInstanceList
+	return pModelsupervisorPorterInstanceList
 }
-func ToBizPorterStatus(source porterinstance.Status) modeltiphereth.PorterInstanceStatus {
-	var modeltipherethPorterInstanceStatus modeltiphereth.PorterInstanceStatus
+func ToBizPorterStatus(source porterinstance.Status) modeltiphereth.UserStatus {
+	var modeltipherethUserStatus modeltiphereth.UserStatus
 	switch source {
 	case porterinstance.StatusActive:
-		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusActive
+		modeltipherethUserStatus = modeltiphereth.UserStatusActive
 	case porterinstance.StatusBlocked:
-		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusBlocked
+		modeltipherethUserStatus = modeltiphereth.UserStatusBlocked
 	default:
-		modeltipherethPorterInstanceStatus = modeltiphereth.PorterInstanceStatusUnspecified
+		modeltipherethUserStatus = modeltiphereth.UserStatusUnspecified
 	}
-	return modeltipherethPorterInstanceStatus
+	return modeltipherethUserStatus
 }
 func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotification *modelnetzach.SystemNotification
@@ -688,6 +688,16 @@ func entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.App
 	modelgeburaAppInfoDetails.Version = source.Version
 	return &modelgeburaAppInfoDetails
 }
+func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterInstance) *modelsupervisor.PorterBinarySummary {
+	var modelsupervisorPorterBinarySummary modelsupervisor.PorterBinarySummary
+	modelsupervisorPorterBinarySummary.Name = source.Name
+	modelsupervisorPorterBinarySummary.Version = source.Version
+	modelsupervisorPorterBinarySummary.Description = source.Description
+	modelsupervisorPorterBinarySummary.SourceCodeAddress = source.SourceCodeAddress
+	modelsupervisorPorterBinarySummary.BuildVersion = source.BuildVersion
+	modelsupervisorPorterBinarySummary.BuildDate = source.BuildDate
+	return &modelsupervisorPorterBinarySummary
+}
 func modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
 	return model.InternalID(source)
 }
@@ -722,68 +732,68 @@ func pModelfeedPersonToPModelfeedPerson(source *modelfeed.Person) *modelfeed.Per
 	}
 	return pModelfeedPerson
 }
-func pModeltipherethFeatureFlagToPModeltipherethFeatureFlag(source *modeltiphereth.FeatureFlag) *modeltiphereth.FeatureFlag {
-	var pModeltipherethFeatureFlag *modeltiphereth.FeatureFlag
+func pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag(source *modelsupervisor.FeatureFlag) *modelsupervisor.FeatureFlag {
+	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag
 	if source != nil {
-		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
-		modeltipherethFeatureFlag.ID = (*source).ID
-		modeltipherethFeatureFlag.Name = (*source).Name
-		modeltipherethFeatureFlag.Description = (*source).Description
-		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
-		modeltipherethFeatureFlag.RequireContext = (*source).RequireContext
-		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
+		var modelsupervisorFeatureFlag modelsupervisor.FeatureFlag
+		modelsupervisorFeatureFlag.ID = (*source).ID
+		modelsupervisorFeatureFlag.Name = (*source).Name
+		modelsupervisorFeatureFlag.Description = (*source).Description
+		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
+		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
+		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
 	}
-	return pModeltipherethFeatureFlag
+	return pModelsupervisorFeatureFlag
 }
-func pModeltipherethFeatureRequestToPModeltipherethFeatureRequest(source *modeltiphereth.FeatureRequest) *modeltiphereth.FeatureRequest {
-	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
+func pModelsupervisorFeatureRequestToPModelsupervisorFeatureRequest(source *modelsupervisor.FeatureRequest) *modelsupervisor.FeatureRequest {
+	var pModelsupervisorFeatureRequest *modelsupervisor.FeatureRequest
 	if source != nil {
-		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
-		modeltipherethFeatureRequest.ID = (*source).ID
-		modeltipherethFeatureRequest.Region = (*source).Region
-		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJSON
-		modeltipherethFeatureRequest.ContextID = modelInternalIDToModelInternalID((*source).ContextID)
-		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
+		var modelsupervisorFeatureRequest modelsupervisor.FeatureRequest
+		modelsupervisorFeatureRequest.ID = (*source).ID
+		modelsupervisorFeatureRequest.Region = (*source).Region
+		modelsupervisorFeatureRequest.ConfigJSON = (*source).ConfigJSON
+		modelsupervisorFeatureRequest.ContextID = modelInternalIDToModelInternalID((*source).ContextID)
+		pModelsupervisorFeatureRequest = &modelsupervisorFeatureRequest
 	}
-	return pModeltipherethFeatureRequest
+	return pModelsupervisorFeatureRequest
 }
-func pModeltipherethPorterFeatureSummaryToPModeltipherethPorterFeatureSummary(source *modeltiphereth.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
-	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
+func pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary(source *modelsupervisor.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
 	if source != nil {
-		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
+		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
 		if (*source).AccountPlatforms != nil {
-			modeltipherethPorterFeatureSummary.AccountPlatforms = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
+			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*modelsupervisor.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
-				modeltipherethPorterFeatureSummary.AccountPlatforms[i] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AccountPlatforms[i])
+				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
 		if (*source).AppInfoSources != nil {
-			modeltipherethPorterFeatureSummary.AppInfoSources = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
+			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*modelsupervisor.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
-				modeltipherethPorterFeatureSummary.AppInfoSources[j] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).AppInfoSources[j])
+				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
 		if (*source).FeedSources != nil {
-			modeltipherethPorterFeatureSummary.FeedSources = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
+			modelsupervisorPorterFeatureSummary.FeedSources = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
-				modeltipherethPorterFeatureSummary.FeedSources[k] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedSources[k])
+				modelsupervisorPorterFeatureSummary.FeedSources[k] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedSources[k])
 			}
 		}
 		if (*source).NotifyDestinations != nil {
-			modeltipherethPorterFeatureSummary.NotifyDestinations = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
+			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*modelsupervisor.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
-				modeltipherethPorterFeatureSummary.NotifyDestinations[l] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).NotifyDestinations[l])
+				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
 		if (*source).FeedItemActions != nil {
-			modeltipherethPorterFeatureSummary.FeedItemActions = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
+			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*modelsupervisor.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
-				modeltipherethPorterFeatureSummary.FeedItemActions[m] = pModeltipherethFeatureFlagToPModeltipherethFeatureFlag((*source).FeedItemActions[m])
+				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
-		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
+		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
 	}
-	return pModeltipherethPorterFeatureSummary
+	return pModelsupervisorPorterFeatureSummary
 }
 func timeTimeToPTimeTime(source time.Time) *time.Time {
 	timeTime := TimeToTime(source)
@@ -931,29 +941,39 @@ func ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []not
 	}
 	return notifytargetStatusList
 }
-func ToEntPorterContextStatus(source modeltiphereth.PorterContextStatus) portercontext.Status {
+func ToEntPorterContextStatus(source modelsupervisor.PorterContextStatus) portercontext.Status {
 	var portercontextStatus portercontext.Status
 	switch source {
-	case modeltiphereth.PorterContextStatusActive:
+	case modelsupervisor.PorterContextStatusActive:
 		portercontextStatus = portercontext.StatusActive
-	case modeltiphereth.PorterContextStatusDisabled:
+	case modelsupervisor.PorterContextStatusDisabled:
 		portercontextStatus = portercontext.StatusDisabled
-	case modeltiphereth.PorterContextStatusUnspecified: // ignored
+	case modelsupervisor.PorterContextStatusUnspecified: // ignored
 	default: // ignored
 	}
 	return portercontextStatus
 }
-func ToEntPorterInstanceStatus(source modeltiphereth.PorterInstanceStatus) porterinstance.Status {
+func ToEntPorterInstanceStatus(source modeltiphereth.UserStatus) porterinstance.Status {
 	var porterinstanceStatus porterinstance.Status
 	switch source {
-	case modeltiphereth.PorterInstanceStatusActive:
+	case modeltiphereth.UserStatusActive:
 		porterinstanceStatus = porterinstance.StatusActive
-	case modeltiphereth.PorterInstanceStatusBlocked:
+	case modeltiphereth.UserStatusBlocked:
 		porterinstanceStatus = porterinstance.StatusBlocked
-	case modeltiphereth.PorterInstanceStatusUnspecified: // ignored
+	case modeltiphereth.UserStatusUnspecified: // ignored
 	default: // ignored
 	}
 	return porterinstanceStatus
+}
+func ToEntPorterInstanceStatusList(source []modeltiphereth.UserStatus) []porterinstance.Status {
+	var porterinstanceStatusList []porterinstance.Status
+	if source != nil {
+		porterinstanceStatusList = make([]porterinstance.Status, len(source))
+		for i := 0; i < len(source); i++ {
+			porterinstanceStatusList[i] = ToEntPorterInstanceStatus(source[i])
+		}
+	}
+	return porterinstanceStatusList
 }
 func ToEntSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) systemnotification.Level {
 	var systemnotificationLevel systemnotification.Level

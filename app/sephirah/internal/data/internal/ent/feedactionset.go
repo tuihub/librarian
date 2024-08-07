@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -26,7 +26,7 @@ type FeedActionSet struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Actions holds the value of the "actions" field.
-	Actions []*modeltiphereth.FeatureRequest `json:"actions,omitempty"`
+	Actions []*modelsupervisor.FeatureRequest `json:"actions,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.

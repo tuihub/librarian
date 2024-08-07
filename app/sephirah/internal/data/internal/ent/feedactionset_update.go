@@ -16,7 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -62,13 +62,13 @@ func (fasu *FeedActionSetUpdate) SetNillableDescription(s *string) *FeedActionSe
 }
 
 // SetActions sets the "actions" field.
-func (fasu *FeedActionSetUpdate) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedActionSetUpdate {
+func (fasu *FeedActionSetUpdate) SetActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdate {
 	fasu.mutation.SetActions(mr)
 	return fasu
 }
 
 // AppendActions appends mr to the "actions" field.
-func (fasu *FeedActionSetUpdate) AppendActions(mr []*modeltiphereth.FeatureRequest) *FeedActionSetUpdate {
+func (fasu *FeedActionSetUpdate) AppendActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdate {
 	fasu.mutation.AppendActions(mr)
 	return fasu
 }
@@ -350,13 +350,13 @@ func (fasuo *FeedActionSetUpdateOne) SetNillableDescription(s *string) *FeedActi
 }
 
 // SetActions sets the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedActionSetUpdateOne {
+func (fasuo *FeedActionSetUpdateOne) SetActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdateOne {
 	fasuo.mutation.SetActions(mr)
 	return fasuo
 }
 
 // AppendActions appends mr to the "actions" field.
-func (fasuo *FeedActionSetUpdateOne) AppendActions(mr []*modeltiphereth.FeatureRequest) *FeedActionSetUpdateOne {
+func (fasuo *FeedActionSetUpdateOne) AppendActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetUpdateOne {
 	fasuo.mutation.AppendActions(mr)
 	return fasuo
 }

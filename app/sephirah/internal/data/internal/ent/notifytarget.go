@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -26,7 +26,7 @@ type NotifyTarget struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Destination holds the value of the "destination" field.
-	Destination *modeltiphereth.FeatureRequest `json:"destination,omitempty"`
+	Destination *modelsupervisor.FeatureRequest `json:"destination,omitempty"`
 	// Status holds the value of the "status" field.
 	Status notifytarget.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.

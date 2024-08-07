@@ -3,7 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -19,7 +19,7 @@ func (FeedActionSet) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("description"),
-		field.JSON("actions", []*modeltiphereth.FeatureRequest{}),
+		field.JSON("actions", []*modelsupervisor.FeatureRequest{}),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

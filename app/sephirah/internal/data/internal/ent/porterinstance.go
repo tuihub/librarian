@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -24,6 +24,14 @@ type PorterInstance struct {
 	Name string `json:"name,omitempty"`
 	// Version holds the value of the "version" field.
 	Version string `json:"version,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
+	// SourceCodeAddress holds the value of the "source_code_address" field.
+	SourceCodeAddress string `json:"source_code_address,omitempty"`
+	// BuildVersion holds the value of the "build_version" field.
+	BuildVersion string `json:"build_version,omitempty"`
+	// BuildDate holds the value of the "build_date" field.
+	BuildDate string `json:"build_date,omitempty"`
 	// GlobalName holds the value of the "global_name" field.
 	GlobalName string `json:"global_name,omitempty"`
 	// Address holds the value of the "address" field.
@@ -31,7 +39,7 @@ type PorterInstance struct {
 	// Region holds the value of the "region" field.
 	Region string `json:"region,omitempty"`
 	// FeatureSummary holds the value of the "feature_summary" field.
-	FeatureSummary *modeltiphereth.PorterFeatureSummary `json:"feature_summary,omitempty"`
+	FeatureSummary *modelsupervisor.PorterFeatureSummary `json:"feature_summary,omitempty"`
 	// ContextJSONSchema holds the value of the "context_json_schema" field.
 	ContextJSONSchema string `json:"context_json_schema,omitempty"`
 	// Status holds the value of the "status" field.
@@ -52,7 +60,7 @@ func (*PorterInstance) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case porterinstance.FieldID:
 			values[i] = new(sql.NullInt64)
-		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldRegion, porterinstance.FieldContextJSONSchema, porterinstance.FieldStatus:
+		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldDescription, porterinstance.FieldSourceCodeAddress, porterinstance.FieldBuildVersion, porterinstance.FieldBuildDate, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldRegion, porterinstance.FieldContextJSONSchema, porterinstance.FieldStatus:
 			values[i] = new(sql.NullString)
 		case porterinstance.FieldUpdatedAt, porterinstance.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -88,6 +96,30 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field version", values[i])
 			} else if value.Valid {
 				pi.Version = value.String
+			}
+		case porterinstance.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				pi.Description = value.String
+			}
+		case porterinstance.FieldSourceCodeAddress:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field source_code_address", values[i])
+			} else if value.Valid {
+				pi.SourceCodeAddress = value.String
+			}
+		case porterinstance.FieldBuildVersion:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field build_version", values[i])
+			} else if value.Valid {
+				pi.BuildVersion = value.String
+			}
+		case porterinstance.FieldBuildDate:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field build_date", values[i])
+			} else if value.Valid {
+				pi.BuildDate = value.String
 			}
 		case porterinstance.FieldGlobalName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -180,6 +212,18 @@ func (pi *PorterInstance) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("version=")
 	builder.WriteString(pi.Version)
+	builder.WriteString(", ")
+	builder.WriteString("description=")
+	builder.WriteString(pi.Description)
+	builder.WriteString(", ")
+	builder.WriteString("source_code_address=")
+	builder.WriteString(pi.SourceCodeAddress)
+	builder.WriteString(", ")
+	builder.WriteString("build_version=")
+	builder.WriteString(pi.BuildVersion)
+	builder.WriteString(", ")
+	builder.WriteString("build_date=")
+	builder.WriteString(pi.BuildDate)
 	builder.WriteString(", ")
 	builder.WriteString("global_name=")
 	builder.WriteString(pi.GlobalName)

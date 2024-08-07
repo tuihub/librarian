@@ -16,7 +16,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -62,7 +62,7 @@ func (ntu *NotifyTargetUpdate) SetNillableDescription(s *string) *NotifyTargetUp
 }
 
 // SetDestination sets the "destination" field.
-func (ntu *NotifyTargetUpdate) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetUpdate {
+func (ntu *NotifyTargetUpdate) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetUpdate {
 	ntu.mutation.SetDestination(mr)
 	return ntu
 }
@@ -454,7 +454,7 @@ func (ntuo *NotifyTargetUpdateOne) SetNillableDescription(s *string) *NotifyTarg
 }
 
 // SetDestination sets the "destination" field.
-func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetUpdateOne {
+func (ntuo *NotifyTargetUpdateOne) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetUpdateOne {
 	ntuo.mutation.SetDestination(mr)
 	return ntuo
 }

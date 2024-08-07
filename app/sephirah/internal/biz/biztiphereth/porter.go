@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
@@ -29,7 +30,7 @@ func (t *Tiphereth) updatePorters(ctx context.Context) error {
 	}
 	for i, porter := range newPorters {
 		porter.ID = ids[i]
-		porter.Status = modeltiphereth.PorterInstanceStatusBlocked
+		porter.Status = modeltiphereth.UserStatusBlocked
 	}
 	err = t.repo.UpsertPorters(ctx, newPorters)
 	if err != nil {
@@ -42,7 +43,7 @@ func (t *Tiphereth) updatePorters(ctx context.Context) error {
 func (t *Tiphereth) ListPorters(
 	ctx context.Context,
 	paging model.Paging,
-) ([]*modeltiphereth.PorterInstance, int64, *errors.Error) {
+) ([]*modelsupervisor.PorterInstance, int64, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
@@ -56,7 +57,7 @@ func (t *Tiphereth) ListPorters(
 func (t *Tiphereth) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
-	status modeltiphereth.PorterInstanceStatus,
+	status modeltiphereth.UserStatus,
 ) *errors.Error {
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
@@ -69,7 +70,7 @@ func (t *Tiphereth) UpdatePorterStatus(
 	return nil
 }
 
-func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modeltiphereth.PorterContext) (model.InternalID, *errors.Error) {
+func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modelsupervisor.PorterContext) (model.InternalID, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
@@ -86,7 +87,7 @@ func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modeltiphe
 	return id, nil
 }
 
-func (t *Tiphereth) ListPorterContexts(ctx context.Context, paging model.Paging) ([]*modeltiphereth.PorterContext, int64, *errors.Error) {
+func (t *Tiphereth) ListPorterContexts(ctx context.Context, paging model.Paging) ([]*modelsupervisor.PorterContext, int64, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
@@ -100,7 +101,7 @@ func (t *Tiphereth) ListPorterContexts(ctx context.Context, paging model.Paging)
 
 func (t *Tiphereth) UpdatePorterContext(
 	ctx context.Context,
-	context *modeltiphereth.PorterContext,
+	context *modelsupervisor.PorterContext,
 ) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
@@ -111,4 +112,23 @@ func (t *Tiphereth) UpdatePorterContext(
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
+}
+
+func (t *Tiphereth) ListPorterGroups(
+	ctx context.Context,
+	paging model.Paging,
+	status []modeltiphereth.UserStatus,
+) ([]*modelsupervisor.PorterGroup, int64, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
+	}
+	if claims.UserType != libauth.UserTypeAdmin {
+		status = []modeltiphereth.UserStatus{modeltiphereth.UserStatusActive}
+	}
+	groups, err := t.repo.ListPorterGroups(ctx, status)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return groups, int64(len(groups)), nil
 }

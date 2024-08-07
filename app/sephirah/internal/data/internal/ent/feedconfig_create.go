@@ -17,7 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfigaction"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -48,7 +48,7 @@ func (fcc *FeedConfigCreate) SetDescription(s string) *FeedConfigCreate {
 }
 
 // SetSource sets the "source" field.
-func (fcc *FeedConfigCreate) SetSource(mr *modeltiphereth.FeatureRequest) *FeedConfigCreate {
+func (fcc *FeedConfigCreate) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigCreate {
 	fcc.mutation.SetSource(mr)
 	return fcc
 }
@@ -607,7 +607,7 @@ func (u *FeedConfigUpsert) UpdateDescription() *FeedConfigUpsert {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsert) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsert {
+func (u *FeedConfigUpsert) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsert {
 	u.Set(feedconfig.FieldSource, v)
 	return u
 }
@@ -835,7 +835,7 @@ func (u *FeedConfigUpsertOne) UpdateDescription() *FeedConfigUpsertOne {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertOne) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsertOne {
+func (u *FeedConfigUpsertOne) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsertOne {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})
@@ -1252,7 +1252,7 @@ func (u *FeedConfigUpsertBulk) UpdateDescription() *FeedConfigUpsertBulk {
 }
 
 // SetSource sets the "source" field.
-func (u *FeedConfigUpsertBulk) SetSource(v *modeltiphereth.FeatureRequest) *FeedConfigUpsertBulk {
+func (u *FeedConfigUpsertBulk) SetSource(v *modelsupervisor.FeatureRequest) *FeedConfigUpsertBulk {
 	return u.Update(func(s *FeedConfigUpsert) {
 		s.SetSource(v)
 	})

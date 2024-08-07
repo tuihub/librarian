@@ -670,6 +670,10 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
 		{Name: "version", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
+		{Name: "source_code_address", Type: field.TypeString},
+		{Name: "build_version", Type: field.TypeString},
+		{Name: "build_date", Type: field.TypeString},
 		{Name: "global_name", Type: field.TypeString},
 		{Name: "address", Type: field.TypeString},
 		{Name: "region", Type: field.TypeString},
@@ -688,7 +692,12 @@ var (
 			{
 				Name:    "porterinstance_address",
 				Unique:  true,
-				Columns: []*schema.Column{PorterInstancesColumns[4]},
+				Columns: []*schema.Column{PorterInstancesColumns[8]},
+			},
+			{
+				Name:    "porterinstance_global_name_region",
+				Unique:  false,
+				Columns: []*schema.Column{PorterInstancesColumns[7], PorterInstancesColumns[9]},
 			},
 		},
 	}

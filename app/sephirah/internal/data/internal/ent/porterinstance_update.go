@@ -13,7 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 )
 
 // PorterInstanceUpdate is the builder for updating PorterInstance entities.
@@ -53,6 +53,62 @@ func (piu *PorterInstanceUpdate) SetVersion(s string) *PorterInstanceUpdate {
 func (piu *PorterInstanceUpdate) SetNillableVersion(s *string) *PorterInstanceUpdate {
 	if s != nil {
 		piu.SetVersion(*s)
+	}
+	return piu
+}
+
+// SetDescription sets the "description" field.
+func (piu *PorterInstanceUpdate) SetDescription(s string) *PorterInstanceUpdate {
+	piu.mutation.SetDescription(s)
+	return piu
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableDescription(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetDescription(*s)
+	}
+	return piu
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (piu *PorterInstanceUpdate) SetSourceCodeAddress(s string) *PorterInstanceUpdate {
+	piu.mutation.SetSourceCodeAddress(s)
+	return piu
+}
+
+// SetNillableSourceCodeAddress sets the "source_code_address" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableSourceCodeAddress(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetSourceCodeAddress(*s)
+	}
+	return piu
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (piu *PorterInstanceUpdate) SetBuildVersion(s string) *PorterInstanceUpdate {
+	piu.mutation.SetBuildVersion(s)
+	return piu
+}
+
+// SetNillableBuildVersion sets the "build_version" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableBuildVersion(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetBuildVersion(*s)
+	}
+	return piu
+}
+
+// SetBuildDate sets the "build_date" field.
+func (piu *PorterInstanceUpdate) SetBuildDate(s string) *PorterInstanceUpdate {
+	piu.mutation.SetBuildDate(s)
+	return piu
+}
+
+// SetNillableBuildDate sets the "build_date" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableBuildDate(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetBuildDate(*s)
 	}
 	return piu
 }
@@ -100,7 +156,7 @@ func (piu *PorterInstanceUpdate) SetNillableRegion(s *string) *PorterInstanceUpd
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdate {
+func (piu *PorterInstanceUpdate) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdate {
 	piu.mutation.SetFeatureSummary(mfs)
 	return piu
 }
@@ -222,6 +278,18 @@ func (piu *PorterInstanceUpdate) sqlSave(ctx context.Context) (n int, err error)
 	if value, ok := piu.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
 	}
+	if value, ok := piu.mutation.Description(); ok {
+		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := piu.mutation.SourceCodeAddress(); ok {
+		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
+	}
+	if value, ok := piu.mutation.BuildVersion(); ok {
+		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
+	}
+	if value, ok := piu.mutation.BuildDate(); ok {
+		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
+	}
 	if value, ok := piu.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)
 	}
@@ -294,6 +362,62 @@ func (piuo *PorterInstanceUpdateOne) SetNillableVersion(s *string) *PorterInstan
 	return piuo
 }
 
+// SetDescription sets the "description" field.
+func (piuo *PorterInstanceUpdateOne) SetDescription(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetDescription(s)
+	return piuo
+}
+
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableDescription(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetDescription(*s)
+	}
+	return piuo
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (piuo *PorterInstanceUpdateOne) SetSourceCodeAddress(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetSourceCodeAddress(s)
+	return piuo
+}
+
+// SetNillableSourceCodeAddress sets the "source_code_address" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableSourceCodeAddress(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetSourceCodeAddress(*s)
+	}
+	return piuo
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (piuo *PorterInstanceUpdateOne) SetBuildVersion(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetBuildVersion(s)
+	return piuo
+}
+
+// SetNillableBuildVersion sets the "build_version" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableBuildVersion(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetBuildVersion(*s)
+	}
+	return piuo
+}
+
+// SetBuildDate sets the "build_date" field.
+func (piuo *PorterInstanceUpdateOne) SetBuildDate(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetBuildDate(s)
+	return piuo
+}
+
+// SetNillableBuildDate sets the "build_date" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableBuildDate(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetBuildDate(*s)
+	}
+	return piuo
+}
+
 // SetGlobalName sets the "global_name" field.
 func (piuo *PorterInstanceUpdateOne) SetGlobalName(s string) *PorterInstanceUpdateOne {
 	piuo.mutation.SetGlobalName(s)
@@ -337,7 +461,7 @@ func (piuo *PorterInstanceUpdateOne) SetNillableRegion(s *string) *PorterInstanc
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) *PorterInstanceUpdateOne {
+func (piuo *PorterInstanceUpdateOne) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) *PorterInstanceUpdateOne {
 	piuo.mutation.SetFeatureSummary(mfs)
 	return piuo
 }
@@ -488,6 +612,18 @@ func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *Porter
 	}
 	if value, ok := piuo.mutation.Version(); ok {
 		_spec.SetField(porterinstance.FieldVersion, field.TypeString, value)
+	}
+	if value, ok := piuo.mutation.Description(); ok {
+		_spec.SetField(porterinstance.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := piuo.mutation.SourceCodeAddress(); ok {
+		_spec.SetField(porterinstance.FieldSourceCodeAddress, field.TypeString, value)
+	}
+	if value, ok := piuo.mutation.BuildVersion(); ok {
+		_spec.SetField(porterinstance.FieldBuildVersion, field.TypeString, value)
+	}
+	if value, ok := piuo.mutation.BuildDate(); ok {
+		_spec.SetField(porterinstance.FieldBuildDate, field.TypeString, value)
 	}
 	if value, ok := piuo.mutation.GlobalName(); ok {
 		_spec.SetField(porterinstance.FieldGlobalName, field.TypeString, value)

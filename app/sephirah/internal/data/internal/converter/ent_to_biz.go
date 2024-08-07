@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -67,21 +68,22 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAccount(*ent.Account) *modeltiphereth.Account
 	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
 
-	ToBizPorter(*ent.PorterInstance) *modeltiphereth.PorterInstance
-	ToBizPorterList([]*ent.PorterInstance) []*modeltiphereth.PorterInstance
-	// goverter:enum:unknown PorterInstanceStatusUnspecified
-	// goverter:enum:map StatusActive PorterInstanceStatusActive
-	// goverter:enum:map StatusBlocked PorterInstanceStatusBlocked
-	ToBizPorterStatus(porterinstance.Status) modeltiphereth.PorterInstanceStatus
+	// goverter:map . BinarySummary
+	ToBizPorter(*ent.PorterInstance) *modelsupervisor.PorterInstance
+	ToBizPorterList([]*ent.PorterInstance) []*modelsupervisor.PorterInstance
+	// goverter:enum:unknown UserStatusUnspecified
+	// goverter:enum:map StatusActive UserStatusActive
+	// goverter:enum:map StatusBlocked UserStatusBlocked
+	ToBizPorterStatus(porterinstance.Status) modeltiphereth.UserStatus
 
 	// goverter:ignore HandleStatus
 	// goverter:ignore HandleStatusMessage
-	ToBizPorterContext(*ent.PorterContext) *modeltiphereth.PorterContext
-	ToBizPorterContextList([]*ent.PorterContext) []*modeltiphereth.PorterContext
+	ToBizPorterContext(*ent.PorterContext) *modelsupervisor.PorterContext
+	ToBizPorterContextList([]*ent.PorterContext) []*modelsupervisor.PorterContext
 	// goverter:enum:unknown PorterContextStatusUnspecified
 	// goverter:enum:map StatusActive PorterContextStatusActive
 	// goverter:enum:map StatusDisabled PorterContextStatusDisabled
-	ToBizPorterContextStatus(portercontext.Status) modeltiphereth.PorterContextStatus
+	ToBizPorterContextStatus(portercontext.Status) modelsupervisor.PorterContextStatus
 
 	// goverter:map . Details
 	// goverter:map UpdatedAt LatestUpdateTime

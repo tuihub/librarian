@@ -7,6 +7,7 @@ import (
 	modelbinah "github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	modelgebura "github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	modelnetzach "github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	modelsupervisor "github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	modeltiphereth "github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	modelyesod "github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
@@ -189,30 +190,30 @@ func ToBizDeviceInfo(source *v11.DeviceInfo) *modeltiphereth.DeviceInfo {
 	}
 	return pModeltipherethDeviceInfo
 }
-func ToBizFeatureFlag(source *v1.FeatureFlag) *modeltiphereth.FeatureFlag {
-	var pModeltipherethFeatureFlag *modeltiphereth.FeatureFlag
+func ToBizFeatureFlag(source *v1.FeatureFlag) *modelsupervisor.FeatureFlag {
+	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag
 	if source != nil {
-		var modeltipherethFeatureFlag modeltiphereth.FeatureFlag
-		modeltipherethFeatureFlag.ID = (*source).Id
-		modeltipherethFeatureFlag.Name = (*source).Name
-		modeltipherethFeatureFlag.Description = (*source).Description
-		modeltipherethFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
-		modeltipherethFeatureFlag.RequireContext = (*source).RequireContext
-		pModeltipherethFeatureFlag = &modeltipherethFeatureFlag
+		var modelsupervisorFeatureFlag modelsupervisor.FeatureFlag
+		modelsupervisorFeatureFlag.ID = (*source).Id
+		modelsupervisorFeatureFlag.Name = (*source).Name
+		modelsupervisorFeatureFlag.Description = (*source).Description
+		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
+		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
+		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
 	}
-	return pModeltipherethFeatureFlag
+	return pModelsupervisorFeatureFlag
 }
-func ToBizFeatureRequest(source *v1.FeatureRequest) *modeltiphereth.FeatureRequest {
-	var pModeltipherethFeatureRequest *modeltiphereth.FeatureRequest
+func ToBizFeatureRequest(source *v1.FeatureRequest) *modelsupervisor.FeatureRequest {
+	var pModelsupervisorFeatureRequest *modelsupervisor.FeatureRequest
 	if source != nil {
-		var modeltipherethFeatureRequest modeltiphereth.FeatureRequest
-		modeltipherethFeatureRequest.ID = (*source).Id
-		modeltipherethFeatureRequest.Region = (*source).Region
-		modeltipherethFeatureRequest.ConfigJSON = (*source).ConfigJson
-		modeltipherethFeatureRequest.ContextID = ToBizInternalID((*source).ContextId)
-		pModeltipherethFeatureRequest = &modeltipherethFeatureRequest
+		var modelsupervisorFeatureRequest modelsupervisor.FeatureRequest
+		modelsupervisorFeatureRequest.ID = (*source).Id
+		modelsupervisorFeatureRequest.Region = (*source).Region
+		modelsupervisorFeatureRequest.ConfigJSON = (*source).ConfigJson
+		modelsupervisorFeatureRequest.ContextID = ToBizInternalID((*source).ContextId)
+		pModelsupervisorFeatureRequest = &modelsupervisorFeatureRequest
 	}
-	return pModeltipherethFeatureRequest
+	return pModelsupervisorFeatureRequest
 }
 func ToBizFeedActionSet(source *v11.FeedActionSet) *modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
@@ -222,7 +223,7 @@ func ToBizFeedActionSet(source *v11.FeedActionSet) *modelyesod.FeedActionSet {
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
 		if (*source).Actions != nil {
-			modelyesodFeedActionSet.Actions = make([]*modeltiphereth.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*modelsupervisor.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
 				modelyesodFeedActionSet.Actions[i] = ToBizFeatureRequest((*source).Actions[i])
 			}
@@ -494,92 +495,106 @@ func ToBizNotifyTargetStatusList(source []v11.NotifyTargetStatus) []modelnetzach
 	}
 	return modelnetzachNotifyTargetStatusList
 }
-func ToBizPorterContext(source *v11.PorterContext) *modeltiphereth.PorterContext {
-	var pModeltipherethPorterContext *modeltiphereth.PorterContext
+func ToBizPorterBinarySummary(source *v1.PorterBinarySummary) *modelsupervisor.PorterBinarySummary {
+	var pModelsupervisorPorterBinarySummary *modelsupervisor.PorterBinarySummary
 	if source != nil {
-		var modeltipherethPorterContext modeltiphereth.PorterContext
-		modeltipherethPorterContext.ID = ToBizInternalID((*source).Id)
-		modeltipherethPorterContext.GlobalName = (*source).GlobalName
-		modeltipherethPorterContext.Region = (*source).Region
-		modeltipherethPorterContext.ContextJSON = (*source).ContextJson
-		modeltipherethPorterContext.Name = (*source).Name
-		modeltipherethPorterContext.Description = (*source).Description
-		modeltipherethPorterContext.Status = ToBizPorterContextStatus((*source).Status)
-		modeltipherethPorterContext.HandleStatus = ToBizPorterContextHandleStatus((*source).HandleStatus)
-		modeltipherethPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
-		pModeltipherethPorterContext = &modeltipherethPorterContext
+		var modelsupervisorPorterBinarySummary modelsupervisor.PorterBinarySummary
+		modelsupervisorPorterBinarySummary.Name = (*source).Name
+		modelsupervisorPorterBinarySummary.Version = (*source).Version
+		modelsupervisorPorterBinarySummary.Description = (*source).Description
+		modelsupervisorPorterBinarySummary.SourceCodeAddress = (*source).SourceCodeAddress
+		modelsupervisorPorterBinarySummary.BuildVersion = (*source).BuildVersion
+		modelsupervisorPorterBinarySummary.BuildDate = (*source).BuildDate
+		pModelsupervisorPorterBinarySummary = &modelsupervisorPorterBinarySummary
 	}
-	return pModeltipherethPorterContext
+	return pModelsupervisorPorterBinarySummary
 }
-func ToBizPorterContextHandleStatus(source v11.PorterContextHandleStatus) modeltiphereth.PorterContextHandleStatus {
-	var modeltipherethPorterContextHandleStatus modeltiphereth.PorterContextHandleStatus
+func ToBizPorterContext(source *v11.PorterContext) *modelsupervisor.PorterContext {
+	var pModelsupervisorPorterContext *modelsupervisor.PorterContext
+	if source != nil {
+		var modelsupervisorPorterContext modelsupervisor.PorterContext
+		modelsupervisorPorterContext.ID = ToBizInternalID((*source).Id)
+		modelsupervisorPorterContext.GlobalName = (*source).GlobalName
+		modelsupervisorPorterContext.Region = (*source).Region
+		modelsupervisorPorterContext.ContextJSON = (*source).ContextJson
+		modelsupervisorPorterContext.Name = (*source).Name
+		modelsupervisorPorterContext.Description = (*source).Description
+		modelsupervisorPorterContext.Status = ToBizPorterContextStatus((*source).Status)
+		modelsupervisorPorterContext.HandleStatus = ToBizPorterContextHandleStatus((*source).HandleStatus)
+		modelsupervisorPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
+		pModelsupervisorPorterContext = &modelsupervisorPorterContext
+	}
+	return pModelsupervisorPorterContext
+}
+func ToBizPorterContextHandleStatus(source v11.PorterContextHandleStatus) modelsupervisor.PorterContextHandleStatus {
+	var modelsupervisorPorterContextHandleStatus modelsupervisor.PorterContextHandleStatus
 	switch source {
 	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusActive
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusActive
 	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusBlocked
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
 	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusDowngraded
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusDowngraded
 	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusQueueing
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
 	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusUnspecified
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
 	default:
-		modeltipherethPorterContextHandleStatus = modeltiphereth.PorterContextHandleStatusUnspecified
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
 	}
-	return modeltipherethPorterContextHandleStatus
+	return modelsupervisorPorterContextHandleStatus
 }
-func ToBizPorterContextStatus(source v11.PorterContextStatus) modeltiphereth.PorterContextStatus {
-	var modeltipherethPorterContextStatus modeltiphereth.PorterContextStatus
+func ToBizPorterContextStatus(source v11.PorterContextStatus) modelsupervisor.PorterContextStatus {
+	var modelsupervisorPorterContextStatus modelsupervisor.PorterContextStatus
 	switch source {
 	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusActive
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusActive
 	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusDisabled
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusDisabled
 	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
 	default:
-		modeltipherethPorterContextStatus = modeltiphereth.PorterContextStatusUnspecified
+		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
 	}
-	return modeltipherethPorterContextStatus
+	return modelsupervisorPorterContextStatus
 }
-func ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary {
-	var pModeltipherethPorterFeatureSummary *modeltiphereth.PorterFeatureSummary
+func ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
 	if source != nil {
-		var modeltipherethPorterFeatureSummary modeltiphereth.PorterFeatureSummary
+		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
 		if (*source).AccountPlatforms != nil {
-			modeltipherethPorterFeatureSummary.AccountPlatforms = make([]*modeltiphereth.FeatureFlag, len((*source).AccountPlatforms))
+			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*modelsupervisor.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
-				modeltipherethPorterFeatureSummary.AccountPlatforms[i] = ToBizFeatureFlag((*source).AccountPlatforms[i])
+				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = ToBizFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
 		if (*source).AppInfoSources != nil {
-			modeltipherethPorterFeatureSummary.AppInfoSources = make([]*modeltiphereth.FeatureFlag, len((*source).AppInfoSources))
+			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*modelsupervisor.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
-				modeltipherethPorterFeatureSummary.AppInfoSources[j] = ToBizFeatureFlag((*source).AppInfoSources[j])
+				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = ToBizFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
 		if (*source).FeedSources != nil {
-			modeltipherethPorterFeatureSummary.FeedSources = make([]*modeltiphereth.FeatureFlag, len((*source).FeedSources))
+			modelsupervisorPorterFeatureSummary.FeedSources = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
-				modeltipherethPorterFeatureSummary.FeedSources[k] = ToBizFeatureFlag((*source).FeedSources[k])
+				modelsupervisorPorterFeatureSummary.FeedSources[k] = ToBizFeatureFlag((*source).FeedSources[k])
 			}
 		}
 		if (*source).NotifyDestinations != nil {
-			modeltipherethPorterFeatureSummary.NotifyDestinations = make([]*modeltiphereth.FeatureFlag, len((*source).NotifyDestinations))
+			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*modelsupervisor.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
-				modeltipherethPorterFeatureSummary.NotifyDestinations[l] = ToBizFeatureFlag((*source).NotifyDestinations[l])
+				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = ToBizFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
 		if (*source).FeedItemActions != nil {
-			modeltipherethPorterFeatureSummary.FeedItemActions = make([]*modeltiphereth.FeatureFlag, len((*source).FeedItemActions))
+			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*modelsupervisor.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
-				modeltipherethPorterFeatureSummary.FeedItemActions[m] = ToBizFeatureFlag((*source).FeedItemActions[m])
+				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = ToBizFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
-		pModeltipherethPorterFeatureSummary = &modeltipherethPorterFeatureSummary
+		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
 	}
-	return pModeltipherethPorterFeatureSummary
+	return pModelsupervisorPorterFeatureSummary
 }
 func ToBizSystemNotificationLevel(source v11.SystemNotificationLevel) modelnetzach.SystemNotificationLevel {
 	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
@@ -1012,7 +1027,7 @@ func ToPBEnclosure(source *modelfeed.Enclosure) *v1.FeedEnclosure {
 	}
 	return pV1FeedEnclosure
 }
-func ToPBFeatureFlag(source *modeltiphereth.FeatureFlag) *v1.FeatureFlag {
+func ToPBFeatureFlag(source *modelsupervisor.FeatureFlag) *v1.FeatureFlag {
 	var pV1FeatureFlag *v1.FeatureFlag
 	if source != nil {
 		var v1FeatureFlag v1.FeatureFlag
@@ -1025,7 +1040,7 @@ func ToPBFeatureFlag(source *modeltiphereth.FeatureFlag) *v1.FeatureFlag {
 	}
 	return pV1FeatureFlag
 }
-func ToPBFeatureRequest(source *modeltiphereth.FeatureRequest) *v1.FeatureRequest {
+func ToPBFeatureRequest(source *modelsupervisor.FeatureRequest) *v1.FeatureRequest {
 	var pV1FeatureRequest *v1.FeatureRequest
 	if source != nil {
 		var v1FeatureRequest v1.FeatureRequest
@@ -1365,15 +1380,15 @@ func ToPBNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) v11.NotifyTa
 	}
 	return v1NotifyTargetStatus
 }
-func ToPBPorter(source *modeltiphereth.PorterInstanceController) *v11.Porter {
+func ToPBPorter(source *modelsupervisor.PorterInstanceController) *v11.Porter {
 	var pV1Porter *v11.Porter
 	if source != nil {
 		var v1Porter v11.Porter
 		v1Porter.Id = ToPBInternalID((*source).PorterInstance.ID)
-		v1Porter.Name = (*source).PorterInstance.Name
-		v1Porter.Version = (*source).PorterInstance.Version
+		v1Porter.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).PorterInstance.BinarySummary)
 		v1Porter.GlobalName = (*source).PorterInstance.GlobalName
-		v1Porter.Status = ToPBPorterStatus((*source).PorterInstance.Status)
+		v1Porter.Region = (*source).PorterInstance.Region
+		v1Porter.Status = ToPBUserStatus((*source).PorterInstance.Status)
 		v1Porter.ConnectionStatus = ToPBPorterConnectionStatus((*source).ConnectionStatus)
 		pString := (*source).PorterInstance.ContextJSONSchema
 		v1Porter.ContextJsonSchema = &pString
@@ -1382,27 +1397,27 @@ func ToPBPorter(source *modeltiphereth.PorterInstanceController) *v11.Porter {
 	}
 	return pV1Porter
 }
-func ToPBPorterConnectionStatus(source modeltiphereth.PorterConnectionStatus) v11.PorterConnectionStatus {
+func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) v11.PorterConnectionStatus {
 	var v1PorterConnectionStatus v11.PorterConnectionStatus
 	switch source {
-	case modeltiphereth.PorterConnectionStatusActivationFailed:
+	case modelsupervisor.PorterConnectionStatusActivationFailed:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
-	case modeltiphereth.PorterConnectionStatusActive:
+	case modelsupervisor.PorterConnectionStatusActive:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
-	case modeltiphereth.PorterConnectionStatusConnected:
+	case modelsupervisor.PorterConnectionStatusConnected:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
-	case modeltiphereth.PorterConnectionStatusDisconnected:
+	case modelsupervisor.PorterConnectionStatusDisconnected:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
-	case modeltiphereth.PorterConnectionStatusDowngraded:
+	case modelsupervisor.PorterConnectionStatusDowngraded:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
-	case modeltiphereth.PorterConnectionStatusUnspecified:
+	case modelsupervisor.PorterConnectionStatusUnspecified:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	default:
 		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
 	return v1PorterConnectionStatus
 }
-func ToPBPorterContext(source *modeltiphereth.PorterContext) *v11.PorterContext {
+func ToPBPorterContext(source *modelsupervisor.PorterContext) *v11.PorterContext {
 	var pV1PorterContext *v11.PorterContext
 	if source != nil {
 		var v1PorterContext v11.PorterContext
@@ -1419,25 +1434,25 @@ func ToPBPorterContext(source *modeltiphereth.PorterContext) *v11.PorterContext 
 	}
 	return pV1PorterContext
 }
-func ToPBPorterContextHandleStatus(source modeltiphereth.PorterContextHandleStatus) v11.PorterContextHandleStatus {
+func ToPBPorterContextHandleStatus(source modelsupervisor.PorterContextHandleStatus) v11.PorterContextHandleStatus {
 	var v1PorterContextHandleStatus v11.PorterContextHandleStatus
 	switch source {
-	case modeltiphereth.PorterContextHandleStatusActive:
+	case modelsupervisor.PorterContextHandleStatusActive:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
-	case modeltiphereth.PorterContextHandleStatusBlocked:
+	case modelsupervisor.PorterContextHandleStatusBlocked:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
-	case modeltiphereth.PorterContextHandleStatusDowngraded:
+	case modelsupervisor.PorterContextHandleStatusDowngraded:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
-	case modeltiphereth.PorterContextHandleStatusQueueing:
+	case modelsupervisor.PorterContextHandleStatusQueueing:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
-	case modeltiphereth.PorterContextHandleStatusUnspecified:
+	case modelsupervisor.PorterContextHandleStatusUnspecified:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	default:
 		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	}
 	return v1PorterContextHandleStatus
 }
-func ToPBPorterContextList(source []*modeltiphereth.PorterContext) []*v11.PorterContext {
+func ToPBPorterContextList(source []*modelsupervisor.PorterContext) []*v11.PorterContext {
 	var pV1PorterContextList []*v11.PorterContext
 	if source != nil {
 		pV1PorterContextList = make([]*v11.PorterContext, len(source))
@@ -1447,21 +1462,49 @@ func ToPBPorterContextList(source []*modeltiphereth.PorterContext) []*v11.Porter
 	}
 	return pV1PorterContextList
 }
-func ToPBPorterContextStatus(source modeltiphereth.PorterContextStatus) v11.PorterContextStatus {
+func ToPBPorterContextStatus(source modelsupervisor.PorterContextStatus) v11.PorterContextStatus {
 	var v1PorterContextStatus v11.PorterContextStatus
 	switch source {
-	case modeltiphereth.PorterContextStatusActive:
+	case modelsupervisor.PorterContextStatusActive:
 		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
-	case modeltiphereth.PorterContextStatusDisabled:
+	case modelsupervisor.PorterContextStatusDisabled:
 		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
-	case modeltiphereth.PorterContextStatusUnspecified:
+	case modelsupervisor.PorterContextStatusUnspecified:
 		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	default:
 		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	}
 	return v1PorterContextStatus
 }
-func ToPBPorterList(source []*modeltiphereth.PorterInstanceController) []*v11.Porter {
+func ToPBPorterGroup(source *modelsupervisor.PorterGroup) *v11.PorterGroup {
+	var pV1PorterGroup *v11.PorterGroup
+	if source != nil {
+		var v1PorterGroup v11.PorterGroup
+		v1PorterGroup.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).BinarySummary)
+		v1PorterGroup.GlobalName = (*source).GlobalName
+		if (*source).Regions != nil {
+			v1PorterGroup.Regions = make([]string, len((*source).Regions))
+			for i := 0; i < len((*source).Regions); i++ {
+				v1PorterGroup.Regions[i] = (*source).Regions[i]
+			}
+		}
+		pString := (*source).ContextJSONSchema
+		v1PorterGroup.ContextJsonSchema = &pString
+		pV1PorterGroup = &v1PorterGroup
+	}
+	return pV1PorterGroup
+}
+func ToPBPorterGroupList(source []*modelsupervisor.PorterGroup) []*v11.PorterGroup {
+	var pV1PorterGroupList []*v11.PorterGroup
+	if source != nil {
+		pV1PorterGroupList = make([]*v11.PorterGroup, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1PorterGroupList[i] = ToPBPorterGroup(source[i])
+		}
+	}
+	return pV1PorterGroupList
+}
+func ToPBPorterList(source []*modelsupervisor.PorterInstanceController) []*v11.Porter {
 	var pV1PorterList []*v11.Porter
 	if source != nil {
 		pV1PorterList = make([]*v11.Porter, len(source))
@@ -1471,7 +1514,7 @@ func ToPBPorterList(source []*modeltiphereth.PorterInstanceController) []*v11.Po
 	}
 	return pV1PorterList
 }
-func ToPBServerFeatureSummary(source *modeltiphereth.ServerFeatureSummary) *v11.ServerFeatureSummary {
+func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v11.ServerFeatureSummary {
 	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
 	if source != nil {
 		var v1ServerFeatureSummary v11.ServerFeatureSummary
@@ -1721,4 +1764,18 @@ func pModelnetzachNotifyFilterToPV1NotifyFilter(source *modelnetzach.NotifyFilte
 		pV1NotifyFilter = &v1NotifyFilter
 	}
 	return pV1NotifyFilter
+}
+func pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary(source *modelsupervisor.PorterBinarySummary) *v1.PorterBinarySummary {
+	var pV1PorterBinarySummary *v1.PorterBinarySummary
+	if source != nil {
+		var v1PorterBinarySummary v1.PorterBinarySummary
+		v1PorterBinarySummary.SourceCodeAddress = (*source).SourceCodeAddress
+		v1PorterBinarySummary.BuildVersion = (*source).BuildVersion
+		v1PorterBinarySummary.BuildDate = (*source).BuildDate
+		v1PorterBinarySummary.Name = (*source).Name
+		v1PorterBinarySummary.Version = (*source).Version
+		v1PorterBinarySummary.Description = (*source).Description
+		pV1PorterBinarySummary = &v1PorterBinarySummary
+	}
+	return pV1PorterBinarySummary
 }

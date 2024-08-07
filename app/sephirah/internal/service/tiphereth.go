@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
@@ -262,13 +263,13 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*modeltiphereth.PorterInstanceController, len(porters))
+	res := make([]*modelsupervisor.PorterInstanceController, len(porters))
 	for i := range res {
 		res[i] = s.s.GetInstanceController(ctx, porters[i].Address)
 		if res[i] == nil {
-			res[i] = new(modeltiphereth.PorterInstanceController)
+			res[i] = new(modelsupervisor.PorterInstanceController)
 			res[i].PorterInstance = *porters[i]
-			res[i].ConnectionStatus = modeltiphereth.PorterConnectionStatusDisconnected
+			res[i].ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
 		}
 	}
 	return &pb.ListPortersResponse{
@@ -285,7 +286,7 @@ func (s *LibrarianSephirahServiceService) UpdatePorterStatus(ctx context.Context
 	}
 	if err := s.t.UpdatePorterStatus(ctx,
 		converter.ToBizInternalID(req.GetPorterId()),
-		converter.ToBizPorterStatus(req.GetStatus()),
+		converter.ToBizUserStatus(req.GetStatus()),
 	); err != nil {
 		return nil, err
 	}
@@ -342,4 +343,24 @@ func (s *LibrarianSephirahServiceService) UpdatePorterContext(
 		return nil, err
 	}
 	return &pb.UpdatePorterContextResponse{}, nil
+}
+
+func (s *LibrarianSephirahServiceService) ListPorterGroups(
+	ctx context.Context,
+	req *pb.ListPorterGroupsRequest,
+) (*pb.ListPorterGroupsResponse, error) {
+	if req.GetPaging() == nil {
+		return nil, pb.ErrorErrorReasonBadRequest("")
+	}
+	groups, total, err := s.t.ListPorterGroups(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizUserStatusList(req.GetStatusFilter()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.ListPorterGroupsResponse{
+		Paging:       &librarian.PagingResponse{TotalSize: total},
+		PorterGroups: converter.ToPBPorterGroupList(groups),
+	}, nil
 }

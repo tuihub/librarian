@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 )
 
 func (s *Supervisor) HasAccountPlatform(platform string) bool {
@@ -47,7 +47,7 @@ func (s *Supervisor) WithAppInfoSource(ctx context.Context, source string) conte
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) HasFeedSource(source *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasFeedSource(source *modelsupervisor.FeatureRequest) bool {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if source == nil {
@@ -61,7 +61,7 @@ func (s *Supervisor) HasFeedSource(source *modeltiphereth.FeatureRequest) bool {
 	return false
 }
 
-func (s *Supervisor) WithFeedSource(ctx context.Context, source *modeltiphereth.FeatureRequest) context.Context {
+func (s *Supervisor) WithFeedSource(ctx context.Context, source *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if sources := s.featureSummaryMap.FeedSources.Load(source.ID); sources != nil {
@@ -70,7 +70,7 @@ func (s *Supervisor) WithFeedSource(ctx context.Context, source *modeltiphereth.
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) HasNotifyDestination(destination *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasNotifyDestination(destination *modelsupervisor.FeatureRequest) bool {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if destination == nil {
@@ -84,7 +84,7 @@ func (s *Supervisor) HasNotifyDestination(destination *modeltiphereth.FeatureReq
 	return false
 }
 
-func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *modeltiphereth.FeatureRequest) context.Context {
+func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if destinations := s.featureSummaryMap.NotifyDestinations.Load(destination.ID); destinations != nil {
@@ -93,7 +93,7 @@ func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *mod
 	return client.WithPorterFastFail(ctx)
 }
 
-func (s *Supervisor) HasFeedItemAction(request *modeltiphereth.FeatureRequest) bool {
+func (s *Supervisor) HasFeedItemAction(request *modelsupervisor.FeatureRequest) bool {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	for _, p := range s.featureSummary.FeedItemActions {
@@ -104,7 +104,7 @@ func (s *Supervisor) HasFeedItemAction(request *modeltiphereth.FeatureRequest) b
 	return false
 }
 
-func (s *Supervisor) WithFeedItemAction(ctx context.Context, request *modeltiphereth.FeatureRequest) context.Context {
+func (s *Supervisor) WithFeedItemAction(ctx context.Context, request *modelsupervisor.FeatureRequest) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if actions := s.featureSummaryMap.FeedItemActions.Load(request.ID); actions != nil {

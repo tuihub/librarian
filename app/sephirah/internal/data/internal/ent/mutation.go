@@ -39,7 +39,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 )
@@ -7523,8 +7523,8 @@ type FeedActionSetMutation struct {
 	id                 *model.InternalID
 	name               *string
 	description        *string
-	actions            *[]*modeltiphereth.FeatureRequest
-	appendactions      []*modeltiphereth.FeatureRequest
+	actions            *[]*modelsupervisor.FeatureRequest
+	appendactions      []*modelsupervisor.FeatureRequest
 	updated_at         *time.Time
 	created_at         *time.Time
 	clearedFields      map[string]struct{}
@@ -7715,13 +7715,13 @@ func (m *FeedActionSetMutation) ResetDescription() {
 }
 
 // SetActions sets the "actions" field.
-func (m *FeedActionSetMutation) SetActions(mr []*modeltiphereth.FeatureRequest) {
+func (m *FeedActionSetMutation) SetActions(mr []*modelsupervisor.FeatureRequest) {
 	m.actions = &mr
 	m.appendactions = nil
 }
 
 // Actions returns the value of the "actions" field in the mutation.
-func (m *FeedActionSetMutation) Actions() (r []*modeltiphereth.FeatureRequest, exists bool) {
+func (m *FeedActionSetMutation) Actions() (r []*modelsupervisor.FeatureRequest, exists bool) {
 	v := m.actions
 	if v == nil {
 		return
@@ -7732,7 +7732,7 @@ func (m *FeedActionSetMutation) Actions() (r []*modeltiphereth.FeatureRequest, e
 // OldActions returns the old "actions" field's value of the FeedActionSet entity.
 // If the FeedActionSet object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modeltiphereth.FeatureRequest, err error) {
+func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modelsupervisor.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldActions is only allowed on UpdateOne operations")
 	}
@@ -7747,12 +7747,12 @@ func (m *FeedActionSetMutation) OldActions(ctx context.Context) (v []*modeltiphe
 }
 
 // AppendActions adds mr to the "actions" field.
-func (m *FeedActionSetMutation) AppendActions(mr []*modeltiphereth.FeatureRequest) {
+func (m *FeedActionSetMutation) AppendActions(mr []*modelsupervisor.FeatureRequest) {
 	m.appendactions = append(m.appendactions, mr...)
 }
 
 // AppendedActions returns the list of values that were appended to the "actions" field in this mutation.
-func (m *FeedActionSetMutation) AppendedActions() ([]*modeltiphereth.FeatureRequest, bool) {
+func (m *FeedActionSetMutation) AppendedActions() ([]*modelsupervisor.FeatureRequest, bool) {
 	if len(m.appendactions) == 0 {
 		return nil, false
 	}
@@ -8041,7 +8041,7 @@ func (m *FeedActionSetMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case feedactionset.FieldActions:
-		v, ok := value.([]*modeltiphereth.FeatureRequest)
+		v, ok := value.([]*modelsupervisor.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -8239,7 +8239,7 @@ type FeedConfigMutation struct {
 	id                        *model.InternalID
 	name                      *string
 	description               *string
-	source                    **modeltiphereth.FeatureRequest
+	source                    **modelsupervisor.FeatureRequest
 	status                    *feedconfig.Status
 	category                  *string
 	pull_interval             *time.Duration
@@ -8483,12 +8483,12 @@ func (m *FeedConfigMutation) ResetDescription() {
 }
 
 // SetSource sets the "source" field.
-func (m *FeedConfigMutation) SetSource(mr *modeltiphereth.FeatureRequest) {
+func (m *FeedConfigMutation) SetSource(mr *modelsupervisor.FeatureRequest) {
 	m.source = &mr
 }
 
 // Source returns the value of the "source" field in the mutation.
-func (m *FeedConfigMutation) Source() (r *modeltiphereth.FeatureRequest, exists bool) {
+func (m *FeedConfigMutation) Source() (r *modelsupervisor.FeatureRequest, exists bool) {
 	v := m.source
 	if v == nil {
 		return
@@ -8499,7 +8499,7 @@ func (m *FeedConfigMutation) Source() (r *modeltiphereth.FeatureRequest, exists 
 // OldSource returns the old "source" field's value of the FeedConfig entity.
 // If the FeedConfig object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FeedConfigMutation) OldSource(ctx context.Context) (v *modeltiphereth.FeatureRequest, err error) {
+func (m *FeedConfigMutation) OldSource(ctx context.Context) (v *modelsupervisor.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldSource is only allowed on UpdateOne operations")
 	}
@@ -9320,7 +9320,7 @@ func (m *FeedConfigMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case feedconfig.FieldSource:
-		v, ok := value.(*modeltiphereth.FeatureRequest)
+		v, ok := value.(*modelsupervisor.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -17641,7 +17641,7 @@ type NotifyTargetMutation struct {
 	id                        *model.InternalID
 	name                      *string
 	description               *string
-	destination               **modeltiphereth.FeatureRequest
+	destination               **modelsupervisor.FeatureRequest
 	status                    *notifytarget.Status
 	updated_at                *time.Time
 	created_at                *time.Time
@@ -17836,12 +17836,12 @@ func (m *NotifyTargetMutation) ResetDescription() {
 }
 
 // SetDestination sets the "destination" field.
-func (m *NotifyTargetMutation) SetDestination(mr *modeltiphereth.FeatureRequest) {
+func (m *NotifyTargetMutation) SetDestination(mr *modelsupervisor.FeatureRequest) {
 	m.destination = &mr
 }
 
 // Destination returns the value of the "destination" field in the mutation.
-func (m *NotifyTargetMutation) Destination() (r *modeltiphereth.FeatureRequest, exists bool) {
+func (m *NotifyTargetMutation) Destination() (r *modelsupervisor.FeatureRequest, exists bool) {
 	v := m.destination
 	if v == nil {
 		return
@@ -17852,7 +17852,7 @@ func (m *NotifyTargetMutation) Destination() (r *modeltiphereth.FeatureRequest, 
 // OldDestination returns the old "destination" field's value of the NotifyTarget entity.
 // If the NotifyTarget object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v *modeltiphereth.FeatureRequest, err error) {
+func (m *NotifyTargetMutation) OldDestination(ctx context.Context) (v *modelsupervisor.FeatureRequest, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDestination is only allowed on UpdateOne operations")
 	}
@@ -18244,7 +18244,7 @@ func (m *NotifyTargetMutation) SetField(name string, value ent.Value) error {
 		m.SetDescription(v)
 		return nil
 	case notifytarget.FieldDestination:
-		v, ok := value.(*modeltiphereth.FeatureRequest)
+		v, ok := value.(*modelsupervisor.FeatureRequest)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -19255,10 +19255,14 @@ type PorterInstanceMutation struct {
 	id                  *model.InternalID
 	name                *string
 	version             *string
+	description         *string
+	source_code_address *string
+	build_version       *string
+	build_date          *string
 	global_name         *string
 	address             *string
 	region              *string
-	feature_summary     **modeltiphereth.PorterFeatureSummary
+	feature_summary     **modelsupervisor.PorterFeatureSummary
 	context_json_schema *string
 	status              *porterinstance.Status
 	updated_at          *time.Time
@@ -19445,6 +19449,150 @@ func (m *PorterInstanceMutation) ResetVersion() {
 	m.version = nil
 }
 
+// SetDescription sets the "description" field.
+func (m *PorterInstanceMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *PorterInstanceMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *PorterInstanceMutation) ResetDescription() {
+	m.description = nil
+}
+
+// SetSourceCodeAddress sets the "source_code_address" field.
+func (m *PorterInstanceMutation) SetSourceCodeAddress(s string) {
+	m.source_code_address = &s
+}
+
+// SourceCodeAddress returns the value of the "source_code_address" field in the mutation.
+func (m *PorterInstanceMutation) SourceCodeAddress() (r string, exists bool) {
+	v := m.source_code_address
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSourceCodeAddress returns the old "source_code_address" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldSourceCodeAddress(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSourceCodeAddress is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSourceCodeAddress requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSourceCodeAddress: %w", err)
+	}
+	return oldValue.SourceCodeAddress, nil
+}
+
+// ResetSourceCodeAddress resets all changes to the "source_code_address" field.
+func (m *PorterInstanceMutation) ResetSourceCodeAddress() {
+	m.source_code_address = nil
+}
+
+// SetBuildVersion sets the "build_version" field.
+func (m *PorterInstanceMutation) SetBuildVersion(s string) {
+	m.build_version = &s
+}
+
+// BuildVersion returns the value of the "build_version" field in the mutation.
+func (m *PorterInstanceMutation) BuildVersion() (r string, exists bool) {
+	v := m.build_version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBuildVersion returns the old "build_version" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldBuildVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBuildVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBuildVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBuildVersion: %w", err)
+	}
+	return oldValue.BuildVersion, nil
+}
+
+// ResetBuildVersion resets all changes to the "build_version" field.
+func (m *PorterInstanceMutation) ResetBuildVersion() {
+	m.build_version = nil
+}
+
+// SetBuildDate sets the "build_date" field.
+func (m *PorterInstanceMutation) SetBuildDate(s string) {
+	m.build_date = &s
+}
+
+// BuildDate returns the value of the "build_date" field in the mutation.
+func (m *PorterInstanceMutation) BuildDate() (r string, exists bool) {
+	v := m.build_date
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBuildDate returns the old "build_date" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldBuildDate(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBuildDate is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBuildDate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBuildDate: %w", err)
+	}
+	return oldValue.BuildDate, nil
+}
+
+// ResetBuildDate resets all changes to the "build_date" field.
+func (m *PorterInstanceMutation) ResetBuildDate() {
+	m.build_date = nil
+}
+
 // SetGlobalName sets the "global_name" field.
 func (m *PorterInstanceMutation) SetGlobalName(s string) {
 	m.global_name = &s
@@ -19554,12 +19702,12 @@ func (m *PorterInstanceMutation) ResetRegion() {
 }
 
 // SetFeatureSummary sets the "feature_summary" field.
-func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modeltiphereth.PorterFeatureSummary) {
+func (m *PorterInstanceMutation) SetFeatureSummary(mfs *modelsupervisor.PorterFeatureSummary) {
 	m.feature_summary = &mfs
 }
 
 // FeatureSummary returns the value of the "feature_summary" field in the mutation.
-func (m *PorterInstanceMutation) FeatureSummary() (r *modeltiphereth.PorterFeatureSummary, exists bool) {
+func (m *PorterInstanceMutation) FeatureSummary() (r *modelsupervisor.PorterFeatureSummary, exists bool) {
 	v := m.feature_summary
 	if v == nil {
 		return
@@ -19570,7 +19718,7 @@ func (m *PorterInstanceMutation) FeatureSummary() (r *modeltiphereth.PorterFeatu
 // OldFeatureSummary returns the old "feature_summary" field's value of the PorterInstance entity.
 // If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *modeltiphereth.PorterFeatureSummary, err error) {
+func (m *PorterInstanceMutation) OldFeatureSummary(ctx context.Context) (v *modelsupervisor.PorterFeatureSummary, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldFeatureSummary is only allowed on UpdateOne operations")
 	}
@@ -19767,12 +19915,24 @@ func (m *PorterInstanceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PorterInstanceMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 14)
 	if m.name != nil {
 		fields = append(fields, porterinstance.FieldName)
 	}
 	if m.version != nil {
 		fields = append(fields, porterinstance.FieldVersion)
+	}
+	if m.description != nil {
+		fields = append(fields, porterinstance.FieldDescription)
+	}
+	if m.source_code_address != nil {
+		fields = append(fields, porterinstance.FieldSourceCodeAddress)
+	}
+	if m.build_version != nil {
+		fields = append(fields, porterinstance.FieldBuildVersion)
+	}
+	if m.build_date != nil {
+		fields = append(fields, porterinstance.FieldBuildDate)
 	}
 	if m.global_name != nil {
 		fields = append(fields, porterinstance.FieldGlobalName)
@@ -19810,6 +19970,14 @@ func (m *PorterInstanceMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case porterinstance.FieldVersion:
 		return m.Version()
+	case porterinstance.FieldDescription:
+		return m.Description()
+	case porterinstance.FieldSourceCodeAddress:
+		return m.SourceCodeAddress()
+	case porterinstance.FieldBuildVersion:
+		return m.BuildVersion()
+	case porterinstance.FieldBuildDate:
+		return m.BuildDate()
 	case porterinstance.FieldGlobalName:
 		return m.GlobalName()
 	case porterinstance.FieldAddress:
@@ -19839,6 +20007,14 @@ func (m *PorterInstanceMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldName(ctx)
 	case porterinstance.FieldVersion:
 		return m.OldVersion(ctx)
+	case porterinstance.FieldDescription:
+		return m.OldDescription(ctx)
+	case porterinstance.FieldSourceCodeAddress:
+		return m.OldSourceCodeAddress(ctx)
+	case porterinstance.FieldBuildVersion:
+		return m.OldBuildVersion(ctx)
+	case porterinstance.FieldBuildDate:
+		return m.OldBuildDate(ctx)
 	case porterinstance.FieldGlobalName:
 		return m.OldGlobalName(ctx)
 	case porterinstance.FieldAddress:
@@ -19878,6 +20054,34 @@ func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetVersion(v)
 		return nil
+	case porterinstance.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
+		return nil
+	case porterinstance.FieldSourceCodeAddress:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSourceCodeAddress(v)
+		return nil
+	case porterinstance.FieldBuildVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBuildVersion(v)
+		return nil
+	case porterinstance.FieldBuildDate:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBuildDate(v)
+		return nil
 	case porterinstance.FieldGlobalName:
 		v, ok := value.(string)
 		if !ok {
@@ -19900,7 +20104,7 @@ func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
 		m.SetRegion(v)
 		return nil
 	case porterinstance.FieldFeatureSummary:
-		v, ok := value.(*modeltiphereth.PorterFeatureSummary)
+		v, ok := value.(*modelsupervisor.PorterFeatureSummary)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -19988,6 +20192,18 @@ func (m *PorterInstanceMutation) ResetField(name string) error {
 		return nil
 	case porterinstance.FieldVersion:
 		m.ResetVersion()
+		return nil
+	case porterinstance.FieldDescription:
+		m.ResetDescription()
+		return nil
+	case porterinstance.FieldSourceCodeAddress:
+		m.ResetSourceCodeAddress()
+		return nil
+	case porterinstance.FieldBuildVersion:
+		m.ResetBuildVersion()
+		return nil
+	case porterinstance.FieldBuildDate:
+		m.ResetBuildDate()
 		return nil
 	case porterinstance.FieldGlobalName:
 		m.ResetGlobalName()

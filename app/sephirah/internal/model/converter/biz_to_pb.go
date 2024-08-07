@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -30,9 +31,9 @@ import (
 type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
-	ToPBServerFeatureSummary(*modeltiphereth.ServerFeatureSummary) *pb.ServerFeatureSummary
-	ToPBFeatureFlag(*modeltiphereth.FeatureFlag) *librarian.FeatureFlag
-	ToPBFeatureRequest(*modeltiphereth.FeatureRequest) *librarian.FeatureRequest
+	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary
+	ToPBFeatureFlag(*modelsupervisor.FeatureFlag) *librarian.FeatureFlag
+	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map ID DeviceId
 	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
@@ -71,11 +72,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
 	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
 
-	// goverter:map Status | ToPBPorterStatus
 	// goverter:ignore FeatureSummary
 	// goverter:autoMap PorterInstance
-	ToPBPorter(*modeltiphereth.PorterInstanceController) *pb.Porter
-	ToPBPorterList([]*modeltiphereth.PorterInstanceController) []*pb.Porter
+	ToPBPorter(*modelsupervisor.PorterInstanceController) *pb.Porter
+	ToPBPorterList([]*modelsupervisor.PorterInstanceController) []*pb.Porter
 	// goverter:enum:unknown PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusUnspecified PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusConnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
@@ -83,22 +83,25 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusActive PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
 	// goverter:enum:map PorterConnectionStatusActivationFailed PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
 	// goverter:enum:map PorterConnectionStatusDowngraded PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
-	ToPBPorterConnectionStatus(modeltiphereth.PorterConnectionStatus) pb.PorterConnectionStatus
+	ToPBPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) pb.PorterConnectionStatus
 
-	ToPBPorterContext(*modeltiphereth.PorterContext) *pb.PorterContext
-	ToPBPorterContextList([]*modeltiphereth.PorterContext) []*pb.PorterContext
+	ToPBPorterContext(*modelsupervisor.PorterContext) *pb.PorterContext
+	ToPBPorterContextList([]*modelsupervisor.PorterContext) []*pb.PorterContext
 	// goverter:enum:unknown PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusUnspecified PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusActive PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
 	// goverter:enum:map PorterContextStatusDisabled PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
-	ToPBPorterContextStatus(modeltiphereth.PorterContextStatus) pb.PorterContextStatus
+	ToPBPorterContextStatus(modelsupervisor.PorterContextStatus) pb.PorterContextStatus
 	// goverter:enum:unknown PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextHandleStatusUnspecified PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextHandleStatusActive PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
 	// goverter:enum:map PorterContextHandleStatusDowngraded PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
 	// goverter:enum:map PorterContextHandleStatusQueueing PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
 	// goverter:enum:map PorterContextHandleStatusBlocked PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
-	ToPBPorterContextHandleStatus(modeltiphereth.PorterContextHandleStatus) pb.PorterContextHandleStatus
+	ToPBPorterContextHandleStatus(modelsupervisor.PorterContextHandleStatus) pb.PorterContextHandleStatus
+
+	ToPBPorterGroup(*modelsupervisor.PorterGroup) *pb.PorterGroup
+	ToPBPorterGroupList([]*modelsupervisor.PorterGroup) []*pb.PorterGroup
 
 	// goverter:ignore AltNames
 	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo
@@ -211,19 +214,6 @@ func ToPBTimePtr(t *time.Time) *timestamppb.Timestamp {
 
 func ToPBDuration(d time.Duration) *durationpb.Duration {
 	return durationpb.New(d)
-}
-
-func ToPBPorterStatus(s modeltiphereth.PorterInstanceStatus) pb.UserStatus {
-	switch s {
-	case modeltiphereth.PorterInstanceStatusUnspecified:
-		return pb.UserStatus_USER_STATUS_UNSPECIFIED
-	case modeltiphereth.PorterInstanceStatusActive:
-		return pb.UserStatus_USER_STATUS_ACTIVE
-	case modeltiphereth.PorterInstanceStatusBlocked:
-		return pb.UserStatus_USER_STATUS_BLOCKED
-	default:
-		return pb.UserStatus_USER_STATUS_UNSPECIFIED
-	}
 }
 
 func ToPBFeedConfigPullStatus(s modelyesod.FeedConfigPullStatus) *pb.FeedConfigPullStatus {

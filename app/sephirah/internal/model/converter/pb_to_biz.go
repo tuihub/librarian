@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -32,9 +33,9 @@ import (
 // goverter:extend DurationPBToDuration
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
-	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modeltiphereth.PorterFeatureSummary
-	ToBizFeatureFlag(*librarian.FeatureFlag) *modeltiphereth.FeatureFlag
-	ToBizFeatureRequest(*librarian.FeatureRequest) *modeltiphereth.FeatureRequest
+	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
+	ToBizFeatureFlag(*librarian.FeatureFlag) *modelsupervisor.FeatureFlag
+	ToBizFeatureRequest(*librarian.FeatureRequest) *modelsupervisor.FeatureRequest
 	// goverter:enum:unknown AccountAppRelationTypeUnspecified
 	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED AccountAppRelationTypeUnspecified
 	// goverter:enum:map AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN AccountAppRelationTypeOwner
@@ -69,19 +70,21 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
 	ToBizUserStatus(pb.UserStatus) modeltiphereth.UserStatus
 
-	ToBizPorterContext(*pb.PorterContext) *modeltiphereth.PorterContext
+	ToBizPorterContext(*pb.PorterContext) *modelsupervisor.PorterContext
 	// goverter:enum:unknown PorterContextStatusUnspecified
 	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED PorterContextStatusUnspecified
 	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE PorterContextStatusActive
 	// goverter:enum:map PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED PorterContextStatusDisabled
-	ToBizPorterContextStatus(pb.PorterContextStatus) modeltiphereth.PorterContextStatus
+	ToBizPorterContextStatus(pb.PorterContextStatus) modelsupervisor.PorterContextStatus
 	// goverter:enum:unknown PorterContextHandleStatusUnspecified
 	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED PorterContextHandleStatusUnspecified
 	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE PorterContextHandleStatusActive
 	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED PorterContextHandleStatusDowngraded
 	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING PorterContextHandleStatusQueueing
 	// goverter:enum:map PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED PorterContextHandleStatusBlocked
-	ToBizPorterContextHandleStatus(pb.PorterContextHandleStatus) modeltiphereth.PorterContextHandleStatus
+	ToBizPorterContextHandleStatus(pb.PorterContextHandleStatus) modelsupervisor.PorterContextHandleStatus
+
+	ToBizPorterBinarySummary(*librarian.PorterBinarySummary) *modelsupervisor.PorterBinarySummary
 
 	// goverter:ignore BoundInternal
 	// goverter:ignore LatestUpdateTime
@@ -201,19 +204,6 @@ func ToBizTime(t *timestamppb.Timestamp) time.Time {
 
 func ToBizDuration(d *durationpb.Duration) time.Duration {
 	return d.AsDuration()
-}
-
-func ToBizPorterStatus(s pb.UserStatus) modeltiphereth.PorterInstanceStatus {
-	switch s {
-	case pb.UserStatus_USER_STATUS_UNSPECIFIED:
-		return modeltiphereth.PorterInstanceStatusUnspecified
-	case pb.UserStatus_USER_STATUS_ACTIVE:
-		return modeltiphereth.PorterInstanceStatusActive
-	case pb.UserStatus_USER_STATUS_BLOCKED:
-		return modeltiphereth.PorterInstanceStatusBlocked
-	default:
-		return modeltiphereth.PorterInstanceStatusUnspecified
-	}
 }
 
 func ToBizGroupFeedItemsBy(by librarian.TimeAggregation_AggregationType) modelyesod.GroupFeedItemsBy {

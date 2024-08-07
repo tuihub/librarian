@@ -15,7 +15,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -40,7 +40,7 @@ func (ntc *NotifyTargetCreate) SetDescription(s string) *NotifyTargetCreate {
 }
 
 // SetDestination sets the "destination" field.
-func (ntc *NotifyTargetCreate) SetDestination(mr *modeltiphereth.FeatureRequest) *NotifyTargetCreate {
+func (ntc *NotifyTargetCreate) SetDestination(mr *modelsupervisor.FeatureRequest) *NotifyTargetCreate {
 	ntc.mutation.SetDestination(mr)
 	return ntc
 }
@@ -386,7 +386,7 @@ func (u *NotifyTargetUpsert) UpdateDescription() *NotifyTargetUpsert {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsert) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsert {
+func (u *NotifyTargetUpsert) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsert {
 	u.Set(notifytarget.FieldDestination, v)
 	return u
 }
@@ -510,7 +510,7 @@ func (u *NotifyTargetUpsertOne) UpdateDescription() *NotifyTargetUpsertOne {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertOne) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsertOne {
+func (u *NotifyTargetUpsertOne) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsertOne {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})
@@ -808,7 +808,7 @@ func (u *NotifyTargetUpsertBulk) UpdateDescription() *NotifyTargetUpsertBulk {
 }
 
 // SetDestination sets the "destination" field.
-func (u *NotifyTargetUpsertBulk) SetDestination(v *modeltiphereth.FeatureRequest) *NotifyTargetUpsertBulk {
+func (u *NotifyTargetUpsertBulk) SetDestination(v *modelsupervisor.FeatureRequest) *NotifyTargetUpsertBulk {
 	return u.Update(func(s *NotifyTargetUpsert) {
 		s.SetDestination(v)
 	})

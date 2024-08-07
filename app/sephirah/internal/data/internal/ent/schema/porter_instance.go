@@ -3,7 +3,7 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
@@ -19,10 +19,14 @@ func (PorterInstance) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("version"),
+		field.String("description"),
+		field.String("source_code_address"),
+		field.String("build_version"),
+		field.String("build_date"),
 		field.String("global_name"),
 		field.String("address"),
 		field.String("region"),
-		field.JSON("feature_summary", new(modeltiphereth.PorterFeatureSummary)),
+		field.JSON("feature_summary", new(modelsupervisor.PorterFeatureSummary)),
 		field.String("context_json_schema"),
 		field.Enum("status").
 			Values("active", "blocked"),
@@ -37,5 +41,6 @@ func (PorterInstance) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("address").
 			Unique(),
+		index.Fields("global_name", "region"),
 	}
 }

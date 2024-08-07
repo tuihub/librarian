@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -40,11 +41,11 @@ type Supervisor struct {
 
 	refreshMu          sync.Mutex
 	trustedAddresses   []string
-	instanceController *libtype.SyncMap[modeltiphereth.PorterInstanceController]
-	instanceCache      *libcache.Map[string, modeltiphereth.PorterInstance]
+	instanceController *libtype.SyncMap[modelsupervisor.PorterInstanceController]
+	instanceCache      *libcache.Map[string, modelsupervisor.PorterInstance]
 
-	featureSummary     *modeltiphereth.ServerFeatureSummary
-	featureSummaryMap  *modeltiphereth.ServerFeatureSummaryMap
+	featureSummary     *modelsupervisor.ServerFeatureSummary
+	featureSummaryMap  *modelsupervisor.ServerFeatureSummaryMap
 	featureSummaryRWMu sync.RWMutex
 }
 
@@ -53,7 +54,7 @@ func NewSupervisor(
 	auth *libauth.Auth,
 	porter *client.Porter,
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
-	instanceCache *libcache.Map[string, modeltiphereth.PorterInstance],
+	instanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
 ) (*Supervisor, error) {
 	if c == nil {
 		c = new(conf.Porter)
@@ -62,11 +63,11 @@ func NewSupervisor(
 		UUID:               int64(uuid.New().ID()),
 		porter:             porter,
 		auth:               auth,
-		instanceController: libtype.NewSyncMap[modeltiphereth.PorterInstanceController](),
+		instanceController: libtype.NewSyncMap[modelsupervisor.PorterInstanceController](),
 		instanceCache:      instanceCache,
 		refreshMu:          sync.Mutex{},
-		featureSummary:     new(modeltiphereth.ServerFeatureSummary),
-		featureSummaryMap:  modeltiphereth.NewServerFeatureSummaryMap(),
+		featureSummary:     new(modelsupervisor.ServerFeatureSummary),
+		featureSummaryMap:  modelsupervisor.NewServerFeatureSummaryMap(),
 		featureSummaryRWMu: sync.RWMutex{},
 		trustedAddresses:   c.GetTrusted(),
 		systemNotify:       systemNotify,
@@ -80,13 +81,13 @@ func (s *Supervisor) GetHeartbeatInterval() time.Duration {
 func (s *Supervisor) GetInstanceController(
 	ctx context.Context,
 	address string,
-) *modeltiphereth.PorterInstanceController {
+) *modelsupervisor.PorterInstanceController {
 	return s.instanceController.Load(address)
 }
 
 func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	ctx context.Context,
-) ([]*modeltiphereth.PorterInstance, error) {
+) ([]*modelsupervisor.PorterInstance, error) {
 	if !s.refreshMu.TryLock() {
 		return nil, errors.New("refresh in progress")
 	}
@@ -97,7 +98,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 		logger.Errorf("%s", err.Error())
 		return nil, err
 	}
-	newInstances := make([]*modeltiphereth.PorterInstance, 0, len(discoveredAddresses))
+	newInstances := make([]*modelsupervisor.PorterInstance, 0, len(discoveredAddresses))
 	newInstancesMu := sync.Mutex{}
 	hasError := false
 	notification := modelnetzach.NewSystemNotify(
@@ -114,14 +115,14 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	// Discover new instances and Refresh disconnected instances
 	for _, address := range discoveredAddresses {
 		if ic := s.instanceController.Load(address); ic != nil &&
-			ic.ConnectionStatus != modeltiphereth.PorterConnectionStatusDisconnected {
+			ic.ConnectionStatus != modelsupervisor.PorterConnectionStatusDisconnected {
 			continue
 		}
 
 		wg.Add(1)
 		go func(ctx context.Context, address string) {
 			defer wg.Done()
-			var ins *modeltiphereth.PorterInstance
+			var ins *modelsupervisor.PorterInstance
 			ins, err = s.evaluatePorterInstance(ctx, address)
 			if err != nil {
 				logger.Errorf("%s", err.Error())
@@ -131,14 +132,14 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 			}
 
 			if ic := s.instanceController.Load(address); ic == nil ||
-				(ic.GlobalName != ins.GlobalName || ic.Version != ins.Version) {
+				(ic.GlobalName != ins.GlobalName || ic.BinarySummary.BuildVersion != ins.BinarySummary.Version) {
 				newInstancesMu.Lock()
 				newInstances = append(newInstances, ins)
 				newInstancesMu.Unlock()
 			}
-			s.instanceController.Store(address, modeltiphereth.PorterInstanceController{
+			s.instanceController.Store(address, modelsupervisor.PorterInstanceController{
 				PorterInstance:          *ins,
-				ConnectionStatus:        modeltiphereth.PorterConnectionStatusConnected,
+				ConnectionStatus:        modelsupervisor.PorterConnectionStatusConnected,
 				ConnectionStatusMessage: "",
 				LastHeartbeat:           time.Now(),
 			})
@@ -146,15 +147,15 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	}
 
 	// Heartbeat
-	s.instanceController.Range(func(address string, ctl modeltiphereth.PorterInstanceController) bool {
-		var ins *modeltiphereth.PorterInstance
+	s.instanceController.Range(func(address string, ctl modelsupervisor.PorterInstanceController) bool {
+		var ins *modelsupervisor.PorterInstance
 		if ins, err = s.instanceCache.Get(ctx, address); err != nil ||
-			ins.Status != modeltiphereth.PorterInstanceStatusActive {
+			ins.Status != modeltiphereth.UserStatusActive {
 			return true
 		}
 
 		wg.Add(1)
-		go func(ctx context.Context, ins *modeltiphereth.PorterInstance) {
+		go func(ctx context.Context, ins *modelsupervisor.PorterInstance) {
 			defer wg.Done()
 			var resp *porter.EnablePorterResponse
 			resp, err = s.enablePorterInstance(ctx, ins)
@@ -173,20 +174,20 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 			}
 			if err != nil { //nolint:nestif // TODO
 				if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
-					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusDisconnected
+					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
 				} else if ctl.LastHeartbeat.Add(defaultHeartbeatDowngrade).Before(now) {
-					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusDowngraded
-				} else if ctl.ConnectionStatus == modeltiphereth.PorterConnectionStatusActive {
-					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
+					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
+				} else if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
+					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
 				} else {
-					ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActivationFailed
+					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
 				}
 				if ctl.ConnectionStatusMessage != "" {
 					ctl.ConnectionStatusMessage += "\n"
 				}
 				ctl.ConnectionStatusMessage += fmt.Sprintf("Error: %s", err.Error())
 			} else {
-				ctl.ConnectionStatus = modeltiphereth.PorterConnectionStatusActive
+				ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
 				ctl.LastHeartbeat = now
 			}
 
@@ -235,7 +236,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 func (s *Supervisor) evaluatePorterInstance(
 	ctx context.Context,
 	address string,
-) (*modeltiphereth.PorterInstance, error) {
+) (*modelsupervisor.PorterInstance, error) {
 	if address == "" {
 		// bad address
 		return nil, errors.New("address is empty")
@@ -249,20 +250,19 @@ func (s *Supervisor) evaluatePorterInstance(
 		logger.Infof("%s", err.Error())
 		return nil, err
 	}
-	if info == nil {
+	if info == nil || info.GetBinarySummary() == nil {
 		// bad instance
-		return nil, errors.New("info is nil")
+		return nil, errors.New("bad instance info")
 	}
 	feature := converter.ToBizPorterFeatureSummary(info.GetFeatureSummary())
-	return &modeltiphereth.PorterInstance{
+	return &modelsupervisor.PorterInstance{
 		ID:                0,
-		Name:              info.GetName(),
-		Version:           info.GetVersion(),
+		BinarySummary:     converter.ToBizPorterBinarySummary(info.GetBinarySummary()),
 		GlobalName:        info.GetGlobalName(),
 		Address:           address,
 		Region:            info.GetRegion(),
 		FeatureSummary:    feature,
-		Status:            modeltiphereth.PorterInstanceStatusUnspecified,
+		Status:            modeltiphereth.UserStatusUnspecified,
 		ContextJSONSchema: info.GetContextJsonSchema(),
 	}, nil
 }
@@ -270,7 +270,7 @@ func (s *Supervisor) evaluatePorterInstance(
 // enablePorterInstance enable porter instance, can be called multiple times.
 func (s *Supervisor) enablePorterInstance(
 	ctx context.Context,
-	instance *modeltiphereth.PorterInstance,
+	instance *modelsupervisor.PorterInstance,
 ) (*porter.EnablePorterResponse, error) {
 	if instance == nil {
 		return nil, errors.New("instance is nil")

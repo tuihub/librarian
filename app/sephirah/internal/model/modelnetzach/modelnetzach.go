@@ -3,7 +3,7 @@ package modelnetzach
 import (
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -38,7 +38,7 @@ type NotifyTarget struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Destination *modeltiphereth.FeatureRequest
+	Destination *modelsupervisor.FeatureRequest
 	Status      NotifyTargetStatus
 }
 

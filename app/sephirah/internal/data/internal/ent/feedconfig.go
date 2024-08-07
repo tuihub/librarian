@@ -13,7 +13,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -29,7 +29,7 @@ type FeedConfig struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Source holds the value of the "source" field.
-	Source *modeltiphereth.FeatureRequest `json:"source,omitempty"`
+	Source *modelsupervisor.FeatureRequest `json:"source,omitempty"`
 	// Status holds the value of the "status" field.
 	Status feedconfig.Status `json:"status,omitempty"`
 	// Category holds the value of the "category" field.

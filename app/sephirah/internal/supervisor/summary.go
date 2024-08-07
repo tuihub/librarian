@@ -3,14 +3,15 @@ package supervisor
 import (
 	"context"
 
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libtype"
 )
 
-func (s *Supervisor) GetFeatureSummary() *modeltiphereth.ServerFeatureSummary {
+func (s *Supervisor) GetFeatureSummary() *modelsupervisor.ServerFeatureSummary {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
-	featureSummary := new(modeltiphereth.ServerFeatureSummary)
+	featureSummary := new(modelsupervisor.ServerFeatureSummary)
 	if s.featureSummary != nil {
 		_ = libtype.DeepCopyStruct(s.featureSummary, &featureSummary)
 	}
@@ -18,10 +19,10 @@ func (s *Supervisor) GetFeatureSummary() *modeltiphereth.ServerFeatureSummary {
 }
 
 func (s *Supervisor) updateFeatureSummary(ctx context.Context) {
-	var instances []*modeltiphereth.PorterInstance
-	s.instanceController.Range(func(key string, controller modeltiphereth.PorterInstanceController) bool {
+	var instances []*modelsupervisor.PorterInstance
+	s.instanceController.Range(func(key string, controller modelsupervisor.PorterInstanceController) bool {
 		ins, err := s.instanceCache.Get(ctx, key)
-		if err == nil && ins != nil && ins.Status == modeltiphereth.PorterInstanceStatusActive {
+		if err == nil && ins != nil && ins.Status == modeltiphereth.UserStatusActive {
 			instances = append(instances, ins)
 		}
 		return true
@@ -36,10 +37,10 @@ func (s *Supervisor) updateFeatureSummary(ctx context.Context) {
 }
 
 func summarize( //nolint:gocognit // how?
-	instances []*modeltiphereth.PorterInstance,
-) (*modeltiphereth.ServerFeatureSummary, *modeltiphereth.ServerFeatureSummaryMap) {
-	res := new(modeltiphereth.ServerFeatureSummary)
-	resMap := modeltiphereth.NewServerFeatureSummaryMap()
+	instances []*modelsupervisor.PorterInstance,
+) (*modelsupervisor.ServerFeatureSummary, *modelsupervisor.ServerFeatureSummaryMap) {
+	res := new(modelsupervisor.ServerFeatureSummary)
+	resMap := modelsupervisor.NewServerFeatureSummaryMap()
 
 	supportedAccountPlatforms := make(map[string]bool)
 	supportedAppSources := make(map[string]bool)

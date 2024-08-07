@@ -5,7 +5,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
@@ -25,15 +25,15 @@ func RequiredStartAction(ctx context.Context, item *modelfeed.Item) (*modelfeed.
 
 func GetBuiltinActionMap(
 	ctx context.Context,
-) map[string]func(context.Context, *modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
-	return map[string]func(context.Context, *modeltiphereth.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
+) map[string]func(context.Context, *modelsupervisor.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error) {
+	return map[string]func(context.Context, *modelsupervisor.FeatureRequest, *modelfeed.Item) (*modelfeed.Item, error){
 		simpleKeywordFilterActionID:  simpleKeywordFilterAction,
 		keywordFilterActionID:        keywordFilterAction,
 		descriptionGeneratorActionID: descriptionGeneratorAction,
 	}
 }
 
-func getBuiltinActionFeatureFlags() ([]*modeltiphereth.FeatureFlag, error) {
+func getBuiltinActionFeatureFlags() ([]*modelsupervisor.FeatureFlag, error) {
 	simple, err := modelyesod.GetSimpleKeywordFilterActionConfigSchema()
 	if err != nil {
 		return nil, err
@@ -46,7 +46,7 @@ func getBuiltinActionFeatureFlags() ([]*modeltiphereth.FeatureFlag, error) {
 	if err != nil {
 		return nil, err
 	}
-	return []*modeltiphereth.FeatureFlag{
+	return []*modelsupervisor.FeatureFlag{
 		{
 			ID:               simpleKeywordFilterActionID,
 			Name:             "Simple Keyword Filter",
@@ -121,7 +121,7 @@ func parseDigestAction(_ context.Context, item *modelfeed.Item) (*modelfeed.Item
 
 func simpleKeywordFilterAction(
 	_ context.Context,
-	request *modeltiphereth.FeatureRequest,
+	request *modelsupervisor.FeatureRequest,
 	item *modelfeed.Item,
 ) (*modelfeed.Item, error) {
 	config := new(modelyesod.SimpleKeywordFilterActionConfig)
@@ -151,12 +151,12 @@ func simpleKeywordFilterAction(
 	return item, nil
 }
 
-func keywordFilterAction(ctx context.Context, _ *modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func keywordFilterAction(ctx context.Context, _ *modelsupervisor.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
 	// TODO: impl
 	return item, nil
 }
 
-func descriptionGeneratorAction(_ context.Context, _ *modeltiphereth.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func descriptionGeneratorAction(_ context.Context, _ *modelsupervisor.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
 	if len(item.Description) > 0 {
 		return item, nil
 	}

@@ -18,6 +18,14 @@ const (
 	FieldName = "name"
 	// FieldVersion holds the string denoting the version field in the database.
 	FieldVersion = "version"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
+	// FieldSourceCodeAddress holds the string denoting the source_code_address field in the database.
+	FieldSourceCodeAddress = "source_code_address"
+	// FieldBuildVersion holds the string denoting the build_version field in the database.
+	FieldBuildVersion = "build_version"
+	// FieldBuildDate holds the string denoting the build_date field in the database.
+	FieldBuildDate = "build_date"
 	// FieldGlobalName holds the string denoting the global_name field in the database.
 	FieldGlobalName = "global_name"
 	// FieldAddress holds the string denoting the address field in the database.
@@ -43,6 +51,10 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldVersion,
+	FieldDescription,
+	FieldSourceCodeAddress,
+	FieldBuildVersion,
+	FieldBuildDate,
 	FieldGlobalName,
 	FieldAddress,
 	FieldRegion,
@@ -111,6 +123,26 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByVersion orders the results by the version field.
 func ByVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldVersion, opts...).ToFunc()
+}
+
+// ByDescription orders the results by the description field.
+func ByDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// BySourceCodeAddress orders the results by the source_code_address field.
+func BySourceCodeAddress(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSourceCodeAddress, opts...).ToFunc()
+}
+
+// ByBuildVersion orders the results by the build_version field.
+func ByBuildVersion(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBuildVersion, opts...).ToFunc()
+}
+
+// ByBuildDate orders the results by the build_date field.
+func ByBuildDate(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBuildDate, opts...).ToFunc()
 }
 
 // ByGlobalName orders the results by the global_name field.

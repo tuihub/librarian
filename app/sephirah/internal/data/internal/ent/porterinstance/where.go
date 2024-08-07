@@ -65,6 +65,26 @@ func Version(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldVersion, v))
 }
 
+// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
+func Description(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldDescription, v))
+}
+
+// SourceCodeAddress applies equality check predicate on the "source_code_address" field. It's identical to SourceCodeAddressEQ.
+func SourceCodeAddress(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldSourceCodeAddress, v))
+}
+
+// BuildVersion applies equality check predicate on the "build_version" field. It's identical to BuildVersionEQ.
+func BuildVersion(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldBuildVersion, v))
+}
+
+// BuildDate applies equality check predicate on the "build_date" field. It's identical to BuildDateEQ.
+func BuildDate(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldBuildDate, v))
+}
+
 // GlobalName applies equality check predicate on the "global_name" field. It's identical to GlobalNameEQ.
 func GlobalName(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldGlobalName, v))
@@ -223,6 +243,266 @@ func VersionEqualFold(v string) predicate.PorterInstance {
 // VersionContainsFold applies the ContainsFold predicate on the "version" field.
 func VersionContainsFold(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldContainsFold(FieldVersion, v))
+}
+
+// DescriptionEQ applies the EQ predicate on the "description" field.
+func DescriptionEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldDescription, v))
+}
+
+// DescriptionNEQ applies the NEQ predicate on the "description" field.
+func DescriptionNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldDescription, v))
+}
+
+// DescriptionIn applies the In predicate on the "description" field.
+func DescriptionIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldDescription, vs...))
+}
+
+// DescriptionNotIn applies the NotIn predicate on the "description" field.
+func DescriptionNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldDescription, vs...))
+}
+
+// DescriptionGT applies the GT predicate on the "description" field.
+func DescriptionGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldDescription, v))
+}
+
+// DescriptionGTE applies the GTE predicate on the "description" field.
+func DescriptionGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldDescription, v))
+}
+
+// DescriptionLT applies the LT predicate on the "description" field.
+func DescriptionLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldDescription, v))
+}
+
+// DescriptionLTE applies the LTE predicate on the "description" field.
+func DescriptionLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldDescription, v))
+}
+
+// DescriptionContains applies the Contains predicate on the "description" field.
+func DescriptionContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldDescription, v))
+}
+
+// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
+func DescriptionHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldDescription, v))
+}
+
+// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
+func DescriptionHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
+func DescriptionEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldDescription, v))
+}
+
+// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
+func DescriptionContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// SourceCodeAddressEQ applies the EQ predicate on the "source_code_address" field.
+func SourceCodeAddressEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressNEQ applies the NEQ predicate on the "source_code_address" field.
+func SourceCodeAddressNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressIn applies the In predicate on the "source_code_address" field.
+func SourceCodeAddressIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldSourceCodeAddress, vs...))
+}
+
+// SourceCodeAddressNotIn applies the NotIn predicate on the "source_code_address" field.
+func SourceCodeAddressNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldSourceCodeAddress, vs...))
+}
+
+// SourceCodeAddressGT applies the GT predicate on the "source_code_address" field.
+func SourceCodeAddressGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressGTE applies the GTE predicate on the "source_code_address" field.
+func SourceCodeAddressGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressLT applies the LT predicate on the "source_code_address" field.
+func SourceCodeAddressLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressLTE applies the LTE predicate on the "source_code_address" field.
+func SourceCodeAddressLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressContains applies the Contains predicate on the "source_code_address" field.
+func SourceCodeAddressContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressHasPrefix applies the HasPrefix predicate on the "source_code_address" field.
+func SourceCodeAddressHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressHasSuffix applies the HasSuffix predicate on the "source_code_address" field.
+func SourceCodeAddressHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressEqualFold applies the EqualFold predicate on the "source_code_address" field.
+func SourceCodeAddressEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldSourceCodeAddress, v))
+}
+
+// SourceCodeAddressContainsFold applies the ContainsFold predicate on the "source_code_address" field.
+func SourceCodeAddressContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldSourceCodeAddress, v))
+}
+
+// BuildVersionEQ applies the EQ predicate on the "build_version" field.
+func BuildVersionEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldBuildVersion, v))
+}
+
+// BuildVersionNEQ applies the NEQ predicate on the "build_version" field.
+func BuildVersionNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldBuildVersion, v))
+}
+
+// BuildVersionIn applies the In predicate on the "build_version" field.
+func BuildVersionIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldBuildVersion, vs...))
+}
+
+// BuildVersionNotIn applies the NotIn predicate on the "build_version" field.
+func BuildVersionNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldBuildVersion, vs...))
+}
+
+// BuildVersionGT applies the GT predicate on the "build_version" field.
+func BuildVersionGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldBuildVersion, v))
+}
+
+// BuildVersionGTE applies the GTE predicate on the "build_version" field.
+func BuildVersionGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldBuildVersion, v))
+}
+
+// BuildVersionLT applies the LT predicate on the "build_version" field.
+func BuildVersionLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldBuildVersion, v))
+}
+
+// BuildVersionLTE applies the LTE predicate on the "build_version" field.
+func BuildVersionLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldBuildVersion, v))
+}
+
+// BuildVersionContains applies the Contains predicate on the "build_version" field.
+func BuildVersionContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldBuildVersion, v))
+}
+
+// BuildVersionHasPrefix applies the HasPrefix predicate on the "build_version" field.
+func BuildVersionHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldBuildVersion, v))
+}
+
+// BuildVersionHasSuffix applies the HasSuffix predicate on the "build_version" field.
+func BuildVersionHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldBuildVersion, v))
+}
+
+// BuildVersionEqualFold applies the EqualFold predicate on the "build_version" field.
+func BuildVersionEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldBuildVersion, v))
+}
+
+// BuildVersionContainsFold applies the ContainsFold predicate on the "build_version" field.
+func BuildVersionContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldBuildVersion, v))
+}
+
+// BuildDateEQ applies the EQ predicate on the "build_date" field.
+func BuildDateEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldBuildDate, v))
+}
+
+// BuildDateNEQ applies the NEQ predicate on the "build_date" field.
+func BuildDateNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldBuildDate, v))
+}
+
+// BuildDateIn applies the In predicate on the "build_date" field.
+func BuildDateIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldBuildDate, vs...))
+}
+
+// BuildDateNotIn applies the NotIn predicate on the "build_date" field.
+func BuildDateNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldBuildDate, vs...))
+}
+
+// BuildDateGT applies the GT predicate on the "build_date" field.
+func BuildDateGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldBuildDate, v))
+}
+
+// BuildDateGTE applies the GTE predicate on the "build_date" field.
+func BuildDateGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldBuildDate, v))
+}
+
+// BuildDateLT applies the LT predicate on the "build_date" field.
+func BuildDateLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldBuildDate, v))
+}
+
+// BuildDateLTE applies the LTE predicate on the "build_date" field.
+func BuildDateLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldBuildDate, v))
+}
+
+// BuildDateContains applies the Contains predicate on the "build_date" field.
+func BuildDateContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldBuildDate, v))
+}
+
+// BuildDateHasPrefix applies the HasPrefix predicate on the "build_date" field.
+func BuildDateHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldBuildDate, v))
+}
+
+// BuildDateHasSuffix applies the HasSuffix predicate on the "build_date" field.
+func BuildDateHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldBuildDate, v))
+}
+
+// BuildDateEqualFold applies the EqualFold predicate on the "build_date" field.
+func BuildDateEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldBuildDate, v))
+}
+
+// BuildDateContainsFold applies the ContainsFold predicate on the "build_date" field.
+func BuildDateContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldBuildDate, v))
 }
 
 // GlobalNameEQ applies the EQ predicate on the "global_name" field.

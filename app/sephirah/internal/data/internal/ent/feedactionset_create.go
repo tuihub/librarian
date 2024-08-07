@@ -14,7 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -39,7 +39,7 @@ func (fasc *FeedActionSetCreate) SetDescription(s string) *FeedActionSetCreate {
 }
 
 // SetActions sets the "actions" field.
-func (fasc *FeedActionSetCreate) SetActions(mr []*modeltiphereth.FeatureRequest) *FeedActionSetCreate {
+func (fasc *FeedActionSetCreate) SetActions(mr []*modelsupervisor.FeatureRequest) *FeedActionSetCreate {
 	fasc.mutation.SetActions(mr)
 	return fasc
 }
@@ -332,7 +332,7 @@ func (u *FeedActionSetUpsert) UpdateDescription() *FeedActionSetUpsert {
 }
 
 // SetActions sets the "actions" field.
-func (u *FeedActionSetUpsert) SetActions(v []*modeltiphereth.FeatureRequest) *FeedActionSetUpsert {
+func (u *FeedActionSetUpsert) SetActions(v []*modelsupervisor.FeatureRequest) *FeedActionSetUpsert {
 	u.Set(feedactionset.FieldActions, v)
 	return u
 }
@@ -444,7 +444,7 @@ func (u *FeedActionSetUpsertOne) UpdateDescription() *FeedActionSetUpsertOne {
 }
 
 // SetActions sets the "actions" field.
-func (u *FeedActionSetUpsertOne) SetActions(v []*modeltiphereth.FeatureRequest) *FeedActionSetUpsertOne {
+func (u *FeedActionSetUpsertOne) SetActions(v []*modelsupervisor.FeatureRequest) *FeedActionSetUpsertOne {
 	return u.Update(func(s *FeedActionSetUpsert) {
 		s.SetActions(v)
 	})
@@ -728,7 +728,7 @@ func (u *FeedActionSetUpsertBulk) UpdateDescription() *FeedActionSetUpsertBulk {
 }
 
 // SetActions sets the "actions" field.
-func (u *FeedActionSetUpsertBulk) SetActions(v []*modeltiphereth.FeatureRequest) *FeedActionSetUpsertBulk {
+func (u *FeedActionSetUpsertBulk) SetActions(v []*modelsupervisor.FeatureRequest) *FeedActionSetUpsertBulk {
 	return u.Update(func(s *FeedActionSetUpsert) {
 		s.SetActions(v)
 	})

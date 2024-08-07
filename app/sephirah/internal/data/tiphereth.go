@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -346,13 +347,20 @@ func (t tipherethRepo) ListLinkAccounts(
 	return converter.ToBizAccountList(a), nil
 }
 
-func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modeltiphereth.PorterInstance) error {
+func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
 	instances := make([]*ent.PorterInstanceCreate, len(il))
 	for i, instance := range il {
+		if instance.BinarySummary == nil {
+			instance.BinarySummary = new(modelsupervisor.PorterBinarySummary)
+		}
 		instances[i] = t.data.db.PorterInstance.Create().
 			SetID(instance.ID).
-			SetName(instance.Name).
-			SetVersion(instance.Version).
+			SetName(instance.BinarySummary.Name).
+			SetVersion(instance.BinarySummary.Version).
+			SetDescription(instance.BinarySummary.Description).
+			SetSourceCodeAddress(instance.BinarySummary.SourceCodeAddress).
+			SetBuildVersion(instance.BinarySummary.BuildVersion).
+			SetBuildDate(instance.BinarySummary.BuildDate).
 			SetGlobalName(instance.GlobalName).
 			SetAddress(instance.Address).
 			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
@@ -374,7 +382,7 @@ func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modeltiphereth.P
 func (t tipherethRepo) ListPorters(
 	ctx context.Context,
 	paging model.Paging,
-) ([]*modeltiphereth.PorterInstance, int64, error) {
+) ([]*modelsupervisor.PorterInstance, int64, error) {
 	q := t.data.db.PorterInstance.Query()
 	count, err := q.Count(ctx)
 	if err != nil {
@@ -393,8 +401,8 @@ func (t tipherethRepo) ListPorters(
 func (t tipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
-	status modeltiphereth.PorterInstanceStatus,
-) (*modeltiphereth.PorterInstance, error) {
+	status modeltiphereth.UserStatus,
+) (*modelsupervisor.PorterInstance, error) {
 	pi, err := t.data.db.PorterInstance.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -406,7 +414,7 @@ func (t tipherethRepo) UpdatePorterStatus(
 	return converter.ToBizPorter(pi), nil
 }
 
-func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modeltiphereth.PorterInstance, error) {
+func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modelsupervisor.PorterInstance, error) {
 	p, err := t.data.db.PorterInstance.Query().Where(
 		porterinstance.AddressEQ(address),
 	).Only(ctx)
@@ -419,7 +427,7 @@ func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string)
 func (t tipherethRepo) CreatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
-	context *modeltiphereth.PorterContext,
+	context *modelsupervisor.PorterContext,
 ) error {
 	return t.data.db.PorterContext.Create().
 		SetOwnerID(userID).
@@ -436,7 +444,7 @@ func (t tipherethRepo) ListPorterContexts(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
-) ([]*modeltiphereth.PorterContext, int64, error) {
+) ([]*modelsupervisor.PorterContext, int64, error) {
 	q := t.data.db.PorterContext.Query().Where(
 		portercontext.HasOwnerWith(user.IDEQ(userID)),
 	)
@@ -457,7 +465,7 @@ func (t tipherethRepo) ListPorterContexts(
 func (t tipherethRepo) UpdatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
-	context *modeltiphereth.PorterContext,
+	context *modelsupervisor.PorterContext,
 ) error {
 	return t.data.db.PorterContext.Update().Where(
 		portercontext.IDEQ(context.ID),
@@ -468,4 +476,46 @@ func (t tipherethRepo) UpdatePorterContext(
 		SetDescription(context.Description).
 		SetStatus(converter.ToEntPorterContextStatus(context.Status)).
 		Exec(ctx)
+}
+
+func (t tipherethRepo) ListPorterGroups(
+	ctx context.Context,
+	status []modeltiphereth.UserStatus,
+) ([]*modelsupervisor.PorterGroup, error) {
+	var pi []*ent.PorterInstance
+	var pg []*modelsupervisor.PorterGroup
+	pgm := make(map[string]*modelsupervisor.PorterGroup)
+	q := t.data.db.PorterInstance.Query()
+	if len(status) > 0 {
+		q.Where(porterinstance.StatusIn(converter.ToEntPorterInstanceStatusList(status)...))
+	}
+	err := q.GroupBy(
+		porterinstance.FieldGlobalName,
+		porterinstance.FieldRegion,
+	).Scan(ctx, &pi)
+	if err != nil {
+		return nil, err
+	}
+	for _, p := range pi {
+		if pgm[p.GlobalName] == nil {
+			pgm[p.GlobalName] = &modelsupervisor.PorterGroup{
+				BinarySummary: &modelsupervisor.PorterBinarySummary{
+					Name:              p.Name,
+					Version:           p.Version,
+					Description:       p.Description,
+					SourceCodeAddress: p.SourceCodeAddress,
+					BuildVersion:      p.BuildVersion,
+					BuildDate:         p.BuildDate,
+				},
+				GlobalName:        p.GlobalName,
+				Regions:           []string{p.Region},
+				ContextJSONSchema: p.ContextJSONSchema,
+			}
+		}
+		pgm[p.GlobalName].Regions = append(pgm[p.GlobalName].Regions, p.Region)
+	}
+	for _, v := range pgm {
+		pg = append(pg, v)
+	}
+	return pg, nil
 }
