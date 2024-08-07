@@ -1040,6 +1040,16 @@ func ToPBFeatureFlag(source *modelsupervisor.FeatureFlag) *v1.FeatureFlag {
 	}
 	return pV1FeatureFlag
 }
+func ToPBFeatureFlagList(source []*modelsupervisor.FeatureFlag) []*v1.FeatureFlag {
+	var pV1FeatureFlagList []*v1.FeatureFlag
+	if source != nil {
+		pV1FeatureFlagList = make([]*v1.FeatureFlag, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1FeatureFlagList[i] = ToPBFeatureFlag(source[i])
+		}
+	}
+	return pV1FeatureFlagList
+}
 func ToPBFeatureRequest(source *modelsupervisor.FeatureRequest) *v1.FeatureRequest {
 	var pV1FeatureRequest *v1.FeatureRequest
 	if source != nil {
@@ -1518,36 +1528,11 @@ func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v11
 	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
 	if source != nil {
 		var v1ServerFeatureSummary v11.ServerFeatureSummary
-		if (*source).AccountPlatforms != nil {
-			v1ServerFeatureSummary.AccountPlatforms = make([]*v1.FeatureFlag, len((*source).AccountPlatforms))
-			for i := 0; i < len((*source).AccountPlatforms); i++ {
-				v1ServerFeatureSummary.AccountPlatforms[i] = ToPBFeatureFlag((*source).AccountPlatforms[i])
-			}
-		}
-		if (*source).AppInfoSources != nil {
-			v1ServerFeatureSummary.AppInfoSources = make([]*v1.FeatureFlag, len((*source).AppInfoSources))
-			for j := 0; j < len((*source).AppInfoSources); j++ {
-				v1ServerFeatureSummary.AppInfoSources[j] = ToPBFeatureFlag((*source).AppInfoSources[j])
-			}
-		}
-		if (*source).FeedSources != nil {
-			v1ServerFeatureSummary.FeedSources = make([]*v1.FeatureFlag, len((*source).FeedSources))
-			for k := 0; k < len((*source).FeedSources); k++ {
-				v1ServerFeatureSummary.FeedSources[k] = ToPBFeatureFlag((*source).FeedSources[k])
-			}
-		}
-		if (*source).NotifyDestinations != nil {
-			v1ServerFeatureSummary.NotifyDestinations = make([]*v1.FeatureFlag, len((*source).NotifyDestinations))
-			for l := 0; l < len((*source).NotifyDestinations); l++ {
-				v1ServerFeatureSummary.NotifyDestinations[l] = ToPBFeatureFlag((*source).NotifyDestinations[l])
-			}
-		}
-		if (*source).FeedItemActions != nil {
-			v1ServerFeatureSummary.FeedItemActions = make([]*v1.FeatureFlag, len((*source).FeedItemActions))
-			for m := 0; m < len((*source).FeedItemActions); m++ {
-				v1ServerFeatureSummary.FeedItemActions[m] = ToPBFeatureFlag((*source).FeedItemActions[m])
-			}
-		}
+		v1ServerFeatureSummary.AccountPlatforms = ToPBFeatureFlagList((*source).AccountPlatforms)
+		v1ServerFeatureSummary.AppInfoSources = ToPBFeatureFlagList((*source).AppInfoSources)
+		v1ServerFeatureSummary.FeedSources = ToPBFeatureFlagList((*source).FeedSources)
+		v1ServerFeatureSummary.NotifyDestinations = ToPBFeatureFlagList((*source).NotifyDestinations)
+		v1ServerFeatureSummary.FeedItemActions = ToPBFeatureFlagList((*source).FeedItemActions)
 		pV1ServerFeatureSummary = &v1ServerFeatureSummary
 	}
 	return pV1ServerFeatureSummary

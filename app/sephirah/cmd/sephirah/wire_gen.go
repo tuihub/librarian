@@ -164,7 +164,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(libauthAuth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v, sephirahServer, store)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, v, sephirahServer)
 	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup2()

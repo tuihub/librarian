@@ -16,7 +16,6 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/libcache"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -35,7 +34,7 @@ type LibrarianSephirahServiceService struct {
 	app      *libapp.Settings
 	auth     *libauth.Auth
 	authFunc func(context.Context) (context.Context, error)
-	info     *libcache.Key[pb.GetServerInformationResponse]
+	info     *pb.ServerInstanceSummary
 }
 
 func NewLibrarianSephirahServiceService(
@@ -51,7 +50,6 @@ func NewLibrarianSephirahServiceService(
 	auth *libauth.Auth,
 	authFunc func(context.Context) (context.Context, error),
 	config *conf.SephirahServer,
-	store libcache.Store,
 ) pb.LibrarianSephirahServiceServer {
 	t.CreateConfiguredAdmin()
 	if config == nil {
@@ -74,47 +72,34 @@ func NewLibrarianSephirahServiceService(
 		authFunc: authFunc,
 		info:     nil,
 	}
-	res.info = newServerInfromationCache(res, store, &pb.ServerInstanceSummary{
+	res.info = &pb.ServerInstanceSummary{
 		Name:          config.GetInfo().GetName(),
 		Description:   config.GetInfo().GetDescription(),
 		WebsiteUrl:    config.GetInfo().GetWebsiteUrl(),
 		LogoUrl:       config.GetInfo().GetLogoUrl(),
 		BackgroundUrl: config.GetInfo().GetBackgroundUrl(),
-	})
+	}
 	return res
-}
-
-func newServerInfromationCache(
-	s *LibrarianSephirahServiceService,
-	store libcache.Store,
-	serverSummary *pb.ServerInstanceSummary,
-) *libcache.Key[pb.GetServerInformationResponse] {
-	return libcache.NewKey[pb.GetServerInformationResponse](
-		store,
-		"GetServerInformationResponse",
-		func(ctx context.Context) (*pb.GetServerInformationResponse, error) {
-			featureSummary := s.s.GetFeatureSummary()
-			featureSummary.FeedItemActions = append(featureSummary.FeedItemActions, s.y.GetBuiltInFeedActions()...)
-			return &pb.GetServerInformationResponse{
-				ServerBinarySummary: &pb.ServerBinarySummary{
-					SourceCodeAddress: s.app.SourceCodeAddress,
-					BuildVersion:      s.app.Version,
-					BuildDate:         s.app.BuildDate,
-				},
-				ProtocolSummary: &pb.ServerProtocolSummary{
-					Version: s.app.ProtoVersion,
-				},
-				CurrentTime:           timestamppb.New(time.Now()),
-				FeatureSummary:        converter.ToPBServerFeatureSummary(featureSummary),
-				ServerInstanceSummary: serverSummary,
-				StatusReport:          nil,
-			}, nil
-		},
-		libcache.WithExpiration(time.Minute),
-	)
 }
 
 func (s *LibrarianSephirahServiceService) GetServerInformation(ctx context.Context,
 	_ *pb.GetServerInformationRequest) (*pb.GetServerInformationResponse, error) {
-	return s.info.Get(ctx)
+	featureSummary := converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary())
+	featureSummary.FeedItemActions = append(featureSummary.FeedItemActions,
+		converter.ToPBFeatureFlagList(s.y.GetBuiltInFeedActions())...,
+	)
+	return &pb.GetServerInformationResponse{
+		ServerBinarySummary: &pb.ServerBinarySummary{
+			SourceCodeAddress: s.app.SourceCodeAddress,
+			BuildVersion:      s.app.Version,
+			BuildDate:         s.app.BuildDate,
+		},
+		ProtocolSummary: &pb.ServerProtocolSummary{
+			Version: s.app.ProtoVersion,
+		},
+		CurrentTime:           timestamppb.New(time.Now()),
+		FeatureSummary:        featureSummary,
+		ServerInstanceSummary: s.info,
+		StatusReport:          nil,
+	}, nil
 }

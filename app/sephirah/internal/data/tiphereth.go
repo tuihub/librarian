@@ -362,9 +362,11 @@ func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.
 			SetBuildVersion(instance.BinarySummary.BuildVersion).
 			SetBuildDate(instance.BinarySummary.BuildDate).
 			SetGlobalName(instance.GlobalName).
+			SetRegion(instance.Region).
 			SetAddress(instance.Address).
 			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
-			SetFeatureSummary(instance.FeatureSummary)
+			SetFeatureSummary(instance.FeatureSummary).
+			SetContextJSONSchema(instance.ContextJSONSchema)
 	}
 	return t.data.db.PorterInstance.
 		CreateBulk(instances...).
@@ -430,6 +432,7 @@ func (t tipherethRepo) CreatePorterContext(
 	context *modelsupervisor.PorterContext,
 ) error {
 	return t.data.db.PorterContext.Create().
+		SetID(context.ID).
 		SetOwnerID(userID).
 		SetGlobalName(context.GlobalName).
 		SetRegion(context.Region).
@@ -482,9 +485,10 @@ func (t tipherethRepo) ListPorterGroups(
 	ctx context.Context,
 	status []modeltiphereth.UserStatus,
 ) ([]*modelsupervisor.PorterGroup, error) {
-	var pi []*ent.PorterInstance
-	var pg []*modelsupervisor.PorterGroup
-	pgm := make(map[string]*modelsupervisor.PorterGroup)
+	var res []struct {
+		ent.PorterInstance
+		Min model.InternalID
+	}
 	q := t.data.db.PorterInstance.Query()
 	if len(status) > 0 {
 		q.Where(porterinstance.StatusIn(converter.ToEntPorterInstanceStatusList(status)...))
@@ -492,27 +496,38 @@ func (t tipherethRepo) ListPorterGroups(
 	err := q.GroupBy(
 		porterinstance.FieldGlobalName,
 		porterinstance.FieldRegion,
-	).Scan(ctx, &pi)
+	).
+		Aggregate(ent.Min(porterinstance.FieldID)).
+		Scan(ctx, &res)
 	if err != nil {
 		return nil, err
 	}
+	var ids []model.InternalID
+	for _, p := range res {
+		ids = append(ids, p.Min)
+	}
+	pi, err := t.data.db.PorterInstance.Query().Where(
+		porterinstance.IDIn(ids...),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var pg []*modelsupervisor.PorterGroup
+	pgm := make(map[string]*modelsupervisor.PorterGroup)
 	for _, p := range pi {
+		if len(p.ContextJSONSchema) == 0 {
+			continue
+		}
 		if pgm[p.GlobalName] == nil {
 			pgm[p.GlobalName] = &modelsupervisor.PorterGroup{
-				BinarySummary: &modelsupervisor.PorterBinarySummary{
-					Name:              p.Name,
-					Version:           p.Version,
-					Description:       p.Description,
-					SourceCodeAddress: p.SourceCodeAddress,
-					BuildVersion:      p.BuildVersion,
-					BuildDate:         p.BuildDate,
-				},
+				BinarySummary:     converter.ToBizPorter(p).BinarySummary,
 				GlobalName:        p.GlobalName,
 				Regions:           []string{p.Region},
 				ContextJSONSchema: p.ContextJSONSchema,
 			}
+		} else {
+			pgm[p.GlobalName].Regions = append(pgm[p.GlobalName].Regions, p.Region)
 		}
-		pgm[p.GlobalName].Regions = append(pgm[p.GlobalName].Regions, p.Region)
 	}
 	for _, v := range pgm {
 		pg = append(pg, v)

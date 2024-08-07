@@ -112,7 +112,7 @@ func (k *Key[T]) Set(ctx context.Context, value *T, options ...Option) error {
 	if err != nil {
 		return err
 	}
-	return k.store.Set(ctx, k.keyName, b, options...)
+	return k.store.Set(ctx, k.keyName, b, append(k.defaultOptions, options...)...)
 }
 
 func (k *Key[T]) Delete(ctx context.Context) error {

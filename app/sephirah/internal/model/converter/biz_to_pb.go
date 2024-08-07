@@ -33,6 +33,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
 	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary
 	ToPBFeatureFlag(*modelsupervisor.FeatureFlag) *librarian.FeatureFlag
+	ToPBFeatureFlagList([]*modelsupervisor.FeatureFlag) []*librarian.FeatureFlag
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map ID DeviceId

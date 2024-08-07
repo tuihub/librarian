@@ -103,6 +103,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	}
 	newInstances := make([]*modelsupervisor.PorterInstance, 0, len(discoveredAddresses))
 	newInstancesMu := sync.Mutex{}
+	updateFeatureSummary := false
 	hasError := false
 	notification := modelnetzach.NewSystemNotify(
 		modelnetzach.SystemNotificationLevelOngoing,
@@ -175,6 +176,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 			} else {
 				ctl.ConnectionStatusMessage = ""
 			}
+			lastConnectionStatus := ctl.ConnectionStatus
 			if err != nil { //nolint:nestif // TODO
 				if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
 					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
@@ -192,6 +194,9 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 			} else {
 				ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
 				ctl.LastHeartbeat = now
+			}
+			if lastConnectionStatus != ctl.ConnectionStatus {
+				updateFeatureSummary = true
 			}
 
 			s.instanceController.Store(ins.Address, ctl)
@@ -230,7 +235,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 		_ = s.systemNotify.PublishFallsLocalCall(ctx, notification)
 	}
 
-	if len(newInstances) > 0 {
+	if updateFeatureSummary {
 		go s.updateFeatureSummary(ctx)
 	}
 	return newInstances, nil

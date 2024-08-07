@@ -116,7 +116,7 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 		return nil, nil, err
 	}
 	v := server.NewAuthMiddleware(auth)
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, auth, v, sephirahServer, store)
+	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, auth, v, sephirahServer)
 	return librarianSephirahServiceServer, func() {
 		cleanup()
 	}, nil

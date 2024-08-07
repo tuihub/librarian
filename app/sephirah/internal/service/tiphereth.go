@@ -268,9 +268,9 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 		res[i] = s.s.GetInstanceController(ctx, porters[i].Address)
 		if res[i] == nil {
 			res[i] = new(modelsupervisor.PorterInstanceController)
-			res[i].PorterInstance = *porters[i]
 			res[i].ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
 		}
+		res[i].PorterInstance = *porters[i]
 	}
 	return &pb.ListPortersResponse{
 		Paging:  &librarian.PagingResponse{TotalSize: total},
