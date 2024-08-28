@@ -534,3 +534,14 @@ func (t tipherethRepo) ListPorterGroups(
 	}
 	return pg, nil
 }
+
+func (t tipherethRepo) FetchPorterContext(
+	ctx context.Context,
+	id model.InternalID,
+) (*modelsupervisor.PorterContext, error) {
+	res, err := t.data.db.PorterContext.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizPorterContext(res), nil
+}

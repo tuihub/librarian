@@ -76,8 +76,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusBlocked UserStatusBlocked
 	ToBizPorterStatus(porterinstance.Status) modeltiphereth.UserStatus
 
-	// goverter:ignore HandleStatus
-	// goverter:ignore HandleStatusMessage
 	ToBizPorterContext(*ent.PorterContext) *modelsupervisor.PorterContext
 	ToBizPorterContextList([]*ent.PorterContext) []*modelsupervisor.PorterContext
 	// goverter:enum:unknown PorterContextStatusUnspecified

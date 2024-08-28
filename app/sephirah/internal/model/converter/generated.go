@@ -520,8 +520,6 @@ func ToBizPorterContext(source *v11.PorterContext) *modelsupervisor.PorterContex
 		modelsupervisorPorterContext.Name = (*source).Name
 		modelsupervisorPorterContext.Description = (*source).Description
 		modelsupervisorPorterContext.Status = ToBizPorterContextStatus((*source).Status)
-		modelsupervisorPorterContext.HandleStatus = ToBizPorterContextHandleStatus((*source).HandleStatus)
-		modelsupervisorPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
 		pModelsupervisorPorterContext = &modelsupervisorPorterContext
 	}
 	return pModelsupervisorPorterContext
@@ -1427,17 +1425,17 @@ func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) v
 	}
 	return v1PorterConnectionStatus
 }
-func ToPBPorterContext(source *modelsupervisor.PorterContext) *v11.PorterContext {
+func ToPBPorterContext(source *modelsupervisor.PorterContextController) *v11.PorterContext {
 	var pV1PorterContext *v11.PorterContext
 	if source != nil {
 		var v1PorterContext v11.PorterContext
-		v1PorterContext.Id = ToPBInternalID((*source).ID)
-		v1PorterContext.GlobalName = (*source).GlobalName
-		v1PorterContext.Region = (*source).Region
-		v1PorterContext.ContextJson = (*source).ContextJSON
-		v1PorterContext.Name = (*source).Name
-		v1PorterContext.Description = (*source).Description
-		v1PorterContext.Status = ToPBPorterContextStatus((*source).Status)
+		v1PorterContext.Id = ToPBInternalID((*source).PorterContext.ID)
+		v1PorterContext.GlobalName = (*source).PorterContext.GlobalName
+		v1PorterContext.Region = (*source).PorterContext.Region
+		v1PorterContext.ContextJson = (*source).PorterContext.ContextJSON
+		v1PorterContext.Name = (*source).PorterContext.Name
+		v1PorterContext.Description = (*source).PorterContext.Description
+		v1PorterContext.Status = ToPBPorterContextStatus((*source).PorterContext.Status)
 		v1PorterContext.HandleStatus = ToPBPorterContextHandleStatus((*source).HandleStatus)
 		v1PorterContext.HandleStatusMessage = (*source).HandleStatusMessage
 		pV1PorterContext = &v1PorterContext
@@ -1462,7 +1460,7 @@ func ToPBPorterContextHandleStatus(source modelsupervisor.PorterContextHandleSta
 	}
 	return v1PorterContextHandleStatus
 }
-func ToPBPorterContextList(source []*modelsupervisor.PorterContext) []*v11.PorterContext {
+func ToPBPorterContextList(source []*modelsupervisor.PorterContextController) []*v11.PorterContext {
 	var pV1PorterContextList []*v11.PorterContext
 	if source != nil {
 		pV1PorterContextList = make([]*v11.PorterContext, len(source))

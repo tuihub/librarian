@@ -324,9 +324,18 @@ func (s *LibrarianSephirahServiceService) ListPorterContexts(
 	if err != nil {
 		return nil, err
 	}
+	res := make([]*modelsupervisor.PorterContextController, len(contexts))
+	for i := range res {
+		res[i] = s.s.GetContextController(ctx, contexts[i].ID)
+		if res[i] == nil {
+			res[i] = new(modelsupervisor.PorterContextController)
+			res[i].HandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
+		}
+		res[i].PorterContext = *contexts[i]
+	}
 	return &pb.ListPorterContextsResponse{
 		Paging:   &librarian.PagingResponse{TotalSize: total},
-		Contexts: converter.ToPBPorterContextList(contexts),
+		Contexts: converter.ToPBPorterContextList(res),
 	}, nil
 }
 

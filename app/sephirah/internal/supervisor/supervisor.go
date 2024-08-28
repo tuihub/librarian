@@ -19,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/lib/logger"
+	"github.com/tuihub/librarian/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/uuid"
@@ -39,12 +40,17 @@ type Supervisor struct {
 	auth         *libauth.Auth
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify]
 
-	refreshMu          sync.Mutex
-	trustedAddresses   []string
-	instanceController *libtype.SyncMap[string, modelsupervisor.PorterInstanceController]
-	instanceCache      *libcache.Map[string, modelsupervisor.PorterInstance]
+	refreshMu                 sync.Mutex
+	trustedAddresses          []string
+	instanceController        *libtype.SyncMap[string, modelsupervisor.PorterInstanceController]
+	instanceContextController *libtype.SyncMap[model.InternalID, modelsupervisor.PorterContextController]
+	instanceCache             *libcache.Map[string, modelsupervisor.PorterInstance]
+	instanceContextCache      *libcache.Map[model.InternalID, modelsupervisor.PorterContext]
+	enableContextTopic        *libmq.Topic[modelsupervisor.PorterContext]
 
-	featureSummary     *modelsupervisor.ServerFeatureSummary
+	// featureSummary contains unique enabled features
+	featureSummary *modelsupervisor.ServerFeatureSummary
+	// featureSummaryMap is the map from enabled feature ID to instance addresses
 	featureSummaryMap  *modelsupervisor.ServerFeatureSummaryMap
 	featureSummaryRWMu sync.RWMutex
 }
@@ -55,23 +61,31 @@ func NewSupervisor(
 	porter *client.Porter,
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 	instanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
+	instanceContextCache *libcache.Map[model.InternalID, modelsupervisor.PorterContext],
 ) (*Supervisor, error) {
 	if c == nil {
 		c = new(conf.Porter)
 	}
-	return &Supervisor{
-		UUID:               int64(uuid.New().ID()),
-		porter:             porter,
-		auth:               auth,
-		instanceController: libtype.NewSyncMap[string, modelsupervisor.PorterInstanceController](),
-		instanceCache:      instanceCache,
-		refreshMu:          sync.Mutex{},
+	res := Supervisor{
+		UUID:         int64(uuid.New().ID()),
+		porter:       porter,
+		auth:         auth,
+		systemNotify: systemNotify,
+
+		refreshMu:                 sync.Mutex{},
+		trustedAddresses:          c.GetTrusted(),
+		instanceController:        libtype.NewSyncMap[string, modelsupervisor.PorterInstanceController](),
+		instanceContextController: libtype.NewSyncMap[model.InternalID, modelsupervisor.PorterContextController](),
+		instanceCache:             instanceCache,
+		instanceContextCache:      instanceContextCache,
+		enableContextTopic:        nil,
+
 		featureSummary:     new(modelsupervisor.ServerFeatureSummary),
 		featureSummaryMap:  modelsupervisor.NewServerFeatureSummaryMap(),
 		featureSummaryRWMu: sync.RWMutex{},
-		trustedAddresses:   c.GetTrusted(),
-		systemNotify:       systemNotify,
-	}, nil
+	}
+	res.enableContextTopic = newEnablePorterContextTopic(&res)
+	return &res, nil
 }
 
 func (s *Supervisor) GetHeartbeatInterval() time.Duration {
@@ -83,6 +97,16 @@ func (s *Supervisor) GetInstanceController(
 	address string,
 ) *modelsupervisor.PorterInstanceController {
 	if c, ok := s.instanceController.Load(address); ok {
+		return &c
+	}
+	return nil
+}
+
+func (s *Supervisor) GetContextController(
+	ctx context.Context,
+	id model.InternalID,
+) *modelsupervisor.PorterContextController {
+	if c, ok := s.instanceContextController.Load(id); ok {
 		return &c
 	}
 	return nil
@@ -146,6 +170,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 				ConnectionStatus:        modelsupervisor.PorterConnectionStatusConnected,
 				ConnectionStatusMessage: "",
 				LastHeartbeat:           time.Now(),
+				LastEnabledContext:      nil,
 			})
 		}(ctx, address)
 	}
@@ -170,30 +195,17 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 				// no return
 			}
 
-			now := time.Now()
-			if resp != nil {
+			if err != nil {
+				ctl.ConnectionStatusMessage += fmt.Sprintf("Error: %s", err.Error())
+			} else if resp != nil {
 				ctl.ConnectionStatusMessage = resp.GetStatusMessage()
-			} else {
-				ctl.ConnectionStatusMessage = ""
 			}
 			lastConnectionStatus := ctl.ConnectionStatus
-			if err != nil { //nolint:nestif // TODO
-				if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
-					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
-				} else if ctl.LastHeartbeat.Add(defaultHeartbeatDowngrade).Before(now) {
-					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
-				} else if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
-					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
-				} else {
-					ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
-				}
-				if ctl.ConnectionStatusMessage != "" {
-					ctl.ConnectionStatusMessage += "\n"
-				}
-				ctl.ConnectionStatusMessage += fmt.Sprintf("Error: %s", err.Error())
-			} else {
-				ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
-				ctl.LastHeartbeat = now
+			err = s.updateControllers(ctx, &ctl, resp)
+			if err != nil {
+				logger.Errorf("%s", err.Error())
+				hasError = true
+				notifyCh <- fmt.Sprintf("Error on %s: %s", ins.Address, err.Error())
 			}
 			if lastConnectionStatus != ctl.ConnectionStatus {
 				updateFeatureSummary = true
@@ -309,4 +321,51 @@ func (s *Supervisor) enablePorterInstance(
 		})
 	}
 	return resp, err
+}
+
+func (s *Supervisor) updateControllers(
+	ctx context.Context,
+	ctl *modelsupervisor.PorterInstanceController,
+	resp *porter.EnablePorterResponse,
+) error {
+	now := time.Now()
+	if resp == nil { //nolint:nestif // TODO
+		if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
+			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
+		} else if ctl.LastHeartbeat.Add(defaultHeartbeatDowngrade).Before(now) {
+			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
+		} else if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
+			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
+		} else {
+			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
+		}
+	} else {
+		ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
+		ctl.LastHeartbeat = now
+	}
+	if resp == nil || resp.GetEnablesSummary() == nil {
+		return nil
+	}
+	if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
+		onlyLast, _ := libtype.DiffSlices(
+			ctl.LastEnabledContext,
+			converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds()),
+		)
+		ctl.LastEnabledContext = converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds())
+		for _, id := range onlyLast {
+			ic, ok := s.instanceContextController.Load(id)
+			if !ok {
+				continue
+			}
+			ic.HandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
+			ic.HandleStatusMessage = ""
+			ic.HandlerAddress = ""
+			s.instanceContextController.Store(id, ic)
+			err := s.QueuePorterContext(ctx, ic.PorterContext)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

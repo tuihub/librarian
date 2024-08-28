@@ -13,6 +13,14 @@ type PorterInstanceController struct {
 	ConnectionStatus        PorterConnectionStatus
 	ConnectionStatusMessage string
 	LastHeartbeat           time.Time
+	LastEnabledContext      []model.InternalID
+}
+
+type PorterContextController struct {
+	PorterContext
+	HandleStatus        PorterContextHandleStatus
+	HandleStatusMessage string
+	HandlerAddress      string
 }
 
 type PorterInstance struct {
@@ -82,15 +90,13 @@ const (
 )
 
 type PorterContext struct {
-	ID                  model.InternalID
-	GlobalName          string
-	Region              string
-	ContextJSON         string
-	Name                string
-	Description         string
-	Status              PorterContextStatus
-	HandleStatus        PorterContextHandleStatus
-	HandleStatusMessage string
+	ID          model.InternalID
+	GlobalName  string
+	Region      string
+	ContextJSON string
+	Name        string
+	Description string
+	Status      PorterContextStatus
 }
 
 type PorterContextStatus int

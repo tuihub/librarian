@@ -2,6 +2,7 @@ package biztiphereth
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
@@ -23,6 +24,7 @@ var ProviderSet = wire.NewSet(
 	NewTiphereth,
 	NewUserCountCache,
 	NewPorterInstanceCache,
+	NewPorterContextCache,
 )
 
 type TipherethRepo interface {
@@ -45,6 +47,7 @@ type TipherethRepo interface {
 	CreatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
 	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modelsupervisor.PorterContext, int64, error)
 	UpdatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
+	FetchPorterContext(context.Context, model.InternalID) (*modelsupervisor.PorterContext, error)
 	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
 	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
 	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error
@@ -181,6 +184,23 @@ func NewPorterInstanceCache(
 		},
 		func(ctx context.Context, s string) (*modelsupervisor.PorterInstance, error) {
 			return t.FetchPorterByAddress(ctx, s)
+		},
+		libcache.WithExpiration(libtime.SevenDays),
+	)
+}
+
+func NewPorterContextCache(
+	t TipherethRepo,
+	store libcache.Store,
+) *libcache.Map[model.InternalID, modelsupervisor.PorterContext] {
+	return libcache.NewMap[model.InternalID, modelsupervisor.PorterContext](
+		store,
+		"PorterContextCache",
+		func(k model.InternalID) string {
+			return strconv.FormatInt(int64(k), 10)
+		},
+		func(ctx context.Context, k model.InternalID) (*modelsupervisor.PorterContext, error) {
+			return t.FetchPorterContext(ctx, k)
 		},
 		libcache.WithExpiration(libtime.SevenDays),
 	)

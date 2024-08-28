@@ -86,8 +86,9 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusDowngraded PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
 	ToPBPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) pb.PorterConnectionStatus
 
-	ToPBPorterContext(*modelsupervisor.PorterContext) *pb.PorterContext
-	ToPBPorterContextList([]*modelsupervisor.PorterContext) []*pb.PorterContext
+	// goverter:autoMap PorterContext
+	ToPBPorterContext(*modelsupervisor.PorterContextController) *pb.PorterContext
+	ToPBPorterContextList([]*modelsupervisor.PorterContextController) []*pb.PorterContext
 	// goverter:enum:unknown PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusUnspecified PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusActive PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
