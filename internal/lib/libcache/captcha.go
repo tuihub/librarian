@@ -20,7 +20,7 @@ func (c *captchaStoreImpl) Set(id string, digits []byte) {
 	_ = c.store.Set(context.Background(), c.key(id), string(digits), WithExpiration(captcha.Expiration))
 }
 
-func (c *captchaStoreImpl) Get(id string, clear bool) []byte {
+func (c *captchaStoreImpl) Get(id string, del bool) []byte {
 	get, err := c.store.Get(context.Background(), c.key(id))
 	if err != nil {
 		return nil
@@ -29,7 +29,7 @@ func (c *captchaStoreImpl) Get(id string, clear bool) []byte {
 	if !ok {
 		return nil
 	}
-	if clear {
+	if del {
 		_ = c.store.Delete(context.Background(), c.key(id))
 	}
 	return []byte(digits)

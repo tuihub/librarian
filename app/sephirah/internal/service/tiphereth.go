@@ -251,7 +251,7 @@ func (s *LibrarianSephirahServiceService) ListLinkAccounts(ctx context.Context, 
 	}, nil
 }
 
-func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *pb.ListPortersRequest) (
+func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *pb.ListPortersRequest) ( //nolint:dupl //no need
 	*pb.ListPortersResponse, error,
 ) {
 	if req.GetPaging() == nil {
@@ -311,7 +311,7 @@ func (s *LibrarianSephirahServiceService) CreatePorterContext(
 	}, nil
 }
 
-func (s *LibrarianSephirahServiceService) ListPorterContexts(
+func (s *LibrarianSephirahServiceService) ListPorterContexts( //nolint:dupl //no need
 	ctx context.Context,
 	req *pb.ListPorterContextsRequest,
 ) (*pb.ListPorterContextsResponse, error) {
