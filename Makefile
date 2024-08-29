@@ -24,7 +24,7 @@ init: init-lint
 	go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 
 init-lint:
-	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.59.1
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.3
 
 init-test:
 	cd tests && make init
