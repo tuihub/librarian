@@ -62,15 +62,15 @@ func NewSnowFlake() *sonyflake.Sonyflake {
 
 func (d defaultSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	id, err := d.sf.NextID()
-	return int64(id), err
+	return int64(id), err //nolint:gosec // safe
 }
 
 func (r *bleveSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	id, err := r.sf.NextID()
-	return int64(id), err
+	return int64(id), err //nolint:gosec // safe
 }
 
 func (m *meiliSearcherRepo) NewID(ctx context.Context) (int64, error) {
 	id, err := m.sf.NextID()
-	return int64(id), err
+	return int64(id), err //nolint:gosec // safe
 }

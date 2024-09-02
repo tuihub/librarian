@@ -31,7 +31,7 @@ func (s *Searcher) NewID(ctx context.Context) (model.InternalID, error) {
 
 func (s *Searcher) NewBatchIDs(ctx context.Context, num int) ([]model.InternalID, error) {
 	resp, err := s.client.NewBatchIDs(ctx, &searcher.NewBatchIDsRequest{
-		Num: int32(num),
+		Num: int64(num),
 	})
 	if err != nil {
 		logger.Infof("NewBatchIDs failed: %s", err.Error())
