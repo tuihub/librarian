@@ -15,18 +15,17 @@ import (
 
 type meiliSearcherRepo struct {
 	sf     *sonyflake.Sonyflake
-	search *meilisearch.Client
+	search meilisearch.ServiceManager
 }
 
-func NewMeili(conf *conf.Searcher_Data, app *libapp.Settings) (*meilisearch.Client, error) {
+func NewMeili(conf *conf.Searcher_Data, app *libapp.Settings) (meilisearch.ServiceManager, error) {
 	if conf.GetMeilisearch() == nil {
 		return nil, nil //nolint:nilnil //TODO
 	}
-	client := meilisearch.NewClient(meilisearch.ClientConfig{
-		Host:    conf.GetMeilisearch().GetAddr(),
-		APIKey:  conf.GetMeilisearch().GetApiKey(),
-		Timeout: 0,
-	})
+	client := meilisearch.New(
+		conf.GetMeilisearch().GetAddr(),
+		meilisearch.WithAPIKey(conf.GetMeilisearch().GetApiKey()),
+	)
 	return client, nil
 }
 
