@@ -18,7 +18,7 @@ import (
 var ProviderSet = wire.NewSet(NewSearcherRepo, NewSnowFlake, NewBleve, NewMeili)
 
 func NewSearcherRepo(
-	b map[biz.Index]bleve.Index, m *meilisearch.Client, sf *sonyflake.Sonyflake,
+	b map[biz.Index]bleve.Index, m meilisearch.ServiceManager, sf *sonyflake.Sonyflake,
 ) (biz.SearcherRepo, error) {
 	if m != nil {
 		return &meiliSearcherRepo{
