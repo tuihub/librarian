@@ -83,7 +83,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	}
 	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
 	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
-	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libauthAuth, clientPorter, topic, libcacheMap, map2)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
 	if err != nil {
 		cleanup2()
 		cleanup()

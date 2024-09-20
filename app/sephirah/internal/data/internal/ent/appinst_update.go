@@ -152,7 +152,7 @@ func (aiu *AppInstUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (aiu *AppInstUpdate) check() error {
-	if _, ok := aiu.mutation.OwnerID(); aiu.mutation.OwnerCleared() && !ok {
+	if aiu.mutation.OwnerCleared() && len(aiu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppInst.owner"`)
 	}
 	return nil
@@ -372,7 +372,7 @@ func (aiuo *AppInstUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (aiuo *AppInstUpdateOne) check() error {
-	if _, ok := aiuo.mutation.OwnerID(); aiuo.mutation.OwnerCleared() && !ok {
+	if aiuo.mutation.OwnerCleared() && len(aiuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "AppInst.owner"`)
 	}
 	return nil

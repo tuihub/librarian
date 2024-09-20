@@ -152,10 +152,10 @@ func (nfsc *NotifyFlowSourceCreate) check() error {
 	if _, ok := nfsc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyFlowSource.created_at"`)}
 	}
-	if _, ok := nfsc.mutation.NotifyFlowID(); !ok {
+	if len(nfsc.mutation.NotifyFlowIDs()) == 0 {
 		return &ValidationError{Name: "notify_flow", err: errors.New(`ent: missing required edge "NotifyFlowSource.notify_flow"`)}
 	}
-	if _, ok := nfsc.mutation.NotifySourceID(); !ok {
+	if len(nfsc.mutation.NotifySourceIDs()) == 0 {
 		return &ValidationError{Name: "notify_source", err: errors.New(`ent: missing required edge "NotifyFlowSource.notify_source"`)}
 	}
 	return nil

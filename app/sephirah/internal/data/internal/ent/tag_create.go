@@ -170,7 +170,7 @@ func (tc *TagCreate) check() error {
 	if _, ok := tc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Tag.created_at"`)}
 	}
-	if _, ok := tc.mutation.OwnerID(); !ok {
+	if len(tc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Tag.owner"`)}
 	}
 	return nil

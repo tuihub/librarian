@@ -169,10 +169,10 @@ func (nfsu *NotifyFlowSourceUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nfsu *NotifyFlowSourceUpdate) check() error {
-	if _, ok := nfsu.mutation.NotifyFlowID(); nfsu.mutation.NotifyFlowCleared() && !ok {
+	if nfsu.mutation.NotifyFlowCleared() && len(nfsu.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowSource.notify_flow"`)
 	}
-	if _, ok := nfsu.mutation.NotifySourceID(); nfsu.mutation.NotifySourceCleared() && !ok {
+	if nfsu.mutation.NotifySourceCleared() && len(nfsu.mutation.NotifySourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowSource.notify_source"`)
 	}
 	return nil
@@ -440,10 +440,10 @@ func (nfsuo *NotifyFlowSourceUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nfsuo *NotifyFlowSourceUpdateOne) check() error {
-	if _, ok := nfsuo.mutation.NotifyFlowID(); nfsuo.mutation.NotifyFlowCleared() && !ok {
+	if nfsuo.mutation.NotifyFlowCleared() && len(nfsuo.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowSource.notify_flow"`)
 	}
-	if _, ok := nfsuo.mutation.NotifySourceID(); nfsuo.mutation.NotifySourceCleared() && !ok {
+	if nfsuo.mutation.NotifySourceCleared() && len(nfsuo.mutation.NotifySourceIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowSource.notify_source"`)
 	}
 	return nil

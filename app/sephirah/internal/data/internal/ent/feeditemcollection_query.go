@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -135,7 +136,7 @@ func (ficq *FeedItemCollectionQuery) QueryNotifySource() *NotifySourceQuery {
 // First returns the first FeedItemCollection entity from the query.
 // Returns a *NotFoundError when no FeedItemCollection was found.
 func (ficq *FeedItemCollectionQuery) First(ctx context.Context) (*FeedItemCollection, error) {
-	nodes, err := ficq.Limit(1).All(setContextOp(ctx, ficq.ctx, "First"))
+	nodes, err := ficq.Limit(1).All(setContextOp(ctx, ficq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +159,7 @@ func (ficq *FeedItemCollectionQuery) FirstX(ctx context.Context) *FeedItemCollec
 // Returns a *NotFoundError when no FeedItemCollection ID was found.
 func (ficq *FeedItemCollectionQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ficq.Limit(1).IDs(setContextOp(ctx, ficq.ctx, "FirstID")); err != nil {
+	if ids, err = ficq.Limit(1).IDs(setContextOp(ctx, ficq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -181,7 +182,7 @@ func (ficq *FeedItemCollectionQuery) FirstIDX(ctx context.Context) model.Interna
 // Returns a *NotSingularError when more than one FeedItemCollection entity is found.
 // Returns a *NotFoundError when no FeedItemCollection entities are found.
 func (ficq *FeedItemCollectionQuery) Only(ctx context.Context) (*FeedItemCollection, error) {
-	nodes, err := ficq.Limit(2).All(setContextOp(ctx, ficq.ctx, "Only"))
+	nodes, err := ficq.Limit(2).All(setContextOp(ctx, ficq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func (ficq *FeedItemCollectionQuery) OnlyX(ctx context.Context) *FeedItemCollect
 // Returns a *NotFoundError when no entities are found.
 func (ficq *FeedItemCollectionQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ficq.Limit(2).IDs(setContextOp(ctx, ficq.ctx, "OnlyID")); err != nil {
+	if ids, err = ficq.Limit(2).IDs(setContextOp(ctx, ficq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -234,7 +235,7 @@ func (ficq *FeedItemCollectionQuery) OnlyIDX(ctx context.Context) model.Internal
 
 // All executes the query and returns a list of FeedItemCollections.
 func (ficq *FeedItemCollectionQuery) All(ctx context.Context) ([]*FeedItemCollection, error) {
-	ctx = setContextOp(ctx, ficq.ctx, "All")
+	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryAll)
 	if err := ficq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -256,7 +257,7 @@ func (ficq *FeedItemCollectionQuery) IDs(ctx context.Context) (ids []model.Inter
 	if ficq.ctx.Unique == nil && ficq.path != nil {
 		ficq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ficq.ctx, "IDs")
+	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryIDs)
 	if err = ficq.Select(feeditemcollection.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -274,7 +275,7 @@ func (ficq *FeedItemCollectionQuery) IDsX(ctx context.Context) []model.InternalI
 
 // Count returns the count of the given query.
 func (ficq *FeedItemCollectionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ficq.ctx, "Count")
+	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryCount)
 	if err := ficq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -292,7 +293,7 @@ func (ficq *FeedItemCollectionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ficq *FeedItemCollectionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ficq.ctx, "Exist")
+	ctx = setContextOp(ctx, ficq.ctx, ent.OpQueryExist)
 	switch _, err := ficq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -718,7 +719,7 @@ func (ficgb *FeedItemCollectionGroupBy) Aggregate(fns ...AggregateFunc) *FeedIte
 
 // Scan applies the selector query and scans the result into the given value.
 func (ficgb *FeedItemCollectionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ficgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ficgb.build.ctx, ent.OpQueryGroupBy)
 	if err := ficgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -766,7 +767,7 @@ func (fics *FeedItemCollectionSelect) Aggregate(fns ...AggregateFunc) *FeedItemC
 
 // Scan applies the selector query and scans the result into the given value.
 func (fics *FeedItemCollectionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fics.ctx, "Select")
+	ctx = setContextOp(ctx, fics.ctx, ent.OpQuerySelect)
 	if err := fics.prepareQuery(ctx); err != nil {
 		return err
 	}

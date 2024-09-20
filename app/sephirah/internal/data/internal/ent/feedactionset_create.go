@@ -166,7 +166,7 @@ func (fasc *FeedActionSetCreate) check() error {
 	if _, ok := fasc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedActionSet.created_at"`)}
 	}
-	if _, ok := fasc.mutation.OwnerID(); !ok {
+	if len(fasc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedActionSet.owner"`)}
 	}
 	return nil

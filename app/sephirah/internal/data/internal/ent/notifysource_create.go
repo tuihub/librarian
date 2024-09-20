@@ -194,7 +194,7 @@ func (nsc *NotifySourceCreate) check() error {
 	if _, ok := nsc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifySource.created_at"`)}
 	}
-	if _, ok := nsc.mutation.OwnerID(); !ok {
+	if len(nsc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifySource.owner"`)}
 	}
 	return nil

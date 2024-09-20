@@ -45,6 +45,7 @@ type TipherethRepo interface {
 	UpdatePorterStatus(context.Context, model.InternalID,
 		modeltiphereth.UserStatus) (*modelsupervisor.PorterInstance, error)
 	CreatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
+	GetEnabledPorterContexts(context.Context) ([]*modelsupervisor.PorterContext, error)
 	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modelsupervisor.PorterContext, int64, error)
 	UpdatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
 	FetchPorterContext(context.Context, model.InternalID) (*modelsupervisor.PorterContext, error)

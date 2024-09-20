@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -110,7 +111,7 @@ func (fiq *FeedItemQuery) QueryFeedItemCollection() *FeedItemCollectionQuery {
 // First returns the first FeedItem entity from the query.
 // Returns a *NotFoundError when no FeedItem was found.
 func (fiq *FeedItemQuery) First(ctx context.Context) (*FeedItem, error) {
-	nodes, err := fiq.Limit(1).All(setContextOp(ctx, fiq.ctx, "First"))
+	nodes, err := fiq.Limit(1).All(setContextOp(ctx, fiq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func (fiq *FeedItemQuery) FirstX(ctx context.Context) *FeedItem {
 // Returns a *NotFoundError when no FeedItem ID was found.
 func (fiq *FeedItemQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, "FirstID")); err != nil {
+	if ids, err = fiq.Limit(1).IDs(setContextOp(ctx, fiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -156,7 +157,7 @@ func (fiq *FeedItemQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one FeedItem entity is found.
 // Returns a *NotFoundError when no FeedItem entities are found.
 func (fiq *FeedItemQuery) Only(ctx context.Context) (*FeedItem, error) {
-	nodes, err := fiq.Limit(2).All(setContextOp(ctx, fiq.ctx, "Only"))
+	nodes, err := fiq.Limit(2).All(setContextOp(ctx, fiq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +185,7 @@ func (fiq *FeedItemQuery) OnlyX(ctx context.Context) *FeedItem {
 // Returns a *NotFoundError when no entities are found.
 func (fiq *FeedItemQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, "OnlyID")); err != nil {
+	if ids, err = fiq.Limit(2).IDs(setContextOp(ctx, fiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -209,7 +210,7 @@ func (fiq *FeedItemQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of FeedItems.
 func (fiq *FeedItemQuery) All(ctx context.Context) ([]*FeedItem, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "All")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryAll)
 	if err := fiq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -231,7 +232,7 @@ func (fiq *FeedItemQuery) IDs(ctx context.Context) (ids []model.InternalID, err 
 	if fiq.ctx.Unique == nil && fiq.path != nil {
 		fiq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fiq.ctx, "IDs")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryIDs)
 	if err = fiq.Select(feeditem.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -249,7 +250,7 @@ func (fiq *FeedItemQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (fiq *FeedItemQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "Count")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryCount)
 	if err := fiq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -267,7 +268,7 @@ func (fiq *FeedItemQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fiq *FeedItemQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fiq.ctx, "Exist")
+	ctx = setContextOp(ctx, fiq.ctx, ent.OpQueryExist)
 	switch _, err := fiq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -637,7 +638,7 @@ func (figb *FeedItemGroupBy) Aggregate(fns ...AggregateFunc) *FeedItemGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (figb *FeedItemGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, figb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, figb.build.ctx, ent.OpQueryGroupBy)
 	if err := figb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -685,7 +686,7 @@ func (fis *FeedItemSelect) Aggregate(fns ...AggregateFunc) *FeedItemSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fis *FeedItemSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fis.ctx, "Select")
+	ctx = setContextOp(ctx, fis.ctx, ent.OpQuerySelect)
 	if err := fis.prepareQuery(ctx); err != nil {
 		return err
 	}

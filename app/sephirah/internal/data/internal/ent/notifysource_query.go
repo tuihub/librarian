@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -183,7 +184,7 @@ func (nsq *NotifySourceQuery) QueryNotifyFlowSource() *NotifyFlowSourceQuery {
 // First returns the first NotifySource entity from the query.
 // Returns a *NotFoundError when no NotifySource was found.
 func (nsq *NotifySourceQuery) First(ctx context.Context) (*NotifySource, error) {
-	nodes, err := nsq.Limit(1).All(setContextOp(ctx, nsq.ctx, "First"))
+	nodes, err := nsq.Limit(1).All(setContextOp(ctx, nsq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -206,7 +207,7 @@ func (nsq *NotifySourceQuery) FirstX(ctx context.Context) *NotifySource {
 // Returns a *NotFoundError when no NotifySource ID was found.
 func (nsq *NotifySourceQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = nsq.Limit(1).IDs(setContextOp(ctx, nsq.ctx, "FirstID")); err != nil {
+	if ids, err = nsq.Limit(1).IDs(setContextOp(ctx, nsq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -229,7 +230,7 @@ func (nsq *NotifySourceQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one NotifySource entity is found.
 // Returns a *NotFoundError when no NotifySource entities are found.
 func (nsq *NotifySourceQuery) Only(ctx context.Context) (*NotifySource, error) {
-	nodes, err := nsq.Limit(2).All(setContextOp(ctx, nsq.ctx, "Only"))
+	nodes, err := nsq.Limit(2).All(setContextOp(ctx, nsq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -257,7 +258,7 @@ func (nsq *NotifySourceQuery) OnlyX(ctx context.Context) *NotifySource {
 // Returns a *NotFoundError when no entities are found.
 func (nsq *NotifySourceQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = nsq.Limit(2).IDs(setContextOp(ctx, nsq.ctx, "OnlyID")); err != nil {
+	if ids, err = nsq.Limit(2).IDs(setContextOp(ctx, nsq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -282,7 +283,7 @@ func (nsq *NotifySourceQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of NotifySources.
 func (nsq *NotifySourceQuery) All(ctx context.Context) ([]*NotifySource, error) {
-	ctx = setContextOp(ctx, nsq.ctx, "All")
+	ctx = setContextOp(ctx, nsq.ctx, ent.OpQueryAll)
 	if err := nsq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -304,7 +305,7 @@ func (nsq *NotifySourceQuery) IDs(ctx context.Context) (ids []model.InternalID, 
 	if nsq.ctx.Unique == nil && nsq.path != nil {
 		nsq.Unique(true)
 	}
-	ctx = setContextOp(ctx, nsq.ctx, "IDs")
+	ctx = setContextOp(ctx, nsq.ctx, ent.OpQueryIDs)
 	if err = nsq.Select(notifysource.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -322,7 +323,7 @@ func (nsq *NotifySourceQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (nsq *NotifySourceQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nsq.ctx, "Count")
+	ctx = setContextOp(ctx, nsq.ctx, ent.OpQueryCount)
 	if err := nsq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -340,7 +341,7 @@ func (nsq *NotifySourceQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (nsq *NotifySourceQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nsq.ctx, "Exist")
+	ctx = setContextOp(ctx, nsq.ctx, ent.OpQueryExist)
 	switch _, err := nsq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -869,7 +870,7 @@ func (nsgb *NotifySourceGroupBy) Aggregate(fns ...AggregateFunc) *NotifySourceGr
 
 // Scan applies the selector query and scans the result into the given value.
 func (nsgb *NotifySourceGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nsgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, nsgb.build.ctx, ent.OpQueryGroupBy)
 	if err := nsgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -917,7 +918,7 @@ func (nss *NotifySourceSelect) Aggregate(fns ...AggregateFunc) *NotifySourceSele
 
 // Scan applies the selector query and scans the result into the given value.
 func (nss *NotifySourceSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nss.ctx, "Select")
+	ctx = setContextOp(ctx, nss.ctx, ent.OpQuerySelect)
 	if err := nss.prepareQuery(ctx); err != nil {
 		return err
 	}

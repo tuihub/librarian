@@ -181,7 +181,7 @@ func (pcc *PorterContextCreate) check() error {
 	if _, ok := pcc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "PorterContext.created_at"`)}
 	}
-	if _, ok := pcc.mutation.OwnerID(); !ok {
+	if len(pcc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "PorterContext.owner"`)}
 	}
 	return nil

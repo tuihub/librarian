@@ -143,10 +143,10 @@ func (fcac *FeedConfigActionCreate) check() error {
 	if _, ok := fcac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedConfigAction.created_at"`)}
 	}
-	if _, ok := fcac.mutation.FeedConfigID(); !ok {
+	if len(fcac.mutation.FeedConfigIDs()) == 0 {
 		return &ValidationError{Name: "feed_config", err: errors.New(`ent: missing required edge "FeedConfigAction.feed_config"`)}
 	}
-	if _, ok := fcac.mutation.FeedActionSetID(); !ok {
+	if len(fcac.mutation.FeedActionSetIDs()) == 0 {
 		return &ValidationError{Name: "feed_action_set", err: errors.New(`ent: missing required edge "FeedConfigAction.feed_action_set"`)}
 	}
 	return nil

@@ -181,7 +181,7 @@ func (ficc *FeedItemCollectionCreate) check() error {
 	if _, ok := ficc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedItemCollection.created_at"`)}
 	}
-	if _, ok := ficc.mutation.OwnerID(); !ok {
+	if len(ficc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedItemCollection.owner"`)}
 	}
 	return nil

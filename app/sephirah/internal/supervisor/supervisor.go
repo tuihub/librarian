@@ -57,6 +57,7 @@ type Supervisor struct {
 
 func NewSupervisor(
 	c *conf.Porter,
+	mq *libmq.MQ,
 	auth *libauth.Auth,
 	porter *client.Porter,
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
@@ -85,6 +86,10 @@ func NewSupervisor(
 		featureSummaryRWMu: sync.RWMutex{},
 	}
 	res.enableContextTopic = newEnablePorterContextTopic(&res)
+	err := mq.RegisterTopic(res.enableContextTopic)
+	if err != nil {
+		return nil, err
+	}
 	return &res, nil
 }
 

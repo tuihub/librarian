@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -182,7 +183,7 @@ func (fcq *FeedConfigQuery) QueryFeedConfigAction() *FeedConfigActionQuery {
 // First returns the first FeedConfig entity from the query.
 // Returns a *NotFoundError when no FeedConfig was found.
 func (fcq *FeedConfigQuery) First(ctx context.Context) (*FeedConfig, error) {
-	nodes, err := fcq.Limit(1).All(setContextOp(ctx, fcq.ctx, "First"))
+	nodes, err := fcq.Limit(1).All(setContextOp(ctx, fcq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +206,7 @@ func (fcq *FeedConfigQuery) FirstX(ctx context.Context) *FeedConfig {
 // Returns a *NotFoundError when no FeedConfig ID was found.
 func (fcq *FeedConfigQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fcq.Limit(1).IDs(setContextOp(ctx, fcq.ctx, "FirstID")); err != nil {
+	if ids, err = fcq.Limit(1).IDs(setContextOp(ctx, fcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -228,7 +229,7 @@ func (fcq *FeedConfigQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one FeedConfig entity is found.
 // Returns a *NotFoundError when no FeedConfig entities are found.
 func (fcq *FeedConfigQuery) Only(ctx context.Context) (*FeedConfig, error) {
-	nodes, err := fcq.Limit(2).All(setContextOp(ctx, fcq.ctx, "Only"))
+	nodes, err := fcq.Limit(2).All(setContextOp(ctx, fcq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -256,7 +257,7 @@ func (fcq *FeedConfigQuery) OnlyX(ctx context.Context) *FeedConfig {
 // Returns a *NotFoundError when no entities are found.
 func (fcq *FeedConfigQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = fcq.Limit(2).IDs(setContextOp(ctx, fcq.ctx, "OnlyID")); err != nil {
+	if ids, err = fcq.Limit(2).IDs(setContextOp(ctx, fcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -281,7 +282,7 @@ func (fcq *FeedConfigQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of FeedConfigs.
 func (fcq *FeedConfigQuery) All(ctx context.Context) ([]*FeedConfig, error) {
-	ctx = setContextOp(ctx, fcq.ctx, "All")
+	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryAll)
 	if err := fcq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -303,7 +304,7 @@ func (fcq *FeedConfigQuery) IDs(ctx context.Context) (ids []model.InternalID, er
 	if fcq.ctx.Unique == nil && fcq.path != nil {
 		fcq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fcq.ctx, "IDs")
+	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryIDs)
 	if err = fcq.Select(feedconfig.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -321,7 +322,7 @@ func (fcq *FeedConfigQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (fcq *FeedConfigQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fcq.ctx, "Count")
+	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryCount)
 	if err := fcq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -339,7 +340,7 @@ func (fcq *FeedConfigQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fcq *FeedConfigQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fcq.ctx, "Exist")
+	ctx = setContextOp(ctx, fcq.ctx, ent.OpQueryExist)
 	switch _, err := fcq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -857,7 +858,7 @@ func (fcgb *FeedConfigGroupBy) Aggregate(fns ...AggregateFunc) *FeedConfigGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (fcgb *FeedConfigGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fcgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fcgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -905,7 +906,7 @@ func (fcs *FeedConfigSelect) Aggregate(fns ...AggregateFunc) *FeedConfigSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fcs *FeedConfigSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcs.ctx, "Select")
+	ctx = setContextOp(ctx, fcs.ctx, ent.OpQuerySelect)
 	if err := fcs.prepareQuery(ctx); err != nil {
 		return err
 	}

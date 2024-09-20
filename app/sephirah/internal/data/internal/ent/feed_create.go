@@ -207,7 +207,7 @@ func (fc *FeedCreate) check() error {
 	if _, ok := fc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Feed.created_at"`)}
 	}
-	if _, ok := fc.mutation.ConfigID(); !ok {
+	if len(fc.mutation.ConfigIDs()) == 0 {
 		return &ValidationError{Name: "config", err: errors.New(`ent: missing required edge "Feed.config"`)}
 	}
 	return nil

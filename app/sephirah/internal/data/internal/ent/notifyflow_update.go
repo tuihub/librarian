@@ -305,7 +305,7 @@ func (nfu *NotifyFlowUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyFlow.status": %w`, err)}
 		}
 	}
-	if _, ok := nfu.mutation.OwnerID(); nfu.mutation.OwnerCleared() && !ok {
+	if nfu.mutation.OwnerCleared() && len(nfu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlow.owner"`)
 	}
 	return nil
@@ -875,7 +875,7 @@ func (nfuo *NotifyFlowUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyFlow.status": %w`, err)}
 		}
 	}
-	if _, ok := nfuo.mutation.OwnerID(); nfuo.mutation.OwnerCleared() && !ok {
+	if nfuo.mutation.OwnerCleared() && len(nfuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlow.owner"`)
 	}
 	return nil

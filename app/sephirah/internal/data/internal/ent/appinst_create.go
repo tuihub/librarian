@@ -140,7 +140,7 @@ func (aic *AppInstCreate) check() error {
 	if _, ok := aic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "AppInst.created_at"`)}
 	}
-	if _, ok := aic.mutation.OwnerID(); !ok {
+	if len(aic.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "AppInst.owner"`)}
 	}
 	return nil

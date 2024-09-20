@@ -183,7 +183,7 @@ func (iu *ImageUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
 		}
 	}
-	if _, ok := iu.mutation.OwnerID(); iu.mutation.OwnerCleared() && !ok {
+	if iu.mutation.OwnerCleared() && len(iu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
 	return nil
@@ -459,7 +459,7 @@ func (iuo *ImageUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "Image.status": %w`, err)}
 		}
 	}
-	if _, ok := iuo.mutation.OwnerID(); iuo.mutation.OwnerCleared() && !ok {
+	if iuo.mutation.OwnerCleared() && len(iuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Image.owner"`)
 	}
 	return nil

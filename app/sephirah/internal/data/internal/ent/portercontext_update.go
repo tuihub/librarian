@@ -199,7 +199,7 @@ func (pcu *PorterContextUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
-	if _, ok := pcu.mutation.OwnerID(); pcu.mutation.OwnerCleared() && !ok {
+	if pcu.mutation.OwnerCleared() && len(pcu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
 	return nil
@@ -472,7 +472,7 @@ func (pcuo *PorterContextUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
-	if _, ok := pcuo.mutation.OwnerID(); pcuo.mutation.OwnerCleared() && !ok {
+	if pcuo.mutation.OwnerCleared() && len(pcuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
 	return nil

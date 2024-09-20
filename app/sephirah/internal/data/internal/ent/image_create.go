@@ -174,7 +174,7 @@ func (ic *ImageCreate) check() error {
 	if _, ok := ic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Image.created_at"`)}
 	}
-	if _, ok := ic.mutation.OwnerID(); !ok {
+	if len(ic.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Image.owner"`)}
 	}
 	return nil

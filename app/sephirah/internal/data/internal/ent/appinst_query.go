@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (aiq *AppInstQuery) QueryOwner() *UserQuery {
 // First returns the first AppInst entity from the query.
 // Returns a *NotFoundError when no AppInst was found.
 func (aiq *AppInstQuery) First(ctx context.Context) (*AppInst, error) {
-	nodes, err := aiq.Limit(1).All(setContextOp(ctx, aiq.ctx, "First"))
+	nodes, err := aiq.Limit(1).All(setContextOp(ctx, aiq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (aiq *AppInstQuery) FirstX(ctx context.Context) *AppInst {
 // Returns a *NotFoundError when no AppInst ID was found.
 func (aiq *AppInstQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = aiq.Limit(1).IDs(setContextOp(ctx, aiq.ctx, "FirstID")); err != nil {
+	if ids, err = aiq.Limit(1).IDs(setContextOp(ctx, aiq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (aiq *AppInstQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one AppInst entity is found.
 // Returns a *NotFoundError when no AppInst entities are found.
 func (aiq *AppInstQuery) Only(ctx context.Context) (*AppInst, error) {
-	nodes, err := aiq.Limit(2).All(setContextOp(ctx, aiq.ctx, "Only"))
+	nodes, err := aiq.Limit(2).All(setContextOp(ctx, aiq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (aiq *AppInstQuery) OnlyX(ctx context.Context) *AppInst {
 // Returns a *NotFoundError when no entities are found.
 func (aiq *AppInstQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = aiq.Limit(2).IDs(setContextOp(ctx, aiq.ctx, "OnlyID")); err != nil {
+	if ids, err = aiq.Limit(2).IDs(setContextOp(ctx, aiq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (aiq *AppInstQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of AppInsts.
 func (aiq *AppInstQuery) All(ctx context.Context) ([]*AppInst, error) {
-	ctx = setContextOp(ctx, aiq.ctx, "All")
+	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryAll)
 	if err := aiq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (aiq *AppInstQuery) IDs(ctx context.Context) (ids []model.InternalID, err e
 	if aiq.ctx.Unique == nil && aiq.path != nil {
 		aiq.Unique(true)
 	}
-	ctx = setContextOp(ctx, aiq.ctx, "IDs")
+	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryIDs)
 	if err = aiq.Select(appinst.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (aiq *AppInstQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (aiq *AppInstQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, aiq.ctx, "Count")
+	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryCount)
 	if err := aiq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (aiq *AppInstQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (aiq *AppInstQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, aiq.ctx, "Exist")
+	ctx = setContextOp(ctx, aiq.ctx, ent.OpQueryExist)
 	switch _, err := aiq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -537,7 +538,7 @@ func (aigb *AppInstGroupBy) Aggregate(fns ...AggregateFunc) *AppInstGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (aigb *AppInstGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, aigb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, aigb.build.ctx, ent.OpQueryGroupBy)
 	if err := aigb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -585,7 +586,7 @@ func (ais *AppInstSelect) Aggregate(fns ...AggregateFunc) *AppInstSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (ais *AppInstSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ais.ctx, "Select")
+	ctx = setContextOp(ctx, ais.ctx, ent.OpQuerySelect)
 	if err := ais.prepareQuery(ctx); err != nil {
 		return err
 	}

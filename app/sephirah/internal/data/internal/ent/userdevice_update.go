@@ -150,10 +150,10 @@ func (udu *UserDeviceUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (udu *UserDeviceUpdate) check() error {
-	if _, ok := udu.mutation.DeviceInfoID(); udu.mutation.DeviceInfoCleared() && !ok {
+	if udu.mutation.DeviceInfoCleared() && len(udu.mutation.DeviceInfoIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserDevice.device_info"`)
 	}
-	if _, ok := udu.mutation.UserID(); udu.mutation.UserCleared() && !ok {
+	if udu.mutation.UserCleared() && len(udu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserDevice.user"`)
 	}
 	return nil
@@ -387,10 +387,10 @@ func (uduo *UserDeviceUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uduo *UserDeviceUpdateOne) check() error {
-	if _, ok := uduo.mutation.DeviceInfoID(); uduo.mutation.DeviceInfoCleared() && !ok {
+	if uduo.mutation.DeviceInfoCleared() && len(uduo.mutation.DeviceInfoIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserDevice.device_info"`)
 	}
-	if _, ok := uduo.mutation.UserID(); uduo.mutation.UserCleared() && !ok {
+	if uduo.mutation.UserCleared() && len(uduo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "UserDevice.user"`)
 	}
 	return nil

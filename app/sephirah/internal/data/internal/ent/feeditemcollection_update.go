@@ -226,7 +226,7 @@ func (ficu *FeedItemCollectionUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ficu *FeedItemCollectionUpdate) check() error {
-	if _, ok := ficu.mutation.OwnerID(); ficu.mutation.OwnerCleared() && !ok {
+	if ficu.mutation.OwnerCleared() && len(ficu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItemCollection.owner"`)
 	}
 	return nil
@@ -605,7 +605,7 @@ func (ficuo *FeedItemCollectionUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ficuo *FeedItemCollectionUpdateOne) check() error {
-	if _, ok := ficuo.mutation.OwnerID(); ficuo.mutation.OwnerCleared() && !ok {
+	if ficuo.mutation.OwnerCleared() && len(ficuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItemCollection.owner"`)
 	}
 	return nil

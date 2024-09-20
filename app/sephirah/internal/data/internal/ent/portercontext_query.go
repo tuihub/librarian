@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (pcq *PorterContextQuery) QueryOwner() *UserQuery {
 // First returns the first PorterContext entity from the query.
 // Returns a *NotFoundError when no PorterContext was found.
 func (pcq *PorterContextQuery) First(ctx context.Context) (*PorterContext, error) {
-	nodes, err := pcq.Limit(1).All(setContextOp(ctx, pcq.ctx, "First"))
+	nodes, err := pcq.Limit(1).All(setContextOp(ctx, pcq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (pcq *PorterContextQuery) FirstX(ctx context.Context) *PorterContext {
 // Returns a *NotFoundError when no PorterContext ID was found.
 func (pcq *PorterContextQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = pcq.Limit(1).IDs(setContextOp(ctx, pcq.ctx, "FirstID")); err != nil {
+	if ids, err = pcq.Limit(1).IDs(setContextOp(ctx, pcq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (pcq *PorterContextQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one PorterContext entity is found.
 // Returns a *NotFoundError when no PorterContext entities are found.
 func (pcq *PorterContextQuery) Only(ctx context.Context) (*PorterContext, error) {
-	nodes, err := pcq.Limit(2).All(setContextOp(ctx, pcq.ctx, "Only"))
+	nodes, err := pcq.Limit(2).All(setContextOp(ctx, pcq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (pcq *PorterContextQuery) OnlyX(ctx context.Context) *PorterContext {
 // Returns a *NotFoundError when no entities are found.
 func (pcq *PorterContextQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = pcq.Limit(2).IDs(setContextOp(ctx, pcq.ctx, "OnlyID")); err != nil {
+	if ids, err = pcq.Limit(2).IDs(setContextOp(ctx, pcq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (pcq *PorterContextQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of PorterContexts.
 func (pcq *PorterContextQuery) All(ctx context.Context) ([]*PorterContext, error) {
-	ctx = setContextOp(ctx, pcq.ctx, "All")
+	ctx = setContextOp(ctx, pcq.ctx, ent.OpQueryAll)
 	if err := pcq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (pcq *PorterContextQuery) IDs(ctx context.Context) (ids []model.InternalID,
 	if pcq.ctx.Unique == nil && pcq.path != nil {
 		pcq.Unique(true)
 	}
-	ctx = setContextOp(ctx, pcq.ctx, "IDs")
+	ctx = setContextOp(ctx, pcq.ctx, ent.OpQueryIDs)
 	if err = pcq.Select(portercontext.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (pcq *PorterContextQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (pcq *PorterContextQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, pcq.ctx, "Count")
+	ctx = setContextOp(ctx, pcq.ctx, ent.OpQueryCount)
 	if err := pcq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (pcq *PorterContextQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (pcq *PorterContextQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, pcq.ctx, "Exist")
+	ctx = setContextOp(ctx, pcq.ctx, ent.OpQueryExist)
 	switch _, err := pcq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -537,7 +538,7 @@ func (pcgb *PorterContextGroupBy) Aggregate(fns ...AggregateFunc) *PorterContext
 
 // Scan applies the selector query and scans the result into the given value.
 func (pcgb *PorterContextGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pcgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, pcgb.build.ctx, ent.OpQueryGroupBy)
 	if err := pcgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -585,7 +586,7 @@ func (pcs *PorterContextSelect) Aggregate(fns ...AggregateFunc) *PorterContextSe
 
 // Scan applies the selector query and scans the result into the given value.
 func (pcs *PorterContextSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, pcs.ctx, "Select")
+	ctx = setContextOp(ctx, pcs.ctx, ent.OpQuerySelect)
 	if err := pcs.prepareQuery(ctx); err != nil {
 		return err
 	}

@@ -438,7 +438,7 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "User.created_at"`)}
 	}
-	if _, ok := uc.mutation.CreatorID(); !ok {
+	if len(uc.mutation.CreatorIDs()) == 0 {
 		return &ValidationError{Name: "creator", err: errors.New(`ent: missing required edge "User.creator"`)}
 	}
 	return nil

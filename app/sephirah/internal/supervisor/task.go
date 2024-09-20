@@ -16,6 +16,9 @@ func (s *Supervisor) QueuePorterContext(
 	ctx context.Context,
 	porterContext modelsupervisor.PorterContext,
 ) error {
+	if ic, ok := s.instanceContextController.Load(porterContext.ID); ok && ic.HandleStatus == modelsupervisor.PorterContextHandleStatusActive {
+		return nil
+	}
 	return s.enableContextTopic.Publish(ctx, porterContext)
 }
 

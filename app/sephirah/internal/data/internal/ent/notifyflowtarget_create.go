@@ -152,10 +152,10 @@ func (nftc *NotifyFlowTargetCreate) check() error {
 	if _, ok := nftc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyFlowTarget.created_at"`)}
 	}
-	if _, ok := nftc.mutation.NotifyFlowID(); !ok {
+	if len(nftc.mutation.NotifyFlowIDs()) == 0 {
 		return &ValidationError{Name: "notify_flow", err: errors.New(`ent: missing required edge "NotifyFlowTarget.notify_flow"`)}
 	}
-	if _, ok := nftc.mutation.NotifyTargetID(); !ok {
+	if len(nftc.mutation.NotifyTargetIDs()) == 0 {
 		return &ValidationError{Name: "notify_target", err: errors.New(`ent: missing required edge "NotifyFlowTarget.notify_target"`)}
 	}
 	return nil

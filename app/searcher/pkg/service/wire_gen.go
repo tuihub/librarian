@@ -22,12 +22,12 @@ func NewSearcherService(searcher_Data *conf.Searcher_Data, settings *libapp.Sett
 	if err != nil {
 		return nil, nil, err
 	}
-	client, err := data.NewMeili(searcher_Data, settings)
+	serviceManager, err := data.NewMeili(searcher_Data, settings)
 	if err != nil {
 		return nil, nil, err
 	}
 	sonyflake := data.NewSnowFlake()
-	searcherRepo, err := data.NewSearcherRepo(v, client, sonyflake)
+	searcherRepo, err := data.NewSearcherRepo(v, serviceManager, sonyflake)
 	if err != nil {
 		return nil, nil, err
 	}

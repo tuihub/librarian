@@ -238,7 +238,7 @@ func (ntu *NotifyTargetUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
 		}
 	}
-	if _, ok := ntu.mutation.OwnerID(); ntu.mutation.OwnerCleared() && !ok {
+	if ntu.mutation.OwnerCleared() && len(ntu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyTarget.owner"`)
 	}
 	return nil
@@ -643,7 +643,7 @@ func (ntuo *NotifyTargetUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "NotifyTarget.status": %w`, err)}
 		}
 	}
-	if _, ok := ntuo.mutation.OwnerID(); ntuo.mutation.OwnerCleared() && !ok {
+	if ntuo.mutation.OwnerCleared() && len(ntuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyTarget.owner"`)
 	}
 	return nil

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -109,7 +110,7 @@ func (fcaq *FeedConfigActionQuery) QueryFeedActionSet() *FeedActionSetQuery {
 // First returns the first FeedConfigAction entity from the query.
 // Returns a *NotFoundError when no FeedConfigAction was found.
 func (fcaq *FeedConfigActionQuery) First(ctx context.Context) (*FeedConfigAction, error) {
-	nodes, err := fcaq.Limit(1).All(setContextOp(ctx, fcaq.ctx, "First"))
+	nodes, err := fcaq.Limit(1).All(setContextOp(ctx, fcaq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func (fcaq *FeedConfigActionQuery) FirstX(ctx context.Context) *FeedConfigAction
 // Returns a *NotFoundError when no FeedConfigAction ID was found.
 func (fcaq *FeedConfigActionQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fcaq.Limit(1).IDs(setContextOp(ctx, fcaq.ctx, "FirstID")); err != nil {
+	if ids, err = fcaq.Limit(1).IDs(setContextOp(ctx, fcaq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -155,7 +156,7 @@ func (fcaq *FeedConfigActionQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one FeedConfigAction entity is found.
 // Returns a *NotFoundError when no FeedConfigAction entities are found.
 func (fcaq *FeedConfigActionQuery) Only(ctx context.Context) (*FeedConfigAction, error) {
-	nodes, err := fcaq.Limit(2).All(setContextOp(ctx, fcaq.ctx, "Only"))
+	nodes, err := fcaq.Limit(2).All(setContextOp(ctx, fcaq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +184,7 @@ func (fcaq *FeedConfigActionQuery) OnlyX(ctx context.Context) *FeedConfigAction 
 // Returns a *NotFoundError when no entities are found.
 func (fcaq *FeedConfigActionQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = fcaq.Limit(2).IDs(setContextOp(ctx, fcaq.ctx, "OnlyID")); err != nil {
+	if ids, err = fcaq.Limit(2).IDs(setContextOp(ctx, fcaq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -208,7 +209,7 @@ func (fcaq *FeedConfigActionQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of FeedConfigActions.
 func (fcaq *FeedConfigActionQuery) All(ctx context.Context) ([]*FeedConfigAction, error) {
-	ctx = setContextOp(ctx, fcaq.ctx, "All")
+	ctx = setContextOp(ctx, fcaq.ctx, ent.OpQueryAll)
 	if err := fcaq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -230,7 +231,7 @@ func (fcaq *FeedConfigActionQuery) IDs(ctx context.Context) (ids []int, err erro
 	if fcaq.ctx.Unique == nil && fcaq.path != nil {
 		fcaq.Unique(true)
 	}
-	ctx = setContextOp(ctx, fcaq.ctx, "IDs")
+	ctx = setContextOp(ctx, fcaq.ctx, ent.OpQueryIDs)
 	if err = fcaq.Select(feedconfigaction.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -248,7 +249,7 @@ func (fcaq *FeedConfigActionQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (fcaq *FeedConfigActionQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fcaq.ctx, "Count")
+	ctx = setContextOp(ctx, fcaq.ctx, ent.OpQueryCount)
 	if err := fcaq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -266,7 +267,7 @@ func (fcaq *FeedConfigActionQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fcaq *FeedConfigActionQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fcaq.ctx, "Exist")
+	ctx = setContextOp(ctx, fcaq.ctx, ent.OpQueryExist)
 	switch _, err := fcaq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -604,7 +605,7 @@ func (fcagb *FeedConfigActionGroupBy) Aggregate(fns ...AggregateFunc) *FeedConfi
 
 // Scan applies the selector query and scans the result into the given value.
 func (fcagb *FeedConfigActionGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcagb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fcagb.build.ctx, ent.OpQueryGroupBy)
 	if err := fcagb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -652,7 +653,7 @@ func (fcas *FeedConfigActionSelect) Aggregate(fns ...AggregateFunc) *FeedConfigA
 
 // Scan applies the selector query and scans the result into the given value.
 func (fcas *FeedConfigActionSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fcas.ctx, "Select")
+	ctx = setContextOp(ctx, fcas.ctx, ent.OpQuerySelect)
 	if err := fcas.prepareQuery(ctx); err != nil {
 		return err
 	}

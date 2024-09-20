@@ -178,7 +178,7 @@ func (au *AppUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (au *AppUpdate) check() error {
-	if _, ok := au.mutation.OwnerID(); au.mutation.OwnerCleared() && !ok {
+	if au.mutation.OwnerCleared() && len(au.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.owner"`)
 	}
 	return nil
@@ -449,7 +449,7 @@ func (auo *AppUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (auo *AppUpdateOne) check() error {
-	if _, ok := auo.mutation.OwnerID(); auo.mutation.OwnerCleared() && !ok {
+	if auo.mutation.OwnerCleared() && len(auo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "App.owner"`)
 	}
 	return nil

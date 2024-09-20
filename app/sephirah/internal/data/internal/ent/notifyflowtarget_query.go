@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -109,7 +110,7 @@ func (nftq *NotifyFlowTargetQuery) QueryNotifyTarget() *NotifyTargetQuery {
 // First returns the first NotifyFlowTarget entity from the query.
 // Returns a *NotFoundError when no NotifyFlowTarget was found.
 func (nftq *NotifyFlowTargetQuery) First(ctx context.Context) (*NotifyFlowTarget, error) {
-	nodes, err := nftq.Limit(1).All(setContextOp(ctx, nftq.ctx, "First"))
+	nodes, err := nftq.Limit(1).All(setContextOp(ctx, nftq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +133,7 @@ func (nftq *NotifyFlowTargetQuery) FirstX(ctx context.Context) *NotifyFlowTarget
 // Returns a *NotFoundError when no NotifyFlowTarget ID was found.
 func (nftq *NotifyFlowTargetQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nftq.Limit(1).IDs(setContextOp(ctx, nftq.ctx, "FirstID")); err != nil {
+	if ids, err = nftq.Limit(1).IDs(setContextOp(ctx, nftq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -155,7 +156,7 @@ func (nftq *NotifyFlowTargetQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one NotifyFlowTarget entity is found.
 // Returns a *NotFoundError when no NotifyFlowTarget entities are found.
 func (nftq *NotifyFlowTargetQuery) Only(ctx context.Context) (*NotifyFlowTarget, error) {
-	nodes, err := nftq.Limit(2).All(setContextOp(ctx, nftq.ctx, "Only"))
+	nodes, err := nftq.Limit(2).All(setContextOp(ctx, nftq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +184,7 @@ func (nftq *NotifyFlowTargetQuery) OnlyX(ctx context.Context) *NotifyFlowTarget 
 // Returns a *NotFoundError when no entities are found.
 func (nftq *NotifyFlowTargetQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = nftq.Limit(2).IDs(setContextOp(ctx, nftq.ctx, "OnlyID")); err != nil {
+	if ids, err = nftq.Limit(2).IDs(setContextOp(ctx, nftq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -208,7 +209,7 @@ func (nftq *NotifyFlowTargetQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of NotifyFlowTargets.
 func (nftq *NotifyFlowTargetQuery) All(ctx context.Context) ([]*NotifyFlowTarget, error) {
-	ctx = setContextOp(ctx, nftq.ctx, "All")
+	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryAll)
 	if err := nftq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -230,7 +231,7 @@ func (nftq *NotifyFlowTargetQuery) IDs(ctx context.Context) (ids []int, err erro
 	if nftq.ctx.Unique == nil && nftq.path != nil {
 		nftq.Unique(true)
 	}
-	ctx = setContextOp(ctx, nftq.ctx, "IDs")
+	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryIDs)
 	if err = nftq.Select(notifyflowtarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -248,7 +249,7 @@ func (nftq *NotifyFlowTargetQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (nftq *NotifyFlowTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, nftq.ctx, "Count")
+	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryCount)
 	if err := nftq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -266,7 +267,7 @@ func (nftq *NotifyFlowTargetQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (nftq *NotifyFlowTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, nftq.ctx, "Exist")
+	ctx = setContextOp(ctx, nftq.ctx, ent.OpQueryExist)
 	switch _, err := nftq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -604,7 +605,7 @@ func (nftgb *NotifyFlowTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyFlo
 
 // Scan applies the selector query and scans the result into the given value.
 func (nftgb *NotifyFlowTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nftgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, nftgb.build.ctx, ent.OpQueryGroupBy)
 	if err := nftgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -652,7 +653,7 @@ func (nfts *NotifyFlowTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyFlowT
 
 // Scan applies the selector query and scans the result into the given value.
 func (nfts *NotifyFlowTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nfts.ctx, "Select")
+	ctx = setContextOp(ctx, nfts.ctx, ent.OpQuerySelect)
 	if err := nfts.prepareQuery(ctx); err != nil {
 		return err
 	}

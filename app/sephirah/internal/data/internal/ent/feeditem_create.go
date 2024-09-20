@@ -331,7 +331,7 @@ func (fic *FeedItemCreate) check() error {
 	if _, ok := fic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedItem.created_at"`)}
 	}
-	if _, ok := fic.mutation.FeedID(); !ok {
+	if len(fic.mutation.FeedIDs()) == 0 {
 		return &ValidationError{Name: "feed", err: errors.New(`ent: missing required edge "FeedItem.feed"`)}
 	}
 	return nil

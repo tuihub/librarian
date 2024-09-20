@@ -248,7 +248,7 @@ func (nsu *NotifySourceUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nsu *NotifySourceUpdate) check() error {
-	if _, ok := nsu.mutation.OwnerID(); nsu.mutation.OwnerCleared() && !ok {
+	if nsu.mutation.OwnerCleared() && len(nsu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifySource.owner"`)
 	}
 	return nil
@@ -708,7 +708,7 @@ func (nsuo *NotifySourceUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nsuo *NotifySourceUpdateOne) check() error {
-	if _, ok := nsuo.mutation.OwnerID(); nsuo.mutation.OwnerCleared() && !ok {
+	if nsuo.mutation.OwnerCleared() && len(nsuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifySource.owner"`)
 	}
 	return nil

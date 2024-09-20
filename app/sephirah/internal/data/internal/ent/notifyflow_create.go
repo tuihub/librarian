@@ -218,7 +218,7 @@ func (nfc *NotifyFlowCreate) check() error {
 	if _, ok := nfc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyFlow.created_at"`)}
 	}
-	if _, ok := nfc.mutation.OwnerID(); !ok {
+	if len(nfc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifyFlow.owner"`)}
 	}
 	return nil

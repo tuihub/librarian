@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -86,7 +87,7 @@ func (abq *AppBinaryQuery) QueryAppInfo() *AppInfoQuery {
 // First returns the first AppBinary entity from the query.
 // Returns a *NotFoundError when no AppBinary was found.
 func (abq *AppBinaryQuery) First(ctx context.Context) (*AppBinary, error) {
-	nodes, err := abq.Limit(1).All(setContextOp(ctx, abq.ctx, "First"))
+	nodes, err := abq.Limit(1).All(setContextOp(ctx, abq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (abq *AppBinaryQuery) FirstX(ctx context.Context) *AppBinary {
 // Returns a *NotFoundError when no AppBinary ID was found.
 func (abq *AppBinaryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = abq.Limit(1).IDs(setContextOp(ctx, abq.ctx, "FirstID")); err != nil {
+	if ids, err = abq.Limit(1).IDs(setContextOp(ctx, abq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -132,7 +133,7 @@ func (abq *AppBinaryQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one AppBinary entity is found.
 // Returns a *NotFoundError when no AppBinary entities are found.
 func (abq *AppBinaryQuery) Only(ctx context.Context) (*AppBinary, error) {
-	nodes, err := abq.Limit(2).All(setContextOp(ctx, abq.ctx, "Only"))
+	nodes, err := abq.Limit(2).All(setContextOp(ctx, abq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -160,7 +161,7 @@ func (abq *AppBinaryQuery) OnlyX(ctx context.Context) *AppBinary {
 // Returns a *NotFoundError when no entities are found.
 func (abq *AppBinaryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = abq.Limit(2).IDs(setContextOp(ctx, abq.ctx, "OnlyID")); err != nil {
+	if ids, err = abq.Limit(2).IDs(setContextOp(ctx, abq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -185,7 +186,7 @@ func (abq *AppBinaryQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of AppBinaries.
 func (abq *AppBinaryQuery) All(ctx context.Context) ([]*AppBinary, error) {
-	ctx = setContextOp(ctx, abq.ctx, "All")
+	ctx = setContextOp(ctx, abq.ctx, ent.OpQueryAll)
 	if err := abq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -207,7 +208,7 @@ func (abq *AppBinaryQuery) IDs(ctx context.Context) (ids []model.InternalID, err
 	if abq.ctx.Unique == nil && abq.path != nil {
 		abq.Unique(true)
 	}
-	ctx = setContextOp(ctx, abq.ctx, "IDs")
+	ctx = setContextOp(ctx, abq.ctx, ent.OpQueryIDs)
 	if err = abq.Select(appbinary.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -225,7 +226,7 @@ func (abq *AppBinaryQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (abq *AppBinaryQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, abq.ctx, "Count")
+	ctx = setContextOp(ctx, abq.ctx, ent.OpQueryCount)
 	if err := abq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -243,7 +244,7 @@ func (abq *AppBinaryQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (abq *AppBinaryQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, abq.ctx, "Exist")
+	ctx = setContextOp(ctx, abq.ctx, ent.OpQueryExist)
 	switch _, err := abq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -537,7 +538,7 @@ func (abgb *AppBinaryGroupBy) Aggregate(fns ...AggregateFunc) *AppBinaryGroupBy 
 
 // Scan applies the selector query and scans the result into the given value.
 func (abgb *AppBinaryGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, abgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, abgb.build.ctx, ent.OpQueryGroupBy)
 	if err := abgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -585,7 +586,7 @@ func (abs *AppBinarySelect) Aggregate(fns ...AggregateFunc) *AppBinarySelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (abs *AppBinarySelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, abs.ctx, "Select")
+	ctx = setContextOp(ctx, abs.ctx, ent.OpQuerySelect)
 	if err := abs.prepareQuery(ctx); err != nil {
 		return err
 	}

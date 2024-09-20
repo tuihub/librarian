@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -60,7 +61,7 @@ func (airtq *AppInstRunTimeQuery) Order(o ...appinstruntime.OrderOption) *AppIns
 // First returns the first AppInstRunTime entity from the query.
 // Returns a *NotFoundError when no AppInstRunTime was found.
 func (airtq *AppInstRunTimeQuery) First(ctx context.Context) (*AppInstRunTime, error) {
-	nodes, err := airtq.Limit(1).All(setContextOp(ctx, airtq.ctx, "First"))
+	nodes, err := airtq.Limit(1).All(setContextOp(ctx, airtq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (airtq *AppInstRunTimeQuery) FirstX(ctx context.Context) *AppInstRunTime {
 // Returns a *NotFoundError when no AppInstRunTime ID was found.
 func (airtq *AppInstRunTimeQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = airtq.Limit(1).IDs(setContextOp(ctx, airtq.ctx, "FirstID")); err != nil {
+	if ids, err = airtq.Limit(1).IDs(setContextOp(ctx, airtq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -106,7 +107,7 @@ func (airtq *AppInstRunTimeQuery) FirstIDX(ctx context.Context) int {
 // Returns a *NotSingularError when more than one AppInstRunTime entity is found.
 // Returns a *NotFoundError when no AppInstRunTime entities are found.
 func (airtq *AppInstRunTimeQuery) Only(ctx context.Context) (*AppInstRunTime, error) {
-	nodes, err := airtq.Limit(2).All(setContextOp(ctx, airtq.ctx, "Only"))
+	nodes, err := airtq.Limit(2).All(setContextOp(ctx, airtq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +135,7 @@ func (airtq *AppInstRunTimeQuery) OnlyX(ctx context.Context) *AppInstRunTime {
 // Returns a *NotFoundError when no entities are found.
 func (airtq *AppInstRunTimeQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
-	if ids, err = airtq.Limit(2).IDs(setContextOp(ctx, airtq.ctx, "OnlyID")); err != nil {
+	if ids, err = airtq.Limit(2).IDs(setContextOp(ctx, airtq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -159,7 +160,7 @@ func (airtq *AppInstRunTimeQuery) OnlyIDX(ctx context.Context) int {
 
 // All executes the query and returns a list of AppInstRunTimes.
 func (airtq *AppInstRunTimeQuery) All(ctx context.Context) ([]*AppInstRunTime, error) {
-	ctx = setContextOp(ctx, airtq.ctx, "All")
+	ctx = setContextOp(ctx, airtq.ctx, ent.OpQueryAll)
 	if err := airtq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -181,7 +182,7 @@ func (airtq *AppInstRunTimeQuery) IDs(ctx context.Context) (ids []int, err error
 	if airtq.ctx.Unique == nil && airtq.path != nil {
 		airtq.Unique(true)
 	}
-	ctx = setContextOp(ctx, airtq.ctx, "IDs")
+	ctx = setContextOp(ctx, airtq.ctx, ent.OpQueryIDs)
 	if err = airtq.Select(appinstruntime.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -199,7 +200,7 @@ func (airtq *AppInstRunTimeQuery) IDsX(ctx context.Context) []int {
 
 // Count returns the count of the given query.
 func (airtq *AppInstRunTimeQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, airtq.ctx, "Count")
+	ctx = setContextOp(ctx, airtq.ctx, ent.OpQueryCount)
 	if err := airtq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -217,7 +218,7 @@ func (airtq *AppInstRunTimeQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (airtq *AppInstRunTimeQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, airtq.ctx, "Exist")
+	ctx = setContextOp(ctx, airtq.ctx, ent.OpQueryExist)
 	switch _, err := airtq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -449,7 +450,7 @@ func (airtgb *AppInstRunTimeGroupBy) Aggregate(fns ...AggregateFunc) *AppInstRun
 
 // Scan applies the selector query and scans the result into the given value.
 func (airtgb *AppInstRunTimeGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, airtgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, airtgb.build.ctx, ent.OpQueryGroupBy)
 	if err := airtgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -497,7 +498,7 @@ func (airts *AppInstRunTimeSelect) Aggregate(fns ...AggregateFunc) *AppInstRunTi
 
 // Scan applies the selector query and scans the result into the given value.
 func (airts *AppInstRunTimeSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, airts.ctx, "Select")
+	ctx = setContextOp(ctx, airts.ctx, ent.OpQuerySelect)
 	if err := airts.prepareQuery(ctx); err != nil {
 		return err
 	}

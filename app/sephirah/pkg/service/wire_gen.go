@@ -55,7 +55,7 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
 	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
-	supervisorSupervisor, err := supervisor.NewSupervisor(porter, auth, clientPorter, topic, libcacheMap, map2)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, mq, auth, clientPorter, topic, libcacheMap, map2)
 	if err != nil {
 		cleanup()
 		return nil, nil, err

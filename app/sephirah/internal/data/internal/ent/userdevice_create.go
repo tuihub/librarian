@@ -140,10 +140,10 @@ func (udc *UserDeviceCreate) check() error {
 	if _, ok := udc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "UserDevice.created_at"`)}
 	}
-	if _, ok := udc.mutation.DeviceInfoID(); !ok {
+	if len(udc.mutation.DeviceInfoIDs()) == 0 {
 		return &ValidationError{Name: "device_info", err: errors.New(`ent: missing required edge "UserDevice.device_info"`)}
 	}
-	if _, ok := udc.mutation.UserID(); !ok {
+	if len(udc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "UserDevice.user"`)}
 	}
 	return nil

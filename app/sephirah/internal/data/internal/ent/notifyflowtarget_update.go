@@ -169,10 +169,10 @@ func (nftu *NotifyFlowTargetUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nftu *NotifyFlowTargetUpdate) check() error {
-	if _, ok := nftu.mutation.NotifyFlowID(); nftu.mutation.NotifyFlowCleared() && !ok {
+	if nftu.mutation.NotifyFlowCleared() && len(nftu.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_flow"`)
 	}
-	if _, ok := nftu.mutation.NotifyTargetID(); nftu.mutation.NotifyTargetCleared() && !ok {
+	if nftu.mutation.NotifyTargetCleared() && len(nftu.mutation.NotifyTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_target"`)
 	}
 	return nil
@@ -440,10 +440,10 @@ func (nftuo *NotifyFlowTargetUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (nftuo *NotifyFlowTargetUpdateOne) check() error {
-	if _, ok := nftuo.mutation.NotifyFlowID(); nftuo.mutation.NotifyFlowCleared() && !ok {
+	if nftuo.mutation.NotifyFlowCleared() && len(nftuo.mutation.NotifyFlowIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_flow"`)
 	}
-	if _, ok := nftuo.mutation.NotifyTargetID(); nftuo.mutation.NotifyTargetCleared() && !ok {
+	if nftuo.mutation.NotifyTargetCleared() && len(nftuo.mutation.NotifyTargetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "NotifyFlowTarget.notify_target"`)
 	}
 	return nil

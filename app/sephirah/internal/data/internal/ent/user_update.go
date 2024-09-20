@@ -803,7 +803,7 @@ func (uu *UserUpdate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "User.type": %w`, err)}
 		}
 	}
-	if _, ok := uu.mutation.CreatorID(); uu.mutation.CreatorCleared() && !ok {
+	if uu.mutation.CreatorCleared() && len(uu.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "User.creator"`)
 	}
 	return nil
@@ -2436,7 +2436,7 @@ func (uuo *UserUpdateOne) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "User.type": %w`, err)}
 		}
 	}
-	if _, ok := uuo.mutation.CreatorID(); uuo.mutation.CreatorCleared() && !ok {
+	if uuo.mutation.CreatorCleared() && len(uuo.mutation.CreatorIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "User.creator"`)
 	}
 	return nil

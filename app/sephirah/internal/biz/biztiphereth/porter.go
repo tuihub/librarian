@@ -15,6 +15,16 @@ import (
 )
 
 func (t *Tiphereth) updatePorters(ctx context.Context) error {
+	if contexts, err := t.repo.GetEnabledPorterContexts(ctx); err != nil {
+		logger.Errorf("get enabled porter contexts failed: %s", err.Error())
+	} else {
+		for _, c := range contexts {
+			err = t.supv.QueuePorterContext(ctx, *c)
+			if err != nil {
+				logger.Errorf("queue porter context failed: %s", err.Error())
+			}
+		}
+	}
 	newPorters, err := t.supv.RefreshAliveInstances(ctx)
 	if err != nil {
 		logger.Errorf("refresh alive instances failed: %s", err.Error())

@@ -412,7 +412,7 @@ func (fiu *FeedItemUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fiu *FeedItemUpdate) check() error {
-	if _, ok := fiu.mutation.FeedID(); fiu.mutation.FeedCleared() && !ok {
+	if fiu.mutation.FeedCleared() && len(fiu.mutation.FeedIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItem.feed"`)
 	}
 	return nil
@@ -996,7 +996,7 @@ func (fiuo *FeedItemUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fiuo *FeedItemUpdateOne) check() error {
-	if _, ok := fiuo.mutation.FeedID(); fiuo.mutation.FeedCleared() && !ok {
+	if fiuo.mutation.FeedCleared() && len(fiuo.mutation.FeedIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedItem.feed"`)
 	}
 	return nil

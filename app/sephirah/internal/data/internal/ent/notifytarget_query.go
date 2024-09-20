@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -135,7 +136,7 @@ func (ntq *NotifyTargetQuery) QueryNotifyFlowTarget() *NotifyFlowTargetQuery {
 // First returns the first NotifyTarget entity from the query.
 // Returns a *NotFoundError when no NotifyTarget was found.
 func (ntq *NotifyTargetQuery) First(ctx context.Context) (*NotifyTarget, error) {
-	nodes, err := ntq.Limit(1).All(setContextOp(ctx, ntq.ctx, "First"))
+	nodes, err := ntq.Limit(1).All(setContextOp(ctx, ntq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -158,7 +159,7 @@ func (ntq *NotifyTargetQuery) FirstX(ctx context.Context) *NotifyTarget {
 // Returns a *NotFoundError when no NotifyTarget ID was found.
 func (ntq *NotifyTargetQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ntq.Limit(1).IDs(setContextOp(ctx, ntq.ctx, "FirstID")); err != nil {
+	if ids, err = ntq.Limit(1).IDs(setContextOp(ctx, ntq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -181,7 +182,7 @@ func (ntq *NotifyTargetQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one NotifyTarget entity is found.
 // Returns a *NotFoundError when no NotifyTarget entities are found.
 func (ntq *NotifyTargetQuery) Only(ctx context.Context) (*NotifyTarget, error) {
-	nodes, err := ntq.Limit(2).All(setContextOp(ctx, ntq.ctx, "Only"))
+	nodes, err := ntq.Limit(2).All(setContextOp(ctx, ntq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -209,7 +210,7 @@ func (ntq *NotifyTargetQuery) OnlyX(ctx context.Context) *NotifyTarget {
 // Returns a *NotFoundError when no entities are found.
 func (ntq *NotifyTargetQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = ntq.Limit(2).IDs(setContextOp(ctx, ntq.ctx, "OnlyID")); err != nil {
+	if ids, err = ntq.Limit(2).IDs(setContextOp(ctx, ntq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -234,7 +235,7 @@ func (ntq *NotifyTargetQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of NotifyTargets.
 func (ntq *NotifyTargetQuery) All(ctx context.Context) ([]*NotifyTarget, error) {
-	ctx = setContextOp(ctx, ntq.ctx, "All")
+	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryAll)
 	if err := ntq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -256,7 +257,7 @@ func (ntq *NotifyTargetQuery) IDs(ctx context.Context) (ids []model.InternalID, 
 	if ntq.ctx.Unique == nil && ntq.path != nil {
 		ntq.Unique(true)
 	}
-	ctx = setContextOp(ctx, ntq.ctx, "IDs")
+	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryIDs)
 	if err = ntq.Select(notifytarget.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -274,7 +275,7 @@ func (ntq *NotifyTargetQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (ntq *NotifyTargetQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, ntq.ctx, "Count")
+	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryCount)
 	if err := ntq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -292,7 +293,7 @@ func (ntq *NotifyTargetQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (ntq *NotifyTargetQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, ntq.ctx, "Exist")
+	ctx = setContextOp(ctx, ntq.ctx, ent.OpQueryExist)
 	switch _, err := ntq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -719,7 +720,7 @@ func (ntgb *NotifyTargetGroupBy) Aggregate(fns ...AggregateFunc) *NotifyTargetGr
 
 // Scan applies the selector query and scans the result into the given value.
 func (ntgb *NotifyTargetGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, ntgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, ntgb.build.ctx, ent.OpQueryGroupBy)
 	if err := ntgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -767,7 +768,7 @@ func (nts *NotifyTargetSelect) Aggregate(fns ...AggregateFunc) *NotifyTargetSele
 
 // Scan applies the selector query and scans the result into the given value.
 func (nts *NotifyTargetSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, nts.ctx, "Select")
+	ctx = setContextOp(ctx, nts.ctx, ent.OpQuerySelect)
 	if err := nts.prepareQuery(ctx); err != nil {
 		return err
 	}

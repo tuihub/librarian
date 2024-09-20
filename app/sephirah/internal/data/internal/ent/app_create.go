@@ -169,7 +169,7 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
 	}
-	if _, ok := ac.mutation.OwnerID(); !ok {
+	if len(ac.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "App.owner"`)}
 	}
 	return nil

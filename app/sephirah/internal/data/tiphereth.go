@@ -545,3 +545,15 @@ func (t tipherethRepo) FetchPorterContext(
 	}
 	return converter.ToBizPorterContext(res), nil
 }
+
+func (t tipherethRepo) GetEnabledPorterContexts(
+	ctx context.Context,
+) ([]*modelsupervisor.PorterContext, error) {
+	pc, err := t.data.db.PorterContext.Query().Where(
+		portercontext.StatusEQ(portercontext.StatusActive),
+	).All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizPorterContextList(pc), nil
+}

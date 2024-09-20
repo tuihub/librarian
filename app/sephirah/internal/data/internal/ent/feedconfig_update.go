@@ -425,7 +425,7 @@ func (fcu *FeedConfigUpdate) check() error {
 			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
 		}
 	}
-	if _, ok := fcu.mutation.OwnerID(); fcu.mutation.OwnerCleared() && !ok {
+	if fcu.mutation.OwnerCleared() && len(fcu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil
@@ -1113,7 +1113,7 @@ func (fcuo *FeedConfigUpdateOne) check() error {
 			return &ValidationError{Name: "latest_pull_status", err: fmt.Errorf(`ent: validator failed for field "FeedConfig.latest_pull_status": %w`, err)}
 		}
 	}
-	if _, ok := fcuo.mutation.OwnerID(); fcuo.mutation.OwnerCleared() && !ok {
+	if fcuo.mutation.OwnerCleared() && len(fcuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfig.owner"`)
 	}
 	return nil

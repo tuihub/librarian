@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -134,7 +135,7 @@ func (diq *DeviceInfoQuery) QueryUserDevice() *UserDeviceQuery {
 // First returns the first DeviceInfo entity from the query.
 // Returns a *NotFoundError when no DeviceInfo was found.
 func (diq *DeviceInfoQuery) First(ctx context.Context) (*DeviceInfo, error) {
-	nodes, err := diq.Limit(1).All(setContextOp(ctx, diq.ctx, "First"))
+	nodes, err := diq.Limit(1).All(setContextOp(ctx, diq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +158,7 @@ func (diq *DeviceInfoQuery) FirstX(ctx context.Context) *DeviceInfo {
 // Returns a *NotFoundError when no DeviceInfo ID was found.
 func (diq *DeviceInfoQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = diq.Limit(1).IDs(setContextOp(ctx, diq.ctx, "FirstID")); err != nil {
+	if ids, err = diq.Limit(1).IDs(setContextOp(ctx, diq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
@@ -180,7 +181,7 @@ func (diq *DeviceInfoQuery) FirstIDX(ctx context.Context) model.InternalID {
 // Returns a *NotSingularError when more than one DeviceInfo entity is found.
 // Returns a *NotFoundError when no DeviceInfo entities are found.
 func (diq *DeviceInfoQuery) Only(ctx context.Context) (*DeviceInfo, error) {
-	nodes, err := diq.Limit(2).All(setContextOp(ctx, diq.ctx, "Only"))
+	nodes, err := diq.Limit(2).All(setContextOp(ctx, diq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -208,7 +209,7 @@ func (diq *DeviceInfoQuery) OnlyX(ctx context.Context) *DeviceInfo {
 // Returns a *NotFoundError when no entities are found.
 func (diq *DeviceInfoQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
 	var ids []model.InternalID
-	if ids, err = diq.Limit(2).IDs(setContextOp(ctx, diq.ctx, "OnlyID")); err != nil {
+	if ids, err = diq.Limit(2).IDs(setContextOp(ctx, diq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
 	switch len(ids) {
@@ -233,7 +234,7 @@ func (diq *DeviceInfoQuery) OnlyIDX(ctx context.Context) model.InternalID {
 
 // All executes the query and returns a list of DeviceInfos.
 func (diq *DeviceInfoQuery) All(ctx context.Context) ([]*DeviceInfo, error) {
-	ctx = setContextOp(ctx, diq.ctx, "All")
+	ctx = setContextOp(ctx, diq.ctx, ent.OpQueryAll)
 	if err := diq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -255,7 +256,7 @@ func (diq *DeviceInfoQuery) IDs(ctx context.Context) (ids []model.InternalID, er
 	if diq.ctx.Unique == nil && diq.path != nil {
 		diq.Unique(true)
 	}
-	ctx = setContextOp(ctx, diq.ctx, "IDs")
+	ctx = setContextOp(ctx, diq.ctx, ent.OpQueryIDs)
 	if err = diq.Select(deviceinfo.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -273,7 +274,7 @@ func (diq *DeviceInfoQuery) IDsX(ctx context.Context) []model.InternalID {
 
 // Count returns the count of the given query.
 func (diq *DeviceInfoQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, diq.ctx, "Count")
+	ctx = setContextOp(ctx, diq.ctx, ent.OpQueryCount)
 	if err := diq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -291,7 +292,7 @@ func (diq *DeviceInfoQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (diq *DeviceInfoQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, diq.ctx, "Exist")
+	ctx = setContextOp(ctx, diq.ctx, ent.OpQueryExist)
 	switch _, err := diq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -709,7 +710,7 @@ func (digb *DeviceInfoGroupBy) Aggregate(fns ...AggregateFunc) *DeviceInfoGroupB
 
 // Scan applies the selector query and scans the result into the given value.
 func (digb *DeviceInfoGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, digb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, digb.build.ctx, ent.OpQueryGroupBy)
 	if err := digb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -757,7 +758,7 @@ func (dis *DeviceInfoSelect) Aggregate(fns ...AggregateFunc) *DeviceInfoSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (dis *DeviceInfoSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, dis.ctx, "Select")
+	ctx = setContextOp(ctx, dis.ctx, ent.OpQuerySelect)
 	if err := dis.prepareQuery(ctx); err != nil {
 		return err
 	}

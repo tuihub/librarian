@@ -189,7 +189,7 @@ func (fasu *FeedActionSetUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fasu *FeedActionSetUpdate) check() error {
-	if _, ok := fasu.mutation.OwnerID(); fasu.mutation.OwnerCleared() && !ok {
+	if fasu.mutation.OwnerCleared() && len(fasu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedActionSet.owner"`)
 	}
 	return nil
@@ -490,7 +490,7 @@ func (fasuo *FeedActionSetUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fasuo *FeedActionSetUpdateOne) check() error {
-	if _, ok := fasuo.mutation.OwnerID(); fasuo.mutation.OwnerCleared() && !ok {
+	if fasuo.mutation.OwnerCleared() && len(fasuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedActionSet.owner"`)
 	}
 	return nil

@@ -345,7 +345,7 @@ func (fcc *FeedConfigCreate) check() error {
 	if _, ok := fcc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "FeedConfig.created_at"`)}
 	}
-	if _, ok := fcc.mutation.OwnerID(); !ok {
+	if len(fcc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "FeedConfig.owner"`)}
 	}
 	return nil

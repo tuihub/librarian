@@ -41,7 +41,6 @@ type TeeOption struct {
 func NewTeeWithRotate(teeOptions []TeeOption, zapOptions ...zap.Option) *zap.Logger {
 	var cores []zapcore.Core
 	cfg := zap.NewProductionConfig()
-	cfg.EncoderConfig.MessageKey = ""
 	cfg.EncoderConfig.TimeKey = ""
 
 	for _, opt := range teeOptions {

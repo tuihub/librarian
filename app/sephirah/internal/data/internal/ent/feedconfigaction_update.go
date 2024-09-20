@@ -165,10 +165,10 @@ func (fcau *FeedConfigActionUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcau *FeedConfigActionUpdate) check() error {
-	if _, ok := fcau.mutation.FeedConfigID(); fcau.mutation.FeedConfigCleared() && !ok {
+	if fcau.mutation.FeedConfigCleared() && len(fcau.mutation.FeedConfigIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfigAction.feed_config"`)
 	}
-	if _, ok := fcau.mutation.FeedActionSetID(); fcau.mutation.FeedActionSetCleared() && !ok {
+	if fcau.mutation.FeedActionSetCleared() && len(fcau.mutation.FeedActionSetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfigAction.feed_action_set"`)
 	}
 	return nil
@@ -423,10 +423,10 @@ func (fcauo *FeedConfigActionUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fcauo *FeedConfigActionUpdateOne) check() error {
-	if _, ok := fcauo.mutation.FeedConfigID(); fcauo.mutation.FeedConfigCleared() && !ok {
+	if fcauo.mutation.FeedConfigCleared() && len(fcauo.mutation.FeedConfigIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfigAction.feed_config"`)
 	}
-	if _, ok := fcauo.mutation.FeedActionSetID(); fcauo.mutation.FeedActionSetCleared() && !ok {
+	if fcauo.mutation.FeedActionSetCleared() && len(fcauo.mutation.FeedActionSetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "FeedConfigAction.feed_action_set"`)
 	}
 	return nil

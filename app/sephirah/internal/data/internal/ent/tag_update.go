@@ -166,7 +166,7 @@ func (tu *TagUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (tu *TagUpdate) check() error {
-	if _, ok := tu.mutation.OwnerID(); tu.mutation.OwnerCleared() && !ok {
+	if tu.mutation.OwnerCleared() && len(tu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Tag.owner"`)
 	}
 	return nil
@@ -397,7 +397,7 @@ func (tuo *TagUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (tuo *TagUpdateOne) check() error {
-	if _, ok := tuo.mutation.OwnerID(); tuo.mutation.OwnerCleared() && !ok {
+	if tuo.mutation.OwnerCleared() && len(tuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Tag.owner"`)
 	}
 	return nil

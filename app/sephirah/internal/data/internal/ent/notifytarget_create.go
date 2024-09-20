@@ -196,7 +196,7 @@ func (ntc *NotifyTargetCreate) check() error {
 	if _, ok := ntc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "NotifyTarget.created_at"`)}
 	}
-	if _, ok := ntc.mutation.OwnerID(); !ok {
+	if len(ntc.mutation.OwnerIDs()) == 0 {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "NotifyTarget.owner"`)}
 	}
 	return nil

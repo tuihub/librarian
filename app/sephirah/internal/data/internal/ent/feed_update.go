@@ -259,7 +259,7 @@ func (fu *FeedUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fu *FeedUpdate) check() error {
-	if _, ok := fu.mutation.ConfigID(); fu.mutation.ConfigCleared() && !ok {
+	if fu.mutation.ConfigCleared() && len(fu.mutation.ConfigIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Feed.config"`)
 	}
 	return nil
@@ -657,7 +657,7 @@ func (fuo *FeedUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (fuo *FeedUpdateOne) check() error {
-	if _, ok := fuo.mutation.ConfigID(); fuo.mutation.ConfigCleared() && !ok {
+	if fuo.mutation.ConfigCleared() && len(fuo.mutation.ConfigIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Feed.config"`)
 	}
 	return nil
