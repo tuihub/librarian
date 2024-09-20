@@ -24,17 +24,16 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	t        *biztiphereth.Tiphereth
-	g        *bizgebura.Gebura
-	b        *bizbinah.Binah
-	y        *bizyesod.Yesod
-	n        *biznetzach.Netzach
-	c        *bizchesed.Chesed
-	s        *supervisor.Supervisor
-	app      *libapp.Settings
-	auth     *libauth.Auth
-	authFunc func(context.Context) (context.Context, error)
-	info     *pb.ServerInstanceSummary
+	t    *biztiphereth.Tiphereth
+	g    *bizgebura.Gebura
+	b    *bizbinah.Binah
+	y    *bizyesod.Yesod
+	n    *biznetzach.Netzach
+	c    *bizchesed.Chesed
+	s    *supervisor.Supervisor
+	app  *libapp.Settings
+	auth *libauth.Auth
+	info *pb.ServerInstanceSummary
 }
 
 func NewLibrarianSephirahServiceService(
@@ -48,7 +47,6 @@ func NewLibrarianSephirahServiceService(
 	s *supervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
-	authFunc func(context.Context) (context.Context, error),
 	config *conf.SephirahServer,
 ) pb.LibrarianSephirahServiceServer {
 	t.CreateConfiguredAdmin()
@@ -60,17 +58,16 @@ func NewLibrarianSephirahServiceService(
 	}
 	res := &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
-		t:        t,
-		g:        g,
-		b:        b,
-		y:        y,
-		n:        n,
-		c:        c,
-		s:        s,
-		app:      app,
-		auth:     auth,
-		authFunc: authFunc,
-		info:     nil,
+		t:    t,
+		g:    g,
+		b:    b,
+		y:    y,
+		n:    n,
+		c:    c,
+		s:    s,
+		app:  app,
+		auth: auth,
+		info: nil,
 	}
 	res.info = &pb.ServerInstanceSummary{
 		Name:          config.GetInfo().GetName(),

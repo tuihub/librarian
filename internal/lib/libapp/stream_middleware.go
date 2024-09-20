@@ -9,6 +9,7 @@ import (
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 )
 
+// NewStreamMiddlewareJwt https://github.com/go-kratos/kratos/issues/2617
 func NewStreamMiddlewareJwt(auth *libauth.Auth) func(ctx context.Context) (context.Context, error) {
 	m := jwt.Server(
 		auth.KeyFunc(libauth.ClaimsTypeUploadToken),
@@ -18,7 +19,7 @@ func NewStreamMiddlewareJwt(auth *libauth.Auth) func(ctx context.Context) (conte
 	return func(ctx context.Context) (context.Context, error) {
 		resp := context.Background()
 		_, err := (m(func(ctx context.Context, _ interface{}) (interface{}, error) {
-			resp = ctx
+			resp = ctx //nolint:fatcontext // no need
 			return nil, nil
 		}))(ctx, nil)
 		if err != nil {
