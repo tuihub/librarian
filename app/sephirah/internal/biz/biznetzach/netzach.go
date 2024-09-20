@@ -165,6 +165,18 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
+	if len(flow.Sources) > 0 {
+		for _, source := range flow.Sources {
+			err = n.notifySourceCache.Delete(ctx, source.SourceID)
+			if err != nil {
+				logger.Errorf("failed to delete cache %s", err.Error())
+			}
+		}
+	}
+	err = n.notifyFlowCache.Delete(ctx, flow.ID)
+	if err != nil {
+		logger.Errorf("failed to delete cache %s", err.Error())
+	}
 	return flow.ID, nil
 }
 

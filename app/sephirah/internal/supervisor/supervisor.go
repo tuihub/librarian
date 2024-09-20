@@ -348,28 +348,35 @@ func (s *Supervisor) updateControllers(
 		ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
 		ctl.LastHeartbeat = now
 	}
-	if resp == nil || resp.GetEnablesSummary() == nil {
+	if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive && resp == nil {
 		return nil
 	}
+	var reQueueContext []model.InternalID
 	if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
 		onlyLast, _ := libtype.DiffSlices(
 			ctl.LastEnabledContext,
 			converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds()),
 		)
+		reQueueContext = onlyLast
 		ctl.LastEnabledContext = converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds())
-		for _, id := range onlyLast {
-			ic, ok := s.instanceContextController.Load(id)
-			if !ok {
-				continue
-			}
-			ic.HandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
-			ic.HandleStatusMessage = ""
-			ic.HandlerAddress = ""
-			s.instanceContextController.Store(id, ic)
-			err := s.QueuePorterContext(ctx, ic.PorterContext)
-			if err != nil {
-				return err
-			}
+	} else {
+		reQueueContext = ctl.LastEnabledContext
+		if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusDowngraded {
+			ctl.LastEnabledContext = nil
+		}
+	}
+	for _, id := range reQueueContext {
+		ic, ok := s.instanceContextController.Load(id)
+		if !ok {
+			continue
+		}
+		ic.HandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
+		ic.HandleStatusMessage = ""
+		ic.HandlerAddress = ""
+		s.instanceContextController.Store(id, ic)
+		err := s.QueuePorterContext(ctx, ic.PorterContext)
+		if err != nil {
+			return err
 		}
 	}
 	return nil

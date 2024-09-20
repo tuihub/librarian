@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflowtarget"
-	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
@@ -264,7 +263,7 @@ func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*
 
 func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
 	ids, err := n.data.db.NotifyFlow.Query().Where(
-		notifyflow.HasNotifySourceWith(notifysource.FeedConfigIDEQ(id)),
+		notifyflow.HasNotifyFlowSourceWith(notifyflowsource.NotifySourceIDEQ(id)),
 	).IDs(ctx)
 	if err != nil {
 		return nil, err
