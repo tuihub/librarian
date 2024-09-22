@@ -49,6 +49,8 @@ type PorterFeatureSummary struct {
 	FeedSources        []*FeatureFlag `json:"feed_sources"`
 	NotifyDestinations []*FeatureFlag `json:"notify_destinations"`
 	FeedItemActions    []*FeatureFlag `json:"feed_item_actions"`
+	FeedGetters        []*FeatureFlag `json:"feed_getters"`
+	FeedSetters        []*FeatureFlag `json:"feed_setters"`
 }
 
 type FeatureFlag struct {
@@ -76,6 +78,8 @@ type ServerFeatureSummary struct {
 	FeedSources        []*FeatureFlag
 	NotifyDestinations []*FeatureFlag
 	FeedItemActions    []*FeatureFlag
+	FeedSetters        []*FeatureFlag
+	FeedGetters        []*FeatureFlag
 }
 
 type PorterConnectionStatus int
@@ -122,6 +126,7 @@ type PorterGroup struct {
 	GlobalName        string
 	Regions           []string
 	ContextJSONSchema string
+	FeatureSummary    *PorterFeatureSummary
 }
 
 type ServerFeatureSummaryMap struct {

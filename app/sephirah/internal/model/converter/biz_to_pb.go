@@ -31,7 +31,7 @@ import (
 type toPBConverter interface { //nolint:unused // used by generator
 	ToPBTimeRange(*model.TimeRange) *librarian.TimeRange
 	ToPBInternalIDList([]model.InternalID) []*librarian.InternalID
-	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *pb.ServerFeatureSummary
+	ToPBServerFeatureSummary(*modelsupervisor.ServerFeatureSummary) *librarian.FeatureSummary
 	ToPBFeatureFlag(*modelsupervisor.FeatureFlag) *librarian.FeatureFlag
 	ToPBFeatureFlagList([]*modelsupervisor.FeatureFlag) []*librarian.FeatureFlag
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
@@ -73,7 +73,6 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBAccount(*modeltiphereth.Account) *librarian.Account
 	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
 
-	// goverter:ignore FeatureSummary
 	// goverter:autoMap PorterInstance
 	ToPBPorter(*modelsupervisor.PorterInstanceController) *pb.Porter
 	ToPBPorterList([]*modelsupervisor.PorterInstanceController) []*pb.Porter

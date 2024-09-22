@@ -791,6 +791,18 @@ func pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary(
 				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
+		if (*source).FeedGetters != nil {
+			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedGetters))
+			for n := 0; n < len((*source).FeedGetters); n++ {
+				modelsupervisorPorterFeatureSummary.FeedGetters[n] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedGetters[n])
+			}
+		}
+		if (*source).FeedSetters != nil {
+			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSetters))
+			for o := 0; o < len((*source).FeedSetters); o++ {
+				modelsupervisorPorterFeatureSummary.FeedSetters[o] = pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag((*source).FeedSetters[o])
+			}
+		}
 		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
 	}
 	return pModelsupervisorPorterFeatureSummary

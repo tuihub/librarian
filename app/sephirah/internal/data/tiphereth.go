@@ -524,6 +524,7 @@ func (t tipherethRepo) ListPorterGroups(
 				GlobalName:        p.GlobalName,
 				Regions:           []string{p.Region},
 				ContextJSONSchema: p.ContextJSONSchema,
+				FeatureSummary:    p.FeatureSummary,
 			}
 		} else {
 			pgm[p.GlobalName].Regions = append(pgm[p.GlobalName].Regions, p.Region)

@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -33,7 +32,7 @@ import (
 // goverter:extend DurationPBToDuration
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
-	ToBizPorterFeatureSummary(*porter.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary
+	ToBizPorterFeatureSummary(*librarian.FeatureSummary) *modelsupervisor.PorterFeatureSummary
 	ToBizFeatureFlag(*librarian.FeatureFlag) *modelsupervisor.FeatureFlag
 	ToBizFeatureRequest(*librarian.FeatureRequest) *modelsupervisor.FeatureRequest
 	// goverter:enum:unknown AccountAppRelationTypeUnspecified

@@ -184,6 +184,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	s.instanceController.Range(func(address string, ctl modelsupervisor.PorterInstanceController) bool {
 		var ins *modelsupervisor.PorterInstance
 		if ins, err = s.instanceCache.Get(ctx, address); err != nil ||
+			ins == nil ||
 			ins.Status != modeltiphereth.UserStatusActive {
 			return true
 		}

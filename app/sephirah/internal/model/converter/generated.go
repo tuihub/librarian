@@ -13,7 +13,6 @@ import (
 	libauth "github.com/tuihub/librarian/internal/lib/libauth"
 	model "github.com/tuihub/librarian/internal/model"
 	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
-	v12 "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -556,7 +555,7 @@ func ToBizPorterContextStatus(source v11.PorterContextStatus) modelsupervisor.Po
 	}
 	return modelsupervisorPorterContextStatus
 }
-func ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modelsupervisor.PorterFeatureSummary {
+func ToBizPorterFeatureSummary(source *v1.FeatureSummary) *modelsupervisor.PorterFeatureSummary {
 	var pModelsupervisorPorterFeatureSummary *modelsupervisor.PorterFeatureSummary
 	if source != nil {
 		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
@@ -588,6 +587,18 @@ func ToBizPorterFeatureSummary(source *v12.PorterFeatureSummary) *modelsuperviso
 			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*modelsupervisor.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
 				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = ToBizFeatureFlag((*source).FeedItemActions[m])
+			}
+		}
+		if (*source).FeedGetters != nil {
+			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedGetters))
+			for n := 0; n < len((*source).FeedGetters); n++ {
+				modelsupervisorPorterFeatureSummary.FeedGetters[n] = ToBizFeatureFlag((*source).FeedGetters[n])
+			}
+		}
+		if (*source).FeedSetters != nil {
+			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSetters))
+			for o := 0; o < len((*source).FeedSetters); o++ {
+				modelsupervisorPorterFeatureSummary.FeedSetters[o] = ToBizFeatureFlag((*source).FeedSetters[o])
 			}
 		}
 		pModelsupervisorPorterFeatureSummary = &modelsupervisorPorterFeatureSummary
@@ -1498,6 +1509,7 @@ func ToPBPorterGroup(source *modelsupervisor.PorterGroup) *v11.PorterGroup {
 		}
 		pString := (*source).ContextJSONSchema
 		v1PorterGroup.ContextJsonSchema = &pString
+		v1PorterGroup.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).FeatureSummary)
 		pV1PorterGroup = &v1PorterGroup
 	}
 	return pV1PorterGroup
@@ -1522,18 +1534,20 @@ func ToPBPorterList(source []*modelsupervisor.PorterInstanceController) []*v11.P
 	}
 	return pV1PorterList
 }
-func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v11.ServerFeatureSummary {
-	var pV1ServerFeatureSummary *v11.ServerFeatureSummary
+func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v1.FeatureSummary {
+	var pV1FeatureSummary *v1.FeatureSummary
 	if source != nil {
-		var v1ServerFeatureSummary v11.ServerFeatureSummary
-		v1ServerFeatureSummary.AccountPlatforms = ToPBFeatureFlagList((*source).AccountPlatforms)
-		v1ServerFeatureSummary.AppInfoSources = ToPBFeatureFlagList((*source).AppInfoSources)
-		v1ServerFeatureSummary.FeedSources = ToPBFeatureFlagList((*source).FeedSources)
-		v1ServerFeatureSummary.NotifyDestinations = ToPBFeatureFlagList((*source).NotifyDestinations)
-		v1ServerFeatureSummary.FeedItemActions = ToPBFeatureFlagList((*source).FeedItemActions)
-		pV1ServerFeatureSummary = &v1ServerFeatureSummary
+		var v1FeatureSummary v1.FeatureSummary
+		v1FeatureSummary.AccountPlatforms = ToPBFeatureFlagList((*source).AccountPlatforms)
+		v1FeatureSummary.AppInfoSources = ToPBFeatureFlagList((*source).AppInfoSources)
+		v1FeatureSummary.FeedSources = ToPBFeatureFlagList((*source).FeedSources)
+		v1FeatureSummary.NotifyDestinations = ToPBFeatureFlagList((*source).NotifyDestinations)
+		v1FeatureSummary.FeedItemActions = ToPBFeatureFlagList((*source).FeedItemActions)
+		v1FeatureSummary.FeedSetters = ToPBFeatureFlagList((*source).FeedSetters)
+		v1FeatureSummary.FeedGetters = ToPBFeatureFlagList((*source).FeedGetters)
+		pV1FeatureSummary = &v1FeatureSummary
 	}
-	return pV1ServerFeatureSummary
+	return pV1FeatureSummary
 }
 func ToPBSystemNotification(source *modelnetzach.SystemNotification) *v11.SystemNotification {
 	var pV1SystemNotification *v11.SystemNotification
@@ -1761,4 +1775,19 @@ func pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary(source *modelsu
 		pV1PorterBinarySummary = &v1PorterBinarySummary
 	}
 	return pV1PorterBinarySummary
+}
+func pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary(source *modelsupervisor.PorterFeatureSummary) *v1.FeatureSummary {
+	var pV1FeatureSummary *v1.FeatureSummary
+	if source != nil {
+		var v1FeatureSummary v1.FeatureSummary
+		v1FeatureSummary.AccountPlatforms = ToPBFeatureFlagList((*source).AccountPlatforms)
+		v1FeatureSummary.AppInfoSources = ToPBFeatureFlagList((*source).AppInfoSources)
+		v1FeatureSummary.FeedSources = ToPBFeatureFlagList((*source).FeedSources)
+		v1FeatureSummary.NotifyDestinations = ToPBFeatureFlagList((*source).NotifyDestinations)
+		v1FeatureSummary.FeedItemActions = ToPBFeatureFlagList((*source).FeedItemActions)
+		v1FeatureSummary.FeedSetters = ToPBFeatureFlagList((*source).FeedSetters)
+		v1FeatureSummary.FeedGetters = ToPBFeatureFlagList((*source).FeedGetters)
+		pV1FeatureSummary = &v1FeatureSummary
+	}
+	return pV1FeatureSummary
 }
