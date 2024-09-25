@@ -38,21 +38,22 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	if err != nil {
 		return nil, nil, err
 	}
-	builtInObserver, err := libobserve.NewBuiltInObserver()
+	entClient, cleanup, err := data.NewSQLClient(database, settings)
 	if err != nil {
-		return nil, nil, err
-	}
-	libmqMQ, cleanup, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
-	if err != nil {
-		return nil, nil, err
-	}
-	entClient, cleanup2, err := data.NewSQLClient(database, settings)
-	if err != nil {
-		cleanup()
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	angelaRepo := data.NewAngelaRepo(dataData)
+	builtInObserver, err := libobserve.NewBuiltInObserver()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	libmqMQ, cleanup2, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
 	if err != nil {
 		cleanup2()
@@ -108,7 +109,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map4, map5, topic5)
 	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
 	topic8 := bizangela.NewPullFeedTopic(angelaBase, topic7, topic)
-	angela, err := bizangela.NewAngela(libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
+	angela, err := bizangela.NewAngela(angelaBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
 	if err != nil {
 		cleanup2()
 		cleanup()

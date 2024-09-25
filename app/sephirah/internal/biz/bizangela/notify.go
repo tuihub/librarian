@@ -52,6 +52,13 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 				if len(messages) == 0 {
 					continue
 				}
+				itemIDs := make([]model.InternalID, 0, len(messages))
+				for _, item := range messages {
+					if item == nil {
+						continue
+					}
+					itemIDs = append(itemIDs, item.ID)
+				}
 				for _, target := range flow.Targets {
 					if target == nil {
 						continue
@@ -60,6 +67,10 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 						Target:   *target,
 						Messages: applyFilter(messages, target.Filter.IncludeKeywords, target.Filter.ExcludeKeywords),
 					})
+					if err != nil {
+						return err
+					}
+					err = a.repo.AddFeedItemsToCollection(ctx, flowID, itemIDs)
 					if err != nil {
 						return err
 					}

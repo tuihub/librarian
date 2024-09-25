@@ -36,7 +36,7 @@ require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/sony/sonyflake v1.2.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tuihub/protos v0.4.22
+	github.com/tuihub/protos v0.4.23
 	github.com/zhihu/norm v0.1.11
 	go.opentelemetry.io/otel v1.29.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.5.0

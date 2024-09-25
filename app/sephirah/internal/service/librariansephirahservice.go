@@ -24,6 +24,7 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
+	a    *bizangela.Angela
 	t    *biztiphereth.Tiphereth
 	g    *bizgebura.Gebura
 	b    *bizbinah.Binah
@@ -37,7 +38,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
-	_ *bizangela.Angela,
+	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,
@@ -58,6 +59,7 @@ func NewLibrarianSephirahServiceService(
 	}
 	res := &LibrarianSephirahServiceService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
+		a:    a,
 		t:    t,
 		g:    g,
 		b:    b,

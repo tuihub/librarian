@@ -138,6 +138,17 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 		if err != nil {
 			return err
 		}
+		// For save flow items
+		err = tx.FeedItemCollection.Create().
+			SetOwnerID(userID).
+			SetID(f.ID).
+			SetName(f.Name).
+			SetDescription(f.Description).
+			SetCategory("").
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	if err != nil {

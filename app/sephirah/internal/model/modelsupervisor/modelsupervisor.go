@@ -54,11 +54,12 @@ type PorterFeatureSummary struct {
 }
 
 type FeatureFlag struct {
-	ID               string `json:"id"`
-	Name             string `json:"name"`
-	Description      string `json:"description"`
-	ConfigJSONSchema string `json:"config_json_schema"`
-	RequireContext   bool   `json:"require_context"`
+	ID               string            `json:"id"`
+	Name             string            `json:"name"`
+	Description      string            `json:"description"`
+	ConfigJSONSchema string            `json:"config_json_schema"`
+	RequireContext   bool              `json:"require_context"`
+	Extra            map[string]string `json:"extra"`
 }
 
 func (f *FeatureFlag) Match(request *FeatureRequest) bool {

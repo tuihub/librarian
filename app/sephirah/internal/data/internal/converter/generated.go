@@ -741,6 +741,12 @@ func pModelsupervisorFeatureFlagToPModelsupervisorFeatureFlag(source *modelsuper
 		modelsupervisorFeatureFlag.Description = (*source).Description
 		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJSONSchema
 		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
+		if (*source).Extra != nil {
+			modelsupervisorFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
+			for key, value := range (*source).Extra {
+				modelsupervisorFeatureFlag.Extra[key] = value
+			}
+		}
 		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
 	}
 	return pModelsupervisorFeatureFlag

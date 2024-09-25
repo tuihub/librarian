@@ -14,7 +14,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
+	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/model"
@@ -314,4 +316,44 @@ func (a *angelaRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([
 		return nil, err
 	}
 	return converter.ToBizFeedActionSetList(actions), nil
+}
+
+func (a *angelaRepo) GetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
+	var fr *modelsupervisor.FeatureRequest
+	var it []*modelfeed.Item
+	err := a.data.WithTx(ctx, func(tx *ent.Tx) error {
+		target, err := tx.NotifyTarget.Get(ctx, id)
+		if err != nil {
+			return err
+		}
+		fr = target.Destination
+		ids, err := target.QueryNotifyFlow().IDs(ctx)
+		if err != nil {
+			return err
+		}
+		items, err := tx.FeedItem.Query().Where(
+			feeditem.HasFeedItemCollectionWith(
+				feeditemcollection.IDIn(ids...),
+			),
+		).Offset(paging.ToOffset()).Limit(paging.ToLimit()).All(ctx)
+		if err != nil {
+			return err
+		}
+		it = converter.ToBizFeedItemList(items)
+		return nil
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+	return fr, it, nil
+}
+
+func (a *angelaRepo) AddFeedItemsToCollection(
+	ctx context.Context,
+	collectionID model.InternalID,
+	itemIDs []model.InternalID,
+) error {
+	return a.data.db.FeedItemCollection.UpdateOneID(collectionID).
+		AddFeedItemIDs(itemIDs...).
+		Exec(ctx)
 }

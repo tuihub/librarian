@@ -198,6 +198,12 @@ func ToBizFeatureFlag(source *v1.FeatureFlag) *modelsupervisor.FeatureFlag {
 		modelsupervisorFeatureFlag.Description = (*source).Description
 		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
 		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
+		if (*source).Extra != nil {
+			modelsupervisorFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
+			for key, value := range (*source).Extra {
+				modelsupervisorFeatureFlag.Extra[key] = value
+			}
+		}
 		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
 	}
 	return pModelsupervisorFeatureFlag
@@ -1045,6 +1051,12 @@ func ToPBFeatureFlag(source *modelsupervisor.FeatureFlag) *v1.FeatureFlag {
 		v1FeatureFlag.Description = (*source).Description
 		v1FeatureFlag.ConfigJsonSchema = (*source).ConfigJSONSchema
 		v1FeatureFlag.RequireContext = (*source).RequireContext
+		if (*source).Extra != nil {
+			v1FeatureFlag.Extra = make(map[string]string, len((*source).Extra))
+			for key, value := range (*source).Extra {
+				v1FeatureFlag.Extra[key] = value
+			}
+		}
 		pV1FeatureFlag = &v1FeatureFlag
 	}
 	return pV1FeatureFlag
@@ -1407,6 +1419,7 @@ func ToPBPorter(source *modelsupervisor.PorterInstanceController) *v11.Porter {
 		v1Porter.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).PorterInstance.BinarySummary)
 		v1Porter.GlobalName = (*source).PorterInstance.GlobalName
 		v1Porter.Region = (*source).PorterInstance.Region
+		v1Porter.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).PorterInstance.FeatureSummary)
 		v1Porter.Status = ToPBUserStatus((*source).PorterInstance.Status)
 		v1Porter.ConnectionStatus = ToPBPorterConnectionStatus((*source).ConnectionStatus)
 		pString := (*source).PorterInstance.ContextJSONSchema

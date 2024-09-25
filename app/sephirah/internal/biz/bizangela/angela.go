@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
+	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
@@ -36,6 +37,7 @@ var ProviderSet = wire.NewSet(
 )
 
 type Angela struct {
+	AngelaBase
 	mq *libmq.MQ
 }
 type AngelaBase struct {
@@ -58,6 +60,8 @@ type AngelaRepo interface {
 	UpdateFeedPullStatus(context.Context, *modelyesod.FeedConfig) error
 	GetFeedItem(context.Context, model.InternalID) (*modelfeed.Item, error)
 	GetFeedActions(context.Context, model.InternalID) ([]*modelyesod.FeedActionSet, error)
+	GetNotifyTargetItems(context.Context, model.InternalID, model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error)
+	AddFeedItemsToCollection(context.Context, model.InternalID, []model.InternalID) error
 }
 
 func NewAngelaBase(
@@ -79,6 +83,7 @@ func NewAngelaBase(
 }
 
 func NewAngela(
+	base *AngelaBase,
 	mq *libmq.MQ,
 	pullAccountInfo *libmq.Topic[modeltiphereth.PullAccountInfo],
 	pullAccountAppInfoRelation *libmq.Topic[modelangela.PullAccountAppInfoRelation],
@@ -114,6 +119,7 @@ func NewAngela(
 		return nil, err
 	}
 	return &Angela{
-		mq: mq,
+		AngelaBase: *base,
+		mq:         mq,
 	}, nil
 }
