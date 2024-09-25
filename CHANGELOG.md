@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
+
+
+### Features
+
+* impl porter context control ([400890b](https://github.com/tuihub/librarian/commit/400890bf060e2c2993201aa5bafcca1579d6ab9d))
+* refactor libcache ([b186f43](https://github.com/tuihub/librarian/commit/b186f435386ccfcc85a52f450884e6c7a7119dd1))
+* refactor supervisor ([afbc8c3](https://github.com/tuihub/librarian/commit/afbc8c336befa55d71572905ba6e6f0d029e7064))
+* support use porter without consul ([30efdaf](https://github.com/tuihub/librarian/commit/30efdaf1de09b8333dcdb77b36a26f10b1a10902))
+* update kratos to v2.8.0 ([8d8d22b](https://github.com/tuihub/librarian/commit/8d8d22bcec3abb973e3489e3b5f9c7c958b698ab))
+* update proto to v0.4.22 ([93eafb0](https://github.com/tuihub/librarian/commit/93eafb0e57dedf75ada05a449cc2425947f00b34))
+* update proto to v0.4.23 ([52a939b](https://github.com/tuihub/librarian/commit/52a939b3a1404436d8102a33639f86a9d64d7da8))
+* upgrade golangci version ([314720d](https://github.com/tuihub/librarian/commit/314720d63d5fd502b0af15f7c60faff12b4c798b))
+* upgrade golangci-lint to v1.60.3 ([b74baf7](https://github.com/tuihub/librarian/commit/b74baf753ce89c88abc3559e9b5c1b61bb6f3e77))
+* upgrade goverter to v1.5.0 ([9d3835b](https://github.com/tuihub/librarian/commit/9d3835b38988de654e4d51f1851d26e926c7dd4c))
+* upgrade proto to v0.4.16 ([670e50f](https://github.com/tuihub/librarian/commit/670e50f10d34a57a1238ef7012a4576731664535))
+* upgrade proto to v0.4.17 ([180cd7e](https://github.com/tuihub/librarian/commit/180cd7e8a131f7a9524ae03cb0b129baa44e1ead))
+* upgrade proto to v0.4.18 ([326f56d](https://github.com/tuihub/librarian/commit/326f56dd6809f8323a80b54ee4c5ca69a5a049de))
+* upgrade proto to v0.4.20 ([7f5ba6d](https://github.com/tuihub/librarian/commit/7f5ba6df657a5ad69cc21ba6e30b483aa569a8a1))
+* upgrade proto to v0.4.21 ([fb1e216](https://github.com/tuihub/librarian/commit/fb1e2164774dccd22e5d55133c28a80c67fba3ce))
+
+
+### Bug Fixes
+
+* lint error ([7f01d1d](https://github.com/tuihub/librarian/commit/7f01d1d9359d67080bf6b45573ec0c6bec0b93e6))
+* test new logic ([d047ccd](https://github.com/tuihub/librarian/commit/d047ccdc5c8a465ec9b29ef130fc25c07e807975))
+* test notify ([52aa741](https://github.com/tuihub/librarian/commit/52aa7411e7b379dd399a4c7d009833248e2ef373))
+* test porter context control ([8b3f8ca](https://github.com/tuihub/librarian/commit/8b3f8ca4841b219830acb2a852de67bc1bde48fa))
+* update sync_map.go ([2ee9464](https://github.com/tuihub/librarian/commit/2ee946480b86cc404013ab2a9cdf14ff5d60842d))
+* **yesod:** fix CreateFeedConfig ([08d22e6](https://github.com/tuihub/librarian/commit/08d22e6f8a3c4cf64a5ce9b55c3d5534c5cd0d38))
+
 ## [0.2.10](https://github.com/tuihub/librarian/compare/v0.2.9...v0.2.10) (2024-07-10)
 
 
