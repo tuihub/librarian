@@ -140,8 +140,15 @@ func (a *MQ) Publish(ctx context.Context, topic string, payload []byte) error {
 	msg := message.NewMessage(watermill.NewUUID(), payload)
 	msg.SetContext(ctx)
 	err := a.pubSub.publisher.Publish(topic, msg)
-	for i := 0; err != nil && i < 16; i += 1 {
+	for i := 0; err != nil && i < 5; i += 1 {
+		if i > 0 {
+			logger.Warnf("retry to publish message %s to topic %s: %s", msg.UUID, topic, err.Error())
+			time.Sleep(time.Duration(i) * time.Second)
+		}
 		err = a.pubSub.publisher.Publish(topic, msg)
+	}
+	if err != nil {
+		logger.Errorf("failed to publish message %s to topic %s: %s", msg.UUID, topic, err.Error())
 	}
 	return err
 }

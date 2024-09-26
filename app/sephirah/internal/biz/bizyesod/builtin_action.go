@@ -38,10 +38,10 @@ func getBuiltinActionFeatureFlags() ([]*modelsupervisor.FeatureFlag, error) {
 	if err != nil {
 		return nil, err
 	}
-	keyword, err := modelyesod.GetKeywordFilterActionConfigSchema()
-	if err != nil {
-		return nil, err
-	}
+	// keyword, err := modelyesod.GetKeywordFilterActionConfigSchema()
+	// if err != nil {
+	//	return nil, err
+	//}
 	desc, err := modelyesod.GetDescriptionGeneratorActionConfigSchema()
 	if err != nil {
 		return nil, err
@@ -53,12 +53,12 @@ func getBuiltinActionFeatureFlags() ([]*modelsupervisor.FeatureFlag, error) {
 			Description:      "Filter feed item by keyword",
 			ConfigJSONSchema: simple,
 		},
-		{
-			ID:               keywordFilterActionID,
-			Name:             "Keyword Filter",
-			Description:      "Filter feed item by keyword",
-			ConfigJSONSchema: keyword,
-		},
+		//{
+		//	ID:               keywordFilterActionID,
+		//	Name:             "Keyword Filter",
+		//	Description:      "Filter feed item by keyword",
+		//	ConfigJSONSchema: keyword,
+		// },
 		{
 			ID:               descriptionGeneratorActionID,
 			Name:             "Description Generator",
