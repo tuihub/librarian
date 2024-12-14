@@ -18,12 +18,17 @@ func (m *SyncMap[K, V]) Load(key K) (V, bool) {
 	if !ok {
 		return value, ok
 	}
-	return v.(V), ok
+	value, ok = v.(V)
+	return value, ok
 }
 
 func (m *SyncMap[K, V]) LoadOrStore(key K, value V) (V, bool) {
 	a, loaded := m.m.LoadOrStore(key, value)
-	return a.(V), loaded
+	existing, ok := a.(V)
+	if !ok {
+		return existing, false
+	}
+	return existing, loaded
 }
 
 func (m *SyncMap[K, V]) LoadAndDelete(key K) (V, bool) {
@@ -32,7 +37,11 @@ func (m *SyncMap[K, V]) LoadAndDelete(key K) (V, bool) {
 	if !loaded {
 		return value, loaded
 	}
-	return v.(V), loaded
+	value, ok := v.(V)
+	if !ok {
+		return value, false
+	}
+	return value, loaded
 }
 
 func (m *SyncMap[K, V]) Store(key K, value V) {
@@ -40,12 +49,23 @@ func (m *SyncMap[K, V]) Store(key K, value V) {
 }
 
 func (m *SyncMap[K, V]) Range(f func(key K, value V) bool) {
-	m.m.Range(func(key, value any) bool { return f(key.(K), value.(V)) })
+	m.m.Range(func(key, value any) bool {
+		k, ok := key.(K)
+		v, ok2 := value.(V)
+		if !ok || !ok2 {
+			return true
+		}
+		return f(k, v)
+	})
 }
 
 func (m *SyncMap[K, V]) Swap(key K, value V) (V, bool) {
 	p, loaded := m.m.Swap(key, value)
-	return p.(V), loaded
+	value, ok := p.(V)
+	if !ok {
+		return value, false
+	}
+	return value, loaded
 }
 
 func (m *SyncMap[K, V]) CompareAndSwap(key K, oldValue, newValue V) bool {
