@@ -52,7 +52,7 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.32.0
 	go.uber.org/ratelimit v0.3.1
 	go.uber.org/zap v1.27.0
-	golang.org/x/crypto v0.30.0
+	golang.org/x/crypto v0.31.0
 	golang.org/x/exp v0.0.0-20241210194714-1829a127f884
 	google.golang.org/grpc v1.69.0
 	google.golang.org/protobuf v1.35.2
