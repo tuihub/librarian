@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.12](https://github.com/tuihub/librarian/compare/v0.2.11...v0.2.12) (2024-12-16)
+
+
+### Bug Fixes
+
+* update golangci-lint to v1.62.2 ([47ef35b](https://github.com/tuihub/librarian/commit/47ef35b32c2e0f4a8e85b89f64bb7804aafbda8c))
+
 ## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
 
 
