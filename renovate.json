@@ -1,19 +1,20 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "schedule:monthly",
     ":timezone(Asia/Singapore)",
     ":dependencyDashboard"
   ],
-  "postUpdateOptions": ["gomodTidy"],
-  "docker": {
-    "enabled": false
-  },
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
   "docker-compose": {
     "enabled": false
   },
-  "labels": ["renovate"],
+  "labels": [
+    "renovate"
+  ],
   "prBodyNotes": [
     "{{#if isMajor}}:warning: MAJOR MAJOR MAJOR :warning:{{/if}}"
   ],
@@ -23,24 +24,34 @@
   },
   "packageRules": [
     {
-      "description": "Automatically group and merge minor and patch-level updates",
-      "matchPackagePatterns": [
-        "*"
+      "matchCategories": [
+        "docker"
       ],
+      "enabled": false
+    },
+    {
+      "description": "Automatically group and merge minor and patch-level updates",
       "matchUpdateTypes": [
         "minor",
         "patch",
         "digest"
       ],
-      "matchManagers": ["gomod"],
-      "stabilityDays": 3,
+      "matchManagers": [
+        "gomod"
+      ],
+      "minimumReleaseAge": "3 days",
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch",
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
       "description": "Opt-out minimum Go version updates: https://github.com/renovatebot/renovate/issues/16715",
-      "matchDatasources": ["golang-version"],
+      "matchDatasources": [
+        "golang-version"
+      ],
       "enabled": false
     }
   ],
