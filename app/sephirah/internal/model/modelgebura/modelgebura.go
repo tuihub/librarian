@@ -62,6 +62,7 @@ type App struct {
 	ID                model.InternalID
 	Name              string
 	Description       string
+	DeviceID          model.InternalID
 	Public            bool
 	AssignedAppInfoID model.InternalID
 }

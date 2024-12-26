@@ -46,6 +46,7 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString, Size: 2147483647},
+		{Name: "device_id", Type: field.TypeInt64},
 		{Name: "public", Type: field.TypeBool},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
@@ -60,13 +61,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "apps_app_infos_app",
-				Columns:    []*schema.Column{AppsColumns[6]},
+				Columns:    []*schema.Column{AppsColumns[7]},
 				RefColumns: []*schema.Column{AppInfosColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "apps_users_app",
-				Columns:    []*schema.Column{AppsColumns[7]},
+				Columns:    []*schema.Column{AppsColumns[8]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

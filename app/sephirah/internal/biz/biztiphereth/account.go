@@ -24,7 +24,7 @@ func (t *Tiphereth) LinkAccount(
 	if !t.supv.HasAccountPlatform(a.Platform) {
 		return nil, bizutils.UnsupportedFeatureError()
 	}
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}

@@ -4,14 +4,15 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -41,12 +42,12 @@ type Angela struct {
 	mq *libmq.MQ
 }
 type AngelaBase struct {
-	repo AngelaRepo
-	supv *supervisor.Supervisor
-	g    bizgebura.GeburaRepo
-	// mapper   mapper.LibrarianMapperServiceClient
-	searcher *client.Searcher
-	porter   porter.LibrarianPorterServiceClient
+	repo   AngelaRepo
+	supv   *supervisor.Supervisor
+	g      bizgebura.GeburaRepo
+	porter porter.LibrarianPorterServiceClient
+	search libsearch.Search
+	id     *libidgenerator.IDGenerator
 }
 
 type AngelaRepo interface {
@@ -68,17 +69,17 @@ func NewAngelaBase(
 	repo AngelaRepo,
 	supv *supervisor.Supervisor,
 	g bizgebura.GeburaRepo,
-	// mClient mapper.LibrarianMapperServiceClient,
 	pClient porter.LibrarianPorterServiceClient,
-	sClient *client.Searcher,
+	search libsearch.Search,
+	id *libidgenerator.IDGenerator,
 ) (*AngelaBase, error) {
 	return &AngelaBase{
-		repo: repo,
-		supv: supv,
-		g:    g,
-		//mapper:   mClient,
-		porter:   pClient,
-		searcher: sClient,
+		repo:   repo,
+		supv:   supv,
+		g:      g,
+		porter: pClient,
+		search: search,
+		id:     id,
 	}, nil
 }
 

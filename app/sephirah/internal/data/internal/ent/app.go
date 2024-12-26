@@ -24,6 +24,8 @@ type App struct {
 	Name string `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
+	// DeviceID holds the value of the "device_id" field.
+	DeviceID model.InternalID `json:"device_id,omitempty"`
 	// Public holds the value of the "public" field.
 	Public bool `json:"public,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -78,7 +80,7 @@ func (*App) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case app.FieldPublic:
 			values[i] = new(sql.NullBool)
-		case app.FieldID:
+		case app.FieldID, app.FieldDeviceID:
 			values[i] = new(sql.NullInt64)
 		case app.FieldName, app.FieldDescription:
 			values[i] = new(sql.NullString)
@@ -120,6 +122,12 @@ func (a *App) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
 				a.Description = value.String
+			}
+		case app.FieldDeviceID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field device_id", values[i])
+			} else if value.Valid {
+				a.DeviceID = model.InternalID(value.Int64)
 			}
 		case app.FieldPublic:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -204,6 +212,9 @@ func (a *App) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(a.Description)
+	builder.WriteString(", ")
+	builder.WriteString("device_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.DeviceID))
 	builder.WriteString(", ")
 	builder.WriteString("public=")
 	builder.WriteString(fmt.Sprintf("%v", a.Public))

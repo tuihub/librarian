@@ -5,16 +5,12 @@ option go_package = "Librarian/internal/conf;conf";
 
 import "conf/base.proto";
 import "conf/sephirah.proto";
-import "conf/mapper.proto";
-import "conf/searcher.proto";
 import "conf/miner.proto";
 
 message Librarian {
   message EnableServiceDiscovery {
-    bool mapper = 1;
-    bool searcher = 2;
-    bool porter = 3;
-    bool miner = 4;
+    bool porter = 1;
+    bool miner = 2;
   }
   EnableServiceDiscovery enable_service_discovery = 10;
 
@@ -27,10 +23,9 @@ message Librarian {
   Porter porter = 7;
   Consul consul = 8;
   Sentry sentry = 9;
+  Search search = 11;
   OTLP otlp = 14;
 
-  Mapper mapper = 11;
-  Searcher searcher = 12;
   Miner miner = 13;
 }
 

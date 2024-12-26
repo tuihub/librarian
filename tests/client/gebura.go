@@ -143,6 +143,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
+		DeviceIdFilter:          nil,
 	}); err != nil {
 		log.Fatal(err)
 	} else if resp.GetPaging().GetTotalSize() != 0 {
@@ -155,6 +156,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			Name:              "test app package",
 			Description:       "test",
 			AssignedAppInfoId: nil,
+			DeviceId:          nil,
 			Public:            false,
 		},
 	})
@@ -170,6 +172,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
+		DeviceIdFilter:          nil,
 	}); err2 != nil {
 		log.Fatal(err2)
 	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetApps()[0].GetDescription() != "test" {
@@ -181,6 +184,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 			Name:              "test app package",
 			Description:       "test2",
 			AssignedAppInfoId: nil,
+			DeviceId:          nil,
 			Public:            false,
 		},
 	}); err2 != nil {
@@ -194,6 +198,7 @@ func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen,gocognit // n
 		OwnerIdFilter:           nil,
 		IdFilter:                nil,
 		AssignedAppInfoIdFilter: nil,
+		DeviceIdFilter:          nil,
 	}); err2 != nil {
 		log.Fatal(err2)
 	} else if resp2.GetPaging().GetTotalSize() != 1 || resp2.GetApps()[0].GetDescription() != "test2" {

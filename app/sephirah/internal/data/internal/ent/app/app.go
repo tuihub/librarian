@@ -18,6 +18,8 @@ const (
 	FieldName = "name"
 	// FieldDescription holds the string denoting the description field in the database.
 	FieldDescription = "description"
+	// FieldDeviceID holds the string denoting the device_id field in the database.
+	FieldDeviceID = "device_id"
 	// FieldPublic holds the string denoting the public field in the database.
 	FieldPublic = "public"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldDescription,
+	FieldDeviceID,
 	FieldPublic,
 	FieldUpdatedAt,
 	FieldCreatedAt,
@@ -103,6 +106,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByDescription orders the results by the description field.
 func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
+}
+
+// ByDeviceID orders the results by the device_id field.
+func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
 }
 
 // ByPublic orders the results by the public field.

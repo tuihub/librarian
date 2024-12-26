@@ -15,9 +15,10 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -35,8 +36,8 @@ func NewSephirahService(
 	*libcron.Cron,
 	libcache.Store,
 	*libapp.Settings,
-	//mapper.LibrarianMapperServiceClient,
-	searcher.LibrarianSearcherServiceClient,
+	*libidgenerator.IDGenerator,
+	libsearch.Search,
 	miner.LibrarianMinerServiceClient,
 ) (pb.LibrarianSephirahServiceServer, func(), error) {
 	panic(wire.Build(

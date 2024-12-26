@@ -39,7 +39,7 @@ func (t *Tiphereth) GetToken(
 		return "", "", pb.ErrorErrorReasonUnauthorized("user not active")
 	}
 
-	sessionID, err := t.searcher.NewID(ctx)
+	sessionID, err := t.id.New()
 	if err != nil {
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -200,7 +200,7 @@ func (t *Tiphereth) RegisterDevice(
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return 0, bizutils.NoPermissionError()
 	}
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

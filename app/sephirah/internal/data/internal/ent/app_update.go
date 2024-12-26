@@ -59,6 +59,27 @@ func (au *AppUpdate) SetNillableDescription(s *string) *AppUpdate {
 	return au
 }
 
+// SetDeviceID sets the "device_id" field.
+func (au *AppUpdate) SetDeviceID(mi model.InternalID) *AppUpdate {
+	au.mutation.ResetDeviceID()
+	au.mutation.SetDeviceID(mi)
+	return au
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (au *AppUpdate) SetNillableDeviceID(mi *model.InternalID) *AppUpdate {
+	if mi != nil {
+		au.SetDeviceID(*mi)
+	}
+	return au
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (au *AppUpdate) AddDeviceID(mi model.InternalID) *AppUpdate {
+	au.mutation.AddDeviceID(mi)
+	return au
+}
+
 // SetPublic sets the "public" field.
 func (au *AppUpdate) SetPublic(b bool) *AppUpdate {
 	au.mutation.SetPublic(b)
@@ -202,6 +223,12 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 	}
+	if value, ok := au.mutation.DeviceID(); ok {
+		_spec.SetField(app.FieldDeviceID, field.TypeInt64, value)
+	}
+	if value, ok := au.mutation.AddedDeviceID(); ok {
+		_spec.AddField(app.FieldDeviceID, field.TypeInt64, value)
+	}
 	if value, ok := au.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)
 	}
@@ -314,6 +341,27 @@ func (auo *AppUpdateOne) SetNillableDescription(s *string) *AppUpdateOne {
 	if s != nil {
 		auo.SetDescription(*s)
 	}
+	return auo
+}
+
+// SetDeviceID sets the "device_id" field.
+func (auo *AppUpdateOne) SetDeviceID(mi model.InternalID) *AppUpdateOne {
+	auo.mutation.ResetDeviceID()
+	auo.mutation.SetDeviceID(mi)
+	return auo
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (auo *AppUpdateOne) SetNillableDeviceID(mi *model.InternalID) *AppUpdateOne {
+	if mi != nil {
+		auo.SetDeviceID(*mi)
+	}
+	return auo
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (auo *AppUpdateOne) AddDeviceID(mi model.InternalID) *AppUpdateOne {
+	auo.mutation.AddDeviceID(mi)
 	return auo
 }
 
@@ -489,6 +537,12 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 	}
 	if value, ok := auo.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.DeviceID(); ok {
+		_spec.SetField(app.FieldDeviceID, field.TypeInt64, value)
+	}
+	if value, ok := auo.mutation.AddedDeviceID(); ok {
+		_spec.AddField(app.FieldDeviceID, field.TypeInt64, value)
 	}
 	if value, ok := auo.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)

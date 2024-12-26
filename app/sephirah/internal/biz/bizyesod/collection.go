@@ -20,7 +20,7 @@ func (y *Yesod) CreateFeedItemCollection(
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
-	id, err := y.searcher.NewID(ctx)
+	id, err := y.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

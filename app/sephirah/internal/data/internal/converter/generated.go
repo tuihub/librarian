@@ -56,9 +56,10 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
-		modelgeburaApp.ID = model.InternalID((*source).ID)
+		modelgeburaApp.ID = modelInternalIDToModelInternalID((*source).ID)
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
 		modelgeburaApp.Public = (*source).Public
 		pModelgeburaApp = &modelgeburaApp
 	}

@@ -23,7 +23,7 @@ func (y *Yesod) CreateFeedActionSet(
 	if len(set.Actions) == 0 {
 		return 0, pb.ErrorErrorReasonBadRequest("actions is empty")
 	}
-	id, err := y.searcher.NewID(ctx)
+	id, err := y.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

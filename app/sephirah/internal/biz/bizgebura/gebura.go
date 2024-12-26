@@ -4,13 +4,14 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
@@ -52,10 +53,10 @@ type GeburaRepo interface {
 }
 
 type Gebura struct {
-	auth *libauth.Auth
-	repo GeburaRepo
-	// mapper         mapper.LibrarianMapperServiceClient
-	searcher           *client.Searcher
+	auth               *libauth.Auth
+	repo               GeburaRepo
+	id                 *libidgenerator.IDGenerator
+	search             libsearch.Search
 	porter             porter.LibrarianPorterServiceClient
 	supv               *supervisor.Supervisor
 	updateAppInfoIndex *libmq.Topic[modelangela.UpdateAppInfoIndex]
@@ -66,8 +67,8 @@ type Gebura struct {
 func NewGebura(
 	repo GeburaRepo,
 	auth *libauth.Auth,
-	// mClient mapper.LibrarianMapperServiceClient,
-	sClient *client.Searcher,
+	id *libidgenerator.IDGenerator,
+	search libsearch.Search,
 	pClient porter.LibrarianPorterServiceClient,
 	supv *supervisor.Supervisor,
 	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
@@ -75,10 +76,10 @@ func NewGebura(
 	appInfoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],
 ) *Gebura {
 	return &Gebura{
-		auth: auth,
-		repo: repo,
-		//mapper:         mClient,
-		searcher:           sClient,
+		auth:               auth,
+		repo:               repo,
+		id:                 id,
+		search:             search,
 		porter:             pClient,
 		supv:               supv,
 		updateAppInfoIndex: updateAppIndex,

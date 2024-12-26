@@ -20,7 +20,7 @@ func (g *Gebura) CreateApp(
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	id, err := g.searcher.NewID(ctx)
+	id, err := g.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}

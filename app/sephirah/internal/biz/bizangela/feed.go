@@ -67,7 +67,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			}
 			feed := modelfeed.FromPBFeed(resp.GetData())
 			feed.ID = p.InternalID
-			ids, err := a.searcher.NewBatchIDs(ctx, len(feed.Items))
+			ids, err := a.id.BatchNew(len(feed.Items))
 			if err != nil {
 				fc.LatestPullMessage = fmt.Sprintf("Generate IDs failed: %s", err.Error())
 				return err

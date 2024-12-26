@@ -252,79 +252,79 @@ func (s *LibrarianSephirahServiceService) UnAssignApp(
 //		}
 //	}
 
-func (s *LibrarianSephirahServiceService) CreateAppInst(
-	ctx context.Context,
-	req *pb.CreateAppInstRequest,
-) (*pb.CreateAppInstResponse, error) {
-	ap, err := s.g.CreateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.CreateAppInstResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
-}
-
-func (s *LibrarianSephirahServiceService) UpdateAppInst(
-	ctx context.Context,
-	req *pb.UpdateAppInstRequest,
-) (*pb.UpdateAppInstResponse, error) {
-	err := s.g.UpdateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.UpdateAppInstResponse{}, nil
-}
-
-func (s *LibrarianSephirahServiceService) ListAppInsts(
-	ctx context.Context,
-	req *pb.ListAppInstsRequest,
-) (*pb.ListAppInstsResponse, error) {
-	ap, total, err := s.g.ListAppInsts(ctx,
-		model.ToBizPaging(req.GetPaging()),
-		converter.ToBizInternalIDList(req.GetIdFilter()),
-		converter.ToBizInternalIDList(req.GetAppIdFilter()),
-		converter.ToBizInternalIDList(req.GetDeviceIdFilter()),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.ListAppInstsResponse{
-		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
-		AppInsts: converter.ToPBAppInstList(ap),
-	}, nil
-}
-
-func (s *LibrarianSephirahServiceService) AddAppInstRunTime(
-	ctx context.Context,
-	req *pb.AddAppInstRunTimeRequest,
-) (*pb.AddAppInstRunTimeResponse, error) {
-	err := s.g.AddAppInstRunTime(ctx,
-		converter.ToBizInternalID(req.GetAppInstId()),
-		converter.ToBizTimeRange(req.GetTimeRange()),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.AddAppInstRunTimeResponse{}, nil
-}
-func (s *LibrarianSephirahServiceService) SumAppInstRunTime(
-	ctx context.Context,
-	req *pb.SumAppInstRunTimeRequest,
-) (*pb.SumAppInstRunTimeResponse, error) {
-	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL {
-		return nil, pb.ErrorErrorReasonBadRequest("unsupported aggregation type")
-	}
-	res, err := s.g.SumAppInstRunTime(ctx,
-		converter.ToBizInternalID(req.GetAppInstId()),
-		converter.ToBizTimeRange(req.GetTimeAggregation().GetTimeRange()),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.SumAppInstRunTimeResponse{RunTimeGroups: []*pb.SumAppInstRunTimeResponse_Group{{
-		TimeRange: req.GetTimeAggregation().GetTimeRange(),
-		Duration:  converter.ToPBDuration(res),
-	}}}, nil
-}
+// func (s *LibrarianSephirahServiceService) CreateAppInst(
+//	ctx context.Context,
+//	req *pb.CreateAppInstRequest,
+// ) (*pb.CreateAppInstResponse, error) {
+//	ap, err := s.g.CreateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.CreateAppInstResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
+//}
+//
+// func (s *LibrarianSephirahServiceService) UpdateAppInst(
+//	ctx context.Context,
+//	req *pb.UpdateAppInstRequest,
+// ) (*pb.UpdateAppInstResponse, error) {
+//	err := s.g.UpdateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.UpdateAppInstResponse{}, nil
+//}
+//
+// func (s *LibrarianSephirahServiceService) ListAppInsts(
+//	ctx context.Context,
+//	req *pb.ListAppInstsRequest,
+// ) (*pb.ListAppInstsResponse, error) {
+//	ap, total, err := s.g.ListAppInsts(ctx,
+//		model.ToBizPaging(req.GetPaging()),
+//		converter.ToBizInternalIDList(req.GetIdFilter()),
+//		converter.ToBizInternalIDList(req.GetAppIdFilter()),
+//		converter.ToBizInternalIDList(req.GetDeviceIdFilter()),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.ListAppInstsResponse{
+//		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
+//		AppInsts: converter.ToPBAppInstList(ap),
+//	}, nil
+//}
+//
+// func (s *LibrarianSephirahServiceService) AddAppInstRunTime(
+//	ctx context.Context,
+//	req *pb.AddAppInstRunTimeRequest,
+// ) (*pb.AddAppInstRunTimeResponse, error) {
+//	err := s.g.AddAppInstRunTime(ctx,
+//		converter.ToBizInternalID(req.GetAppInstId()),
+//		converter.ToBizTimeRange(req.GetTimeRange()),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.AddAppInstRunTimeResponse{}, nil
+// }
+// func (s *LibrarianSephirahServiceService) SumAppInstRunTime(
+//	ctx context.Context,
+//	req *pb.SumAppInstRunTimeRequest,
+// ) (*pb.SumAppInstRunTimeResponse, error) {
+//	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL {
+//		return nil, pb.ErrorErrorReasonBadRequest("unsupported aggregation type")
+//	}
+//	res, err := s.g.SumAppInstRunTime(ctx,
+//		converter.ToBizInternalID(req.GetAppInstId()),
+//		converter.ToBizTimeRange(req.GetTimeAggregation().GetTimeRange()),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.SumAppInstRunTimeResponse{RunTimeGroups: []*pb.SumAppInstRunTimeResponse_Group{{
+//		TimeRange: req.GetTimeAggregation().GetTimeRange(),
+//		Duration:  converter.ToPBDuration(res),
+//	}}}, nil
+// }
 
 func (s *LibrarianSephirahServiceService) UploadAppSaveFile(
 	ctx context.Context,

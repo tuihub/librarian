@@ -10,9 +10,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -25,7 +25,7 @@ func (g *Gebura) CreateAppInfo(
 	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	id, err := g.searcher.NewID(ctx)
+	id, err := g.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
@@ -95,7 +95,7 @@ func (g *Gebura) SyncAppInfos(
 		return nil, bizutils.NoPermissionError()
 	}
 	appInfos := make([]*modelgebura.AppInfo, 0, len(infoIDs))
-	ids, err := g.searcher.NewBatchIDs(ctx, len(infoIDs))
+	ids, err := g.id.BatchNew(len(infoIDs))
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
@@ -144,9 +144,13 @@ func (g *Gebura) SearchAppInfos(ctx context.Context, paging model.Paging, query 
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	ids, err := g.searcher.SearchID(ctx, paging, query, searcherpb.Index_INDEX_GEBURA_APP)
+	results, err := g.search.SearchID(ctx, libsearch.SearchIndexGeburaApp, paging, query)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err)
+	}
+	ids := make([]model.InternalID, 0, len(results))
+	for _, r := range results {
+		ids = append(ids, r.ID)
 	}
 	infos, err := g.repo.GetBatchBoundAppInfos(ctx, ids)
 	if err != nil {
@@ -224,7 +228,7 @@ func (g *Gebura) PurchaseAppInfo(ctx context.Context, infoID *modelgebura.AppInf
 		if infoID.Internal {
 			return errors.BadRequest("app not found", "")
 		}
-		ids, err := g.searcher.NewBatchIDs(ctx2, 2) //nolint:mnd // checked
+		ids, err := g.id.BatchNew(2) //nolint:mnd // checked
 		if err != nil {
 			return err
 		}

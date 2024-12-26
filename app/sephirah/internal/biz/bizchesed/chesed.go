@@ -7,17 +7,17 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelbinah"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	searcherpb "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -40,7 +40,8 @@ type ChesedRepo interface {
 type Chesed struct {
 	repo        ChesedRepo
 	b           bizbinah.BinahRepo
-	searcher    *client.Searcher
+	id          *libidgenerator.IDGenerator
+	search      libsearch.Search
 	porter      porter.LibrarianPorterServiceClient
 	miner       miner.LibrarianMinerServiceClient
 	upload      *modelbinah.UploadCallBack
@@ -52,9 +53,10 @@ type Chesed struct {
 func NewChesed(
 	repo ChesedRepo,
 	b bizbinah.BinahRepo,
+	id *libidgenerator.IDGenerator,
+	search libsearch.Search,
 	cron *libcron.Cron,
 	pClient porter.LibrarianPorterServiceClient,
-	sClient *client.Searcher,
 	miClient miner.LibrarianMinerServiceClient,
 	block *modelbinah.ControlBlock,
 	imageCache *libcache.Map[model.InternalID, modelchesed.Image],
@@ -62,8 +64,9 @@ func NewChesed(
 	c := &Chesed{
 		repo:        repo,
 		b:           b,
+		id:          id,
+		search:      search,
 		porter:      pClient,
-		searcher:    sClient,
 		miner:       miClient,
 		upload:      nil,
 		download:    nil,
@@ -107,7 +110,7 @@ func (c *Chesed) UploadImage(ctx context.Context, image modelchesed.Image,
 	if err := metadata.Check(); err != nil {
 		return "", pb.ErrorErrorReasonBadRequest("invalid file metadata: %s", err.Error())
 	}
-	id, err := c.searcher.NewID(ctx)
+	id, err := c.id.New()
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -166,11 +169,11 @@ func (c *Chesed) ScanImage(ctx context.Context) error {
 		for _, r := range results.GetResults() {
 			desReq += r.GetText() + " "
 		}
-		if err = c.searcher.DescribeID(ctx,
+		if err = c.search.DescribeID(ctx,
 			image.ID,
+			libsearch.SearchIndexChesedImage,
+			true,
 			desReq,
-			searcherpb.DescribeIDRequest_DESCRIBE_MODE_APPEND,
-			searcherpb.Index_INDEX_CHESED_IMAGE,
 		); err != nil {
 			return err
 		}
@@ -202,13 +205,17 @@ func (c *Chesed) SearchImages(ctx context.Context, paging model.Paging, query st
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	ids, err := c.searcher.SearchID(ctx,
+	results, err := c.search.SearchID(ctx,
+		libsearch.SearchIndexChesedImage,
 		paging,
 		query,
-		searcherpb.Index_INDEX_CHESED_IMAGE,
 	)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	ids := make([]model.InternalID, 0, len(results))
+	for _, r := range results {
+		ids = append(ids, r.ID)
 	}
 	return ids, nil
 }

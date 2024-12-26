@@ -25,15 +25,17 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
@@ -67,14 +69,8 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	netzachRepo := data.NewNetzachRepo(dataData)
-	librarianSearcherServiceClient, err := client2.NewSearcherClient(consul, settings)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	searcher := client.NewSearcher(librarianSearcherServiceClient)
-	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, searcher)
+	idGenerator := libidgenerator.NewIDGenerator()
+	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	store, err := libcache.NewStore(cache)
 	if err != nil {
@@ -91,7 +87,13 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	geburaRepo := data.NewGeburaRepo(dataData)
-	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, searcher)
+	libsearchSearch, err := libsearch.NewSearch(search, settings)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -122,13 +124,13 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
-	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, searcher, topic4, cron, key, libcacheMap)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, idGenerator, libsearchSearch, topic4, cron, key, libcacheMap)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, searcher, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map3)
+	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map3)
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()
@@ -136,16 +138,16 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
-	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth, librarianSearcherServiceClient)
+	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth)
 	yesodRepo := data.NewYesodRepo(dataData)
 	map7 := bizyesod.NewFeedOwnerCache(yesodRepo, store)
-	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, searcher, topic8, topic, map7)
+	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, idGenerator, libsearchSearch, topic8, topic, map7)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, searcher, libmqMQ, map5, map4, map6, topic)
+	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, idGenerator, libsearchSearch, libmqMQ, map5, map4, map6, topic)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -159,7 +161,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		return nil, nil, err
 	}
 	map8 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, cron, librarianPorterServiceClient, searcher, librarianMinerServiceClient, controlBlock, map8)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, idGenerator, libsearchSearch, cron, librarianPorterServiceClient, librarianMinerServiceClient, controlBlock, map8)
 	if err != nil {
 		cleanup2()
 		cleanup()

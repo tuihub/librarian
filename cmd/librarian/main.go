@@ -13,7 +13,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -40,8 +39,6 @@ var (
 
 var ProviderSet = wire.NewSet(
 	newApp,
-	// mapperClientSelector,
-	searcherClientSelector,
 	minerClientSelector,
 )
 
@@ -106,13 +103,12 @@ func main() {
 		bc.GetDatabase(),
 		bc.GetS3(),
 		bc.GetPorter(),
-		bc.GetMapper().GetData(),
-		bc.GetSearcher().GetData(),
 		bc.GetMiner().GetData(),
 		bc.GetAuth(),
 		bc.GetMq(),
 		bc.GetCache(),
 		bc.GetConsul(),
+		bc.GetSearch(),
 		appSettings,
 	)
 	if err != nil {
@@ -137,18 +133,6 @@ func main() {
 //	}
 //	return inproc.Mapper, nil
 //}
-
-func searcherClientSelector(
-	conf *conf.Librarian_EnableServiceDiscovery,
-	c *conf.Consul,
-	inproc *inprocgrpc.InprocClients,
-	app *libapp.Settings,
-) (searcher.LibrarianSearcherServiceClient, error) {
-	if conf.GetSearcher() {
-		return client.NewSearcherClient(c, app)
-	}
-	return inproc.Searcher, nil
-}
 
 func minerClientSelector(
 	conf *conf.Librarian_EnableServiceDiscovery,

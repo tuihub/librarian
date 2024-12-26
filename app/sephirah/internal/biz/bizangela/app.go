@@ -37,7 +37,7 @@ func NewPullAppInfoTopic(
 					return nil
 				}
 			}
-			id, err := a.searcher.NewID(ctx)
+			id, err := a.id.New()
 			if err != nil {
 				return err
 			}

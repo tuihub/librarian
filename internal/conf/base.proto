@@ -62,3 +62,12 @@ message OTLP {
   string headers = 3;
   bool grpc_insecure = 4;
 }
+
+message Search {
+  string driver = 1;
+  message MeiliSearch {
+    string addr = 1;
+    string api_key = 2;
+  }
+  optional MeiliSearch meili = 2;
+}

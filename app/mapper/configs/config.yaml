@@ -1,7 +1,0 @@
-server:
-  grpc:
-    addr: 0.0.0.0:10001
-    timeout: 1s
-data:
-  cayley:
-    store: memory

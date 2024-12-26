@@ -4,4 +4,4 @@ import (
 	"github.com/google/wire"
 )
 
-var ProviderSet = wire.NewSet(NewSearcher, NewPorter, NewPorterClient)
+var ProviderSet = wire.NewSet(NewPorter, NewPorterClient)

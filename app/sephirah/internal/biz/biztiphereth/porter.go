@@ -33,7 +33,7 @@ func (t *Tiphereth) updatePorters(ctx context.Context) error {
 	if len(newPorters) == 0 {
 		return nil
 	}
-	ids, err := t.searcher.NewBatchIDs(ctx, len(newPorters))
+	ids, err := t.id.BatchNew(len(newPorters))
 	if err != nil {
 		logger.Errorf("new batch ids failed: %s", err.Error())
 		return err
@@ -85,7 +85,7 @@ func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modelsuper
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

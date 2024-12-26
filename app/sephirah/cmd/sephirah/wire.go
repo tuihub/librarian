@@ -16,8 +16,10 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -34,6 +36,7 @@ func wireApp(
 	*conf.MQ,
 	*conf.Cache,
 	*conf.Consul,
+	*conf.Search,
 	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(wire.Build(
@@ -50,6 +53,8 @@ func wireApp(
 		libcache.ProviderSet,
 		libobserve.ProviderSet,
 		libapp.ProviderSet,
+		libidgenerator.ProviderSet,
+		libsearch.ProviderSet,
 		newApp,
 	))
 }

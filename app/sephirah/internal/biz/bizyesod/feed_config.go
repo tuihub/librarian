@@ -20,7 +20,7 @@ func (y *Yesod) CreateFeedConfig(ctx context.Context, config *modelyesod.FeedCon
 	if !y.supv.HasFeedSource(config.Source) {
 		return 0, bizutils.UnsupportedFeatureError()
 	}
-	id, err := y.searcher.NewID(ctx)
+	id, err := y.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

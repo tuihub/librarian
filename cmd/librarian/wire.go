@@ -6,7 +6,6 @@ package main
 
 import (
 	minerService "github.com/tuihub/librarian/app/miner/pkg/service"
-	searcherService "github.com/tuihub/librarian/app/searcher/pkg/service"
 	sephirahService "github.com/tuihub/librarian/app/sephirah/pkg/service"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/inprocgrpc"
@@ -14,8 +13,10 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 
 	"github.com/go-kratos/kratos/v2"
@@ -29,20 +30,17 @@ func wireApp(
 	*conf.Database,
 	*conf.S3,
 	*conf.Porter,
-	*conf.Mapper_Data,
-	*conf.Searcher_Data,
 	*conf.Miner_Data,
 	*conf.Auth,
 	*conf.MQ,
 	*conf.Cache,
 	*conf.Consul,
+	*conf.Search,
 	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(
 		wire.Build(
 			sephirahService.ProviderSet,
-			//mapperService.ProviderSet,
-			searcherService.ProviderSet,
 			minerService.ProviderSet,
 			server.ProviderSet,
 			inprocgrpc.ProviderSet,
@@ -51,6 +49,8 @@ func wireApp(
 			libcron.ProviderSet,
 			libcache.ProviderSet,
 			libobserve.ProviderSet,
+			libidgenerator.ProviderSet,
+			libsearch.ProviderSet,
 			ProviderSet,
 		),
 	)

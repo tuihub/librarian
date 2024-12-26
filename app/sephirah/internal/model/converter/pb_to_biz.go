@@ -102,7 +102,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppType_APP_TYPE_GAME AppTypeGame
 	ToBizAppType(librarian.AppType) modelgebura.AppType
 
-	ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
+	// ToBizAppInst(*pb.AppInst) *modelgebura.AppInst
 
 	// goverter:ignore DigestDescription
 	// goverter:ignore DigestImages

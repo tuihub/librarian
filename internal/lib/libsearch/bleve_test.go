@@ -1,13 +1,14 @@
-package data_test
+package libsearch_test
 
 import (
 	"context"
 	"errors"
 	"testing"
 
-	"github.com/tuihub/librarian/app/searcher/internal/biz"
-	"github.com/tuihub/librarian/app/searcher/internal/data"
+	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/blevesearch/bleve/v2"
@@ -58,11 +59,14 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	indexMap := make(map[biz.Index]bleve.Index)
-	indexMap[biz.IndexGeneral] = index
-	r, err := data.NewSearcherRepo(
-		indexMap,
-		nil, nil,
+	indexMap := make(map[libsearch.SearchIndex]bleve.Index)
+	indexMap[libsearch.SearchIndexGeneral] = index
+	r, err := libsearch.NewSearch(
+		&conf.Search{
+			Driver: "bleve",
+			Meili:  nil,
+		},
+		&libapp.Settings{}, //nolint:exhaustruct // no need
 	)
 	if err != nil {
 		t.Error(err)
@@ -73,12 +77,12 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 		if err != nil {
 			return
 		}
-		if err = r.DescribeID(context.Background(), model.InternalID(i), biz.IndexGeneral, false, string(str)); err != nil {
+		if err = r.DescribeID(context.Background(), model.InternalID(i), libsearch.SearchIndexGeneral, false, string(str)); err != nil {
 			t.Errorf("DescribeID() error = %v", err)
 		}
 	}
 	ids, err := r.SearchID(context.Background(),
-		biz.IndexGeneral,
+		libsearch.SearchIndexGeneral,
 		model.Paging{
 			PageSize: 10,
 			PageNum:  1,

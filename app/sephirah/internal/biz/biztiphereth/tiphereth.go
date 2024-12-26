@@ -4,7 +4,6 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
@@ -12,7 +11,9 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
@@ -61,12 +62,12 @@ type TipherethRepo interface {
 }
 
 type Tiphereth struct {
-	app  *libapp.Settings
-	auth *libauth.Auth
-	repo TipherethRepo
-	supv *supervisor.Supervisor
-	// mapper      mapper.LibrarianMapperServiceClient
-	searcher            *client.Searcher
+	app                 *libapp.Settings
+	auth                *libauth.Auth
+	repo                TipherethRepo
+	supv                *supervisor.Supervisor
+	id                  *libidgenerator.IDGenerator
+	search              libsearch.Search
 	pullAccount         *libmq.Topic[modeltiphereth.PullAccountInfo]
 	userCountCache      *libcache.Key[modeltiphereth.UserCount]
 	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance]
@@ -77,20 +78,20 @@ func NewTiphereth(
 	repo TipherethRepo,
 	auth *libauth.Auth,
 	supv *supervisor.Supervisor,
-	// mClient mapper.LibrarianMapperServiceClient,
-	sClient *client.Searcher,
+	id *libidgenerator.IDGenerator,
+	search libsearch.Search,
 	pullAccount *libmq.Topic[modeltiphereth.PullAccountInfo],
 	cron *libcron.Cron,
 	userCountCache *libcache.Key[modeltiphereth.UserCount],
 	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
-		app:  app,
-		auth: auth,
-		repo: repo,
-		supv: supv,
-		//mapper:      mClient,
-		searcher:            sClient,
+		app:                 app,
+		auth:                auth,
+		repo:                repo,
+		supv:                supv,
+		id:                  id,
+		search:              search,
 		pullAccount:         pullAccount,
 		userCountCache:      userCountCache,
 		porterInstanceCache: porterInstanceCache,
@@ -135,7 +136,7 @@ func (t *Tiphereth) CreateConfiguredAdmin() {
 		return
 	}
 	user.PassWord = password
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return
 	}

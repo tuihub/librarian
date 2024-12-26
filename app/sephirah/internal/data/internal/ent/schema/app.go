@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -17,6 +19,7 @@ func (App) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.Text("description"),
+		field.Int64("device_id").GoType(model.InternalID(0)),
 		field.Bool("public"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),

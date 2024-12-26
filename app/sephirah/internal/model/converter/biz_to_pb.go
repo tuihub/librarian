@@ -124,8 +124,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:ignore Chunks
 	ToPBAppBinary(*modelgebura.AppBinary) *pb.AppBinary
 
-	ToPBAppInst(*modelgebura.AppInst) *pb.AppInst
-	ToPBAppInstList([]*modelgebura.AppInst) []*pb.AppInst
+	// ToPBAppInst(*modelgebura.AppInst) *pb.AppInst
+	// ToPBAppInstList([]*modelgebura.AppInst) []*pb.AppInst
 
 	ToPBFeed(*modelfeed.Feed) *librarian.Feed
 	ToPBFeedItem(*modelfeed.Item) *librarian.FeedItem

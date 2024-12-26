@@ -38,6 +38,7 @@ func ToBizApp(source *v11.App) *modelgebura.App {
 		modelgeburaApp.ID = ToBizInternalID((*source).Id)
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.DeviceID = ToBizInternalID((*source).DeviceId)
 		modelgeburaApp.Public = (*source).Public
 		modelgeburaApp.AssignedAppInfoID = ToBizInternalID((*source).AssignedAppInfoId)
 		pModelgeburaApp = &modelgeburaApp
@@ -140,17 +141,6 @@ func ToBizAppInfoList(source []*v1.AppInfo) []*modelgebura.AppInfo {
 		}
 	}
 	return pModelgeburaAppInfoList
-}
-func ToBizAppInst(source *v11.AppInst) *modelgebura.AppInst {
-	var pModelgeburaAppInst *modelgebura.AppInst
-	if source != nil {
-		var modelgeburaAppInst modelgebura.AppInst
-		modelgeburaAppInst.ID = ToBizInternalID((*source).Id)
-		modelgeburaAppInst.AppID = ToBizInternalID((*source).AppId)
-		modelgeburaAppInst.DeviceID = ToBizInternalID((*source).DeviceId)
-		pModelgeburaAppInst = &modelgeburaAppInst
-	}
-	return pModelgeburaAppInst
 }
 func ToBizAppType(source v1.AppType) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
@@ -859,6 +849,7 @@ func ToPBApp(source *modelgebura.App) *v11.App {
 		v1App.Name = (*source).Name
 		v1App.Description = (*source).Description
 		v1App.AssignedAppInfoId = ToPBInternalID((*source).AssignedAppInfoID)
+		v1App.DeviceId = ToPBInternalID((*source).DeviceID)
 		v1App.Public = (*source).Public
 		pV1App = &v1App
 	}
@@ -962,27 +953,6 @@ func ToPBAppInfoMixedList(source []*modelgebura.AppInfoMixed) []*v1.AppInfoMixed
 		}
 	}
 	return pV1AppInfoMixedList
-}
-func ToPBAppInst(source *modelgebura.AppInst) *v11.AppInst {
-	var pV1AppInst *v11.AppInst
-	if source != nil {
-		var v1AppInst v11.AppInst
-		v1AppInst.Id = ToPBInternalID((*source).ID)
-		v1AppInst.DeviceId = ToPBInternalID((*source).DeviceID)
-		v1AppInst.AppId = ToPBInternalID((*source).AppID)
-		pV1AppInst = &v1AppInst
-	}
-	return pV1AppInst
-}
-func ToPBAppInstList(source []*modelgebura.AppInst) []*v11.AppInst {
-	var pV1AppInstList []*v11.AppInst
-	if source != nil {
-		pV1AppInstList = make([]*v11.AppInst, len(source))
-		for i := 0; i < len(source); i++ {
-			pV1AppInstList[i] = ToPBAppInst(source[i])
-		}
-	}
-	return pV1AppInstList
 }
 func ToPBAppList(source []*modelgebura.App) []*v11.App {
 	var pV1AppList []*v11.App

@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
@@ -14,7 +13,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
@@ -60,10 +61,10 @@ type YesodRepo interface {
 }
 
 type Yesod struct {
-	repo YesodRepo
-	supv *supervisor.Supervisor
-	// mapper   mapper.LibrarianMapperServiceClient
-	searcher           *client.Searcher
+	repo               YesodRepo
+	supv               *supervisor.Supervisor
+	id                 *libidgenerator.IDGenerator
+	search             libsearch.Search
 	pullFeed           *libmq.Topic[modelyesod.PullFeed]
 	systemNotify       *libmq.Topic[modelnetzach.SystemNotify]
 	feedOwner          *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
@@ -74,8 +75,8 @@ func NewYesod(
 	repo YesodRepo,
 	supv *supervisor.Supervisor,
 	cron *libcron.Cron,
-	// mClient mapper.LibrarianMapperServiceClient,
-	sClient *client.Searcher,
+	id *libidgenerator.IDGenerator,
+	search libsearch.Search,
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 	feedOwner *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User],
@@ -85,10 +86,10 @@ func NewYesod(
 		return nil, err
 	}
 	y := &Yesod{
-		repo: repo,
-		supv: supv,
-		//mapper:   mClient,
-		searcher:           sClient,
+		repo:               repo,
+		supv:               supv,
+		id:                 id,
+		search:             search,
 		pullFeed:           pullFeed,
 		systemNotify:       systemNotify,
 		feedOwner:          feedOwner,
@@ -127,7 +128,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 				fmt.Sprintf("%s: Update Feed %s", modelnetzach.SystemNotifyTitleCronJob, c.Name),
 				"Queued",
 			)
-			un.Notification.ID, err = y.searcher.NewID(ctx)
+			un.Notification.ID, err = y.id.New()
 			if err != nil {
 				return nil
 			}

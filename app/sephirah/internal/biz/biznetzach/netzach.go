@@ -4,13 +4,14 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizutils"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -47,7 +48,8 @@ type NetzachRepo interface {
 type Netzach struct {
 	repo              NetzachRepo
 	supv              *supervisor.Supervisor
-	searcher          *client.Searcher
+	id                *libidgenerator.IDGenerator
+	search            libsearch.Search
 	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
 	notifyFlowCache   *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget]
@@ -56,7 +58,8 @@ type Netzach struct {
 func NewNetzach(
 	repo NetzachRepo,
 	supv *supervisor.Supervisor,
-	sClient *client.Searcher,
+	id *libidgenerator.IDGenerator,
+	search libsearch.Search,
 	mq *libmq.MQ,
 	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
@@ -69,7 +72,8 @@ func NewNetzach(
 	y := &Netzach{
 		repo,
 		supv,
-		sClient,
+		id,
+		search,
 		notifySourceCache,
 		notifyFlowCache,
 		notifyTargetCache,
@@ -89,7 +93,7 @@ func (n *Netzach) CreateNotifyTarget(ctx context.Context, target *modelnetzach.N
 	if target == nil {
 		return 0, pb.ErrorErrorReasonBadRequest("notify target required")
 	}
-	id, err := n.searcher.NewID(ctx)
+	id, err := n.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -146,7 +150,7 @@ func (n *Netzach) CreateNotifyFlow(ctx context.Context, flow *modelnetzach.Notif
 	if flow == nil {
 		return 0, pb.ErrorErrorReasonBadRequest("notify target required")
 	}
-	id, err := n.searcher.NewID(ctx)
+	id, err := n.id.New()
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

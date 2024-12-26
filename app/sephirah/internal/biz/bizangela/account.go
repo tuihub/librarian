@@ -87,7 +87,7 @@ func NewPullAccountAppInfoRelationTopic(
 			}
 			infos := make([]*modelgebura.AppInfo, 0, infoNum)
 			var infoIDs []model.InternalID
-			if id, err := a.searcher.NewBatchIDs(ctx, infoNum); err != nil {
+			if id, err := a.id.BatchNew(infoNum); err != nil {
 				return err
 			} else {
 				infoIDs = id

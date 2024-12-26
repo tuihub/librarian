@@ -66,6 +66,12 @@ func Description(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldDescription, v))
 }
 
+// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
+func DeviceID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldDeviceID, vc))
+}
+
 // Public applies equality check predicate on the "public" field. It's identical to PublicEQ.
 func Public(v bool) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldPublic, v))
@@ -209,6 +215,60 @@ func DescriptionEqualFold(v string) predicate.App {
 // DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
 func DescriptionContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldDescription, v))
+}
+
+// DeviceIDEQ applies the EQ predicate on the "device_id" field.
+func DeviceIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldDeviceID, vc))
+}
+
+// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
+func DeviceIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldDeviceID, vc))
+}
+
+// DeviceIDIn applies the In predicate on the "device_id" field.
+func DeviceIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldDeviceID, v...))
+}
+
+// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
+func DeviceIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldDeviceID, v...))
+}
+
+// DeviceIDGT applies the GT predicate on the "device_id" field.
+func DeviceIDGT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGT(FieldDeviceID, vc))
+}
+
+// DeviceIDGTE applies the GTE predicate on the "device_id" field.
+func DeviceIDGTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGTE(FieldDeviceID, vc))
+}
+
+// DeviceIDLT applies the LT predicate on the "device_id" field.
+func DeviceIDLT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLT(FieldDeviceID, vc))
+}
+
+// DeviceIDLTE applies the LTE predicate on the "device_id" field.
+func DeviceIDLTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLTE(FieldDeviceID, vc))
 }
 
 // PublicEQ applies the EQ predicate on the "public" field.

@@ -898,6 +898,8 @@ type AppMutation struct {
 	id              *model.InternalID
 	name            *string
 	description     *string
+	device_id       *model.InternalID
+	adddevice_id    *model.InternalID
 	public          *bool
 	updated_at      *time.Time
 	created_at      *time.Time
@@ -1085,6 +1087,62 @@ func (m *AppMutation) OldDescription(ctx context.Context) (v string, err error) 
 // ResetDescription resets all changes to the "description" field.
 func (m *AppMutation) ResetDescription() {
 	m.description = nil
+}
+
+// SetDeviceID sets the "device_id" field.
+func (m *AppMutation) SetDeviceID(mi model.InternalID) {
+	m.device_id = &mi
+	m.adddevice_id = nil
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *AppMutation) DeviceID() (r model.InternalID, exists bool) {
+	v := m.device_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the App entity.
+// If the App object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppMutation) OldDeviceID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (m *AppMutation) AddDeviceID(mi model.InternalID) {
+	if m.adddevice_id != nil {
+		*m.adddevice_id += mi
+	} else {
+		m.adddevice_id = &mi
+	}
+}
+
+// AddedDeviceID returns the value that was added to the "device_id" field in this mutation.
+func (m *AppMutation) AddedDeviceID() (r model.InternalID, exists bool) {
+	v := m.adddevice_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *AppMutation) ResetDeviceID() {
+	m.device_id = nil
+	m.adddevice_id = nil
 }
 
 // SetPublic sets the "public" field.
@@ -1307,12 +1365,15 @@ func (m *AppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.name != nil {
 		fields = append(fields, app.FieldName)
 	}
 	if m.description != nil {
 		fields = append(fields, app.FieldDescription)
+	}
+	if m.device_id != nil {
+		fields = append(fields, app.FieldDeviceID)
 	}
 	if m.public != nil {
 		fields = append(fields, app.FieldPublic)
@@ -1335,6 +1396,8 @@ func (m *AppMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case app.FieldDescription:
 		return m.Description()
+	case app.FieldDeviceID:
+		return m.DeviceID()
 	case app.FieldPublic:
 		return m.Public()
 	case app.FieldUpdatedAt:
@@ -1354,6 +1417,8 @@ func (m *AppMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldName(ctx)
 	case app.FieldDescription:
 		return m.OldDescription(ctx)
+	case app.FieldDeviceID:
+		return m.OldDeviceID(ctx)
 	case app.FieldPublic:
 		return m.OldPublic(ctx)
 	case app.FieldUpdatedAt:
@@ -1383,6 +1448,13 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDescription(v)
 		return nil
+	case app.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
+		return nil
 	case app.FieldPublic:
 		v, ok := value.(bool)
 		if !ok {
@@ -1411,13 +1483,21 @@ func (m *AppMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *AppMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.adddevice_id != nil {
+		fields = append(fields, app.FieldDeviceID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case app.FieldDeviceID:
+		return m.AddedDeviceID()
+	}
 	return nil, false
 }
 
@@ -1426,6 +1506,13 @@ func (m *AppMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *AppMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case app.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeviceID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown App numeric field %s", name)
 }
@@ -1458,6 +1545,9 @@ func (m *AppMutation) ResetField(name string) error {
 		return nil
 	case app.FieldDescription:
 		m.ResetDescription()
+		return nil
+	case app.FieldDeviceID:
+		m.ResetDeviceID()
 		return nil
 	case app.FieldPublic:
 		m.ResetPublic()

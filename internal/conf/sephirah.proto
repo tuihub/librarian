@@ -33,4 +33,5 @@ message Sephirah {
   Porter porter = 7;
   Consul consul = 8;
   Sentry sentry = 9;
+  Search search = 10;
 }

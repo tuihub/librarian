@@ -62,6 +62,7 @@ func main() {
 		bc.GetMq(),
 		bc.GetCache(),
 		bc.GetConsul(),
+		bc.GetSearch(),
 		appSettings,
 	)
 	if err != nil {

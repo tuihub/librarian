@@ -5,7 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/app/sephirah/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	searcher "github.com/tuihub/protos/pkg/librarian/searcher/v1"
+	"github.com/tuihub/librarian/internal/lib/libsearch"
 )
 
 func NewUpdateAppInfoIndexTopic(
@@ -23,11 +23,11 @@ func NewUpdateAppInfoIndexTopic(
 				for _, other := range info.Others {
 					desc += other.Name
 				}
-				err = a.searcher.DescribeID(ctx,
+				err = a.search.DescribeID(ctx,
 					info.Internal.ID,
+					libsearch.SearchIndexGeburaApp,
+					false,
 					desc,
-					searcher.DescribeIDRequest_DESCRIBE_MODE_OVERRIDE,
-					searcher.Index_INDEX_GEBURA_APP,
 				)
 				if err != nil {
 					return err

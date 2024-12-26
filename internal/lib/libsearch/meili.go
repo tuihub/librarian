@@ -1,32 +1,28 @@
-package data
+package libsearch
 
 import (
 	"context"
 
-	"github.com/tuihub/librarian/app/searcher/internal/biz"
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/meilisearch/meilisearch-go"
-	"github.com/sony/sonyflake"
 )
 
 type meiliSearcherRepo struct {
-	sf     *sonyflake.Sonyflake
 	search meilisearch.ServiceManager
 }
 
-func NewMeili(conf *conf.Searcher_Data, app *libapp.Settings) (meilisearch.ServiceManager, error) {
-	if conf.GetMeilisearch() == nil {
-		return nil, nil //nolint:nilnil //TODO
+func newMeili(conf *conf.Search) meilisearch.ServiceManager {
+	if conf.GetDriver() != "meili" {
+		return nil
 	}
 	client := meilisearch.New(
-		conf.GetMeilisearch().GetAddr(),
-		meilisearch.WithAPIKey(conf.GetMeilisearch().GetApiKey()),
+		conf.GetMeili().GetAddr(),
+		meilisearch.WithAPIKey(conf.GetMeili().GetApiKey()),
 	)
-	return client, nil
+	return client
 }
 
 type document struct {
@@ -35,7 +31,7 @@ type document struct {
 }
 
 func (m *meiliSearcherRepo) DescribeID(
-	ctx context.Context, id model.InternalID, index biz.Index, append_ bool, description string,
+	ctx context.Context, id model.InternalID, index SearchIndex, append_ bool, description string,
 ) error {
 	var jsonDesc interface{}
 	err := libcodec.Unmarshal(libcodec.JSON, []byte(description), &jsonDesc)
@@ -52,12 +48,12 @@ func (m *meiliSearcherRepo) DescribeID(
 		}
 	}
 	if append_ {
-		_, err = m.search.Index(biz.IndexNameMap()[index]).UpdateDocuments(documents)
+		_, err = m.search.Index(SearchIndexNameMap()[index]).UpdateDocuments(documents)
 		if err != nil {
 			return err
 		}
 	} else {
-		_, err = m.search.Index(biz.IndexNameMap()[index]).AddDocuments(documents)
+		_, err = m.search.Index(SearchIndexNameMap()[index]).AddDocuments(documents)
 		if err != nil {
 			return err
 		}
@@ -65,13 +61,13 @@ func (m *meiliSearcherRepo) DescribeID(
 	return nil
 }
 
-func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, paging model.Paging, query string) (
-	[]*biz.SearchResult, error) {
+func (m *meiliSearcherRepo) SearchID(ctx context.Context, index SearchIndex, paging model.Paging, query string) (
+	[]*SearchResult, error) {
 	request := new(meilisearch.SearchRequest)
 	request.Limit = int64(paging.ToLimit())
 	request.Limit = int64(paging.ToOffset())
 	// https://github.com/meilisearch/meilisearch-go/issues/406
-	resultRaw, err := m.search.Index(biz.IndexNameMap()[index]).SearchRaw(query, request)
+	resultRaw, err := m.search.Index(SearchIndexNameMap()[index]).SearchRaw(query, request)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +84,7 @@ func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, pagin
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*biz.SearchResult, 0, 20) //nolint:mnd // TODO
+	res := make([]*SearchResult, 0, 20) //nolint:mnd // TODO
 	for _, h := range result.Hits {
 		var str []byte
 		str, err = libcodec.Marshal(libcodec.JSON, h)
@@ -100,7 +96,7 @@ func (m *meiliSearcherRepo) SearchID(ctx context.Context, index biz.Index, pagin
 		if err != nil {
 			continue
 		}
-		res = append(res, &biz.SearchResult{
+		res = append(res, &SearchResult{
 			ID:   d.ID,
 			Rank: 0,
 		})

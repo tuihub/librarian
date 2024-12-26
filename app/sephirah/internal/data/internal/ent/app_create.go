@@ -37,6 +37,12 @@ func (ac *AppCreate) SetDescription(s string) *AppCreate {
 	return ac
 }
 
+// SetDeviceID sets the "device_id" field.
+func (ac *AppCreate) SetDeviceID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetDeviceID(mi)
+	return ac
+}
+
 // SetPublic sets the "public" field.
 func (ac *AppCreate) SetPublic(b bool) *AppCreate {
 	ac.mutation.SetPublic(b)
@@ -160,6 +166,9 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "App.description"`)}
 	}
+	if _, ok := ac.mutation.DeviceID(); !ok {
+		return &ValidationError{Name: "device_id", err: errors.New(`ent: missing required field "App.device_id"`)}
+	}
 	if _, ok := ac.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "App.public"`)}
 	}
@@ -212,6 +221,10 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 	if value, ok := ac.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 		_node.Description = value
+	}
+	if value, ok := ac.mutation.DeviceID(); ok {
+		_spec.SetField(app.FieldDeviceID, field.TypeInt64, value)
+		_node.DeviceID = value
 	}
 	if value, ok := ac.mutation.Public(); ok {
 		_spec.SetField(app.FieldPublic, field.TypeBool, value)
@@ -335,6 +348,24 @@ func (u *AppUpsert) UpdateDescription() *AppUpsert {
 	return u
 }
 
+// SetDeviceID sets the "device_id" field.
+func (u *AppUpsert) SetDeviceID(v model.InternalID) *AppUpsert {
+	u.Set(app.FieldDeviceID, v)
+	return u
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateDeviceID() *AppUpsert {
+	u.SetExcluded(app.FieldDeviceID)
+	return u
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppUpsert) AddDeviceID(v model.InternalID) *AppUpsert {
+	u.Add(app.FieldDeviceID, v)
+	return u
+}
+
 // SetPublic sets the "public" field.
 func (u *AppUpsert) SetPublic(v bool) *AppUpsert {
 	u.Set(app.FieldPublic, v)
@@ -444,6 +475,27 @@ func (u *AppUpsertOne) SetDescription(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateDescription() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *AppUpsertOne) SetDeviceID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppUpsertOne) AddDeviceID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateDeviceID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateDeviceID()
 	})
 }
 
@@ -728,6 +780,27 @@ func (u *AppUpsertBulk) SetDescription(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateDescription() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateDescription()
+	})
+}
+
+// SetDeviceID sets the "device_id" field.
+func (u *AppUpsertBulk) SetDeviceID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppUpsertBulk) AddDeviceID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateDeviceID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateDeviceID()
 	})
 }
 

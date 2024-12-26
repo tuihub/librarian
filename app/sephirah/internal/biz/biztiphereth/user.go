@@ -36,7 +36,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 		return nil, pb.ErrorErrorReasonBadRequest("invalid password")
 	}
 	user.PassWord = password
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
@@ -183,7 +183,7 @@ func (t *Tiphereth) RegisterUser(
 		logger.Infof("generate password failed: %s", err.Error())
 		return nil, "", pb.ErrorErrorReasonBadRequest("invalid password")
 	}
-	id, err := t.searcher.NewID(ctx)
+	id, err := t.id.New()
 	if err != nil {
 		return nil, "", pb.ErrorErrorReasonUnspecified("%s", err)
 	}
