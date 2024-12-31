@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.12](https://github.com/tuihub/librarian/compare/v0.2.11...v0.2.12) (2024-12-31)
+
+
+### Features
+
+* update proto to v0.4.25 ([5128c7a](https://github.com/tuihub/librarian/commit/5128c7ab915a63c628063911e221c5b1b56e8334))
+
+
+### Bug Fixes
+
+* update golangci-lint to v1.62.2 ([47ef35b](https://github.com/tuihub/librarian/commit/47ef35b32c2e0f4a8e85b89f64bb7804aafbda8c))
+
 ## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
 
 
