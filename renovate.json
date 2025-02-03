@@ -45,6 +45,12 @@
       "automerge": true,
       "matchPackageNames": [
         "*"
+      ]
+    },
+    {
+      "description": "Ignore specific dependencies",
+      "matchManagers": [
+        "gomod"
       ],
       "ignoreDeps": ["github.com/tuihub/protos"]
     },
