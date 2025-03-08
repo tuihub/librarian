@@ -49,17 +49,43 @@ func (t tipherethRepo) FetchUserByPassword(
 
 func (t tipherethRepo) CreateDevice(
 	ctx context.Context,
+	userID model.InternalID,
 	info *modeltiphereth.DeviceInfo,
-) error {
-	return t.data.db.DeviceInfo.Create().
-		SetID(info.ID).
-		SetDeviceName(info.DeviceName).
-		SetSystemType(converter.ToEntSystemType(info.SystemType)).
-		SetSystemVersion(info.SystemVersion).
-		SetClientName(info.ClientName).
-		SetClientSourceCodeAddress(info.ClientSourceCodeAddress).
-		SetClientVersion(info.ClientVersion).
-		Exec(ctx)
+	clientLocalID *string,
+) (model.InternalID, error) {
+	var res model.InternalID
+	err := t.data.WithTx(ctx, func(tx *ent.Tx) error {
+		if clientLocalID != nil {
+			infos, err := tx.DeviceInfo.Query().Where(
+				deviceinfo.HasUserWith(user.IDEQ(userID)),
+				deviceinfo.ClientLocalIDEQ(*clientLocalID),
+			).All(ctx)
+			if err != nil {
+				return err
+			}
+			if len(infos) > 0 {
+				res = infos[0].ID
+				return nil
+			}
+		}
+		q := tx.DeviceInfo.Create().
+			SetID(info.ID).
+			SetDeviceName(info.DeviceName).
+			SetSystemType(converter.ToEntSystemType(info.SystemType)).
+			SetSystemVersion(info.SystemVersion).
+			SetClientName(info.ClientName).
+			SetClientSourceCodeAddress(info.ClientSourceCodeAddress).
+			SetClientVersion(info.ClientVersion)
+		if clientLocalID != nil {
+			q.SetClientLocalID(*clientLocalID)
+		}
+		res = info.ID
+		return q.Exec(ctx)
+	})
+	if err != nil {
+		return 0, err
+	}
+	return res, nil
 }
 
 func (t tipherethRepo) FetchDeviceInfo(

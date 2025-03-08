@@ -50,7 +50,7 @@ type TipherethRepo interface {
 	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modelsupervisor.PorterContext, int64, error)
 	UpdatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
 	FetchPorterContext(context.Context, model.InternalID) (*modelsupervisor.PorterContext, error)
-	CreateDevice(context.Context, *modeltiphereth.DeviceInfo) error
+	CreateDevice(context.Context, model.InternalID, *modeltiphereth.DeviceInfo, *string) (model.InternalID, error)
 	ListUserSessions(context.Context, model.InternalID) ([]*modeltiphereth.UserSession, error)
 	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error
 	FetchDeviceInfo(context.Context, model.InternalID) (*modeltiphereth.DeviceInfo, error)

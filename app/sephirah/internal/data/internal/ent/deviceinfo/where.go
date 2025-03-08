@@ -81,6 +81,11 @@ func ClientVersion(v string) predicate.DeviceInfo {
 	return predicate.DeviceInfo(sql.FieldEQ(FieldClientVersion, v))
 }
 
+// ClientLocalID applies equality check predicate on the "client_local_id" field. It's identical to ClientLocalIDEQ.
+func ClientLocalID(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEQ(FieldClientLocalID, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.DeviceInfo {
 	return predicate.DeviceInfo(sql.FieldEQ(FieldUpdatedAt, v))
@@ -434,6 +439,81 @@ func ClientVersionEqualFold(v string) predicate.DeviceInfo {
 // ClientVersionContainsFold applies the ContainsFold predicate on the "client_version" field.
 func ClientVersionContainsFold(v string) predicate.DeviceInfo {
 	return predicate.DeviceInfo(sql.FieldContainsFold(FieldClientVersion, v))
+}
+
+// ClientLocalIDEQ applies the EQ predicate on the "client_local_id" field.
+func ClientLocalIDEQ(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEQ(FieldClientLocalID, v))
+}
+
+// ClientLocalIDNEQ applies the NEQ predicate on the "client_local_id" field.
+func ClientLocalIDNEQ(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNEQ(FieldClientLocalID, v))
+}
+
+// ClientLocalIDIn applies the In predicate on the "client_local_id" field.
+func ClientLocalIDIn(vs ...string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldIn(FieldClientLocalID, vs...))
+}
+
+// ClientLocalIDNotIn applies the NotIn predicate on the "client_local_id" field.
+func ClientLocalIDNotIn(vs ...string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNotIn(FieldClientLocalID, vs...))
+}
+
+// ClientLocalIDGT applies the GT predicate on the "client_local_id" field.
+func ClientLocalIDGT(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldGT(FieldClientLocalID, v))
+}
+
+// ClientLocalIDGTE applies the GTE predicate on the "client_local_id" field.
+func ClientLocalIDGTE(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldGTE(FieldClientLocalID, v))
+}
+
+// ClientLocalIDLT applies the LT predicate on the "client_local_id" field.
+func ClientLocalIDLT(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldLT(FieldClientLocalID, v))
+}
+
+// ClientLocalIDLTE applies the LTE predicate on the "client_local_id" field.
+func ClientLocalIDLTE(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldLTE(FieldClientLocalID, v))
+}
+
+// ClientLocalIDContains applies the Contains predicate on the "client_local_id" field.
+func ClientLocalIDContains(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldContains(FieldClientLocalID, v))
+}
+
+// ClientLocalIDHasPrefix applies the HasPrefix predicate on the "client_local_id" field.
+func ClientLocalIDHasPrefix(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldHasPrefix(FieldClientLocalID, v))
+}
+
+// ClientLocalIDHasSuffix applies the HasSuffix predicate on the "client_local_id" field.
+func ClientLocalIDHasSuffix(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldHasSuffix(FieldClientLocalID, v))
+}
+
+// ClientLocalIDIsNil applies the IsNil predicate on the "client_local_id" field.
+func ClientLocalIDIsNil() predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldIsNull(FieldClientLocalID))
+}
+
+// ClientLocalIDNotNil applies the NotNil predicate on the "client_local_id" field.
+func ClientLocalIDNotNil() predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldNotNull(FieldClientLocalID))
+}
+
+// ClientLocalIDEqualFold applies the EqualFold predicate on the "client_local_id" field.
+func ClientLocalIDEqualFold(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldEqualFold(FieldClientLocalID, v))
+}
+
+// ClientLocalIDContainsFold applies the ContainsFold predicate on the "client_local_id" field.
+func ClientLocalIDContainsFold(v string) predicate.DeviceInfo {
+	return predicate.DeviceInfo(sql.FieldContainsFold(FieldClientLocalID, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

@@ -30,6 +30,8 @@ type DeviceInfo struct {
 	ClientSourceCodeAddress string `json:"client_source_code_address,omitempty"`
 	// ClientVersion holds the value of the "client_version" field.
 	ClientVersion string `json:"client_version,omitempty"`
+	// ClientLocalID holds the value of the "client_local_id" field.
+	ClientLocalID string `json:"client_local_id,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -87,7 +89,7 @@ func (*DeviceInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case deviceinfo.FieldID:
 			values[i] = new(sql.NullInt64)
-		case deviceinfo.FieldDeviceName, deviceinfo.FieldSystemType, deviceinfo.FieldSystemVersion, deviceinfo.FieldClientName, deviceinfo.FieldClientSourceCodeAddress, deviceinfo.FieldClientVersion:
+		case deviceinfo.FieldDeviceName, deviceinfo.FieldSystemType, deviceinfo.FieldSystemVersion, deviceinfo.FieldClientName, deviceinfo.FieldClientSourceCodeAddress, deviceinfo.FieldClientVersion, deviceinfo.FieldClientLocalID:
 			values[i] = new(sql.NullString)
 		case deviceinfo.FieldUpdatedAt, deviceinfo.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -147,6 +149,12 @@ func (di *DeviceInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field client_version", values[i])
 			} else if value.Valid {
 				di.ClientVersion = value.String
+			}
+		case deviceinfo.FieldClientLocalID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field client_local_id", values[i])
+			} else if value.Valid {
+				di.ClientLocalID = value.String
 			}
 		case deviceinfo.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -228,6 +236,9 @@ func (di *DeviceInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("client_version=")
 	builder.WriteString(di.ClientVersion)
+	builder.WriteString(", ")
+	builder.WriteString("client_local_id=")
+	builder.WriteString(di.ClientLocalID)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(di.UpdatedAt.Format(time.ANSIC))

@@ -21,6 +21,7 @@ func (DeviceInfo) Fields() []ent.Field {
 		field.String("client_name"),
 		field.String("client_source_code_address"),
 		field.String("client_version"),
+		field.String("client_local_id").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

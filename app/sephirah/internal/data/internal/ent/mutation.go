@@ -5652,6 +5652,7 @@ type DeviceInfoMutation struct {
 	client_name                *string
 	client_source_code_address *string
 	client_version             *string
+	client_local_id            *string
 	updated_at                 *time.Time
 	created_at                 *time.Time
 	clearedFields              map[string]struct{}
@@ -5989,6 +5990,55 @@ func (m *DeviceInfoMutation) ResetClientVersion() {
 	m.client_version = nil
 }
 
+// SetClientLocalID sets the "client_local_id" field.
+func (m *DeviceInfoMutation) SetClientLocalID(s string) {
+	m.client_local_id = &s
+}
+
+// ClientLocalID returns the value of the "client_local_id" field in the mutation.
+func (m *DeviceInfoMutation) ClientLocalID() (r string, exists bool) {
+	v := m.client_local_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldClientLocalID returns the old "client_local_id" field's value of the DeviceInfo entity.
+// If the DeviceInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceInfoMutation) OldClientLocalID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldClientLocalID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldClientLocalID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldClientLocalID: %w", err)
+	}
+	return oldValue.ClientLocalID, nil
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (m *DeviceInfoMutation) ClearClientLocalID() {
+	m.client_local_id = nil
+	m.clearedFields[deviceinfo.FieldClientLocalID] = struct{}{}
+}
+
+// ClientLocalIDCleared returns if the "client_local_id" field was cleared in this mutation.
+func (m *DeviceInfoMutation) ClientLocalIDCleared() bool {
+	_, ok := m.clearedFields[deviceinfo.FieldClientLocalID]
+	return ok
+}
+
+// ResetClientLocalID resets all changes to the "client_local_id" field.
+func (m *DeviceInfoMutation) ResetClientLocalID() {
+	m.client_local_id = nil
+	delete(m.clearedFields, deviceinfo.FieldClientLocalID)
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *DeviceInfoMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -6257,7 +6307,7 @@ func (m *DeviceInfoMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceInfoMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.device_name != nil {
 		fields = append(fields, deviceinfo.FieldDeviceName)
 	}
@@ -6275,6 +6325,9 @@ func (m *DeviceInfoMutation) Fields() []string {
 	}
 	if m.client_version != nil {
 		fields = append(fields, deviceinfo.FieldClientVersion)
+	}
+	if m.client_local_id != nil {
+		fields = append(fields, deviceinfo.FieldClientLocalID)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, deviceinfo.FieldUpdatedAt)
@@ -6302,6 +6355,8 @@ func (m *DeviceInfoMutation) Field(name string) (ent.Value, bool) {
 		return m.ClientSourceCodeAddress()
 	case deviceinfo.FieldClientVersion:
 		return m.ClientVersion()
+	case deviceinfo.FieldClientLocalID:
+		return m.ClientLocalID()
 	case deviceinfo.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case deviceinfo.FieldCreatedAt:
@@ -6327,6 +6382,8 @@ func (m *DeviceInfoMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldClientSourceCodeAddress(ctx)
 	case deviceinfo.FieldClientVersion:
 		return m.OldClientVersion(ctx)
+	case deviceinfo.FieldClientLocalID:
+		return m.OldClientLocalID(ctx)
 	case deviceinfo.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case deviceinfo.FieldCreatedAt:
@@ -6382,6 +6439,13 @@ func (m *DeviceInfoMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetClientVersion(v)
 		return nil
+	case deviceinfo.FieldClientLocalID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetClientLocalID(v)
+		return nil
 	case deviceinfo.FieldUpdatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -6425,7 +6489,11 @@ func (m *DeviceInfoMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *DeviceInfoMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(deviceinfo.FieldClientLocalID) {
+		fields = append(fields, deviceinfo.FieldClientLocalID)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -6438,6 +6506,11 @@ func (m *DeviceInfoMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *DeviceInfoMutation) ClearField(name string) error {
+	switch name {
+	case deviceinfo.FieldClientLocalID:
+		m.ClearClientLocalID()
+		return nil
+	}
 	return fmt.Errorf("unknown DeviceInfo nullable field %s", name)
 }
 
@@ -6462,6 +6535,9 @@ func (m *DeviceInfoMutation) ResetField(name string) error {
 		return nil
 	case deviceinfo.FieldClientVersion:
 		m.ResetClientVersion()
+		return nil
+	case deviceinfo.FieldClientLocalID:
+		m.ResetClientLocalID()
 		return nil
 	case deviceinfo.FieldUpdatedAt:
 		m.ResetUpdatedAt()

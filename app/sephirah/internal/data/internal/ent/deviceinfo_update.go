@@ -116,6 +116,26 @@ func (diu *DeviceInfoUpdate) SetNillableClientVersion(s *string) *DeviceInfoUpda
 	return diu
 }
 
+// SetClientLocalID sets the "client_local_id" field.
+func (diu *DeviceInfoUpdate) SetClientLocalID(s string) *DeviceInfoUpdate {
+	diu.mutation.SetClientLocalID(s)
+	return diu
+}
+
+// SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
+func (diu *DeviceInfoUpdate) SetNillableClientLocalID(s *string) *DeviceInfoUpdate {
+	if s != nil {
+		diu.SetClientLocalID(*s)
+	}
+	return diu
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (diu *DeviceInfoUpdate) ClearClientLocalID() *DeviceInfoUpdate {
+	diu.mutation.ClearClientLocalID()
+	return diu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (diu *DeviceInfoUpdate) SetUpdatedAt(t time.Time) *DeviceInfoUpdate {
 	diu.mutation.SetUpdatedAt(t)
@@ -324,6 +344,12 @@ func (diu *DeviceInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := diu.mutation.ClientVersion(); ok {
 		_spec.SetField(deviceinfo.FieldClientVersion, field.TypeString, value)
+	}
+	if value, ok := diu.mutation.ClientLocalID(); ok {
+		_spec.SetField(deviceinfo.FieldClientLocalID, field.TypeString, value)
+	}
+	if diu.mutation.ClientLocalIDCleared() {
+		_spec.ClearField(deviceinfo.FieldClientLocalID, field.TypeString)
 	}
 	if value, ok := diu.mutation.UpdatedAt(); ok {
 		_spec.SetField(deviceinfo.FieldUpdatedAt, field.TypeTime, value)
@@ -582,6 +608,26 @@ func (diuo *DeviceInfoUpdateOne) SetNillableClientVersion(s *string) *DeviceInfo
 	return diuo
 }
 
+// SetClientLocalID sets the "client_local_id" field.
+func (diuo *DeviceInfoUpdateOne) SetClientLocalID(s string) *DeviceInfoUpdateOne {
+	diuo.mutation.SetClientLocalID(s)
+	return diuo
+}
+
+// SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
+func (diuo *DeviceInfoUpdateOne) SetNillableClientLocalID(s *string) *DeviceInfoUpdateOne {
+	if s != nil {
+		diuo.SetClientLocalID(*s)
+	}
+	return diuo
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (diuo *DeviceInfoUpdateOne) ClearClientLocalID() *DeviceInfoUpdateOne {
+	diuo.mutation.ClearClientLocalID()
+	return diuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (diuo *DeviceInfoUpdateOne) SetUpdatedAt(t time.Time) *DeviceInfoUpdateOne {
 	diuo.mutation.SetUpdatedAt(t)
@@ -820,6 +866,12 @@ func (diuo *DeviceInfoUpdateOne) sqlSave(ctx context.Context) (_node *DeviceInfo
 	}
 	if value, ok := diuo.mutation.ClientVersion(); ok {
 		_spec.SetField(deviceinfo.FieldClientVersion, field.TypeString, value)
+	}
+	if value, ok := diuo.mutation.ClientLocalID(); ok {
+		_spec.SetField(deviceinfo.FieldClientLocalID, field.TypeString, value)
+	}
+	if diuo.mutation.ClientLocalIDCleared() {
+		_spec.ClearField(deviceinfo.FieldClientLocalID, field.TypeString)
 	}
 	if value, ok := diuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(deviceinfo.FieldUpdatedAt, field.TypeTime, value)

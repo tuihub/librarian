@@ -114,13 +114,13 @@ func init() {
 	deviceinfoFields := schema.DeviceInfo{}.Fields()
 	_ = deviceinfoFields
 	// deviceinfoDescUpdatedAt is the schema descriptor for updated_at field.
-	deviceinfoDescUpdatedAt := deviceinfoFields[7].Descriptor()
+	deviceinfoDescUpdatedAt := deviceinfoFields[8].Descriptor()
 	// deviceinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	deviceinfo.DefaultUpdatedAt = deviceinfoDescUpdatedAt.Default.(func() time.Time)
 	// deviceinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	deviceinfo.UpdateDefaultUpdatedAt = deviceinfoDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// deviceinfoDescCreatedAt is the schema descriptor for created_at field.
-	deviceinfoDescCreatedAt := deviceinfoFields[8].Descriptor()
+	deviceinfoDescCreatedAt := deviceinfoFields[9].Descriptor()
 	// deviceinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
 	deviceinfo.DefaultCreatedAt = deviceinfoDescCreatedAt.Default.(func() time.Time)
 	feedFields := schema.Feed{}.Fields()

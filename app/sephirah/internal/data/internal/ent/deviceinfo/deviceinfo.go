@@ -27,6 +27,8 @@ const (
 	FieldClientSourceCodeAddress = "client_source_code_address"
 	// FieldClientVersion holds the string denoting the client_version field in the database.
 	FieldClientVersion = "client_version"
+	// FieldClientLocalID holds the string denoting the client_local_id field in the database.
+	FieldClientLocalID = "client_local_id"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -69,6 +71,7 @@ var Columns = []string{
 	FieldClientName,
 	FieldClientSourceCodeAddress,
 	FieldClientVersion,
+	FieldClientLocalID,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -162,6 +165,11 @@ func ByClientSourceCodeAddress(opts ...sql.OrderTermOption) OrderOption {
 // ByClientVersion orders the results by the client_version field.
 func ByClientVersion(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldClientVersion, opts...).ToFunc()
+}
+
+// ByClientLocalID orders the results by the client_local_id field.
+func ByClientLocalID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldClientLocalID, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

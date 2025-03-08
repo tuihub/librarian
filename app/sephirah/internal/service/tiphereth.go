@@ -99,7 +99,8 @@ func (s *LibrarianSephirahServiceService) RegisterDevice(ctx context.Context, re
 	if req.GetDeviceInfo() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	id, err := s.t.RegisterDevice(ctx, converter.ToBizDeviceInfo(req.GetDeviceInfo()))
+	localID := req.GetClientLocalId()
+	id, err := s.t.RegisterDevice(ctx, converter.ToBizDeviceInfo(req.GetDeviceInfo()), &localID)
 	if err != nil {
 		return nil, err
 	}

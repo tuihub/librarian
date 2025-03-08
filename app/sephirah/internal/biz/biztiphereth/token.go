@@ -121,7 +121,7 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 			session.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
 			if err != nil {
 				logger.Infof("FetchDeviceInfo failed: %s", err.Error())
-				return "", "", pb.ErrorErrorReasonUnauthorized("invalid device")
+				return "", "", pb.ErrorErrorReasonNotFound("invalid device")
 			}
 			needUpdate = true
 		}
@@ -196,8 +196,10 @@ func (t *Tiphereth) AcquireUserToken(
 func (t *Tiphereth) RegisterDevice(
 	ctx context.Context,
 	device *modeltiphereth.DeviceInfo,
+	clientLocalID *string,
 ) (model.InternalID, *errors.Error) {
-	if libauth.FromContextAssertUserType(ctx) == nil {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
 		return 0, bizutils.NoPermissionError()
 	}
 	id, err := t.id.New()
@@ -205,7 +207,7 @@ func (t *Tiphereth) RegisterDevice(
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	device.ID = id
-	err = t.repo.CreateDevice(ctx, device)
+	id, err = t.repo.CreateDevice(ctx, claims.UserID, device, clientLocalID)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

@@ -203,6 +203,7 @@ var (
 		{Name: "client_name", Type: field.TypeString},
 		{Name: "client_source_code_address", Type: field.TypeString},
 		{Name: "client_version", Type: field.TypeString},
+		{Name: "client_local_id", Type: field.TypeString, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}

@@ -62,6 +62,20 @@ func (dic *DeviceInfoCreate) SetClientVersion(s string) *DeviceInfoCreate {
 	return dic
 }
 
+// SetClientLocalID sets the "client_local_id" field.
+func (dic *DeviceInfoCreate) SetClientLocalID(s string) *DeviceInfoCreate {
+	dic.mutation.SetClientLocalID(s)
+	return dic
+}
+
+// SetNillableClientLocalID sets the "client_local_id" field if the given value is not nil.
+func (dic *DeviceInfoCreate) SetNillableClientLocalID(s *string) *DeviceInfoCreate {
+	if s != nil {
+		dic.SetClientLocalID(*s)
+	}
+	return dic
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (dic *DeviceInfoCreate) SetUpdatedAt(t time.Time) *DeviceInfoCreate {
 	dic.mutation.SetUpdatedAt(t)
@@ -274,6 +288,10 @@ func (dic *DeviceInfoCreate) createSpec() (*DeviceInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(deviceinfo.FieldClientVersion, field.TypeString, value)
 		_node.ClientVersion = value
 	}
+	if value, ok := dic.mutation.ClientLocalID(); ok {
+		_spec.SetField(deviceinfo.FieldClientLocalID, field.TypeString, value)
+		_node.ClientLocalID = value
+	}
 	if value, ok := dic.mutation.UpdatedAt(); ok {
 		_spec.SetField(deviceinfo.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
@@ -458,6 +476,24 @@ func (u *DeviceInfoUpsert) UpdateClientVersion() *DeviceInfoUpsert {
 	return u
 }
 
+// SetClientLocalID sets the "client_local_id" field.
+func (u *DeviceInfoUpsert) SetClientLocalID(v string) *DeviceInfoUpsert {
+	u.Set(deviceinfo.FieldClientLocalID, v)
+	return u
+}
+
+// UpdateClientLocalID sets the "client_local_id" field to the value that was provided on create.
+func (u *DeviceInfoUpsert) UpdateClientLocalID() *DeviceInfoUpsert {
+	u.SetExcluded(deviceinfo.FieldClientLocalID)
+	return u
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (u *DeviceInfoUpsert) ClearClientLocalID() *DeviceInfoUpsert {
+	u.SetNull(deviceinfo.FieldClientLocalID)
+	return u
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (u *DeviceInfoUpsert) SetUpdatedAt(v time.Time) *DeviceInfoUpsert {
 	u.Set(deviceinfo.FieldUpdatedAt, v)
@@ -611,6 +647,27 @@ func (u *DeviceInfoUpsertOne) SetClientVersion(v string) *DeviceInfoUpsertOne {
 func (u *DeviceInfoUpsertOne) UpdateClientVersion() *DeviceInfoUpsertOne {
 	return u.Update(func(s *DeviceInfoUpsert) {
 		s.UpdateClientVersion()
+	})
+}
+
+// SetClientLocalID sets the "client_local_id" field.
+func (u *DeviceInfoUpsertOne) SetClientLocalID(v string) *DeviceInfoUpsertOne {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.SetClientLocalID(v)
+	})
+}
+
+// UpdateClientLocalID sets the "client_local_id" field to the value that was provided on create.
+func (u *DeviceInfoUpsertOne) UpdateClientLocalID() *DeviceInfoUpsertOne {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.UpdateClientLocalID()
+	})
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (u *DeviceInfoUpsertOne) ClearClientLocalID() *DeviceInfoUpsertOne {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.ClearClientLocalID()
 	})
 }
 
@@ -937,6 +994,27 @@ func (u *DeviceInfoUpsertBulk) SetClientVersion(v string) *DeviceInfoUpsertBulk 
 func (u *DeviceInfoUpsertBulk) UpdateClientVersion() *DeviceInfoUpsertBulk {
 	return u.Update(func(s *DeviceInfoUpsert) {
 		s.UpdateClientVersion()
+	})
+}
+
+// SetClientLocalID sets the "client_local_id" field.
+func (u *DeviceInfoUpsertBulk) SetClientLocalID(v string) *DeviceInfoUpsertBulk {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.SetClientLocalID(v)
+	})
+}
+
+// UpdateClientLocalID sets the "client_local_id" field to the value that was provided on create.
+func (u *DeviceInfoUpsertBulk) UpdateClientLocalID() *DeviceInfoUpsertBulk {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.UpdateClientLocalID()
+	})
+}
+
+// ClearClientLocalID clears the value of the "client_local_id" field.
+func (u *DeviceInfoUpsertBulk) ClearClientLocalID() *DeviceInfoUpsertBulk {
+	return u.Update(func(s *DeviceInfoUpsert) {
+		s.ClearClientLocalID()
 	})
 }
 
