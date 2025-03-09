@@ -3,6 +3,7 @@ package bizangela
 import (
 	"context"
 	"fmt"
+	"slices"
 	"sort"
 	"time"
 
@@ -14,8 +15,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-
-	"golang.org/x/exp/slices"
 )
 
 func NewPullFeedTopic( //nolint:gocognit // TODO

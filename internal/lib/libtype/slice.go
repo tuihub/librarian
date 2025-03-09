@@ -1,12 +1,12 @@
 package libtype
 
 import (
-	"math/rand"
+	"math/rand/v2"
 )
 
 func ShuffleSlice[T any](ss []T) {
 	for i := range ss {
-		j := rand.Intn(i + 1) //nolint:gosec // not critical
+		j := rand.IntN(i + 1) //nolint:gosec // not critical
 		ss[i], ss[j] = ss[j], ss[i]
 	}
 }
