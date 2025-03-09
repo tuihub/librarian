@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.12](https://github.com/tuihub/librarian/compare/v0.2.11...v0.2.12) (2025-03-09)
+
+
+### Features
+
+* update proto to v0.4.25 ([5128c7a](https://github.com/tuihub/librarian/commit/5128c7ab915a63c628063911e221c5b1b56e8334))
+
+
+### Bug Fixes
+
+* support client local device id ([c7040d3](https://github.com/tuihub/librarian/commit/c7040d355f9e97c2ffeaa18b3d94e964173c9279))
+* update golangci-lint to v1.62.2 ([47ef35b](https://github.com/tuihub/librarian/commit/47ef35b32c2e0f4a8e85b89f64bb7804aafbda8c))
+* upgrade golangci-lint ([82da9b0](https://github.com/tuihub/librarian/commit/82da9b006157527b7bc760340b2fdfdedbef89ec))
+
 ## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
 
 
