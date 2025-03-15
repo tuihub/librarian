@@ -1,0 +1,112 @@
+<div class="mb-6">
+    <h2 class="text-2xl font-bold">
+        {{if .User.ID}}编辑用户{{else}}创建新用户{{end}}
+    </h2>
+</div>
+
+<form id="userForm" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="{{.User.Username}}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+            >
+        </div>
+
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+            <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{.User.Email}}"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密码</label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    {{if not .User.ID}}required{{end}}
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="{{if .User.ID}}留空表示不修改密码{{end}}"
+            >
+        </div>
+
+        <div>
+            <label for="role" class="block text-sm font-medium text-gray-700 mb-1">角色</label>
+            <select
+                    id="role"
+                    name="role"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+                <option value="user" {{if eq .User.Role "user"}}selected{{end}}>普通用户</option>
+                <option value="admin" {{if eq .User.Role "admin"}}selected{{end}}>管理员</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="flex justify-between pt-4">
+        <a href="/users" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded transition duration-200">
+            返回列表
+        </a>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-200">
+            {{if .User.ID}}更新用户{{else}}创建用户{{end}}
+        </button>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('userForm');
+        const action = "{{.Action}}";
+        const method = "{{.Method}}";
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+            const userData = {};
+
+            for (const [key, value] of formData.entries()) {
+                // 如果是编辑用户且密码为空，则不发送密码字段
+                if (key === 'password' && value === '' && method === 'PUT') {
+                    continue;
+                }
+                userData[key] = value;
+            }
+
+            fetch(action, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || '操作失败');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 操作成功，跳转到用户列表页
+                    window.location.href = '/users';
+                })
+                .catch(error => {
+                    alert(error.message || '操作失败，请重试');
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
