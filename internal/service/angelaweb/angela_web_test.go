@@ -5,6 +5,7 @@ import (
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
+	"golang.org/x/crypto/bcrypt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -23,6 +24,15 @@ func Test_AngelaWeb(t *testing.T) {
 		Password: "admin123",
 		Email:    "admin@example.com",
 		Role:     "admin",
+	}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), bcrypt.DefaultCost)
+	if err != nil {
+		t.Fatal(err)
+	}
+	admin.Password = string(hashedPassword)
+	err = db.AutoMigrate(&admin)
+	if err != nil {
+		t.Fatal(err)
 	}
 	err = db.Create(&admin).Error
 	if err != nil {
