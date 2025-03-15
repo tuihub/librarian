@@ -1,8 +1,8 @@
 package angelaweb
 
 import (
+	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	jwtware "github.com/gofiber/jwt/v3"
 )
 
 func (a *AngelaWeb) setupRoutes() {
@@ -18,7 +18,7 @@ func (a *AngelaWeb) setupRoutes() {
 
 	// JWT中间件
 	api.Use(jwtware.New(jwtware.Config{
-		SigningKey: []byte("your-secret-key"),
+		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 
 	// 受保护的API路由
@@ -35,7 +35,7 @@ func (a *AngelaWeb) setupRoutes() {
 	// 受保护的页面路由
 	auth := a.app.Group("/")
 	auth.Use(jwtware.New(jwtware.Config{
-		SigningKey: []byte("your-secret-key"),
+		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 
 	auth.Get("/", a.pageBuilder.Dashboard)
