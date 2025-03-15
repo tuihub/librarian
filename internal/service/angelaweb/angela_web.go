@@ -9,9 +9,9 @@ import (
 )
 
 type AngelaWeb struct {
-	handler *api.Handler
-	builder *page.Builder
-	app     *fiber.App
+	apiHandler  *api.Handler
+	pageBuilder *page.Builder
+	app         *fiber.App
 }
 
 func NewAngelaWeb(handler *api.Handler, builder *page.Builder) *AngelaWeb {
@@ -22,15 +22,13 @@ func NewAngelaWeb(handler *api.Handler, builder *page.Builder) *AngelaWeb {
 		ViewsLayout: "layout/default",
 	})
 
-	app.Static("/static", "./static")
-
-	initRoutes(app)
-
-	return &AngelaWeb{
-		handler: handler,
-		builder: builder,
-		app:     app,
+	res := &AngelaWeb{
+		apiHandler:  handler,
+		pageBuilder: builder,
+		app:         app,
 	}
+	res.setupRoutes()
+	return res
 }
 
 func (a *AngelaWeb) Start(ctx context.Context) error {
