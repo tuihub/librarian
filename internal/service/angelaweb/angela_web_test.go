@@ -3,6 +3,7 @@ package angelaweb
 import (
 	"context"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
+	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,7 +17,8 @@ func Test_AngelaWeb(t *testing.T) {
 		t.Fatal(err)
 	}
 	handler := api.NewHandler(db)
-	angelaWeb := NewAngelaWeb(handler)
+	builder := page.NewBuilder(db)
+	angelaWeb := NewAngelaWeb(handler, builder)
 
 	err = angelaWeb.Start(context.Background())
 
