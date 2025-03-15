@@ -55,10 +55,7 @@
                     }
                     return response.json();
                 })
-                .then(data => {
-                    // 保存token
-                    localStorage.setItem('token', data.token);
-                    // 跳转到首页
+                .then(() => {
                     window.location.href = '/';
                 })
                 .catch(error => {

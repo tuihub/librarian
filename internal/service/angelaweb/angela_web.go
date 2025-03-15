@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 )
@@ -11,10 +12,11 @@ import (
 type AngelaWeb struct {
 	apiHandler  *api.Handler
 	pageBuilder *page.Builder
+	auth        *libauth.Auth
 	app         *fiber.App
 }
 
-func NewAngelaWeb(handler *api.Handler, builder *page.Builder) *AngelaWeb {
+func NewAngelaWeb(handler *api.Handler, builder *page.Builder, auth *libauth.Auth) *AngelaWeb {
 	viewsEngine := html.New("./view", ".html")
 
 	app := fiber.New(fiber.Config{
@@ -25,6 +27,7 @@ func NewAngelaWeb(handler *api.Handler, builder *page.Builder) *AngelaWeb {
 	res := &AngelaWeb{
 		apiHandler:  handler,
 		pageBuilder: builder,
+		auth:        auth,
 		app:         app,
 	}
 	res.setupRoutes()

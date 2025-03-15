@@ -72,6 +72,14 @@ func RawFromContext(ctx context.Context) string {
 	return ""
 }
 
+func ValidateString(tokenString string, keyFunc jwtv5.Keyfunc) (bool, error) {
+	token, err := jwtv5.ParseWithClaims(tokenString, &Claims{}, keyFunc)
+	if err != nil {
+		return false, err
+	}
+	return token.Valid, nil
+}
+
 func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) *Claims {
 	if userTypes == nil {
 		userTypes = []UserType{UserTypeAdmin, UserTypeNormal}

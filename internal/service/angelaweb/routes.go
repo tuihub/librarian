@@ -1,9 +1,17 @@
 package angelaweb
 
 import (
-	jwtware "github.com/gofiber/contrib/jwt"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/keyauth"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 )
+
+func (a *AngelaWeb) newValidator() func(ctx *fiber.Ctx, s string) (bool, error) {
+	return func(ctx *fiber.Ctx, s string) (bool, error) {
+		return libauth.ValidateString(s, a.auth.KeyFunc(libauth.ClaimsTypeAccessToken))
+	}
+}
 
 func (a *AngelaWeb) setupRoutes() {
 	// 静态文件
@@ -16,9 +24,9 @@ func (a *AngelaWeb) setupRoutes() {
 	api := a.app.Group("/api")
 	api.Post("/login", a.apiHandler.Login)
 
-	// JWT中间件
-	api.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
+	api.Use(keyauth.New(keyauth.Config{
+		KeyLookup: "cookie:access_token",
+		Validator: a.newValidator(),
 	}))
 
 	// 受保护的API路由
@@ -34,8 +42,9 @@ func (a *AngelaWeb) setupRoutes() {
 
 	// 受保护的页面路由
 	auth := a.app.Group("/")
-	auth.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
+	auth.Use(keyauth.New(keyauth.Config{
+		KeyLookup: "cookie:access_token",
+		Validator: a.newValidator(),
 	}))
 
 	auth.Get("/", a.pageBuilder.Dashboard)

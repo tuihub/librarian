@@ -2,6 +2,8 @@ package angelaweb
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
@@ -14,6 +16,11 @@ import (
 )
 
 func Test_AngelaWeb(t *testing.T) {
+	auth, err := libauth.NewAuth(&conf.Auth{
+		PasswordSalt: "",
+		JwtIssuer:    "",
+		JwtSecret:    "",
+	})
 	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{})
 	if err != nil {
 		t.Fatal(err)
@@ -39,9 +46,9 @@ func Test_AngelaWeb(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	handler := api.NewHandler(db)
+	handler := api.NewHandler(db, auth)
 	builder := page.NewBuilder(db)
-	angelaWeb := NewAngelaWeb(handler, builder)
+	angelaWeb := NewAngelaWeb(handler, builder, auth)
 
 	err = angelaWeb.Start(context.Background())
 

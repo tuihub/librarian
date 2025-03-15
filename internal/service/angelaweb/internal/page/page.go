@@ -14,6 +14,12 @@ func NewBuilder(db *gorm.DB) *Builder {
 	return &Builder{db: db}
 }
 
+func (b *Builder) Login(c *fiber.Ctx) error {
+	return c.Render("login", fiber.Map{
+		"Title": "登录",
+	})
+}
+
 func (b *Builder) Dashboard(c *fiber.Ctx) error {
 	var userCount int64
 	if err := b.db.Model(&model.User{}).Count(&userCount).Error; err != nil {
@@ -63,11 +69,5 @@ func (b *Builder) UserForm(c *fiber.Ctx) error {
 		"User":   user,
 		"Action": action,
 		"Method": method,
-	})
-}
-
-func (b *Builder) Login(c *fiber.Ctx) error {
-	return c.Render("login", fiber.Map{
-		"Title": "登录",
 	})
 }
