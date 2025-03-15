@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifyflow"
@@ -13,8 +12,9 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
 
 	"entgo.io/ent/dialect/sql"
 )

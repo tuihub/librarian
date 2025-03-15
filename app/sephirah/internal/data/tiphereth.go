@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
@@ -14,10 +13,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 
 	"entgo.io/ent/dialect/sql"
 )

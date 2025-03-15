@@ -5,11 +5,9 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
-	"github.com/tuihub/librarian/app/sephirah/internal/service"
-	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	"github.com/tuihub/librarian/internal/biz"
+	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -18,6 +16,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
+	"github.com/tuihub/librarian/internal/service/sephirah"
+	"github.com/tuihub/librarian/internal/service/supervisor"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -45,6 +45,6 @@ func NewSephirahService(
 		biz.ProviderSet,
 		client.ProviderSet,
 		supervisor.ProviderSet,
-		service.ProviderSet,
+		sephirah.ProviderSet,
 	))
 }

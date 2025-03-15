@@ -12,13 +12,13 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelchesed"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model/modelchesed"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
 // goverter:converter

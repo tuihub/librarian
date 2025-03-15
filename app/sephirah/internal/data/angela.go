@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
@@ -15,12 +14,13 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditem"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/feeditemcollection"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modeltiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/internal/model/modeltiphereth"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"entgo.io/ent/dialect/sql"
 )

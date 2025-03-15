@@ -8,18 +8,16 @@ package main
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizangela"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizbinah"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizchesed"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizgebura"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biznetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/app/sephirah/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
-	"github.com/tuihub/librarian/app/sephirah/internal/service"
-	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	bizangela2 "github.com/tuihub/librarian/internal/biz/bizangela"
+	"github.com/tuihub/librarian/internal/biz/bizbinah"
+	"github.com/tuihub/librarian/internal/biz/bizchesed"
+	"github.com/tuihub/librarian/internal/biz/bizgebura"
+	biznetzach2 "github.com/tuihub/librarian/internal/biz/biznetzach"
+	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	client2 "github.com/tuihub/librarian/internal/client"
+	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -30,6 +28,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
+	"github.com/tuihub/librarian/internal/service/sephirah"
+	"github.com/tuihub/librarian/internal/service/supervisor"
 )
 
 // Injectors from wire.go:
@@ -70,7 +70,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 	}
 	netzachRepo := data.NewNetzachRepo(dataData)
 	idGenerator := libidgenerator.NewIDGenerator()
-	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
+	topic := biznetzach2.NewSystemNotificationTopic(netzachRepo, idGenerator)
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	store, err := libcache.NewStore(cache)
 	if err != nil {
@@ -93,25 +93,25 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	angelaBase, err := bizangela2.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	map3 := bizangela.NewAppInfoCache(geburaRepo, store)
-	libmqTopic := bizangela.NewUpdateAppInfoIndexTopic(angelaBase)
-	topic2 := bizangela.NewPullAppInfoTopic(angelaBase, map3, libmqTopic)
-	topic3 := bizangela.NewPullAccountAppInfoRelationTopic(angelaBase, topic2)
-	topic4 := bizangela.NewPullAccountTopic(angelaBase, topic3)
-	map4 := bizangela.NewNotifyFlowCache(netzachRepo, store)
-	map5 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
-	map6 := bizangela.NewNotifyTargetCache(netzachRepo, store)
-	topic5 := bizangela.NewNotifyPushTopic(angelaBase, map6)
-	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map4, map5, topic5)
-	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
-	topic8 := bizangela.NewPullFeedTopic(angelaBase, topic7, topic)
-	angela, err := bizangela.NewAngela(angelaBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
+	map3 := bizangela2.NewAppInfoCache(geburaRepo, store)
+	libmqTopic := bizangela2.NewUpdateAppInfoIndexTopic(angelaBase)
+	topic2 := bizangela2.NewPullAppInfoTopic(angelaBase, map3, libmqTopic)
+	topic3 := bizangela2.NewPullAccountAppInfoRelationTopic(angelaBase, topic2)
+	topic4 := bizangela2.NewPullAccountTopic(angelaBase, topic3)
+	map4 := bizangela2.NewNotifyFlowCache(netzachRepo, store)
+	map5 := bizangela2.NewFeedToNotifyFlowCache(netzachRepo, store)
+	map6 := bizangela2.NewNotifyTargetCache(netzachRepo, store)
+	topic5 := bizangela2.NewNotifyPushTopic(angelaBase, map6)
+	topic6 := bizangela2.NewNotifyRouterTopic(angelaBase, map4, map5, topic5)
+	topic7 := bizangela2.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
+	topic8 := bizangela2.NewPullFeedTopic(angelaBase, topic7, topic)
+	angela, err := bizangela2.NewAngela(angelaBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -147,7 +147,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, idGenerator, libsearchSearch, libmqMQ, map5, map4, map6, topic)
+	netzach, err := biznetzach2.NewNetzach(netzachRepo, supervisorSupervisor, idGenerator, libsearchSearch, libmqMQ, map5, map4, map6, topic)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -167,7 +167,7 @@ func wireApp(sephirahServer *conf.SephirahServer, database *conf.Database, s3 *c
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := service.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
 	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup2()

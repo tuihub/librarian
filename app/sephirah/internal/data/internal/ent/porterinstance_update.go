@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -13,7 +14,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelsupervisor"
 )
 
 // PorterInstanceUpdate is the builder for updating PorterInstance entities.

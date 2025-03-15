@@ -5,12 +5,10 @@
 package main
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/biz"
-	"github.com/tuihub/librarian/app/sephirah/internal/client"
 	"github.com/tuihub/librarian/app/sephirah/internal/data"
-	"github.com/tuihub/librarian/app/sephirah/internal/service"
-	"github.com/tuihub/librarian/app/sephirah/internal/supervisor"
+	"github.com/tuihub/librarian/internal/biz"
 	globalclient "github.com/tuihub/librarian/internal/client"
+	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -21,6 +19,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
+	"github.com/tuihub/librarian/internal/service/sephirah"
+	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/google/wire"
@@ -46,7 +46,7 @@ func wireApp(
 		biz.ProviderSet,
 		client.ProviderSet,
 		supervisor.ProviderSet,
-		service.ProviderSet,
+		sephirah.ProviderSet,
 		libauth.ProviderSet,
 		libmq.ProviderSet,
 		libcron.ProviderSet,

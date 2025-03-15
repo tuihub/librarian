@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/app/sephirah/internal/model/modelyesod"
+	"github.com/tuihub/librarian/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
 //go:generate go run github.com/jmattheis/goverter/cmd/goverter gen .
