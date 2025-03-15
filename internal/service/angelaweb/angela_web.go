@@ -4,15 +4,17 @@ import (
 	"context"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal"
+	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
+	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 )
 
 type AngelaWeb struct {
-	handler *internal.Handler
+	handler *api.Handler
+	builder *page.Builder
 	app     *fiber.App
 }
 
-func NewAngelaWeb(handler *internal.Handler) *AngelaWeb {
+func NewAngelaWeb(handler *api.Handler, builder *page.Builder) *AngelaWeb {
 	viewsEngine := html.New("./view", ".html")
 
 	app := fiber.New(fiber.Config{
@@ -26,6 +28,7 @@ func NewAngelaWeb(handler *internal.Handler) *AngelaWeb {
 
 	return &AngelaWeb{
 		handler: handler,
+		builder: builder,
 		app:     app,
 	}
 }
