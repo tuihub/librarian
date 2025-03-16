@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
+	"gorm.io/gorm"
 )
 
 type AngelaWeb struct {
@@ -16,7 +17,7 @@ type AngelaWeb struct {
 	app         *fiber.App
 }
 
-func NewAngelaWeb(handler *api.Handler, builder *page.Builder, auth *libauth.Auth) *AngelaWeb {
+func NewAngelaWeb(db *gorm.DB, auth *libauth.Auth) *AngelaWeb {
 	viewsEngine := html.New("./view", ".html")
 
 	app := fiber.New(fiber.Config{
@@ -25,8 +26,8 @@ func NewAngelaWeb(handler *api.Handler, builder *page.Builder, auth *libauth.Aut
 	})
 
 	res := &AngelaWeb{
-		apiHandler:  handler,
-		pageBuilder: builder,
+		apiHandler:  api.NewHandler(db, auth),
+		pageBuilder: page.NewBuilder(db),
 		auth:        auth,
 		app:         app,
 	}

@@ -2,6 +2,7 @@ package sephirah
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 	"time"
 
 	"github.com/tuihub/librarian/internal/biz/bizangela"
@@ -14,7 +15,6 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 

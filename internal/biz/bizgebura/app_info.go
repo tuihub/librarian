@@ -9,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -22,7 +21,7 @@ func (g *Gebura) CreateAppInfo(
 	ctx context.Context,
 	appInfo *modelgebura.AppInfo,
 ) (*modelgebura.AppInfo, *errors.Error) {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
 	id, err := g.id.New()
@@ -42,7 +41,7 @@ func (g *Gebura) CreateAppInfo(
 }
 
 func (g *Gebura) UpdateAppInfo(ctx context.Context, appInfo *modelgebura.AppInfo) *errors.Error {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
 	appInfo.Internal = true
@@ -62,7 +61,7 @@ func (g *Gebura) ListAppInfos(
 	ids []model.InternalID,
 	containDetails bool,
 ) ([]*modelgebura.AppInfo, int64, *errors.Error) {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	infos, total, err := g.repo.ListAppInfos(ctx, paging, sources, types, ids, containDetails)
@@ -73,7 +72,7 @@ func (g *Gebura) ListAppInfos(
 }
 
 func (g *Gebura) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo, merged model.InternalID) *errors.Error {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
 	if !base.Internal {

@@ -3,13 +3,11 @@ package converter
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -21,7 +19,7 @@ import (
 // goverter:converter
 // goverter:output:format function
 // goverter:output:file ./generated.go
-// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
+// goverter:output:package github.com/tuihub/librarian/internal/service/sephirah/internal/converter
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend ToPBInternalID
@@ -37,8 +35,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map ID DeviceId
-	ToPBDeviceInfo(*modeltiphereth.DeviceInfo) *pb.DeviceInfo
-	ToPBDeviceInfoList([]*modeltiphereth.DeviceInfo) []*pb.DeviceInfo
+	ToPBDeviceInfo(*model.DeviceInfo) *pb.DeviceInfo
+	ToPBDeviceInfoList([]*model.DeviceInfo) []*pb.DeviceInfo
 	// goverter:enum:unknown SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeUnspecified SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeIOS SystemType_SYSTEM_TYPE_IOS
@@ -47,31 +45,31 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeWindows SystemType_SYSTEM_TYPE_WINDOWS
 	// goverter:enum:map SystemTypeMacOS SystemType_SYSTEM_TYPE_MACOS
 	// goverter:enum:map SystemTypeLinux SystemType_SYSTEM_TYPE_LINUX
-	ToPBSystemType(modeltiphereth.SystemType) pb.SystemType
+	ToPBSystemType(model.SystemType) pb.SystemType
 
 	// goverter:map CreateAt CreateTime
 	// goverter:map ExpireAt ExpireTime
-	ToPBUserSession(*modeltiphereth.UserSession) *pb.UserSession
-	ToPBUserSessionList([]*modeltiphereth.UserSession) []*pb.UserSession
+	ToPBUserSession(*model.UserSession) *pb.UserSession
+	ToPBUserSessionList([]*model.UserSession) []*pb.UserSession
 
 	// goverter:ignore Password
-	ToPBUser(*modeltiphereth.User) *pb.User
-	ToPBUserList([]*modeltiphereth.User) []*pb.User
+	ToPBUser(*model.User) *pb.User
+	ToPBUserList([]*model.User) []*pb.User
 	// goverter:enum:unknown UserType_USER_TYPE_UNSPECIFIED
 	// goverter:enum:map UserTypeUnspecified UserType_USER_TYPE_UNSPECIFIED
 	// goverter:enum:map UserTypeAdmin UserType_USER_TYPE_ADMIN
 	// goverter:enum:map UserTypeNormal UserType_USER_TYPE_NORMAL
 	// goverter:enum:map UserTypeSentinel UserType_USER_TYPE_SENTINEL
 	// goverter:enum:map UserTypePorter UserType_USER_TYPE_PORTER
-	ToPBUserType(libauth.UserType) pb.UserType
+	ToPBUserType(model.UserType) pb.UserType
 	// goverter:enum:unknown UserStatus_USER_STATUS_UNSPECIFIED
 	// goverter:enum:map UserStatusUnspecified UserStatus_USER_STATUS_UNSPECIFIED
 	// goverter:enum:map UserStatusActive UserStatus_USER_STATUS_ACTIVE
 	// goverter:enum:map UserStatusBlocked UserStatus_USER_STATUS_BLOCKED
-	ToPBUserStatus(modeltiphereth.UserStatus) pb.UserStatus
+	ToPBUserStatus(model.UserStatus) pb.UserStatus
 
-	ToPBAccount(*modeltiphereth.Account) *librarian.Account
-	ToPBAccountList([]*modeltiphereth.Account) []*librarian.Account
+	ToPBAccount(*model.Account) *librarian.Account
+	ToPBAccountList([]*model.Account) []*librarian.Account
 
 	// goverter:autoMap PorterInstance
 	ToPBPorter(*modelsupervisor.PorterInstanceController) *pb.Porter

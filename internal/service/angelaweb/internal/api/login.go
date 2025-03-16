@@ -28,7 +28,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"message": "Invalid credentials"})
 	}
 
-	token, err := h.auth.GenerateToken(model2.InternalID(user.ID), 0, libauth.ClaimsTypeAccessToken, libauth.UserTypeAdmin, nil, 24*time.Hour)
+	token, err := h.auth.GenerateToken(model2.InternalID(user.ID), 0, libauth.ClaimsTypeAccessToken, model2.UserTypeAdmin, nil, 24*time.Hour)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"message": "Error generating token"})
 	}

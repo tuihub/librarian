@@ -2,9 +2,9 @@ package sephirah
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )

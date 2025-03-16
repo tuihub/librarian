@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/converter"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/account"
@@ -14,12 +15,8 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
-	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
-
-	"entgo.io/ent/dialect/sql"
 )
 
 type tipherethRepo struct {
@@ -36,7 +33,7 @@ func NewTipherethRepo(data *Data) biztiphereth.TipherethRepo {
 func (t tipherethRepo) FetchUserByPassword(
 	ctx context.Context,
 	username, password string,
-) (*modeltiphereth.User, error) {
+) (*model.User, error) {
 	u, err := t.data.db.User.Query().Where(
 		user.UsernameEQ(username),
 		user.PasswordEQ(password),
@@ -50,7 +47,7 @@ func (t tipherethRepo) FetchUserByPassword(
 func (t tipherethRepo) CreateDevice(
 	ctx context.Context,
 	userID model.InternalID,
-	info *modeltiphereth.DeviceInfo,
+	info *model.DeviceInfo,
 	clientLocalID *string,
 ) (model.InternalID, error) {
 	var res model.InternalID
@@ -91,7 +88,7 @@ func (t tipherethRepo) CreateDevice(
 func (t tipherethRepo) FetchDeviceInfo(
 	ctx context.Context,
 	deviceID model.InternalID,
-) (*modeltiphereth.DeviceInfo, error) {
+) (*model.DeviceInfo, error) {
 	res, err := t.data.db.DeviceInfo.Get(ctx, deviceID)
 	if err != nil {
 		return nil, err
@@ -99,7 +96,7 @@ func (t tipherethRepo) FetchDeviceInfo(
 	return converter.ToBizDeviceInfo(res), nil
 }
 
-func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*modeltiphereth.DeviceInfo, error) {
+func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*model.DeviceInfo, error) {
 	devices, err := t.data.db.DeviceInfo.Query().Where(
 		deviceinfo.HasUserWith(user.IDEQ(id)),
 	).All(ctx)
@@ -109,7 +106,7 @@ func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]
 	return converter.ToBizDeviceInfoList(devices), nil
 }
 
-func (t tipherethRepo) CreateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
+func (t tipherethRepo) CreateUserSession(ctx context.Context, session *model.UserSession) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.UserSession.Create().
 			SetID(session.ID).
@@ -150,7 +147,7 @@ func (t tipherethRepo) FetchUserSession(
 	ctx context.Context,
 	userID model.InternalID,
 	token string,
-) (*modeltiphereth.UserSession, error) {
+) (*model.UserSession, error) {
 	session, err := t.data.db.UserSession.Query().Where(
 		usersession.UserIDEQ(userID),
 		usersession.RefreshTokenEQ(token),
@@ -168,14 +165,14 @@ func (t tipherethRepo) FetchUserSession(
 func (t tipherethRepo) ListUserSessions(
 	ctx context.Context,
 	id model.InternalID,
-) ([]*modeltiphereth.UserSession, error) {
+) ([]*model.UserSession, error) {
 	session, err := t.data.db.UserSession.Query().Where(
 		usersession.UserIDEQ(id),
 	).WithDeviceInfo().All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*modeltiphereth.UserSession, len(session))
+	res := make([]*model.UserSession, len(session))
 	for i, s := range session {
 		res[i] = converter.ToBizUserSession(s)
 		if s.Edges.DeviceInfo != nil {
@@ -185,7 +182,7 @@ func (t tipherethRepo) ListUserSessions(
 	return res, nil
 }
 
-func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *modeltiphereth.UserSession) error {
+func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *model.UserSession) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.UserSession.UpdateOneID(session.ID).
 			SetRefreshToken(session.RefreshToken).
@@ -215,30 +212,30 @@ func (t tipherethRepo) DeleteUserSession(
 	).Exec(ctx)
 }
 
-func (t tipherethRepo) CreateUser(ctx context.Context, u *modeltiphereth.User, c model.InternalID) error {
+func (t tipherethRepo) CreateUser(ctx context.Context, u *model.User, c model.InternalID) error {
 	q := t.data.db.User.Create().
 		SetID(u.ID).
-		SetUsername(u.UserName).
-		SetPassword(u.PassWord).
+		SetUsername(u.Username).
+		SetPassword(u.Password).
 		SetStatus(converter.ToEntUserStatus(u.Status)).
 		SetType(converter.ToEntUserType(u.Type)).
 		SetCreatorID(c)
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateUser(ctx context.Context, u *modeltiphereth.User, password string) error {
+func (t tipherethRepo) UpdateUser(ctx context.Context, u *model.User, password string) error {
 	q := t.data.db.User.Update().
 		Where(user.IDEQ(u.ID))
-	if u.UserName != "" {
-		q.SetUsername(u.UserName)
+	if u.Username != "" {
+		q.SetUsername(u.Username)
 	}
-	if u.PassWord != "" {
-		q.Where(user.PasswordEQ(password)).SetPassword(u.PassWord)
+	if u.Password != "" {
+		q.Where(user.PasswordEQ(password)).SetPassword(u.Password)
 	}
-	if u.Type != libauth.UserTypeUnspecified {
+	if u.Type != model.UserTypeUnspecified {
 		q.SetType(converter.ToEntUserType(u.Type))
 	}
-	if u.Status != modeltiphereth.UserStatusUnspecified {
+	if u.Status != model.UserStatusUnspecified {
 		q.SetStatus(converter.ToEntUserStatus(u.Status))
 	}
 	return q.Exec(ctx)
@@ -248,11 +245,11 @@ func (t tipherethRepo) ListUsers(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
-	types []libauth.UserType,
-	statuses []modeltiphereth.UserStatus,
+	types []model.UserType,
+	statuses []model.UserStatus,
 	exclude []model.InternalID,
 	creator model.InternalID,
-) ([]*modeltiphereth.User, int64, error) {
+) ([]*model.User, int64, error) {
 	q := t.data.db.User.Query().Where(user.IDEQ(creator)).QueryCreatedUser()
 	if len(ids) > 0 {
 		q.Where(user.IDIn(ids...))
@@ -280,7 +277,7 @@ func (t tipherethRepo) ListUsers(
 	return converter.ToBizUserList(u), int64(count), nil
 }
 
-func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*modeltiphereth.User, error) {
+func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model.User, error) {
 	u, err := t.data.db.User.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -294,7 +291,7 @@ func (t tipherethRepo) GetUserCount(ctx context.Context) (int, error) {
 
 func (t tipherethRepo) LinkAccount(
 	ctx context.Context,
-	a modeltiphereth.Account,
+	a model.Account,
 	userID model.InternalID,
 ) (model.InternalID, error) {
 	accountID := a.ID
@@ -348,7 +345,7 @@ func (t tipherethRepo) LinkAccount(
 	return accountID, nil
 }
 
-func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Account, u model.InternalID) error {
+func (t tipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(a.Platform),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
@@ -361,7 +358,7 @@ func (t tipherethRepo) UnLinkAccount(ctx context.Context, a modeltiphereth.Accou
 func (t tipherethRepo) ListLinkAccounts(
 	ctx context.Context,
 	userID model.InternalID,
-) ([]*modeltiphereth.Account, error) {
+) ([]*model.Account, error) {
 	a, err := t.data.db.Account.Query().
 		Where(
 			account.HasBindUserWith(user.IDEQ(userID)),
@@ -429,7 +426,7 @@ func (t tipherethRepo) ListPorters(
 func (t tipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
-	status modeltiphereth.UserStatus,
+	status model.UserStatus,
 ) (*modelsupervisor.PorterInstance, error) {
 	pi, err := t.data.db.PorterInstance.Get(ctx, id)
 	if err != nil {
@@ -509,7 +506,7 @@ func (t tipherethRepo) UpdatePorterContext(
 
 func (t tipherethRepo) ListPorterGroups(
 	ctx context.Context,
-	status []modeltiphereth.UserStatus,
+	status []model.UserStatus,
 ) ([]*modelsupervisor.PorterGroup, error) {
 	var res []struct {
 		ent.PorterInstance

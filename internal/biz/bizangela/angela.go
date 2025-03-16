@@ -12,7 +12,6 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
@@ -51,7 +50,7 @@ type AngelaBase struct {
 }
 
 type AngelaRepo interface {
-	UpsertAccount(context.Context, modeltiphereth.Account) error
+	UpsertAccount(context.Context, model.Account) error
 	UpsertAppInfo(context.Context, *modelgebura.AppInfo, *modelgebura.AppInfo) error
 	UpsertAppInfos(context.Context, []*modelgebura.AppInfo) error
 	AccountPurchaseAppInfos(context.Context, model.InternalID, []model.InternalID) error
@@ -86,7 +85,7 @@ func NewAngelaBase(
 func NewAngela(
 	base *AngelaBase,
 	mq *libmq.MQ,
-	pullAccountInfo *libmq.Topic[modeltiphereth.PullAccountInfo],
+	pullAccountInfo *libmq.Topic[model.PullAccountInfo],
 	pullAccountAppInfoRelation *libmq.Topic[modelangela.PullAccountAppInfoRelation],
 	pullAppInfo *libmq.Topic[modelangela.PullAppInfo],
 	pullFeed *libmq.Topic[modelyesod.PullFeed],

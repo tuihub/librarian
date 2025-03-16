@@ -2,13 +2,12 @@ package sephirah
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -65,9 +64,9 @@ func (s *LibrarianSephirahServiceService) AcquireUserToken(ctx context.Context, 
 func (s *LibrarianSephirahServiceService) RegisterUser(ctx context.Context, req *pb.RegisterUserRequest) (
 	*pb.RegisterUserResponse, error,
 ) {
-	var captchaAns *modeltiphereth.CaptchaAns
+	var captchaAns *model.CaptchaAns
 	if req.GetCaptcha() != nil {
-		captchaAns = &modeltiphereth.CaptchaAns{
+		captchaAns = &model.CaptchaAns{
 			ID:    req.GetCaptcha().GetId(),
 			Value: req.GetCaptcha().GetValue(),
 		}
@@ -205,7 +204,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 	if req.GetAccountId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	a, err := s.t.LinkAccount(ctx, modeltiphereth.Account{
+	a, err := s.t.LinkAccount(ctx, model.Account{
 		ID:                0,
 		Platform:          req.GetAccountId().GetPlatform(),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),
@@ -225,7 +224,7 @@ func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req
 	if req.GetAccountId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	if err := s.t.UnLinkAccount(ctx, modeltiphereth.Account{
+	if err := s.t.UnLinkAccount(ctx, model.Account{
 		ID:                0,
 		Platform:          req.GetAccountId().GetPlatform(),
 		PlatformAccountID: req.GetAccountId().GetPlatformAccountId(),

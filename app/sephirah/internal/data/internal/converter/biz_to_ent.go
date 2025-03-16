@@ -12,12 +12,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
@@ -34,14 +33,14 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserTypeNormal TypeNormal
 	// goverter:enum:map UserTypeSentinel TypeSentinel
 	// goverter:enum:map UserTypePorter @ignore
-	ToEntUserType(libauth.UserType) user.Type
-	ToEntUserTypeList([]libauth.UserType) []user.Type
+	ToEntUserType(model.UserType) user.Type
+	ToEntUserTypeList([]model.UserType) []user.Type
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map UserStatusUnspecified @ignore
 	// goverter:enum:map UserStatusActive StatusActive
 	// goverter:enum:map UserStatusBlocked StatusBlocked
-	ToEntUserStatus(modeltiphereth.UserStatus) user.Status
-	ToEntUserStatusList([]modeltiphereth.UserStatus) []user.Status
+	ToEntUserStatus(model.UserStatus) user.Status
+	ToEntUserStatusList([]model.UserStatus) []user.Status
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map SystemTypeUnspecified @ignore
@@ -51,14 +50,14 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeMacOS SystemTypeMacos
 	// goverter:enum:map SystemTypeLinux SystemTypeLinux
 	// goverter:enum:map SystemTypeWeb SystemTypeWeb
-	ToEntSystemType(modeltiphereth.SystemType) deviceinfo.SystemType
+	ToEntSystemType(model.SystemType) deviceinfo.SystemType
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map UserStatusUnspecified @ignore
 	// goverter:enum:map UserStatusActive StatusActive
 	// goverter:enum:map UserStatusBlocked StatusBlocked
-	ToEntPorterInstanceStatus(modeltiphereth.UserStatus) porterinstance.Status
-	ToEntPorterInstanceStatusList([]modeltiphereth.UserStatus) []porterinstance.Status
+	ToEntPorterInstanceStatus(model.UserStatus) porterinstance.Status
+	ToEntPorterInstanceStatusList([]model.UserStatus) []porterinstance.Status
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map PorterContextStatusUnspecified @ignore

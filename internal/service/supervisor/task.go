@@ -3,11 +3,11 @@ package supervisor
 import (
 	"context"
 	"fmt"
+	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 
 	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtype"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )

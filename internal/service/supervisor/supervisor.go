@@ -16,10 +16,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/uuid"
@@ -185,7 +183,7 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 		var ins *modelsupervisor.PorterInstance
 		if ins, err = s.instanceCache.Get(ctx, address); err != nil ||
 			ins == nil ||
-			ins.Status != modeltiphereth.UserStatusActive {
+			ins.Status != model.UserStatusActive {
 			return true
 		}
 
@@ -288,7 +286,7 @@ func (s *Supervisor) evaluatePorterInstance(
 		Address:           address,
 		Region:            info.GetRegion(),
 		FeatureSummary:    feature,
-		Status:            modeltiphereth.UserStatusUnspecified,
+		Status:            model.UserStatusUnspecified,
 		ContextJSONSchema: info.GetContextJsonSchema(),
 	}, nil
 }
@@ -314,7 +312,7 @@ func (s *Supervisor) enablePorterInstance(
 			instance.ID,
 			0,
 			libauth.ClaimsTypeRefreshToken,
-			libauth.UserTypePorter,
+			model.UserTypePorter,
 			nil,
 			libtime.Hour,
 		)

@@ -16,7 +16,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
@@ -537,7 +536,7 @@ func (y *yesodRepo) ListFeedItemsInCollection(
 	return res, total, nil
 }
 
-func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*modeltiphereth.User, error) {
+func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*model.User, error) {
 	only, err := y.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(id)).QueryOwner().Only(ctx)
 	if err != nil {
 		return nil, err

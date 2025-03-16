@@ -9,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -23,7 +22,7 @@ func (t *Tiphereth) GetToken(
 	ctx context.Context,
 	username, password string,
 	deviceID *model.InternalID,
-) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
+) (model.AccessToken, model.RefreshToken, *errors.Error) {
 	password, err := t.auth.GeneratePassword(password)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
@@ -35,7 +34,7 @@ func (t *Tiphereth) GetToken(
 		logger.Infof("FetchUserByPassword failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnauthorized("invalid user or password")
 	}
-	if user.Status != modeltiphereth.UserStatusActive {
+	if user.Status != model.UserStatusActive {
 		return "", "", pb.ErrorErrorReasonUnauthorized("user not active")
 	}
 
@@ -43,7 +42,7 @@ func (t *Tiphereth) GetToken(
 	if err != nil {
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	userSession := &modeltiphereth.UserSession{
+	userSession := &model.UserSession{
 		ID:           sessionID,
 		UserID:       user.ID,
 		RefreshToken: "",
@@ -90,15 +89,15 @@ func (t *Tiphereth) GetToken(
 		logger.Infof("create user session failed: %s", err.Error())
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
+	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
 }
 
 func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 	ctx context.Context,
 	deviceID *model.InternalID,
-) (modeltiphereth.AccessToken, modeltiphereth.RefreshToken, *errors.Error) {
+) (model.AccessToken, model.RefreshToken, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx,
-		libauth.UserTypeAdmin, libauth.UserTypeNormal, libauth.UserTypeSentinel, libauth.UserTypePorter)
+		model.UserTypeAdmin, model.UserTypeNormal, model.UserTypeSentinel, model.UserTypePorter)
 	if claims == nil {
 		return "", "", bizutils.NoPermissionError()
 	}
@@ -107,9 +106,9 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 		return "", "", bizutils.NoPermissionError()
 	}
 	needUpdate := false
-	session := new(modeltiphereth.UserSession)
+	session := new(model.UserSession)
 	var err error
-	if claims.UserType != libauth.UserTypePorter { //nolint:nestif // TODO
+	if claims.UserType != model.UserTypePorter { //nolint:nestif // TODO
 		session, err = t.repo.FetchUserSession(ctx, claims.UserID, oldRefreshToken)
 		if err != nil {
 			return "", "", bizutils.NoPermissionError()
@@ -159,21 +158,21 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 		session.ExpireAt = time.Now().Add(refreshTokenExpire)
 		needUpdate = true
 	}
-	if claims.UserType != libauth.UserTypePorter && needUpdate {
+	if claims.UserType != model.UserTypePorter && needUpdate {
 		err = t.repo.UpdateUserSession(ctx, session)
 		if err != nil {
 			logger.Infof("update user session failed: %s", err.Error())
 			return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
 	}
-	return modeltiphereth.AccessToken(accessToken), modeltiphereth.RefreshToken(refreshToken), nil
+	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
 }
 
 func (t *Tiphereth) AcquireUserToken(
 	ctx context.Context,
 	userID model.InternalID,
-) (modeltiphereth.AccessToken, *errors.Error) {
-	claims := libauth.FromContextAssertUserType(ctx, libauth.UserTypePorter)
+) (model.AccessToken, *errors.Error) {
+	claims := libauth.FromContextAssertUserType(ctx, model.UserTypePorter)
 	if claims == nil || claims.PorterID != 0 {
 		return "", bizutils.NoPermissionError()
 	}
@@ -182,7 +181,7 @@ func (t *Tiphereth) AcquireUserToken(
 		userID,
 		claims.UserID,
 		libauth.ClaimsTypeAccessToken,
-		libauth.UserTypeNormal,
+		model.UserTypeNormal,
 		nil,
 		libtime.Day,
 	)
@@ -190,12 +189,12 @@ func (t *Tiphereth) AcquireUserToken(
 		logger.Infof("generate access token failed: %s", err.Error())
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return modeltiphereth.AccessToken(accessToken), nil
+	return model.AccessToken(accessToken), nil
 }
 
 func (t *Tiphereth) RegisterDevice(
 	ctx context.Context,
-	device *modeltiphereth.DeviceInfo,
+	device *model.DeviceInfo,
 	clientLocalID *string,
 ) (model.InternalID, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
@@ -214,7 +213,7 @@ func (t *Tiphereth) RegisterDevice(
 	return id, nil
 }
 
-func (t *Tiphereth) ListRegisteredDevices(ctx context.Context) ([]*modeltiphereth.DeviceInfo, *errors.Error) {
+func (t *Tiphereth) ListRegisteredDevices(ctx context.Context) ([]*model.DeviceInfo, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -226,7 +225,7 @@ func (t *Tiphereth) ListRegisteredDevices(ctx context.Context) ([]*modeltipheret
 	return devices, nil
 }
 
-func (t *Tiphereth) ListUserSessions(ctx context.Context) ([]*modeltiphereth.UserSession, *errors.Error) {
+func (t *Tiphereth) ListUserSessions(ctx context.Context) ([]*model.UserSession, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()

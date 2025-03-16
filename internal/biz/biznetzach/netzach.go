@@ -2,7 +2,6 @@ package biznetzach
 
 import (
 	"context"
-
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -246,7 +245,7 @@ func (n *Netzach) ListSystemNotifications(
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	var userID *model.InternalID
-	if claims.UserType != libauth.UserTypeAdmin {
+	if claims.UserType != model.UserTypeAdmin {
 		types = []modelnetzach.SystemNotificationType{modelnetzach.SystemNotificationTypeUser}
 		userID = &claims.UserID
 	}

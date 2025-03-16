@@ -2,7 +2,6 @@ package bizangela
 
 import (
 	"context"
-
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
@@ -11,7 +10,7 @@ import (
 )
 
 func (a *Angela) PorterGetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
-	claims := libauth.FromContextAssertUserType(ctx, libauth.UserTypePorter)
+	claims := libauth.FromContextAssertUserType(ctx, model.UserTypePorter)
 	if claims == nil {
 		return nil, nil, bizutils.NoPermissionError()
 	}

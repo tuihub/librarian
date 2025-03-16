@@ -4,14 +4,12 @@
 package converter
 
 import (
-	libauth "github.com/tuihub/librarian/internal/lib/libauth"
 	model "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelbinah"
 	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
@@ -164,10 +162,10 @@ func ToBizAppTypeList(source []v1.AppType) []modelgebura.AppType {
 	}
 	return modelgeburaAppTypeList
 }
-func ToBizDeviceInfo(source *v11.DeviceInfo) *modeltiphereth.DeviceInfo {
-	var pModeltipherethDeviceInfo *modeltiphereth.DeviceInfo
+func ToBizDeviceInfo(source *v11.DeviceInfo) *model.DeviceInfo {
+	var pModeltipherethDeviceInfo *model.DeviceInfo
 	if source != nil {
-		var modeltipherethDeviceInfo modeltiphereth.DeviceInfo
+		var modeltipherethDeviceInfo model.DeviceInfo
 		modeltipherethDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
 		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
 		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
@@ -679,25 +677,25 @@ func ToBizSystemNotificationTypeList(source []v11.SystemNotificationType) []mode
 	}
 	return modelnetzachSystemNotificationTypeList
 }
-func ToBizSystemType(source v11.SystemType) modeltiphereth.SystemType {
-	var modeltipherethSystemType modeltiphereth.SystemType
+func ToBizSystemType(source v11.SystemType) model.SystemType {
+	var modeltipherethSystemType model.SystemType
 	switch source {
 	case v11.SystemType_SYSTEM_TYPE_ANDROID:
-		modeltipherethSystemType = modeltiphereth.SystemTypeAndroid
+		modeltipherethSystemType = model.SystemTypeAndroid
 	case v11.SystemType_SYSTEM_TYPE_IOS:
-		modeltipherethSystemType = modeltiphereth.SystemTypeIOS
+		modeltipherethSystemType = model.SystemTypeIOS
 	case v11.SystemType_SYSTEM_TYPE_LINUX:
-		modeltipherethSystemType = modeltiphereth.SystemTypeLinux
+		modeltipherethSystemType = model.SystemTypeLinux
 	case v11.SystemType_SYSTEM_TYPE_MACOS:
-		modeltipherethSystemType = modeltiphereth.SystemTypeMacOS
+		modeltipherethSystemType = model.SystemTypeMacOS
 	case v11.SystemType_SYSTEM_TYPE_UNSPECIFIED:
-		modeltipherethSystemType = modeltiphereth.SystemTypeUnspecified
+		modeltipherethSystemType = model.SystemTypeUnspecified
 	case v11.SystemType_SYSTEM_TYPE_WEB:
-		modeltipherethSystemType = modeltiphereth.SystemTypeWeb
+		modeltipherethSystemType = model.SystemTypeWeb
 	case v11.SystemType_SYSTEM_TYPE_WINDOWS:
-		modeltipherethSystemType = modeltiphereth.SystemTypeWindows
+		modeltipherethSystemType = model.SystemTypeWindows
 	default:
-		modeltipherethSystemType = modeltiphereth.SystemTypeUnspecified
+		modeltipherethSystemType = model.SystemTypeUnspecified
 	}
 	return modeltipherethSystemType
 }
@@ -711,65 +709,65 @@ func ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	}
 	return pModelTimeRange
 }
-func ToBizUser(source *v11.User) *modeltiphereth.User {
-	var pModeltipherethUser *modeltiphereth.User
+func ToBizUser(source *v11.User) *model.User {
+	var pModeltipherethUser *model.User
 	if source != nil {
-		var modeltipherethUser modeltiphereth.User
+		var modeltipherethUser model.User
 		modeltipherethUser.ID = ToBizInternalID((*source).Id)
-		modeltipherethUser.UserName = (*source).Username
-		modeltipherethUser.PassWord = (*source).Password
+		modeltipherethUser.Username = (*source).Username
+		modeltipherethUser.Password = (*source).Password
 		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
 		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
 		pModeltipherethUser = &modeltipherethUser
 	}
 	return pModeltipherethUser
 }
-func ToBizUserStatus(source v11.UserStatus) modeltiphereth.UserStatus {
-	var modeltipherethUserStatus modeltiphereth.UserStatus
+func ToBizUserStatus(source v11.UserStatus) model.UserStatus {
+	var modeltipherethUserStatus model.UserStatus
 	switch source {
 	case v11.UserStatus_USER_STATUS_ACTIVE:
-		modeltipherethUserStatus = modeltiphereth.UserStatusActive
+		modeltipherethUserStatus = model.UserStatusActive
 	case v11.UserStatus_USER_STATUS_BLOCKED:
-		modeltipherethUserStatus = modeltiphereth.UserStatusBlocked
+		modeltipherethUserStatus = model.UserStatusBlocked
 	case v11.UserStatus_USER_STATUS_UNSPECIFIED:
-		modeltipherethUserStatus = modeltiphereth.UserStatusUnspecified
+		modeltipherethUserStatus = model.UserStatusUnspecified
 	default:
-		modeltipherethUserStatus = modeltiphereth.UserStatusUnspecified
+		modeltipherethUserStatus = model.UserStatusUnspecified
 	}
 	return modeltipherethUserStatus
 }
-func ToBizUserStatusList(source []v11.UserStatus) []modeltiphereth.UserStatus {
-	var modeltipherethUserStatusList []modeltiphereth.UserStatus
+func ToBizUserStatusList(source []v11.UserStatus) []model.UserStatus {
+	var modeltipherethUserStatusList []model.UserStatus
 	if source != nil {
-		modeltipherethUserStatusList = make([]modeltiphereth.UserStatus, len(source))
+		modeltipherethUserStatusList = make([]model.UserStatus, len(source))
 		for i := 0; i < len(source); i++ {
 			modeltipherethUserStatusList[i] = ToBizUserStatus(source[i])
 		}
 	}
 	return modeltipherethUserStatusList
 }
-func ToLibAuthUserType(source v11.UserType) libauth.UserType {
-	var libauthUserType libauth.UserType
+func ToLibAuthUserType(source v11.UserType) model.UserType {
+	var libauthUserType model.UserType
 	switch source {
 	case v11.UserType_USER_TYPE_ADMIN:
-		libauthUserType = libauth.UserTypeAdmin
+		libauthUserType = model.UserTypeAdmin
 	case v11.UserType_USER_TYPE_NORMAL:
-		libauthUserType = libauth.UserTypeNormal
+		libauthUserType = model.UserTypeNormal
 	case v11.UserType_USER_TYPE_PORTER:
-		libauthUserType = libauth.UserTypePorter
+		libauthUserType = model.UserTypePorter
 	case v11.UserType_USER_TYPE_SENTINEL:
-		libauthUserType = libauth.UserTypeSentinel
+		libauthUserType = model.UserTypeSentinel
 	case v11.UserType_USER_TYPE_UNSPECIFIED:
-		libauthUserType = libauth.UserTypeUnspecified
+		libauthUserType = model.UserTypeUnspecified
 	default:
-		libauthUserType = libauth.UserTypeUnspecified
+		libauthUserType = model.UserTypeUnspecified
 	}
 	return libauthUserType
 }
-func ToLibAuthUserTypeList(source []v11.UserType) []libauth.UserType {
-	var libauthUserTypeList []libauth.UserType
+func ToLibAuthUserTypeList(source []v11.UserType) []model.UserType {
+	var libauthUserTypeList []model.UserType
 	if source != nil {
-		libauthUserTypeList = make([]libauth.UserType, len(source))
+		libauthUserTypeList = make([]model.UserType, len(source))
 		for i := 0; i < len(source); i++ {
 			libauthUserTypeList[i] = ToLibAuthUserType(source[i])
 		}
@@ -816,7 +814,7 @@ func pV1FeedPersonToPModelfeedPerson(source *v1.FeedPerson) *modelfeed.Person {
 	}
 	return pModelfeedPerson
 }
-func ToPBAccount(source *modeltiphereth.Account) *v1.Account {
+func ToPBAccount(source *model.Account) *v1.Account {
 	var pV1Account *v1.Account
 	if source != nil {
 		var v1Account v1.Account
@@ -831,7 +829,7 @@ func ToPBAccount(source *modeltiphereth.Account) *v1.Account {
 	}
 	return pV1Account
 }
-func ToPBAccountList(source []*modeltiphereth.Account) []*v1.Account {
+func ToPBAccountList(source []*model.Account) []*v1.Account {
 	var pV1AccountList []*v1.Account
 	if source != nil {
 		pV1AccountList = make([]*v1.Account, len(source))
@@ -976,7 +974,7 @@ func ToPBAppType(source modelgebura.AppType) v1.AppType {
 	}
 	return v1AppType
 }
-func ToPBDeviceInfo(source *modeltiphereth.DeviceInfo) *v11.DeviceInfo {
+func ToPBDeviceInfo(source *model.DeviceInfo) *v11.DeviceInfo {
 	var pV1DeviceInfo *v11.DeviceInfo
 	if source != nil {
 		var v1DeviceInfo v11.DeviceInfo
@@ -991,7 +989,7 @@ func ToPBDeviceInfo(source *modeltiphereth.DeviceInfo) *v11.DeviceInfo {
 	}
 	return pV1DeviceInfo
 }
-func ToPBDeviceInfoList(source []*modeltiphereth.DeviceInfo) []*v11.DeviceInfo {
+func ToPBDeviceInfoList(source []*model.DeviceInfo) []*v11.DeviceInfo {
 	var pV1DeviceInfoList []*v11.DeviceInfo
 	if source != nil {
 		pV1DeviceInfoList = make([]*v11.DeviceInfo, len(source))
@@ -1606,22 +1604,22 @@ func ToPBSystemNotificationType(source modelnetzach.SystemNotificationType) v11.
 	}
 	return v1SystemNotificationType
 }
-func ToPBSystemType(source modeltiphereth.SystemType) v11.SystemType {
+func ToPBSystemType(source model.SystemType) v11.SystemType {
 	var v1SystemType v11.SystemType
 	switch source {
-	case modeltiphereth.SystemTypeAndroid:
+	case model.SystemTypeAndroid:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_ANDROID
-	case modeltiphereth.SystemTypeIOS:
+	case model.SystemTypeIOS:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_IOS
-	case modeltiphereth.SystemTypeLinux:
+	case model.SystemTypeLinux:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_LINUX
-	case modeltiphereth.SystemTypeMacOS:
+	case model.SystemTypeMacOS:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_MACOS
-	case modeltiphereth.SystemTypeUnspecified:
+	case model.SystemTypeUnspecified:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_UNSPECIFIED
-	case modeltiphereth.SystemTypeWeb:
+	case model.SystemTypeWeb:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_WEB
-	case modeltiphereth.SystemTypeWindows:
+	case model.SystemTypeWindows:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_WINDOWS
 	default:
 		v1SystemType = v11.SystemType_SYSTEM_TYPE_UNSPECIFIED
@@ -1638,19 +1636,19 @@ func ToPBTimeRange(source *model.TimeRange) *v1.TimeRange {
 	}
 	return pV1TimeRange
 }
-func ToPBUser(source *modeltiphereth.User) *v11.User {
+func ToPBUser(source *model.User) *v11.User {
 	var pV1User *v11.User
 	if source != nil {
 		var v1User v11.User
 		v1User.Id = ToPBInternalID((*source).ID)
-		v1User.Username = (*source).UserName
+		v1User.Username = (*source).Username
 		v1User.Type = ToPBUserType((*source).Type)
 		v1User.Status = ToPBUserStatus((*source).Status)
 		pV1User = &v1User
 	}
 	return pV1User
 }
-func ToPBUserList(source []*modeltiphereth.User) []*v11.User {
+func ToPBUserList(source []*model.User) []*v11.User {
 	var pV1UserList []*v11.User
 	if source != nil {
 		pV1UserList = make([]*v11.User, len(source))
@@ -1660,7 +1658,7 @@ func ToPBUserList(source []*modeltiphereth.User) []*v11.User {
 	}
 	return pV1UserList
 }
-func ToPBUserSession(source *modeltiphereth.UserSession) *v11.UserSession {
+func ToPBUserSession(source *model.UserSession) *v11.UserSession {
 	var pV1UserSession *v11.UserSession
 	if source != nil {
 		var v1UserSession v11.UserSession
@@ -1673,7 +1671,7 @@ func ToPBUserSession(source *modeltiphereth.UserSession) *v11.UserSession {
 	}
 	return pV1UserSession
 }
-func ToPBUserSessionList(source []*modeltiphereth.UserSession) []*v11.UserSession {
+func ToPBUserSessionList(source []*model.UserSession) []*v11.UserSession {
 	var pV1UserSessionList []*v11.UserSession
 	if source != nil {
 		pV1UserSessionList = make([]*v11.UserSession, len(source))
@@ -1683,32 +1681,32 @@ func ToPBUserSessionList(source []*modeltiphereth.UserSession) []*v11.UserSessio
 	}
 	return pV1UserSessionList
 }
-func ToPBUserStatus(source modeltiphereth.UserStatus) v11.UserStatus {
+func ToPBUserStatus(source model.UserStatus) v11.UserStatus {
 	var v1UserStatus v11.UserStatus
 	switch source {
-	case modeltiphereth.UserStatusActive:
+	case model.UserStatusActive:
 		v1UserStatus = v11.UserStatus_USER_STATUS_ACTIVE
-	case modeltiphereth.UserStatusBlocked:
+	case model.UserStatusBlocked:
 		v1UserStatus = v11.UserStatus_USER_STATUS_BLOCKED
-	case modeltiphereth.UserStatusUnspecified:
+	case model.UserStatusUnspecified:
 		v1UserStatus = v11.UserStatus_USER_STATUS_UNSPECIFIED
 	default:
 		v1UserStatus = v11.UserStatus_USER_STATUS_UNSPECIFIED
 	}
 	return v1UserStatus
 }
-func ToPBUserType(source libauth.UserType) v11.UserType {
+func ToPBUserType(source model.UserType) v11.UserType {
 	var v1UserType v11.UserType
 	switch source {
-	case libauth.UserTypeAdmin:
+	case model.UserTypeAdmin:
 		v1UserType = v11.UserType_USER_TYPE_ADMIN
-	case libauth.UserTypeNormal:
+	case model.UserTypeNormal:
 		v1UserType = v11.UserType_USER_TYPE_NORMAL
-	case libauth.UserTypePorter:
+	case model.UserTypePorter:
 		v1UserType = v11.UserType_USER_TYPE_PORTER
-	case libauth.UserTypeSentinel:
+	case model.UserTypeSentinel:
 		v1UserType = v11.UserType_USER_TYPE_SENTINEL
-	case libauth.UserTypeUnspecified:
+	case model.UserTypeUnspecified:
 		v1UserType = v11.UserType_USER_TYPE_UNSPECIFIED
 	default:
 		v1UserType = v11.UserType_USER_TYPE_UNSPECIFIED

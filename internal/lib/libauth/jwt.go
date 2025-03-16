@@ -17,7 +17,7 @@ type Claims struct {
 	UserID           model.InternalID `json:"uid,string"`
 	PorterID         model.InternalID `json:"pid,string,omitempty"`
 	Type             ClaimsType       `json:"ct"`
-	UserType         UserType         `json:"ut"`
+	UserType         model.UserType   `json:"ut"`
 	TransferMetadata any              `json:"tm,omitempty"`
 	jwtv5.RegisteredClaims
 }
@@ -30,16 +30,6 @@ const (
 	ClaimsTypeRefreshToken
 	ClaimsTypeUploadToken
 	ClaimsTypeDownloadToken
-)
-
-type UserType int
-
-const (
-	UserTypeUnspecified UserType = iota
-	UserTypeAdmin
-	UserTypeNormal
-	UserTypeSentinel
-	UserTypePorter
 )
 
 func (a *Auth) KeyFunc(t ClaimsType) jwtv5.Keyfunc {
@@ -80,9 +70,9 @@ func ValidateString(tokenString string, keyFunc jwtv5.Keyfunc) (bool, error) {
 	return token.Valid, nil
 }
 
-func FromContextAssertUserType(ctx context.Context, userTypes ...UserType) *Claims {
+func FromContextAssertUserType(ctx context.Context, userTypes ...model.UserType) *Claims {
 	if userTypes == nil {
-		userTypes = []UserType{UserTypeAdmin, UserTypeNormal}
+		userTypes = []model.UserType{model.UserTypeAdmin, model.UserTypeNormal}
 	}
 	c := FromContext(ctx)
 	for _, ut := range userTypes {
@@ -101,7 +91,7 @@ func (a *Auth) GenerateToken(
 	uid model.InternalID,
 	pid model.InternalID,
 	claimsType ClaimsType,
-	userType UserType,
+	userType model.UserType,
 	transferMetadata any,
 	expire time.Duration,
 ) (string, error) {

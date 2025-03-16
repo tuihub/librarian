@@ -10,32 +10,31 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/dchest/captcha"
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (*model.InternalID, *errors.Error) {
+func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.InternalID, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	if claims.UserType != libauth.UserTypeAdmin && user.Type != libauth.UserTypeSentinel {
+	if claims.UserType != model.UserTypeAdmin && user.Type != model.UserTypeSentinel {
 		return nil, bizutils.NoPermissionError()
 	}
 	if t.app.EnvExist(libapp.EnvDemoMode) {
-		if user.Type == libauth.UserTypeAdmin {
+		if user.Type == model.UserTypeAdmin {
 			return nil, pb.ErrorErrorReasonForbidden("server running in demo mode, create admin user is not allowed")
 		}
 	}
-	password, err := t.auth.GeneratePassword(user.PassWord)
+	password, err := t.auth.GeneratePassword(user.Password)
 	if err != nil {
 		logger.Infof("generate password failed: %s", err.Error())
 		return nil, pb.ErrorErrorReasonBadRequest("invalid password")
 	}
-	user.PassWord = password
+	user.Password = password
 	id, err := t.id.New()
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
@@ -60,7 +59,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *modeltiphereth.User) (
 }
 
 func (t *Tiphereth) UpdateUser(
-	ctx context.Context, user *modeltiphereth.User, originPassword string,
+	ctx context.Context, user *model.User, originPassword string,
 ) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
@@ -69,15 +68,15 @@ func (t *Tiphereth) UpdateUser(
 	if user.ID == 0 {
 		return pb.ErrorErrorReasonBadRequest("internal id required")
 	}
-	if user.PassWord != "" && originPassword == "" {
+	if user.Password != "" && originPassword == "" {
 		return pb.ErrorErrorReasonBadRequest("password required")
 	}
 	if t.app.EnvExist(libapp.EnvDemoMode) {
-		if user.Type == libauth.UserTypeAdmin {
+		if user.Type == model.UserTypeAdmin {
 			return pb.ErrorErrorReasonForbidden("server running in demo mode, modify admin user is not allowed")
 		}
 	}
-	if claims.UserType != libauth.UserTypeAdmin &&
+	if claims.UserType != model.UserTypeAdmin &&
 		claims.UserID != user.ID {
 		res, _, err := t.repo.ListUsers(ctx,
 			model.Paging{
@@ -85,7 +84,7 @@ func (t *Tiphereth) UpdateUser(
 				PageNum:  1,
 			},
 			[]model.InternalID{user.ID},
-			[]libauth.UserType{libauth.UserTypeSentinel},
+			[]model.UserType{model.UserTypeSentinel},
 			nil,
 			nil,
 			claims.UserID,
@@ -94,13 +93,13 @@ func (t *Tiphereth) UpdateUser(
 			return bizutils.NoPermissionError()
 		}
 	}
-	if user.PassWord != "" {
-		password, err := t.auth.GeneratePassword(user.PassWord)
+	if user.Password != "" {
+		password, err := t.auth.GeneratePassword(user.Password)
 		if err != nil {
 			logger.Infof("generate password failed: %s", err.Error())
 			return pb.ErrorErrorReasonBadRequest("invalid password")
 		}
-		user.PassWord = password
+		user.Password = password
 		originPassword, err = t.auth.GeneratePassword(originPassword)
 		if err != nil {
 			logger.Infof("generate password failed: %s", err.Error())
@@ -115,8 +114,8 @@ func (t *Tiphereth) UpdateUser(
 }
 
 func (t *Tiphereth) ListUsers(
-	ctx context.Context, paging model.Paging, types []libauth.UserType, statuses []modeltiphereth.UserStatus,
-) ([]*modeltiphereth.User, int64, *errors.Error) {
+	ctx context.Context, paging model.Paging, types []model.UserType, statuses []model.UserStatus,
+) ([]*model.User, int64, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
@@ -129,7 +128,7 @@ func (t *Tiphereth) ListUsers(
 	return users, total, nil
 }
 
-func (t *Tiphereth) GetUser(ctx context.Context, id *model.InternalID) (*modeltiphereth.User, *errors.Error) {
+func (t *Tiphereth) GetUser(ctx context.Context, id *model.InternalID) (*model.User, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -151,8 +150,8 @@ func (t *Tiphereth) RegisterUser(
 	ctx context.Context,
 	username string,
 	password string,
-	captchaReq *modeltiphereth.CaptchaAns,
-) (*modeltiphereth.CaptchaQue, string, *errors.Error) {
+	captchaReq *model.CaptchaAns,
+) (*model.CaptchaQue, string, *errors.Error) {
 	if t.app.EnvExist(libapp.EnvDemoMode) {
 		return nil, "", pb.ErrorErrorReasonForbidden("server running in demo mode, register user is not allowed")
 	}
@@ -170,7 +169,7 @@ func (t *Tiphereth) RegisterUser(
 		if err != nil {
 			return nil, "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 		}
-		return &modeltiphereth.CaptchaQue{
+		return &model.CaptchaQue{
 			ID:    captchaID,
 			Image: captchaImg.Bytes(),
 		}, "", nil
@@ -187,12 +186,12 @@ func (t *Tiphereth) RegisterUser(
 	if err != nil {
 		return nil, "", pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	user := &modeltiphereth.User{
+	user := &model.User{
 		ID:       id,
-		UserName: username,
-		PassWord: passwordParsed,
-		Type:     libauth.UserTypeNormal,
-		Status:   modeltiphereth.UserStatusActive,
+		Username: username,
+		Password: passwordParsed,
+		Type:     model.UserTypeNormal,
+		Status:   model.UserStatusActive,
 	}
 	if err = t.repo.CreateUser(ctx, user, user.ID); err != nil {
 		logger.Infof("repo CreateUser failed: %s", err.Error())

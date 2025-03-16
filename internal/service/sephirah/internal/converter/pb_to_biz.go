@@ -3,14 +3,12 @@ package converter
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelbinah"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -22,7 +20,7 @@ import (
 // goverter:converter
 // goverter:output:format function
 // goverter:output:file ./generated.go
-// goverter:output:package github.com/tuihub/librarian/app/sephirah/internal/model/converter
+// goverter:output:package github.com/tuihub/librarian/internal/service/sephirah/internal/converter
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend ToBizInternalID
@@ -43,7 +41,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizInternalIDList([]*librarian.InternalID) []model.InternalID
 
 	// goverter:map DeviceId ID
-	ToBizDeviceInfo(*pb.DeviceInfo) *modeltiphereth.DeviceInfo
+	ToBizDeviceInfo(*pb.DeviceInfo) *model.DeviceInfo
 	// goverter:enum:unknown SystemTypeUnspecified
 	// goverter:enum:map SystemType_SYSTEM_TYPE_UNSPECIFIED SystemTypeUnspecified
 	// goverter:enum:map SystemType_SYSTEM_TYPE_IOS SystemTypeIOS
@@ -52,22 +50,22 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemType_SYSTEM_TYPE_WINDOWS SystemTypeWindows
 	// goverter:enum:map SystemType_SYSTEM_TYPE_MACOS SystemTypeMacOS
 	// goverter:enum:map SystemType_SYSTEM_TYPE_LINUX SystemTypeLinux
-	ToBizSystemType(pb.SystemType) modeltiphereth.SystemType
-	ToBizUser(*pb.User) *modeltiphereth.User
+	ToBizSystemType(pb.SystemType) model.SystemType
+	ToBizUser(*pb.User) *model.User
 	// goverter:enum:unknown UserTypeUnspecified
 	// goverter:enum:map UserType_USER_TYPE_UNSPECIFIED UserTypeUnspecified
 	// goverter:enum:map UserType_USER_TYPE_ADMIN UserTypeAdmin
 	// goverter:enum:map UserType_USER_TYPE_NORMAL UserTypeNormal
 	// goverter:enum:map UserType_USER_TYPE_SENTINEL UserTypeSentinel
 	// goverter:enum:map UserType_USER_TYPE_PORTER UserTypePorter
-	ToLibAuthUserType(pb.UserType) libauth.UserType
-	ToLibAuthUserTypeList([]pb.UserType) []libauth.UserType
-	ToBizUserStatusList([]pb.UserStatus) []modeltiphereth.UserStatus
+	ToLibAuthUserType(pb.UserType) model.UserType
+	ToLibAuthUserTypeList([]pb.UserType) []model.UserType
+	ToBizUserStatusList([]pb.UserStatus) []model.UserStatus
 	// goverter:enum:unknown UserStatusUnspecified
 	// goverter:enum:map UserStatus_USER_STATUS_UNSPECIFIED UserStatusUnspecified
 	// goverter:enum:map UserStatus_USER_STATUS_ACTIVE UserStatusActive
 	// goverter:enum:map UserStatus_USER_STATUS_BLOCKED UserStatusBlocked
-	ToBizUserStatus(pb.UserStatus) modeltiphereth.UserStatus
+	ToBizUserStatus(pb.UserStatus) model.UserStatus
 
 	ToBizPorterContext(*pb.PorterContext) *modelsupervisor.PorterContext
 	// goverter:enum:unknown PorterContextStatusUnspecified

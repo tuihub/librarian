@@ -17,7 +17,6 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 
@@ -54,7 +53,7 @@ type YesodRepo interface {
 	RemoveFeedItemFromCollection(context.Context, model.InternalID, model.InternalID, model.InternalID) error
 	ListFeedItemsInCollection(context.Context, model.InternalID, model.Paging, []model.InternalID, []string,
 		[]string, []string, *model.TimeRange) ([]*modelyesod.FeedItemDigest, int, error)
-	GetFeedOwner(context.Context, model.InternalID) (*modeltiphereth.User, error)
+	GetFeedOwner(context.Context, model.InternalID) (*model.User, error)
 	CreateFeedActionSet(context.Context, model.InternalID, *modelyesod.FeedActionSet) error
 	UpdateFeedActionSet(context.Context, model.InternalID, *modelyesod.FeedActionSet) error
 	ListFeedActionSets(context.Context, model.InternalID, model.Paging) ([]*modelyesod.FeedActionSet, int, error)
@@ -67,7 +66,7 @@ type Yesod struct {
 	search             libsearch.Search
 	pullFeed           *libmq.Topic[modelyesod.PullFeed]
 	systemNotify       *libmq.Topic[modelnetzach.SystemNotify]
-	feedOwner          *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User]
+	feedOwner          *libcache.Map[modelyesod.FeedConfig, model.User]
 	builtinFeedActions []*modelsupervisor.FeatureFlag
 }
 
@@ -79,7 +78,7 @@ func NewYesod(
 	search libsearch.Search,
 	pullFeed *libmq.Topic[modelyesod.PullFeed],
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
-	feedOwner *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User],
+	feedOwner *libcache.Map[modelyesod.FeedConfig, model.User],
 ) (*Yesod, error) {
 	builtinFeedActions, err := getBuiltinActionFeatureFlags()
 	if err != nil {
@@ -117,7 +116,7 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 	var errRes error
 	for _, c := range configs {
 		doNotify := func() *modelnetzach.SystemNotify {
-			var owner *modeltiphereth.User
+			var owner *model.User
 			owner, err = y.feedOwner.Get(ctx, *c)
 			if err != nil {
 				return nil
@@ -160,14 +159,14 @@ func (y *Yesod) PullFeeds(ctx context.Context) error {
 func NewFeedOwnerCache(
 	repo YesodRepo,
 	store libcache.Store,
-) *libcache.Map[modelyesod.FeedConfig, modeltiphereth.User] {
-	return libcache.NewMap[modelyesod.FeedConfig, modeltiphereth.User](
+) *libcache.Map[modelyesod.FeedConfig, model.User] {
+	return libcache.NewMap[modelyesod.FeedConfig, model.User](
 		store,
 		"FeedOwner",
 		func(k modelyesod.FeedConfig) string {
 			return strconv.FormatInt(int64(k.ID), 10)
 		},
-		func(ctx context.Context, fc modelyesod.FeedConfig) (*modeltiphereth.User, error) {
+		func(ctx context.Context, fc modelyesod.FeedConfig) (*model.User, error) {
 			res, err := repo.GetFeedOwner(ctx, fc.ID)
 			if err != nil {
 				return nil, err

@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -40,7 +39,7 @@ func (t *Tiphereth) updatePorters(ctx context.Context) error {
 	}
 	for i, porter := range newPorters {
 		porter.ID = ids[i]
-		porter.Status = modeltiphereth.UserStatusBlocked
+		porter.Status = model.UserStatusBlocked
 	}
 	err = t.repo.UpsertPorters(ctx, newPorters)
 	if err != nil {
@@ -54,7 +53,7 @@ func (t *Tiphereth) ListPorters(
 	ctx context.Context,
 	paging model.Paging,
 ) ([]*modelsupervisor.PorterInstance, int64, *errors.Error) {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	porters, total, err := t.repo.ListPorters(ctx, paging)
@@ -67,9 +66,9 @@ func (t *Tiphereth) ListPorters(
 func (t *Tiphereth) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
-	status modeltiphereth.UserStatus,
+	status model.UserStatus,
 ) *errors.Error {
-	if libauth.FromContextAssertUserType(ctx, libauth.UserTypeAdmin) == nil {
+	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
 	pi, err := t.repo.UpdatePorterStatus(ctx, id, status)
@@ -127,14 +126,14 @@ func (t *Tiphereth) UpdatePorterContext(
 func (t *Tiphereth) ListPorterGroups(
 	ctx context.Context,
 	paging model.Paging,
-	status []modeltiphereth.UserStatus,
+	status []model.UserStatus,
 ) ([]*modelsupervisor.PorterGroup, int64, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	if claims.UserType != libauth.UserTypeAdmin {
-		status = []modeltiphereth.UserStatus{modeltiphereth.UserStatusActive}
+	if claims.UserType != model.UserTypeAdmin {
+		status = []model.UserStatus{model.UserStatusActive}
 	}
 	groups, err := t.repo.ListPorterGroups(ctx, status)
 	if err != nil {

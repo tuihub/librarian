@@ -1,6 +1,7 @@
 package converter
 
 import (
+	"github.com/tuihub/librarian/internal/model"
 	"time"
 
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent"
@@ -14,13 +15,11 @@ import (
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/app/sephirah/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
@@ -34,26 +33,26 @@ import (
 // goverter:extend TimeToTime
 // goverter:extend TimeToTimePtr
 type toBizConverter interface { //nolint:unused // used by generator
-	// goverter:ignore PassWord
-	ToBizUser(*ent.User) *modeltiphereth.User
-	ToBizUserList([]*ent.User) []*modeltiphereth.User
+	// goverter:ignore Password
+	ToBizUser(*ent.User) *model.User
+	ToBizUserList([]*ent.User) []*model.User
 	// goverter:enum:unknown UserTypeUnspecified
 	// goverter:enum:map TypeAdmin UserTypeAdmin
 	// goverter:enum:map TypeNormal UserTypeNormal
 	// goverter:enum:map TypeSentinel UserTypeSentinel
-	ToLibAuthUserType(user.Type) libauth.UserType
+	ToLibAuthUserType(user.Type) model.UserType
 	// goverter:enum:unknown UserStatusUnspecified
 	// goverter:enum:map StatusActive UserStatusActive
 	// goverter:enum:map StatusBlocked UserStatusBlocked
-	ToBizUserStatus(user.Status) modeltiphereth.UserStatus
+	ToBizUserStatus(user.Status) model.UserStatus
 
 	// goverter:ignore DeviceInfo
 	// goverter:map CreatedAt CreateAt
-	ToBizUserSession(*ent.UserSession) *modeltiphereth.UserSession
-	ToBizUserSessionList([]*ent.UserSession) []*modeltiphereth.UserSession
+	ToBizUserSession(*ent.UserSession) *model.UserSession
+	ToBizUserSessionList([]*ent.UserSession) []*model.UserSession
 
-	ToBizDeviceInfo(*ent.DeviceInfo) *modeltiphereth.DeviceInfo
-	ToBizDeviceInfoList([]*ent.DeviceInfo) []*modeltiphereth.DeviceInfo
+	ToBizDeviceInfo(*ent.DeviceInfo) *model.DeviceInfo
+	ToBizDeviceInfoList([]*ent.DeviceInfo) []*model.DeviceInfo
 	// goverter:enum:unknown SystemTypeUnspecified
 	// goverter:enum:map SystemTypeUnknown SystemTypeUnspecified
 	// goverter:enum:map SystemTypeIos SystemTypeIOS
@@ -62,11 +61,11 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeWindows SystemTypeWindows
 	// goverter:enum:map SystemTypeMacos SystemTypeMacOS
 	// goverter:enum:map SystemTypeLinux SystemTypeLinux
-	ToBizSystemType(deviceinfo.SystemType) modeltiphereth.SystemType
+	ToBizSystemType(deviceinfo.SystemType) model.SystemType
 
 	// goverter:map UpdatedAt LatestUpdateTime
-	ToBizAccount(*ent.Account) *modeltiphereth.Account
-	ToBizAccountList([]*ent.Account) []*modeltiphereth.Account
+	ToBizAccount(*ent.Account) *model.Account
+	ToBizAccountList([]*ent.Account) []*model.Account
 
 	// goverter:map . BinarySummary
 	ToBizPorter(*ent.PorterInstance) *modelsupervisor.PorterInstance
@@ -74,7 +73,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:unknown UserStatusUnspecified
 	// goverter:enum:map StatusActive UserStatusActive
 	// goverter:enum:map StatusBlocked UserStatusBlocked
-	ToBizPorterStatus(porterinstance.Status) modeltiphereth.UserStatus
+	ToBizPorterStatus(porterinstance.Status) model.UserStatus
 
 	ToBizPorterContext(*ent.PorterContext) *modelsupervisor.PorterContext
 	ToBizPorterContextList([]*ent.PorterContext) []*modelsupervisor.PorterContext

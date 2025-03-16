@@ -19,7 +19,6 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"entgo.io/ent/dialect/sql"
@@ -36,7 +35,7 @@ func NewAngelaRepo(data *Data) bizangela.AngelaRepo {
 	}
 }
 
-func (a *angelaRepo) UpsertAccount(ctx context.Context, acc modeltiphereth.Account) error {
+func (a *angelaRepo) UpsertAccount(ctx context.Context, acc model.Account) error {
 	return a.data.db.Account.Create().
 		SetID(acc.ID).
 		SetPlatform(acc.Platform).

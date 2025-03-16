@@ -6,10 +6,8 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -17,10 +15,10 @@ import (
 func NewPullAccountTopic(
 	a *AngelaBase,
 	sr *libmq.Topic[modelangela.PullAccountAppInfoRelation],
-) *libmq.Topic[modeltiphereth.PullAccountInfo] {
-	return libmq.NewTopic[modeltiphereth.PullAccountInfo](
+) *libmq.Topic[model.PullAccountInfo] {
+	return libmq.NewTopic[model.PullAccountInfo](
 		"PullAccountInfo",
-		func(ctx context.Context, info *modeltiphereth.PullAccountInfo) error {
+		func(ctx context.Context, info *model.PullAccountInfo) error {
 			if !a.supv.HasAccountPlatform(info.Platform) {
 				return nil
 			}
@@ -34,7 +32,7 @@ func NewPullAccountTopic(
 			if err != nil {
 				return err
 			}
-			err = a.repo.UpsertAccount(ctx, modeltiphereth.Account{
+			err = a.repo.UpsertAccount(ctx, model.Account{
 				ID:                info.ID,
 				Platform:          info.Platform,
 				PlatformAccountID: info.PlatformAccountID,

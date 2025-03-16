@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -15,8 +14,8 @@ import (
 
 func (t *Tiphereth) LinkAccount(
 	ctx context.Context,
-	a modeltiphereth.Account,
-) (*modeltiphereth.Account, *errors.Error) {
+	a model.Account,
+) (*model.Account, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -29,7 +28,7 @@ func (t *Tiphereth) LinkAccount(
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	a.ID = id
-	if err = t.pullAccount.LocalCall(ctx, modeltiphereth.PullAccountInfo{
+	if err = t.pullAccount.LocalCall(ctx, model.PullAccountInfo{
 		ID:                a.ID,
 		Platform:          a.Platform,
 		PlatformAccountID: a.PlatformAccountID,
@@ -44,7 +43,7 @@ func (t *Tiphereth) LinkAccount(
 	return &a, nil
 }
 
-func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account) *errors.Error {
+func (t *Tiphereth) UnLinkAccount(ctx context.Context, a model.Account) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
@@ -60,7 +59,7 @@ func (t *Tiphereth) UnLinkAccount(ctx context.Context, a modeltiphereth.Account)
 
 func (t *Tiphereth) ListLinkAccounts(
 	ctx context.Context, id model.InternalID,
-) ([]*modeltiphereth.Account, *errors.Error) {
+) ([]*model.Account, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()

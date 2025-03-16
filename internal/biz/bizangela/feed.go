@@ -9,7 +9,6 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/model/converter"
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"

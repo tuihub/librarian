@@ -5,7 +5,6 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modeltiphereth"
 )
 
 type PorterInstanceController struct {
@@ -30,7 +29,7 @@ type PorterInstance struct {
 	Address           string
 	Region            string
 	FeatureSummary    *PorterFeatureSummary
-	Status            modeltiphereth.UserStatus
+	Status            model.UserStatus
 	ContextJSONSchema string
 }
 

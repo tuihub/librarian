@@ -21,7 +21,7 @@ func (v *v1) init(db *gorm.DB) {
 }
 
 func (v *v1) migrate() error {
-	version := new(Version)
+	version := new(_Version)
 	version.Version = 1
 	if !v.tx.Migrator().HasTable(version) {
 		err := v.tx.Migrator().CreateTable(version)
@@ -59,7 +59,7 @@ func (v *v1) migrateWrapper(migrateVersion uint, doPreMigration func() error, do
 	}
 
 	if v.curVersion == nil {
-		version := new(Version)
+		version := new(_Version)
 		// check if the version table exists
 		if !v.tx.Migrator().HasTable(version) {
 			var cv uint = 0
@@ -96,7 +96,7 @@ func (v *v1) migrateWrapper(migrateVersion uint, doPreMigration func() error, do
 	if err != nil {
 		return err
 	}
-	err = v.tx.Create(&Version{Version: migrateVersion}).Error
+	err = v.tx.Create(&_Version{Version: migrateVersion}).Error
 	if err != nil {
 		return err
 	}
@@ -105,16 +105,18 @@ func (v *v1) migrateWrapper(migrateVersion uint, doPreMigration func() error, do
 	return err
 }
 
-type Version struct {
+type _Version struct {
 	Version   uint `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-type Model struct {
+type _Model struct {
 	ID        model.InternalID `gorm:"primarykey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
+
+type _ID model.InternalID

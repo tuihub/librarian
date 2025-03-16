@@ -1,18 +1,17 @@
-package modeltiphereth
+package model
 
 import (
 	"time"
-
-	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 type User struct {
-	ID       model.InternalID
-	UserName string
-	PassWord string
-	Type     libauth.UserType
-	Status   UserStatus
+	ID        InternalID
+	Username  string
+	Password  string
+	Type      UserType
+	Status    UserStatus
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type UserStatus int
@@ -23,11 +22,21 @@ const (
 	UserStatusBlocked
 )
 
+type UserType int
+
+const (
+	UserTypeUnspecified UserType = iota
+	UserTypeAdmin
+	UserTypeNormal
+	UserTypeSentinel
+	UserTypePorter
+)
+
 type AccessToken string
 type RefreshToken string
 
 type Account struct {
-	ID                model.InternalID
+	ID                InternalID
 	Platform          string
 	PlatformAccountID string
 	Name              string
@@ -37,14 +46,14 @@ type Account struct {
 }
 
 type PullAccountInfo struct {
-	ID                model.InternalID
+	ID                InternalID
 	Platform          string
 	PlatformAccountID string
 }
 
 type UserSession struct {
-	ID           model.InternalID
-	UserID       model.InternalID
+	ID           InternalID
+	UserID       InternalID
 	RefreshToken string
 	DeviceInfo   *DeviceInfo
 	CreateAt     time.Time
@@ -52,7 +61,7 @@ type UserSession struct {
 }
 
 type DeviceInfo struct {
-	ID                      model.InternalID
+	ID                      InternalID
 	DeviceName              string
 	SystemType              SystemType
 	SystemVersion           string
