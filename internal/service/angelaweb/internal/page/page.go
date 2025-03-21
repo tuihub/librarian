@@ -41,7 +41,7 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 
 	return c.Render("dashboard", fiber.Map{
 		"Title":     "Dashboard",
-		"UserCount": userCount,
+		"UserCount": userCount.Count,
 	})
 }
 

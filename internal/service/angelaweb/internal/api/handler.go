@@ -30,5 +30,5 @@ func (h *Handler) GetDashboardStats(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Error fetching stats"})
 	}
-	return c.JSON(fiber.Map{"user_count": userCount})
+	return c.JSON(fiber.Map{"user_count": userCount.Count})
 }
