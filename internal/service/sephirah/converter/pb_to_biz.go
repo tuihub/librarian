@@ -20,7 +20,7 @@ import (
 // goverter:converter
 // goverter:output:format function
 // goverter:output:file ./generated.go
-// goverter:output:package github.com/tuihub/librarian/internal/service/sephirah/internal/converter
+// goverter:output:package github.com/tuihub/librarian/internal/service/sephirah/converter
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend ToBizInternalID

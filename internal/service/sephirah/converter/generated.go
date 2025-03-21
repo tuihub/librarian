@@ -5,12 +5,12 @@ package converter
 
 import (
 	model "github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelbinah"
+	modelbinah "github.com/tuihub/librarian/internal/model/modelbinah"
 	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
-	"github.com/tuihub/librarian/internal/model/modelgebura"
-	"github.com/tuihub/librarian/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/model/modelyesod"
+	modelgebura "github.com/tuihub/librarian/internal/model/modelgebura"
+	modelnetzach "github.com/tuihub/librarian/internal/model/modelnetzach"
+	modelsupervisor "github.com/tuihub/librarian/internal/model/modelsupervisor"
+	modelyesod "github.com/tuihub/librarian/internal/model/modelyesod"
 	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -163,19 +163,19 @@ func ToBizAppTypeList(source []v1.AppType) []modelgebura.AppType {
 	return modelgeburaAppTypeList
 }
 func ToBizDeviceInfo(source *v11.DeviceInfo) *model.DeviceInfo {
-	var pModeltipherethDeviceInfo *model.DeviceInfo
+	var pModelDeviceInfo *model.DeviceInfo
 	if source != nil {
-		var modeltipherethDeviceInfo model.DeviceInfo
-		modeltipherethDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
-		modeltipherethDeviceInfo.DeviceName = (*source).DeviceName
-		modeltipherethDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
-		modeltipherethDeviceInfo.SystemVersion = (*source).SystemVersion
-		modeltipherethDeviceInfo.ClientName = (*source).ClientName
-		modeltipherethDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
-		modeltipherethDeviceInfo.ClientVersion = (*source).ClientVersion
-		pModeltipherethDeviceInfo = &modeltipherethDeviceInfo
+		var modelDeviceInfo model.DeviceInfo
+		modelDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
+		modelDeviceInfo.DeviceName = (*source).DeviceName
+		modelDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
+		modelDeviceInfo.SystemVersion = (*source).SystemVersion
+		modelDeviceInfo.ClientName = (*source).ClientName
+		modelDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
+		modelDeviceInfo.ClientVersion = (*source).ClientVersion
+		pModelDeviceInfo = &modelDeviceInfo
 	}
-	return pModeltipherethDeviceInfo
+	return pModelDeviceInfo
 }
 func ToBizFeatureFlag(source *v1.FeatureFlag) *modelsupervisor.FeatureFlag {
 	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag
@@ -678,26 +678,26 @@ func ToBizSystemNotificationTypeList(source []v11.SystemNotificationType) []mode
 	return modelnetzachSystemNotificationTypeList
 }
 func ToBizSystemType(source v11.SystemType) model.SystemType {
-	var modeltipherethSystemType model.SystemType
+	var modelSystemType model.SystemType
 	switch source {
 	case v11.SystemType_SYSTEM_TYPE_ANDROID:
-		modeltipherethSystemType = model.SystemTypeAndroid
+		modelSystemType = model.SystemTypeAndroid
 	case v11.SystemType_SYSTEM_TYPE_IOS:
-		modeltipherethSystemType = model.SystemTypeIOS
+		modelSystemType = model.SystemTypeIOS
 	case v11.SystemType_SYSTEM_TYPE_LINUX:
-		modeltipherethSystemType = model.SystemTypeLinux
+		modelSystemType = model.SystemTypeLinux
 	case v11.SystemType_SYSTEM_TYPE_MACOS:
-		modeltipherethSystemType = model.SystemTypeMacOS
+		modelSystemType = model.SystemTypeMacOS
 	case v11.SystemType_SYSTEM_TYPE_UNSPECIFIED:
-		modeltipherethSystemType = model.SystemTypeUnspecified
+		modelSystemType = model.SystemTypeUnspecified
 	case v11.SystemType_SYSTEM_TYPE_WEB:
-		modeltipherethSystemType = model.SystemTypeWeb
+		modelSystemType = model.SystemTypeWeb
 	case v11.SystemType_SYSTEM_TYPE_WINDOWS:
-		modeltipherethSystemType = model.SystemTypeWindows
+		modelSystemType = model.SystemTypeWindows
 	default:
-		modeltipherethSystemType = model.SystemTypeUnspecified
+		modelSystemType = model.SystemTypeUnspecified
 	}
-	return modeltipherethSystemType
+	return modelSystemType
 }
 func ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	var pModelTimeRange *model.TimeRange
@@ -710,69 +710,69 @@ func ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	return pModelTimeRange
 }
 func ToBizUser(source *v11.User) *model.User {
-	var pModeltipherethUser *model.User
+	var pModelUser *model.User
 	if source != nil {
-		var modeltipherethUser model.User
-		modeltipherethUser.ID = ToBizInternalID((*source).Id)
-		modeltipherethUser.Username = (*source).Username
-		modeltipherethUser.Password = (*source).Password
-		modeltipherethUser.Type = ToLibAuthUserType((*source).Type)
-		modeltipherethUser.Status = ToBizUserStatus((*source).Status)
-		pModeltipherethUser = &modeltipherethUser
+		var modelUser model.User
+		modelUser.ID = ToBizInternalID((*source).Id)
+		modelUser.Username = (*source).Username
+		modelUser.Password = (*source).Password
+		modelUser.Type = ToLibAuthUserType((*source).Type)
+		modelUser.Status = ToBizUserStatus((*source).Status)
+		pModelUser = &modelUser
 	}
-	return pModeltipherethUser
+	return pModelUser
 }
 func ToBizUserStatus(source v11.UserStatus) model.UserStatus {
-	var modeltipherethUserStatus model.UserStatus
+	var modelUserStatus model.UserStatus
 	switch source {
 	case v11.UserStatus_USER_STATUS_ACTIVE:
-		modeltipherethUserStatus = model.UserStatusActive
+		modelUserStatus = model.UserStatusActive
 	case v11.UserStatus_USER_STATUS_BLOCKED:
-		modeltipherethUserStatus = model.UserStatusBlocked
+		modelUserStatus = model.UserStatusBlocked
 	case v11.UserStatus_USER_STATUS_UNSPECIFIED:
-		modeltipherethUserStatus = model.UserStatusUnspecified
+		modelUserStatus = model.UserStatusUnspecified
 	default:
-		modeltipherethUserStatus = model.UserStatusUnspecified
+		modelUserStatus = model.UserStatusUnspecified
 	}
-	return modeltipherethUserStatus
+	return modelUserStatus
 }
 func ToBizUserStatusList(source []v11.UserStatus) []model.UserStatus {
-	var modeltipherethUserStatusList []model.UserStatus
+	var modelUserStatusList []model.UserStatus
 	if source != nil {
-		modeltipherethUserStatusList = make([]model.UserStatus, len(source))
+		modelUserStatusList = make([]model.UserStatus, len(source))
 		for i := 0; i < len(source); i++ {
-			modeltipherethUserStatusList[i] = ToBizUserStatus(source[i])
+			modelUserStatusList[i] = ToBizUserStatus(source[i])
 		}
 	}
-	return modeltipherethUserStatusList
+	return modelUserStatusList
 }
 func ToLibAuthUserType(source v11.UserType) model.UserType {
-	var libauthUserType model.UserType
+	var modelUserType model.UserType
 	switch source {
 	case v11.UserType_USER_TYPE_ADMIN:
-		libauthUserType = model.UserTypeAdmin
+		modelUserType = model.UserTypeAdmin
 	case v11.UserType_USER_TYPE_NORMAL:
-		libauthUserType = model.UserTypeNormal
+		modelUserType = model.UserTypeNormal
 	case v11.UserType_USER_TYPE_PORTER:
-		libauthUserType = model.UserTypePorter
+		modelUserType = model.UserTypePorter
 	case v11.UserType_USER_TYPE_SENTINEL:
-		libauthUserType = model.UserTypeSentinel
+		modelUserType = model.UserTypeSentinel
 	case v11.UserType_USER_TYPE_UNSPECIFIED:
-		libauthUserType = model.UserTypeUnspecified
+		modelUserType = model.UserTypeUnspecified
 	default:
-		libauthUserType = model.UserTypeUnspecified
+		modelUserType = model.UserTypeUnspecified
 	}
-	return libauthUserType
+	return modelUserType
 }
 func ToLibAuthUserTypeList(source []v11.UserType) []model.UserType {
-	var libauthUserTypeList []model.UserType
+	var modelUserTypeList []model.UserType
 	if source != nil {
-		libauthUserTypeList = make([]model.UserType, len(source))
+		modelUserTypeList = make([]model.UserType, len(source))
 		for i := 0; i < len(source); i++ {
-			libauthUserTypeList[i] = ToLibAuthUserType(source[i])
+			modelUserTypeList[i] = ToLibAuthUserType(source[i])
 		}
 	}
-	return libauthUserTypeList
+	return modelUserTypeList
 }
 func pTimestamppbTimestampToPTimeTime(source *timestamppb.Timestamp) *time.Time {
 	var pTimeTime *time.Time

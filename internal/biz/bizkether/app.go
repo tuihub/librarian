@@ -1,30 +1,30 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
 	"strconv"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPullAppInfoTopic(
-	a *AngelaBase,
+	a *KetherBase,
 	infoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],
-	updateAppInfoIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
-) *libmq.Topic[modelangela.PullAppInfo] {
-	return libmq.NewTopic[modelangela.PullAppInfo](
+	updateAppInfoIndex *libmq.Topic[modelkether.UpdateAppInfoIndex],
+) *libmq.Topic[modelkether.PullAppInfo] {
+	return libmq.NewTopic[modelkether.PullAppInfo](
 		"PullAppInfo",
-		func(ctx context.Context, r *modelangela.PullAppInfo) error {
+		func(ctx context.Context, r *modelkether.PullAppInfo) error {
 			if !a.supv.HasAppInfoSource(r.AppInfoID.Source) {
 				return nil
 			}
@@ -70,14 +70,14 @@ func NewPullAppInfoTopic(
 				return err
 			}
 			_ = infoCache.Delete(ctx, r.AppInfoID)
-			_ = updateAppInfoIndex.Publish(ctx, modelangela.UpdateAppInfoIndex{IDs: []model.InternalID{id}})
+			_ = updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{id}})
 			return nil
 		},
 	)
 }
 
 func NewAppInfoCache(
-	g bizgebura.GeburaRepo,
+	g *data.GeburaRepo,
 	store libcache.Store,
 ) *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo] {
 	return libcache.NewMap[modelgebura.AppInfoID, modelgebura.AppInfo](

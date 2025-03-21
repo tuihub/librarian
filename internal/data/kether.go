@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
@@ -24,19 +23,19 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-type angelaRepo struct {
+type KetherRepo struct {
 	data *Data
 }
 
-// NewAngelaRepo .
-func NewAngelaRepo(data *Data) bizangela.AngelaRepo {
-	return &angelaRepo{
+// NewKetherRepo .
+func NewKetherRepo(data *Data) *KetherRepo {
+	return &KetherRepo{
 		data: data,
 	}
 }
 
-func (a *angelaRepo) UpsertAccount(ctx context.Context, acc model.Account) error {
-	return a.data.db.Account.Create().
+func (k *KetherRepo) UpsertAccount(ctx context.Context, acc model.Account) error {
+	return k.data.db.Account.Create().
 		SetID(acc.ID).
 		SetPlatform(acc.Platform).
 		SetPlatformAccountID(acc.PlatformAccountID).
@@ -54,10 +53,10 @@ func (a *angelaRepo) UpsertAccount(ctx context.Context, acc model.Account) error
 		Exec(ctx)
 }
 
-func (a *angelaRepo) UpsertAppInfo( //nolint:gocognit //TODO
+func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 	ctx context.Context, ap *modelgebura.AppInfo, internal *modelgebura.AppInfo,
 ) error {
-	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
+	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.AppInfo.Create().
 			SetID(ap.ID).
 			SetInternal(ap.Internal).
@@ -136,13 +135,13 @@ func (a *angelaRepo) UpsertAppInfo( //nolint:gocognit //TODO
 	})
 }
 
-func (a *angelaRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppInfo) error {
+func (k *KetherRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppInfo) error {
 	apps := make([]*ent.AppInfoCreate, len(al))
 	for i, ap := range al {
 		if ap.Details == nil {
 			ap.Details = new(modelgebura.AppInfoDetails)
 		}
-		apps[i] = a.data.db.AppInfo.Create().
+		apps[i] = k.data.db.AppInfo.Create().
 			SetID(ap.ID).
 			SetInternal(ap.Internal).
 			SetSource(ap.Source).
@@ -163,7 +162,7 @@ func (a *angelaRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppIn
 				SetVersion(ap.Details.Version)
 		}
 	}
-	return a.data.db.AppInfo.
+	return k.data.db.AppInfo.
 		CreateBulk(apps...).
 		OnConflict(
 			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
@@ -174,10 +173,10 @@ func (a *angelaRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppIn
 		Exec(ctx)
 }
 
-func (a *angelaRepo) AccountPurchaseAppInfos(
+func (k *KetherRepo) AccountPurchaseAppInfos(
 	ctx context.Context, id model.InternalID, ids []model.InternalID,
 ) error {
-	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
+	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		appIDs, err := tx.App.Query().Where(
 			app.IDIn(ids...),
 		).
@@ -185,15 +184,15 @@ func (a *angelaRepo) AccountPurchaseAppInfos(
 		if err != nil {
 			return err
 		}
-		return a.data.db.Account.
+		return k.data.db.Account.
 			UpdateOneID(id).
 			AddPurchasedAppIDs(appIDs...).
 			Exec(ctx)
 	})
 }
 
-func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
-	return a.data.WithTx(ctx, func(tx *ent.Tx) error {
+func (k *KetherRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
+	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		conf, err := tx.FeedConfig.Query().
 			Where(feedconfig.IDEQ(f.ID)).
 			Only(ctx)
@@ -218,12 +217,12 @@ func (a *angelaRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	})
 }
 
-func (a *angelaRepo) CheckNewFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) ([]string, error) {
+func (k *KetherRepo) CheckNewFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) ([]string, error) {
 	guids := make([]string, 0, len(items))
 	for _, item := range items {
 		guids = append(guids, item.GUID)
 	}
-	existItems, err := a.data.db.FeedItem.Query().Where(
+	existItems, err := k.data.db.FeedItem.Query().Where(
 		feeditem.FeedID(feedID),
 		feeditem.GUIDIn(guids...),
 	).Select(feeditem.FieldGUID).All(ctx)
@@ -243,14 +242,14 @@ func (a *angelaRepo) CheckNewFeedItems(ctx context.Context, items []*modelfeed.I
 	return res, nil
 }
 
-func (a *angelaRepo) UpsertFeedItems(
+func (k *KetherRepo) UpsertFeedItems(
 	ctx context.Context,
 	items []*modelfeed.Item,
 	feedID model.InternalID,
 ) error {
 	il := make([]*ent.FeedItemCreate, len(items))
 	for i, item := range items {
-		il[i] = a.data.db.FeedItem.Create().
+		il[i] = k.data.db.FeedItem.Create().
 			SetFeedID(feedID).
 			SetID(item.ID).
 			SetTitle(item.Title).
@@ -273,7 +272,7 @@ func (a *angelaRepo) UpsertFeedItems(
 			il[i].SetPublishedParsed(time.Now())
 		}
 	}
-	return a.data.db.FeedItem.CreateBulk(il...).
+	return k.data.db.FeedItem.CreateBulk(il...).
 		OnConflict(
 			sql.ConflictColumns(feeditem.FieldFeedID, feeditem.FieldGUID),
 			//
@@ -286,8 +285,8 @@ func (a *angelaRepo) UpsertFeedItems(
 		).Exec(ctx)
 }
 
-func (a *angelaRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {
-	c, err := a.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(conf.ID)).Only(ctx)
+func (k *KetherRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.FeedConfig) error {
+	c, err := k.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(conf.ID)).Only(ctx)
 	if err != nil {
 		return err
 	}
@@ -299,16 +298,16 @@ func (a *angelaRepo) UpdateFeedPullStatus(ctx context.Context, conf *modelyesod.
 		Exec(ctx)
 }
 
-func (a *angelaRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfeed.Item, error) {
-	item, err := a.data.db.FeedItem.Get(ctx, id)
+func (k *KetherRepo) GetFeedItem(ctx context.Context, id model.InternalID) (*modelfeed.Item, error) {
+	item, err := k.data.db.FeedItem.Get(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	return converter.ToBizFeedItem(item), nil
 }
 
-func (a *angelaRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([]*modelyesod.FeedActionSet, error) {
-	actions, err := a.data.db.FeedActionSet.Query().
+func (k *KetherRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([]*modelyesod.FeedActionSet, error) {
+	actions, err := k.data.db.FeedActionSet.Query().
 		Where(feedactionset.HasFeedConfigWith(feedconfig.IDEQ(id))).
 		All(ctx)
 	if err != nil {
@@ -317,10 +316,10 @@ func (a *angelaRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([
 	return converter.ToBizFeedActionSetList(actions), nil
 }
 
-func (a *angelaRepo) GetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
+func (k *KetherRepo) GetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
 	var fr *modelsupervisor.FeatureRequest
 	var it []*modelfeed.Item
-	err := a.data.WithTx(ctx, func(tx *ent.Tx) error {
+	err := k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		target, err := tx.NotifyTarget.Get(ctx, id)
 		if err != nil {
 			return err
@@ -347,12 +346,12 @@ func (a *angelaRepo) GetNotifyTargetItems(ctx context.Context, id model.Internal
 	return fr, it, nil
 }
 
-func (a *angelaRepo) AddFeedItemsToCollection(
+func (k *KetherRepo) AddFeedItemsToCollection(
 	ctx context.Context,
 	collectionID model.InternalID,
 	itemIDs []model.InternalID,
 ) error {
-	return a.data.db.FeedItemCollection.UpdateOneID(collectionID).
+	return k.data.db.FeedItemCollection.UpdateOneID(collectionID).
 		AddFeedItemIDs(itemIDs...).
 		Exec(ctx)
 }

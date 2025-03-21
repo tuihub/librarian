@@ -1,19 +1,19 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
 
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
-	"github.com/tuihub/librarian/internal/model/modelangela"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 )
 
 func NewUpdateAppInfoIndexTopic(
-	a *AngelaBase,
-) *libmq.Topic[modelangela.UpdateAppInfoIndex] {
-	return libmq.NewTopic[modelangela.UpdateAppInfoIndex](
+	a *KetherBase,
+) *libmq.Topic[modelkether.UpdateAppInfoIndex] {
+	return libmq.NewTopic[modelkether.UpdateAppInfoIndex](
 		"UpdateAppInfoIndex",
-		func(ctx context.Context, r *modelangela.UpdateAppInfoIndex) error {
+		func(ctx context.Context, r *modelkether.UpdateAppInfoIndex) error {
 			infos, err := a.g.GetBatchBoundAppInfos(ctx, r.IDs)
 			if err != nil {
 				return err

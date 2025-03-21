@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 
-	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -11,18 +10,18 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 )
 
-type chesedRepo struct {
+type ChesedRepo struct {
 	data *Data
 }
 
 // NewChesedRepo .
-func NewChesedRepo(data *Data) bizchesed.ChesedRepo {
-	return &chesedRepo{
+func NewChesedRepo(data *Data) *ChesedRepo {
+	return &ChesedRepo{
 		data: data,
 	}
 }
 
-func (c chesedRepo) CreateImage(ctx context.Context, userID model.InternalID, image *modelchesed.Image) error {
+func (c *ChesedRepo) CreateImage(ctx context.Context, userID model.InternalID, image *modelchesed.Image) error {
 	return c.data.db.Image.Create().
 		SetID(image.ID).
 		SetName(image.Name).
@@ -33,7 +32,7 @@ func (c chesedRepo) CreateImage(ctx context.Context, userID model.InternalID, im
 		Exec(ctx)
 }
 
-func (c chesedRepo) ListImages(ctx context.Context, userID model.InternalID, paging model.Paging) (
+func (c *ChesedRepo) ListImages(ctx context.Context, userID model.InternalID, paging model.Paging) (
 	[]*modelchesed.Image, int64, error) {
 	q := c.data.db.Image.Query().
 		Where(
@@ -53,7 +52,7 @@ func (c chesedRepo) ListImages(ctx context.Context, userID model.InternalID, pag
 	return converter.ToBizImageList(res), int64(total), nil
 }
 
-func (c chesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
+func (c *ChesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image, error) {
 	res, err := c.data.db.Image.Query().
 		Where(image.StatusEQ(image.StatusUploaded)).
 		Limit(10). //nolint:mnd //TODO
@@ -64,13 +63,13 @@ func (c chesedRepo) ListImageNeedScan(ctx context.Context) ([]*modelchesed.Image
 	return converter.ToBizImageList(res), nil
 }
 
-func (c chesedRepo) SetImageStatus(ctx context.Context, id model.InternalID, status modelchesed.ImageStatus) error {
+func (c *ChesedRepo) SetImageStatus(ctx context.Context, id model.InternalID, status modelchesed.ImageStatus) error {
 	return c.data.db.Image.UpdateOneID(id).
 		SetStatus(converter.ToEntImageStatus(status)).
 		Exec(ctx)
 }
 
-func (c chesedRepo) GetImage(ctx context.Context, userID model.InternalID, id model.InternalID) (
+func (c *ChesedRepo) GetImage(ctx context.Context, userID model.InternalID, id model.InternalID) (
 	*modelchesed.Image, error) {
 	res, err := c.data.db.Image.Query().
 		Where(

@@ -1,4 +1,4 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
@@ -6,16 +6,16 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPullAccountTopic(
-	a *AngelaBase,
-	sr *libmq.Topic[modelangela.PullAccountAppInfoRelation],
+	a *KetherBase,
+	sr *libmq.Topic[modelkether.PullAccountAppInfoRelation],
 ) *libmq.Topic[model.PullAccountInfo] {
 	return libmq.NewTopic[model.PullAccountInfo](
 		"PullAccountInfo",
@@ -46,7 +46,7 @@ func NewPullAccountTopic(
 				return err
 			}
 			return sr.
-				Publish(ctx, modelangela.PullAccountAppInfoRelation{
+				Publish(ctx, modelkether.PullAccountAppInfoRelation{
 					ID:                info.ID,
 					Platform:          info.Platform,
 					PlatformAccountID: info.PlatformAccountID,
@@ -56,12 +56,12 @@ func NewPullAccountTopic(
 }
 
 func NewPullAccountAppInfoRelationTopic(
-	a *AngelaBase,
-	sa *libmq.Topic[modelangela.PullAppInfo],
-) *libmq.Topic[modelangela.PullAccountAppInfoRelation] {
-	return libmq.NewTopic[modelangela.PullAccountAppInfoRelation](
+	a *KetherBase,
+	sa *libmq.Topic[modelkether.PullAppInfo],
+) *libmq.Topic[modelkether.PullAccountAppInfoRelation] {
+	return libmq.NewTopic[modelkether.PullAccountAppInfoRelation](
 		"PullAccountAppInfoRelation",
-		func(ctx context.Context, r *modelangela.PullAccountAppInfoRelation) error {
+		func(ctx context.Context, r *modelkether.PullAccountAppInfoRelation) error {
 			if !a.supv.HasAccountPlatform(r.Platform) {
 				return nil
 			}
@@ -103,7 +103,7 @@ func NewPullAccountAppInfoRelationTopic(
 				return err
 			}
 			for _, info := range infos {
-				_ = sa.Publish(ctx, modelangela.PullAppInfo{
+				_ = sa.Publish(ctx, modelkether.PullAppInfo{
 					ID: info.ID,
 					AppInfoID: modelgebura.AppInfoID{
 						Internal:    false,

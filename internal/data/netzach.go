@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
@@ -19,17 +18,17 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-type netzachRepo struct {
+type NetzachRepo struct {
 	data *Data
 }
 
-func NewNetzachRepo(data *Data) biznetzach.NetzachRepo {
-	return &netzachRepo{
+func NewNetzachRepo(data *Data) *NetzachRepo {
+	return &NetzachRepo{
 		data: data,
 	}
 }
 
-func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalID, t *modelnetzach.NotifyTarget) error {
+func (n *NetzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalID, t *modelnetzach.NotifyTarget) error {
 	q := n.data.db.NotifyTarget.Create().
 		SetOwnerID(id).
 		SetID(t.ID).
@@ -40,7 +39,7 @@ func (n *netzachRepo) CreateNotifyTarget(ctx context.Context, id model.InternalI
 	return q.Exec(ctx)
 }
 
-func (n *netzachRepo) UpdateNotifyTarget(
+func (n *NetzachRepo) UpdateNotifyTarget(
 	ctx context.Context,
 	userID model.InternalID,
 	t *modelnetzach.NotifyTarget,
@@ -64,7 +63,7 @@ func (n *netzachRepo) UpdateNotifyTarget(
 	return q.Exec(ctx)
 }
 
-func (n *netzachRepo) ListNotifyTargets(
+func (n *NetzachRepo) ListNotifyTargets(
 	ctx context.Context,
 	paging model.Paging,
 	userID model.InternalID,
@@ -94,7 +93,7 @@ func (n *netzachRepo) ListNotifyTargets(
 	return converter.ToBizNotifyTargetList(res), int64(total), nil
 }
 
-func (n *netzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyTarget, error) {
+func (n *NetzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyTarget, error) {
 	res, err := n.data.db.NotifyTarget.Query().Where(notifytarget.IDEQ(id)).Only(ctx)
 	if err != nil {
 		return nil, err
@@ -102,7 +101,7 @@ func (n *netzachRepo) GetNotifyTarget(ctx context.Context, id model.InternalID) 
 	return converter.ToBizNotifyTarget(res), nil
 }
 
-func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
+func (n *NetzachRepo) CreateNotifyFlow(ctx context.Context, userID model.InternalID, f *modelnetzach.NotifyFlow) error {
 	err := n.data.WithTx(ctx, func(tx *ent.Tx) error {
 		err := tx.NotifyFlow.Create().
 			SetID(f.ID).
@@ -157,7 +156,7 @@ func (n *netzachRepo) CreateNotifyFlow(ctx context.Context, userID model.Interna
 	return nil
 }
 
-func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
+func (n *NetzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 	ctx context.Context,
 	userID model.InternalID,
 	f *modelnetzach.NotifyFlow,
@@ -228,7 +227,7 @@ func (n *netzachRepo) UpdateNotifyFlow( //nolint:gocognit // TODO
 	return nil
 }
 
-func (n *netzachRepo) ListNotifyFlows(
+func (n *NetzachRepo) ListNotifyFlows(
 	ctx context.Context,
 	paging model.Paging,
 	userID model.InternalID,
@@ -260,7 +259,7 @@ func (n *netzachRepo) ListNotifyFlows(
 	return res, int64(total), nil
 }
 
-func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyFlow, error) {
+func (n *NetzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*modelnetzach.NotifyFlow, error) {
 	res, err := n.data.db.NotifyFlow.Query().
 		Where(notifyflow.IDEQ(id)).
 		WithNotifyFlowSource().
@@ -272,7 +271,7 @@ func (n *netzachRepo) GetNotifyFlow(ctx context.Context, id model.InternalID) (*
 	return converter.ToBizNotifyFlowExtend(res), nil
 }
 
-func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
+func (n *NetzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.InternalID) ([]model.InternalID, error) {
 	ids, err := n.data.db.NotifyFlow.Query().Where(
 		notifyflow.HasNotifyFlowSourceWith(notifyflowsource.NotifySourceIDEQ(id)),
 	).IDs(ctx)
@@ -282,7 +281,7 @@ func (n *netzachRepo) GetNotifyFlowIDsWithFeed(ctx context.Context, id model.Int
 	return ids, nil
 }
 
-func (n *netzachRepo) UpsertSystemNotification(
+func (n *NetzachRepo) UpsertSystemNotification(
 	ctx context.Context,
 	userID model.InternalID,
 	notification *modelnetzach.SystemNotification,
@@ -311,7 +310,7 @@ func (n *netzachRepo) UpsertSystemNotification(
 	).Exec(ctx)
 }
 
-func (n *netzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {
+func (n *NetzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {
 	q := n.data.db.SystemNotification.Query().
 		Order(ent.Desc(systemnotification.FieldUpdatedAt))
 	if userID != nil {

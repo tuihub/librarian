@@ -1,4 +1,4 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
-func (a *Angela) PorterGetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
+func (a *Kether) PorterGetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
 	claims := libauth.FromContextAssertUserType(ctx, model.UserTypePorter)
 	if claims == nil {
 		return nil, nil, bizutils.NoPermissionError()

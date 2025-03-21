@@ -1,4 +1,4 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
@@ -6,27 +6,27 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tuihub/librarian/internal/biz/biznetzach"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
 func NewNotifyRouterTopic( //nolint:gocognit // TODO
-	a *AngelaBase,
+	a *KetherBase,
 	flowMap *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
-	feedToFlowMap *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
-	push *libmq.Topic[modelangela.NotifyPush],
-) *libmq.Topic[modelangela.NotifyRouter] {
-	return libmq.NewTopic[modelangela.NotifyRouter](
+	feedToFlowMap *libcache.Map[model.InternalID, modelkether.FeedToNotifyFlowValue],
+	push *libmq.Topic[modelkether.NotifyPush],
+) *libmq.Topic[modelkether.NotifyRouter] {
+	return libmq.NewTopic[modelkether.NotifyRouter](
 		"NotifyRouter",
-		func(ctx context.Context, r *modelangela.NotifyRouter) error {
+		func(ctx context.Context, r *modelkether.NotifyRouter) error {
 			flowIDs, err := feedToFlowMap.Get(ctx, r.FeedID)
 			if err != nil {
 				return err
@@ -63,7 +63,7 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 					if target == nil {
 						continue
 					}
-					err = push.Publish(ctx, modelangela.NotifyPush{
+					err = push.Publish(ctx, modelkether.NotifyPush{
 						Target:   *target,
 						Messages: applyFilter(messages, target.Filter.IncludeKeywords, target.Filter.ExcludeKeywords),
 					})
@@ -82,12 +82,12 @@ func NewNotifyRouterTopic( //nolint:gocognit // TODO
 }
 
 func NewNotifyPushTopic(
-	a *AngelaBase,
+	a *KetherBase,
 	targetMap *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
-) *libmq.Topic[modelangela.NotifyPush] {
-	return libmq.NewTopic[modelangela.NotifyPush](
+) *libmq.Topic[modelkether.NotifyPush] {
+	return libmq.NewTopic[modelkether.NotifyPush](
 		"NotifyPush",
-		func(ctx context.Context, p *modelangela.NotifyPush) error {
+		func(ctx context.Context, p *modelkether.NotifyPush) error {
 			target, err := targetMap.Get(ctx, p.Target.TargetID)
 			if err != nil {
 				return err
@@ -115,21 +115,21 @@ func NewNotifyPushTopic(
 
 // NewFeedToNotifyFlowCache Cache-Aside Pattern.
 func NewFeedToNotifyFlowCache(
-	n biznetzach.NetzachRepo,
+	n *data.NetzachRepo,
 	store libcache.Store,
-) *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue] {
-	return libcache.NewMap[model.InternalID, modelangela.FeedToNotifyFlowValue](
+) *libcache.Map[model.InternalID, modelkether.FeedToNotifyFlowValue] {
+	return libcache.NewMap[model.InternalID, modelkether.FeedToNotifyFlowValue](
 		store,
 		"FeedToNotifyFlow",
 		func(k model.InternalID) string {
 			return strconv.FormatInt(int64(k), 10)
 		},
-		func(ctx context.Context, id model.InternalID) (*modelangela.FeedToNotifyFlowValue, error) {
+		func(ctx context.Context, id model.InternalID) (*modelkether.FeedToNotifyFlowValue, error) {
 			res, err := n.GetNotifyFlowIDsWithFeed(ctx, id)
 			if err != nil {
 				return nil, err
 			}
-			return (*modelangela.FeedToNotifyFlowValue)(&res), nil
+			return (*modelkether.FeedToNotifyFlowValue)(&res), nil
 		},
 		libcache.WithExpiration(libtime.SevenDays),
 	)
@@ -137,7 +137,7 @@ func NewFeedToNotifyFlowCache(
 
 // NewNotifyFlowCache Cache-Aside Pattern.
 func NewNotifyFlowCache(
-	n biznetzach.NetzachRepo,
+	n *data.NetzachRepo,
 	store libcache.Store,
 ) *libcache.Map[model.InternalID, modelnetzach.NotifyFlow] {
 	return libcache.NewMap[model.InternalID, modelnetzach.NotifyFlow](
@@ -159,7 +159,7 @@ func NewNotifyFlowCache(
 
 // NewNotifyTargetCache Cache-Aside Pattern.
 func NewNotifyTargetCache(
-	n biznetzach.NetzachRepo,
+	n *data.NetzachRepo,
 	store libcache.Store,
 ) *libcache.Map[model.InternalID, modelnetzach.NotifyTarget] {
 	return libcache.NewMap[model.InternalID, modelnetzach.NotifyTarget](

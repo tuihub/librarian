@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -27,43 +28,10 @@ var ProviderSet = wire.NewSet(
 	NewPorterContextCache,
 )
 
-type TipherethRepo interface {
-	FetchUserByPassword(context.Context, string, string) (*model.User, error)
-	CreateUser(context.Context, *model.User, model.InternalID) error
-	UpdateUser(context.Context, *model.User, string) error
-	ListUsers(context.Context, model.Paging, []model.InternalID,
-		[]model.UserType, []model.UserStatus, []model.InternalID,
-		model.InternalID) ([]*model.User, int64, error)
-	GetUserCount(context.Context) (int, error)
-	LinkAccount(context.Context, model.Account, model.InternalID) (model.InternalID, error)
-	UnLinkAccount(context.Context, model.Account, model.InternalID) error
-	ListLinkAccounts(context.Context, model.InternalID) ([]*model.Account, error)
-	GetUser(context.Context, model.InternalID) (*model.User, error)
-	UpsertPorters(context.Context, []*modelsupervisor.PorterInstance) error
-	ListPorters(context.Context, model.Paging) ([]*modelsupervisor.PorterInstance, int64, error)
-	FetchPorterByAddress(context.Context, string) (*modelsupervisor.PorterInstance, error)
-	UpdatePorterStatus(context.Context, model.InternalID,
-		model.UserStatus) (*modelsupervisor.PorterInstance, error)
-	CreatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
-	GetEnabledPorterContexts(context.Context) ([]*modelsupervisor.PorterContext, error)
-	ListPorterContexts(context.Context, model.InternalID, model.Paging) ([]*modelsupervisor.PorterContext, int64, error)
-	UpdatePorterContext(context.Context, model.InternalID, *modelsupervisor.PorterContext) error
-	FetchPorterContext(context.Context, model.InternalID) (*modelsupervisor.PorterContext, error)
-	CreateDevice(context.Context, model.InternalID, *model.DeviceInfo, *string) (model.InternalID, error)
-	ListUserSessions(context.Context, model.InternalID) ([]*model.UserSession, error)
-	DeleteUserSession(context.Context, model.InternalID, model.InternalID) error
-	FetchDeviceInfo(context.Context, model.InternalID) (*model.DeviceInfo, error)
-	CreateUserSession(context.Context, *model.UserSession) error
-	FetchUserSession(context.Context, model.InternalID, string) (*model.UserSession, error)
-	UpdateUserSession(context.Context, *model.UserSession) error
-	ListDevices(context.Context, model.InternalID) ([]*model.DeviceInfo, error)
-	ListPorterGroups(context.Context, []model.UserStatus) ([]*modelsupervisor.PorterGroup, error)
-}
-
 type Tiphereth struct {
 	app                 *libapp.Settings
 	auth                *libauth.Auth
-	repo                TipherethRepo
+	repo                *data.TipherethRepo
 	supv                *supervisor.Supervisor
 	id                  *libidgenerator.IDGenerator
 	search              libsearch.Search
@@ -74,7 +42,7 @@ type Tiphereth struct {
 
 func NewTiphereth(
 	app *libapp.Settings,
-	repo TipherethRepo,
+	repo *data.TipherethRepo,
 	auth *libauth.Auth,
 	supv *supervisor.Supervisor,
 	id *libidgenerator.IDGenerator,
@@ -156,7 +124,7 @@ func (t *Tiphereth) CreateConfiguredAdmin() {
 }
 
 func NewUserCountCache(
-	t TipherethRepo,
+	t *data.TipherethRepo,
 	store libcache.Store,
 ) *libcache.Key[model.UserCount] {
 	return libcache.NewKey[model.UserCount](
@@ -174,7 +142,7 @@ func NewUserCountCache(
 }
 
 func NewPorterInstanceCache(
-	t TipherethRepo,
+	t *data.TipherethRepo,
 	store libcache.Store,
 ) *libcache.Map[string, modelsupervisor.PorterInstance] {
 	return libcache.NewMap[string, modelsupervisor.PorterInstance](
@@ -191,7 +159,7 @@ func NewPorterInstanceCache(
 }
 
 func NewPorterContextCache(
-	t TipherethRepo,
+	t *data.TipherethRepo,
 	store libcache.Store,
 ) *libcache.Map[model.InternalID, modelsupervisor.PorterContext] {
 	return libcache.NewMap[model.InternalID, modelsupervisor.PorterContext](

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
@@ -11,7 +12,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -25,43 +26,23 @@ var ProviderSet = wire.NewSet(
 	NewSystemNotificationTopic,
 )
 
-type NetzachRepo interface {
-	CreateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
-	UpdateNotifyTarget(context.Context, model.InternalID, *modelnetzach.NotifyTarget) error
-	ListNotifyTargets(context.Context, model.Paging, model.InternalID, []model.InternalID,
-		[]modelnetzach.NotifyTargetStatus) (
-		[]*modelnetzach.NotifyTarget, int64, error)
-	GetNotifyTarget(context.Context, model.InternalID) (*modelnetzach.NotifyTarget, error)
-	CreateNotifyFlow(context.Context, model.InternalID, *modelnetzach.NotifyFlow) error
-	UpdateNotifyFlow(context.Context, model.InternalID, *modelnetzach.NotifyFlow) error
-	ListNotifyFlows(context.Context, model.Paging, model.InternalID, []model.InternalID) (
-		[]*modelnetzach.NotifyFlow, int64, error)
-	GetNotifyFlow(context.Context, model.InternalID) (*modelnetzach.NotifyFlow, error)
-	GetNotifyFlowIDsWithFeed(context.Context, model.InternalID) ([]model.InternalID, error)
-
-	UpsertSystemNotification(context.Context, model.InternalID, *modelnetzach.SystemNotification) error
-	ListSystemNotifications(context.Context, model.Paging, *model.InternalID, []modelnetzach.SystemNotificationType,
-		[]modelnetzach.SystemNotificationLevel, []modelnetzach.SystemNotificationStatus) (
-		[]*modelnetzach.SystemNotification, int64, error)
-}
-
 type Netzach struct {
-	repo              NetzachRepo
+	repo              *data.NetzachRepo
 	supv              *supervisor.Supervisor
 	id                *libidgenerator.IDGenerator
 	search            libsearch.Search
-	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue]
+	notifySourceCache *libcache.Map[model.InternalID, modelkether.FeedToNotifyFlowValue]
 	notifyFlowCache   *libcache.Map[model.InternalID, modelnetzach.NotifyFlow]
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget]
 }
 
 func NewNetzach(
-	repo NetzachRepo,
+	repo *data.NetzachRepo,
 	supv *supervisor.Supervisor,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	mq *libmq.MQ,
-	notifySourceCache *libcache.Map[model.InternalID, modelangela.FeedToNotifyFlowValue],
+	notifySourceCache *libcache.Map[model.InternalID, modelkether.FeedToNotifyFlowValue],
 	notifyFlowCache *libcache.Map[model.InternalID, modelnetzach.NotifyFlow],
 	notifyTargetCache *libcache.Map[model.InternalID, modelnetzach.NotifyTarget],
 	systemNotification *libmq.Topic[modelnetzach.SystemNotify],

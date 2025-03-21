@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
@@ -20,18 +19,18 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-type tipherethRepo struct {
+type TipherethRepo struct {
 	data *Data
 }
 
 // NewTipherethRepo .
-func NewTipherethRepo(data *Data) biztiphereth.TipherethRepo {
-	return &tipherethRepo{
+func NewTipherethRepo(data *Data) *TipherethRepo {
+	return &TipherethRepo{
 		data: data,
 	}
 }
 
-func (t tipherethRepo) FetchUserByPassword(
+func (t *TipherethRepo) FetchUserByPassword(
 	ctx context.Context,
 	username, password string,
 ) (*model.User, error) {
@@ -45,7 +44,7 @@ func (t tipherethRepo) FetchUserByPassword(
 	return converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) CreateDevice(
+func (t *TipherethRepo) CreateDevice(
 	ctx context.Context,
 	userID model.InternalID,
 	info *model.DeviceInfo,
@@ -86,7 +85,7 @@ func (t tipherethRepo) CreateDevice(
 	return res, nil
 }
 
-func (t tipherethRepo) FetchDeviceInfo(
+func (t *TipherethRepo) FetchDeviceInfo(
 	ctx context.Context,
 	deviceID model.InternalID,
 ) (*model.DeviceInfo, error) {
@@ -97,7 +96,7 @@ func (t tipherethRepo) FetchDeviceInfo(
 	return converter.ToBizDeviceInfo(res), nil
 }
 
-func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*model.DeviceInfo, error) {
+func (t *TipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*model.DeviceInfo, error) {
 	devices, err := t.data.db.DeviceInfo.Query().Where(
 		deviceinfo.HasUserWith(user.IDEQ(id)),
 	).All(ctx)
@@ -107,7 +106,7 @@ func (t tipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]
 	return converter.ToBizDeviceInfoList(devices), nil
 }
 
-func (t tipherethRepo) CreateUserSession(ctx context.Context, session *model.UserSession) error {
+func (t *TipherethRepo) CreateUserSession(ctx context.Context, session *model.UserSession) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.UserSession.Create().
 			SetID(session.ID).
@@ -144,7 +143,7 @@ func (t tipherethRepo) CreateUserSession(ctx context.Context, session *model.Use
 	})
 }
 
-func (t tipherethRepo) FetchUserSession(
+func (t *TipherethRepo) FetchUserSession(
 	ctx context.Context,
 	userID model.InternalID,
 	token string,
@@ -163,7 +162,7 @@ func (t tipherethRepo) FetchUserSession(
 	return res, nil
 }
 
-func (t tipherethRepo) ListUserSessions(
+func (t *TipherethRepo) ListUserSessions(
 	ctx context.Context,
 	id model.InternalID,
 ) ([]*model.UserSession, error) {
@@ -183,7 +182,7 @@ func (t tipherethRepo) ListUserSessions(
 	return res, nil
 }
 
-func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *model.UserSession) error {
+func (t *TipherethRepo) UpdateUserSession(ctx context.Context, session *model.UserSession) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.UserSession.UpdateOneID(session.ID).
 			SetRefreshToken(session.RefreshToken).
@@ -203,7 +202,7 @@ func (t tipherethRepo) UpdateUserSession(ctx context.Context, session *model.Use
 	})
 }
 
-func (t tipherethRepo) DeleteUserSession(
+func (t *TipherethRepo) DeleteUserSession(
 	ctx context.Context,
 	userID model.InternalID,
 	sessionID model.InternalID,
@@ -213,7 +212,7 @@ func (t tipherethRepo) DeleteUserSession(
 	).Exec(ctx)
 }
 
-func (t tipherethRepo) CreateUser(ctx context.Context, u *model.User, c model.InternalID) error {
+func (t *TipherethRepo) CreateUser(ctx context.Context, u *model.User, c model.InternalID) error {
 	q := t.data.db.User.Create().
 		SetID(u.ID).
 		SetUsername(u.Username).
@@ -224,7 +223,7 @@ func (t tipherethRepo) CreateUser(ctx context.Context, u *model.User, c model.In
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) UpdateUser(ctx context.Context, u *model.User, password string) error {
+func (t *TipherethRepo) UpdateUser(ctx context.Context, u *model.User, password string) error {
 	q := t.data.db.User.Update().
 		Where(user.IDEQ(u.ID))
 	if u.Username != "" {
@@ -242,7 +241,7 @@ func (t tipherethRepo) UpdateUser(ctx context.Context, u *model.User, password s
 	return q.Exec(ctx)
 }
 
-func (t tipherethRepo) ListUsers(
+func (t *TipherethRepo) ListUsers(
 	ctx context.Context,
 	paging model.Paging,
 	ids []model.InternalID,
@@ -278,7 +277,7 @@ func (t tipherethRepo) ListUsers(
 	return converter.ToBizUserList(u), int64(count), nil
 }
 
-func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model.User, error) {
+func (t *TipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model.User, error) {
 	u, err := t.data.db.User.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -286,11 +285,11 @@ func (t tipherethRepo) GetUser(ctx context.Context, id model.InternalID) (*model
 	return converter.ToBizUser(u), nil
 }
 
-func (t tipherethRepo) GetUserCount(ctx context.Context) (int, error) {
+func (t *TipherethRepo) GetUserCount(ctx context.Context) (int, error) {
 	return t.data.db.User.Query().Count(ctx)
 }
 
-func (t tipherethRepo) LinkAccount(
+func (t *TipherethRepo) LinkAccount(
 	ctx context.Context,
 	a model.Account,
 	userID model.InternalID,
@@ -346,7 +345,7 @@ func (t tipherethRepo) LinkAccount(
 	return accountID, nil
 }
 
-func (t tipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u model.InternalID) error {
+func (t *TipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(a.Platform),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
@@ -356,7 +355,7 @@ func (t tipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u mod
 		Exec(ctx)
 }
 
-func (t tipherethRepo) ListLinkAccounts(
+func (t *TipherethRepo) ListLinkAccounts(
 	ctx context.Context,
 	userID model.InternalID,
 ) ([]*model.Account, error) {
@@ -371,7 +370,7 @@ func (t tipherethRepo) ListLinkAccounts(
 	return converter.ToBizAccountList(a), nil
 }
 
-func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
+func (t *TipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
 	instances := make([]*ent.PorterInstanceCreate, len(il))
 	for i, instance := range il {
 		if instance.BinarySummary == nil {
@@ -405,7 +404,7 @@ func (t tipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.
 		Exec(ctx)
 }
 
-func (t tipherethRepo) ListPorters(
+func (t *TipherethRepo) ListPorters(
 	ctx context.Context,
 	paging model.Paging,
 ) ([]*modelsupervisor.PorterInstance, int64, error) {
@@ -424,7 +423,7 @@ func (t tipherethRepo) ListPorters(
 	return converter.ToBizPorterList(p), int64(count), nil
 }
 
-func (t tipherethRepo) UpdatePorterStatus(
+func (t *TipherethRepo) UpdatePorterStatus(
 	ctx context.Context,
 	id model.InternalID,
 	status model.UserStatus,
@@ -440,7 +439,7 @@ func (t tipherethRepo) UpdatePorterStatus(
 	return converter.ToBizPorter(pi), nil
 }
 
-func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modelsupervisor.PorterInstance, error) {
+func (t *TipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modelsupervisor.PorterInstance, error) {
 	p, err := t.data.db.PorterInstance.Query().Where(
 		porterinstance.AddressEQ(address),
 	).Only(ctx)
@@ -450,7 +449,7 @@ func (t tipherethRepo) FetchPorterByAddress(ctx context.Context, address string)
 	return converter.ToBizPorter(p), nil
 }
 
-func (t tipherethRepo) CreatePorterContext(
+func (t *TipherethRepo) CreatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
 	context *modelsupervisor.PorterContext,
@@ -467,7 +466,7 @@ func (t tipherethRepo) CreatePorterContext(
 		Exec(ctx)
 }
 
-func (t tipherethRepo) ListPorterContexts(
+func (t *TipherethRepo) ListPorterContexts(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -489,7 +488,7 @@ func (t tipherethRepo) ListPorterContexts(
 	return converter.ToBizPorterContextList(p), int64(count), nil
 }
 
-func (t tipherethRepo) UpdatePorterContext(
+func (t *TipherethRepo) UpdatePorterContext(
 	ctx context.Context,
 	userID model.InternalID,
 	context *modelsupervisor.PorterContext,
@@ -505,7 +504,7 @@ func (t tipherethRepo) UpdatePorterContext(
 		Exec(ctx)
 }
 
-func (t tipherethRepo) ListPorterGroups(
+func (t *TipherethRepo) ListPorterGroups(
 	ctx context.Context,
 	status []model.UserStatus,
 ) ([]*modelsupervisor.PorterGroup, error) {
@@ -560,7 +559,7 @@ func (t tipherethRepo) ListPorterGroups(
 	return pg, nil
 }
 
-func (t tipherethRepo) FetchPorterContext(
+func (t *TipherethRepo) FetchPorterContext(
 	ctx context.Context,
 	id model.InternalID,
 ) (*modelsupervisor.PorterContext, error) {
@@ -571,7 +570,7 @@ func (t tipherethRepo) FetchPorterContext(
 	return converter.ToBizPorterContext(res), nil
 }
 
-func (t tipherethRepo) GetEnabledPorterContexts(
+func (t *TipherethRepo) GetEnabledPorterContexts(
 	ctx context.Context,
 ) ([]*modelsupervisor.PorterContext, error) {
 	pc, err := t.data.db.PorterContext.Query().Where(

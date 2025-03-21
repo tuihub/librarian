@@ -1,4 +1,4 @@
-package modelangela
+package modelkether
 
 import (
 	"github.com/tuihub/librarian/internal/model"

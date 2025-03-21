@@ -9,8 +9,8 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -37,7 +37,7 @@ func (g *Gebura) CreateAppInfo(
 	if err = g.repo.CreateAppInfo(ctx, appInfo); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	_ = g.updateAppInfoIndex.Publish(ctx, modelangela.UpdateAppInfoIndex{IDs: []model.InternalID{appInfo.ID}})
+	_ = g.updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{appInfo.ID}})
 	return appInfo, nil
 }
 
@@ -50,7 +50,7 @@ func (g *Gebura) UpdateAppInfo(ctx context.Context, appInfo *modelgebura.AppInfo
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	_ = g.updateAppInfoIndex.Publish(ctx, modelangela.UpdateAppInfoIndex{IDs: []model.InternalID{appInfo.ID}})
+	_ = g.updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{appInfo.ID}})
 	return nil
 }
 
@@ -82,7 +82,7 @@ func (g *Gebura) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo, me
 	if err := g.repo.MergeAppInfos(ctx, base, merged); err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	_ = g.updateAppInfoIndex.Publish(ctx, modelangela.UpdateAppInfoIndex{IDs: []model.InternalID{base.ID}})
+	_ = g.updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{base.ID}})
 	return nil
 }
 
@@ -104,7 +104,7 @@ func (g *Gebura) SyncAppInfos(
 			continue
 		}
 		if wait {
-			err = g.pullAppInfo.LocalCall(ctx, modelangela.PullAppInfo{
+			err = g.pullAppInfo.LocalCall(ctx, modelkether.PullAppInfo{
 				ID:              ids[i],
 				AppInfoID:       *infoID,
 				IgnoreRateLimit: false,
@@ -119,7 +119,7 @@ func (g *Gebura) SyncAppInfos(
 			}
 			appInfos = append(appInfos, app)
 		} else {
-			_ = g.pullAppInfo.Publish(ctx, modelangela.PullAppInfo{
+			_ = g.pullAppInfo.Publish(ctx, modelkether.PullAppInfo{
 				ID:              ids[i],
 				AppInfoID:       *infoID,
 				IgnoreRateLimit: false,

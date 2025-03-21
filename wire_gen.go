@@ -9,10 +9,10 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/tuihub/librarian/app/miner/pkg/service"
-	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/internal/biz/bizkether"
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
@@ -46,7 +46,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
-	angelaRepo := data.NewAngelaRepo(dataData)
+	ketherRepo := data.NewKetherRepo(dataData)
 	builtInObserver, err := libobserve.NewBuiltInObserver()
 	if err != nil {
 		cleanup()
@@ -94,25 +94,25 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	angelaBase, err := bizangela.NewAngelaBase(angelaRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	map3 := bizangela.NewAppInfoCache(geburaRepo, store)
-	libmqTopic := bizangela.NewUpdateAppInfoIndexTopic(angelaBase)
-	topic2 := bizangela.NewPullAppInfoTopic(angelaBase, map3, libmqTopic)
-	topic3 := bizangela.NewPullAccountAppInfoRelationTopic(angelaBase, topic2)
-	topic4 := bizangela.NewPullAccountTopic(angelaBase, topic3)
-	map4 := bizangela.NewNotifyFlowCache(netzachRepo, store)
-	map5 := bizangela.NewFeedToNotifyFlowCache(netzachRepo, store)
-	map6 := bizangela.NewNotifyTargetCache(netzachRepo, store)
-	topic5 := bizangela.NewNotifyPushTopic(angelaBase, map6)
-	topic6 := bizangela.NewNotifyRouterTopic(angelaBase, map4, map5, topic5)
-	topic7 := bizangela.NewFeedItemPostprocessTopic(angelaBase, topic6, topic)
-	topic8 := bizangela.NewPullFeedTopic(angelaBase, topic7, topic)
-	angela, err := bizangela.NewAngela(angelaBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
+	map3 := bizkether.NewAppInfoCache(geburaRepo, store)
+	libmqTopic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
+	topic2 := bizkether.NewPullAppInfoTopic(ketherBase, map3, libmqTopic)
+	topic3 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, topic2)
+	topic4 := bizkether.NewPullAccountTopic(ketherBase, topic3)
+	map4 := bizkether.NewNotifyFlowCache(netzachRepo, store)
+	map5 := bizkether.NewFeedToNotifyFlowCache(netzachRepo, store)
+	map6 := bizkether.NewNotifyTargetCache(netzachRepo, store)
+	topic5 := bizkether.NewNotifyPushTopic(ketherBase, map6)
+	topic6 := bizkether.NewNotifyRouterTopic(ketherBase, map4, map5, topic5)
+	topic7 := bizkether.NewFeedItemPostprocessTopic(ketherBase, topic6, topic)
+	topic8 := bizkether.NewPullFeedTopic(ketherBase, topic7, topic)
+	kether, err := bizkether.NewKether(ketherBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -177,7 +177,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahServiceService(angela, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahServiceService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
 	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup3()

@@ -2,16 +2,15 @@ package bizgebura
 
 import (
 	"context"
-	"time"
 
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
-	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
@@ -22,57 +21,27 @@ type ReportAppPackageHandler interface {
 	Handle(context.Context, []*modelgebura.AppBinary) *errors.Error
 }
 
-type GeburaRepo interface {
-	CreateAppInfo(context.Context, *modelgebura.AppInfo) error
-	CreateAppInfoOrGet(context.Context, *modelgebura.AppInfo) (*modelgebura.AppInfo, error)
-	UpdateAppInfo(context.Context, *modelgebura.AppInfo) error
-	ListAppInfos(context.Context, model.Paging, []string, []modelgebura.AppType,
-		[]model.InternalID, bool) ([]*modelgebura.AppInfo, int64, error)
-	MergeAppInfos(context.Context, modelgebura.AppInfo, model.InternalID) error
-	GetAppInfo(context.Context, modelgebura.AppInfoID) (*modelgebura.AppInfo, error)
-	GetBoundAppInfos(context.Context, model.InternalID) ([]*modelgebura.AppInfo, error)
-	GetBatchBoundAppInfos(context.Context, []model.InternalID) ([]*modelgebura.BoundAppInfos, error)
-	PurchaseAppInfo(context.Context, model.InternalID,
-		*modelgebura.AppInfoID, func(ctx2 context.Context) error) (model.InternalID, error)
-	GetPurchasedAppInfos(context.Context, model.InternalID, string) ([]*modelgebura.BoundAppInfos, error)
-
-	CreateApp(context.Context, model.InternalID, *modelgebura.App) error
-	UpdateApp(context.Context, model.InternalID, *modelgebura.App) error
-	ListApps(context.Context, model.Paging, []model.InternalID, []model.InternalID,
-		[]model.InternalID, bool) ([]*modelgebura.App, int, error)
-	AssignApp(context.Context, model.InternalID, model.InternalID, model.InternalID) error
-	// ListAppPackageBinaryChecksumOfOneSource(context.Context, modelgebura.AppPackageSource,
-	//	model.InternalID) ([]string, error)
-	UnAssignApp(context.Context, model.InternalID, model.InternalID) error
-	AddAppInstRunTime(context.Context, model.InternalID, model.InternalID, *model.TimeRange) error
-	SumAppInstRunTime(context.Context, model.InternalID, model.InternalID, *model.TimeRange) (time.Duration, error)
-	CreateAppInst(context.Context, model.InternalID, *modelgebura.AppInst) error
-	UpdateAppInst(context.Context, model.InternalID, *modelgebura.AppInst) error
-	ListAppInsts(context.Context, model.InternalID, model.Paging, []model.InternalID,
-		[]model.InternalID, []model.InternalID) ([]*modelgebura.AppInst, int, error)
-}
-
 type Gebura struct {
 	auth               *libauth.Auth
-	repo               GeburaRepo
+	repo               *data.GeburaRepo
 	id                 *libidgenerator.IDGenerator
 	search             libsearch.Search
 	porter             porter.LibrarianPorterServiceClient
 	supv               *supervisor.Supervisor
-	updateAppInfoIndex *libmq.Topic[modelangela.UpdateAppInfoIndex]
-	pullAppInfo        *libmq.Topic[modelangela.PullAppInfo]
+	updateAppInfoIndex *libmq.Topic[modelkether.UpdateAppInfoIndex]
+	pullAppInfo        *libmq.Topic[modelkether.PullAppInfo]
 	appInfoCache       *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo]
 }
 
 func NewGebura(
-	repo GeburaRepo,
+	repo *data.GeburaRepo,
 	auth *libauth.Auth,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	pClient porter.LibrarianPorterServiceClient,
 	supv *supervisor.Supervisor,
-	updateAppIndex *libmq.Topic[modelangela.UpdateAppInfoIndex],
-	pullAppInfo *libmq.Topic[modelangela.PullAppInfo],
+	updateAppIndex *libmq.Topic[modelkether.UpdateAppInfoIndex],
+	pullAppInfo *libmq.Topic[modelkether.PullAppInfo],
 	appInfoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],
 ) *Gebura {
 	return &Gebura{

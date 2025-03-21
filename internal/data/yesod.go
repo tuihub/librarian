@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
@@ -19,18 +18,18 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 )
 
-type yesodRepo struct {
+type YesodRepo struct {
 	data *Data
 }
 
 // NewYesodRepo .
-func NewYesodRepo(data *Data) bizyesod.YesodRepo {
-	return &yesodRepo{
+func NewYesodRepo(data *Data) *YesodRepo {
+	return &YesodRepo{
 		data: data,
 	}
 }
 
-func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID, c *modelyesod.FeedConfig) error {
+func (y *YesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID, c *modelyesod.FeedConfig) error {
 	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
 		err := tx.FeedConfig.Create().
 			SetOwnerID(owner).
@@ -59,7 +58,7 @@ func (y *yesodRepo) CreateFeedConfig(ctx context.Context, owner model.InternalID
 	})
 }
 
-func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalID, c *modelyesod.FeedConfig) error {
+func (y *YesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalID, c *modelyesod.FeedConfig) error {
 	return y.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.FeedConfig.Update().
 			Where(
@@ -106,13 +105,13 @@ func (y *yesodRepo) UpdateFeedConfig(ctx context.Context, userID model.InternalI
 // UpdateFeedConfigAsInQueue set SetNextPullBeginAt to one day later to avoid repeat queue.
 // While pull success, UpsertFeed will set correct value.
 // While pull failed, server will retry task next day.
-func (y *yesodRepo) UpdateFeedConfigAsInQueue(ctx context.Context, id model.InternalID) error {
+func (y *YesodRepo) UpdateFeedConfigAsInQueue(ctx context.Context, id model.InternalID) error {
 	q := y.data.db.FeedConfig.UpdateOneID(id).
 		SetNextPullBeginAt(time.Now().Add(libtime.Day))
 	return q.Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string,
+func (y *YesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string,
 	statuses []modelyesod.FeedConfigStatus, order modelyesod.ListFeedOrder,
 	pullTime time.Time, i int) ([]*modelyesod.FeedConfig, error) {
 	q := y.data.db.FeedConfig.Query()
@@ -134,7 +133,7 @@ func (y *yesodRepo) ListFeedConfigNeedPull(ctx context.Context, sources []string
 	return converter.ToBizFeedConfigList(feedConfigs), nil
 }
 
-func (y *yesodRepo) ListFeedConfigs(
+func (y *YesodRepo) ListFeedConfigs(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -193,7 +192,7 @@ func (y *yesodRepo) ListFeedConfigs(
 	return res, total, nil
 }
 
-func (y *yesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID) ([]string, error) {
+func (y *YesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID) ([]string, error) {
 	res, err := y.data.db.FeedConfig.Query().
 		Where(
 			feedconfig.HasOwnerWith(user.IDEQ(id)),
@@ -207,7 +206,7 @@ func (y *yesodRepo) ListFeedCategories(ctx context.Context, id model.InternalID)
 	return res, nil
 }
 
-func (y *yesodRepo) ListFeedPlatforms(ctx context.Context, id model.InternalID) ([]string, error) {
+func (y *YesodRepo) ListFeedPlatforms(ctx context.Context, id model.InternalID) ([]string, error) {
 	res, err := y.data.db.FeedItem.Query().
 		Where(
 			feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(id)))),
@@ -221,7 +220,7 @@ func (y *yesodRepo) ListFeedPlatforms(ctx context.Context, id model.InternalID) 
 	return res, nil
 }
 
-func (y *yesodRepo) ListFeedItems(
+func (y *YesodRepo) ListFeedItems(
 	ctx context.Context,
 	userID model.InternalID,
 	paging model.Paging,
@@ -285,7 +284,7 @@ func (y *yesodRepo) ListFeedItems(
 	return res, total, nil
 }
 
-func (y *yesodRepo) GroupFeedItems( //nolint:gocognit //TODO
+func (y *YesodRepo) GroupFeedItems( //nolint:gocognit //TODO
 	ctx context.Context,
 	userID model.InternalID,
 	groups []model.TimeRange,
@@ -347,7 +346,7 @@ func (y *yesodRepo) GroupFeedItems( //nolint:gocognit //TODO
 	return res, nil
 }
 
-func (y *yesodRepo) GetFeedItems(
+func (y *YesodRepo) GetFeedItems(
 	ctx context.Context,
 	userID model.InternalID,
 	ids []model.InternalID,
@@ -376,13 +375,13 @@ func (y *yesodRepo) GetFeedItems(
 	return res, nil
 }
 
-func (y *yesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, id model.InternalID) error {
+func (y *YesodRepo) ReadFeedItem(ctx context.Context, userID model.InternalID, id model.InternalID) error {
 	return y.data.db.FeedItem.UpdateOneID(id).Where(
 		feeditem.HasFeedWith(feed.HasConfigWith(feedconfig.HasOwnerWith(user.IDEQ(userID)))),
 	).AddReadCount(1).Exec(ctx)
 }
 
-func (y *yesodRepo) CreateFeedItemCollection(
+func (y *YesodRepo) CreateFeedItemCollection(
 	ctx context.Context,
 	ownerID model.InternalID,
 	collection *modelyesod.FeedItemCollection,
@@ -396,7 +395,7 @@ func (y *yesodRepo) CreateFeedItemCollection(
 		Exec(ctx)
 }
 
-func (y *yesodRepo) UpdateFeedItemCollection(
+func (y *YesodRepo) UpdateFeedItemCollection(
 	ctx context.Context,
 	ownerID model.InternalID,
 	collection *modelyesod.FeedItemCollection,
@@ -409,7 +408,7 @@ func (y *yesodRepo) UpdateFeedItemCollection(
 		Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeedItemCollections(
+func (y *YesodRepo) ListFeedItemCollections(
 	ctx context.Context,
 	ownerID model.InternalID,
 	paging model.Paging,
@@ -450,7 +449,7 @@ func (y *yesodRepo) ListFeedItemCollections(
 	return res, total, nil
 }
 
-func (y *yesodRepo) AddFeedItemToCollection(
+func (y *YesodRepo) AddFeedItemToCollection(
 	ctx context.Context,
 	ownerID model.InternalID,
 	collectionID model.InternalID,
@@ -462,7 +461,7 @@ func (y *yesodRepo) AddFeedItemToCollection(
 		Exec(ctx)
 }
 
-func (y *yesodRepo) RemoveFeedItemFromCollection(
+func (y *YesodRepo) RemoveFeedItemFromCollection(
 	ctx context.Context,
 	ownerID model.InternalID,
 	collectionID model.InternalID,
@@ -474,7 +473,7 @@ func (y *yesodRepo) RemoveFeedItemFromCollection(
 		Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeedItemsInCollection(
+func (y *YesodRepo) ListFeedItemsInCollection(
 	ctx context.Context,
 	ownerID model.InternalID,
 	paging model.Paging,
@@ -536,7 +535,7 @@ func (y *yesodRepo) ListFeedItemsInCollection(
 	return res, total, nil
 }
 
-func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*model.User, error) {
+func (y *YesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*model.User, error) {
 	only, err := y.data.db.FeedConfig.Query().Where(feedconfig.IDEQ(id)).QueryOwner().Only(ctx)
 	if err != nil {
 		return nil, err
@@ -544,7 +543,7 @@ func (y *yesodRepo) GetFeedOwner(ctx context.Context, id model.InternalID) (*mod
 	return converter.ToBizUser(only), nil
 }
 
-func (y *yesodRepo) CreateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
+func (y *YesodRepo) CreateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
 	return y.data.db.FeedActionSet.Create().
 		SetOwnerID(id).
 		SetID(set.ID).
@@ -554,7 +553,7 @@ func (y *yesodRepo) CreateFeedActionSet(ctx context.Context, id model.InternalID
 		Exec(ctx)
 }
 
-func (y *yesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
+func (y *YesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID, set *modelyesod.FeedActionSet) error {
 	return y.data.db.FeedActionSet.UpdateOneID(set.ID).
 		Where(feedactionset.HasOwnerWith(user.IDEQ(id))).
 		SetName(set.Name).
@@ -563,7 +562,7 @@ func (y *yesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID
 		Exec(ctx)
 }
 
-func (y *yesodRepo) ListFeedActionSets(ctx context.Context, id model.InternalID, paging model.Paging) ([]*modelyesod.FeedActionSet, int, error) {
+func (y *YesodRepo) ListFeedActionSets(ctx context.Context, id model.InternalID, paging model.Paging) ([]*modelyesod.FeedActionSet, int, error) {
 	var res []*modelyesod.FeedActionSet
 	var total int
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {

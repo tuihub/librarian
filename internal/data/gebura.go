@@ -5,7 +5,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
@@ -17,18 +16,18 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 )
 
-type geburaRepo struct {
+type GeburaRepo struct {
 	data *Data
 }
 
 // NewGeburaRepo .
-func NewGeburaRepo(data *Data) bizgebura.GeburaRepo {
-	return &geburaRepo{
+func NewGeburaRepo(data *Data) *GeburaRepo {
+	return &GeburaRepo{
 		data: data,
 	}
 }
 
-func (g geburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
+func (g *GeburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
 	if a.Details == nil {
 		a.Details = new(modelgebura.AppInfoDetails)
 	}
@@ -53,7 +52,7 @@ func (g geburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) e
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppInfo) (*modelgebura.AppInfo, error) {
+func (g *GeburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppInfo) (*modelgebura.AppInfo, error) {
 	err := g.CreateAppInfo(ctx, a)
 	if err == nil {
 		return a, nil
@@ -72,7 +71,7 @@ func (g geburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppIn
 	return nil, err
 }
 
-func (g geburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
+func (g *GeburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
 	q := g.data.db.AppInfo.Update().
 		Where(
 			appinfo.IDEQ(a.ID),
@@ -97,7 +96,7 @@ func (g geburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) e
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) ListAppInfos(
+func (g *GeburaRepo) ListAppInfos(
 	ctx context.Context,
 	paging model.Paging,
 	sources []string,
@@ -149,7 +148,7 @@ func (g geburaRepo) ListAppInfos(
 	return infos, int64(total), nil
 }
 
-func (g geburaRepo) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo, merged model.InternalID) error {
+func (g *GeburaRepo) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo, merged model.InternalID) error {
 	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		baseAppInfo := converter.ToEntAppInfo(base)
 		err := tx.AppInfo.UpdateOne(&baseAppInfo).Exec(ctx)
@@ -194,7 +193,7 @@ func (g geburaRepo) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo,
 	return err
 }
 
-func (g geburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (*modelgebura.AppInfo, error) {
+func (g *GeburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (*modelgebura.AppInfo, error) {
 	res, err := g.data.db.AppInfo.Query().
 		Where(
 			appinfo.InternalEQ(id.Internal),
@@ -208,7 +207,7 @@ func (g geburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (*
 	return converter.ToBizAppInfo(res), nil
 }
 
-func (g geburaRepo) GetBoundAppInfos(ctx context.Context, id model.InternalID) ([]*modelgebura.AppInfo, error) {
+func (g *GeburaRepo) GetBoundAppInfos(ctx context.Context, id model.InternalID) ([]*modelgebura.AppInfo, error) {
 	a, err := g.data.db.AppInfo.Get(ctx, id)
 	if err != nil {
 		return nil, err
@@ -224,7 +223,7 @@ func (g geburaRepo) GetBoundAppInfos(ctx context.Context, id model.InternalID) (
 	return converter.ToBizAppInfoList(append(externalApps, internalApp)), nil
 }
 
-func (g geburaRepo) GetBatchBoundAppInfos(
+func (g *GeburaRepo) GetBatchBoundAppInfos(
 	ctx context.Context,
 	ids []model.InternalID,
 ) ([]*modelgebura.BoundAppInfos, error) {
@@ -254,7 +253,7 @@ func (g geburaRepo) GetBatchBoundAppInfos(
 	return res, nil
 }
 
-func (g geburaRepo) PurchaseAppInfo(
+func (g *GeburaRepo) PurchaseAppInfo(
 	ctx context.Context,
 	userID model.InternalID,
 	appID *modelgebura.AppInfoID,
@@ -295,7 +294,7 @@ func (g geburaRepo) PurchaseAppInfo(
 	return a.Edges.BindInternal.ID, err
 }
 
-func (g geburaRepo) GetPurchasedAppInfos(
+func (g *GeburaRepo) GetPurchasedAppInfos(
 	ctx context.Context,
 	id model.InternalID,
 	source string,
@@ -326,7 +325,7 @@ func (g geburaRepo) GetPurchasedAppInfos(
 	return res, nil
 }
 
-func (g geburaRepo) CreateApp(ctx context.Context, userID model.InternalID, ap *modelgebura.App) error {
+func (g *GeburaRepo) CreateApp(ctx context.Context, userID model.InternalID, ap *modelgebura.App) error {
 	q := g.data.db.App.Create().
 		SetOwnerID(userID).
 		SetID(ap.ID).
@@ -336,7 +335,7 @@ func (g geburaRepo) CreateApp(ctx context.Context, userID model.InternalID, ap *
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, ap *modelgebura.App) error {
+func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, ap *modelgebura.App) error {
 	q := g.data.db.App.Update().
 		Where(
 			app.IDEQ(ap.ID),
@@ -348,7 +347,7 @@ func (g geburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, ap 
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) ListApps(
+func (g *GeburaRepo) ListApps(
 	ctx context.Context,
 	paging model.Paging,
 	ownerIDs []model.InternalID,
@@ -390,7 +389,7 @@ func (g geburaRepo) ListApps(
 	return res, total, nil
 }
 
-func (g geburaRepo) AssignApp(
+func (g *GeburaRepo) AssignApp(
 	ctx context.Context,
 	userID model.InternalID,
 	appID model.InternalID,
@@ -406,7 +405,7 @@ func (g geburaRepo) AssignApp(
 	return err
 }
 
-func (g geburaRepo) UnAssignApp(
+func (g *GeburaRepo) UnAssignApp(
 	ctx context.Context,
 	userID model.InternalID,
 	appID model.InternalID,
@@ -436,7 +435,7 @@ func (g geburaRepo) UnAssignApp(
 //		Strings(ctx)
 //}
 
-func (g geburaRepo) CreateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
+func (g *GeburaRepo) CreateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
 	_, err := g.data.db.App.Query().Where(
 		app.IDEQ(inst.AppID),
 		app.HasOwnerWith(user.IDEQ(ownerID)),
@@ -452,7 +451,7 @@ func (g geburaRepo) CreateAppInst(ctx context.Context, ownerID model.InternalID,
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) UpdateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
+func (g *GeburaRepo) UpdateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
 	_, err := g.data.db.App.Query().Where(
 		app.IDEQ(inst.AppID),
 		app.HasOwnerWith(user.IDEQ(ownerID)),
@@ -469,7 +468,7 @@ func (g geburaRepo) UpdateAppInst(ctx context.Context, ownerID model.InternalID,
 	return q.Exec(ctx)
 }
 
-func (g geburaRepo) ListAppInsts(
+func (g *GeburaRepo) ListAppInsts(
 	ctx context.Context,
 	ownerID model.InternalID,
 	paging model.Paging,
@@ -501,7 +500,7 @@ func (g geburaRepo) ListAppInsts(
 	return converter.ToBizAppInstList(insts), total, nil
 }
 
-func (g geburaRepo) AddAppInstRunTime(
+func (g *GeburaRepo) AddAppInstRunTime(
 	ctx context.Context,
 	userID model.InternalID,
 	instID model.InternalID,
@@ -515,7 +514,7 @@ func (g geburaRepo) AddAppInstRunTime(
 		Exec(ctx)
 }
 
-func (g geburaRepo) SumAppInstRunTime(
+func (g *GeburaRepo) SumAppInstRunTime(
 	ctx context.Context,
 	userID model.InternalID,
 	instID model.InternalID,

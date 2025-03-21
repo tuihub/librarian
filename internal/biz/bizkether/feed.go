@@ -1,4 +1,4 @@
-package bizangela
+package bizkether
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libmq"
-	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
+	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
@@ -18,8 +18,8 @@ import (
 )
 
 func NewPullFeedTopic( //nolint:gocognit // TODO
-	a *AngelaBase,
-	parse *libmq.Topic[modelangela.FeedItemPostprocess],
+	a *KetherBase,
+	parse *libmq.Topic[modelkether.FeedItemPostprocess],
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
 ) *libmq.Topic[modelyesod.PullFeed] {
 	return libmq.NewTopic[modelyesod.PullFeed](
@@ -94,7 +94,7 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 			// Queue FeedItemPostprocess
 			for _, item := range feed.Items {
 				if slices.Contains(newItemGUIDs, item.GUID) {
-					err = parse.Publish(ctx, modelangela.FeedItemPostprocess{
+					err = parse.Publish(ctx, modelkether.FeedItemPostprocess{
 						FeedID:       feed.ID,
 						Item:         item,
 						SystemNotify: p.SystemNotify,
@@ -110,13 +110,13 @@ func NewPullFeedTopic( //nolint:gocognit // TODO
 }
 
 func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
-	a *AngelaBase,
-	notify *libmq.Topic[modelangela.NotifyRouter],
+	a *KetherBase,
+	notify *libmq.Topic[modelkether.NotifyRouter],
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
-) *libmq.Topic[modelangela.FeedItemPostprocess] {
-	return libmq.NewTopic[modelangela.FeedItemPostprocess](
+) *libmq.Topic[modelkether.FeedItemPostprocess] {
+	return libmq.NewTopic[modelkether.FeedItemPostprocess](
 		"FeedItemPostprocess",
-		func(ctx context.Context, p *modelangela.FeedItemPostprocess) error {
+		func(ctx context.Context, p *modelkether.FeedItemPostprocess) error {
 			notifyMsg := p.SystemNotify
 			if notifyMsg == nil {
 				notifyMsg = new(modelnetzach.SystemNotify)
@@ -195,7 +195,7 @@ func NewFeedItemPostprocessTopic( //nolint:gocognit // TODO
 				notifyMsg.Notification.Content = fmt.Sprintf("UpsertFeedItems failed: %s", err.Error())
 				return err
 			}
-			_ = notify.Publish(ctx, modelangela.NotifyRouter{
+			_ = notify.Publish(ctx, modelkether.NotifyRouter{
 				FeedID:   p.FeedID,
 				Messages: []*modelfeed.Item{item},
 			})

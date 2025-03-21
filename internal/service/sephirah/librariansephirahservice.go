@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
+	"github.com/tuihub/librarian/internal/biz/bizkether"
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
@@ -24,7 +24,7 @@ import (
 type LibrarianSephirahServiceService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	a    *bizangela.Angela
+	a    *bizkether.Kether
 	t    *biztiphereth.Tiphereth
 	g    *bizgebura.Gebura
 	b    *bizbinah.Binah
@@ -38,7 +38,7 @@ type LibrarianSephirahServiceService struct {
 }
 
 func NewLibrarianSephirahServiceService(
-	a *bizangela.Angela,
+	a *bizkether.Kether,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,

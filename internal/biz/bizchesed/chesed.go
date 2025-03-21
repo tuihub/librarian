@@ -7,6 +7,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizutils"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libcron"
@@ -29,16 +30,8 @@ var ProviderSet = wire.NewSet(
 	NewImageCache,
 )
 
-type ChesedRepo interface {
-	CreateImage(context.Context, model.InternalID, *modelchesed.Image) error
-	ListImages(context.Context, model.InternalID, model.Paging) ([]*modelchesed.Image, int64, error)
-	ListImageNeedScan(context.Context) ([]*modelchesed.Image, error)
-	SetImageStatus(context.Context, model.InternalID, modelchesed.ImageStatus) error
-	GetImage(context.Context, model.InternalID, model.InternalID) (*modelchesed.Image, error)
-}
-
 type Chesed struct {
-	repo        ChesedRepo
+	repo        *data.ChesedRepo
 	b           bizbinah.BinahRepo
 	id          *libidgenerator.IDGenerator
 	search      libsearch.Search
@@ -51,7 +44,7 @@ type Chesed struct {
 }
 
 func NewChesed(
-	repo ChesedRepo,
+	repo *data.ChesedRepo,
 	b bizbinah.BinahRepo,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
