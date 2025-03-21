@@ -5,11 +5,11 @@
 package main
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	"github.com/tuihub/librarian/internal/biz"
 	globalclient "github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"

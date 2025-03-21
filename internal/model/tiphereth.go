@@ -5,13 +5,11 @@ import (
 )
 
 type User struct {
-	ID        InternalID
-	Username  string
-	Password  string
-	Type      UserType
-	Status    UserStatus
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID       InternalID
+	Username string
+	Password string
+	Type     UserType
+	Status   UserStatus
 }
 
 type UserStatus int

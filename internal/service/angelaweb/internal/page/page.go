@@ -1,8 +1,9 @@
 package page
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
+
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 

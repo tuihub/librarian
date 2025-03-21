@@ -5,8 +5,8 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id" gorm:"primarykey"`
-	Username  string    `json:"username" gorm:"unique"`
+	ID        uint      `gorm:"primarykey" json:"id"`
+	Username  string    `gorm:"unique"     json:"username"`
 	Password  string    `json:"-"` // 不在JSON中显示密码
 	Email     string    `json:"email"`
 	Role      string    `json:"role"`

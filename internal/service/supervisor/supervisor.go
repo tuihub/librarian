@@ -18,6 +18,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/uuid"

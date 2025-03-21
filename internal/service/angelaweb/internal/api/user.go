@@ -1,8 +1,9 @@
 package api
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func (h *Handler) ListUsers(c *fiber.Ctx) error {

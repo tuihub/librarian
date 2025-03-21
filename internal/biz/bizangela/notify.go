@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
+	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 

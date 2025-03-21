@@ -2,10 +2,10 @@ package sephirah
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelchesed"
+	converter2 "github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
@@ -15,7 +15,7 @@ import (
 
 func (s *LibrarianSephirahServiceService) UploadImage(ctx context.Context, req *pb.UploadImageRequest) (
 	*pb.UploadImageResponse, error) {
-	fm := converter.ToBizFileMetadata(req.GetFileMetadata())
+	fm := converter2.ToBizFileMetadata(req.GetFileMetadata())
 	if fm == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
 	}
@@ -42,7 +42,7 @@ func (s *LibrarianSephirahServiceService) ListImages(ctx context.Context, req *p
 	}
 	return &pb.ListImagesResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
-		Ids:    converter.ToPBInternalIDList(res),
+		Ids:    converter2.ToPBInternalIDList(res),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) SearchImages(ctx context.Context,
@@ -53,7 +53,7 @@ func (s *LibrarianSephirahServiceService) SearchImages(ctx context.Context,
 	}
 	return &pb.SearchImagesResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(len(res))},
-		Ids:    converter.ToPBInternalIDList(res),
+		Ids:    converter2.ToPBInternalIDList(res),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetImage(ctx context.Context, req *pb.GetImageRequest) (
@@ -62,7 +62,7 @@ func (s *LibrarianSephirahServiceService) GetImage(ctx context.Context, req *pb.
 }
 func (s *LibrarianSephirahServiceService) DownloadImage(ctx context.Context, req *pb.DownloadImageRequest) (
 	*pb.DownloadImageResponse, error) {
-	token, err := s.c.DownloadImage(ctx, converter.ToBizInternalID(req.GetId()))
+	token, err := s.c.DownloadImage(ctx, converter2.ToBizInternalID(req.GetId()))
 	if err != nil {
 		return nil, err
 	}

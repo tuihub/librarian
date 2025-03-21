@@ -2,12 +2,12 @@ package sephirah
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
+	converter2 "github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
@@ -18,7 +18,7 @@ func (s *LibrarianSephirahServiceService) GetToken(ctx context.Context, req *pb.
 	accessToken, refreshToken, err := s.t.GetToken(ctx,
 		req.GetUsername(),
 		req.GetPassword(),
-		converter.ToBizInternalIDPtr(req.GetDeviceId()),
+		converter2.ToBizInternalIDPtr(req.GetDeviceId()),
 	)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
@@ -34,7 +34,7 @@ func (s *LibrarianSephirahServiceService) RefreshToken(ctx context.Context, req 
 ) {
 	var deviceID *model.InternalID
 	if req.GetDeviceId() != nil {
-		id := converter.ToBizInternalID(req.GetDeviceId())
+		id := converter2.ToBizInternalID(req.GetDeviceId())
 		deviceID = &id
 	}
 	accessToken, refreshToken, err := s.t.RefreshToken(ctx, deviceID)
@@ -53,7 +53,7 @@ func (s *LibrarianSephirahServiceService) AcquireUserToken(ctx context.Context, 
 	if req.GetUserId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	token, err := s.t.AcquireUserToken(ctx, converter.ToBizInternalID(req.GetUserId()))
+	token, err := s.t.AcquireUserToken(ctx, converter2.ToBizInternalID(req.GetUserId()))
 	if err != nil {
 		return nil, err
 	}
@@ -99,12 +99,12 @@ func (s *LibrarianSephirahServiceService) RegisterDevice(ctx context.Context, re
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	localID := req.GetClientLocalId()
-	id, err := s.t.RegisterDevice(ctx, converter.ToBizDeviceInfo(req.GetDeviceInfo()), &localID)
+	id, err := s.t.RegisterDevice(ctx, converter2.ToBizDeviceInfo(req.GetDeviceInfo()), &localID)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.RegisterDeviceResponse{
-		DeviceId: converter.ToPBInternalID(id),
+		DeviceId: converter2.ToPBInternalID(id),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) ListRegisteredDevices(
@@ -118,7 +118,7 @@ func (s *LibrarianSephirahServiceService) ListRegisteredDevices(
 		return nil, err
 	}
 	return &pb.ListRegisteredDevicesResponse{
-		Devices: converter.ToPBDeviceInfoList(devices),
+		Devices: converter2.ToPBDeviceInfoList(devices),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) ListUserSessions(ctx context.Context, req *pb.ListUserSessionsRequest) (
@@ -129,7 +129,7 @@ func (s *LibrarianSephirahServiceService) ListUserSessions(ctx context.Context, 
 		return nil, err
 	}
 	return &pb.ListUserSessionsResponse{
-		Sessions: converter.ToPBUserSessionList(sessions),
+		Sessions: converter2.ToPBUserSessionList(sessions),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) DeleteUserSession(ctx context.Context, req *pb.DeleteUserSessionRequest) (
@@ -138,7 +138,7 @@ func (s *LibrarianSephirahServiceService) DeleteUserSession(ctx context.Context,
 	if req.GetSessionId() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	err := s.t.DeleteUserSession(ctx, converter.ToBizInternalID(req.GetSessionId()))
+	err := s.t.DeleteUserSession(ctx, converter2.ToBizInternalID(req.GetSessionId()))
 	if err != nil {
 		return nil, err
 	}
@@ -150,12 +150,12 @@ func (s *LibrarianSephirahServiceService) CreateUser(ctx context.Context, req *p
 	if req.GetUser() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	id, err := s.t.CreateUser(ctx, converter.ToBizUser(req.GetUser()))
+	id, err := s.t.CreateUser(ctx, converter2.ToBizUser(req.GetUser()))
 	if err != nil {
 		return nil, err
 	}
 	return &pb.CreateUserResponse{
-		Id: converter.ToPBInternalID(*id),
+		Id: converter2.ToPBInternalID(*id),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (
@@ -164,7 +164,7 @@ func (s *LibrarianSephirahServiceService) UpdateUser(ctx context.Context, req *p
 	if req.GetUser() == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
-	err := s.t.UpdateUser(ctx, converter.ToBizUser(req.GetUser()), req.GetPassword())
+	err := s.t.UpdateUser(ctx, converter2.ToBizUser(req.GetUser()), req.GetPassword())
 	if err != nil {
 		return nil, err
 	}
@@ -178,25 +178,25 @@ func (s *LibrarianSephirahServiceService) ListUsers(ctx context.Context, req *pb
 	}
 	u, total, err := s.t.ListUsers(ctx,
 		model.ToBizPaging(req.GetPaging()),
-		converter.ToLibAuthUserTypeList(req.GetTypeFilter()),
-		converter.ToBizUserStatusList(req.GetStatusFilter()),
+		converter2.ToLibAuthUserTypeList(req.GetTypeFilter()),
+		converter2.ToBizUserStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListUsersResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
-		Users:  converter.ToPBUserList(u),
+		Users:  converter2.ToPBUserList(u),
 	}, nil
 }
 func (s *LibrarianSephirahServiceService) GetUser(ctx context.Context, req *pb.GetUserRequest) (
 	*pb.GetUserResponse, error,
 ) {
-	u, err := s.t.GetUser(ctx, converter.ToBizInternalIDPtr(req.GetId()))
+	u, err := s.t.GetUser(ctx, converter2.ToBizInternalIDPtr(req.GetId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetUserResponse{User: converter.ToPBUser(u)}, nil
+	return &pb.GetUserResponse{User: converter2.ToPBUser(u)}, nil
 }
 func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *pb.LinkAccountRequest) (
 	*pb.LinkAccountResponse, error,
@@ -216,7 +216,7 @@ func (s *LibrarianSephirahServiceService) LinkAccount(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	return &pb.LinkAccountResponse{AccountId: converter.ToPBInternalID(a.ID)}, nil
+	return &pb.LinkAccountResponse{AccountId: converter2.ToPBInternalID(a.ID)}, nil
 }
 func (s *LibrarianSephirahServiceService) UnLinkAccount(ctx context.Context, req *pb.UnLinkAccountRequest) (
 	*pb.UnLinkAccountResponse, error,
@@ -241,13 +241,13 @@ func (s *LibrarianSephirahServiceService) ListLinkAccounts(ctx context.Context, 
 	*pb.ListLinkAccountsResponse, error,
 ) {
 	res, err := s.t.ListLinkAccounts(ctx,
-		converter.ToBizInternalID(req.GetUserId()),
+		converter2.ToBizInternalID(req.GetUserId()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListLinkAccountsResponse{
-		Accounts: converter.ToPBAccountList(res),
+		Accounts: converter2.ToPBAccountList(res),
 	}, nil
 }
 
@@ -274,7 +274,7 @@ func (s *LibrarianSephirahServiceService) ListPorters(ctx context.Context, req *
 	}
 	return &pb.ListPortersResponse{
 		Paging:  &librarian.PagingResponse{TotalSize: total},
-		Porters: converter.ToPBPorterList(res),
+		Porters: converter2.ToPBPorterList(res),
 	}, nil
 }
 
@@ -285,8 +285,8 @@ func (s *LibrarianSephirahServiceService) UpdatePorterStatus(ctx context.Context
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	if err := s.t.UpdatePorterStatus(ctx,
-		converter.ToBizInternalID(req.GetPorterId()),
-		converter.ToBizUserStatus(req.GetStatus()),
+		converter2.ToBizInternalID(req.GetPorterId()),
+		converter2.ToBizUserStatus(req.GetStatus()),
 	); err != nil {
 		return nil, err
 	}
@@ -301,13 +301,13 @@ func (s *LibrarianSephirahServiceService) CreatePorterContext(
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	id, err := s.t.CreatePorterContext(ctx,
-		converter.ToBizPorterContext(req.GetContext()),
+		converter2.ToBizPorterContext(req.GetContext()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.CreatePorterContextResponse{
-		ContextId: converter.ToPBInternalID(id),
+		ContextId: converter2.ToPBInternalID(id),
 	}, nil
 }
 
@@ -335,7 +335,7 @@ func (s *LibrarianSephirahServiceService) ListPorterContexts( //nolint:dupl //no
 	}
 	return &pb.ListPorterContextsResponse{
 		Paging:   &librarian.PagingResponse{TotalSize: total},
-		Contexts: converter.ToPBPorterContextList(res),
+		Contexts: converter2.ToPBPorterContextList(res),
 	}, nil
 }
 
@@ -347,7 +347,7 @@ func (s *LibrarianSephirahServiceService) UpdatePorterContext(
 		return nil, pb.ErrorErrorReasonBadRequest("")
 	}
 	if err := s.t.UpdatePorterContext(ctx,
-		converter.ToBizPorterContext(req.GetContext()),
+		converter2.ToBizPorterContext(req.GetContext()),
 	); err != nil {
 		return nil, err
 	}
@@ -363,13 +363,13 @@ func (s *LibrarianSephirahServiceService) ListPorterGroups(
 	}
 	groups, total, err := s.t.ListPorterGroups(ctx,
 		model.ToBizPaging(req.GetPaging()),
-		converter.ToBizUserStatusList(req.GetStatusFilter()),
+		converter2.ToBizUserStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
 	return &pb.ListPorterGroupsResponse{
 		Paging:       &librarian.PagingResponse{TotalSize: total},
-		PorterGroups: converter.ToPBPorterGroupList(groups),
+		PorterGroups: converter2.ToPBPorterGroupList(groups),
 	}, nil
 }

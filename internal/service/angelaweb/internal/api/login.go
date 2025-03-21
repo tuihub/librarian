@@ -1,11 +1,13 @@
 package api
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"time"
+
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	model2 "github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
-	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func (h *Handler) Login(c *fiber.Ctx) error {

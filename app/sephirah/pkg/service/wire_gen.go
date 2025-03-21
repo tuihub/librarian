@@ -7,7 +7,6 @@
 package service
 
 import (
-	"github.com/tuihub/librarian/app/sephirah/internal/data"
 	bizangela2 "github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
@@ -17,6 +16,8 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/data"
+	data2 "github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -51,7 +52,7 @@ func NewSephirahService(sephirahServer *conf.SephirahServer, database *conf.Data
 	}
 	netzachRepo := data.NewNetzachRepo(dataData)
 	topic := biznetzach2.NewSystemNotificationTopic(netzachRepo, idGenerator)
-	tipherethRepo := data.NewTipherethRepo(dataData)
+	tipherethRepo := data2.NewTipherethRepo(dataData)
 	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
 	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
 	supervisorSupervisor, err := supervisor.NewSupervisor(porter, mq, auth, clientPorter, topic, libcacheMap, map2)

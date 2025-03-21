@@ -2,9 +2,9 @@ package sephirah
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/service/sephirah/internal/converter"
 
 	"github.com/tuihub/librarian/internal/model"
+	converter2 "github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
@@ -13,7 +13,7 @@ func (s *LibrarianSephirahServiceService) PorterGetNotifyTargetItems(
 	req *pb.PorterGetNotifyTargetItemsRequest,
 ) (*pb.PorterGetNotifyTargetItemsResponse, error) {
 	fr, items, err := s.a.PorterGetNotifyTargetItems(ctx,
-		converter.ToBizInternalID(req.GetId()),
+		converter2.ToBizInternalID(req.GetId()),
 		model.ToBizPaging(req.GetPaging()),
 	)
 	if err != nil {
@@ -21,7 +21,7 @@ func (s *LibrarianSephirahServiceService) PorterGetNotifyTargetItems(
 	}
 	return &pb.PorterGetNotifyTargetItemsResponse{
 		Paging:      nil,
-		Destination: converter.ToPBFeatureRequest(fr),
-		Items:       converter.ToPBFeedItemList(items),
+		Destination: converter2.ToPBFeatureRequest(fr),
+		Items:       converter2.ToPBFeedItemList(items),
 	}, nil
 }
