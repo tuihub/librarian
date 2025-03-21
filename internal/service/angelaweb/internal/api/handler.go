@@ -26,7 +26,7 @@ func NewHandler(
 }
 
 func (h *Handler) GetDashboardStats(c *fiber.Ctx) error {
-	userCount, err := h.userCountCache.Get(c.Context())
+	userCount, err := h.userCountCache.Get(c.UserContext())
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Error fetching stats"})
 	}

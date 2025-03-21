@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal/util"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -35,7 +34,7 @@ func (b *Builder) Login(c *fiber.Ctx) error {
 }
 
 func (b *Builder) Dashboard(c *fiber.Ctx) error {
-	userCount, err := b.userCountCache.Get(util.BizContext(c))
+	userCount, err := b.userCountCache.Get(c.UserContext())
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Error fetching dashboard data")
 	}
@@ -47,7 +46,7 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 }
 
 func (b *Builder) UserList(c *fiber.Ctx) error {
-	users, _, err := b.t.ListUsers(util.BizContext(c), model.Paging{
+	users, _, err := b.t.ListUsers(c.UserContext(), model.Paging{
 		PageNum:  1,
 		PageSize: 20,
 	}, nil, nil)
@@ -74,7 +73,7 @@ func (b *Builder) UserForm(c *fiber.Ctx) error {
 		if err != nil {
 			return c.Status(http.StatusBadRequest).SendString("Invalid ID")
 		}
-		user, err = b.t.GetUser(util.BizContext(c), lo.ToPtr(model.InternalID(id)))
+		user, err = b.t.GetUser(c.UserContext(), lo.ToPtr(model.InternalID(id)))
 		if err != nil {
 			return c.Status(http.StatusNotFound).SendString("User not found")
 		}

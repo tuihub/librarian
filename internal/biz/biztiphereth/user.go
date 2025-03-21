@@ -13,10 +13,9 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/dchest/captcha"
-	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.User, *errors.Error) {
+func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -59,7 +58,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.Us
 
 func (t *Tiphereth) UpdateUser(
 	ctx context.Context, user *model.User, originPassword string,
-) *errors.Error {
+) error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
@@ -86,7 +85,6 @@ func (t *Tiphereth) UpdateUser(
 			[]model.UserType{model.UserTypeSentinel},
 			nil,
 			nil,
-			claims.UserID,
 		)
 		if err != nil || len(res) != 1 || res[0].ID != user.ID {
 			return bizutils.NoPermissionError()
@@ -114,20 +112,20 @@ func (t *Tiphereth) UpdateUser(
 
 func (t *Tiphereth) ListUsers(
 	ctx context.Context, paging model.Paging, types []model.UserType, statuses []model.UserStatus,
-) ([]*model.User, int64, *errors.Error) {
-	claims := libauth.FromContextAssertUserType(ctx)
+) ([]*model.User, int64, error) {
+	claims := libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	var exclude []model.InternalID
-	users, total, err := t.repo.ListUsers(ctx, paging, nil, types, statuses, exclude, claims.UserID)
+	users, total, err := t.repo.ListUsers(ctx, paging, nil, types, statuses, exclude)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return users, total, nil
 }
 
-func (t *Tiphereth) GetUser(ctx context.Context, id *model.InternalID) (*model.User, *errors.Error) {
+func (t *Tiphereth) GetUser(ctx context.Context, id *model.InternalID) (*model.User, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -150,7 +148,7 @@ func (t *Tiphereth) RegisterUser(
 	username string,
 	password string,
 	captchaReq *model.CaptchaAns,
-) (*model.CaptchaQue, string, *errors.Error) {
+) (*model.CaptchaQue, string, error) {
 	if t.app.EnvExist(libapp.EnvDemoMode) {
 		return nil, "", pb.ErrorErrorReasonForbidden("server running in demo mode, register user is not allowed")
 	}
@@ -200,7 +198,7 @@ func (t *Tiphereth) RegisterUser(
 	return nil, "TODO", nil // TODO: return refresh token
 }
 
-func (t *Tiphereth) checkCapacity(ctx context.Context) *errors.Error {
+func (t *Tiphereth) checkCapacity(ctx context.Context) error {
 	if !t.app.EnvExist(libapp.EnvUserCapacity) {
 		return nil
 	}

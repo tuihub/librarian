@@ -11,9 +11,7 @@
         <tr class="bg-gray-200 text-gray-700">
             <th class="py-3 px-4 text-left">ID</th>
             <th class="py-3 px-4 text-left">用户名</th>
-            <th class="py-3 px-4 text-left">邮箱</th>
             <th class="py-3 px-4 text-left">角色</th>
-            <th class="py-3 px-4 text-left">创建时间</th>
             <th class="py-3 px-4 text-left">操作</th>
         </tr>
         </thead>
@@ -22,15 +20,13 @@
         <tr class="border-b hover:bg-gray-100">
             <td class="py-3 px-4">{{.ID}}</td>
             <td class="py-3 px-4">{{.Username}}</td>
-            <td class="py-3 px-4">{{.Email}}</td>
             <td class="py-3 px-4">
-                {{if eq .Role "admin"}}
+                {{if eq .Type 1}}
                 <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">管理员</span>
                 {{else}}
                 <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">普通用户</span>
                 {{end}}
             </td>
-            <td class="py-3 px-4">{{.CreatedAt.Format "2006-01-02 15:04:05"}}</td>
             <td class="py-3 px-4">
                 <div class="flex space-x-2">
                     <a href="/users/edit/{{.ID}}" class="text-blue-500 hover:text-blue-700">

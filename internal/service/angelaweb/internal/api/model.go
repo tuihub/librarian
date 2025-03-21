@@ -5,5 +5,4 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
-type LoginResponse struct {
-}
+type LoginResponse struct{}

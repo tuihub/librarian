@@ -5,14 +5,13 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal/util"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
 )
 
 func (h *Handler) ListUsers(c *fiber.Ctx) error {
-	users, _, err := h.t.ListUsers(util.BizContext(c), model.Paging{
+	users, _, err := h.t.ListUsers(c.UserContext(), model.Paging{
 		PageSize: 1,
 		PageNum:  20,
 	}, nil, nil)
@@ -28,7 +27,7 @@ func (h *Handler) GetUser(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Invalid ID"})
 	}
-	user, err := h.t.GetUser(util.BizContext(c), lo.ToPtr(model.InternalID(id)))
+	user, err := h.t.GetUser(c.UserContext(), lo.ToPtr(model.InternalID(id)))
 	if err != nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"message": "User not found"})
 	}
@@ -42,7 +41,7 @@ func (h *Handler) CreateUser(c *fiber.Ctx) error {
 	}
 
 	var err error
-	user, err = h.t.CreateUser(util.BizContext(c), user)
+	user, err = h.t.CreateUser(c.UserContext(), user)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
@@ -62,7 +61,7 @@ func (h *Handler) UpdateUser(c *fiber.Ctx) error {
 	}
 	user.ID = model.InternalID(id)
 
-	err = h.t.UpdateUser(util.BizContext(c), &user, "")
+	err = h.t.UpdateUser(c.UserContext(), &user, "")
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}

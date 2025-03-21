@@ -3,7 +3,6 @@ package angelaweb
 import (
 	"context"
 	"embed"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"net/http"
 
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
@@ -14,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
 	"github.com/google/wire"
 )
@@ -43,6 +43,7 @@ func NewAngelaWeb(
 	userCountCache *libcache.Key[model.UserCount],
 ) *AngelaWeb {
 	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".html")
+	viewsEngine.Directory = "view"
 
 	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
 		Views:       viewsEngine,

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal/util"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,7 +15,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Invalid request"})
 	}
 
-	accessToken, _, err := h.t.GetToken(util.BizContext(c), req.Username, req.Password, nil)
+	accessToken, _, err := h.t.GetToken(c.UserContext(), req.Username, req.Password, nil)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": err.Message})
 	}
@@ -23,7 +23,7 @@ func (h *Handler) Login(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{ //nolint:exhaustruct // no need
 		Name:     "access_token",
 		Value:    string(accessToken),
-		Expires:  time.Now().Add(24 * time.Hour),
+		Expires:  time.Now().Add(libtime.Day),
 		HTTPOnly: true,
 		Secure:   true,
 		SameSite: "strict",

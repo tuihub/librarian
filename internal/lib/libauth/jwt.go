@@ -2,6 +2,7 @@ package libauth
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -80,11 +81,25 @@ func ValidateString(tokenString string, keyFunc jwtv5.Keyfunc) (bool, error) {
 	return token.Valid, nil
 }
 
+func FromString(tokenString string, keyFunc jwtv5.Keyfunc) (*Claims, error) {
+	token, err := jwtv5.ParseWithClaims(tokenString, new(Claims), keyFunc)
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*Claims); ok {
+		return claims, nil
+	}
+	return nil, errors.New("invalid claims type")
+}
+
 func FromContextAssertUserType(ctx context.Context, userTypes ...model.UserType) *Claims {
 	if userTypes == nil {
 		userTypes = []model.UserType{model.UserTypeAdmin, model.UserTypeNormal}
 	}
 	c := FromContext(ctx)
+	if c == nil {
+		return nil
+	}
 	for _, ut := range userTypes {
 		if c.UserType == ut {
 			return c
