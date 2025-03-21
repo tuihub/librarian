@@ -2,13 +2,23 @@ package angelaweb
 
 import (
 	"context"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/template/html/v2"
+	"embed"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"net/http"
+
+	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
-	"gorm.io/gorm"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
+	"github.com/google/wire"
 )
+
+var ProviderSet = wire.NewSet(NewAngelaWeb)
 
 type AngelaWeb struct {
 	apiHandler  *api.Handler
@@ -17,17 +27,33 @@ type AngelaWeb struct {
 	app         *fiber.App
 }
 
-func NewAngelaWeb(db *gorm.DB, auth *libauth.Auth) *AngelaWeb {
-	viewsEngine := html.New("./view", ".html")
+// Embed view
+//
+//go:embed view/*
+var embedDirView embed.FS
 
-	app := fiber.New(fiber.Config{
+// Embed static
+//
+//go:embed static/*
+var embedDirStatic embed.FS
+
+func NewAngelaWeb(
+	auth *libauth.Auth,
+	t *biztiphereth.Tiphereth,
+	userCountCache *libcache.Key[model.UserCount],
+) *AngelaWeb {
+	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".html")
+
+	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
 		Views:       viewsEngine,
 		ViewsLayout: "layout/default",
 	})
 
+	app.Use(logger.New())
+
 	res := &AngelaWeb{
-		apiHandler:  api.NewHandler(db, auth),
-		pageBuilder: page.NewBuilder(db),
+		apiHandler:  api.NewHandler(t, userCountCache),
+		pageBuilder: page.NewBuilder(t, userCountCache),
 		auth:        auth,
 		app:         app,
 	}

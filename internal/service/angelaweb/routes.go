@@ -1,10 +1,13 @@
 package angelaweb
 
 import (
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/tuihub/librarian/internal/lib/libauth"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/keyauth"
-	"github.com/tuihub/librarian/internal/lib/libauth"
 )
 
 func (a *AngelaWeb) newValidator() func(ctx *fiber.Ctx, s string) (bool, error) {
@@ -15,7 +18,11 @@ func (a *AngelaWeb) newValidator() func(ctx *fiber.Ctx, s string) (bool, error) 
 
 func (a *AngelaWeb) setupRoutes() {
 	// 静态文件
-	a.app.Static("/static", "./static")
+	a.app.Use("/static", filesystem.New(filesystem.Config{
+		Root:       http.FS(embedDirStatic),
+		PathPrefix: "static",
+		Browse:     true,
+	}))
 
 	// CORS
 	a.app.Use(cors.New())
@@ -24,7 +31,7 @@ func (a *AngelaWeb) setupRoutes() {
 	api := a.app.Group("/api")
 	api.Post("/login", a.apiHandler.Login)
 
-	api.Use(keyauth.New(keyauth.Config{
+	api.Use(keyauth.New(keyauth.Config{ //nolint:exhaustruct // no need
 		KeyLookup: "cookie:access_token",
 		Validator: a.newValidator(),
 	}))
@@ -34,7 +41,6 @@ func (a *AngelaWeb) setupRoutes() {
 	api.Post("/users", a.apiHandler.CreateUser)
 	api.Get("/users/:id", a.apiHandler.GetUser)
 	api.Put("/users/:id", a.apiHandler.UpdateUser)
-	api.Delete("/users/:id", a.apiHandler.DeleteUser)
 	api.Get("/dashboard/stats", a.apiHandler.GetDashboardStats)
 
 	// 页面路由
@@ -42,7 +48,7 @@ func (a *AngelaWeb) setupRoutes() {
 
 	// 受保护的页面路由
 	auth := a.app.Group("/")
-	auth.Use(keyauth.New(keyauth.Config{
+	auth.Use(keyauth.New(keyauth.Config{ //nolint:exhaustruct // no need
 		KeyLookup: "cookie:access_token",
 		Validator: a.newValidator(),
 	}))

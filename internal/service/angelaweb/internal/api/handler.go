@@ -1,29 +1,34 @@
 package api
 
 import (
-	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
+	"net/http"
+
+	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 type Handler struct {
-	db   *gorm.DB
-	auth *libauth.Auth
+	t              *biztiphereth.Tiphereth
+	userCountCache *libcache.Key[model.UserCount]
 }
 
-func NewHandler(db *gorm.DB, auth *libauth.Auth) *Handler {
+func NewHandler(
+	t *biztiphereth.Tiphereth,
+	userCountCache *libcache.Key[model.UserCount],
+) *Handler {
 	return &Handler{
-		db:   db,
-		auth: auth,
+		t:              t,
+		userCountCache: userCountCache,
 	}
 }
 
 func (h *Handler) GetDashboardStats(c *fiber.Ctx) error {
-	var userCount int64
-	if err := h.db.Model(&model.User{}).Count(&userCount).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"message": "Error fetching stats"})
+	userCount, err := h.userCountCache.Get(c.Context())
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Error fetching stats"})
 	}
 	return c.JSON(fiber.Map{"user_count": userCount})
 }

@@ -23,7 +23,6 @@ type TipherethRepo struct {
 	data *Data
 }
 
-// NewTipherethRepo .
 func NewTipherethRepo(data *Data) *TipherethRepo {
 	return &TipherethRepo{
 		data: data,

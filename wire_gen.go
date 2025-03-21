@@ -29,6 +29,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
+	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 )
@@ -192,7 +193,8 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	app, err := newApp(grpcServer, httpServer, libmqMQ, cron, builtInObserver, consul)
+	angelaWeb := angelaweb.NewAngelaWeb(libauthAuth, tiphereth, key)
+	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul)
 	if err != nil {
 		cleanup3()
 		cleanup2()

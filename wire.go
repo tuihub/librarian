@@ -20,6 +20,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
+	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 
@@ -45,6 +46,7 @@ func wireApp(
 	panic(
 		wire.Build(
 			minerService.ProviderSet,
+			angelaweb.ProviderSet,
 			data.ProviderSet,
 			biz.ProviderSet,
 			client.ProviderSet,

@@ -1,18 +1,31 @@
 package page
 
 import (
-	"github.com/tuihub/librarian/internal/service/angelaweb/internal/model"
+	"net/http"
+	"strconv"
+
+	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/service/angelaweb/internal/util"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
+	"github.com/samber/lo"
 )
 
 type Builder struct {
-	db *gorm.DB
+	t              *biztiphereth.Tiphereth
+	userCountCache *libcache.Key[model.UserCount]
 }
 
-func NewBuilder(db *gorm.DB) *Builder {
-	return &Builder{db: db}
+func NewBuilder(
+	t *biztiphereth.Tiphereth,
+	userCountCache *libcache.Key[model.UserCount],
+) *Builder {
+	return &Builder{
+		t:              t,
+		userCountCache: userCountCache,
+	}
 }
 
 func (b *Builder) Login(c *fiber.Ctx) error {
@@ -22,9 +35,9 @@ func (b *Builder) Login(c *fiber.Ctx) error {
 }
 
 func (b *Builder) Dashboard(c *fiber.Ctx) error {
-	var userCount int64
-	if err := b.db.Model(&model.User{}).Count(&userCount).Error; err != nil {
-		return c.Status(500).SendString("Error fetching dashboard data")
+	userCount, err := b.userCountCache.Get(util.BizContext(c))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString("Error fetching dashboard data")
 	}
 
 	return c.Render("dashboard", fiber.Map{
@@ -34,9 +47,13 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 }
 
 func (b *Builder) UserList(c *fiber.Ctx) error {
-	var users []model.User
-	if err := b.db.Find(&users).Error; err != nil {
-		return c.Status(500).SendString("Error fetching users")
+	users, _, err := b.t.ListUsers(util.BizContext(c), model.Paging{
+		PageNum:  1,
+		PageSize: 20,
+	}, nil, nil)
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString("Error fetching users")
 	}
 
 	return c.Render("user", fiber.Map{
@@ -46,18 +63,23 @@ func (b *Builder) UserList(c *fiber.Ctx) error {
 }
 
 func (b *Builder) UserForm(c *fiber.Ctx) error {
-	id := c.Params("id")
-	var user model.User
+	idStr := c.Params("id")
+	var user *model.User
 	var title string
 	var action string
 	var method string
 
-	if id != "" {
-		if err := b.db.First(&user, id).Error; err != nil {
-			return c.Status(404).SendString("User not found")
+	if idStr != "" {
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			return c.Status(http.StatusBadRequest).SendString("Invalid ID")
+		}
+		user, err = b.t.GetUser(util.BizContext(c), lo.ToPtr(model.InternalID(id)))
+		if err != nil {
+			return c.Status(http.StatusNotFound).SendString("User not found")
 		}
 		title = "编辑用户"
-		action = "/api/users/" + id
+		action = "/api/users/" + idStr
 		method = "PUT"
 	} else {
 		title = "创建用户"

@@ -12,6 +12,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	"github.com/tuihub/librarian/internal/lib/libzap"
+	"github.com/tuihub/librarian/internal/service/angelaweb"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
 	"github.com/go-kratos/kratos/v2"
@@ -45,6 +46,7 @@ var ProviderSet = wire.NewSet(
 func newApp(
 	gs *grpc.Server,
 	hs *http.Server,
+	aw *angelaweb.AngelaWeb,
 	mq *libmq.MQ,
 	cron *libcron.Cron,
 	obs *libobserve.BuiltInObserver,
@@ -55,7 +57,7 @@ func newApp(
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs, hs, mq, cron, obs),
+		kratos.Server(gs, hs, aw, mq, cron, obs),
 	}
 	r, err := libapp.NewRegistrar(consul)
 	if err == nil {

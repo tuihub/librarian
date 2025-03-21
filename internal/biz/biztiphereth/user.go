@@ -16,7 +16,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.InternalID, *errors.Error) {
+func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.User, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -54,8 +54,7 @@ func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.In
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	_ = t.userCountCache.Delete(ctx)
-	res := user.ID
-	return &res, nil
+	return user, nil
 }
 
 func (t *Tiphereth) UpdateUser(
