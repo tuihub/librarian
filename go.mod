@@ -19,7 +19,7 @@ require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250210091908-15168b5a1b7d
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250210091908-15168b5a1b7d
 	github.com/go-kratos/kratos/v2 v2.8.3
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
@@ -49,7 +49,6 @@ require (
 	go.uber.org/ratelimit v0.3.1
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.35.0
-	golang.org/x/exp v0.0.0-20250228200357-dead58393ab7
 	google.golang.org/grpc v1.70.0
 	google.golang.org/protobuf v1.36.5
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
@@ -171,6 +170,7 @@ require (
 	go.shabbyrobe.org/gocovmerge v0.0.0-20230507111327-fa4f82cfbf4d // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	golang.org/x/exp v0.0.0-20250228200357-dead58393ab7 // indirect
 	golang.org/x/mod v0.23.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
