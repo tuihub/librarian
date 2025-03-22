@@ -31,7 +31,7 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/meilisearch/meilisearch-go v0.31.0
 	github.com/minio/minio-go/v7 v7.0.87
-	github.com/redis/go-redis/v9 v9.7.1
+	github.com/redis/go-redis/v9 v9.7.3
 	github.com/sony/sonyflake v1.2.0
 	github.com/tuihub/protos v0.4.25
 	go.opentelemetry.io/otel v1.34.0
