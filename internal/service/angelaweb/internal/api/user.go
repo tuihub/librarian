@@ -11,14 +11,41 @@ import (
 )
 
 func (h *Handler) ListUsers(c *fiber.Ctx) error {
-	users, _, err := h.t.ListUsers(c.UserContext(), model.Paging{
-		PageSize: 1,
-		PageNum:  20,
+	// Parse pagination parameters from query string
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+
+	pageSize, err := strconv.Atoi(c.Query("pageSize", "10"))
+	if err != nil || pageSize < 1 {
+		pageSize = 10
+	}
+
+	users, total, err := h.t.ListUsers(c.UserContext(), model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
 	}, nil, nil)
+
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "Error fetching users"})
 	}
-	return c.JSON(users)
+
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+
+	return c.JSON(fiber.Map{
+		"users": users,
+		"pagination": fiber.Map{
+			"currentPage": pageNum,
+			"totalPages":  totalPages,
+			"totalItems":  total,
+			"pageSize":    pageSize,
+		},
+	})
 }
 
 func (h *Handler) GetUser(c *fiber.Ctx) error {

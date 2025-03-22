@@ -46,18 +46,39 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 }
 
 func (b *Builder) UserList(c *fiber.Ctx) error {
-	users, _, err := b.t.ListUsers(c.UserContext(), model.Paging{
-		PageNum:  1,
-		PageSize: 20,
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+
+	pageSize := 1 // Users per page
+
+	users, total, err := b.t.ListUsers(c.UserContext(), model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
 	}, nil, nil)
 
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Error fetching users")
 	}
 
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+
 	return c.Render("user", fiber.Map{
 		"Title": "用户管理",
 		"Users": users,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
 	})
 }
 

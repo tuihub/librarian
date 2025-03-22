@@ -51,6 +51,36 @@
     </table>
 </div>
 
+<!-- 分页控制 -->
+{{if .Pagination}}
+<div class="flex justify-between items-center mt-6">
+    <div class="text-sm text-gray-700">
+        第 {{.Pagination.CurrentPage}} 页，共 {{.Pagination.TotalPages}} 页
+    </div>
+    <div class="flex space-x-2">
+        {{if .Pagination.HasPrev}}
+        <a href="/users?page={{.Pagination.PrevPage}}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded transition duration-200">
+            上一页
+        </a>
+        {{else}}
+        <button disabled class="bg-gray-100 text-gray-400 font-semibold py-2 px-4 rounded cursor-not-allowed">
+            上一页
+        </button>
+        {{end}}
+
+        {{if .Pagination.HasNext}}
+        <a href="/users?page={{.Pagination.NextPage}}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded transition duration-200">
+            下一页
+        </a>
+        {{else}}
+        <button disabled class="bg-gray-100 text-gray-400 font-semibold py-2 px-4 rounded cursor-not-allowed">
+            下一页
+        </button>
+        {{end}}
+    </div>
+</div>
+{{end}}
+
 <!-- 删除确认对话框 -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div class="bg-white rounded-lg p-6 w-96">

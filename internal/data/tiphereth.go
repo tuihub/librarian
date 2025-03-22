@@ -261,14 +261,14 @@ func (t *TipherethRepo) ListUsers(
 	if len(exclude) > 0 {
 		q.Where(user.IDNotIn(exclude...))
 	}
+	count, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
 	u, err := q.
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
 		All(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	count, err := q.Count(ctx)
 	if err != nil {
 		return nil, 0, err
 	}
