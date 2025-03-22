@@ -22,7 +22,7 @@ Config file is required. The config template is provided in [configs](configs)
 
 ### Command line arguments
 
-- `config` path, eg: --conf config.yaml
+- `config` path, eg: --conf config.toml
 - `data` path, eg: --data /opt/librarian/data
 
 ### Environment variables
@@ -37,5 +37,5 @@ Config file is required. The config template is provided in [configs](configs)
 1. Install [Go](https://golang.org/)
 2. (Optional) Install [Docker](https://docs.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
 3. (Optional) Deploy dependencies with [tests/docker-compose.yml](tests/docker-compose.yml)
-4. Create the config file at [configs/config.yaml](configs/config.yaml) with templates.
+4. Create the config file at [configs/config.toml](configs/config.toml) with templates.
 5. Run `make run` to start the server

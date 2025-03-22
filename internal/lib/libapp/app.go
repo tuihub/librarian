@@ -131,7 +131,7 @@ func checkDataPath(path string) error {
 func loadFlags() Flags {
 	var confPath string
 	var dataPath string
-	flag.StringVar(&confPath, "conf", "", "config path, eg: --conf config.yaml")
+	flag.StringVar(&confPath, "conf", "", "config path, eg: --conf config.toml")
 	flag.StringVar(&dataPath, "data", ".", "data path, eg: --data /opt/librarian/data")
 	flag.Parse()
 	return Flags{
