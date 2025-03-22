@@ -48,7 +48,7 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 func (b *Builder) UserList(c *fiber.Ctx) error {
 	pageNum, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || pageNum < 1 {
-		pageNum = 1
+		pageNum = 10
 	}
 
 	pageSize := 1 // Users per page
