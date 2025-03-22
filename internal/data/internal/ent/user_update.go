@@ -13,9 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
@@ -26,9 +23,9 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -121,34 +118,34 @@ func (uu *UserUpdate) SetNillableCreatedAt(t *time.Time) *UserUpdate {
 	return uu
 }
 
-// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
-func (uu *UserUpdate) AddBindAccountIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddBindAccountIDs(ids...)
+// AddSessionIDs adds the "session" edge to the Session entity by IDs.
+func (uu *UserUpdate) AddSessionIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddSessionIDs(ids...)
 	return uu
 }
 
-// AddBindAccount adds the "bind_account" edges to the Account entity.
-func (uu *UserUpdate) AddBindAccount(a ...*Account) *UserUpdate {
+// AddSession adds the "session" edges to the Session entity.
+func (uu *UserUpdate) AddSession(s ...*Session) *UserUpdate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uu.AddSessionIDs(ids...)
+}
+
+// AddAccountIDs adds the "account" edge to the Account entity by IDs.
+func (uu *UserUpdate) AddAccountIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.AddAccountIDs(ids...)
+	return uu
+}
+
+// AddAccount adds the "account" edges to the Account entity.
+func (uu *UserUpdate) AddAccount(a ...*Account) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.AddBindAccountIDs(ids...)
-}
-
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (uu *UserUpdate) AddPurchasedAppIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddPurchasedAppIDs(ids...)
-	return uu
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (uu *UserUpdate) AddPurchasedApp(a ...*AppInfo) *UserUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uu.AddPurchasedAppIDs(ids...)
+	return uu.AddAccountIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
@@ -164,21 +161,6 @@ func (uu *UserUpdate) AddApp(a ...*App) *UserUpdate {
 		ids[i] = a[i].ID
 	}
 	return uu.AddAppIDs(ids...)
-}
-
-// AddAppInstIDs adds the "app_inst" edge to the AppInst entity by IDs.
-func (uu *UserUpdate) AddAppInstIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddAppInstIDs(ids...)
-	return uu
-}
-
-// AddAppInst adds the "app_inst" edges to the AppInst entity.
-func (uu *UserUpdate) AddAppInst(a ...*AppInst) *UserUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uu.AddAppInstIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -301,21 +283,6 @@ func (uu *UserUpdate) AddFile(f ...*File) *UserUpdate {
 	return uu.AddFileIDs(ids...)
 }
 
-// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
-func (uu *UserUpdate) AddDeviceInfoIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.AddDeviceInfoIDs(ids...)
-	return uu
-}
-
-// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
-func (uu *UserUpdate) AddDeviceInfo(d ...*DeviceInfo) *UserUpdate {
-	ids := make([]model.InternalID, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return uu.AddDeviceInfoIDs(ids...)
-}
-
 // AddTagIDs adds the "tag" edge to the Tag entity by IDs.
 func (uu *UserUpdate) AddTagIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddTagIDs(ids...)
@@ -346,17 +313,6 @@ func (uu *UserUpdate) AddPorterContext(p ...*PorterContext) *UserUpdate {
 	return uu.AddPorterContextIDs(ids...)
 }
 
-// SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uu *UserUpdate) SetCreatorID(id model.InternalID) *UserUpdate {
-	uu.mutation.SetCreatorID(id)
-	return uu
-}
-
-// SetCreator sets the "creator" edge to the User entity.
-func (uu *UserUpdate) SetCreator(u *User) *UserUpdate {
-	return uu.SetCreatorID(u.ID)
-}
-
 // AddCreatedUserIDs adds the "created_user" edge to the User entity by IDs.
 func (uu *UserUpdate) AddCreatedUserIDs(ids ...model.InternalID) *UserUpdate {
 	uu.mutation.AddCreatedUserIDs(ids...)
@@ -372,66 +328,51 @@ func (uu *UserUpdate) AddCreatedUser(u ...*User) *UserUpdate {
 	return uu.AddCreatedUserIDs(ids...)
 }
 
-// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
-func (uu *UserUpdate) AddUserDeviceIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddUserDeviceIDs(ids...)
-	return uu
-}
-
-// AddUserDevice adds the "user_device" edges to the UserDevice entity.
-func (uu *UserUpdate) AddUserDevice(u ...*UserDevice) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uu.AddUserDeviceIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
 }
 
-// ClearBindAccount clears all "bind_account" edges to the Account entity.
-func (uu *UserUpdate) ClearBindAccount() *UserUpdate {
-	uu.mutation.ClearBindAccount()
+// ClearSession clears all "session" edges to the Session entity.
+func (uu *UserUpdate) ClearSession() *UserUpdate {
+	uu.mutation.ClearSession()
 	return uu
 }
 
-// RemoveBindAccountIDs removes the "bind_account" edge to Account entities by IDs.
-func (uu *UserUpdate) RemoveBindAccountIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveBindAccountIDs(ids...)
+// RemoveSessionIDs removes the "session" edge to Session entities by IDs.
+func (uu *UserUpdate) RemoveSessionIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveSessionIDs(ids...)
 	return uu
 }
 
-// RemoveBindAccount removes "bind_account" edges to Account entities.
-func (uu *UserUpdate) RemoveBindAccount(a ...*Account) *UserUpdate {
+// RemoveSession removes "session" edges to Session entities.
+func (uu *UserUpdate) RemoveSession(s ...*Session) *UserUpdate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uu.RemoveSessionIDs(ids...)
+}
+
+// ClearAccount clears all "account" edges to the Account entity.
+func (uu *UserUpdate) ClearAccount() *UserUpdate {
+	uu.mutation.ClearAccount()
+	return uu
+}
+
+// RemoveAccountIDs removes the "account" edge to Account entities by IDs.
+func (uu *UserUpdate) RemoveAccountIDs(ids ...model.InternalID) *UserUpdate {
+	uu.mutation.RemoveAccountIDs(ids...)
+	return uu
+}
+
+// RemoveAccount removes "account" edges to Account entities.
+func (uu *UserUpdate) RemoveAccount(a ...*Account) *UserUpdate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uu.RemoveBindAccountIDs(ids...)
-}
-
-// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
-func (uu *UserUpdate) ClearPurchasedApp() *UserUpdate {
-	uu.mutation.ClearPurchasedApp()
-	return uu
-}
-
-// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
-func (uu *UserUpdate) RemovePurchasedAppIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemovePurchasedAppIDs(ids...)
-	return uu
-}
-
-// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
-func (uu *UserUpdate) RemovePurchasedApp(a ...*AppInfo) *UserUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uu.RemovePurchasedAppIDs(ids...)
+	return uu.RemoveAccountIDs(ids...)
 }
 
 // ClearApp clears all "app" edges to the App entity.
@@ -453,27 +394,6 @@ func (uu *UserUpdate) RemoveApp(a ...*App) *UserUpdate {
 		ids[i] = a[i].ID
 	}
 	return uu.RemoveAppIDs(ids...)
-}
-
-// ClearAppInst clears all "app_inst" edges to the AppInst entity.
-func (uu *UserUpdate) ClearAppInst() *UserUpdate {
-	uu.mutation.ClearAppInst()
-	return uu
-}
-
-// RemoveAppInstIDs removes the "app_inst" edge to AppInst entities by IDs.
-func (uu *UserUpdate) RemoveAppInstIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveAppInstIDs(ids...)
-	return uu
-}
-
-// RemoveAppInst removes "app_inst" edges to AppInst entities.
-func (uu *UserUpdate) RemoveAppInst(a ...*AppInst) *UserUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uu.RemoveAppInstIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -644,27 +564,6 @@ func (uu *UserUpdate) RemoveFile(f ...*File) *UserUpdate {
 	return uu.RemoveFileIDs(ids...)
 }
 
-// ClearDeviceInfo clears all "device_info" edges to the DeviceInfo entity.
-func (uu *UserUpdate) ClearDeviceInfo() *UserUpdate {
-	uu.mutation.ClearDeviceInfo()
-	return uu
-}
-
-// RemoveDeviceInfoIDs removes the "device_info" edge to DeviceInfo entities by IDs.
-func (uu *UserUpdate) RemoveDeviceInfoIDs(ids ...model.InternalID) *UserUpdate {
-	uu.mutation.RemoveDeviceInfoIDs(ids...)
-	return uu
-}
-
-// RemoveDeviceInfo removes "device_info" edges to DeviceInfo entities.
-func (uu *UserUpdate) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdate {
-	ids := make([]model.InternalID, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return uu.RemoveDeviceInfoIDs(ids...)
-}
-
 // ClearTag clears all "tag" edges to the Tag entity.
 func (uu *UserUpdate) ClearTag() *UserUpdate {
 	uu.mutation.ClearTag()
@@ -707,12 +606,6 @@ func (uu *UserUpdate) RemovePorterContext(p ...*PorterContext) *UserUpdate {
 	return uu.RemovePorterContextIDs(ids...)
 }
 
-// ClearCreator clears the "creator" edge to the User entity.
-func (uu *UserUpdate) ClearCreator() *UserUpdate {
-	uu.mutation.ClearCreator()
-	return uu
-}
-
 // ClearCreatedUser clears all "created_user" edges to the User entity.
 func (uu *UserUpdate) ClearCreatedUser() *UserUpdate {
 	uu.mutation.ClearCreatedUser()
@@ -732,27 +625,6 @@ func (uu *UserUpdate) RemoveCreatedUser(u ...*User) *UserUpdate {
 		ids[i] = u[i].ID
 	}
 	return uu.RemoveCreatedUserIDs(ids...)
-}
-
-// ClearUserDevice clears all "user_device" edges to the UserDevice entity.
-func (uu *UserUpdate) ClearUserDevice() *UserUpdate {
-	uu.mutation.ClearUserDevice()
-	return uu
-}
-
-// RemoveUserDeviceIDs removes the "user_device" edge to UserDevice entities by IDs.
-func (uu *UserUpdate) RemoveUserDeviceIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveUserDeviceIDs(ids...)
-	return uu
-}
-
-// RemoveUserDevice removes "user_device" edges to UserDevice entities.
-func (uu *UserUpdate) RemoveUserDevice(u ...*UserDevice) *UserUpdate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uu.RemoveUserDeviceIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -839,28 +711,28 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 	}
-	if uu.mutation.BindAccountCleared() {
+	if uu.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedBindAccountIDs(); len(nodes) > 0 && !uu.mutation.BindAccountCleared() {
+	if nodes := uu.mutation.RemovedSessionIDs(); len(nodes) > 0 && !uu.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -868,15 +740,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.BindAccountIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -884,28 +756,28 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.PurchasedAppCleared() {
+	if uu.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !uu.mutation.PurchasedAppCleared() {
+	if nodes := uu.mutation.RemovedAccountIDs(); len(nodes) > 0 && !uu.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -913,15 +785,15 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uu.mutation.PurchasedAppIDs(); len(nodes) > 0 {
+	if nodes := uu.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -967,51 +839,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uu.mutation.AppInstCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedAppInstIDs(); len(nodes) > 0 && !uu.mutation.AppInstCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.AppInstIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1379,63 +1206,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.DeviceInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		createE := &UserDeviceCreate{config: uu.config, mutation: newUserDeviceMutation(uu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedDeviceInfoIDs(); len(nodes) > 0 && !uu.mutation.DeviceInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &UserDeviceCreate{config: uu.config, mutation: newUserDeviceMutation(uu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.DeviceInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &UserDeviceCreate{config: uu.config, mutation: newUserDeviceMutation(uu.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uu.mutation.TagCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1526,35 +1296,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uu.mutation.CreatorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   user.CreatorTable,
-			Columns: []string{user.CreatorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.CreatorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   user.CreatorTable,
-			Columns: []string{user.CreatorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uu.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -1593,51 +1334,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uu.mutation.UserDeviceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedUserDeviceIDs(); len(nodes) > 0 && !uu.mutation.UserDeviceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.UserDeviceIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1741,34 +1437,34 @@ func (uuo *UserUpdateOne) SetNillableCreatedAt(t *time.Time) *UserUpdateOne {
 	return uuo
 }
 
-// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
-func (uuo *UserUpdateOne) AddBindAccountIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddBindAccountIDs(ids...)
+// AddSessionIDs adds the "session" edge to the Session entity by IDs.
+func (uuo *UserUpdateOne) AddSessionIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddSessionIDs(ids...)
 	return uuo
 }
 
-// AddBindAccount adds the "bind_account" edges to the Account entity.
-func (uuo *UserUpdateOne) AddBindAccount(a ...*Account) *UserUpdateOne {
+// AddSession adds the "session" edges to the Session entity.
+func (uuo *UserUpdateOne) AddSession(s ...*Session) *UserUpdateOne {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uuo.AddSessionIDs(ids...)
+}
+
+// AddAccountIDs adds the "account" edge to the Account entity by IDs.
+func (uuo *UserUpdateOne) AddAccountIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.AddAccountIDs(ids...)
+	return uuo
+}
+
+// AddAccount adds the "account" edges to the Account entity.
+func (uuo *UserUpdateOne) AddAccount(a ...*Account) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.AddBindAccountIDs(ids...)
-}
-
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (uuo *UserUpdateOne) AddPurchasedAppIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddPurchasedAppIDs(ids...)
-	return uuo
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (uuo *UserUpdateOne) AddPurchasedApp(a ...*AppInfo) *UserUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uuo.AddPurchasedAppIDs(ids...)
+	return uuo.AddAccountIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
@@ -1784,21 +1480,6 @@ func (uuo *UserUpdateOne) AddApp(a ...*App) *UserUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return uuo.AddAppIDs(ids...)
-}
-
-// AddAppInstIDs adds the "app_inst" edge to the AppInst entity by IDs.
-func (uuo *UserUpdateOne) AddAppInstIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddAppInstIDs(ids...)
-	return uuo
-}
-
-// AddAppInst adds the "app_inst" edges to the AppInst entity.
-func (uuo *UserUpdateOne) AddAppInst(a ...*AppInst) *UserUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uuo.AddAppInstIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -1921,21 +1602,6 @@ func (uuo *UserUpdateOne) AddFile(f ...*File) *UserUpdateOne {
 	return uuo.AddFileIDs(ids...)
 }
 
-// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
-func (uuo *UserUpdateOne) AddDeviceInfoIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.AddDeviceInfoIDs(ids...)
-	return uuo
-}
-
-// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
-func (uuo *UserUpdateOne) AddDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
-	ids := make([]model.InternalID, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return uuo.AddDeviceInfoIDs(ids...)
-}
-
 // AddTagIDs adds the "tag" edge to the Tag entity by IDs.
 func (uuo *UserUpdateOne) AddTagIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddTagIDs(ids...)
@@ -1966,17 +1632,6 @@ func (uuo *UserUpdateOne) AddPorterContext(p ...*PorterContext) *UserUpdateOne {
 	return uuo.AddPorterContextIDs(ids...)
 }
 
-// SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uuo *UserUpdateOne) SetCreatorID(id model.InternalID) *UserUpdateOne {
-	uuo.mutation.SetCreatorID(id)
-	return uuo
-}
-
-// SetCreator sets the "creator" edge to the User entity.
-func (uuo *UserUpdateOne) SetCreator(u *User) *UserUpdateOne {
-	return uuo.SetCreatorID(u.ID)
-}
-
 // AddCreatedUserIDs adds the "created_user" edge to the User entity by IDs.
 func (uuo *UserUpdateOne) AddCreatedUserIDs(ids ...model.InternalID) *UserUpdateOne {
 	uuo.mutation.AddCreatedUserIDs(ids...)
@@ -1992,66 +1647,51 @@ func (uuo *UserUpdateOne) AddCreatedUser(u ...*User) *UserUpdateOne {
 	return uuo.AddCreatedUserIDs(ids...)
 }
 
-// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
-func (uuo *UserUpdateOne) AddUserDeviceIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddUserDeviceIDs(ids...)
-	return uuo
-}
-
-// AddUserDevice adds the "user_device" edges to the UserDevice entity.
-func (uuo *UserUpdateOne) AddUserDevice(u ...*UserDevice) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uuo.AddUserDeviceIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
 }
 
-// ClearBindAccount clears all "bind_account" edges to the Account entity.
-func (uuo *UserUpdateOne) ClearBindAccount() *UserUpdateOne {
-	uuo.mutation.ClearBindAccount()
+// ClearSession clears all "session" edges to the Session entity.
+func (uuo *UserUpdateOne) ClearSession() *UserUpdateOne {
+	uuo.mutation.ClearSession()
 	return uuo
 }
 
-// RemoveBindAccountIDs removes the "bind_account" edge to Account entities by IDs.
-func (uuo *UserUpdateOne) RemoveBindAccountIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveBindAccountIDs(ids...)
+// RemoveSessionIDs removes the "session" edge to Session entities by IDs.
+func (uuo *UserUpdateOne) RemoveSessionIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveSessionIDs(ids...)
 	return uuo
 }
 
-// RemoveBindAccount removes "bind_account" edges to Account entities.
-func (uuo *UserUpdateOne) RemoveBindAccount(a ...*Account) *UserUpdateOne {
+// RemoveSession removes "session" edges to Session entities.
+func (uuo *UserUpdateOne) RemoveSession(s ...*Session) *UserUpdateOne {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uuo.RemoveSessionIDs(ids...)
+}
+
+// ClearAccount clears all "account" edges to the Account entity.
+func (uuo *UserUpdateOne) ClearAccount() *UserUpdateOne {
+	uuo.mutation.ClearAccount()
+	return uuo
+}
+
+// RemoveAccountIDs removes the "account" edge to Account entities by IDs.
+func (uuo *UserUpdateOne) RemoveAccountIDs(ids ...model.InternalID) *UserUpdateOne {
+	uuo.mutation.RemoveAccountIDs(ids...)
+	return uuo
+}
+
+// RemoveAccount removes "account" edges to Account entities.
+func (uuo *UserUpdateOne) RemoveAccount(a ...*Account) *UserUpdateOne {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uuo.RemoveBindAccountIDs(ids...)
-}
-
-// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
-func (uuo *UserUpdateOne) ClearPurchasedApp() *UserUpdateOne {
-	uuo.mutation.ClearPurchasedApp()
-	return uuo
-}
-
-// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
-func (uuo *UserUpdateOne) RemovePurchasedAppIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemovePurchasedAppIDs(ids...)
-	return uuo
-}
-
-// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
-func (uuo *UserUpdateOne) RemovePurchasedApp(a ...*AppInfo) *UserUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uuo.RemovePurchasedAppIDs(ids...)
+	return uuo.RemoveAccountIDs(ids...)
 }
 
 // ClearApp clears all "app" edges to the App entity.
@@ -2073,27 +1713,6 @@ func (uuo *UserUpdateOne) RemoveApp(a ...*App) *UserUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return uuo.RemoveAppIDs(ids...)
-}
-
-// ClearAppInst clears all "app_inst" edges to the AppInst entity.
-func (uuo *UserUpdateOne) ClearAppInst() *UserUpdateOne {
-	uuo.mutation.ClearAppInst()
-	return uuo
-}
-
-// RemoveAppInstIDs removes the "app_inst" edge to AppInst entities by IDs.
-func (uuo *UserUpdateOne) RemoveAppInstIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveAppInstIDs(ids...)
-	return uuo
-}
-
-// RemoveAppInst removes "app_inst" edges to AppInst entities.
-func (uuo *UserUpdateOne) RemoveAppInst(a ...*AppInst) *UserUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uuo.RemoveAppInstIDs(ids...)
 }
 
 // ClearFeedConfig clears all "feed_config" edges to the FeedConfig entity.
@@ -2264,27 +1883,6 @@ func (uuo *UserUpdateOne) RemoveFile(f ...*File) *UserUpdateOne {
 	return uuo.RemoveFileIDs(ids...)
 }
 
-// ClearDeviceInfo clears all "device_info" edges to the DeviceInfo entity.
-func (uuo *UserUpdateOne) ClearDeviceInfo() *UserUpdateOne {
-	uuo.mutation.ClearDeviceInfo()
-	return uuo
-}
-
-// RemoveDeviceInfoIDs removes the "device_info" edge to DeviceInfo entities by IDs.
-func (uuo *UserUpdateOne) RemoveDeviceInfoIDs(ids ...model.InternalID) *UserUpdateOne {
-	uuo.mutation.RemoveDeviceInfoIDs(ids...)
-	return uuo
-}
-
-// RemoveDeviceInfo removes "device_info" edges to DeviceInfo entities.
-func (uuo *UserUpdateOne) RemoveDeviceInfo(d ...*DeviceInfo) *UserUpdateOne {
-	ids := make([]model.InternalID, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return uuo.RemoveDeviceInfoIDs(ids...)
-}
-
 // ClearTag clears all "tag" edges to the Tag entity.
 func (uuo *UserUpdateOne) ClearTag() *UserUpdateOne {
 	uuo.mutation.ClearTag()
@@ -2327,12 +1925,6 @@ func (uuo *UserUpdateOne) RemovePorterContext(p ...*PorterContext) *UserUpdateOn
 	return uuo.RemovePorterContextIDs(ids...)
 }
 
-// ClearCreator clears the "creator" edge to the User entity.
-func (uuo *UserUpdateOne) ClearCreator() *UserUpdateOne {
-	uuo.mutation.ClearCreator()
-	return uuo
-}
-
 // ClearCreatedUser clears all "created_user" edges to the User entity.
 func (uuo *UserUpdateOne) ClearCreatedUser() *UserUpdateOne {
 	uuo.mutation.ClearCreatedUser()
@@ -2352,27 +1944,6 @@ func (uuo *UserUpdateOne) RemoveCreatedUser(u ...*User) *UserUpdateOne {
 		ids[i] = u[i].ID
 	}
 	return uuo.RemoveCreatedUserIDs(ids...)
-}
-
-// ClearUserDevice clears all "user_device" edges to the UserDevice entity.
-func (uuo *UserUpdateOne) ClearUserDevice() *UserUpdateOne {
-	uuo.mutation.ClearUserDevice()
-	return uuo
-}
-
-// RemoveUserDeviceIDs removes the "user_device" edge to UserDevice entities by IDs.
-func (uuo *UserUpdateOne) RemoveUserDeviceIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveUserDeviceIDs(ids...)
-	return uuo
-}
-
-// RemoveUserDevice removes "user_device" edges to UserDevice entities.
-func (uuo *UserUpdateOne) RemoveUserDevice(u ...*UserDevice) *UserUpdateOne {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uuo.RemoveUserDeviceIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -2489,28 +2060,28 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 	}
-	if uuo.mutation.BindAccountCleared() {
+	if uuo.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedBindAccountIDs(); len(nodes) > 0 && !uuo.mutation.BindAccountCleared() {
+	if nodes := uuo.mutation.RemovedSessionIDs(); len(nodes) > 0 && !uuo.mutation.SessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2518,15 +2089,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.BindAccountIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2534,28 +2105,28 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.PurchasedAppCleared() {
+	if uuo.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !uuo.mutation.PurchasedAppCleared() {
+	if nodes := uuo.mutation.RemovedAccountIDs(); len(nodes) > 0 && !uuo.mutation.AccountCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2563,15 +2134,15 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := uuo.mutation.PurchasedAppIDs(); len(nodes) > 0 {
+	if nodes := uuo.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -2617,51 +2188,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uuo.mutation.AppInstCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedAppInstIDs(); len(nodes) > 0 && !uuo.mutation.AppInstCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.AppInstIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -3029,63 +2555,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.DeviceInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		createE := &UserDeviceCreate{config: uuo.config, mutation: newUserDeviceMutation(uuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedDeviceInfoIDs(); len(nodes) > 0 && !uuo.mutation.DeviceInfoCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &UserDeviceCreate{config: uuo.config, mutation: newUserDeviceMutation(uuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.DeviceInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &UserDeviceCreate{config: uuo.config, mutation: newUserDeviceMutation(uuo.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uuo.mutation.TagCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -3176,35 +2645,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if uuo.mutation.CreatorCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   user.CreatorTable,
-			Columns: []string{user.CreatorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.CreatorIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   user.CreatorTable,
-			Columns: []string{user.CreatorColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if uuo.mutation.CreatedUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -3243,51 +2683,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uuo.mutation.UserDeviceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedUserDeviceIDs(); len(nodes) > 0 && !uuo.mutation.UserDeviceCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.UserDeviceIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

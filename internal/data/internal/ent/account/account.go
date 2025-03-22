@@ -18,6 +18,8 @@ const (
 	FieldPlatform = "platform"
 	// FieldPlatformAccountID holds the string denoting the platform_account_id field in the database.
 	FieldPlatformAccountID = "platform_account_id"
+	// FieldBoundUserID holds the string denoting the bound_user_id field in the database.
+	FieldBoundUserID = "bound_user_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldProfileURL holds the string denoting the profile_url field in the database.
@@ -28,24 +30,17 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgePurchasedApp holds the string denoting the purchased_app edge name in mutations.
-	EdgePurchasedApp = "purchased_app"
-	// EdgeBindUser holds the string denoting the bind_user edge name in mutations.
-	EdgeBindUser = "bind_user"
+	// EdgeBoundUser holds the string denoting the bound_user edge name in mutations.
+	EdgeBoundUser = "bound_user"
 	// Table holds the table name of the account in the database.
 	Table = "accounts"
-	// PurchasedAppTable is the table that holds the purchased_app relation/edge. The primary key declared below.
-	PurchasedAppTable = "account_purchased_app"
-	// PurchasedAppInverseTable is the table name for the AppInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "appinfo" package.
-	PurchasedAppInverseTable = "app_infos"
-	// BindUserTable is the table that holds the bind_user relation/edge.
-	BindUserTable = "accounts"
-	// BindUserInverseTable is the table name for the User entity.
+	// BoundUserTable is the table that holds the bound_user relation/edge.
+	BoundUserTable = "accounts"
+	// BoundUserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	BindUserInverseTable = "users"
-	// BindUserColumn is the table column denoting the bind_user relation/edge.
-	BindUserColumn = "user_bind_account"
+	BoundUserInverseTable = "users"
+	// BoundUserColumn is the table column denoting the bound_user relation/edge.
+	BoundUserColumn = "bound_user_id"
 )
 
 // Columns holds all SQL columns for account fields.
@@ -53,6 +48,7 @@ var Columns = []string{
 	FieldID,
 	FieldPlatform,
 	FieldPlatformAccountID,
+	FieldBoundUserID,
 	FieldName,
 	FieldProfileURL,
 	FieldAvatarURL,
@@ -60,27 +56,10 @@ var Columns = []string{
 	FieldCreatedAt,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "accounts"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"user_bind_account",
-}
-
-var (
-	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
-	// primary key for the purchased_app relation (M2M).
-	PurchasedAppPrimaryKey = []string{"account_id", "app_info_id"}
-)
-
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -114,6 +93,11 @@ func ByPlatformAccountID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPlatformAccountID, opts...).ToFunc()
 }
 
+// ByBoundUserID orders the results by the bound_user_id field.
+func ByBoundUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBoundUserID, opts...).ToFunc()
+}
+
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
@@ -139,37 +123,16 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByPurchasedAppCount orders the results by purchased_app count.
-func ByPurchasedAppCount(opts ...sql.OrderTermOption) OrderOption {
+// ByBoundUserField orders the results by bound_user field.
+func ByBoundUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPurchasedAppStep(), opts...)
+		sqlgraph.OrderByNeighborTerms(s, newBoundUserStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByPurchasedApp orders the results by purchased_app terms.
-func ByPurchasedApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPurchasedAppStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByBindUserField orders the results by bind_user field.
-func ByBindUserField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBindUserStep(), sql.OrderByField(field, opts...))
-	}
-}
-func newPurchasedAppStep() *sqlgraph.Step {
+func newBoundUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PurchasedAppInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
-	)
-}
-func newBindUserStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(BindUserInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, BindUserTable, BindUserColumn),
+		sqlgraph.To(BoundUserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, BoundUserTable, BoundUserColumn),
 	)
 }

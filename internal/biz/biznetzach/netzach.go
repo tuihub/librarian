@@ -218,7 +218,6 @@ func (n *Netzach) ListNotifyFlows(
 func (n *Netzach) ListSystemNotifications(
 	ctx context.Context,
 	paging model.Paging,
-	types []modelnetzach.SystemNotificationType,
 	levels []modelnetzach.SystemNotificationLevel,
 	statuses []modelnetzach.SystemNotificationStatus,
 ) ([]*modelnetzach.SystemNotification, int64, *errors.Error) {
@@ -227,6 +226,7 @@ func (n *Netzach) ListSystemNotifications(
 		return nil, 0, bizutils.NoPermissionError()
 	}
 	var userID *model.InternalID
+	var types []modelnetzach.SystemNotificationType
 	if claims.UserType != model.UserTypeAdmin {
 		types = []modelnetzach.SystemNotificationType{modelnetzach.SystemNotificationTypeUser}
 		userID = &claims.UserID

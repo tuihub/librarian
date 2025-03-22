@@ -2,20 +2,19 @@ package bizgebura
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
-
-	"github.com/go-kratos/kratos/v2/errors"
 )
 
 func (g *Gebura) CreateApp(
 	ctx context.Context,
 	a *modelgebura.App,
-) (*modelgebura.App, *errors.Error) {
+) (*modelgebura.App, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -25,18 +24,27 @@ func (g *Gebura) CreateApp(
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err)
 	}
 	a.ID = id
+	a.VersionNumber = 1
+	a.VersionDate = time.Now()
 	if err = g.repo.CreateApp(ctx, claims.UserID, a); err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return a, nil
 }
 
-func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) *errors.Error {
+func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	err := g.repo.UpdateApp(ctx, claims.UserID, a)
+	old, err := g.repo.GetApp(ctx, a.ID)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	if old.BoundStoreAppID != 0 && !a.StopStoreManage {
+		return pb.ErrorErrorReasonBadRequest("under store manage")
+	}
+	err = g.repo.UpdateApp(ctx, claims.UserID, a)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -47,9 +55,8 @@ func (g *Gebura) ListApps(
 	ctx context.Context,
 	paging model.Paging,
 	ownerIDs []model.InternalID,
-	appInfoIDs []model.InternalID,
 	ids []model.InternalID,
-) ([]*modelgebura.App, int, *errors.Error) {
+) ([]*modelgebura.App, int, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
@@ -59,43 +66,43 @@ func (g *Gebura) ListApps(
 		ownerIDs = []model.InternalID{claims.UserID}
 		publicOnly = false
 	}
-	res, total, err := g.repo.ListApps(ctx, paging, ownerIDs, appInfoIDs, ids, publicOnly)
+	res, total, err := g.repo.ListApps(ctx, paging, ownerIDs, ids, publicOnly)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return res, total, nil
 }
 
-func (g *Gebura) AssignApp(
-	ctx context.Context,
-	appID model.InternalID,
-	appInfoID model.InternalID,
-) *errors.Error {
-	claims := libauth.FromContextAssertUserType(ctx)
-	if claims == nil {
-		return bizutils.NoPermissionError()
-	}
-	err := g.repo.AssignApp(ctx, claims.UserID, appID, appInfoID)
-	if err != nil {
-		return pb.ErrorErrorReasonUnspecified("%s", err)
-	}
-	return nil
-}
+// func (g *Gebura) AssignApp(
+//	ctx context.Context,
+//	appID model.InternalID,
+//	appInfoID model.InternalID,
+// ) error {
+//	claims := libauth.FromContextAssertUserType(ctx)
+//	if claims == nil {
+//		return bizutils.NoPermissionError()
+//	}
+//	err := g.repo.AssignApp(ctx, claims.UserID, appID, appInfoID)
+//	if err != nil {
+//		return pb.ErrorErrorReasonUnspecified("%s", err)
+//	}
+//	return nil
+//}
+//
+// func (g *Gebura) UnAssignApp(ctx context.Context, appID model.InternalID) error {
+//	claims := libauth.FromContextAssertUserType(ctx)
+//	if claims == nil {
+//		return bizutils.NoPermissionError()
+//	} else {
+//		err := g.repo.UnAssignApp(ctx, claims.UserID, appID)
+//		if err != nil {
+//			return pb.ErrorErrorReasonUnspecified("%s", err)
+//		}
+//	}
+//	return nil
+//}
 
-func (g *Gebura) UnAssignApp(ctx context.Context, appID model.InternalID) *errors.Error {
-	claims := libauth.FromContextAssertUserType(ctx)
-	if claims == nil {
-		return bizutils.NoPermissionError()
-	} else {
-		err := g.repo.UnAssignApp(ctx, claims.UserID, appID)
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err)
-		}
-	}
-	return nil
-}
-
-// func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPackageHandler, *errors.Error) {
+// func (g *Gebura) NewReportAppPackageHandler(ctx context.Context) (ReportAppPackageHandler, error) {
 //	claims := libauth.FromContext(ctx)
 //	if claims == nil {
 //		return nil, bizutils.NoPermissionError()
@@ -118,7 +125,7 @@ func (g *Gebura) UnAssignApp(ctx context.Context, appID model.InternalID) *error
 //	sha256   []string
 //}
 //
-// func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelgebura.AppBinary) *errors.Error {
+// func (r *reportAppPackageHandler) Handle(ctx context.Context, binaries []*modelgebura.AppBinary) error {
 //	var vl []*mapper.Vertex
 //	packages := make([]*modelgebura.App, 0, len(binaries))
 //	ids, err := r.g.searcher.NewBatchIDs(ctx, len(binaries))

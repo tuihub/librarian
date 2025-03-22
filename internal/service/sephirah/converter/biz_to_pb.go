@@ -9,7 +9,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/protobuf/types/known/durationpb"
@@ -35,8 +35,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map ID DeviceId
-	ToPBDeviceInfo(*model.DeviceInfo) *pb.DeviceInfo
-	ToPBDeviceInfoList([]*model.DeviceInfo) []*pb.DeviceInfo
+	ToPBDeviceInfo(*model.Device) *sephirah.DeviceInfo
+	ToPBDeviceInfoList([]*model.Device) []*sephirah.DeviceInfo
 	// goverter:enum:unknown SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeUnspecified SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeIOS SystemType_SYSTEM_TYPE_IOS
@@ -45,35 +45,35 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeWindows SystemType_SYSTEM_TYPE_WINDOWS
 	// goverter:enum:map SystemTypeMacOS SystemType_SYSTEM_TYPE_MACOS
 	// goverter:enum:map SystemTypeLinux SystemType_SYSTEM_TYPE_LINUX
-	ToPBSystemType(model.SystemType) pb.SystemType
+	ToPBSystemType(model.SystemType) sephirah.SystemType
 
 	// goverter:map CreateAt CreateTime
 	// goverter:map ExpireAt ExpireTime
-	ToPBUserSession(*model.UserSession) *pb.UserSession
-	ToPBUserSessionList([]*model.UserSession) []*pb.UserSession
+	ToPBUserSession(*model.Session) *sephirah.UserSession
+	ToPBUserSessionList([]*model.Session) []*sephirah.UserSession
 
 	// goverter:ignore Password
-	ToPBUser(*model.User) *pb.User
-	ToPBUserList([]*model.User) []*pb.User
+	ToPBUser(*model.User) *sephirah.User
+	ToPBUserList([]*model.User) []*sephirah.User
 	// goverter:enum:unknown UserType_USER_TYPE_UNSPECIFIED
 	// goverter:enum:map UserTypeUnspecified UserType_USER_TYPE_UNSPECIFIED
 	// goverter:enum:map UserTypeAdmin UserType_USER_TYPE_ADMIN
 	// goverter:enum:map UserTypeNormal UserType_USER_TYPE_NORMAL
 	// goverter:enum:map UserTypeSentinel UserType_USER_TYPE_SENTINEL
 	// goverter:enum:map UserTypePorter UserType_USER_TYPE_PORTER
-	ToPBUserType(model.UserType) pb.UserType
+	ToPBUserType(model.UserType) sephirah.UserType
 	// goverter:enum:unknown UserStatus_USER_STATUS_UNSPECIFIED
 	// goverter:enum:map UserStatusUnspecified UserStatus_USER_STATUS_UNSPECIFIED
 	// goverter:enum:map UserStatusActive UserStatus_USER_STATUS_ACTIVE
 	// goverter:enum:map UserStatusBlocked UserStatus_USER_STATUS_BLOCKED
-	ToPBUserStatus(model.UserStatus) pb.UserStatus
+	ToPBUserStatus(model.UserStatus) sephirah.UserStatus
 
-	ToPBAccount(*model.Account) *librarian.Account
-	ToPBAccountList([]*model.Account) []*librarian.Account
+	ToPBAccount(*model.Account) *sephirah.Account
+	ToPBAccountList([]*model.Account) []*sephirah.Account
 
 	// goverter:autoMap PorterInstance
-	ToPBPorter(*modelsupervisor.PorterInstanceController) *pb.Porter
-	ToPBPorterList([]*modelsupervisor.PorterInstanceController) []*pb.Porter
+	ToPBPorter(*modelsupervisor.PorterInstanceController) *sephirah.Porter
+	ToPBPorterList([]*modelsupervisor.PorterInstanceController) []*sephirah.Porter
 	// goverter:enum:unknown PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusUnspecified PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusConnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
@@ -81,49 +81,63 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusActive PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
 	// goverter:enum:map PorterConnectionStatusActivationFailed PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
 	// goverter:enum:map PorterConnectionStatusDowngraded PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
-	ToPBPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) pb.PorterConnectionStatus
+	ToPBPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) sephirah.PorterConnectionStatus
 
 	// goverter:autoMap PorterContext
-	ToPBPorterContext(*modelsupervisor.PorterContextController) *pb.PorterContext
-	ToPBPorterContextList([]*modelsupervisor.PorterContextController) []*pb.PorterContext
+	ToPBPorterContext(*modelsupervisor.PorterContextController) *sephirah.PorterContext
+	ToPBPorterContextList([]*modelsupervisor.PorterContextController) []*sephirah.PorterContext
 	// goverter:enum:unknown PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusUnspecified PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusActive PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
 	// goverter:enum:map PorterContextStatusDisabled PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
-	ToPBPorterContextStatus(modelsupervisor.PorterContextStatus) pb.PorterContextStatus
+	ToPBPorterContextStatus(modelsupervisor.PorterContextStatus) sephirah.PorterContextStatus
 	// goverter:enum:unknown PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextHandleStatusUnspecified PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextHandleStatusActive PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
 	// goverter:enum:map PorterContextHandleStatusDowngraded PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
 	// goverter:enum:map PorterContextHandleStatusQueueing PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
 	// goverter:enum:map PorterContextHandleStatusBlocked PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
-	ToPBPorterContextHandleStatus(modelsupervisor.PorterContextHandleStatus) pb.PorterContextHandleStatus
+	ToPBPorterContextHandleStatus(modelsupervisor.PorterContextHandleStatus) sephirah.PorterContextHandleStatus
 
-	ToPBPorterGroup(*modelsupervisor.PorterGroup) *pb.PorterGroup
-	ToPBPorterGroupList([]*modelsupervisor.PorterGroup) []*pb.PorterGroup
+	ToPBPorterGroup(*modelsupervisor.PorterDigest) *sephirah.PorterDigest
+	ToPBPorterGroupList([]*modelsupervisor.PorterDigest) []*sephirah.PorterDigest
 
+	// goverter:ignore Description
+	// goverter:ignore IconImageId
+	// goverter:ignore BackgroundImageId
+	// goverter:ignore CoverImageId
+	// goverter:ignore Developer
+	// goverter:ignore Publisher
 	// goverter:ignore AltNames
-	ToPBAppInfo(*modelgebura.AppInfo) *librarian.AppInfo
-	// goverter:ignore ImageUrls
-	ToPBAppInfoDetail(*modelgebura.AppInfoDetails) *librarian.AppInfoDetails
-	ToPBAppInfoList([]*modelgebura.AppInfo) []*librarian.AppInfo
-	// goverter:ignore AltNames
-	ToPBAppInfoMixed(*modelgebura.AppInfoMixed) *librarian.AppInfoMixed
-	ToPBAppInfoMixedList([]*modelgebura.AppInfoMixed) []*librarian.AppInfoMixed
+	ToPBAppInfo(*modelgebura.AppInfo) *sephirah.AppInfo
+	ToPBAppInfoList([]*modelgebura.AppInfo) []*sephirah.AppInfo
 	// goverter:enum:unknown AppType_APP_TYPE_UNSPECIFIED
 	// goverter:enum:map AppTypeUnspecified AppType_APP_TYPE_UNSPECIFIED
 	// goverter:enum:map AppTypeGame AppType_APP_TYPE_GAME
-	ToPBAppType(modelgebura.AppType) librarian.AppType
+	ToPBAppType(modelgebura.AppType) sephirah.AppType
 
-	ToPBApp(*modelgebura.App) *pb.App
-	ToPBAppList([]*modelgebura.App) []*pb.App
-	// goverter:ignore Id
-	// goverter:ignore TokenServerUrl
-	// goverter:ignore Chunks
-	ToPBAppBinary(*modelgebura.AppBinary) *pb.AppBinary
+	// goverter:ignore VersionNumber
+	// goverter:ignore VersionUpdateTime
+	// goverter:ignore CreatorDeviceId
+	// goverter:ignore BoundAppSource
+	// goverter:ignore BoundStoreApp
+	// goverter:ignore StopStoreManaging
+	// goverter:ignore Type
+	// goverter:ignore IconImageUrl
+	// goverter:ignore IconImageId
+	// goverter:ignore BackgroundImageUrl
+	// goverter:ignore BackgroundImageId
+	// goverter:ignore CoverImageUrl
+	// goverter:ignore CoverImageId
+	// goverter:ignore Tags
+	// goverter:ignore AltNames
+	// goverter:ignore Developer
+	// goverter:ignore Publisher
+	ToPBApp(*modelgebura.App) *sephirah.App
+	ToPBAppList([]*modelgebura.App) []*sephirah.App
 
-	// ToPBAppInst(*modelgebura.AppInst) *pb.AppInst
-	// ToPBAppInstList([]*modelgebura.AppInst) []*pb.AppInst
+	// ToPBAppInst(*modelgebura.AppInst) *sephirah.AppInst
+	// ToPBAppInstList([]*modelgebura.AppInst) []*sephirah.AppInst
 
 	ToPBFeed(*modelfeed.Feed) *librarian.Feed
 	ToPBFeedItem(*modelfeed.Item) *librarian.FeedItem
@@ -131,62 +145,57 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeedImage(*modelfeed.Image) *librarian.FeedImage
 	ToPBEnclosure(*modelfeed.Enclosure) *librarian.FeedEnclosure
 	// goverter:map LatestPullStatus | ToPBFeedConfigPullStatus
-	ToPBFeedConfig(*modelyesod.FeedConfig) *pb.FeedConfig
+	ToPBFeedConfig(*modelyesod.FeedConfig) *sephirah.FeedConfig
 	// goverter:enum:unknown FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
 	// goverter:enum:map FeedConfigStatusUnspecified FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
 	// goverter:enum:map FeedConfigStatusActive FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
 	// goverter:enum:map FeedConfigStatusSuspend FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
-	ToPBFeedConfigStatus(modelyesod.FeedConfigStatus) pb.FeedConfigStatus
+	ToPBFeedConfigStatus(modelyesod.FeedConfigStatus) sephirah.FeedConfigStatus
 	// goverter:map FeedConfig Config
-	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *pb.ListFeedConfigsResponse_FeedWithConfig
-	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*pb.ListFeedConfigsResponse_FeedWithConfig
-	ToPBFeedItemDigest(*modelyesod.FeedItemDigest) *pb.FeedItemDigest
-	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*pb.FeedItemDigest
+	ToPBFeedWithConfig(*modelyesod.FeedWithConfig) *sephirah.ListFeedConfigsResponse_FeedWithConfig
+	ToPBFeedWithConfigList([]*modelyesod.FeedWithConfig) []*sephirah.ListFeedConfigsResponse_FeedWithConfig
+	ToPBFeedItemDigest(*modelyesod.FeedItemDigest) *sephirah.FeedItemDigest
+	ToPBFeedItemDigestList([]*modelyesod.FeedItemDigest) []*sephirah.FeedItemDigest
 
-	ToPBFeedActionSet(*modelyesod.FeedActionSet) *pb.FeedActionSet
-	ToPBFeedActionSetList([]*modelyesod.FeedActionSet) []*pb.FeedActionSet
+	ToPBFeedActionSet(*modelyesod.FeedActionSet) *sephirah.FeedActionSet
+	ToPBFeedActionSetList([]*modelyesod.FeedActionSet) []*sephirah.FeedActionSet
 
-	ToPBFeedItemCollection(*modelyesod.FeedItemCollection) *pb.FeedItemCollection
-	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*pb.FeedItemCollection
+	ToPBFeedItemCollection(*modelyesod.FeedItemCollection) *sephirah.FeedItemCollection
+	ToPBFeedItemCollectionList([]*modelyesod.FeedItemCollection) []*sephirah.FeedItemCollection
 
-	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *pb.NotifyTarget
-	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*pb.NotifyTarget
+	ToPBNotifyTarget(*modelnetzach.NotifyTarget) *sephirah.NotifyTarget
+	ToPBNotifyTargetList([]*modelnetzach.NotifyTarget) []*sephirah.NotifyTarget
 	// goverter:enum:unknown NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyTargetStatusUnspecified NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyTargetStatusActive NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
 	// goverter:enum:map NotifyTargetStatusSuspend NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
-	ToPBNotifyTargetStatus(modelnetzach.NotifyTargetStatus) pb.NotifyTargetStatus
+	ToPBNotifyTargetStatus(modelnetzach.NotifyTargetStatus) sephirah.NotifyTargetStatus
 
-	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *pb.NotifyFlow
+	ToPBNotifyFlow(*modelnetzach.NotifyFlow) *sephirah.NotifyFlow
 	// goverter:enum:unknown NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyFlowStatusUnspecified NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	// goverter:enum:map NotifyFlowStatusActive NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
 	// goverter:enum:map NotifyFlowStatusSuspend NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
-	ToPBNotifyFlowStatus(modelnetzach.NotifyFlowStatus) pb.NotifyFlowStatus
-	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *pb.NotifyFlowSource
-	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *pb.NotifyFlowTarget
-	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*pb.NotifyFlow
+	ToPBNotifyFlowStatus(modelnetzach.NotifyFlowStatus) sephirah.NotifyFlowStatus
+	ToPBNotifyFlowSource(*modelnetzach.NotifyFlowSource) *sephirah.NotifyFlowSource
+	ToPBNotifyFlowTarget(*modelnetzach.NotifyFlowTarget) *sephirah.NotifyFlowTarget
+	ToPBNotifyFlowList([]*modelnetzach.NotifyFlow) []*sephirah.NotifyFlow
 
-	ToPBSystemNotification(*modelnetzach.SystemNotification) *pb.SystemNotification
-	ToPBSystemNotificationList([]*modelnetzach.SystemNotification) []*pb.SystemNotification
-	// goverter:enum:unknown SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
-	// goverter:enum:map SystemNotificationTypeUnspecified SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
-	// goverter:enum:map SystemNotificationTypeSystem SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM
-	// goverter:enum:map SystemNotificationTypeUser SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER
-	ToPBSystemNotificationType(modelnetzach.SystemNotificationType) pb.SystemNotificationType
+	ToPBSystemNotification(*modelnetzach.SystemNotification) *sephirah.SystemNotification
+	ToPBSystemNotificationList([]*modelnetzach.SystemNotification) []*sephirah.SystemNotification
 	// goverter:enum:unknown SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
 	// goverter:enum:map SystemNotificationLevelUnspecified SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
 	// goverter:enum:map SystemNotificationLevelInfo SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO
 	// goverter:enum:map SystemNotificationLevelWarning SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING
 	// goverter:enum:map SystemNotificationLevelError SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR
 	// goverter:enum:map SystemNotificationLevelOngoing SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING
-	ToPBSystemNotificationLevel(modelnetzach.SystemNotificationLevel) pb.SystemNotificationLevel
+	ToPBSystemNotificationLevel(modelnetzach.SystemNotificationLevel) sephirah.SystemNotificationLevel
 	// goverter:enum:unknown SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
 	// goverter:enum:map SystemNotificationStatusUnspecified SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
 	// goverter:enum:map SystemNotificationStatusUnread SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
 	// goverter:enum:map SystemNotificationStatusRead SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
 	// goverter:enum:map SystemNotificationStatusDismissed SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED
-	ToPBSystemNotificationStatus(modelnetzach.SystemNotificationStatus) pb.SystemNotificationStatus
+	ToPBSystemNotificationStatus(modelnetzach.SystemNotificationStatus) sephirah.SystemNotificationStatus
 }
 
 func DurationPBToDuration(t *durationpb.Duration) time.Duration {
@@ -215,19 +224,19 @@ func ToPBDuration(d time.Duration) *durationpb.Duration {
 	return durationpb.New(d)
 }
 
-func ToPBFeedConfigPullStatus(s modelyesod.FeedConfigPullStatus) *pb.FeedConfigPullStatus {
-	var status pb.FeedConfigPullStatus
+func ToPBFeedConfigPullStatus(s modelyesod.FeedConfigPullStatus) *sephirah.FeedConfigPullStatus {
+	var status sephirah.FeedConfigPullStatus
 	switch s {
 	case modelyesod.FeedConfigPullStatusUnspecified:
-		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
+		status = sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
 	case modelyesod.FeedConfigPullStatusProcessing:
-		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING
+		status = sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING
 	case modelyesod.FeedConfigPullStatusSuccess:
-		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS
+		status = sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS
 	case modelyesod.FeedConfigPullStatusFailed:
-		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED
+		status = sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED
 	default:
-		status = pb.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
+		status = sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED
 	}
 	return &status
 }

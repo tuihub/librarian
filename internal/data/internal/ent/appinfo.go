@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -18,8 +19,6 @@ type AppInfo struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
-	// Internal holds the value of the "internal" field.
-	Internal bool `json:"internal,omitempty"`
 	// Source holds the value of the "source" field.
 	Source string `json:"source,omitempty"`
 	// SourceAppID holds the value of the "source_app_id" field.
@@ -36,102 +35,33 @@ type AppInfo struct {
 	Description string `json:"description,omitempty"`
 	// IconImageURL holds the value of the "icon_image_url" field.
 	IconImageURL string `json:"icon_image_url,omitempty"`
+	// IconImageID holds the value of the "icon_image_id" field.
+	IconImageID model.InternalID `json:"icon_image_id,omitempty"`
 	// BackgroundImageURL holds the value of the "background_image_url" field.
 	BackgroundImageURL string `json:"background_image_url,omitempty"`
+	// BackgroundImageID holds the value of the "background_image_id" field.
+	BackgroundImageID model.InternalID `json:"background_image_id,omitempty"`
 	// CoverImageURL holds the value of the "cover_image_url" field.
 	CoverImageURL string `json:"cover_image_url,omitempty"`
+	// CoverImageID holds the value of the "cover_image_id" field.
+	CoverImageID model.InternalID `json:"cover_image_id,omitempty"`
 	// ReleaseDate holds the value of the "release_date" field.
 	ReleaseDate string `json:"release_date,omitempty"`
 	// Developer holds the value of the "developer" field.
 	Developer string `json:"developer,omitempty"`
 	// Publisher holds the value of the "publisher" field.
 	Publisher string `json:"publisher,omitempty"`
-	// Version holds the value of the "version" field.
-	Version string `json:"version,omitempty"`
+	// Tags holds the value of the "tags" field.
+	Tags []string `json:"tags,omitempty"`
+	// AlternativeNames holds the value of the "alternative_names" field.
+	AlternativeNames []string `json:"alternative_names,omitempty"`
+	// RawData holds the value of the "raw_data" field.
+	RawData string `json:"raw_data,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the AppInfoQuery when eager-loading is set.
-	Edges                  AppInfoEdges `json:"edges"`
-	app_info_bind_external *model.InternalID
-	selectValues           sql.SelectValues
-}
-
-// AppInfoEdges holds the relations/edges for other nodes in the graph.
-type AppInfoEdges struct {
-	// PurchasedByAccount holds the value of the purchased_by_account edge.
-	PurchasedByAccount []*Account `json:"purchased_by_account,omitempty"`
-	// PurchasedByUser holds the value of the purchased_by_user edge.
-	PurchasedByUser []*User `json:"purchased_by_user,omitempty"`
-	// App holds the value of the app edge.
-	App []*App `json:"app,omitempty"`
-	// AppBinary holds the value of the app_binary edge.
-	AppBinary []*AppBinary `json:"app_binary,omitempty"`
-	// BindInternal holds the value of the bind_internal edge.
-	BindInternal *AppInfo `json:"bind_internal,omitempty"`
-	// BindExternal holds the value of the bind_external edge.
-	BindExternal []*AppInfo `json:"bind_external,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [6]bool
-}
-
-// PurchasedByAccountOrErr returns the PurchasedByAccount value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppInfoEdges) PurchasedByAccountOrErr() ([]*Account, error) {
-	if e.loadedTypes[0] {
-		return e.PurchasedByAccount, nil
-	}
-	return nil, &NotLoadedError{edge: "purchased_by_account"}
-}
-
-// PurchasedByUserOrErr returns the PurchasedByUser value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppInfoEdges) PurchasedByUserOrErr() ([]*User, error) {
-	if e.loadedTypes[1] {
-		return e.PurchasedByUser, nil
-	}
-	return nil, &NotLoadedError{edge: "purchased_by_user"}
-}
-
-// AppOrErr returns the App value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppInfoEdges) AppOrErr() ([]*App, error) {
-	if e.loadedTypes[2] {
-		return e.App, nil
-	}
-	return nil, &NotLoadedError{edge: "app"}
-}
-
-// AppBinaryOrErr returns the AppBinary value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppInfoEdges) AppBinaryOrErr() ([]*AppBinary, error) {
-	if e.loadedTypes[3] {
-		return e.AppBinary, nil
-	}
-	return nil, &NotLoadedError{edge: "app_binary"}
-}
-
-// BindInternalOrErr returns the BindInternal value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e AppInfoEdges) BindInternalOrErr() (*AppInfo, error) {
-	if e.BindInternal != nil {
-		return e.BindInternal, nil
-	} else if e.loadedTypes[4] {
-		return nil, &NotFoundError{label: appinfo.Label}
-	}
-	return nil, &NotLoadedError{edge: "bind_internal"}
-}
-
-// BindExternalOrErr returns the BindExternal value or an error if the edge
-// was not loaded in eager-loading.
-func (e AppInfoEdges) BindExternalOrErr() ([]*AppInfo, error) {
-	if e.loadedTypes[5] {
-		return e.BindExternal, nil
-	}
-	return nil, &NotLoadedError{edge: "bind_external"}
+	CreatedAt    time.Time `json:"created_at,omitempty"`
+	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -139,16 +69,14 @@ func (*AppInfo) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appinfo.FieldInternal:
-			values[i] = new(sql.NullBool)
-		case appinfo.FieldID:
+		case appinfo.FieldTags, appinfo.FieldAlternativeNames:
+			values[i] = new([]byte)
+		case appinfo.FieldID, appinfo.FieldIconImageID, appinfo.FieldBackgroundImageID, appinfo.FieldCoverImageID:
 			values[i] = new(sql.NullInt64)
-		case appinfo.FieldSource, appinfo.FieldSourceAppID, appinfo.FieldSourceURL, appinfo.FieldName, appinfo.FieldType, appinfo.FieldShortDescription, appinfo.FieldDescription, appinfo.FieldIconImageURL, appinfo.FieldBackgroundImageURL, appinfo.FieldCoverImageURL, appinfo.FieldReleaseDate, appinfo.FieldDeveloper, appinfo.FieldPublisher, appinfo.FieldVersion:
+		case appinfo.FieldSource, appinfo.FieldSourceAppID, appinfo.FieldSourceURL, appinfo.FieldName, appinfo.FieldType, appinfo.FieldShortDescription, appinfo.FieldDescription, appinfo.FieldIconImageURL, appinfo.FieldBackgroundImageURL, appinfo.FieldCoverImageURL, appinfo.FieldReleaseDate, appinfo.FieldDeveloper, appinfo.FieldPublisher, appinfo.FieldRawData:
 			values[i] = new(sql.NullString)
 		case appinfo.FieldUpdatedAt, appinfo.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case appinfo.ForeignKeys[0]: // app_info_bind_external
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -169,12 +97,6 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				ai.ID = model.InternalID(value.Int64)
-			}
-		case appinfo.FieldInternal:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field internal", values[i])
-			} else if value.Valid {
-				ai.Internal = value.Bool
 			}
 		case appinfo.FieldSource:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -224,17 +146,35 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ai.IconImageURL = value.String
 			}
+		case appinfo.FieldIconImageID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field icon_image_id", values[i])
+			} else if value.Valid {
+				ai.IconImageID = model.InternalID(value.Int64)
+			}
 		case appinfo.FieldBackgroundImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field background_image_url", values[i])
 			} else if value.Valid {
 				ai.BackgroundImageURL = value.String
 			}
+		case appinfo.FieldBackgroundImageID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field background_image_id", values[i])
+			} else if value.Valid {
+				ai.BackgroundImageID = model.InternalID(value.Int64)
+			}
 		case appinfo.FieldCoverImageURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field cover_image_url", values[i])
 			} else if value.Valid {
 				ai.CoverImageURL = value.String
+			}
+		case appinfo.FieldCoverImageID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field cover_image_id", values[i])
+			} else if value.Valid {
+				ai.CoverImageID = model.InternalID(value.Int64)
 			}
 		case appinfo.FieldReleaseDate:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -254,11 +194,27 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ai.Publisher = value.String
 			}
-		case appinfo.FieldVersion:
+		case appinfo.FieldTags:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field tags", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &ai.Tags); err != nil {
+					return fmt.Errorf("unmarshal field tags: %w", err)
+				}
+			}
+		case appinfo.FieldAlternativeNames:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field alternative_names", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &ai.AlternativeNames); err != nil {
+					return fmt.Errorf("unmarshal field alternative_names: %w", err)
+				}
+			}
+		case appinfo.FieldRawData:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field version", values[i])
+				return fmt.Errorf("unexpected type %T for field raw_data", values[i])
 			} else if value.Valid {
-				ai.Version = value.String
+				ai.RawData = value.String
 			}
 		case appinfo.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -272,13 +228,6 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				ai.CreatedAt = value.Time
 			}
-		case appinfo.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_info_bind_external", values[i])
-			} else if value.Valid {
-				ai.app_info_bind_external = new(model.InternalID)
-				*ai.app_info_bind_external = model.InternalID(value.Int64)
-			}
 		default:
 			ai.selectValues.Set(columns[i], values[i])
 		}
@@ -290,36 +239,6 @@ func (ai *AppInfo) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (ai *AppInfo) Value(name string) (ent.Value, error) {
 	return ai.selectValues.Get(name)
-}
-
-// QueryPurchasedByAccount queries the "purchased_by_account" edge of the AppInfo entity.
-func (ai *AppInfo) QueryPurchasedByAccount() *AccountQuery {
-	return NewAppInfoClient(ai.config).QueryPurchasedByAccount(ai)
-}
-
-// QueryPurchasedByUser queries the "purchased_by_user" edge of the AppInfo entity.
-func (ai *AppInfo) QueryPurchasedByUser() *UserQuery {
-	return NewAppInfoClient(ai.config).QueryPurchasedByUser(ai)
-}
-
-// QueryApp queries the "app" edge of the AppInfo entity.
-func (ai *AppInfo) QueryApp() *AppQuery {
-	return NewAppInfoClient(ai.config).QueryApp(ai)
-}
-
-// QueryAppBinary queries the "app_binary" edge of the AppInfo entity.
-func (ai *AppInfo) QueryAppBinary() *AppBinaryQuery {
-	return NewAppInfoClient(ai.config).QueryAppBinary(ai)
-}
-
-// QueryBindInternal queries the "bind_internal" edge of the AppInfo entity.
-func (ai *AppInfo) QueryBindInternal() *AppInfoQuery {
-	return NewAppInfoClient(ai.config).QueryBindInternal(ai)
-}
-
-// QueryBindExternal queries the "bind_external" edge of the AppInfo entity.
-func (ai *AppInfo) QueryBindExternal() *AppInfoQuery {
-	return NewAppInfoClient(ai.config).QueryBindExternal(ai)
 }
 
 // Update returns a builder for updating this AppInfo.
@@ -345,9 +264,6 @@ func (ai *AppInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("AppInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", ai.ID))
-	builder.WriteString("internal=")
-	builder.WriteString(fmt.Sprintf("%v", ai.Internal))
-	builder.WriteString(", ")
 	builder.WriteString("source=")
 	builder.WriteString(ai.Source)
 	builder.WriteString(", ")
@@ -372,11 +288,20 @@ func (ai *AppInfo) String() string {
 	builder.WriteString("icon_image_url=")
 	builder.WriteString(ai.IconImageURL)
 	builder.WriteString(", ")
+	builder.WriteString("icon_image_id=")
+	builder.WriteString(fmt.Sprintf("%v", ai.IconImageID))
+	builder.WriteString(", ")
 	builder.WriteString("background_image_url=")
 	builder.WriteString(ai.BackgroundImageURL)
 	builder.WriteString(", ")
+	builder.WriteString("background_image_id=")
+	builder.WriteString(fmt.Sprintf("%v", ai.BackgroundImageID))
+	builder.WriteString(", ")
 	builder.WriteString("cover_image_url=")
 	builder.WriteString(ai.CoverImageURL)
+	builder.WriteString(", ")
+	builder.WriteString("cover_image_id=")
+	builder.WriteString(fmt.Sprintf("%v", ai.CoverImageID))
 	builder.WriteString(", ")
 	builder.WriteString("release_date=")
 	builder.WriteString(ai.ReleaseDate)
@@ -387,8 +312,14 @@ func (ai *AppInfo) String() string {
 	builder.WriteString("publisher=")
 	builder.WriteString(ai.Publisher)
 	builder.WriteString(", ")
-	builder.WriteString("version=")
-	builder.WriteString(ai.Version)
+	builder.WriteString("tags=")
+	builder.WriteString(fmt.Sprintf("%v", ai.Tags))
+	builder.WriteString(", ")
+	builder.WriteString("alternative_names=")
+	builder.WriteString(fmt.Sprintf("%v", ai.AlternativeNames))
+	builder.WriteString(", ")
+	builder.WriteString("raw_data=")
+	builder.WriteString(ai.RawData)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ai.UpdatedAt.Format(time.ANSIC))

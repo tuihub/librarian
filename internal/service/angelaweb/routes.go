@@ -29,6 +29,10 @@ func (a *AngelaWeb) setupRoutes() {
 	api.Post("/users", a.apiHandler.CreateUser)
 	api.Get("/users/:id", a.apiHandler.GetUser)
 	api.Put("/users/:id", a.apiHandler.UpdateUser)
+
+	api.Get("/porters", a.apiHandler.ListPorters)
+	api.Put("/porters/:id/status", a.apiHandler.UpdatePorterStatus)
+
 	api.Get("/dashboard/stats", a.apiHandler.GetDashboardStats)
 
 	// 页面路由
@@ -42,4 +46,6 @@ func (a *AngelaWeb) setupRoutes() {
 	auth.Get("/users", a.pageBuilder.UserList)
 	auth.Get("/users/new", a.pageBuilder.UserForm)
 	auth.Get("/users/edit/:id", a.pageBuilder.UserForm)
+
+	auth.Get("/porters", a.pageBuilder.PorterList)
 }

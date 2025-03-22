@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,7 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -21,13 +23,13 @@ import (
 // AppQuery is the builder for querying App entities.
 type AppQuery struct {
 	config
-	ctx         *QueryContext
-	order       []app.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.App
-	withOwner   *UserQuery
-	withAppInfo *AppInfoQuery
-	withFKs     bool
+	ctx            *QueryContext
+	order          []app.OrderOption
+	inters         []Interceptor
+	predicates     []predicate.App
+	withUser       *UserQuery
+	withDevice     *DeviceQuery
+	withAppRunTime *AppRunTimeQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -64,8 +66,8 @@ func (aq *AppQuery) Order(o ...app.OrderOption) *AppQuery {
 	return aq
 }
 
-// QueryOwner chains the current query on the "owner" edge.
-func (aq *AppQuery) QueryOwner() *UserQuery {
+// QueryUser chains the current query on the "user" edge.
+func (aq *AppQuery) QueryUser() *UserQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
@@ -78,7 +80,7 @@ func (aq *AppQuery) QueryOwner() *UserQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, app.OwnerTable, app.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, app.UserTable, app.UserColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -86,9 +88,9 @@ func (aq *AppQuery) QueryOwner() *UserQuery {
 	return query
 }
 
-// QueryAppInfo chains the current query on the "app_info" edge.
-func (aq *AppQuery) QueryAppInfo() *AppInfoQuery {
-	query := (&AppInfoClient{config: aq.config}).Query()
+// QueryDevice chains the current query on the "device" edge.
+func (aq *AppQuery) QueryDevice() *DeviceQuery {
+	query := (&DeviceClient{config: aq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := aq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -99,8 +101,30 @@ func (aq *AppQuery) QueryAppInfo() *AppInfoQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, selector),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, app.AppInfoTable, app.AppInfoColumn),
+			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, app.DeviceTable, app.DeviceColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAppRunTime chains the current query on the "app_run_time" edge.
+func (aq *AppQuery) QueryAppRunTime() *AppRunTimeQuery {
+	query := (&AppRunTimeClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, selector),
+			sqlgraph.To(appruntime.Table, appruntime.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.AppRunTimeTable, app.AppRunTimeColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -295,38 +319,50 @@ func (aq *AppQuery) Clone() *AppQuery {
 		return nil
 	}
 	return &AppQuery{
-		config:      aq.config,
-		ctx:         aq.ctx.Clone(),
-		order:       append([]app.OrderOption{}, aq.order...),
-		inters:      append([]Interceptor{}, aq.inters...),
-		predicates:  append([]predicate.App{}, aq.predicates...),
-		withOwner:   aq.withOwner.Clone(),
-		withAppInfo: aq.withAppInfo.Clone(),
+		config:         aq.config,
+		ctx:            aq.ctx.Clone(),
+		order:          append([]app.OrderOption{}, aq.order...),
+		inters:         append([]Interceptor{}, aq.inters...),
+		predicates:     append([]predicate.App{}, aq.predicates...),
+		withUser:       aq.withUser.Clone(),
+		withDevice:     aq.withDevice.Clone(),
+		withAppRunTime: aq.withAppRunTime.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
 	}
 }
 
-// WithOwner tells the query-builder to eager-load the nodes that are connected to
-// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithOwner(opts ...func(*UserQuery)) *AppQuery {
+// WithUser tells the query-builder to eager-load the nodes that are connected to
+// the "user" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithUser(opts ...func(*UserQuery)) *AppQuery {
 	query := (&UserClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withOwner = query
+	aq.withUser = query
 	return aq
 }
 
-// WithAppInfo tells the query-builder to eager-load the nodes that are connected to
-// the "app_info" edge. The optional arguments are used to configure the query builder of the edge.
-func (aq *AppQuery) WithAppInfo(opts ...func(*AppInfoQuery)) *AppQuery {
-	query := (&AppInfoClient{config: aq.config}).Query()
+// WithDevice tells the query-builder to eager-load the nodes that are connected to
+// the "device" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithDevice(opts ...func(*DeviceQuery)) *AppQuery {
+	query := (&DeviceClient{config: aq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	aq.withAppInfo = query
+	aq.withDevice = query
+	return aq
+}
+
+// WithAppRunTime tells the query-builder to eager-load the nodes that are connected to
+// the "app_run_time" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithAppRunTime(opts ...func(*AppRunTimeQuery)) *AppQuery {
+	query := (&AppRunTimeClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withAppRunTime = query
 	return aq
 }
 
@@ -336,12 +372,12 @@ func (aq *AppQuery) WithAppInfo(opts ...func(*AppInfoQuery)) *AppQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		VersionNumber uint64 `json:"version_number,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.App.Query().
-//		GroupBy(app.FieldName).
+//		GroupBy(app.FieldVersionNumber).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
@@ -359,11 +395,11 @@ func (aq *AppQuery) GroupBy(field string, fields ...string) *AppGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		VersionNumber uint64 `json:"version_number,omitempty"`
 //	}
 //
 //	client.App.Query().
-//		Select(app.FieldName).
+//		Select(app.FieldVersionNumber).
 //		Scan(ctx, &v)
 func (aq *AppQuery) Select(fields ...string) *AppSelect {
 	aq.ctx.Fields = append(aq.ctx.Fields, fields...)
@@ -407,19 +443,13 @@ func (aq *AppQuery) prepareQuery(ctx context.Context) error {
 func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, error) {
 	var (
 		nodes       = []*App{}
-		withFKs     = aq.withFKs
 		_spec       = aq.querySpec()
-		loadedTypes = [2]bool{
-			aq.withOwner != nil,
-			aq.withAppInfo != nil,
+		loadedTypes = [3]bool{
+			aq.withUser != nil,
+			aq.withDevice != nil,
+			aq.withAppRunTime != nil,
 		}
 	)
-	if aq.withOwner != nil || aq.withAppInfo != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, app.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*App).scanValues(nil, columns)
 	}
@@ -438,29 +468,33 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aq.withOwner; query != nil {
-		if err := aq.loadOwner(ctx, query, nodes, nil,
-			func(n *App, e *User) { n.Edges.Owner = e }); err != nil {
+	if query := aq.withUser; query != nil {
+		if err := aq.loadUser(ctx, query, nodes, nil,
+			func(n *App, e *User) { n.Edges.User = e }); err != nil {
 			return nil, err
 		}
 	}
-	if query := aq.withAppInfo; query != nil {
-		if err := aq.loadAppInfo(ctx, query, nodes, nil,
-			func(n *App, e *AppInfo) { n.Edges.AppInfo = e }); err != nil {
+	if query := aq.withDevice; query != nil {
+		if err := aq.loadDevice(ctx, query, nodes, nil,
+			func(n *App, e *Device) { n.Edges.Device = e }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withAppRunTime; query != nil {
+		if err := aq.loadAppRunTime(ctx, query, nodes,
+			func(n *App) { n.Edges.AppRunTime = []*AppRunTime{} },
+			func(n *App, e *AppRunTime) { n.Edges.AppRunTime = append(n.Edges.AppRunTime, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (aq *AppQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*App, init func(*App), assign func(*App, *User)) error {
+func (aq *AppQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*App, init func(*App), assign func(*App, *User)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*App)
 	for i := range nodes {
-		if nodes[i].user_app == nil {
-			continue
-		}
-		fk := *nodes[i].user_app
+		fk := nodes[i].UserID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -477,7 +511,7 @@ func (aq *AppQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Ap
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_app" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "user_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -485,14 +519,11 @@ func (aq *AppQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Ap
 	}
 	return nil
 }
-func (aq *AppQuery) loadAppInfo(ctx context.Context, query *AppInfoQuery, nodes []*App, init func(*App), assign func(*App, *AppInfo)) error {
+func (aq *AppQuery) loadDevice(ctx context.Context, query *DeviceQuery, nodes []*App, init func(*App), assign func(*App, *Device)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*App)
 	for i := range nodes {
-		if nodes[i].app_info_app == nil {
-			continue
-		}
-		fk := *nodes[i].app_info_app
+		fk := nodes[i].CreatorDeviceID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -501,7 +532,7 @@ func (aq *AppQuery) loadAppInfo(ctx context.Context, query *AppInfoQuery, nodes 
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(appinfo.IDIn(ids...))
+	query.Where(device.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -509,11 +540,41 @@ func (aq *AppQuery) loadAppInfo(ctx context.Context, query *AppInfoQuery, nodes 
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_info_app" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "creator_device_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
+	}
+	return nil
+}
+func (aq *AppQuery) loadAppRunTime(ctx context.Context, query *AppRunTimeQuery, nodes []*App, init func(*App), assign func(*App, *AppRunTime)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*App)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appruntime.FieldAppID)
+	}
+	query.Where(predicate.AppRunTime(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(app.AppRunTimeColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -542,6 +603,12 @@ func (aq *AppQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != app.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if aq.withUser != nil {
+			_spec.Node.AddColumnOnce(app.FieldUserID)
+		}
+		if aq.withDevice != nil {
+			_spec.Node.AddColumnOnce(app.FieldCreatorDeviceID)
 		}
 	}
 	if ps := aq.predicates; len(ps) > 0 {

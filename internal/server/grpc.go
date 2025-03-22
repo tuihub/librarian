@@ -6,7 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"

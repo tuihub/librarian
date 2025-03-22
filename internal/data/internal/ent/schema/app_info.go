@@ -3,8 +3,9 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -16,7 +17,6 @@ type AppInfo struct {
 func (AppInfo) Fields() []ent.Field {
 	return []ent.Field{
 		defaultPrimaryKey(),
-		field.Bool("internal"),
 		field.String("source"),
 		field.String("source_app_id"),
 		field.String("source_url").Optional(),
@@ -26,12 +26,17 @@ func (AppInfo) Fields() []ent.Field {
 		field.String("short_description").Optional(),
 		field.Text("description").Optional(),
 		field.String("icon_image_url").Optional(),
+		field.Int64("icon_image_id").GoType(model.InternalID(0)),
 		field.String("background_image_url").Optional(),
+		field.Int64("background_image_id").GoType(model.InternalID(0)),
 		field.String("cover_image_url").Optional(),
+		field.Int64("cover_image_id").GoType(model.InternalID(0)),
 		field.String("release_date").Optional(),
 		field.String("developer").Optional(),
 		field.String("publisher").Optional(),
-		field.String("version").Optional(),
+		field.Strings("tags"),
+		field.Strings("alternative_names"),
+		field.String("raw_data"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -47,15 +52,5 @@ func (AppInfo) Indexes() []ent.Index {
 }
 
 func (AppInfo) Edges() []ent.Edge {
-	return []ent.Edge{
-		edge.From("purchased_by_account", Account.Type).
-			Ref("purchased_app"),
-		edge.From("purchased_by_user", User.Type).
-			Ref("purchased_app"),
-		edge.To("app", App.Type),
-		edge.To("app_binary", AppBinary.Type),
-		edge.To("bind_external", AppInfo.Type).
-			From("bind_internal").
-			Unique(),
-	}
+	return []ent.Edge{}
 }

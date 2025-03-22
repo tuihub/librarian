@@ -18,7 +18,7 @@ var (
 		{Name: "avatar_url", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_bind_account", Type: field.TypeInt64, Nullable: true},
+		{Name: "bound_user_id", Type: field.TypeInt64, Nullable: true},
 	}
 	// AccountsTable holds the schema information for the "accounts" table.
 	AccountsTable = &schema.Table{
@@ -27,7 +27,7 @@ var (
 		PrimaryKey: []*schema.Column{AccountsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "accounts_users_bind_account",
+				Symbol:     "accounts_users_account",
 				Columns:    []*schema.Column{AccountsColumns[8]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
@@ -44,14 +44,31 @@ var (
 	// AppsColumns holds the columns for the "apps" table.
 	AppsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "name", Type: field.TypeString},
-		{Name: "description", Type: field.TypeString, Size: 2147483647},
-		{Name: "device_id", Type: field.TypeInt64},
+		{Name: "version_number", Type: field.TypeUint64},
+		{Name: "version_date", Type: field.TypeTime},
+		{Name: "app_sources", Type: field.TypeJSON},
 		{Name: "public", Type: field.TypeBool},
+		{Name: "bound_store_app_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "stop_store_manage", Type: field.TypeBool, Nullable: true},
+		{Name: "name", Type: field.TypeString},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"unknown", "game"}},
+		{Name: "short_description", Type: field.TypeString, Nullable: true},
+		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
+		{Name: "icon_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "icon_image_id", Type: field.TypeInt64},
+		{Name: "background_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "background_image_id", Type: field.TypeInt64},
+		{Name: "cover_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "cover_image_id", Type: field.TypeInt64},
+		{Name: "release_date", Type: field.TypeString, Nullable: true},
+		{Name: "developer", Type: field.TypeString, Nullable: true},
+		{Name: "publisher", Type: field.TypeString, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON},
+		{Name: "alternative_names", Type: field.TypeJSON},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "app_info_app", Type: field.TypeInt64, Nullable: true},
-		{Name: "user_app", Type: field.TypeInt64},
+		{Name: "creator_device_id", Type: field.TypeInt64},
+		{Name: "user_id", Type: field.TypeInt64},
 	}
 	// AppsTable holds the schema information for the "apps" table.
 	AppsTable = &schema.Table{
@@ -60,55 +77,52 @@ var (
 		PrimaryKey: []*schema.Column{AppsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "apps_app_infos_app",
-				Columns:    []*schema.Column{AppsColumns[7]},
-				RefColumns: []*schema.Column{AppInfosColumns[0]},
-				OnDelete:   schema.SetNull,
+				Symbol:     "apps_devices_app",
+				Columns:    []*schema.Column{AppsColumns[24]},
+				RefColumns: []*schema.Column{DevicesColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "apps_users_app",
-				Columns:    []*schema.Column{AppsColumns[8]},
+				Columns:    []*schema.Column{AppsColumns[25]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
-	}
-	// AppBinariesColumns holds the columns for the "app_binaries" table.
-	AppBinariesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "size_bytes", Type: field.TypeInt64, Nullable: true},
-		{Name: "public_url", Type: field.TypeString, Nullable: true},
-		{Name: "sha256", Type: field.TypeBytes, Nullable: true},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "app_info_app_binary", Type: field.TypeInt64, Nullable: true},
-	}
-	// AppBinariesTable holds the schema information for the "app_binaries" table.
-	AppBinariesTable = &schema.Table{
-		Name:       "app_binaries",
-		Columns:    AppBinariesColumns,
-		PrimaryKey: []*schema.Column{AppBinariesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "app_binaries_app_infos_app_binary",
-				Columns:    []*schema.Column{AppBinariesColumns[7]},
-				RefColumns: []*schema.Column{AppInfosColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "appbinary_sha256",
+				Name:    "app_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{AppsColumns[25]},
+			},
+		},
+	}
+	// AppCategoriesColumns holds the columns for the "app_categories" table.
+	AppCategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "user_id", Type: field.TypeInt64},
+		{Name: "app_id", Type: field.TypeInt64},
+		{Name: "start_time", Type: field.TypeTime},
+		{Name: "run_duration", Type: field.TypeInt64},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// AppCategoriesTable holds the schema information for the "app_categories" table.
+	AppCategoriesTable = &schema.Table{
+		Name:       "app_categories",
+		Columns:    AppCategoriesColumns,
+		PrimaryKey: []*schema.Column{AppCategoriesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appcategory_user_id_app_id_start_time_run_duration",
 				Unique:  true,
-				Columns: []*schema.Column{AppBinariesColumns[4]},
+				Columns: []*schema.Column{AppCategoriesColumns[1], AppCategoriesColumns[2], AppCategoriesColumns[3], AppCategoriesColumns[4]},
 			},
 		},
 	}
 	// AppInfosColumns holds the columns for the "app_infos" table.
 	AppInfosColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
-		{Name: "internal", Type: field.TypeBool},
 		{Name: "source", Type: field.TypeString},
 		{Name: "source_app_id", Type: field.TypeString},
 		{Name: "source_url", Type: field.TypeString, Nullable: true},
@@ -117,85 +131,71 @@ var (
 		{Name: "short_description", Type: field.TypeString, Nullable: true},
 		{Name: "description", Type: field.TypeString, Nullable: true, Size: 2147483647},
 		{Name: "icon_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "icon_image_id", Type: field.TypeInt64},
 		{Name: "background_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "background_image_id", Type: field.TypeInt64},
 		{Name: "cover_image_url", Type: field.TypeString, Nullable: true},
+		{Name: "cover_image_id", Type: field.TypeInt64},
 		{Name: "release_date", Type: field.TypeString, Nullable: true},
 		{Name: "developer", Type: field.TypeString, Nullable: true},
 		{Name: "publisher", Type: field.TypeString, Nullable: true},
-		{Name: "version", Type: field.TypeString, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON},
+		{Name: "alternative_names", Type: field.TypeJSON},
+		{Name: "raw_data", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "app_info_bind_external", Type: field.TypeInt64, Nullable: true},
 	}
 	// AppInfosTable holds the schema information for the "app_infos" table.
 	AppInfosTable = &schema.Table{
 		Name:       "app_infos",
 		Columns:    AppInfosColumns,
 		PrimaryKey: []*schema.Column{AppInfosColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "app_infos_app_infos_bind_external",
-				Columns:    []*schema.Column{AppInfosColumns[18]},
-				RefColumns: []*schema.Column{AppInfosColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "appinfo_source_source_app_id",
 				Unique:  true,
-				Columns: []*schema.Column{AppInfosColumns[2], AppInfosColumns[3]},
+				Columns: []*schema.Column{AppInfosColumns[1], AppInfosColumns[2]},
 			},
 		},
 	}
-	// AppInstsColumns holds the columns for the "app_insts" table.
-	AppInstsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64},
-		{Name: "device_id", Type: field.TypeInt64},
-		{Name: "app_id", Type: field.TypeInt64},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_app_inst", Type: field.TypeInt64},
-	}
-	// AppInstsTable holds the schema information for the "app_insts" table.
-	AppInstsTable = &schema.Table{
-		Name:       "app_insts",
-		Columns:    AppInstsColumns,
-		PrimaryKey: []*schema.Column{AppInstsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "app_insts_users_app_inst",
-				Columns:    []*schema.Column{AppInstsColumns[5]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-	}
-	// AppInstRunTimesColumns holds the columns for the "app_inst_run_times" table.
-	AppInstRunTimesColumns = []*schema.Column{
+	// AppRunTimesColumns holds the columns for the "app_run_times" table.
+	AppRunTimesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "app_inst_id", Type: field.TypeInt64},
 		{Name: "start_time", Type: field.TypeTime},
 		{Name: "run_duration", Type: field.TypeInt64},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "app_id", Type: field.TypeInt64},
 	}
-	// AppInstRunTimesTable holds the schema information for the "app_inst_run_times" table.
-	AppInstRunTimesTable = &schema.Table{
-		Name:       "app_inst_run_times",
-		Columns:    AppInstRunTimesColumns,
-		PrimaryKey: []*schema.Column{AppInstRunTimesColumns[0]},
+	// AppRunTimesTable holds the schema information for the "app_run_times" table.
+	AppRunTimesTable = &schema.Table{
+		Name:       "app_run_times",
+		Columns:    AppRunTimesColumns,
+		PrimaryKey: []*schema.Column{AppRunTimesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_run_times_apps_app_run_time",
+				Columns:    []*schema.Column{AppRunTimesColumns[6]},
+				RefColumns: []*schema.Column{AppsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "appinstruntime_user_id_app_inst_id",
+				Name:    "appruntime_user_id_app_id",
 				Unique:  false,
-				Columns: []*schema.Column{AppInstRunTimesColumns[1], AppInstRunTimesColumns[2]},
+				Columns: []*schema.Column{AppRunTimesColumns[1], AppRunTimesColumns[6]},
+			},
+			{
+				Name:    "appruntime_start_time_run_duration",
+				Unique:  true,
+				Columns: []*schema.Column{AppRunTimesColumns[2], AppRunTimesColumns[3]},
 			},
 		},
 	}
-	// DeviceInfosColumns holds the columns for the "device_infos" table.
-	DeviceInfosColumns = []*schema.Column{
+	// DevicesColumns holds the columns for the "devices" table.
+	DevicesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "device_name", Type: field.TypeString},
 		{Name: "system_type", Type: field.TypeEnum, Enums: []string{"ios", "android", "web", "windows", "macos", "linux", "unknown"}},
@@ -207,11 +207,11 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
-	// DeviceInfosTable holds the schema information for the "device_infos" table.
-	DeviceInfosTable = &schema.Table{
-		Name:       "device_infos",
-		Columns:    DeviceInfosColumns,
-		PrimaryKey: []*schema.Column{DeviceInfosColumns[0]},
+	// DevicesTable holds the schema information for the "devices" table.
+	DevicesTable = &schema.Table{
+		Name:       "devices",
+		Columns:    DevicesColumns,
+		PrimaryKey: []*schema.Column{DevicesColumns[0]},
 	}
 	// FeedsColumns holds the columns for the "feeds" table.
 	FeedsColumns = []*schema.Column{
@@ -703,6 +703,84 @@ var (
 			},
 		},
 	}
+	// SessionsColumns holds the columns for the "sessions" table.
+	SessionsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "refresh_token", Type: field.TypeString},
+		{Name: "expire_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "device_id", Type: field.TypeInt64, Nullable: true},
+		{Name: "user_id", Type: field.TypeInt64},
+	}
+	// SessionsTable holds the schema information for the "sessions" table.
+	SessionsTable = &schema.Table{
+		Name:       "sessions",
+		Columns:    SessionsColumns,
+		PrimaryKey: []*schema.Column{SessionsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sessions_devices_session",
+				Columns:    []*schema.Column{SessionsColumns[5]},
+				RefColumns: []*schema.Column{DevicesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "sessions_users_session",
+				Columns:    []*schema.Column{SessionsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "session_user_id_device_id",
+				Unique:  true,
+				Columns: []*schema.Column{SessionsColumns[6], SessionsColumns[5]},
+			},
+			{
+				Name:    "session_refresh_token",
+				Unique:  true,
+				Columns: []*schema.Column{SessionsColumns[1]},
+			},
+		},
+	}
+	// StoreAppsColumns holds the columns for the "store_apps" table.
+	StoreAppsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// StoreAppsTable holds the schema information for the "store_apps" table.
+	StoreAppsTable = &schema.Table{
+		Name:       "store_apps",
+		Columns:    StoreAppsColumns,
+		PrimaryKey: []*schema.Column{StoreAppsColumns[0]},
+	}
+	// StoreAppBinariesColumns holds the columns for the "store_app_binaries" table.
+	StoreAppBinariesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "size_bytes", Type: field.TypeInt64, Nullable: true},
+		{Name: "public_url", Type: field.TypeString, Nullable: true},
+		{Name: "sha256", Type: field.TypeBytes, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// StoreAppBinariesTable holds the schema information for the "store_app_binaries" table.
+	StoreAppBinariesTable = &schema.Table{
+		Name:       "store_app_binaries",
+		Columns:    StoreAppBinariesColumns,
+		PrimaryKey: []*schema.Column{StoreAppBinariesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "storeappbinary_sha256",
+				Unique:  true,
+				Columns: []*schema.Column{StoreAppBinariesColumns[4]},
+			},
+		},
+	}
 	// SystemNotificationsColumns holds the columns for the "system_notifications" table.
 	SystemNotificationsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -751,10 +829,10 @@ var (
 		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin", "normal", "sentinel"}},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"admin", "normal"}},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_created_user", Type: field.TypeInt64, Nullable: true},
+		{Name: "creator_id", Type: field.TypeInt64, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
 	UsersTable = &schema.Table{
@@ -767,97 +845,6 @@ var (
 				Columns:    []*schema.Column{UsersColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
-			},
-		},
-	}
-	// UserDevicesColumns holds the columns for the "user_devices" table.
-	UserDevicesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "device_id", Type: field.TypeInt64},
-		{Name: "user_id", Type: field.TypeInt64},
-	}
-	// UserDevicesTable holds the schema information for the "user_devices" table.
-	UserDevicesTable = &schema.Table{
-		Name:       "user_devices",
-		Columns:    UserDevicesColumns,
-		PrimaryKey: []*schema.Column{UserDevicesColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_devices_device_infos_device_info",
-				Columns:    []*schema.Column{UserDevicesColumns[3]},
-				RefColumns: []*schema.Column{DeviceInfosColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-			{
-				Symbol:     "user_devices_users_user",
-				Columns:    []*schema.Column{UserDevicesColumns[4]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "userdevice_user_id_device_id",
-				Unique:  true,
-				Columns: []*schema.Column{UserDevicesColumns[4], UserDevicesColumns[3]},
-			},
-		},
-	}
-	// UserSessionsColumns holds the columns for the "user_sessions" table.
-	UserSessionsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64},
-		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "refresh_token", Type: field.TypeString},
-		{Name: "expire_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "device_info_user_session", Type: field.TypeInt64, Nullable: true},
-	}
-	// UserSessionsTable holds the schema information for the "user_sessions" table.
-	UserSessionsTable = &schema.Table{
-		Name:       "user_sessions",
-		Columns:    UserSessionsColumns,
-		PrimaryKey: []*schema.Column{UserSessionsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_sessions_device_infos_user_session",
-				Columns:    []*schema.Column{UserSessionsColumns[6]},
-				RefColumns: []*schema.Column{DeviceInfosColumns[0]},
-				OnDelete:   schema.SetNull,
-			},
-		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "usersession_refresh_token",
-				Unique:  true,
-				Columns: []*schema.Column{UserSessionsColumns[2]},
-			},
-		},
-	}
-	// AccountPurchasedAppColumns holds the columns for the "account_purchased_app" table.
-	AccountPurchasedAppColumns = []*schema.Column{
-		{Name: "account_id", Type: field.TypeInt64},
-		{Name: "app_info_id", Type: field.TypeInt64},
-	}
-	// AccountPurchasedAppTable holds the schema information for the "account_purchased_app" table.
-	AccountPurchasedAppTable = &schema.Table{
-		Name:       "account_purchased_app",
-		Columns:    AccountPurchasedAppColumns,
-		PrimaryKey: []*schema.Column{AccountPurchasedAppColumns[0], AccountPurchasedAppColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "account_purchased_app_account_id",
-				Columns:    []*schema.Column{AccountPurchasedAppColumns[0]},
-				RefColumns: []*schema.Column{AccountsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "account_purchased_app_app_info_id",
-				Columns:    []*schema.Column{AccountPurchasedAppColumns[1]},
-				RefColumns: []*schema.Column{AppInfosColumns[0]},
-				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -886,40 +873,14 @@ var (
 			},
 		},
 	}
-	// UserPurchasedAppColumns holds the columns for the "user_purchased_app" table.
-	UserPurchasedAppColumns = []*schema.Column{
-		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "app_info_id", Type: field.TypeInt64},
-	}
-	// UserPurchasedAppTable holds the schema information for the "user_purchased_app" table.
-	UserPurchasedAppTable = &schema.Table{
-		Name:       "user_purchased_app",
-		Columns:    UserPurchasedAppColumns,
-		PrimaryKey: []*schema.Column{UserPurchasedAppColumns[0], UserPurchasedAppColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_purchased_app_user_id",
-				Columns:    []*schema.Column{UserPurchasedAppColumns[0]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "user_purchased_app_app_info_id",
-				Columns:    []*schema.Column{UserPurchasedAppColumns[1]},
-				RefColumns: []*schema.Column{AppInfosColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		AccountsTable,
 		AppsTable,
-		AppBinariesTable,
+		AppCategoriesTable,
 		AppInfosTable,
-		AppInstsTable,
-		AppInstRunTimesTable,
-		DeviceInfosTable,
+		AppRunTimesTable,
+		DevicesTable,
 		FeedsTable,
 		FeedActionSetsTable,
 		FeedConfigsTable,
@@ -935,24 +896,21 @@ var (
 		NotifyTargetsTable,
 		PorterContextsTable,
 		PorterInstancesTable,
+		SessionsTable,
+		StoreAppsTable,
+		StoreAppBinariesTable,
 		SystemNotificationsTable,
 		TagsTable,
 		UsersTable,
-		UserDevicesTable,
-		UserSessionsTable,
-		AccountPurchasedAppTable,
 		FeedItemFeedItemCollectionTable,
-		UserPurchasedAppTable,
 	}
 )
 
 func init() {
 	AccountsTable.ForeignKeys[0].RefTable = UsersTable
-	AppsTable.ForeignKeys[0].RefTable = AppInfosTable
+	AppsTable.ForeignKeys[0].RefTable = DevicesTable
 	AppsTable.ForeignKeys[1].RefTable = UsersTable
-	AppBinariesTable.ForeignKeys[0].RefTable = AppInfosTable
-	AppInfosTable.ForeignKeys[0].RefTable = AppInfosTable
-	AppInstsTable.ForeignKeys[0].RefTable = UsersTable
+	AppRunTimesTable.ForeignKeys[0].RefTable = AppsTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedActionSetsTable.ForeignKeys[0].RefTable = UsersTable
 	FeedConfigsTable.ForeignKeys[0].RefTable = UsersTable
@@ -973,15 +931,10 @@ func init() {
 	NotifySourcesTable.ForeignKeys[2].RefTable = UsersTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
 	PorterContextsTable.ForeignKeys[0].RefTable = UsersTable
+	SessionsTable.ForeignKeys[0].RefTable = DevicesTable
+	SessionsTable.ForeignKeys[1].RefTable = UsersTable
 	TagsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
-	UserDevicesTable.ForeignKeys[0].RefTable = DeviceInfosTable
-	UserDevicesTable.ForeignKeys[1].RefTable = UsersTable
-	UserSessionsTable.ForeignKeys[0].RefTable = DeviceInfosTable
-	AccountPurchasedAppTable.ForeignKeys[0].RefTable = AccountsTable
-	AccountPurchasedAppTable.ForeignKeys[1].RefTable = AppInfosTable
 	FeedItemFeedItemCollectionTable.ForeignKeys[0].RefTable = FeedItemsTable
 	FeedItemFeedItemCollectionTable.ForeignKeys[1].RefTable = FeedItemCollectionsTable
-	UserPurchasedAppTable.ForeignKeys[0].RefTable = UsersTable
-	UserPurchasedAppTable.ForeignKeys[1].RefTable = AppInfosTable
 }

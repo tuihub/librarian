@@ -3,6 +3,7 @@
 package app
 
 import (
+	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -14,67 +15,121 @@ const (
 	Label = "app"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
-	// FieldDescription holds the string denoting the description field in the database.
-	FieldDescription = "description"
-	// FieldDeviceID holds the string denoting the device_id field in the database.
-	FieldDeviceID = "device_id"
+	// FieldVersionNumber holds the string denoting the version_number field in the database.
+	FieldVersionNumber = "version_number"
+	// FieldVersionDate holds the string denoting the version_date field in the database.
+	FieldVersionDate = "version_date"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
+	// FieldCreatorDeviceID holds the string denoting the creator_device_id field in the database.
+	FieldCreatorDeviceID = "creator_device_id"
+	// FieldAppSources holds the string denoting the app_sources field in the database.
+	FieldAppSources = "app_sources"
 	// FieldPublic holds the string denoting the public field in the database.
 	FieldPublic = "public"
+	// FieldBoundStoreAppID holds the string denoting the bound_store_app_id field in the database.
+	FieldBoundStoreAppID = "bound_store_app_id"
+	// FieldStopStoreManage holds the string denoting the stop_store_manage field in the database.
+	FieldStopStoreManage = "stop_store_manage"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
+	// FieldShortDescription holds the string denoting the short_description field in the database.
+	FieldShortDescription = "short_description"
+	// FieldDescription holds the string denoting the description field in the database.
+	FieldDescription = "description"
+	// FieldIconImageURL holds the string denoting the icon_image_url field in the database.
+	FieldIconImageURL = "icon_image_url"
+	// FieldIconImageID holds the string denoting the icon_image_id field in the database.
+	FieldIconImageID = "icon_image_id"
+	// FieldBackgroundImageURL holds the string denoting the background_image_url field in the database.
+	FieldBackgroundImageURL = "background_image_url"
+	// FieldBackgroundImageID holds the string denoting the background_image_id field in the database.
+	FieldBackgroundImageID = "background_image_id"
+	// FieldCoverImageURL holds the string denoting the cover_image_url field in the database.
+	FieldCoverImageURL = "cover_image_url"
+	// FieldCoverImageID holds the string denoting the cover_image_id field in the database.
+	FieldCoverImageID = "cover_image_id"
+	// FieldReleaseDate holds the string denoting the release_date field in the database.
+	FieldReleaseDate = "release_date"
+	// FieldDeveloper holds the string denoting the developer field in the database.
+	FieldDeveloper = "developer"
+	// FieldPublisher holds the string denoting the publisher field in the database.
+	FieldPublisher = "publisher"
+	// FieldTags holds the string denoting the tags field in the database.
+	FieldTags = "tags"
+	// FieldAlternativeNames holds the string denoting the alternative_names field in the database.
+	FieldAlternativeNames = "alternative_names"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeOwner holds the string denoting the owner edge name in mutations.
-	EdgeOwner = "owner"
-	// EdgeAppInfo holds the string denoting the app_info edge name in mutations.
-	EdgeAppInfo = "app_info"
+	// EdgeUser holds the string denoting the user edge name in mutations.
+	EdgeUser = "user"
+	// EdgeDevice holds the string denoting the device edge name in mutations.
+	EdgeDevice = "device"
+	// EdgeAppRunTime holds the string denoting the app_run_time edge name in mutations.
+	EdgeAppRunTime = "app_run_time"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
-	// OwnerTable is the table that holds the owner relation/edge.
-	OwnerTable = "apps"
-	// OwnerInverseTable is the table name for the User entity.
+	// UserTable is the table that holds the user relation/edge.
+	UserTable = "apps"
+	// UserInverseTable is the table name for the User entity.
 	// It exists in this package in order to avoid circular dependency with the "user" package.
-	OwnerInverseTable = "users"
-	// OwnerColumn is the table column denoting the owner relation/edge.
-	OwnerColumn = "user_app"
-	// AppInfoTable is the table that holds the app_info relation/edge.
-	AppInfoTable = "apps"
-	// AppInfoInverseTable is the table name for the AppInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "appinfo" package.
-	AppInfoInverseTable = "app_infos"
-	// AppInfoColumn is the table column denoting the app_info relation/edge.
-	AppInfoColumn = "app_info_app"
+	UserInverseTable = "users"
+	// UserColumn is the table column denoting the user relation/edge.
+	UserColumn = "user_id"
+	// DeviceTable is the table that holds the device relation/edge.
+	DeviceTable = "apps"
+	// DeviceInverseTable is the table name for the Device entity.
+	// It exists in this package in order to avoid circular dependency with the "device" package.
+	DeviceInverseTable = "devices"
+	// DeviceColumn is the table column denoting the device relation/edge.
+	DeviceColumn = "creator_device_id"
+	// AppRunTimeTable is the table that holds the app_run_time relation/edge.
+	AppRunTimeTable = "app_run_times"
+	// AppRunTimeInverseTable is the table name for the AppRunTime entity.
+	// It exists in this package in order to avoid circular dependency with the "appruntime" package.
+	AppRunTimeInverseTable = "app_run_times"
+	// AppRunTimeColumn is the table column denoting the app_run_time relation/edge.
+	AppRunTimeColumn = "app_id"
 )
 
 // Columns holds all SQL columns for app fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
-	FieldDescription,
-	FieldDeviceID,
+	FieldVersionNumber,
+	FieldVersionDate,
+	FieldUserID,
+	FieldCreatorDeviceID,
+	FieldAppSources,
 	FieldPublic,
+	FieldBoundStoreAppID,
+	FieldStopStoreManage,
+	FieldName,
+	FieldType,
+	FieldShortDescription,
+	FieldDescription,
+	FieldIconImageURL,
+	FieldIconImageID,
+	FieldBackgroundImageURL,
+	FieldBackgroundImageID,
+	FieldCoverImageURL,
+	FieldCoverImageID,
+	FieldReleaseDate,
+	FieldDeveloper,
+	FieldPublisher,
+	FieldTags,
+	FieldAlternativeNames,
 	FieldUpdatedAt,
 	FieldCreatedAt,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "apps"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"app_info_app",
-	"user_app",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -90,6 +145,29 @@ var (
 	DefaultCreatedAt func() time.Time
 )
 
+// Type defines the type for the "type" enum field.
+type Type string
+
+// Type values.
+const (
+	TypeUnknown Type = "unknown"
+	TypeGame    Type = "game"
+)
+
+func (_type Type) String() string {
+	return string(_type)
+}
+
+// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
+func TypeValidator(_type Type) error {
+	switch _type {
+	case TypeUnknown, TypeGame:
+		return nil
+	default:
+		return fmt.Errorf("app: invalid enum value for type field: %q", _type)
+	}
+}
+
 // OrderOption defines the ordering options for the App queries.
 type OrderOption func(*sql.Selector)
 
@@ -98,9 +176,54 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
+// ByVersionNumber orders the results by the version_number field.
+func ByVersionNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldVersionNumber, opts...).ToFunc()
+}
+
+// ByVersionDate orders the results by the version_date field.
+func ByVersionDate(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldVersionDate, opts...).ToFunc()
+}
+
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
+}
+
+// ByCreatorDeviceID orders the results by the creator_device_id field.
+func ByCreatorDeviceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatorDeviceID, opts...).ToFunc()
+}
+
+// ByPublic orders the results by the public field.
+func ByPublic(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublic, opts...).ToFunc()
+}
+
+// ByBoundStoreAppID orders the results by the bound_store_app_id field.
+func ByBoundStoreAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBoundStoreAppID, opts...).ToFunc()
+}
+
+// ByStopStoreManage orders the results by the stop_store_manage field.
+func ByStopStoreManage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStopStoreManage, opts...).ToFunc()
+}
+
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
+}
+
+// ByShortDescription orders the results by the short_description field.
+func ByShortDescription(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldShortDescription, opts...).ToFunc()
 }
 
 // ByDescription orders the results by the description field.
@@ -108,14 +231,49 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDescription, opts...).ToFunc()
 }
 
-// ByDeviceID orders the results by the device_id field.
-func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
+// ByIconImageURL orders the results by the icon_image_url field.
+func ByIconImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIconImageURL, opts...).ToFunc()
 }
 
-// ByPublic orders the results by the public field.
-func ByPublic(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPublic, opts...).ToFunc()
+// ByIconImageID orders the results by the icon_image_id field.
+func ByIconImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIconImageID, opts...).ToFunc()
+}
+
+// ByBackgroundImageURL orders the results by the background_image_url field.
+func ByBackgroundImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBackgroundImageURL, opts...).ToFunc()
+}
+
+// ByBackgroundImageID orders the results by the background_image_id field.
+func ByBackgroundImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBackgroundImageID, opts...).ToFunc()
+}
+
+// ByCoverImageURL orders the results by the cover_image_url field.
+func ByCoverImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCoverImageURL, opts...).ToFunc()
+}
+
+// ByCoverImageID orders the results by the cover_image_id field.
+func ByCoverImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCoverImageID, opts...).ToFunc()
+}
+
+// ByReleaseDate orders the results by the release_date field.
+func ByReleaseDate(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldReleaseDate, opts...).ToFunc()
+}
+
+// ByDeveloper orders the results by the developer field.
+func ByDeveloper(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeveloper, opts...).ToFunc()
+}
+
+// ByPublisher orders the results by the publisher field.
+func ByPublisher(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublisher, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
@@ -128,30 +286,51 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByOwnerField orders the results by owner field.
-func ByOwnerField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByUserField orders the results by user field.
+func ByUserField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newOwnerStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newUserStep(), sql.OrderByField(field, opts...))
 	}
 }
 
-// ByAppInfoField orders the results by app_info field.
-func ByAppInfoField(field string, opts ...sql.OrderTermOption) OrderOption {
+// ByDeviceField orders the results by device field.
+func ByDeviceField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAppInfoStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newDeviceStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newOwnerStep() *sqlgraph.Step {
+
+// ByAppRunTimeCount orders the results by app_run_time count.
+func ByAppRunTimeCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppRunTimeStep(), opts...)
+	}
+}
+
+// ByAppRunTime orders the results by app_run_time terms.
+func ByAppRunTime(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppRunTimeStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(OwnerInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		sqlgraph.To(UserInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 	)
 }
-func newAppInfoStep() *sqlgraph.Step {
+func newDeviceStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AppInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, AppInfoTable, AppInfoColumn),
+		sqlgraph.To(DeviceInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, DeviceTable, DeviceColumn),
+	)
+}
+func newAppRunTimeStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppRunTimeInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AppRunTimeTable, AppRunTimeColumn),
 	)
 }

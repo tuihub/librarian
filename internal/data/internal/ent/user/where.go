@@ -66,6 +66,12 @@ func Password(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPassword, v))
 }
 
+// CreatorID applies equality check predicate on the "creator_id" field. It's identical to CreatorIDEQ.
+func CreatorID(v model.InternalID) predicate.User {
+	vc := int64(v)
+	return predicate.User(sql.FieldEQ(FieldCreatorID, vc))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldUpdatedAt, v))
@@ -246,6 +252,36 @@ func TypeNotIn(vs ...Type) predicate.User {
 	return predicate.User(sql.FieldNotIn(FieldType, vs...))
 }
 
+// CreatorIDEQ applies the EQ predicate on the "creator_id" field.
+func CreatorIDEQ(v model.InternalID) predicate.User {
+	vc := int64(v)
+	return predicate.User(sql.FieldEQ(FieldCreatorID, vc))
+}
+
+// CreatorIDNEQ applies the NEQ predicate on the "creator_id" field.
+func CreatorIDNEQ(v model.InternalID) predicate.User {
+	vc := int64(v)
+	return predicate.User(sql.FieldNEQ(FieldCreatorID, vc))
+}
+
+// CreatorIDIn applies the In predicate on the "creator_id" field.
+func CreatorIDIn(vs ...model.InternalID) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.User(sql.FieldIn(FieldCreatorID, v...))
+}
+
+// CreatorIDNotIn applies the NotIn predicate on the "creator_id" field.
+func CreatorIDNotIn(vs ...model.InternalID) predicate.User {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.User(sql.FieldNotIn(FieldCreatorID, v...))
+}
+
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
 func UpdatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldUpdatedAt, v))
@@ -326,21 +362,21 @@ func CreatedAtLTE(v time.Time) predicate.User {
 	return predicate.User(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasBindAccount applies the HasEdge predicate on the "bind_account" edge.
-func HasBindAccount() predicate.User {
+// HasSession applies the HasEdge predicate on the "session" edge.
+func HasSession() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, BindAccountTable, BindAccountColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, SessionTable, SessionColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasBindAccountWith applies the HasEdge predicate on the "bind_account" edge with a given conditions (other predicates).
-func HasBindAccountWith(preds ...predicate.Account) predicate.User {
+// HasSessionWith applies the HasEdge predicate on the "session" edge with a given conditions (other predicates).
+func HasSessionWith(preds ...predicate.Session) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newBindAccountStep()
+		step := newSessionStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -349,21 +385,21 @@ func HasBindAccountWith(preds ...predicate.Account) predicate.User {
 	})
 }
 
-// HasPurchasedApp applies the HasEdge predicate on the "purchased_app" edge.
-func HasPurchasedApp() predicate.User {
+// HasAccount applies the HasEdge predicate on the "account" edge.
+func HasAccount() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, AccountTable, AccountColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
-func HasPurchasedAppWith(preds ...predicate.AppInfo) predicate.User {
+// HasAccountWith applies the HasEdge predicate on the "account" edge with a given conditions (other predicates).
+func HasAccountWith(preds ...predicate.Account) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
-		step := newPurchasedAppStep()
+		step := newAccountStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -387,29 +423,6 @@ func HasApp() predicate.User {
 func HasAppWith(preds ...predicate.App) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := newAppStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasAppInst applies the HasEdge predicate on the "app_inst" edge.
-func HasAppInst() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, AppInstTable, AppInstColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasAppInstWith applies the HasEdge predicate on the "app_inst" edge with a given conditions (other predicates).
-func HasAppInstWith(preds ...predicate.AppInst) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := newAppInstStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -602,29 +615,6 @@ func HasFileWith(preds ...predicate.File) predicate.User {
 	})
 }
 
-// HasDeviceInfo applies the HasEdge predicate on the "device_info" edge.
-func HasDeviceInfo() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, DeviceInfoTable, DeviceInfoPrimaryKey...),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasDeviceInfoWith applies the HasEdge predicate on the "device_info" edge with a given conditions (other predicates).
-func HasDeviceInfoWith(preds ...predicate.DeviceInfo) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := newDeviceInfoStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasTag applies the HasEdge predicate on the "tag" edge.
 func HasTag() predicate.User {
 	return predicate.User(func(s *sql.Selector) {
@@ -709,29 +699,6 @@ func HasCreatedUser() predicate.User {
 func HasCreatedUserWith(preds ...predicate.User) predicate.User {
 	return predicate.User(func(s *sql.Selector) {
 		step := newCreatedUserStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasUserDevice applies the HasEdge predicate on the "user_device" edge.
-func HasUserDevice() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, UserDeviceTable, UserDeviceColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasUserDeviceWith applies the HasEdge predicate on the "user_device" edge with a given conditions (other predicates).
-func HasUserDeviceWith(preds ...predicate.UserDevice) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := newUserDeviceStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

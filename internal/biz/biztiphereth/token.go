@@ -42,16 +42,16 @@ func (t *Tiphereth) GetToken(
 	if err != nil {
 		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	userSession := &model.UserSession{
+	userSession := &model.Session{
 		ID:           sessionID,
 		UserID:       user.ID,
 		RefreshToken: "",
-		DeviceInfo:   nil,
+		Device:       nil,
 		CreateAt:     time.Now(),
 		ExpireAt:     time.Now().Add(refreshTokenExpire),
 	}
 	if deviceID != nil {
-		userSession.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
+		userSession.Device, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
 		if err != nil {
 			logger.Infof("FetchDeviceInfo failed: %s", err.Error())
 			return "", "", pb.ErrorErrorReasonUnauthorized("invalid device")
@@ -106,7 +106,7 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 		return "", "", bizutils.NoPermissionError()
 	}
 	needUpdate := false
-	session := new(model.UserSession)
+	session := new(model.Session)
 	var err error
 	if claims.UserType != model.UserTypePorter { //nolint:nestif // TODO
 		session, err = t.repo.FetchUserSession(ctx, claims.UserID, oldRefreshToken)
@@ -116,8 +116,8 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 		if session.RefreshToken != oldRefreshToken {
 			return "", "", bizutils.NoPermissionError()
 		}
-		if session.DeviceInfo == nil && deviceID != nil {
-			session.DeviceInfo, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
+		if session.Device == nil && deviceID != nil {
+			session.Device, err = t.repo.FetchDeviceInfo(ctx, *deviceID)
 			if err != nil {
 				logger.Infof("FetchDeviceInfo failed: %s", err.Error())
 				return "", "", pb.ErrorErrorReasonNotFound("invalid device")
@@ -194,7 +194,7 @@ func (t *Tiphereth) AcquireUserToken(
 
 func (t *Tiphereth) RegisterDevice(
 	ctx context.Context,
-	device *model.DeviceInfo,
+	device *model.Device,
 	clientLocalID *string,
 ) (model.InternalID, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
@@ -206,26 +206,14 @@ func (t *Tiphereth) RegisterDevice(
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	device.ID = id
-	id, err = t.repo.CreateDevice(ctx, claims.UserID, device, clientLocalID)
+	id, err = t.repo.CreateDevice(ctx, device, clientLocalID)
 	if err != nil {
 		return 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return id, nil
 }
 
-func (t *Tiphereth) ListRegisteredDevices(ctx context.Context) ([]*model.DeviceInfo, *errors.Error) {
-	claims := libauth.FromContextAssertUserType(ctx)
-	if claims == nil {
-		return nil, bizutils.NoPermissionError()
-	}
-	devices, err := t.repo.ListDevices(ctx, claims.UserID)
-	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	return devices, nil
-}
-
-func (t *Tiphereth) ListUserSessions(ctx context.Context) ([]*model.UserSession, *errors.Error) {
+func (t *Tiphereth) ListUserSessions(ctx context.Context) ([]*model.Session, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()

@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -56,6 +55,26 @@ func (au *AccountUpdate) SetNillablePlatformAccountID(s *string) *AccountUpdate 
 	if s != nil {
 		au.SetPlatformAccountID(*s)
 	}
+	return au
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (au *AccountUpdate) SetBoundUserID(mi model.InternalID) *AccountUpdate {
+	au.mutation.SetBoundUserID(mi)
+	return au
+}
+
+// SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
+func (au *AccountUpdate) SetNillableBoundUserID(mi *model.InternalID) *AccountUpdate {
+	if mi != nil {
+		au.SetBoundUserID(*mi)
+	}
+	return au
+}
+
+// ClearBoundUserID clears the value of the "bound_user_id" field.
+func (au *AccountUpdate) ClearBoundUserID() *AccountUpdate {
+	au.mutation.ClearBoundUserID()
 	return au
 }
 
@@ -121,38 +140,9 @@ func (au *AccountUpdate) SetNillableCreatedAt(t *time.Time) *AccountUpdate {
 	return au
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (au *AccountUpdate) AddPurchasedAppIDs(ids ...model.InternalID) *AccountUpdate {
-	au.mutation.AddPurchasedAppIDs(ids...)
-	return au
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (au *AccountUpdate) AddPurchasedApp(a ...*AppInfo) *AccountUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return au.AddPurchasedAppIDs(ids...)
-}
-
-// SetBindUserID sets the "bind_user" edge to the User entity by ID.
-func (au *AccountUpdate) SetBindUserID(id model.InternalID) *AccountUpdate {
-	au.mutation.SetBindUserID(id)
-	return au
-}
-
-// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
-func (au *AccountUpdate) SetNillableBindUserID(id *model.InternalID) *AccountUpdate {
-	if id != nil {
-		au = au.SetBindUserID(*id)
-	}
-	return au
-}
-
-// SetBindUser sets the "bind_user" edge to the User entity.
-func (au *AccountUpdate) SetBindUser(u *User) *AccountUpdate {
-	return au.SetBindUserID(u.ID)
+// SetBoundUser sets the "bound_user" edge to the User entity.
+func (au *AccountUpdate) SetBoundUser(u *User) *AccountUpdate {
+	return au.SetBoundUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -160,30 +150,9 @@ func (au *AccountUpdate) Mutation() *AccountMutation {
 	return au.mutation
 }
 
-// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
-func (au *AccountUpdate) ClearPurchasedApp() *AccountUpdate {
-	au.mutation.ClearPurchasedApp()
-	return au
-}
-
-// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
-func (au *AccountUpdate) RemovePurchasedAppIDs(ids ...model.InternalID) *AccountUpdate {
-	au.mutation.RemovePurchasedAppIDs(ids...)
-	return au
-}
-
-// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
-func (au *AccountUpdate) RemovePurchasedApp(a ...*AppInfo) *AccountUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return au.RemovePurchasedAppIDs(ids...)
-}
-
-// ClearBindUser clears the "bind_user" edge to the User entity.
-func (au *AccountUpdate) ClearBindUser() *AccountUpdate {
-	au.mutation.ClearBindUser()
+// ClearBoundUser clears the "bound_user" edge to the User entity.
+func (au *AccountUpdate) ClearBoundUser() *AccountUpdate {
+	au.mutation.ClearBoundUser()
 	return au
 }
 
@@ -253,57 +222,12 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := au.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if au.mutation.PurchasedAppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !au.mutation.PurchasedAppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := au.mutation.PurchasedAppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if au.mutation.BindUserCleared() {
+	if au.mutation.BoundUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.BindUserTable,
-			Columns: []string{account.BindUserColumn},
+			Table:   account.BoundUserTable,
+			Columns: []string{account.BoundUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -311,12 +235,12 @@ func (au *AccountUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := au.mutation.BindUserIDs(); len(nodes) > 0 {
+	if nodes := au.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.BindUserTable,
-			Columns: []string{account.BindUserColumn},
+			Table:   account.BoundUserTable,
+			Columns: []string{account.BoundUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -372,6 +296,26 @@ func (auo *AccountUpdateOne) SetNillablePlatformAccountID(s *string) *AccountUpd
 	if s != nil {
 		auo.SetPlatformAccountID(*s)
 	}
+	return auo
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (auo *AccountUpdateOne) SetBoundUserID(mi model.InternalID) *AccountUpdateOne {
+	auo.mutation.SetBoundUserID(mi)
+	return auo
+}
+
+// SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
+func (auo *AccountUpdateOne) SetNillableBoundUserID(mi *model.InternalID) *AccountUpdateOne {
+	if mi != nil {
+		auo.SetBoundUserID(*mi)
+	}
+	return auo
+}
+
+// ClearBoundUserID clears the value of the "bound_user_id" field.
+func (auo *AccountUpdateOne) ClearBoundUserID() *AccountUpdateOne {
+	auo.mutation.ClearBoundUserID()
 	return auo
 }
 
@@ -437,38 +381,9 @@ func (auo *AccountUpdateOne) SetNillableCreatedAt(t *time.Time) *AccountUpdateOn
 	return auo
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (auo *AccountUpdateOne) AddPurchasedAppIDs(ids ...model.InternalID) *AccountUpdateOne {
-	auo.mutation.AddPurchasedAppIDs(ids...)
-	return auo
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (auo *AccountUpdateOne) AddPurchasedApp(a ...*AppInfo) *AccountUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return auo.AddPurchasedAppIDs(ids...)
-}
-
-// SetBindUserID sets the "bind_user" edge to the User entity by ID.
-func (auo *AccountUpdateOne) SetBindUserID(id model.InternalID) *AccountUpdateOne {
-	auo.mutation.SetBindUserID(id)
-	return auo
-}
-
-// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
-func (auo *AccountUpdateOne) SetNillableBindUserID(id *model.InternalID) *AccountUpdateOne {
-	if id != nil {
-		auo = auo.SetBindUserID(*id)
-	}
-	return auo
-}
-
-// SetBindUser sets the "bind_user" edge to the User entity.
-func (auo *AccountUpdateOne) SetBindUser(u *User) *AccountUpdateOne {
-	return auo.SetBindUserID(u.ID)
+// SetBoundUser sets the "bound_user" edge to the User entity.
+func (auo *AccountUpdateOne) SetBoundUser(u *User) *AccountUpdateOne {
+	return auo.SetBoundUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -476,30 +391,9 @@ func (auo *AccountUpdateOne) Mutation() *AccountMutation {
 	return auo.mutation
 }
 
-// ClearPurchasedApp clears all "purchased_app" edges to the AppInfo entity.
-func (auo *AccountUpdateOne) ClearPurchasedApp() *AccountUpdateOne {
-	auo.mutation.ClearPurchasedApp()
-	return auo
-}
-
-// RemovePurchasedAppIDs removes the "purchased_app" edge to AppInfo entities by IDs.
-func (auo *AccountUpdateOne) RemovePurchasedAppIDs(ids ...model.InternalID) *AccountUpdateOne {
-	auo.mutation.RemovePurchasedAppIDs(ids...)
-	return auo
-}
-
-// RemovePurchasedApp removes "purchased_app" edges to AppInfo entities.
-func (auo *AccountUpdateOne) RemovePurchasedApp(a ...*AppInfo) *AccountUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return auo.RemovePurchasedAppIDs(ids...)
-}
-
-// ClearBindUser clears the "bind_user" edge to the User entity.
-func (auo *AccountUpdateOne) ClearBindUser() *AccountUpdateOne {
-	auo.mutation.ClearBindUser()
+// ClearBoundUser clears the "bound_user" edge to the User entity.
+func (auo *AccountUpdateOne) ClearBoundUser() *AccountUpdateOne {
+	auo.mutation.ClearBoundUser()
 	return auo
 }
 
@@ -599,57 +493,12 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 	if value, ok := auo.mutation.CreatedAt(); ok {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 	}
-	if auo.mutation.PurchasedAppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.RemovedPurchasedAppIDs(); len(nodes) > 0 && !auo.mutation.PurchasedAppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := auo.mutation.PurchasedAppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if auo.mutation.BindUserCleared() {
+	if auo.mutation.BoundUserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.BindUserTable,
-			Columns: []string{account.BindUserColumn},
+			Table:   account.BoundUserTable,
+			Columns: []string{account.BoundUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -657,12 +506,12 @@ func (auo *AccountUpdateOne) sqlSave(ctx context.Context) (_node *Account, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := auo.mutation.BindUserIDs(); len(nodes) > 0 {
+	if nodes := auo.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.BindUserTable,
-			Columns: []string{account.BindUserColumn},
+			Table:   account.BoundUserTable,
+			Columns: []string{account.BoundUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),

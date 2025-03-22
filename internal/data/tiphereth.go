@@ -7,12 +7,11 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
-	"github.com/tuihub/librarian/internal/data/internal/ent/usersession"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
@@ -45,16 +44,14 @@ func (t *TipherethRepo) FetchUserByPassword(
 
 func (t *TipherethRepo) CreateDevice(
 	ctx context.Context,
-	userID model.InternalID,
-	info *model.DeviceInfo,
+	info *model.Device,
 	clientLocalID *string,
 ) (model.InternalID, error) {
 	var res model.InternalID
 	err := t.data.WithTx(ctx, func(tx *ent.Tx) error {
 		if clientLocalID != nil {
-			infos, err := tx.DeviceInfo.Query().Where(
-				deviceinfo.HasUserWith(user.IDEQ(userID)),
-				deviceinfo.ClientLocalIDEQ(*clientLocalID),
+			infos, err := tx.Device.Query().Where(
+				device.ClientLocalIDEQ(*clientLocalID),
 			).All(ctx)
 			if err != nil {
 				return err
@@ -64,7 +61,7 @@ func (t *TipherethRepo) CreateDevice(
 				return nil
 			}
 		}
-		q := tx.DeviceInfo.Create().
+		q := tx.Device.Create().
 			SetID(info.ID).
 			SetDeviceName(info.DeviceName).
 			SetSystemType(converter.ToEntSystemType(info.SystemType)).
@@ -87,56 +84,33 @@ func (t *TipherethRepo) CreateDevice(
 func (t *TipherethRepo) FetchDeviceInfo(
 	ctx context.Context,
 	deviceID model.InternalID,
-) (*model.DeviceInfo, error) {
-	res, err := t.data.db.DeviceInfo.Get(ctx, deviceID)
+) (*model.Device, error) {
+	res, err := t.data.db.Device.Get(ctx, deviceID)
 	if err != nil {
 		return nil, err
 	}
 	return converter.ToBizDeviceInfo(res), nil
 }
 
-func (t *TipherethRepo) ListDevices(ctx context.Context, id model.InternalID) ([]*model.DeviceInfo, error) {
-	devices, err := t.data.db.DeviceInfo.Query().Where(
-		deviceinfo.HasUserWith(user.IDEQ(id)),
-	).All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizDeviceInfoList(devices), nil
-}
-
-func (t *TipherethRepo) CreateUserSession(ctx context.Context, session *model.UserSession) error {
+func (t *TipherethRepo) CreateUserSession(ctx context.Context, s *model.Session) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.UserSession.Create().
-			SetID(session.ID).
-			SetUserID(session.UserID).
-			SetRefreshToken(session.RefreshToken).
-			SetCreatedAt(session.CreateAt).
-			SetExpireAt(session.ExpireAt)
-		if session.DeviceInfo != nil {
-			_, _ = tx.UserSession.Delete().Where(
-				usersession.UserIDEQ(session.UserID),
-				usersession.HasDeviceInfoWith(
-					deviceinfo.IDEQ(session.DeviceInfo.ID),
+		q := tx.Session.Create().
+			SetID(s.ID).
+			SetUserID(s.UserID).
+			SetRefreshToken(s.RefreshToken).
+			SetCreatedAt(s.CreateAt).
+			SetExpireAt(s.ExpireAt)
+		if s.Device != nil {
+			_, _ = tx.Session.Delete().Where(
+				session.UserIDEQ(s.UserID),
+				session.HasDeviceWith(
+					device.IDEQ(s.Device.ID),
 				)).Exec(ctx)
-			q.SetDeviceInfoID(session.DeviceInfo.ID)
+			q.SetDeviceID(s.Device.ID)
 		}
 		err := q.Exec(ctx)
 		if err != nil {
 			return err
-		}
-		if session.DeviceInfo != nil {
-			err = tx.UserDevice.Create().
-				SetUserID(session.UserID).
-				SetDeviceInfoID(session.DeviceInfo.ID).
-				OnConflict(
-					sql.ConflictColumns(userdevice.FieldUserID, userdevice.FieldDeviceID),
-				).
-				UpdateNewValues().
-				Exec(ctx)
-			if err != nil {
-				return err
-			}
 		}
 		return nil
 	})
@@ -146,17 +120,17 @@ func (t *TipherethRepo) FetchUserSession(
 	ctx context.Context,
 	userID model.InternalID,
 	token string,
-) (*model.UserSession, error) {
-	session, err := t.data.db.UserSession.Query().Where(
-		usersession.UserIDEQ(userID),
-		usersession.RefreshTokenEQ(token),
-	).WithDeviceInfo().Only(ctx)
+) (*model.Session, error) {
+	s, err := t.data.db.Session.Query().Where(
+		session.UserIDEQ(userID),
+		session.RefreshTokenEQ(token),
+	).WithDevice().Only(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := converter.ToBizUserSession(session)
-	if session.Edges.DeviceInfo != nil {
-		res.DeviceInfo = converter.ToBizDeviceInfo(session.Edges.DeviceInfo)
+	res := converter.ToBizUserSession(s)
+	if s.Edges.Device != nil {
+		res.Device = converter.ToBizDeviceInfo(s.Edges.Device)
 	}
 	return res, nil
 }
@@ -164,38 +138,31 @@ func (t *TipherethRepo) FetchUserSession(
 func (t *TipherethRepo) ListUserSessions(
 	ctx context.Context,
 	id model.InternalID,
-) ([]*model.UserSession, error) {
-	session, err := t.data.db.UserSession.Query().Where(
-		usersession.UserIDEQ(id),
-	).WithDeviceInfo().All(ctx)
+) ([]*model.Session, error) {
+	ss, err := t.data.db.Session.Query().Where(
+		session.UserIDEQ(id),
+	).WithDevice().All(ctx)
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*model.UserSession, len(session))
-	for i, s := range session {
+	res := make([]*model.Session, len(ss))
+	for i, s := range ss {
 		res[i] = converter.ToBizUserSession(s)
-		if s.Edges.DeviceInfo != nil {
-			res[i].DeviceInfo = converter.ToBizDeviceInfo(s.Edges.DeviceInfo)
+		if s.Edges.Device != nil {
+			res[i].Device = converter.ToBizDeviceInfo(s.Edges.Device)
 		}
 	}
 	return res, nil
 }
 
-func (t *TipherethRepo) UpdateUserSession(ctx context.Context, session *model.UserSession) error {
+func (t *TipherethRepo) UpdateUserSession(ctx context.Context, session *model.Session) error {
 	return t.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := tx.UserSession.UpdateOneID(session.ID).
+		q := tx.Session.UpdateOneID(session.ID).
 			SetRefreshToken(session.RefreshToken).
 			SetCreatedAt(session.CreateAt).
 			SetExpireAt(session.ExpireAt)
-		if session.DeviceInfo != nil {
-			q.SetDeviceInfoID(session.DeviceInfo.ID)
-
-			err := tx.User.UpdateOneID(session.UserID).
-				AddDeviceInfoIDs(session.DeviceInfo.ID).
-				Exec(ctx)
-			if err != nil {
-				return err
-			}
+		if session.Device != nil {
+			q.SetDeviceID(session.Device.ID)
 		}
 		return q.Exec(ctx)
 	})
@@ -206,8 +173,8 @@ func (t *TipherethRepo) DeleteUserSession(
 	userID model.InternalID,
 	sessionID model.InternalID,
 ) error {
-	return t.data.db.UserSession.DeleteOneID(sessionID).Where(
-		usersession.UserIDEQ(userID),
+	return t.data.db.Session.DeleteOneID(sessionID).Where(
+		session.UserIDEQ(userID),
 	).Exec(ctx)
 }
 
@@ -298,7 +265,7 @@ func (t *TipherethRepo) LinkAccount(
 		if err != nil {
 			return err
 		}
-		exist, err := u.QueryBindAccount().Where(
+		exist, err := u.QueryAccount().Where(
 			account.PlatformEQ(a.Platform),
 		).Exist(ctx)
 		if err != nil {
@@ -313,7 +280,7 @@ func (t *TipherethRepo) LinkAccount(
 		).Only(ctx)
 		if ent.IsNotFound(err) {
 			return tx.Account.Create().
-				SetBindUserID(userID).
+				SetBoundUserID(userID).
 				SetID(a.ID).
 				SetPlatform(a.Platform).
 				SetPlatformAccountID(a.PlatformAccountID).
@@ -325,7 +292,7 @@ func (t *TipherethRepo) LinkAccount(
 		if err != nil {
 			return err
 		}
-		exist, err = acc.QueryBindUser().Exist(ctx)
+		exist, err = acc.QueryBoundUser().Exist(ctx)
 		if err != nil {
 			return err
 		}
@@ -334,7 +301,7 @@ func (t *TipherethRepo) LinkAccount(
 		}
 		accountID = acc.ID
 		return tx.Account.UpdateOneID(acc.ID).
-			SetBindUserID(userID).
+			SetBoundUserID(userID).
 			Exec(ctx)
 	})
 	if err != nil {
@@ -347,9 +314,9 @@ func (t *TipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u mo
 	return t.data.db.Account.Update().Where(
 		account.PlatformEQ(a.Platform),
 		account.PlatformAccountIDEQ(a.PlatformAccountID),
-		account.HasBindUserWith(user.IDEQ(u)),
+		account.HasBoundUserWith(user.IDEQ(u)),
 	).
-		ClearBindUser().
+		ClearBoundUser().
 		Exec(ctx)
 }
 
@@ -359,7 +326,7 @@ func (t *TipherethRepo) ListLinkAccounts(
 ) ([]*model.Account, error) {
 	a, err := t.data.db.Account.Query().
 		Where(
-			account.HasBindUserWith(user.IDEQ(userID)),
+			account.HasBoundUserWith(user.IDEQ(userID)),
 		).
 		All(ctx)
 	if err != nil {
@@ -502,10 +469,10 @@ func (t *TipherethRepo) UpdatePorterContext(
 		Exec(ctx)
 }
 
-func (t *TipherethRepo) ListPorterGroups(
+func (t *TipherethRepo) ListPorterDigests(
 	ctx context.Context,
 	status []model.UserStatus,
-) ([]*modelsupervisor.PorterGroup, error) {
+) ([]*modelsupervisor.PorterDigest, error) {
 	var res []struct {
 		ent.PorterInstance
 		Min model.InternalID
@@ -533,14 +500,14 @@ func (t *TipherethRepo) ListPorterGroups(
 	if err != nil {
 		return nil, err
 	}
-	var pg []*modelsupervisor.PorterGroup
-	pgm := make(map[string]*modelsupervisor.PorterGroup)
+	var pg []*modelsupervisor.PorterDigest
+	pgm := make(map[string]*modelsupervisor.PorterDigest)
 	for _, p := range pi {
 		if len(p.ContextJSONSchema) == 0 {
 			continue
 		}
 		if pgm[p.GlobalName] == nil {
-			pgm[p.GlobalName] = &modelsupervisor.PorterGroup{
+			pgm[p.GlobalName] = &modelsupervisor.PorterDigest{
 				BinarySummary:     converter.ToBizPorter(p).BinarySummary,
 				GlobalName:        p.GlobalName,
 				Regions:           []string{p.Region},

@@ -22,7 +22,6 @@ require (
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/golang-jwt/jwt/v5 v5.2.2
-	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
 	github.com/hashicorp/consul/api v1.31.2
@@ -36,7 +35,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.3
 	github.com/samber/lo v1.49.1
 	github.com/sony/sonyflake v1.2.0
-	github.com/tuihub/protos v0.4.25
+	github.com/tuihub/protos v0.5.0
 	go.opentelemetry.io/otel v1.34.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.10.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.10.0
@@ -118,6 +117,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.23.2 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.25.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect

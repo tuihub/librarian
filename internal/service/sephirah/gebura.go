@@ -5,224 +5,188 @@ import (
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s *LibrarianSephirahServiceService) CreateAppInfo(ctx context.Context, req *pb.CreateAppInfoRequest) (
-	*pb.CreateAppInfoResponse, error,
-) {
-	appInfo := req.GetAppInfo()
-	if appInfo == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("appInfo info required")
-	}
-	a, err := s.g.CreateAppInfo(ctx, converter.ToBizAppInfo(req.GetAppInfo()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.CreateAppInfoResponse{
-		Id: converter.ToPBInternalID(a.ID),
-	}, nil
-}
-func (s *LibrarianSephirahServiceService) UpdateAppInfo(ctx context.Context, req *pb.UpdateAppInfoRequest) (
-	*pb.UpdateAppInfoResponse, error,
-) {
-	appInfo := req.GetAppInfo()
-	if appInfo == nil || appInfo.GetId() == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("appInfo and internal_id required")
-	}
-	err := s.g.UpdateAppInfo(ctx, converter.ToBizAppInfo(req.GetAppInfo()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.UpdateAppInfoResponse{}, nil
-}
-func (s *LibrarianSephirahServiceService) ListAppInfos(ctx context.Context, req *pb.ListAppInfosRequest) (
-	*pb.ListAppInfosResponse, error,
-) {
-	a, total, err := s.g.ListAppInfos(ctx,
-		model.ToBizPaging(req.GetPaging()),
-		req.GetSourceFilter(),
-		converter.ToBizAppTypeList(req.GetTypeFilter()),
-		converter.ToBizInternalIDList(req.GetIdFilter()),
-		req.GetContainDetails(),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.ListAppInfosResponse{
-		Paging:   &librarian.PagingResponse{TotalSize: total},
-		AppInfos: converter.ToPBAppInfoList(a),
-	}, nil
-}
-func (s *LibrarianSephirahServiceService) MergeAppInfos(ctx context.Context, req *pb.MergeAppInfosRequest) (
-	*pb.MergeAppInfosResponse, error,
-) {
-	info := converter.ToBizAppInfo(req.GetBase())
-	if info == nil {
-		return nil, pb.ErrorErrorReasonBadRequest("base required")
-	}
-	err := s.g.MergeAppInfos(ctx,
-		*info,
-		converter.ToBizInternalID(req.GetMerged()),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.MergeAppInfosResponse{}, nil
-}
-func (s *LibrarianSephirahServiceService) SyncAppInfos(ctx context.Context, req *pb.SyncAppInfosRequest) (
-	*pb.SyncAppInfosResponse, error,
-) {
-	apps, err := s.g.SyncAppInfos(ctx, converter.ToBizAppInfoIDList(req.GetAppInfoIds()), req.GetWaitData())
-	if err != nil {
-		return nil, err
-	}
-	return &pb.SyncAppInfosResponse{AppInfos: converter.ToPBAppInfoList(apps)}, nil
-}
-func (s *LibrarianSephirahServiceService) SearchAppInfos(ctx context.Context, req *pb.SearchAppInfosRequest) (
-	*pb.SearchAppInfosResponse, error,
-) {
-	infos, total, err := s.g.SearchAppInfos(ctx,
-		model.ToBizPaging(req.GetPaging()),
-		req.GetQuery(),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.SearchAppInfosResponse{
-		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
-		AppInfos: converter.ToPBAppInfoMixedList(infos),
-	}, nil
-}
-func (s *LibrarianSephirahServiceService) SearchNewAppInfos(ctx context.Context, req *pb.SearchNewAppInfosRequest) (
-	*pb.SearchNewAppInfosResponse, error,
-) {
-	infos, total, err := s.g.SearchNewAppInfos(ctx,
-		model.ToBizPaging(req.GetPaging()),
-		req.GetName(),
-		req.GetSourceFilter(),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.SearchNewAppInfosResponse{
-		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
-		AppInfos: converter.ToPBAppInfoList(infos),
-	}, nil
-}
-func (s *LibrarianSephirahServiceService) GetAppInfo(ctx context.Context, req *pb.GetAppInfoRequest) (
-	*pb.GetAppInfoResponse, error,
-) {
-	res, err := s.g.GetAppInfo(ctx, converter.ToBizInternalID(req.GetAppInfoId()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.GetAppInfoResponse{AppInfo: converter.ToPBAppInfo(res)}, nil
-}
-func (s *LibrarianSephirahServiceService) GetBoundAppInfos(ctx context.Context, req *pb.GetBoundAppInfosRequest) (
-	*pb.GetBoundAppInfosResponse, error,
-) {
-	al, err := s.g.GetBoundAppInfos(ctx, converter.ToBizInternalID(req.GetAppInfoId()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.GetBoundAppInfosResponse{AppInfos: converter.ToPBAppInfoList(al)}, nil
-}
-func (s *LibrarianSephirahServiceService) PurchaseAppInfo(ctx context.Context, req *pb.PurchaseAppInfoRequest) (
-	*pb.PurchaseAppInfoResponse, error,
-) {
-	id, err := s.g.PurchaseAppInfo(ctx, converter.ToBizAppInfoID(req.GetAppInfoId()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.PurchaseAppInfoResponse{
-		Id: converter.ToPBInternalID(id),
-	}, nil
-}
-func (s *LibrarianSephirahServiceService) GetPurchasedAppInfos(
-	ctx context.Context,
-	req *pb.GetPurchasedAppInfosRequest,
-) (
-	*pb.GetPurchasedAppInfosResponse, error,
-) {
-	infos, err := s.g.GetPurchasedAppInfos(ctx, req.GetSource())
-	if err != nil {
-		return nil, err
-	}
-	return &pb.GetPurchasedAppInfosResponse{
-		AppInfos: converter.ToPBAppInfoMixedList(infos),
-	}, nil
-}
+//
+// func (s *LibrarianSephirahService) ListAppInfos(ctx context.Context, req *sephirah.ListAppInfosRequest) (
+//
+//	*sephirah.ListAppInfosResponse, error,
+//
+//	) {
+//		a, total, err := s.g.ListAppInfos(ctx,
+//			model.ToBizPaging(req.GetPaging()),
+//			req.GetSourceFilter(),
+//			converter.ToBizAppTypeList(req.GetTypeFilter()),
+//			converter.ToBizInternalIDList(req.GetIdFilter()),
+//			req.GetContainDetails(),
+//		)
+//		if err != nil {
+//			return nil, err
+//		}
+//		return &sephirah.ListAppInfosResponse{
+//			Paging:   &librarian.PagingResponse{TotalSize: total},
+//			AppInfos: converter.ToPBAppInfoList(a),
+//		}, nil
+//	}
+//
+//
+// func (s *LibrarianSephirahService) SyncAppInfos(ctx context.Context, req *sephirah.SyncAppInfosRequest) (
+//
+//	*sephirah.SyncAppInfosResponse, error,
+//
+//	) {
+//		apps, err := s.g.SyncAppInfos(ctx, converter.ToBizAppInfoIDList(req.GetAppInfoIds()), req.GetWaitData())
+//		if err != nil {
+//			return nil, err
+//		}
+//		return &sephirah.SyncAppInfosResponse{AppInfos: converter.ToPBAppInfoList(apps)}, nil
+//	}
+// func (s *LibrarianSephirahService) SearchAppInfos(ctx context.Context, req *sephirah.SearchAppInfosRequest) (
+//	*sephirah.SearchAppInfosResponse, error,
+// ) {
+//	infos, total, err := s.g.SearchAppInfos(ctx,
+//		model.ToBizPaging(req.GetPaging()),
+//		req.GetNameLike(),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.SearchAppInfosResponse{
+//		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
+//		AppInfos: converter.ToPBAppInfoMixedList(infos),
+//	}, nil
+//}
 
-func (s *LibrarianSephirahServiceService) CreateApp(
+// func (s *LibrarianSephirahService) SearchNewAppInfos(ctx context.Context, req *sephirah.SearchNewAppInfosRequest) (
+//	*sephirah.SearchNewAppInfosResponse, error,
+// ) {
+//	infos, total, err := s.g.SearchNewAppInfos(ctx,
+//		model.ToBizPaging(req.GetPaging()),
+//		req.GetName(),
+//		req.GetSourceFilter(),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.SearchNewAppInfosResponse{
+//		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
+//		AppInfos: converter.ToPBAppInfoList(infos),
+//	}, nil
+//}
+// func (s *LibrarianSephirahService) GetAppInfo(ctx context.Context, req *sephirah.GetAppInfoRequest) (
+//	*sephirah.GetAppInfoResponse, error,
+// ) {
+//	res, err := s.g.GetAppInfo(ctx, converter.ToBizInternalID(req.GetAppInfoId()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.GetAppInfoResponse{AppInfo: converter.ToPBAppInfo(res)}, nil
+//}
+// func (s *LibrarianSephirahService) GetBoundAppInfos(ctx context.Context, req *sephirah.GetBoundAppInfosRequest) (
+//	*sephirah.GetBoundAppInfosResponse, error,
+// ) {
+//	al, err := s.g.GetBoundAppInfos(ctx, converter.ToBizInternalID(req.GetAppInfoId()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.GetBoundAppInfosResponse{AppInfos: converter.ToPBAppInfoList(al)}, nil
+//}
+// func (s *LibrarianSephirahService) PurchaseAppInfo(ctx context.Context, req *sephirah.PurchaseAppInfoRequest) (
+//	*sephirah.PurchaseAppInfoResponse, error,
+// ) {
+//	id, err := s.g.PurchaseAppInfo(ctx, converter.ToBizAppInfoID(req.GetAppInfoId()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.PurchaseAppInfoResponse{
+//		Id: converter.ToPBInternalID(id),
+//	}, nil
+//}
+// func (s *LibrarianSephirahService) GetPurchasedAppInfos(
+//	ctx context.Context,
+//	req *sephirah.GetPurchasedAppInfosRequest,
+// ) (
+//	*sephirah.GetPurchasedAppInfosResponse, error,
+// ) {
+//	infos, err := s.g.GetPurchasedAppInfos(ctx, req.GetSource())
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.GetPurchasedAppInfosResponse{
+//		AppInfos: converter.ToPBAppInfoMixedList(infos),
+//	}, nil
+//}
+
+func (s *LibrarianSephirahService) CreateApp(
 	ctx context.Context,
-	req *pb.CreateAppRequest,
-) (*pb.CreateAppResponse, error) {
+	req *sephirah.CreateAppRequest,
+) (*sephirah.CreateAppResponse, error) {
 	ap, err := s.g.CreateApp(ctx, converter.ToBizApp(req.GetApp()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateAppResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
+	return &sephirah.CreateAppResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
 }
-func (s *LibrarianSephirahServiceService) UpdateApp(
+func (s *LibrarianSephirahService) UpdateApp(
 	ctx context.Context,
-	req *pb.UpdateAppRequest,
-) (*pb.UpdateAppResponse, error) {
+	req *sephirah.UpdateAppRequest,
+) (*sephirah.UpdateAppResponse, error) {
 	err := s.g.UpdateApp(ctx, converter.ToBizApp(req.GetApp()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UpdateAppResponse{}, nil
+	return &sephirah.UpdateAppResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListApps(
+func (s *LibrarianSephirahService) ListApps(
 	ctx context.Context,
-	req *pb.ListAppsRequest,
-) (*pb.ListAppsResponse, error) {
+	req *sephirah.ListAppsRequest,
+) (*sephirah.ListAppsResponse, error) {
 	ap, total, err := s.g.ListApps(ctx,
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetOwnerIdFilter()),
-		converter.ToBizInternalIDList(req.GetAssignedAppInfoIdFilter()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListAppsResponse{
+	return &sephirah.ListAppsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(total)},
 		Apps:   converter.ToPBAppList(ap),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) AssignApp(
-	ctx context.Context,
-	req *pb.AssignAppRequest,
-) (*pb.AssignAppResponse, error) {
-	err := s.g.AssignApp(ctx,
-		converter.ToBizInternalID(req.GetAppId()),
-		converter.ToBizInternalID(req.GetAppInfoId()),
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.AssignAppResponse{}, nil
-}
-func (s *LibrarianSephirahServiceService) UnAssignApp(
-	ctx context.Context,
-	req *pb.UnAssignAppRequest,
-) (*pb.UnAssignAppResponse, error) {
-	err := s.g.UnAssignApp(ctx, converter.ToBizInternalID(req.GetAppId()))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.UnAssignAppResponse{}, nil
-}
 
-// func (s *LibrarianSephirahServiceService) ReportAppPackages(
+// func (s *LibrarianSephirahService) AssignApp(
+//	ctx context.Context,
+//	req *sephirah.AssignAppRequest,
+// ) (*sephirah.AssignAppResponse, error) {
+//	err := s.g.AssignApp(ctx,
+//		converter.ToBizInternalID(req.GetAppId()),
+//		converter.ToBizInternalID(req.GetAppInfoId()),
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.AssignAppResponse{}, nil
+//}
+// func (s *LibrarianSephirahService) UnAssignApp(
+//	ctx context.Context,
+//	req *sephirah.UnAssignAppRequest,
+// ) (*sephirah.UnAssignAppResponse, error) {
+//	err := s.g.UnAssignApp(ctx, converter.ToBizInternalID(req.GetAppId()))
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &sephirah.UnAssignAppResponse{}, nil
+//}
+
+// func (s *LibrarianSephirahService) ReportAppPackages(
 //
-//	conn pb.LibrarianSephirahService_ReportAppPackagesServer,
+//	conn sephirah.LibrarianSephirahService_ReportAppPackagesServer,
 //
 //	) error {
 //		ctx, err1 := s.authFunc(conn.Context())
@@ -246,101 +210,60 @@ func (s *LibrarianSephirahServiceService) UnAssignApp(
 //			if err := handler.Handle(conn.Context(), binaries); err != nil {
 //				return err
 //			}
-//			if err := conn.Send(&pb.ReportAppPackagesResponse{}); err != nil {
+//			if err := conn.Send(&sephirah.ReportAppPackagesResponse{}); err != nil {
 //				return err
 //			}
 //		}
 //	}
 
-// func (s *LibrarianSephirahServiceService) CreateAppInst(
+// func (s *LibrarianSephirahService) AddAppRunTime(
 //	ctx context.Context,
-//	req *pb.CreateAppInstRequest,
-// ) (*pb.CreateAppInstResponse, error) {
-//	ap, err := s.g.CreateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &pb.CreateAppInstResponse{Id: converter.ToPBInternalID(ap.ID)}, nil
-//}
-//
-// func (s *LibrarianSephirahServiceService) UpdateAppInst(
-//	ctx context.Context,
-//	req *pb.UpdateAppInstRequest,
-// ) (*pb.UpdateAppInstResponse, error) {
-//	err := s.g.UpdateAppInst(ctx, converter.ToBizAppInst(req.GetAppInst()))
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &pb.UpdateAppInstResponse{}, nil
-//}
-//
-// func (s *LibrarianSephirahServiceService) ListAppInsts(
-//	ctx context.Context,
-//	req *pb.ListAppInstsRequest,
-// ) (*pb.ListAppInstsResponse, error) {
-//	ap, total, err := s.g.ListAppInsts(ctx,
-//		model.ToBizPaging(req.GetPaging()),
-//		converter.ToBizInternalIDList(req.GetIdFilter()),
-//		converter.ToBizInternalIDList(req.GetAppIdFilter()),
-//		converter.ToBizInternalIDList(req.GetDeviceIdFilter()),
-//	)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &pb.ListAppInstsResponse{
-//		Paging:   &librarian.PagingResponse{TotalSize: int64(total)},
-//		AppInsts: converter.ToPBAppInstList(ap),
-//	}, nil
-//}
-//
-// func (s *LibrarianSephirahServiceService) AddAppInstRunTime(
-//	ctx context.Context,
-//	req *pb.AddAppInstRunTimeRequest,
-// ) (*pb.AddAppInstRunTimeResponse, error) {
-//	err := s.g.AddAppInstRunTime(ctx,
+//	req *sephirah.AddAppInstRunTimeRequest,
+// ) (*sephirah.AddAppInstRunTimeResponse, error) {
+//	err := s.g.AddAppRunTime(ctx,
 //		converter.ToBizInternalID(req.GetAppInstId()),
 //		converter.ToBizTimeRange(req.GetTimeRange()),
 //	)
 //	if err != nil {
 //		return nil, err
 //	}
-//	return &pb.AddAppInstRunTimeResponse{}, nil
+//	return &sephirah.AddAppInstRunTimeResponse{}, nil
 // }
-// func (s *LibrarianSephirahServiceService) SumAppInstRunTime(
+// func (s *LibrarianSephirahService) SumAppRunTime(
 //	ctx context.Context,
-//	req *pb.SumAppInstRunTimeRequest,
-// ) (*pb.SumAppInstRunTimeResponse, error) {
+//	req *sephirah.SumAppInstRunTimeRequest,
+// ) (*sephirah.SumAppInstRunTimeResponse, error) {
 //	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL {
-//		return nil, pb.ErrorErrorReasonBadRequest("unsupported aggregation type")
+//		return nil, sephirah.ErrorErrorReasonBadRequest("unsupported aggregation type")
 //	}
-//	res, err := s.g.SumAppInstRunTime(ctx,
+//	res, err := s.g.SumAppRunTime(ctx,
 //		converter.ToBizInternalID(req.GetAppInstId()),
 //		converter.ToBizTimeRange(req.GetTimeAggregation().GetTimeRange()),
 //	)
 //	if err != nil {
 //		return nil, err
 //	}
-//	return &pb.SumAppInstRunTimeResponse{RunTimeGroups: []*pb.SumAppInstRunTimeResponse_Group{{
+//	return &sephirah.SumAppInstRunTimeResponse{RunTimeGroups: []*sephirah.SumAppInstRunTimeResponse_Group{{
 //		TimeRange: req.GetTimeAggregation().GetTimeRange(),
 //		Duration:  converter.ToPBDuration(res),
 //	}}}, nil
 // }
 
-func (s *LibrarianSephirahServiceService) UploadAppSaveFile(
+func (s *LibrarianSephirahService) UploadAppSaveFile(
 	ctx context.Context,
-	req *pb.UploadAppSaveFileRequest,
-) (*pb.UploadAppSaveFileResponse, error) {
+	req *sephirah.UploadAppSaveFileRequest,
+) (*sephirah.UploadAppSaveFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadGameSaveFile not implemented")
 }
-func (s *LibrarianSephirahServiceService) DownloadAppSaveFile(
+func (s *LibrarianSephirahService) DownloadAppSaveFile(
 	ctx context.Context,
-	req *pb.DownloadAppSaveFileRequest,
-) (*pb.DownloadAppSaveFileResponse, error) {
+	req *sephirah.DownloadAppSaveFileRequest,
+) (*sephirah.DownloadAppSaveFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DownloadGameSaveFile not implemented")
 }
-func (s *LibrarianSephirahServiceService) ListAppSaveFiles(
+func (s *LibrarianSephirahService) ListAppSaveFiles(
 	ctx context.Context,
-	req *pb.ListAppSaveFilesRequest,
-) (*pb.ListAppSaveFilesResponse, error) {
+	req *sephirah.ListAppSaveFilesRequest,
+) (*sephirah.ListAppSaveFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListGameSaveFile not implemented")
 }

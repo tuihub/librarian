@@ -49,16 +49,16 @@ type PullAccountInfo struct {
 	PlatformAccountID string
 }
 
-type UserSession struct {
+type Session struct {
 	ID           InternalID
 	UserID       InternalID
 	RefreshToken string
-	DeviceInfo   *DeviceInfo
+	Device       *Device
 	CreateAt     time.Time
 	ExpireAt     time.Time
 }
 
-type DeviceInfo struct {
+type Device struct {
 	ID                      InternalID
 	DeviceName              string
 	SystemType              SystemType

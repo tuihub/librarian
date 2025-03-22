@@ -7,14 +7,15 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelchesed"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-func (s *LibrarianSephirahServiceService) UploadImage(ctx context.Context, req *pb.UploadImageRequest) (
-	*pb.UploadImageResponse, error) {
+func (s *LibrarianSephirahService) UploadImage(ctx context.Context, req *sephirah.UploadImageRequest) (
+	*sephirah.UploadImageResponse, error) {
 	fm := converter.ToBizFileMetadata(req.GetFileMetadata())
 	if fm == nil {
 		return nil, pb.ErrorErrorReasonBadRequest("app required")
@@ -28,43 +29,43 @@ func (s *LibrarianSephirahServiceService) UploadImage(ctx context.Context, req *
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UploadImageResponse{UploadToken: token}, nil
+	return &sephirah.UploadImageResponse{UploadToken: token}, nil
 }
-func (s *LibrarianSephirahServiceService) UpdateImage(ctx context.Context, req *pb.UpdateImageRequest) (
-	*pb.UpdateImageResponse, error) {
+func (s *LibrarianSephirahService) UpdateImage(ctx context.Context, req *sephirah.UpdateImageRequest) (
+	*sephirah.UpdateImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateImage not implemented")
 }
-func (s *LibrarianSephirahServiceService) ListImages(ctx context.Context, req *pb.ListImagesRequest) (
-	*pb.ListImagesResponse, error) {
+func (s *LibrarianSephirahService) ListImages(ctx context.Context, req *sephirah.ListImagesRequest) (
+	*sephirah.ListImagesResponse, error) {
 	res, total, err := s.c.ListImages(ctx, model.ToBizPaging(req.GetPaging()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListImagesResponse{
+	return &sephirah.ListImagesResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
 		Ids:    converter.ToPBInternalIDList(res),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) SearchImages(ctx context.Context,
-	req *pb.SearchImagesRequest) (*pb.SearchImagesResponse, error) {
+func (s *LibrarianSephirahService) SearchImages(ctx context.Context,
+	req *sephirah.SearchImagesRequest) (*sephirah.SearchImagesResponse, error) {
 	res, err := s.c.SearchImages(ctx, model.ToBizPaging(req.GetPaging()), req.GetKeywords())
 	if err != nil {
 		return nil, err
 	}
-	return &pb.SearchImagesResponse{
+	return &sephirah.SearchImagesResponse{
 		Paging: &librarian.PagingResponse{TotalSize: int64(len(res))},
 		Ids:    converter.ToPBInternalIDList(res),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) GetImage(ctx context.Context, req *pb.GetImageRequest) (
-	*pb.GetImageResponse, error) {
+func (s *LibrarianSephirahService) GetImage(ctx context.Context, req *sephirah.GetImageRequest) (
+	*sephirah.GetImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetImage not implemented")
 }
-func (s *LibrarianSephirahServiceService) DownloadImage(ctx context.Context, req *pb.DownloadImageRequest) (
-	*pb.DownloadImageResponse, error) {
+func (s *LibrarianSephirahService) DownloadImage(ctx context.Context, req *sephirah.DownloadImageRequest) (
+	*sephirah.DownloadImageResponse, error) {
 	token, err := s.c.DownloadImage(ctx, converter.ToBizInternalID(req.GetId()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.DownloadImageResponse{DownloadToken: token}, nil
+	return &sephirah.DownloadImageResponse{DownloadToken: token}, nil
 }

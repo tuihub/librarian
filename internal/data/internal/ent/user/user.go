@@ -23,18 +23,18 @@ const (
 	FieldStatus = "status"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
+	// FieldCreatorID holds the string denoting the creator_id field in the database.
+	FieldCreatorID = "creator_id"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgeBindAccount holds the string denoting the bind_account edge name in mutations.
-	EdgeBindAccount = "bind_account"
-	// EdgePurchasedApp holds the string denoting the purchased_app edge name in mutations.
-	EdgePurchasedApp = "purchased_app"
+	// EdgeSession holds the string denoting the session edge name in mutations.
+	EdgeSession = "session"
+	// EdgeAccount holds the string denoting the account edge name in mutations.
+	EdgeAccount = "account"
 	// EdgeApp holds the string denoting the app edge name in mutations.
 	EdgeApp = "app"
-	// EdgeAppInst holds the string denoting the app_inst edge name in mutations.
-	EdgeAppInst = "app_inst"
 	// EdgeFeedConfig holds the string denoting the feed_config edge name in mutations.
 	EdgeFeedConfig = "feed_config"
 	// EdgeFeedActionSet holds the string denoting the feed_action_set edge name in mutations.
@@ -51,8 +51,6 @@ const (
 	EdgeImage = "image"
 	// EdgeFile holds the string denoting the file edge name in mutations.
 	EdgeFile = "file"
-	// EdgeDeviceInfo holds the string denoting the device_info edge name in mutations.
-	EdgeDeviceInfo = "device_info"
 	// EdgeTag holds the string denoting the tag edge name in mutations.
 	EdgeTag = "tag"
 	// EdgePorterContext holds the string denoting the porter_context edge name in mutations.
@@ -61,36 +59,29 @@ const (
 	EdgeCreator = "creator"
 	// EdgeCreatedUser holds the string denoting the created_user edge name in mutations.
 	EdgeCreatedUser = "created_user"
-	// EdgeUserDevice holds the string denoting the user_device edge name in mutations.
-	EdgeUserDevice = "user_device"
 	// Table holds the table name of the user in the database.
 	Table = "users"
-	// BindAccountTable is the table that holds the bind_account relation/edge.
-	BindAccountTable = "accounts"
-	// BindAccountInverseTable is the table name for the Account entity.
+	// SessionTable is the table that holds the session relation/edge.
+	SessionTable = "sessions"
+	// SessionInverseTable is the table name for the Session entity.
+	// It exists in this package in order to avoid circular dependency with the "session" package.
+	SessionInverseTable = "sessions"
+	// SessionColumn is the table column denoting the session relation/edge.
+	SessionColumn = "user_id"
+	// AccountTable is the table that holds the account relation/edge.
+	AccountTable = "accounts"
+	// AccountInverseTable is the table name for the Account entity.
 	// It exists in this package in order to avoid circular dependency with the "account" package.
-	BindAccountInverseTable = "accounts"
-	// BindAccountColumn is the table column denoting the bind_account relation/edge.
-	BindAccountColumn = "user_bind_account"
-	// PurchasedAppTable is the table that holds the purchased_app relation/edge. The primary key declared below.
-	PurchasedAppTable = "user_purchased_app"
-	// PurchasedAppInverseTable is the table name for the AppInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "appinfo" package.
-	PurchasedAppInverseTable = "app_infos"
+	AccountInverseTable = "accounts"
+	// AccountColumn is the table column denoting the account relation/edge.
+	AccountColumn = "bound_user_id"
 	// AppTable is the table that holds the app relation/edge.
 	AppTable = "apps"
 	// AppInverseTable is the table name for the App entity.
 	// It exists in this package in order to avoid circular dependency with the "app" package.
 	AppInverseTable = "apps"
 	// AppColumn is the table column denoting the app relation/edge.
-	AppColumn = "user_app"
-	// AppInstTable is the table that holds the app_inst relation/edge.
-	AppInstTable = "app_insts"
-	// AppInstInverseTable is the table name for the AppInst entity.
-	// It exists in this package in order to avoid circular dependency with the "appinst" package.
-	AppInstInverseTable = "app_insts"
-	// AppInstColumn is the table column denoting the app_inst relation/edge.
-	AppInstColumn = "user_app_inst"
+	AppColumn = "user_id"
 	// FeedConfigTable is the table that holds the feed_config relation/edge.
 	FeedConfigTable = "feed_configs"
 	// FeedConfigInverseTable is the table name for the FeedConfig entity.
@@ -147,11 +138,6 @@ const (
 	FileInverseTable = "files"
 	// FileColumn is the table column denoting the file relation/edge.
 	FileColumn = "user_file"
-	// DeviceInfoTable is the table that holds the device_info relation/edge. The primary key declared below.
-	DeviceInfoTable = "user_devices"
-	// DeviceInfoInverseTable is the table name for the DeviceInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "deviceinfo" package.
-	DeviceInfoInverseTable = "device_infos"
 	// TagTable is the table that holds the tag relation/edge.
 	TagTable = "tags"
 	// TagInverseTable is the table name for the Tag entity.
@@ -169,18 +155,11 @@ const (
 	// CreatorTable is the table that holds the creator relation/edge.
 	CreatorTable = "users"
 	// CreatorColumn is the table column denoting the creator relation/edge.
-	CreatorColumn = "user_created_user"
+	CreatorColumn = "creator_id"
 	// CreatedUserTable is the table that holds the created_user relation/edge.
 	CreatedUserTable = "users"
 	// CreatedUserColumn is the table column denoting the created_user relation/edge.
-	CreatedUserColumn = "user_created_user"
-	// UserDeviceTable is the table that holds the user_device relation/edge.
-	UserDeviceTable = "user_devices"
-	// UserDeviceInverseTable is the table name for the UserDevice entity.
-	// It exists in this package in order to avoid circular dependency with the "userdevice" package.
-	UserDeviceInverseTable = "user_devices"
-	// UserDeviceColumn is the table column denoting the user_device relation/edge.
-	UserDeviceColumn = "user_id"
+	CreatedUserColumn = "creator_id"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -190,34 +169,15 @@ var Columns = []string{
 	FieldPassword,
 	FieldStatus,
 	FieldType,
+	FieldCreatorID,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "users"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"user_created_user",
-}
-
-var (
-	// PurchasedAppPrimaryKey and PurchasedAppColumn2 are the table columns denoting the
-	// primary key for the purchased_app relation (M2M).
-	PurchasedAppPrimaryKey = []string{"user_id", "app_info_id"}
-	// DeviceInfoPrimaryKey and DeviceInfoColumn2 are the table columns denoting the
-	// primary key for the device_info relation (M2M).
-	DeviceInfoPrimaryKey = []string{"user_id", "device_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -261,9 +221,8 @@ type Type string
 
 // Type values.
 const (
-	TypeAdmin    Type = "admin"
-	TypeNormal   Type = "normal"
-	TypeSentinel Type = "sentinel"
+	TypeAdmin  Type = "admin"
+	TypeNormal Type = "normal"
 )
 
 func (_type Type) String() string {
@@ -273,7 +232,7 @@ func (_type Type) String() string {
 // TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
 func TypeValidator(_type Type) error {
 	switch _type {
-	case TypeAdmin, TypeNormal, TypeSentinel:
+	case TypeAdmin, TypeNormal:
 		return nil
 	default:
 		return fmt.Errorf("user: invalid enum value for type field: %q", _type)
@@ -308,6 +267,11 @@ func ByType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldType, opts...).ToFunc()
 }
 
+// ByCreatorID orders the results by the creator_id field.
+func ByCreatorID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatorID, opts...).ToFunc()
+}
+
 // ByUpdatedAt orders the results by the updated_at field.
 func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
@@ -318,31 +282,31 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
 
-// ByBindAccountCount orders the results by bind_account count.
-func ByBindAccountCount(opts ...sql.OrderTermOption) OrderOption {
+// BySessionCount orders the results by session count.
+func BySessionCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBindAccountStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newSessionStep(), opts...)
 	}
 }
 
-// ByBindAccount orders the results by bind_account terms.
-func ByBindAccount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// BySession orders the results by session terms.
+func BySession(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBindAccountStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSessionStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
-// ByPurchasedAppCount orders the results by purchased_app count.
-func ByPurchasedAppCount(opts ...sql.OrderTermOption) OrderOption {
+// ByAccountCount orders the results by account count.
+func ByAccountCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPurchasedAppStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newAccountStep(), opts...)
 	}
 }
 
-// ByPurchasedApp orders the results by purchased_app terms.
-func ByPurchasedApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByAccount orders the results by account terms.
+func ByAccount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPurchasedAppStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newAccountStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -357,20 +321,6 @@ func ByAppCount(opts ...sql.OrderTermOption) OrderOption {
 func ByApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAppStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByAppInstCount orders the results by app_inst count.
-func ByAppInstCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAppInstStep(), opts...)
-	}
-}
-
-// ByAppInst orders the results by app_inst terms.
-func ByAppInst(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAppInstStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -486,20 +436,6 @@ func ByFile(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByDeviceInfoCount orders the results by device_info count.
-func ByDeviceInfoCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newDeviceInfoStep(), opts...)
-	}
-}
-
-// ByDeviceInfo orders the results by device_info terms.
-func ByDeviceInfo(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newDeviceInfoStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByTagCount orders the results by tag count.
 func ByTagCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -548,32 +484,18 @@ func ByCreatedUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newCreatedUserStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByUserDeviceCount orders the results by user_device count.
-func ByUserDeviceCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newUserDeviceStep(), opts...)
-	}
-}
-
-// ByUserDevice orders the results by user_device terms.
-func ByUserDevice(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newUserDeviceStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newBindAccountStep() *sqlgraph.Step {
+func newSessionStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(BindAccountInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, BindAccountTable, BindAccountColumn),
+		sqlgraph.To(SessionInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SessionTable, SessionColumn),
 	)
 }
-func newPurchasedAppStep() *sqlgraph.Step {
+func newAccountStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PurchasedAppInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+		sqlgraph.To(AccountInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, AccountTable, AccountColumn),
 	)
 }
 func newAppStep() *sqlgraph.Step {
@@ -581,13 +503,6 @@ func newAppStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, AppTable, AppColumn),
-	)
-}
-func newAppInstStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AppInstInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AppInstTable, AppInstColumn),
 	)
 }
 func newFeedConfigStep() *sqlgraph.Step {
@@ -646,13 +561,6 @@ func newFileStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.O2M, false, FileTable, FileColumn),
 	)
 }
-func newDeviceInfoStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(DeviceInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, DeviceInfoTable, DeviceInfoPrimaryKey...),
-	)
-}
 func newTagStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -679,12 +587,5 @@ func newCreatedUserStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(Table, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, CreatedUserTable, CreatedUserColumn),
-	)
-}
-func newUserDeviceStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(UserDeviceInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, UserDeviceTable, UserDeviceColumn),
 	)
 }

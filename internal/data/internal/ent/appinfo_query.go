@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,29 +11,18 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppInfoQuery is the builder for querying AppInfo entities.
 type AppInfoQuery struct {
 	config
-	ctx                    *QueryContext
-	order                  []appinfo.OrderOption
-	inters                 []Interceptor
-	predicates             []predicate.AppInfo
-	withPurchasedByAccount *AccountQuery
-	withPurchasedByUser    *UserQuery
-	withApp                *AppQuery
-	withAppBinary          *AppBinaryQuery
-	withBindInternal       *AppInfoQuery
-	withBindExternal       *AppInfoQuery
-	withFKs                bool
+	ctx        *QueryContext
+	order      []appinfo.OrderOption
+	inters     []Interceptor
+	predicates []predicate.AppInfo
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -69,138 +57,6 @@ func (aiq *AppInfoQuery) Unique(unique bool) *AppInfoQuery {
 func (aiq *AppInfoQuery) Order(o ...appinfo.OrderOption) *AppInfoQuery {
 	aiq.order = append(aiq.order, o...)
 	return aiq
-}
-
-// QueryPurchasedByAccount chains the current query on the "purchased_by_account" edge.
-func (aiq *AppInfoQuery) QueryPurchasedByAccount() *AccountQuery {
-	query := (&AccountClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, appinfo.PurchasedByAccountTable, appinfo.PurchasedByAccountPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryPurchasedByUser chains the current query on the "purchased_by_user" edge.
-func (aiq *AppInfoQuery) QueryPurchasedByUser() *UserQuery {
-	query := (&UserClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, appinfo.PurchasedByUserTable, appinfo.PurchasedByUserPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryApp chains the current query on the "app" edge.
-func (aiq *AppInfoQuery) QueryApp() *AppQuery {
-	query := (&AppClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(app.Table, app.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.AppTable, appinfo.AppColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryAppBinary chains the current query on the "app_binary" edge.
-func (aiq *AppInfoQuery) QueryAppBinary() *AppBinaryQuery {
-	query := (&AppBinaryClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(appbinary.Table, appbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.AppBinaryTable, appinfo.AppBinaryColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryBindInternal chains the current query on the "bind_internal" edge.
-func (aiq *AppInfoQuery) QueryBindInternal() *AppInfoQuery {
-	query := (&AppInfoClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, appinfo.BindInternalTable, appinfo.BindInternalColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryBindExternal chains the current query on the "bind_external" edge.
-func (aiq *AppInfoQuery) QueryBindExternal() *AppInfoQuery {
-	query := (&AppInfoClient{config: aiq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := aiq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := aiq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, selector),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.BindExternalTable, appinfo.BindExternalColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(aiq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first AppInfo entity from the query.
@@ -390,87 +246,15 @@ func (aiq *AppInfoQuery) Clone() *AppInfoQuery {
 		return nil
 	}
 	return &AppInfoQuery{
-		config:                 aiq.config,
-		ctx:                    aiq.ctx.Clone(),
-		order:                  append([]appinfo.OrderOption{}, aiq.order...),
-		inters:                 append([]Interceptor{}, aiq.inters...),
-		predicates:             append([]predicate.AppInfo{}, aiq.predicates...),
-		withPurchasedByAccount: aiq.withPurchasedByAccount.Clone(),
-		withPurchasedByUser:    aiq.withPurchasedByUser.Clone(),
-		withApp:                aiq.withApp.Clone(),
-		withAppBinary:          aiq.withAppBinary.Clone(),
-		withBindInternal:       aiq.withBindInternal.Clone(),
-		withBindExternal:       aiq.withBindExternal.Clone(),
+		config:     aiq.config,
+		ctx:        aiq.ctx.Clone(),
+		order:      append([]appinfo.OrderOption{}, aiq.order...),
+		inters:     append([]Interceptor{}, aiq.inters...),
+		predicates: append([]predicate.AppInfo{}, aiq.predicates...),
 		// clone intermediate query.
 		sql:  aiq.sql.Clone(),
 		path: aiq.path,
 	}
-}
-
-// WithPurchasedByAccount tells the query-builder to eager-load the nodes that are connected to
-// the "purchased_by_account" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithPurchasedByAccount(opts ...func(*AccountQuery)) *AppInfoQuery {
-	query := (&AccountClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withPurchasedByAccount = query
-	return aiq
-}
-
-// WithPurchasedByUser tells the query-builder to eager-load the nodes that are connected to
-// the "purchased_by_user" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithPurchasedByUser(opts ...func(*UserQuery)) *AppInfoQuery {
-	query := (&UserClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withPurchasedByUser = query
-	return aiq
-}
-
-// WithApp tells the query-builder to eager-load the nodes that are connected to
-// the "app" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithApp(opts ...func(*AppQuery)) *AppInfoQuery {
-	query := (&AppClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withApp = query
-	return aiq
-}
-
-// WithAppBinary tells the query-builder to eager-load the nodes that are connected to
-// the "app_binary" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithAppBinary(opts ...func(*AppBinaryQuery)) *AppInfoQuery {
-	query := (&AppBinaryClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withAppBinary = query
-	return aiq
-}
-
-// WithBindInternal tells the query-builder to eager-load the nodes that are connected to
-// the "bind_internal" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithBindInternal(opts ...func(*AppInfoQuery)) *AppInfoQuery {
-	query := (&AppInfoClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withBindInternal = query
-	return aiq
-}
-
-// WithBindExternal tells the query-builder to eager-load the nodes that are connected to
-// the "bind_external" edge. The optional arguments are used to configure the query builder of the edge.
-func (aiq *AppInfoQuery) WithBindExternal(opts ...func(*AppInfoQuery)) *AppInfoQuery {
-	query := (&AppInfoClient{config: aiq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	aiq.withBindExternal = query
-	return aiq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -479,12 +263,12 @@ func (aiq *AppInfoQuery) WithBindExternal(opts ...func(*AppInfoQuery)) *AppInfoQ
 // Example:
 //
 //	var v []struct {
-//		Internal bool `json:"internal,omitempty"`
+//		Source string `json:"source,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.AppInfo.Query().
-//		GroupBy(appinfo.FieldInternal).
+//		GroupBy(appinfo.FieldSource).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (aiq *AppInfoQuery) GroupBy(field string, fields ...string) *AppInfoGroupBy {
@@ -502,11 +286,11 @@ func (aiq *AppInfoQuery) GroupBy(field string, fields ...string) *AppInfoGroupBy
 // Example:
 //
 //	var v []struct {
-//		Internal bool `json:"internal,omitempty"`
+//		Source string `json:"source,omitempty"`
 //	}
 //
 //	client.AppInfo.Query().
-//		Select(appinfo.FieldInternal).
+//		Select(appinfo.FieldSource).
 //		Scan(ctx, &v)
 func (aiq *AppInfoQuery) Select(fields ...string) *AppInfoSelect {
 	aiq.ctx.Fields = append(aiq.ctx.Fields, fields...)
@@ -549,31 +333,15 @@ func (aiq *AppInfoQuery) prepareQuery(ctx context.Context) error {
 
 func (aiq *AppInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppInfo, error) {
 	var (
-		nodes       = []*AppInfo{}
-		withFKs     = aiq.withFKs
-		_spec       = aiq.querySpec()
-		loadedTypes = [6]bool{
-			aiq.withPurchasedByAccount != nil,
-			aiq.withPurchasedByUser != nil,
-			aiq.withApp != nil,
-			aiq.withAppBinary != nil,
-			aiq.withBindInternal != nil,
-			aiq.withBindExternal != nil,
-		}
+		nodes = []*AppInfo{}
+		_spec = aiq.querySpec()
 	)
-	if aiq.withBindInternal != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, appinfo.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppInfo).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &AppInfo{config: aiq.config}
 		nodes = append(nodes, node)
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -585,296 +353,7 @@ func (aiq *AppInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := aiq.withPurchasedByAccount; query != nil {
-		if err := aiq.loadPurchasedByAccount(ctx, query, nodes,
-			func(n *AppInfo) { n.Edges.PurchasedByAccount = []*Account{} },
-			func(n *AppInfo, e *Account) { n.Edges.PurchasedByAccount = append(n.Edges.PurchasedByAccount, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := aiq.withPurchasedByUser; query != nil {
-		if err := aiq.loadPurchasedByUser(ctx, query, nodes,
-			func(n *AppInfo) { n.Edges.PurchasedByUser = []*User{} },
-			func(n *AppInfo, e *User) { n.Edges.PurchasedByUser = append(n.Edges.PurchasedByUser, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := aiq.withApp; query != nil {
-		if err := aiq.loadApp(ctx, query, nodes,
-			func(n *AppInfo) { n.Edges.App = []*App{} },
-			func(n *AppInfo, e *App) { n.Edges.App = append(n.Edges.App, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := aiq.withAppBinary; query != nil {
-		if err := aiq.loadAppBinary(ctx, query, nodes,
-			func(n *AppInfo) { n.Edges.AppBinary = []*AppBinary{} },
-			func(n *AppInfo, e *AppBinary) { n.Edges.AppBinary = append(n.Edges.AppBinary, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := aiq.withBindInternal; query != nil {
-		if err := aiq.loadBindInternal(ctx, query, nodes, nil,
-			func(n *AppInfo, e *AppInfo) { n.Edges.BindInternal = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := aiq.withBindExternal; query != nil {
-		if err := aiq.loadBindExternal(ctx, query, nodes,
-			func(n *AppInfo) { n.Edges.BindExternal = []*AppInfo{} },
-			func(n *AppInfo, e *AppInfo) { n.Edges.BindExternal = append(n.Edges.BindExternal, e) }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
-}
-
-func (aiq *AppInfoQuery) loadPurchasedByAccount(ctx context.Context, query *AccountQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *Account)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[model.InternalID]*AppInfo)
-	nids := make(map[model.InternalID]map[*AppInfo]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(appinfo.PurchasedByAccountTable)
-		s.Join(joinT).On(s.C(account.FieldID), joinT.C(appinfo.PurchasedByAccountPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(appinfo.PurchasedByAccountPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(appinfo.PurchasedByAccountPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
-				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*AppInfo]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Account](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "purchased_by_account" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (aiq *AppInfoQuery) loadPurchasedByUser(ctx context.Context, query *UserQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *User)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[model.InternalID]*AppInfo)
-	nids := make(map[model.InternalID]map[*AppInfo]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(appinfo.PurchasedByUserTable)
-		s.Join(joinT).On(s.C(user.FieldID), joinT.C(appinfo.PurchasedByUserPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(appinfo.PurchasedByUserPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(appinfo.PurchasedByUserPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
-				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*AppInfo]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*User](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "purchased_by_user" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (aiq *AppInfoQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *App)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*AppInfo)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.App(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(appinfo.AppColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.app_info_app
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "app_info_app" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "app_info_app" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (aiq *AppInfoQuery) loadAppBinary(ctx context.Context, query *AppBinaryQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *AppBinary)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*AppInfo)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.AppBinary(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(appinfo.AppBinaryColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.app_info_app_binary
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "app_info_app_binary" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "app_info_app_binary" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (aiq *AppInfoQuery) loadBindInternal(ctx context.Context, query *AppInfoQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *AppInfo)) error {
-	ids := make([]model.InternalID, 0, len(nodes))
-	nodeids := make(map[model.InternalID][]*AppInfo)
-	for i := range nodes {
-		if nodes[i].app_info_bind_external == nil {
-			continue
-		}
-		fk := *nodes[i].app_info_bind_external
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(appinfo.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "app_info_bind_external" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
-}
-func (aiq *AppInfoQuery) loadBindExternal(ctx context.Context, query *AppInfoQuery, nodes []*AppInfo, init func(*AppInfo), assign func(*AppInfo, *AppInfo)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*AppInfo)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.AppInfo(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(appinfo.BindExternalColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.app_info_bind_external
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "app_info_bind_external" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "app_info_bind_external" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
 }
 
 func (aiq *AppInfoQuery) sqlCount(ctx context.Context) (int, error) {

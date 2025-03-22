@@ -12,20 +12,17 @@ type Account func(*sql.Selector)
 // App is the predicate function for app builders.
 type App func(*sql.Selector)
 
-// AppBinary is the predicate function for appbinary builders.
-type AppBinary func(*sql.Selector)
+// AppCategory is the predicate function for appcategory builders.
+type AppCategory func(*sql.Selector)
 
 // AppInfo is the predicate function for appinfo builders.
 type AppInfo func(*sql.Selector)
 
-// AppInst is the predicate function for appinst builders.
-type AppInst func(*sql.Selector)
+// AppRunTime is the predicate function for appruntime builders.
+type AppRunTime func(*sql.Selector)
 
-// AppInstRunTime is the predicate function for appinstruntime builders.
-type AppInstRunTime func(*sql.Selector)
-
-// DeviceInfo is the predicate function for deviceinfo builders.
-type DeviceInfo func(*sql.Selector)
+// Device is the predicate function for device builders.
+type Device func(*sql.Selector)
 
 // Feed is the predicate function for feed builders.
 type Feed func(*sql.Selector)
@@ -72,6 +69,15 @@ type PorterContext func(*sql.Selector)
 // PorterInstance is the predicate function for porterinstance builders.
 type PorterInstance func(*sql.Selector)
 
+// Session is the predicate function for session builders.
+type Session func(*sql.Selector)
+
+// StoreApp is the predicate function for storeapp builders.
+type StoreApp func(*sql.Selector)
+
+// StoreAppBinary is the predicate function for storeappbinary builders.
+type StoreAppBinary func(*sql.Selector)
+
 // SystemNotification is the predicate function for systemnotification builders.
 type SystemNotification func(*sql.Selector)
 
@@ -80,9 +86,3 @@ type Tag func(*sql.Selector)
 
 // User is the predicate function for user builders.
 type User func(*sql.Selector)
-
-// UserDevice is the predicate function for userdevice builders.
-type UserDevice func(*sql.Selector)
-
-// UserSession is the predicate function for usersession builders.
-type UserSession func(*sql.Selector)

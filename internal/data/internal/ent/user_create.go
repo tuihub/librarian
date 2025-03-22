@@ -13,9 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
@@ -25,9 +22,9 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifysource"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -60,6 +57,12 @@ func (uc *UserCreate) SetStatus(u user.Status) *UserCreate {
 // SetType sets the "type" field.
 func (uc *UserCreate) SetType(u user.Type) *UserCreate {
 	uc.mutation.SetType(u)
+	return uc
+}
+
+// SetCreatorID sets the "creator_id" field.
+func (uc *UserCreate) SetCreatorID(mi model.InternalID) *UserCreate {
+	uc.mutation.SetCreatorID(mi)
 	return uc
 }
 
@@ -97,34 +100,34 @@ func (uc *UserCreate) SetID(mi model.InternalID) *UserCreate {
 	return uc
 }
 
-// AddBindAccountIDs adds the "bind_account" edge to the Account entity by IDs.
-func (uc *UserCreate) AddBindAccountIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddBindAccountIDs(ids...)
+// AddSessionIDs adds the "session" edge to the Session entity by IDs.
+func (uc *UserCreate) AddSessionIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddSessionIDs(ids...)
 	return uc
 }
 
-// AddBindAccount adds the "bind_account" edges to the Account entity.
-func (uc *UserCreate) AddBindAccount(a ...*Account) *UserCreate {
+// AddSession adds the "session" edges to the Session entity.
+func (uc *UserCreate) AddSession(s ...*Session) *UserCreate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return uc.AddSessionIDs(ids...)
+}
+
+// AddAccountIDs adds the "account" edge to the Account entity by IDs.
+func (uc *UserCreate) AddAccountIDs(ids ...model.InternalID) *UserCreate {
+	uc.mutation.AddAccountIDs(ids...)
+	return uc
+}
+
+// AddAccount adds the "account" edges to the Account entity.
+func (uc *UserCreate) AddAccount(a ...*Account) *UserCreate {
 	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
-	return uc.AddBindAccountIDs(ids...)
-}
-
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (uc *UserCreate) AddPurchasedAppIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddPurchasedAppIDs(ids...)
-	return uc
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (uc *UserCreate) AddPurchasedApp(a ...*AppInfo) *UserCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uc.AddPurchasedAppIDs(ids...)
+	return uc.AddAccountIDs(ids...)
 }
 
 // AddAppIDs adds the "app" edge to the App entity by IDs.
@@ -140,21 +143,6 @@ func (uc *UserCreate) AddApp(a ...*App) *UserCreate {
 		ids[i] = a[i].ID
 	}
 	return uc.AddAppIDs(ids...)
-}
-
-// AddAppInstIDs adds the "app_inst" edge to the AppInst entity by IDs.
-func (uc *UserCreate) AddAppInstIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddAppInstIDs(ids...)
-	return uc
-}
-
-// AddAppInst adds the "app_inst" edges to the AppInst entity.
-func (uc *UserCreate) AddAppInst(a ...*AppInst) *UserCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return uc.AddAppInstIDs(ids...)
 }
 
 // AddFeedConfigIDs adds the "feed_config" edge to the FeedConfig entity by IDs.
@@ -277,21 +265,6 @@ func (uc *UserCreate) AddFile(f ...*File) *UserCreate {
 	return uc.AddFileIDs(ids...)
 }
 
-// AddDeviceInfoIDs adds the "device_info" edge to the DeviceInfo entity by IDs.
-func (uc *UserCreate) AddDeviceInfoIDs(ids ...model.InternalID) *UserCreate {
-	uc.mutation.AddDeviceInfoIDs(ids...)
-	return uc
-}
-
-// AddDeviceInfo adds the "device_info" edges to the DeviceInfo entity.
-func (uc *UserCreate) AddDeviceInfo(d ...*DeviceInfo) *UserCreate {
-	ids := make([]model.InternalID, len(d))
-	for i := range d {
-		ids[i] = d[i].ID
-	}
-	return uc.AddDeviceInfoIDs(ids...)
-}
-
 // AddTagIDs adds the "tag" edge to the Tag entity by IDs.
 func (uc *UserCreate) AddTagIDs(ids ...model.InternalID) *UserCreate {
 	uc.mutation.AddTagIDs(ids...)
@@ -322,12 +295,6 @@ func (uc *UserCreate) AddPorterContext(p ...*PorterContext) *UserCreate {
 	return uc.AddPorterContextIDs(ids...)
 }
 
-// SetCreatorID sets the "creator" edge to the User entity by ID.
-func (uc *UserCreate) SetCreatorID(id model.InternalID) *UserCreate {
-	uc.mutation.SetCreatorID(id)
-	return uc
-}
-
 // SetCreator sets the "creator" edge to the User entity.
 func (uc *UserCreate) SetCreator(u *User) *UserCreate {
 	return uc.SetCreatorID(u.ID)
@@ -346,21 +313,6 @@ func (uc *UserCreate) AddCreatedUser(u ...*User) *UserCreate {
 		ids[i] = u[i].ID
 	}
 	return uc.AddCreatedUserIDs(ids...)
-}
-
-// AddUserDeviceIDs adds the "user_device" edge to the UserDevice entity by IDs.
-func (uc *UserCreate) AddUserDeviceIDs(ids ...int) *UserCreate {
-	uc.mutation.AddUserDeviceIDs(ids...)
-	return uc
-}
-
-// AddUserDevice adds the "user_device" edges to the UserDevice entity.
-func (uc *UserCreate) AddUserDevice(u ...*UserDevice) *UserCreate {
-	ids := make([]int, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return uc.AddUserDeviceIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -432,6 +384,9 @@ func (uc *UserCreate) check() error {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "User.type": %w`, err)}
 		}
 	}
+	if _, ok := uc.mutation.CreatorID(); !ok {
+		return &ValidationError{Name: "creator_id", err: errors.New(`ent: missing required field "User.creator_id"`)}
+	}
 	if _, ok := uc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "User.updated_at"`)}
 	}
@@ -498,15 +453,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := uc.mutation.BindAccountIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.SessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.BindAccountTable,
-			Columns: []string{user.BindAccountColumn},
+			Table:   user.SessionTable,
+			Columns: []string{user.SessionColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(session.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -514,15 +469,15 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.PurchasedAppIDs(); len(nodes) > 0 {
+	if nodes := uc.mutation.AccountIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   user.PurchasedAppTable,
-			Columns: user.PurchasedAppPrimaryKey,
+			Table:   user.AccountTable,
+			Columns: []string{user.AccountColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -539,22 +494,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := uc.mutation.AppInstIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   user.AppInstTable,
-			Columns: []string{user.AppInstColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinst.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -690,26 +629,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := uc.mutation.DeviceInfoIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.DeviceInfoTable,
-			Columns: user.DeviceInfoPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(deviceinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		createE := &UserDeviceCreate{config: uc.config, mutation: newUserDeviceMutation(uc.config, OpCreate)}
-		createE.defaults()
-		_, specE := createE.createSpec()
-		edge.Target.Fields = specE.Fields
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := uc.mutation.TagIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -756,7 +675,7 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_created_user = &nodes[0]
+		_node.CreatorID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := uc.mutation.CreatedUserIDs(); len(nodes) > 0 {
@@ -768,22 +687,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := uc.mutation.UserDeviceIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   user.UserDeviceTable,
-			Columns: []string{user.UserDeviceColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(userdevice.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -931,6 +834,9 @@ func (u *UserUpsertOne) UpdateNewValues() *UserUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(user.FieldID)
+		}
+		if _, exists := u.create.mutation.CreatorID(); exists {
+			s.SetIgnore(user.FieldCreatorID)
 		}
 	}))
 	return u
@@ -1228,6 +1134,9 @@ func (u *UserUpsertBulk) UpdateNewValues() *UserUpsertBulk {
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(user.FieldID)
+			}
+			if _, exists := b.mutation.CreatorID(); exists {
+				s.SetIgnore(user.FieldCreatorID)
 			}
 		}
 	}))

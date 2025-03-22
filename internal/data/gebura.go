@@ -2,15 +2,13 @@ package data
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinstruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
@@ -28,27 +26,27 @@ func NewGeburaRepo(data *Data) *GeburaRepo {
 }
 
 func (g *GeburaRepo) CreateAppInfo(ctx context.Context, a *modelgebura.AppInfo) error {
-	if a.Details == nil {
-		a.Details = new(modelgebura.AppInfoDetails)
-	}
 	q := g.data.db.AppInfo.Create().
 		SetID(a.ID).
-		SetInternal(a.Internal).
 		SetSource(a.Source).
 		SetSourceAppID(a.SourceAppID).
 		SetSourceURL(a.SourceURL).
 		SetName(a.Name).
-		SetType(converter.ToEntAppType(a.Type)).
+		SetType(converter.ToEntAppInfoType(a.Type)).
 		SetShortDescription(a.ShortDescription).
+		SetDescription(a.Description).
 		SetIconImageURL(a.IconImageURL).
+		SetIconImageID(a.IconImageID).
 		SetBackgroundImageURL(a.BackgroundImageURL).
+		SetBackgroundImageID(a.BackgroundImageID).
 		SetCoverImageURL(a.CoverImageURL).
-		SetDescription(a.Details.Description).
-		SetReleaseDate(a.Details.ReleaseDate).
-		SetDeveloper(a.Details.Developer).
-		SetPublisher(a.Details.Publisher).
-		SetVersion(a.Details.Version).
-		SetBindInternalID(a.BoundInternal)
+		SetCoverImageID(a.CoverImageID).
+		SetReleaseDate(a.ReleaseDate).
+		SetDeveloper(a.Developer).
+		SetPublisher(a.Publisher).
+		SetTags(a.Tags).
+		SetAlternativeNames(a.AlternativeNames).
+		SetRawData(a.RawData)
 	return q.Exec(ctx)
 }
 
@@ -60,7 +58,6 @@ func (g *GeburaRepo) CreateAppInfoOrGet(ctx context.Context, a *modelgebura.AppI
 	if ent.IsConstraintError(err) {
 		var ai *ent.AppInfo
 		ai, err = g.data.db.AppInfo.Query().Where(
-			appinfo.InternalEQ(a.Internal),
 			appinfo.SourceEQ(a.Source),
 			appinfo.SourceAppIDEQ(a.SourceAppID),
 		).Only(ctx)
@@ -80,19 +77,21 @@ func (g *GeburaRepo) UpdateAppInfo(ctx context.Context, a *modelgebura.AppInfo) 
 		).
 		SetSourceURL(a.SourceURL).
 		SetName(a.Name).
-		SetType(converter.ToEntAppType(a.Type)).
+		SetType(converter.ToEntAppInfoType(a.Type)).
 		SetShortDescription(a.ShortDescription).
+		SetDescription(a.Description).
 		SetIconImageURL(a.IconImageURL).
+		SetIconImageID(a.IconImageID).
 		SetBackgroundImageURL(a.BackgroundImageURL).
-		SetCoverImageURL(a.CoverImageURL)
-	if a.Details != nil {
-		q.
-			SetDescription(a.Details.Description).
-			SetReleaseDate(a.Details.ReleaseDate).
-			SetDeveloper(a.Details.Developer).
-			SetPublisher(a.Details.Publisher).
-			SetVersion(a.Details.Version)
-	}
+		SetBackgroundImageID(a.BackgroundImageID).
+		SetCoverImageURL(a.CoverImageURL).
+		SetCoverImageID(a.CoverImageID).
+		SetReleaseDate(a.ReleaseDate).
+		SetDeveloper(a.Developer).
+		SetPublisher(a.Publisher).
+		SetTags(a.Tags).
+		SetAlternativeNames(a.AlternativeNames).
+		SetRawData(a.RawData)
 	return q.Exec(ctx)
 }
 
@@ -102,7 +101,6 @@ func (g *GeburaRepo) ListAppInfos(
 	sources []string,
 	types []modelgebura.AppType,
 	ids []model.InternalID,
-	containDetails bool,
 ) ([]*modelgebura.AppInfo, int64, error) {
 	var al []*ent.AppInfo
 	var total int
@@ -114,7 +112,7 @@ func (g *GeburaRepo) ListAppInfos(
 		if len(types) > 0 {
 			typeFilter := make([]appinfo.Type, len(types))
 			for i, appType := range types {
-				typeFilter[i] = converter.ToEntAppType(appType)
+				typeFilter[i] = converter.ToEntAppInfoType(appType)
 			}
 			q.Where(appinfo.TypeIn(typeFilter...))
 		}
@@ -138,65 +136,12 @@ func (g *GeburaRepo) ListAppInfos(
 	if err != nil {
 		return nil, 0, err
 	}
-	infos := make([]*modelgebura.AppInfo, len(al))
-	for i, sa := range al {
-		infos[i] = converter.ToBizAppInfo(sa)
-		if !containDetails {
-			infos[i].Details = nil
-		}
-	}
-	return infos, int64(total), nil
-}
-
-func (g *GeburaRepo) MergeAppInfos(ctx context.Context, base modelgebura.AppInfo, merged model.InternalID) error {
-	err := g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		baseAppInfo := converter.ToEntAppInfo(base)
-		err := tx.AppInfo.UpdateOne(&baseAppInfo).Exec(ctx)
-		if err != nil {
-			return err
-		}
-		mergedAppInfo, err := tx.AppInfo.Get(ctx, merged)
-		if err != nil {
-			return err
-		}
-		if !baseAppInfo.Internal || !mergedAppInfo.Internal {
-			return errors.New("source must be internal")
-		}
-		err = tx.User.Update().
-			Where(user.HasPurchasedAppWith(appinfo.IDEQ(mergedAppInfo.ID))).
-			RemovePurchasedAppIDs(mergedAppInfo.ID).
-			AddPurchasedAppIDs(baseAppInfo.ID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.AppInfo.Update().
-			Where(appinfo.HasBindInternalWith(appinfo.IDEQ(mergedAppInfo.ID))).
-			SetBindInternalID(baseAppInfo.ID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.App.Update().
-			Where(app.HasAppInfoWith(appinfo.IDEQ(mergedAppInfo.ID))).
-			SetAppInfoID(baseAppInfo.ID).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
-		err = tx.AppInfo.DeleteOne(mergedAppInfo).Exec(ctx)
-		if err != nil {
-			return err
-		}
-		return nil
-	})
-	return err
+	return converter.ToBizAppInfoList(al), int64(total), nil
 }
 
 func (g *GeburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (*modelgebura.AppInfo, error) {
 	res, err := g.data.db.AppInfo.Query().
 		Where(
-			appinfo.InternalEQ(id.Internal),
 			appinfo.SourceEQ(id.Source),
 			appinfo.SourceAppIDEQ(id.SourceAppID),
 		).
@@ -207,162 +152,208 @@ func (g *GeburaRepo) GetAppInfo(ctx context.Context, id modelgebura.AppInfoID) (
 	return converter.ToBizAppInfo(res), nil
 }
 
-func (g *GeburaRepo) GetBoundAppInfos(ctx context.Context, id model.InternalID) ([]*modelgebura.AppInfo, error) {
-	a, err := g.data.db.AppInfo.Get(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-	internalApp, err := a.QueryBindInternal().Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	externalApps, err := internalApp.QueryBindExternal().All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizAppInfoList(append(externalApps, internalApp)), nil
-}
+// func (g *GeburaRepo) GetBoundAppInfos(ctx context.Context, id model.InternalID) ([]*modelgebura.AppInfo, error) {
+//	a, err := g.data.db.AppInfo.Get(ctx, id)
+//	if err != nil {
+//		return nil, err
+//	}
+//	internalApp, err := a.QueryBindInternal().Only(ctx)
+//	if err != nil {
+//		return nil, err
+//	}
+//	externalApps, err := internalApp.QueryBindExternal().All(ctx)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return converter.ToBizAppInfoList(append(externalApps, internalApp)), nil
+//}
+//
+// func (g *GeburaRepo) GetBatchBoundAppInfos(
+//	ctx context.Context,
+//	ids []model.InternalID,
+// ) ([]*modelgebura.BoundAppInfos, error) {
+//	infos, err := g.data.db.AppInfo.Query().
+//		Where(
+//			appinfo.IDIn(ids...),
+//			appinfo.InternalEQ(true),
+//		).
+//		WithBindExternal().
+//		All(ctx)
+//	if err != nil {
+//		return nil, err
+//	}
+//	res := make([]*modelgebura.BoundAppInfos, 0, len(infos))
+//	for i := range infos {
+//		res = append(res, new(modelgebura.BoundAppInfos))
+//		res[i].Internal = converter.ToBizAppInfo(infos[i])
+//		if externals, e := infos[i].Edges.BindExternalOrErr(); e == nil {
+//			for _, external := range externals {
+//				res[i].Others = append(res[i].Others, converter.ToBizAppInfo(external))
+//			}
+//		}
+//		if res[i].Internal == nil {
+//			res[i].Internal = new(modelgebura.AppInfo)
+//		}
+//	}
+//	return res, nil
+//}
+//
+// func (g *GeburaRepo) PurchaseAppInfo(
+//	ctx context.Context,
+//	userID model.InternalID,
+//	appID *modelgebura.AppInfoID,
+//	createFunc func(ctx2 context.Context) error,
+// ) (model.InternalID, error) {
+//	q := g.data.db.AppInfo.Query().WithBindInternal()
+//	if appID.Internal {
+//		q.Where(
+//			appinfo.InternalEQ(true),
+//			appinfo.SourceAppIDEQ(appID.SourceAppID),
+//		)
+//	} else {
+//		q.Where(
+//			appinfo.InternalEQ(false),
+//			appinfo.SourceEQ(appID.Source),
+//			appinfo.SourceAppIDEQ(appID.SourceAppID),
+//		)
+//	}
+//	a, err := q.Only(ctx)
+//	if ent.IsNotFound(err) && createFunc != nil {
+//		err = createFunc(ctx)
+//		if err != nil {
+//			return 0, err
+//		}
+//		a, err = q.Only(ctx)
+//		if err != nil {
+//			return 0, err
+//		}
+//	}
+//	if err != nil {
+//		return 0, err
+//	}
+//	if a.Edges.BindInternal != nil {
+//		err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(a.Edges.BindInternal.ID).Exec(ctx)
+//	} else {
+//		err = errors.New("internal app not found")
+//	}
+//	return a.Edges.BindInternal.ID, err
+//}
+//
+// func (g *GeburaRepo) GetPurchasedAppInfos(
+//	ctx context.Context,
+//	id model.InternalID,
+//	source string,
+// ) ([]*modelgebura.BoundAppInfos, error) {
+//	q := g.data.db.AppInfo.Query().
+//		Where(
+//			appinfo.HasPurchasedByUserWith(user.IDEQ(id)),
+//		)
+//	if len(source) > 0 {
+//		q.Where(appinfo.SourceEQ(source))
+//	}
+//	infos, err := q.
+//		WithBindExternal().
+//		All(ctx)
+//	if err != nil {
+//		return nil, err
+//	}
+//	res := make([]*modelgebura.BoundAppInfos, 0, len(infos))
+//	for i := range infos {
+//		res = append(res, new(modelgebura.BoundAppInfos))
+//		res[i].Internal = converter.ToBizAppInfo(infos[i])
+//		if externals, e := infos[i].Edges.BindExternalOrErr(); e == nil {
+//			for _, external := range externals {
+//				res[i].Others = append(res[i].Others, converter.ToBizAppInfo(external))
+//			}
+//		}
+//	}
+//	return res, nil
+//}
 
-func (g *GeburaRepo) GetBatchBoundAppInfos(
-	ctx context.Context,
-	ids []model.InternalID,
-) ([]*modelgebura.BoundAppInfos, error) {
-	infos, err := g.data.db.AppInfo.Query().
-		Where(
-			appinfo.IDIn(ids...),
-			appinfo.InternalEQ(true),
-		).
-		WithBindExternal().
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res := make([]*modelgebura.BoundAppInfos, 0, len(infos))
-	for i := range infos {
-		res = append(res, new(modelgebura.BoundAppInfos))
-		res[i].Internal = converter.ToBizAppInfo(infos[i])
-		if externals, e := infos[i].Edges.BindExternalOrErr(); e == nil {
-			for _, external := range externals {
-				res[i].Others = append(res[i].Others, converter.ToBizAppInfo(external))
-			}
-		}
-		if res[i].Internal == nil {
-			res[i].Internal = new(modelgebura.AppInfo)
-		}
-	}
-	return res, nil
-}
-
-func (g *GeburaRepo) PurchaseAppInfo(
-	ctx context.Context,
-	userID model.InternalID,
-	appID *modelgebura.AppInfoID,
-	createFunc func(ctx2 context.Context) error,
-) (model.InternalID, error) {
-	q := g.data.db.AppInfo.Query().WithBindInternal()
-	if appID.Internal {
-		q.Where(
-			appinfo.InternalEQ(true),
-			appinfo.SourceAppIDEQ(appID.SourceAppID),
-		)
-	} else {
-		q.Where(
-			appinfo.InternalEQ(false),
-			appinfo.SourceEQ(appID.Source),
-			appinfo.SourceAppIDEQ(appID.SourceAppID),
-		)
-	}
-	a, err := q.Only(ctx)
-	if ent.IsNotFound(err) && createFunc != nil {
-		err = createFunc(ctx)
-		if err != nil {
-			return 0, err
-		}
-		a, err = q.Only(ctx)
-		if err != nil {
-			return 0, err
-		}
-	}
-	if err != nil {
-		return 0, err
-	}
-	if a.Edges.BindInternal != nil {
-		err = g.data.db.User.UpdateOneID(userID).AddPurchasedAppIDs(a.Edges.BindInternal.ID).Exec(ctx)
-	} else {
-		err = errors.New("internal app not found")
-	}
-	return a.Edges.BindInternal.ID, err
-}
-
-func (g *GeburaRepo) GetPurchasedAppInfos(
-	ctx context.Context,
-	id model.InternalID,
-	source string,
-) ([]*modelgebura.BoundAppInfos, error) {
-	q := g.data.db.AppInfo.Query().
-		Where(
-			appinfo.HasPurchasedByUserWith(user.IDEQ(id)),
-		)
-	if len(source) > 0 {
-		q.Where(appinfo.SourceEQ(source))
-	}
-	infos, err := q.
-		WithBindExternal().
-		All(ctx)
-	if err != nil {
-		return nil, err
-	}
-	res := make([]*modelgebura.BoundAppInfos, 0, len(infos))
-	for i := range infos {
-		res = append(res, new(modelgebura.BoundAppInfos))
-		res[i].Internal = converter.ToBizAppInfo(infos[i])
-		if externals, e := infos[i].Edges.BindExternalOrErr(); e == nil {
-			for _, external := range externals {
-				res[i].Others = append(res[i].Others, converter.ToBizAppInfo(external))
-			}
-		}
-	}
-	return res, nil
-}
-
-func (g *GeburaRepo) CreateApp(ctx context.Context, userID model.InternalID, ap *modelgebura.App) error {
+func (g *GeburaRepo) CreateApp(ctx context.Context, userID model.InternalID, a *modelgebura.App) error {
 	q := g.data.db.App.Create().
-		SetOwnerID(userID).
-		SetID(ap.ID).
-		SetName(ap.Name).
-		SetDescription(ap.Description).
-		SetPublic(ap.Public)
+		SetUserID(userID).
+		SetID(a.ID).
+		SetVersionNumber(a.VersionNumber).
+		SetVersionDate(a.VersionDate).
+		SetCreatorDeviceID(a.CreatorDeviceID).
+		SetAppSources(a.AppSources).
+		SetPublic(a.Public).
+		SetBoundStoreAppID(a.BoundStoreAppID).
+		SetStopStoreManage(a.StopStoreManage).
+		SetName(a.Name).
+		SetType(converter.ToEntAppType(a.Type)).
+		SetShortDescription(a.ShortDescription).
+		SetDescription(a.Description).
+		SetIconImageURL(a.IconImageURL).
+		SetIconImageID(a.IconImageID).
+		SetBackgroundImageURL(a.BackgroundImageURL).
+		SetBackgroundImageID(a.BackgroundImageID).
+		SetCoverImageURL(a.CoverImageURL).
+		SetCoverImageID(a.CoverImageID).
+		SetReleaseDate(a.ReleaseDate).
+		SetDeveloper(a.Developer).
+		SetPublisher(a.Publisher).
+		SetTags(a.Tags).
+		SetAlternativeNames(a.AlternativeNames)
 	return q.Exec(ctx)
 }
 
-func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, ap *modelgebura.App) error {
-	q := g.data.db.App.Update().
-		Where(
-			app.IDEQ(ap.ID),
-			app.HasOwnerWith(user.IDEQ(ownerID)),
-		).
-		SetName(ap.Name).
-		SetDescription(ap.Description).
-		SetPublic(ap.Public)
-	return q.Exec(ctx)
+func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, a *modelgebura.App) error {
+	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		old, err := tx.App.Get(ctx, a.ID)
+		if err != nil {
+			return err
+		}
+		q := tx.App.Update().
+			Where(
+				app.IDEQ(a.ID),
+				app.HasUserWith(user.IDEQ(ownerID)),
+			).
+			SetVersionNumber(old.VersionNumber + 1).
+			SetVersionDate(a.VersionDate).
+			SetAppSources(a.AppSources).
+			SetPublic(a.Public).
+			SetStopStoreManage(a.StopStoreManage).
+			SetName(a.Name).
+			SetType(converter.ToEntAppType(a.Type)).
+			SetShortDescription(a.ShortDescription).
+			SetDescription(a.Description).
+			SetIconImageURL(a.IconImageURL).
+			SetIconImageID(a.IconImageID).
+			SetBackgroundImageURL(a.BackgroundImageURL).
+			SetBackgroundImageID(a.BackgroundImageID).
+			SetCoverImageURL(a.CoverImageURL).
+			SetCoverImageID(a.CoverImageID).
+			SetReleaseDate(a.ReleaseDate).
+			SetDeveloper(a.Developer).
+			SetPublisher(a.Publisher).
+			SetTags(a.Tags).
+			SetAlternativeNames(a.AlternativeNames)
+		return q.Exec(ctx)
+	})
+}
+
+func (g *GeburaRepo) GetApp(ctx context.Context, id model.InternalID) (*modelgebura.App, error) {
+	a, err := g.data.db.App.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizApp(a), nil
 }
 
 func (g *GeburaRepo) ListApps(
 	ctx context.Context,
 	paging model.Paging,
 	ownerIDs []model.InternalID,
-	appInfoIDs []model.InternalID,
 	ids []model.InternalID,
 	publicOnly bool,
 ) ([]*modelgebura.App, int, error) {
 	q := g.data.db.App.Query().Where(
-		app.HasOwnerWith(user.IDIn(ownerIDs...)),
+		app.HasUserWith(user.IDIn(ownerIDs...)),
 	)
 	if len(ids) > 0 {
 		q.Where(app.IDIn(ids...))
-	}
-	if len(appInfoIDs) > 0 {
-		q.Where(app.HasAppInfoWith(appinfo.IDIn(appInfoIDs...)))
 	}
 	if publicOnly {
 		q.Where(app.PublicEQ(true))
@@ -372,7 +363,6 @@ func (g *GeburaRepo) ListApps(
 		return nil, 0, err
 	}
 	ap, err := q.
-		WithAppInfo().
 		Limit(paging.ToLimit()).
 		Offset(paging.ToOffset()).
 		All(ctx)
@@ -382,43 +372,40 @@ func (g *GeburaRepo) ListApps(
 	res := make([]*modelgebura.App, len(ap))
 	for i := range ap {
 		res[i] = converter.ToBizApp(ap[i])
-		if ap[i].Edges.AppInfo != nil {
-			res[i].AssignedAppInfoID = ap[i].Edges.AppInfo.ID
-		}
 	}
 	return res, total, nil
 }
 
-func (g *GeburaRepo) AssignApp(
-	ctx context.Context,
-	userID model.InternalID,
-	appID model.InternalID,
-	appInfoID model.InternalID,
-) error {
-	err := g.data.db.App.Update().
-		Where(
-			app.HasOwnerWith(user.IDEQ(userID)),
-			app.IDEQ(appID),
-		).
-		SetAppInfoID(appInfoID).
-		Exec(ctx)
-	return err
-}
-
-func (g *GeburaRepo) UnAssignApp(
-	ctx context.Context,
-	userID model.InternalID,
-	appID model.InternalID,
-) error {
-	err := g.data.db.App.Update().
-		Where(
-			app.HasOwnerWith(user.IDEQ(userID)),
-			app.IDEQ(appID),
-		).
-		ClearAppInfo().
-		Exec(ctx)
-	return err
-}
+// func (g *GeburaRepo) AssignApp(
+//	ctx context.Context,
+//	userID model.InternalID,
+//	appID model.InternalID,
+//	appInfoID model.InternalID,
+// ) error {
+//	err := g.data.db.App.Update().
+//		Where(
+//			app.HasOwnerWith(user.IDEQ(userID)),
+//			app.IDEQ(appID),
+//		).
+//		SetAppInfoID(appInfoID).
+//		Exec(ctx)
+//	return err
+//}
+//
+// func (g *GeburaRepo) UnAssignApp(
+//	ctx context.Context,
+//	userID model.InternalID,
+//	appID model.InternalID,
+// ) error {
+//	err := g.data.db.App.Update().
+//		Where(
+//			app.HasOwnerWith(user.IDEQ(userID)),
+//			app.IDEQ(appID),
+//		).
+//		ClearAppInfo().
+//		Exec(ctx)
+//	return err
+//}
 
 // func (g geburaRepo) ListAppPackageBinaryChecksumOfOneSource(
 //	ctx context.Context,
@@ -435,86 +422,21 @@ func (g *GeburaRepo) UnAssignApp(
 //		Strings(ctx)
 //}
 
-func (g *GeburaRepo) CreateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
-	_, err := g.data.db.App.Query().Where(
-		app.IDEQ(inst.AppID),
-		app.HasOwnerWith(user.IDEQ(ownerID)),
-	).Only(ctx)
-	if err != nil {
-		return err
-	}
-	q := g.data.db.AppInst.Create().
-		SetID(inst.ID).
-		SetOwnerID(ownerID).
-		SetAppID(inst.AppID).
-		SetDeviceID(inst.DeviceID)
-	return q.Exec(ctx)
-}
-
-func (g *GeburaRepo) UpdateAppInst(ctx context.Context, ownerID model.InternalID, inst *modelgebura.AppInst) error {
-	_, err := g.data.db.App.Query().Where(
-		app.IDEQ(inst.AppID),
-		app.HasOwnerWith(user.IDEQ(ownerID)),
-	).Only(ctx)
-	if err != nil {
-		return err
-	}
-	q := g.data.db.AppInst.Update().
-		Where(
-			appinst.IDEQ(inst.ID),
-			appinst.HasOwnerWith(user.IDEQ(ownerID)),
-		).
-		SetAppID(inst.AppID)
-	return q.Exec(ctx)
-}
-
-func (g *GeburaRepo) ListAppInsts(
-	ctx context.Context,
-	ownerID model.InternalID,
-	paging model.Paging,
-	ids []model.InternalID,
-	appIDs []model.InternalID,
-	deviceIDs []model.InternalID,
-) ([]*modelgebura.AppInst, int, error) {
-	q := g.data.db.AppInst.Query().Where(appinst.HasOwnerWith(user.IDEQ(ownerID)))
-	if len(ids) > 0 {
-		q.Where(appinst.IDIn(ids...))
-	}
-	if len(appIDs) > 0 {
-		q.Where(appinst.AppIDIn(appIDs...))
-	}
-	if len(deviceIDs) > 0 {
-		q.Where(appinst.DeviceIDIn(deviceIDs...))
-	}
-	total, err := q.Count(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	insts, err := q.
-		Limit(paging.ToLimit()).
-		Offset(paging.ToOffset()).
-		All(ctx)
-	if err != nil {
-		return nil, 0, err
-	}
-	return converter.ToBizAppInstList(insts), total, nil
-}
-
-func (g *GeburaRepo) AddAppInstRunTime(
+func (g *GeburaRepo) AddAppRunTime(
 	ctx context.Context,
 	userID model.InternalID,
 	instID model.InternalID,
 	timeRange *model.TimeRange,
 ) error {
-	return g.data.db.AppInstRunTime.Create().
+	return g.data.db.AppRunTime.Create().
 		SetUserID(userID).
-		SetAppInstID(instID).
+		SetAppID(instID).
 		SetStartTime(timeRange.StartTime).
 		SetRunDuration(timeRange.Duration).
 		Exec(ctx)
 }
 
-func (g *GeburaRepo) SumAppInstRunTime(
+func (g *GeburaRepo) SumAppRunTime(
 	ctx context.Context,
 	userID model.InternalID,
 	instID model.InternalID,
@@ -523,15 +445,15 @@ func (g *GeburaRepo) SumAppInstRunTime(
 	var v []struct {
 		Sum time.Duration
 	}
-	err := g.data.db.AppInstRunTime.Query().Where(
-		appinstruntime.UserIDEQ(userID),
-		appinstruntime.AppInstIDEQ(instID),
-		appinstruntime.And(
-			appinstruntime.StartTimeGTE(timeRange.StartTime),
-			appinstruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+	err := g.data.db.AppRunTime.Query().Where(
+		appruntime.UserIDEQ(userID),
+		appruntime.AppIDEQ(instID),
+		appruntime.And(
+			appruntime.StartTimeGTE(timeRange.StartTime),
+			appruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
 		),
 	).Aggregate(
-		ent.Sum(appinstruntime.FieldRunDuration),
+		ent.Sum(appruntime.FieldRunDuration),
 	).Scan(ctx, &v)
 	if err != nil {
 		return time.Duration(0), err

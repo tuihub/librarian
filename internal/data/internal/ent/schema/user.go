@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -23,7 +25,9 @@ func (User) Fields() []ent.Field {
 		field.Enum("status").
 			Values("active", "blocked"),
 		field.Enum("type").
-			Values("admin", "normal", "sentinel"),
+			Values("admin", "normal"),
+		field.Int64("creator_id").
+			GoType(model.InternalID(0)).Immutable(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -34,10 +38,9 @@ func (User) Fields() []ent.Field {
 // Edges of the User.
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("bind_account", Account.Type),
-		edge.To("purchased_app", AppInfo.Type),
+		edge.To("session", Session.Type),
+		edge.To("account", Account.Type),
 		edge.To("app", App.Type),
-		edge.To("app_inst", AppInst.Type),
 		edge.To("feed_config", FeedConfig.Type),
 		edge.To("feed_action_set", FeedActionSet.Type),
 		edge.To("feed_item_collection", FeedItemCollection.Type),
@@ -46,13 +49,13 @@ func (User) Edges() []ent.Edge {
 		edge.To("notify_flow", NotifyFlow.Type),
 		edge.To("image", Image.Type),
 		edge.To("file", File.Type),
-		edge.To("device_info", DeviceInfo.Type).
-			Through("user_device", UserDevice.Type),
 		edge.To("tag", Tag.Type),
 		edge.To("porter_context", PorterContext.Type),
 		edge.To("created_user", User.Type).
 			From("creator").
+			Field("creator_id").
 			Unique().
-			Required(),
+			Required().
+			Immutable(),
 	}
 }

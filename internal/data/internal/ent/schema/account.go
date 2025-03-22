@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -20,6 +22,7 @@ func (Account) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("platform"),
 		field.String("platform_account_id"),
+		field.Int64("bound_user_id").GoType(model.InternalID(0)).Optional(),
 		field.String("name"),
 		field.String("profile_url"),
 		field.String("avatar_url"),
@@ -40,9 +43,9 @@ func (Account) Indexes() []ent.Index {
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("purchased_app", AppInfo.Type),
-		edge.From("bind_user", User.Type).
-			Ref("bind_account").
+		edge.From("bound_user", User.Type).
+			Ref("account").
+			Field("bound_user_id").
 			Unique(),
 	}
 }

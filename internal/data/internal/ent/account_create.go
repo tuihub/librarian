@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -34,6 +33,20 @@ func (ac *AccountCreate) SetPlatform(s string) *AccountCreate {
 // SetPlatformAccountID sets the "platform_account_id" field.
 func (ac *AccountCreate) SetPlatformAccountID(s string) *AccountCreate {
 	ac.mutation.SetPlatformAccountID(s)
+	return ac
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (ac *AccountCreate) SetBoundUserID(mi model.InternalID) *AccountCreate {
+	ac.mutation.SetBoundUserID(mi)
+	return ac
+}
+
+// SetNillableBoundUserID sets the "bound_user_id" field if the given value is not nil.
+func (ac *AccountCreate) SetNillableBoundUserID(mi *model.InternalID) *AccountCreate {
+	if mi != nil {
+		ac.SetBoundUserID(*mi)
+	}
 	return ac
 }
 
@@ -89,38 +102,9 @@ func (ac *AccountCreate) SetID(mi model.InternalID) *AccountCreate {
 	return ac
 }
 
-// AddPurchasedAppIDs adds the "purchased_app" edge to the AppInfo entity by IDs.
-func (ac *AccountCreate) AddPurchasedAppIDs(ids ...model.InternalID) *AccountCreate {
-	ac.mutation.AddPurchasedAppIDs(ids...)
-	return ac
-}
-
-// AddPurchasedApp adds the "purchased_app" edges to the AppInfo entity.
-func (ac *AccountCreate) AddPurchasedApp(a ...*AppInfo) *AccountCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return ac.AddPurchasedAppIDs(ids...)
-}
-
-// SetBindUserID sets the "bind_user" edge to the User entity by ID.
-func (ac *AccountCreate) SetBindUserID(id model.InternalID) *AccountCreate {
-	ac.mutation.SetBindUserID(id)
-	return ac
-}
-
-// SetNillableBindUserID sets the "bind_user" edge to the User entity by ID if the given value is not nil.
-func (ac *AccountCreate) SetNillableBindUserID(id *model.InternalID) *AccountCreate {
-	if id != nil {
-		ac = ac.SetBindUserID(*id)
-	}
-	return ac
-}
-
-// SetBindUser sets the "bind_user" edge to the User entity.
-func (ac *AccountCreate) SetBindUser(u *User) *AccountCreate {
-	return ac.SetBindUserID(u.ID)
+// SetBoundUser sets the "bound_user" edge to the User entity.
+func (ac *AccountCreate) SetBoundUser(u *User) *AccountCreate {
+	return ac.SetBoundUserID(u.ID)
 }
 
 // Mutation returns the AccountMutation object of the builder.
@@ -252,28 +236,12 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		_spec.SetField(account.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.PurchasedAppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   account.PurchasedAppTable,
-			Columns: account.PurchasedAppPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := ac.mutation.BindUserIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.BoundUserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   account.BindUserTable,
-			Columns: []string{account.BindUserColumn},
+			Table:   account.BoundUserTable,
+			Columns: []string{account.BoundUserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -282,7 +250,7 @@ func (ac *AccountCreate) createSpec() (*Account, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_bind_account = &nodes[0]
+		_node.BoundUserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -358,6 +326,24 @@ func (u *AccountUpsert) SetPlatformAccountID(v string) *AccountUpsert {
 // UpdatePlatformAccountID sets the "platform_account_id" field to the value that was provided on create.
 func (u *AccountUpsert) UpdatePlatformAccountID() *AccountUpsert {
 	u.SetExcluded(account.FieldPlatformAccountID)
+	return u
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (u *AccountUpsert) SetBoundUserID(v model.InternalID) *AccountUpsert {
+	u.Set(account.FieldBoundUserID, v)
+	return u
+}
+
+// UpdateBoundUserID sets the "bound_user_id" field to the value that was provided on create.
+func (u *AccountUpsert) UpdateBoundUserID() *AccountUpsert {
+	u.SetExcluded(account.FieldBoundUserID)
+	return u
+}
+
+// ClearBoundUserID clears the value of the "bound_user_id" field.
+func (u *AccountUpsert) ClearBoundUserID() *AccountUpsert {
+	u.SetNull(account.FieldBoundUserID)
 	return u
 }
 
@@ -494,6 +480,27 @@ func (u *AccountUpsertOne) SetPlatformAccountID(v string) *AccountUpsertOne {
 func (u *AccountUpsertOne) UpdatePlatformAccountID() *AccountUpsertOne {
 	return u.Update(func(s *AccountUpsert) {
 		s.UpdatePlatformAccountID()
+	})
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (u *AccountUpsertOne) SetBoundUserID(v model.InternalID) *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetBoundUserID(v)
+	})
+}
+
+// UpdateBoundUserID sets the "bound_user_id" field to the value that was provided on create.
+func (u *AccountUpsertOne) UpdateBoundUserID() *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateBoundUserID()
+	})
+}
+
+// ClearBoundUserID clears the value of the "bound_user_id" field.
+func (u *AccountUpsertOne) ClearBoundUserID() *AccountUpsertOne {
+	return u.Update(func(s *AccountUpsert) {
+		s.ClearBoundUserID()
 	})
 }
 
@@ -806,6 +813,27 @@ func (u *AccountUpsertBulk) SetPlatformAccountID(v string) *AccountUpsertBulk {
 func (u *AccountUpsertBulk) UpdatePlatformAccountID() *AccountUpsertBulk {
 	return u.Update(func(s *AccountUpsert) {
 		s.UpdatePlatformAccountID()
+	})
+}
+
+// SetBoundUserID sets the "bound_user_id" field.
+func (u *AccountUpsertBulk) SetBoundUserID(v model.InternalID) *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.SetBoundUserID(v)
+	})
+}
+
+// UpdateBoundUserID sets the "bound_user_id" field to the value that was provided on create.
+func (u *AccountUpsertBulk) UpdateBoundUserID() *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.UpdateBoundUserID()
+	})
+}
+
+// ClearBoundUserID clears the value of the "bound_user_id" field.
+func (u *AccountUpsertBulk) ClearBoundUserID() *AccountUpsertBulk {
+	return u.Update(func(s *AccountUpsert) {
+		s.ClearBoundUserID()
 	})
 }
 

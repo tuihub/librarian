@@ -56,9 +56,52 @@ func IDLTE(id model.InternalID) predicate.App {
 	return predicate.App(sql.FieldLTE(FieldID, id))
 }
 
+// VersionNumber applies equality check predicate on the "version_number" field. It's identical to VersionNumberEQ.
+func VersionNumber(v uint64) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersionNumber, v))
+}
+
+// VersionDate applies equality check predicate on the "version_date" field. It's identical to VersionDateEQ.
+func VersionDate(v time.Time) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersionDate, v))
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldUserID, vc))
+}
+
+// CreatorDeviceID applies equality check predicate on the "creator_device_id" field. It's identical to CreatorDeviceIDEQ.
+func CreatorDeviceID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldCreatorDeviceID, vc))
+}
+
+// Public applies equality check predicate on the "public" field. It's identical to PublicEQ.
+func Public(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPublic, v))
+}
+
+// BoundStoreAppID applies equality check predicate on the "bound_store_app_id" field. It's identical to BoundStoreAppIDEQ.
+func BoundStoreAppID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldBoundStoreAppID, vc))
+}
+
+// StopStoreManage applies equality check predicate on the "stop_store_manage" field. It's identical to StopStoreManageEQ.
+func StopStoreManage(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldStopStoreManage, v))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldName, v))
+}
+
+// ShortDescription applies equality check predicate on the "short_description" field. It's identical to ShortDescriptionEQ.
+func ShortDescription(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldShortDescription, v))
 }
 
 // Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
@@ -66,15 +109,52 @@ func Description(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldDescription, v))
 }
 
-// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
-func DeviceID(v model.InternalID) predicate.App {
-	vc := int64(v)
-	return predicate.App(sql.FieldEQ(FieldDeviceID, vc))
+// IconImageURL applies equality check predicate on the "icon_image_url" field. It's identical to IconImageURLEQ.
+func IconImageURL(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldIconImageURL, v))
 }
 
-// Public applies equality check predicate on the "public" field. It's identical to PublicEQ.
-func Public(v bool) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldPublic, v))
+// IconImageID applies equality check predicate on the "icon_image_id" field. It's identical to IconImageIDEQ.
+func IconImageID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldIconImageID, vc))
+}
+
+// BackgroundImageURL applies equality check predicate on the "background_image_url" field. It's identical to BackgroundImageURLEQ.
+func BackgroundImageURL(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageID applies equality check predicate on the "background_image_id" field. It's identical to BackgroundImageIDEQ.
+func BackgroundImageID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageID, vc))
+}
+
+// CoverImageURL applies equality check predicate on the "cover_image_url" field. It's identical to CoverImageURLEQ.
+func CoverImageURL(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldCoverImageURL, v))
+}
+
+// CoverImageID applies equality check predicate on the "cover_image_id" field. It's identical to CoverImageIDEQ.
+func CoverImageID(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldCoverImageID, vc))
+}
+
+// ReleaseDate applies equality check predicate on the "release_date" field. It's identical to ReleaseDateEQ.
+func ReleaseDate(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldReleaseDate, v))
+}
+
+// Developer applies equality check predicate on the "developer" field. It's identical to DeveloperEQ.
+func Developer(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldDeveloper, v))
+}
+
+// Publisher applies equality check predicate on the "publisher" field. It's identical to PublisherEQ.
+func Publisher(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPublisher, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -85,6 +165,240 @@ func UpdatedAt(v time.Time) predicate.App {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// VersionNumberEQ applies the EQ predicate on the "version_number" field.
+func VersionNumberEQ(v uint64) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersionNumber, v))
+}
+
+// VersionNumberNEQ applies the NEQ predicate on the "version_number" field.
+func VersionNumberNEQ(v uint64) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldVersionNumber, v))
+}
+
+// VersionNumberIn applies the In predicate on the "version_number" field.
+func VersionNumberIn(vs ...uint64) predicate.App {
+	return predicate.App(sql.FieldIn(FieldVersionNumber, vs...))
+}
+
+// VersionNumberNotIn applies the NotIn predicate on the "version_number" field.
+func VersionNumberNotIn(vs ...uint64) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldVersionNumber, vs...))
+}
+
+// VersionNumberGT applies the GT predicate on the "version_number" field.
+func VersionNumberGT(v uint64) predicate.App {
+	return predicate.App(sql.FieldGT(FieldVersionNumber, v))
+}
+
+// VersionNumberGTE applies the GTE predicate on the "version_number" field.
+func VersionNumberGTE(v uint64) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldVersionNumber, v))
+}
+
+// VersionNumberLT applies the LT predicate on the "version_number" field.
+func VersionNumberLT(v uint64) predicate.App {
+	return predicate.App(sql.FieldLT(FieldVersionNumber, v))
+}
+
+// VersionNumberLTE applies the LTE predicate on the "version_number" field.
+func VersionNumberLTE(v uint64) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldVersionNumber, v))
+}
+
+// VersionDateEQ applies the EQ predicate on the "version_date" field.
+func VersionDateEQ(v time.Time) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldVersionDate, v))
+}
+
+// VersionDateNEQ applies the NEQ predicate on the "version_date" field.
+func VersionDateNEQ(v time.Time) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldVersionDate, v))
+}
+
+// VersionDateIn applies the In predicate on the "version_date" field.
+func VersionDateIn(vs ...time.Time) predicate.App {
+	return predicate.App(sql.FieldIn(FieldVersionDate, vs...))
+}
+
+// VersionDateNotIn applies the NotIn predicate on the "version_date" field.
+func VersionDateNotIn(vs ...time.Time) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldVersionDate, vs...))
+}
+
+// VersionDateGT applies the GT predicate on the "version_date" field.
+func VersionDateGT(v time.Time) predicate.App {
+	return predicate.App(sql.FieldGT(FieldVersionDate, v))
+}
+
+// VersionDateGTE applies the GTE predicate on the "version_date" field.
+func VersionDateGTE(v time.Time) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldVersionDate, v))
+}
+
+// VersionDateLT applies the LT predicate on the "version_date" field.
+func VersionDateLT(v time.Time) predicate.App {
+	return predicate.App(sql.FieldLT(FieldVersionDate, v))
+}
+
+// VersionDateLTE applies the LTE predicate on the "version_date" field.
+func VersionDateLTE(v time.Time) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldVersionDate, v))
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldUserID, vc))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldUserID, vc))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldUserID, v...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldUserID, v...))
+}
+
+// CreatorDeviceIDEQ applies the EQ predicate on the "creator_device_id" field.
+func CreatorDeviceIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldCreatorDeviceID, vc))
+}
+
+// CreatorDeviceIDNEQ applies the NEQ predicate on the "creator_device_id" field.
+func CreatorDeviceIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldCreatorDeviceID, vc))
+}
+
+// CreatorDeviceIDIn applies the In predicate on the "creator_device_id" field.
+func CreatorDeviceIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldCreatorDeviceID, v...))
+}
+
+// CreatorDeviceIDNotIn applies the NotIn predicate on the "creator_device_id" field.
+func CreatorDeviceIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldCreatorDeviceID, v...))
+}
+
+// PublicEQ applies the EQ predicate on the "public" field.
+func PublicEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPublic, v))
+}
+
+// PublicNEQ applies the NEQ predicate on the "public" field.
+func PublicNEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldPublic, v))
+}
+
+// BoundStoreAppIDEQ applies the EQ predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDNEQ applies the NEQ predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDIn applies the In predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldBoundStoreAppID, v...))
+}
+
+// BoundStoreAppIDNotIn applies the NotIn predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldBoundStoreAppID, v...))
+}
+
+// BoundStoreAppIDGT applies the GT predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDGT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGT(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDGTE applies the GTE predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDGTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGTE(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDLT applies the LT predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDLT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLT(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDLTE applies the LTE predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDLTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLTE(FieldBoundStoreAppID, vc))
+}
+
+// BoundStoreAppIDIsNil applies the IsNil predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldBoundStoreAppID))
+}
+
+// BoundStoreAppIDNotNil applies the NotNil predicate on the "bound_store_app_id" field.
+func BoundStoreAppIDNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldBoundStoreAppID))
+}
+
+// StopStoreManageEQ applies the EQ predicate on the "stop_store_manage" field.
+func StopStoreManageEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldStopStoreManage, v))
+}
+
+// StopStoreManageNEQ applies the NEQ predicate on the "stop_store_manage" field.
+func StopStoreManageNEQ(v bool) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldStopStoreManage, v))
+}
+
+// StopStoreManageIsNil applies the IsNil predicate on the "stop_store_manage" field.
+func StopStoreManageIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldStopStoreManage))
+}
+
+// StopStoreManageNotNil applies the NotNil predicate on the "stop_store_manage" field.
+func StopStoreManageNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldStopStoreManage))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -152,6 +466,101 @@ func NameContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldName, v))
 }
 
+// TypeEQ applies the EQ predicate on the "type" field.
+func TypeEQ(v Type) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldType, v))
+}
+
+// TypeNEQ applies the NEQ predicate on the "type" field.
+func TypeNEQ(v Type) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldType, v))
+}
+
+// TypeIn applies the In predicate on the "type" field.
+func TypeIn(vs ...Type) predicate.App {
+	return predicate.App(sql.FieldIn(FieldType, vs...))
+}
+
+// TypeNotIn applies the NotIn predicate on the "type" field.
+func TypeNotIn(vs ...Type) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldType, vs...))
+}
+
+// ShortDescriptionEQ applies the EQ predicate on the "short_description" field.
+func ShortDescriptionEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldShortDescription, v))
+}
+
+// ShortDescriptionNEQ applies the NEQ predicate on the "short_description" field.
+func ShortDescriptionNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldShortDescription, v))
+}
+
+// ShortDescriptionIn applies the In predicate on the "short_description" field.
+func ShortDescriptionIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldShortDescription, vs...))
+}
+
+// ShortDescriptionNotIn applies the NotIn predicate on the "short_description" field.
+func ShortDescriptionNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldShortDescription, vs...))
+}
+
+// ShortDescriptionGT applies the GT predicate on the "short_description" field.
+func ShortDescriptionGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldShortDescription, v))
+}
+
+// ShortDescriptionGTE applies the GTE predicate on the "short_description" field.
+func ShortDescriptionGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldShortDescription, v))
+}
+
+// ShortDescriptionLT applies the LT predicate on the "short_description" field.
+func ShortDescriptionLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldShortDescription, v))
+}
+
+// ShortDescriptionLTE applies the LTE predicate on the "short_description" field.
+func ShortDescriptionLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldShortDescription, v))
+}
+
+// ShortDescriptionContains applies the Contains predicate on the "short_description" field.
+func ShortDescriptionContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldShortDescription, v))
+}
+
+// ShortDescriptionHasPrefix applies the HasPrefix predicate on the "short_description" field.
+func ShortDescriptionHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldShortDescription, v))
+}
+
+// ShortDescriptionHasSuffix applies the HasSuffix predicate on the "short_description" field.
+func ShortDescriptionHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldShortDescription, v))
+}
+
+// ShortDescriptionIsNil applies the IsNil predicate on the "short_description" field.
+func ShortDescriptionIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldShortDescription))
+}
+
+// ShortDescriptionNotNil applies the NotNil predicate on the "short_description" field.
+func ShortDescriptionNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldShortDescription))
+}
+
+// ShortDescriptionEqualFold applies the EqualFold predicate on the "short_description" field.
+func ShortDescriptionEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldShortDescription, v))
+}
+
+// ShortDescriptionContainsFold applies the ContainsFold predicate on the "short_description" field.
+func ShortDescriptionContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldShortDescription, v))
+}
+
 // DescriptionEQ applies the EQ predicate on the "description" field.
 func DescriptionEQ(v string) predicate.App {
 	return predicate.App(sql.FieldEQ(FieldDescription, v))
@@ -207,6 +616,16 @@ func DescriptionHasSuffix(v string) predicate.App {
 	return predicate.App(sql.FieldHasSuffix(FieldDescription, v))
 }
 
+// DescriptionIsNil applies the IsNil predicate on the "description" field.
+func DescriptionIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldDescription))
+}
+
+// DescriptionNotNil applies the NotNil predicate on the "description" field.
+func DescriptionNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldDescription))
+}
+
 // DescriptionEqualFold applies the EqualFold predicate on the "description" field.
 func DescriptionEqualFold(v string) predicate.App {
 	return predicate.App(sql.FieldEqualFold(FieldDescription, v))
@@ -217,68 +636,616 @@ func DescriptionContainsFold(v string) predicate.App {
 	return predicate.App(sql.FieldContainsFold(FieldDescription, v))
 }
 
-// DeviceIDEQ applies the EQ predicate on the "device_id" field.
-func DeviceIDEQ(v model.InternalID) predicate.App {
-	vc := int64(v)
-	return predicate.App(sql.FieldEQ(FieldDeviceID, vc))
+// IconImageURLEQ applies the EQ predicate on the "icon_image_url" field.
+func IconImageURLEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldIconImageURL, v))
 }
 
-// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
-func DeviceIDNEQ(v model.InternalID) predicate.App {
-	vc := int64(v)
-	return predicate.App(sql.FieldNEQ(FieldDeviceID, vc))
+// IconImageURLNEQ applies the NEQ predicate on the "icon_image_url" field.
+func IconImageURLNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldIconImageURL, v))
 }
 
-// DeviceIDIn applies the In predicate on the "device_id" field.
-func DeviceIDIn(vs ...model.InternalID) predicate.App {
+// IconImageURLIn applies the In predicate on the "icon_image_url" field.
+func IconImageURLIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldIconImageURL, vs...))
+}
+
+// IconImageURLNotIn applies the NotIn predicate on the "icon_image_url" field.
+func IconImageURLNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldIconImageURL, vs...))
+}
+
+// IconImageURLGT applies the GT predicate on the "icon_image_url" field.
+func IconImageURLGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldIconImageURL, v))
+}
+
+// IconImageURLGTE applies the GTE predicate on the "icon_image_url" field.
+func IconImageURLGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldIconImageURL, v))
+}
+
+// IconImageURLLT applies the LT predicate on the "icon_image_url" field.
+func IconImageURLLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldIconImageURL, v))
+}
+
+// IconImageURLLTE applies the LTE predicate on the "icon_image_url" field.
+func IconImageURLLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldIconImageURL, v))
+}
+
+// IconImageURLContains applies the Contains predicate on the "icon_image_url" field.
+func IconImageURLContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldIconImageURL, v))
+}
+
+// IconImageURLHasPrefix applies the HasPrefix predicate on the "icon_image_url" field.
+func IconImageURLHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldIconImageURL, v))
+}
+
+// IconImageURLHasSuffix applies the HasSuffix predicate on the "icon_image_url" field.
+func IconImageURLHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldIconImageURL, v))
+}
+
+// IconImageURLIsNil applies the IsNil predicate on the "icon_image_url" field.
+func IconImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldIconImageURL))
+}
+
+// IconImageURLNotNil applies the NotNil predicate on the "icon_image_url" field.
+func IconImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldIconImageURL))
+}
+
+// IconImageURLEqualFold applies the EqualFold predicate on the "icon_image_url" field.
+func IconImageURLEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldIconImageURL, v))
+}
+
+// IconImageURLContainsFold applies the ContainsFold predicate on the "icon_image_url" field.
+func IconImageURLContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldIconImageURL, v))
+}
+
+// IconImageIDEQ applies the EQ predicate on the "icon_image_id" field.
+func IconImageIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldIconImageID, vc))
+}
+
+// IconImageIDNEQ applies the NEQ predicate on the "icon_image_id" field.
+func IconImageIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldIconImageID, vc))
+}
+
+// IconImageIDIn applies the In predicate on the "icon_image_id" field.
+func IconImageIDIn(vs ...model.InternalID) predicate.App {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.App(sql.FieldIn(FieldDeviceID, v...))
+	return predicate.App(sql.FieldIn(FieldIconImageID, v...))
 }
 
-// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
-func DeviceIDNotIn(vs ...model.InternalID) predicate.App {
+// IconImageIDNotIn applies the NotIn predicate on the "icon_image_id" field.
+func IconImageIDNotIn(vs ...model.InternalID) predicate.App {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.App(sql.FieldNotIn(FieldDeviceID, v...))
+	return predicate.App(sql.FieldNotIn(FieldIconImageID, v...))
 }
 
-// DeviceIDGT applies the GT predicate on the "device_id" field.
-func DeviceIDGT(v model.InternalID) predicate.App {
+// IconImageIDGT applies the GT predicate on the "icon_image_id" field.
+func IconImageIDGT(v model.InternalID) predicate.App {
 	vc := int64(v)
-	return predicate.App(sql.FieldGT(FieldDeviceID, vc))
+	return predicate.App(sql.FieldGT(FieldIconImageID, vc))
 }
 
-// DeviceIDGTE applies the GTE predicate on the "device_id" field.
-func DeviceIDGTE(v model.InternalID) predicate.App {
+// IconImageIDGTE applies the GTE predicate on the "icon_image_id" field.
+func IconImageIDGTE(v model.InternalID) predicate.App {
 	vc := int64(v)
-	return predicate.App(sql.FieldGTE(FieldDeviceID, vc))
+	return predicate.App(sql.FieldGTE(FieldIconImageID, vc))
 }
 
-// DeviceIDLT applies the LT predicate on the "device_id" field.
-func DeviceIDLT(v model.InternalID) predicate.App {
+// IconImageIDLT applies the LT predicate on the "icon_image_id" field.
+func IconImageIDLT(v model.InternalID) predicate.App {
 	vc := int64(v)
-	return predicate.App(sql.FieldLT(FieldDeviceID, vc))
+	return predicate.App(sql.FieldLT(FieldIconImageID, vc))
 }
 
-// DeviceIDLTE applies the LTE predicate on the "device_id" field.
-func DeviceIDLTE(v model.InternalID) predicate.App {
+// IconImageIDLTE applies the LTE predicate on the "icon_image_id" field.
+func IconImageIDLTE(v model.InternalID) predicate.App {
 	vc := int64(v)
-	return predicate.App(sql.FieldLTE(FieldDeviceID, vc))
+	return predicate.App(sql.FieldLTE(FieldIconImageID, vc))
 }
 
-// PublicEQ applies the EQ predicate on the "public" field.
-func PublicEQ(v bool) predicate.App {
-	return predicate.App(sql.FieldEQ(FieldPublic, v))
+// BackgroundImageURLEQ applies the EQ predicate on the "background_image_url" field.
+func BackgroundImageURLEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageURL, v))
 }
 
-// PublicNEQ applies the NEQ predicate on the "public" field.
-func PublicNEQ(v bool) predicate.App {
-	return predicate.App(sql.FieldNEQ(FieldPublic, v))
+// BackgroundImageURLNEQ applies the NEQ predicate on the "background_image_url" field.
+func BackgroundImageURLNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLIn applies the In predicate on the "background_image_url" field.
+func BackgroundImageURLIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldBackgroundImageURL, vs...))
+}
+
+// BackgroundImageURLNotIn applies the NotIn predicate on the "background_image_url" field.
+func BackgroundImageURLNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldBackgroundImageURL, vs...))
+}
+
+// BackgroundImageURLGT applies the GT predicate on the "background_image_url" field.
+func BackgroundImageURLGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLGTE applies the GTE predicate on the "background_image_url" field.
+func BackgroundImageURLGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLLT applies the LT predicate on the "background_image_url" field.
+func BackgroundImageURLLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLLTE applies the LTE predicate on the "background_image_url" field.
+func BackgroundImageURLLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLContains applies the Contains predicate on the "background_image_url" field.
+func BackgroundImageURLContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLHasPrefix applies the HasPrefix predicate on the "background_image_url" field.
+func BackgroundImageURLHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLHasSuffix applies the HasSuffix predicate on the "background_image_url" field.
+func BackgroundImageURLHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLIsNil applies the IsNil predicate on the "background_image_url" field.
+func BackgroundImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldBackgroundImageURL))
+}
+
+// BackgroundImageURLNotNil applies the NotNil predicate on the "background_image_url" field.
+func BackgroundImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldBackgroundImageURL))
+}
+
+// BackgroundImageURLEqualFold applies the EqualFold predicate on the "background_image_url" field.
+func BackgroundImageURLEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageURLContainsFold applies the ContainsFold predicate on the "background_image_url" field.
+func BackgroundImageURLContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldBackgroundImageURL, v))
+}
+
+// BackgroundImageIDEQ applies the EQ predicate on the "background_image_id" field.
+func BackgroundImageIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldBackgroundImageID, vc))
+}
+
+// BackgroundImageIDNEQ applies the NEQ predicate on the "background_image_id" field.
+func BackgroundImageIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldBackgroundImageID, vc))
+}
+
+// BackgroundImageIDIn applies the In predicate on the "background_image_id" field.
+func BackgroundImageIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldBackgroundImageID, v...))
+}
+
+// BackgroundImageIDNotIn applies the NotIn predicate on the "background_image_id" field.
+func BackgroundImageIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldBackgroundImageID, v...))
+}
+
+// BackgroundImageIDGT applies the GT predicate on the "background_image_id" field.
+func BackgroundImageIDGT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGT(FieldBackgroundImageID, vc))
+}
+
+// BackgroundImageIDGTE applies the GTE predicate on the "background_image_id" field.
+func BackgroundImageIDGTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGTE(FieldBackgroundImageID, vc))
+}
+
+// BackgroundImageIDLT applies the LT predicate on the "background_image_id" field.
+func BackgroundImageIDLT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLT(FieldBackgroundImageID, vc))
+}
+
+// BackgroundImageIDLTE applies the LTE predicate on the "background_image_id" field.
+func BackgroundImageIDLTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLTE(FieldBackgroundImageID, vc))
+}
+
+// CoverImageURLEQ applies the EQ predicate on the "cover_image_url" field.
+func CoverImageURLEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldCoverImageURL, v))
+}
+
+// CoverImageURLNEQ applies the NEQ predicate on the "cover_image_url" field.
+func CoverImageURLNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldCoverImageURL, v))
+}
+
+// CoverImageURLIn applies the In predicate on the "cover_image_url" field.
+func CoverImageURLIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldCoverImageURL, vs...))
+}
+
+// CoverImageURLNotIn applies the NotIn predicate on the "cover_image_url" field.
+func CoverImageURLNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldCoverImageURL, vs...))
+}
+
+// CoverImageURLGT applies the GT predicate on the "cover_image_url" field.
+func CoverImageURLGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldCoverImageURL, v))
+}
+
+// CoverImageURLGTE applies the GTE predicate on the "cover_image_url" field.
+func CoverImageURLGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldCoverImageURL, v))
+}
+
+// CoverImageURLLT applies the LT predicate on the "cover_image_url" field.
+func CoverImageURLLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldCoverImageURL, v))
+}
+
+// CoverImageURLLTE applies the LTE predicate on the "cover_image_url" field.
+func CoverImageURLLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldCoverImageURL, v))
+}
+
+// CoverImageURLContains applies the Contains predicate on the "cover_image_url" field.
+func CoverImageURLContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldCoverImageURL, v))
+}
+
+// CoverImageURLHasPrefix applies the HasPrefix predicate on the "cover_image_url" field.
+func CoverImageURLHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldCoverImageURL, v))
+}
+
+// CoverImageURLHasSuffix applies the HasSuffix predicate on the "cover_image_url" field.
+func CoverImageURLHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldCoverImageURL, v))
+}
+
+// CoverImageURLIsNil applies the IsNil predicate on the "cover_image_url" field.
+func CoverImageURLIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldCoverImageURL))
+}
+
+// CoverImageURLNotNil applies the NotNil predicate on the "cover_image_url" field.
+func CoverImageURLNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldCoverImageURL))
+}
+
+// CoverImageURLEqualFold applies the EqualFold predicate on the "cover_image_url" field.
+func CoverImageURLEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldCoverImageURL, v))
+}
+
+// CoverImageURLContainsFold applies the ContainsFold predicate on the "cover_image_url" field.
+func CoverImageURLContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldCoverImageURL, v))
+}
+
+// CoverImageIDEQ applies the EQ predicate on the "cover_image_id" field.
+func CoverImageIDEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldEQ(FieldCoverImageID, vc))
+}
+
+// CoverImageIDNEQ applies the NEQ predicate on the "cover_image_id" field.
+func CoverImageIDNEQ(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldNEQ(FieldCoverImageID, vc))
+}
+
+// CoverImageIDIn applies the In predicate on the "cover_image_id" field.
+func CoverImageIDIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldIn(FieldCoverImageID, v...))
+}
+
+// CoverImageIDNotIn applies the NotIn predicate on the "cover_image_id" field.
+func CoverImageIDNotIn(vs ...model.InternalID) predicate.App {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.App(sql.FieldNotIn(FieldCoverImageID, v...))
+}
+
+// CoverImageIDGT applies the GT predicate on the "cover_image_id" field.
+func CoverImageIDGT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGT(FieldCoverImageID, vc))
+}
+
+// CoverImageIDGTE applies the GTE predicate on the "cover_image_id" field.
+func CoverImageIDGTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldGTE(FieldCoverImageID, vc))
+}
+
+// CoverImageIDLT applies the LT predicate on the "cover_image_id" field.
+func CoverImageIDLT(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLT(FieldCoverImageID, vc))
+}
+
+// CoverImageIDLTE applies the LTE predicate on the "cover_image_id" field.
+func CoverImageIDLTE(v model.InternalID) predicate.App {
+	vc := int64(v)
+	return predicate.App(sql.FieldLTE(FieldCoverImageID, vc))
+}
+
+// ReleaseDateEQ applies the EQ predicate on the "release_date" field.
+func ReleaseDateEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldReleaseDate, v))
+}
+
+// ReleaseDateNEQ applies the NEQ predicate on the "release_date" field.
+func ReleaseDateNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldReleaseDate, v))
+}
+
+// ReleaseDateIn applies the In predicate on the "release_date" field.
+func ReleaseDateIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldReleaseDate, vs...))
+}
+
+// ReleaseDateNotIn applies the NotIn predicate on the "release_date" field.
+func ReleaseDateNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldReleaseDate, vs...))
+}
+
+// ReleaseDateGT applies the GT predicate on the "release_date" field.
+func ReleaseDateGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldReleaseDate, v))
+}
+
+// ReleaseDateGTE applies the GTE predicate on the "release_date" field.
+func ReleaseDateGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldReleaseDate, v))
+}
+
+// ReleaseDateLT applies the LT predicate on the "release_date" field.
+func ReleaseDateLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldReleaseDate, v))
+}
+
+// ReleaseDateLTE applies the LTE predicate on the "release_date" field.
+func ReleaseDateLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldReleaseDate, v))
+}
+
+// ReleaseDateContains applies the Contains predicate on the "release_date" field.
+func ReleaseDateContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldReleaseDate, v))
+}
+
+// ReleaseDateHasPrefix applies the HasPrefix predicate on the "release_date" field.
+func ReleaseDateHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldReleaseDate, v))
+}
+
+// ReleaseDateHasSuffix applies the HasSuffix predicate on the "release_date" field.
+func ReleaseDateHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldReleaseDate, v))
+}
+
+// ReleaseDateIsNil applies the IsNil predicate on the "release_date" field.
+func ReleaseDateIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldReleaseDate))
+}
+
+// ReleaseDateNotNil applies the NotNil predicate on the "release_date" field.
+func ReleaseDateNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldReleaseDate))
+}
+
+// ReleaseDateEqualFold applies the EqualFold predicate on the "release_date" field.
+func ReleaseDateEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldReleaseDate, v))
+}
+
+// ReleaseDateContainsFold applies the ContainsFold predicate on the "release_date" field.
+func ReleaseDateContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldReleaseDate, v))
+}
+
+// DeveloperEQ applies the EQ predicate on the "developer" field.
+func DeveloperEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldDeveloper, v))
+}
+
+// DeveloperNEQ applies the NEQ predicate on the "developer" field.
+func DeveloperNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldDeveloper, v))
+}
+
+// DeveloperIn applies the In predicate on the "developer" field.
+func DeveloperIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldDeveloper, vs...))
+}
+
+// DeveloperNotIn applies the NotIn predicate on the "developer" field.
+func DeveloperNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldDeveloper, vs...))
+}
+
+// DeveloperGT applies the GT predicate on the "developer" field.
+func DeveloperGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldDeveloper, v))
+}
+
+// DeveloperGTE applies the GTE predicate on the "developer" field.
+func DeveloperGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldDeveloper, v))
+}
+
+// DeveloperLT applies the LT predicate on the "developer" field.
+func DeveloperLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldDeveloper, v))
+}
+
+// DeveloperLTE applies the LTE predicate on the "developer" field.
+func DeveloperLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldDeveloper, v))
+}
+
+// DeveloperContains applies the Contains predicate on the "developer" field.
+func DeveloperContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldDeveloper, v))
+}
+
+// DeveloperHasPrefix applies the HasPrefix predicate on the "developer" field.
+func DeveloperHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldDeveloper, v))
+}
+
+// DeveloperHasSuffix applies the HasSuffix predicate on the "developer" field.
+func DeveloperHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldDeveloper, v))
+}
+
+// DeveloperIsNil applies the IsNil predicate on the "developer" field.
+func DeveloperIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldDeveloper))
+}
+
+// DeveloperNotNil applies the NotNil predicate on the "developer" field.
+func DeveloperNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldDeveloper))
+}
+
+// DeveloperEqualFold applies the EqualFold predicate on the "developer" field.
+func DeveloperEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldDeveloper, v))
+}
+
+// DeveloperContainsFold applies the ContainsFold predicate on the "developer" field.
+func DeveloperContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldDeveloper, v))
+}
+
+// PublisherEQ applies the EQ predicate on the "publisher" field.
+func PublisherEQ(v string) predicate.App {
+	return predicate.App(sql.FieldEQ(FieldPublisher, v))
+}
+
+// PublisherNEQ applies the NEQ predicate on the "publisher" field.
+func PublisherNEQ(v string) predicate.App {
+	return predicate.App(sql.FieldNEQ(FieldPublisher, v))
+}
+
+// PublisherIn applies the In predicate on the "publisher" field.
+func PublisherIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldIn(FieldPublisher, vs...))
+}
+
+// PublisherNotIn applies the NotIn predicate on the "publisher" field.
+func PublisherNotIn(vs ...string) predicate.App {
+	return predicate.App(sql.FieldNotIn(FieldPublisher, vs...))
+}
+
+// PublisherGT applies the GT predicate on the "publisher" field.
+func PublisherGT(v string) predicate.App {
+	return predicate.App(sql.FieldGT(FieldPublisher, v))
+}
+
+// PublisherGTE applies the GTE predicate on the "publisher" field.
+func PublisherGTE(v string) predicate.App {
+	return predicate.App(sql.FieldGTE(FieldPublisher, v))
+}
+
+// PublisherLT applies the LT predicate on the "publisher" field.
+func PublisherLT(v string) predicate.App {
+	return predicate.App(sql.FieldLT(FieldPublisher, v))
+}
+
+// PublisherLTE applies the LTE predicate on the "publisher" field.
+func PublisherLTE(v string) predicate.App {
+	return predicate.App(sql.FieldLTE(FieldPublisher, v))
+}
+
+// PublisherContains applies the Contains predicate on the "publisher" field.
+func PublisherContains(v string) predicate.App {
+	return predicate.App(sql.FieldContains(FieldPublisher, v))
+}
+
+// PublisherHasPrefix applies the HasPrefix predicate on the "publisher" field.
+func PublisherHasPrefix(v string) predicate.App {
+	return predicate.App(sql.FieldHasPrefix(FieldPublisher, v))
+}
+
+// PublisherHasSuffix applies the HasSuffix predicate on the "publisher" field.
+func PublisherHasSuffix(v string) predicate.App {
+	return predicate.App(sql.FieldHasSuffix(FieldPublisher, v))
+}
+
+// PublisherIsNil applies the IsNil predicate on the "publisher" field.
+func PublisherIsNil() predicate.App {
+	return predicate.App(sql.FieldIsNull(FieldPublisher))
+}
+
+// PublisherNotNil applies the NotNil predicate on the "publisher" field.
+func PublisherNotNil() predicate.App {
+	return predicate.App(sql.FieldNotNull(FieldPublisher))
+}
+
+// PublisherEqualFold applies the EqualFold predicate on the "publisher" field.
+func PublisherEqualFold(v string) predicate.App {
+	return predicate.App(sql.FieldEqualFold(FieldPublisher, v))
+}
+
+// PublisherContainsFold applies the ContainsFold predicate on the "publisher" field.
+func PublisherContainsFold(v string) predicate.App {
+	return predicate.App(sql.FieldContainsFold(FieldPublisher, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -361,21 +1328,21 @@ func CreatedAtLTE(v time.Time) predicate.App {
 	return predicate.App(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasOwner applies the HasEdge predicate on the "owner" edge.
-func HasOwner() predicate.App {
+// HasUser applies the HasEdge predicate on the "user" edge.
+func HasUser() predicate.App {
 	return predicate.App(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, UserTable, UserColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
-func HasOwnerWith(preds ...predicate.User) predicate.App {
+// HasUserWith applies the HasEdge predicate on the "user" edge with a given conditions (other predicates).
+func HasUserWith(preds ...predicate.User) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := newOwnerStep()
+		step := newUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)
@@ -384,21 +1351,44 @@ func HasOwnerWith(preds ...predicate.User) predicate.App {
 	})
 }
 
-// HasAppInfo applies the HasEdge predicate on the "app_info" edge.
-func HasAppInfo() predicate.App {
+// HasDevice applies the HasEdge predicate on the "device" edge.
+func HasDevice() predicate.App {
 	return predicate.App(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, AppInfoTable, AppInfoColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, DeviceTable, DeviceColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasAppInfoWith applies the HasEdge predicate on the "app_info" edge with a given conditions (other predicates).
-func HasAppInfoWith(preds ...predicate.AppInfo) predicate.App {
+// HasDeviceWith applies the HasEdge predicate on the "device" edge with a given conditions (other predicates).
+func HasDeviceWith(preds ...predicate.Device) predicate.App {
 	return predicate.App(func(s *sql.Selector) {
-		step := newAppInfoStep()
+		step := newDeviceStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAppRunTime applies the HasEdge predicate on the "app_run_time" edge.
+func HasAppRunTime() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, AppRunTimeTable, AppRunTimeColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppRunTimeWith applies the HasEdge predicate on the "app_run_time" edge with a given conditions (other predicates).
+func HasAppRunTimeWith(preds ...predicate.AppRunTime) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := newAppRunTimeStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

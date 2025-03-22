@@ -18,11 +18,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinstruntime"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
@@ -38,11 +37,12 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
-	"github.com/tuihub/librarian/internal/data/internal/ent/usersession"
 )
 
 // Client is the client that holds all ent builders.
@@ -54,16 +54,14 @@ type Client struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
-	// AppBinary is the client for interacting with the AppBinary builders.
-	AppBinary *AppBinaryClient
+	// AppCategory is the client for interacting with the AppCategory builders.
+	AppCategory *AppCategoryClient
 	// AppInfo is the client for interacting with the AppInfo builders.
 	AppInfo *AppInfoClient
-	// AppInst is the client for interacting with the AppInst builders.
-	AppInst *AppInstClient
-	// AppInstRunTime is the client for interacting with the AppInstRunTime builders.
-	AppInstRunTime *AppInstRunTimeClient
-	// DeviceInfo is the client for interacting with the DeviceInfo builders.
-	DeviceInfo *DeviceInfoClient
+	// AppRunTime is the client for interacting with the AppRunTime builders.
+	AppRunTime *AppRunTimeClient
+	// Device is the client for interacting with the Device builders.
+	Device *DeviceClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedActionSet is the client for interacting with the FeedActionSet builders.
@@ -94,16 +92,18 @@ type Client struct {
 	PorterContext *PorterContextClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
+	// Session is the client for interacting with the Session builders.
+	Session *SessionClient
+	// StoreApp is the client for interacting with the StoreApp builders.
+	StoreApp *StoreAppClient
+	// StoreAppBinary is the client for interacting with the StoreAppBinary builders.
+	StoreAppBinary *StoreAppBinaryClient
 	// SystemNotification is the client for interacting with the SystemNotification builders.
 	SystemNotification *SystemNotificationClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
-	// UserDevice is the client for interacting with the UserDevice builders.
-	UserDevice *UserDeviceClient
-	// UserSession is the client for interacting with the UserSession builders.
-	UserSession *UserSessionClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -117,11 +117,10 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Account = NewAccountClient(c.config)
 	c.App = NewAppClient(c.config)
-	c.AppBinary = NewAppBinaryClient(c.config)
+	c.AppCategory = NewAppCategoryClient(c.config)
 	c.AppInfo = NewAppInfoClient(c.config)
-	c.AppInst = NewAppInstClient(c.config)
-	c.AppInstRunTime = NewAppInstRunTimeClient(c.config)
-	c.DeviceInfo = NewDeviceInfoClient(c.config)
+	c.AppRunTime = NewAppRunTimeClient(c.config)
+	c.Device = NewDeviceClient(c.config)
 	c.Feed = NewFeedClient(c.config)
 	c.FeedActionSet = NewFeedActionSetClient(c.config)
 	c.FeedConfig = NewFeedConfigClient(c.config)
@@ -137,11 +136,12 @@ func (c *Client) init() {
 	c.NotifyTarget = NewNotifyTargetClient(c.config)
 	c.PorterContext = NewPorterContextClient(c.config)
 	c.PorterInstance = NewPorterInstanceClient(c.config)
+	c.Session = NewSessionClient(c.config)
+	c.StoreApp = NewStoreAppClient(c.config)
+	c.StoreAppBinary = NewStoreAppBinaryClient(c.config)
 	c.SystemNotification = NewSystemNotificationClient(c.config)
 	c.Tag = NewTagClient(c.config)
 	c.User = NewUserClient(c.config)
-	c.UserDevice = NewUserDeviceClient(c.config)
-	c.UserSession = NewUserSessionClient(c.config)
 }
 
 type (
@@ -236,11 +236,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:             cfg,
 		Account:            NewAccountClient(cfg),
 		App:                NewAppClient(cfg),
-		AppBinary:          NewAppBinaryClient(cfg),
+		AppCategory:        NewAppCategoryClient(cfg),
 		AppInfo:            NewAppInfoClient(cfg),
-		AppInst:            NewAppInstClient(cfg),
-		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
-		DeviceInfo:         NewDeviceInfoClient(cfg),
+		AppRunTime:         NewAppRunTimeClient(cfg),
+		Device:             NewDeviceClient(cfg),
 		Feed:               NewFeedClient(cfg),
 		FeedActionSet:      NewFeedActionSetClient(cfg),
 		FeedConfig:         NewFeedConfigClient(cfg),
@@ -256,11 +255,12 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		NotifyTarget:       NewNotifyTargetClient(cfg),
 		PorterContext:      NewPorterContextClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
+		Session:            NewSessionClient(cfg),
+		StoreApp:           NewStoreAppClient(cfg),
+		StoreAppBinary:     NewStoreAppBinaryClient(cfg),
 		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
-		UserDevice:         NewUserDeviceClient(cfg),
-		UserSession:        NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -282,11 +282,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:             cfg,
 		Account:            NewAccountClient(cfg),
 		App:                NewAppClient(cfg),
-		AppBinary:          NewAppBinaryClient(cfg),
+		AppCategory:        NewAppCategoryClient(cfg),
 		AppInfo:            NewAppInfoClient(cfg),
-		AppInst:            NewAppInstClient(cfg),
-		AppInstRunTime:     NewAppInstRunTimeClient(cfg),
-		DeviceInfo:         NewDeviceInfoClient(cfg),
+		AppRunTime:         NewAppRunTimeClient(cfg),
+		Device:             NewDeviceClient(cfg),
 		Feed:               NewFeedClient(cfg),
 		FeedActionSet:      NewFeedActionSetClient(cfg),
 		FeedConfig:         NewFeedConfigClient(cfg),
@@ -302,11 +301,12 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		NotifyTarget:       NewNotifyTargetClient(cfg),
 		PorterContext:      NewPorterContextClient(cfg),
 		PorterInstance:     NewPorterInstanceClient(cfg),
+		Session:            NewSessionClient(cfg),
+		StoreApp:           NewStoreAppClient(cfg),
+		StoreAppBinary:     NewStoreAppBinaryClient(cfg),
 		SystemNotification: NewSystemNotificationClient(cfg),
 		Tag:                NewTagClient(cfg),
 		User:               NewUserClient(cfg),
-		UserDevice:         NewUserDeviceClient(cfg),
-		UserSession:        NewUserSessionClient(cfg),
 	}, nil
 }
 
@@ -336,12 +336,12 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
-		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
-		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterContext, c.PorterInstance, c.SystemNotification, c.Tag, c.User,
-		c.UserDevice, c.UserSession,
+		c.Account, c.App, c.AppCategory, c.AppInfo, c.AppRunTime, c.Device, c.Feed,
+		c.FeedActionSet, c.FeedConfig, c.FeedConfigAction, c.FeedItem,
+		c.FeedItemCollection, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
+		c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget, c.PorterContext,
+		c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
+		c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -351,12 +351,12 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Account, c.App, c.AppBinary, c.AppInfo, c.AppInst, c.AppInstRunTime,
-		c.DeviceInfo, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
-		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
-		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterContext, c.PorterInstance, c.SystemNotification, c.Tag, c.User,
-		c.UserDevice, c.UserSession,
+		c.Account, c.App, c.AppCategory, c.AppInfo, c.AppRunTime, c.Device, c.Feed,
+		c.FeedActionSet, c.FeedConfig, c.FeedConfigAction, c.FeedItem,
+		c.FeedItemCollection, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
+		c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget, c.PorterContext,
+		c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
+		c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -369,16 +369,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Account.mutate(ctx, m)
 	case *AppMutation:
 		return c.App.mutate(ctx, m)
-	case *AppBinaryMutation:
-		return c.AppBinary.mutate(ctx, m)
+	case *AppCategoryMutation:
+		return c.AppCategory.mutate(ctx, m)
 	case *AppInfoMutation:
 		return c.AppInfo.mutate(ctx, m)
-	case *AppInstMutation:
-		return c.AppInst.mutate(ctx, m)
-	case *AppInstRunTimeMutation:
-		return c.AppInstRunTime.mutate(ctx, m)
-	case *DeviceInfoMutation:
-		return c.DeviceInfo.mutate(ctx, m)
+	case *AppRunTimeMutation:
+		return c.AppRunTime.mutate(ctx, m)
+	case *DeviceMutation:
+		return c.Device.mutate(ctx, m)
 	case *FeedMutation:
 		return c.Feed.mutate(ctx, m)
 	case *FeedActionSetMutation:
@@ -409,16 +407,18 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PorterContext.mutate(ctx, m)
 	case *PorterInstanceMutation:
 		return c.PorterInstance.mutate(ctx, m)
+	case *SessionMutation:
+		return c.Session.mutate(ctx, m)
+	case *StoreAppMutation:
+		return c.StoreApp.mutate(ctx, m)
+	case *StoreAppBinaryMutation:
+		return c.StoreAppBinary.mutate(ctx, m)
 	case *SystemNotificationMutation:
 		return c.SystemNotification.mutate(ctx, m)
 	case *TagMutation:
 		return c.Tag.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
-	case *UserDeviceMutation:
-		return c.UserDevice.mutate(ctx, m)
-	case *UserSessionMutation:
-		return c.UserSession.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -532,31 +532,15 @@ func (c *AccountClient) GetX(ctx context.Context, id model.InternalID) *Account 
 	return obj
 }
 
-// QueryPurchasedApp queries the purchased_app edge of a Account.
-func (c *AccountClient) QueryPurchasedApp(a *Account) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := a.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(account.Table, account.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, account.PurchasedAppTable, account.PurchasedAppPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryBindUser queries the bind_user edge of a Account.
-func (c *AccountClient) QueryBindUser(a *Account) *UserQuery {
+// QueryBoundUser queries the bound_user edge of a Account.
+func (c *AccountClient) QueryBoundUser(a *Account) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(account.Table, account.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, account.BindUserTable, account.BindUserColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, account.BoundUserTable, account.BoundUserColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -697,15 +681,15 @@ func (c *AppClient) GetX(ctx context.Context, id model.InternalID) *App {
 	return obj
 }
 
-// QueryOwner queries the owner edge of a App.
-func (c *AppClient) QueryOwner(a *App) *UserQuery {
+// QueryUser queries the user edge of a App.
+func (c *AppClient) QueryUser(a *App) *UserQuery {
 	query := (&UserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
 			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, app.OwnerTable, app.OwnerColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, app.UserTable, app.UserColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -713,15 +697,31 @@ func (c *AppClient) QueryOwner(a *App) *UserQuery {
 	return query
 }
 
-// QueryAppInfo queries the app_info edge of a App.
-func (c *AppClient) QueryAppInfo(a *App) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
+// QueryDevice queries the device edge of a App.
+func (c *AppClient) QueryDevice(a *App) *DeviceQuery {
+	query := (&DeviceClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := a.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(app.Table, app.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, app.AppInfoTable, app.AppInfoColumn),
+			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, app.DeviceTable, app.DeviceColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppRunTime queries the app_run_time edge of a App.
+func (c *AppClient) QueryAppRunTime(a *App) *AppRunTimeQuery {
+	query := (&AppRunTimeClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(appruntime.Table, appruntime.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, app.AppRunTimeTable, app.AppRunTimeColumn),
 		)
 		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
 		return fromV, nil
@@ -754,107 +754,107 @@ func (c *AppClient) mutate(ctx context.Context, m *AppMutation) (Value, error) {
 	}
 }
 
-// AppBinaryClient is a client for the AppBinary schema.
-type AppBinaryClient struct {
+// AppCategoryClient is a client for the AppCategory schema.
+type AppCategoryClient struct {
 	config
 }
 
-// NewAppBinaryClient returns a client for the AppBinary from the given config.
-func NewAppBinaryClient(c config) *AppBinaryClient {
-	return &AppBinaryClient{config: c}
+// NewAppCategoryClient returns a client for the AppCategory from the given config.
+func NewAppCategoryClient(c config) *AppCategoryClient {
+	return &AppCategoryClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `appbinary.Hooks(f(g(h())))`.
-func (c *AppBinaryClient) Use(hooks ...Hook) {
-	c.hooks.AppBinary = append(c.hooks.AppBinary, hooks...)
+// A call to `Use(f, g, h)` equals to `appcategory.Hooks(f(g(h())))`.
+func (c *AppCategoryClient) Use(hooks ...Hook) {
+	c.hooks.AppCategory = append(c.hooks.AppCategory, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `appbinary.Intercept(f(g(h())))`.
-func (c *AppBinaryClient) Intercept(interceptors ...Interceptor) {
-	c.inters.AppBinary = append(c.inters.AppBinary, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `appcategory.Intercept(f(g(h())))`.
+func (c *AppCategoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppCategory = append(c.inters.AppCategory, interceptors...)
 }
 
-// Create returns a builder for creating a AppBinary entity.
-func (c *AppBinaryClient) Create() *AppBinaryCreate {
-	mutation := newAppBinaryMutation(c.config, OpCreate)
-	return &AppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a AppCategory entity.
+func (c *AppCategoryClient) Create() *AppCategoryCreate {
+	mutation := newAppCategoryMutation(c.config, OpCreate)
+	return &AppCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of AppBinary entities.
-func (c *AppBinaryClient) CreateBulk(builders ...*AppBinaryCreate) *AppBinaryCreateBulk {
-	return &AppBinaryCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of AppCategory entities.
+func (c *AppCategoryClient) CreateBulk(builders ...*AppCategoryCreate) *AppCategoryCreateBulk {
+	return &AppCategoryCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *AppBinaryClient) MapCreateBulk(slice any, setFunc func(*AppBinaryCreate, int)) *AppBinaryCreateBulk {
+func (c *AppCategoryClient) MapCreateBulk(slice any, setFunc func(*AppCategoryCreate, int)) *AppCategoryCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &AppBinaryCreateBulk{err: fmt.Errorf("calling to AppBinaryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &AppCategoryCreateBulk{err: fmt.Errorf("calling to AppCategoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*AppBinaryCreate, rv.Len())
+	builders := make([]*AppCategoryCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &AppBinaryCreateBulk{config: c.config, builders: builders}
+	return &AppCategoryCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for AppBinary.
-func (c *AppBinaryClient) Update() *AppBinaryUpdate {
-	mutation := newAppBinaryMutation(c.config, OpUpdate)
-	return &AppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for AppCategory.
+func (c *AppCategoryClient) Update() *AppCategoryUpdate {
+	mutation := newAppCategoryMutation(c.config, OpUpdate)
+	return &AppCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AppBinaryClient) UpdateOne(ab *AppBinary) *AppBinaryUpdateOne {
-	mutation := newAppBinaryMutation(c.config, OpUpdateOne, withAppBinary(ab))
-	return &AppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AppCategoryClient) UpdateOne(ac *AppCategory) *AppCategoryUpdateOne {
+	mutation := newAppCategoryMutation(c.config, OpUpdateOne, withAppCategory(ac))
+	return &AppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppBinaryClient) UpdateOneID(id model.InternalID) *AppBinaryUpdateOne {
-	mutation := newAppBinaryMutation(c.config, OpUpdateOne, withAppBinaryID(id))
-	return &AppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AppCategoryClient) UpdateOneID(id int) *AppCategoryUpdateOne {
+	mutation := newAppCategoryMutation(c.config, OpUpdateOne, withAppCategoryID(id))
+	return &AppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for AppBinary.
-func (c *AppBinaryClient) Delete() *AppBinaryDelete {
-	mutation := newAppBinaryMutation(c.config, OpDelete)
-	return &AppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for AppCategory.
+func (c *AppCategoryClient) Delete() *AppCategoryDelete {
+	mutation := newAppCategoryMutation(c.config, OpDelete)
+	return &AppCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *AppBinaryClient) DeleteOne(ab *AppBinary) *AppBinaryDeleteOne {
-	return c.DeleteOneID(ab.ID)
+func (c *AppCategoryClient) DeleteOne(ac *AppCategory) *AppCategoryDeleteOne {
+	return c.DeleteOneID(ac.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppBinaryClient) DeleteOneID(id model.InternalID) *AppBinaryDeleteOne {
-	builder := c.Delete().Where(appbinary.ID(id))
+func (c *AppCategoryClient) DeleteOneID(id int) *AppCategoryDeleteOne {
+	builder := c.Delete().Where(appcategory.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AppBinaryDeleteOne{builder}
+	return &AppCategoryDeleteOne{builder}
 }
 
-// Query returns a query builder for AppBinary.
-func (c *AppBinaryClient) Query() *AppBinaryQuery {
-	return &AppBinaryQuery{
+// Query returns a query builder for AppCategory.
+func (c *AppCategoryClient) Query() *AppCategoryQuery {
+	return &AppCategoryQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeAppBinary},
+		ctx:    &QueryContext{Type: TypeAppCategory},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a AppBinary entity by its id.
-func (c *AppBinaryClient) Get(ctx context.Context, id model.InternalID) (*AppBinary, error) {
-	return c.Query().Where(appbinary.ID(id)).Only(ctx)
+// Get returns a AppCategory entity by its id.
+func (c *AppCategoryClient) Get(ctx context.Context, id int) (*AppCategory, error) {
+	return c.Query().Where(appcategory.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppBinaryClient) GetX(ctx context.Context, id model.InternalID) *AppBinary {
+func (c *AppCategoryClient) GetX(ctx context.Context, id int) *AppCategory {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -862,44 +862,28 @@ func (c *AppBinaryClient) GetX(ctx context.Context, id model.InternalID) *AppBin
 	return obj
 }
 
-// QueryAppInfo queries the app_info edge of a AppBinary.
-func (c *AppBinaryClient) QueryAppInfo(ab *AppBinary) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ab.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appbinary.Table, appbinary.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, appbinary.AppInfoTable, appbinary.AppInfoColumn),
-		)
-		fromV = sqlgraph.Neighbors(ab.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
-func (c *AppBinaryClient) Hooks() []Hook {
-	return c.hooks.AppBinary
+func (c *AppCategoryClient) Hooks() []Hook {
+	return c.hooks.AppCategory
 }
 
 // Interceptors returns the client interceptors.
-func (c *AppBinaryClient) Interceptors() []Interceptor {
-	return c.inters.AppBinary
+func (c *AppCategoryClient) Interceptors() []Interceptor {
+	return c.inters.AppCategory
 }
 
-func (c *AppBinaryClient) mutate(ctx context.Context, m *AppBinaryMutation) (Value, error) {
+func (c *AppCategoryClient) mutate(ctx context.Context, m *AppCategoryMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&AppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&AppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&AppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&AppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&AppCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown AppBinary mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown AppCategory mutation op: %q", m.Op())
 	}
 }
 
@@ -1011,102 +995,6 @@ func (c *AppInfoClient) GetX(ctx context.Context, id model.InternalID) *AppInfo 
 	return obj
 }
 
-// QueryPurchasedByAccount queries the purchased_by_account edge of a AppInfo.
-func (c *AppInfoClient) QueryPurchasedByAccount(ai *AppInfo) *AccountQuery {
-	query := (&AccountClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, appinfo.PurchasedByAccountTable, appinfo.PurchasedByAccountPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryPurchasedByUser queries the purchased_by_user edge of a AppInfo.
-func (c *AppInfoClient) QueryPurchasedByUser(ai *AppInfo) *UserQuery {
-	query := (&UserClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, appinfo.PurchasedByUserTable, appinfo.PurchasedByUserPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryApp queries the app edge of a AppInfo.
-func (c *AppInfoClient) QueryApp(ai *AppInfo) *AppQuery {
-	query := (&AppClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(app.Table, app.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.AppTable, appinfo.AppColumn),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryAppBinary queries the app_binary edge of a AppInfo.
-func (c *AppInfoClient) QueryAppBinary(ai *AppInfo) *AppBinaryQuery {
-	query := (&AppBinaryClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(appbinary.Table, appbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.AppBinaryTable, appinfo.AppBinaryColumn),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryBindInternal queries the bind_internal edge of a AppInfo.
-func (c *AppInfoClient) QueryBindInternal(ai *AppInfo) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, appinfo.BindInternalTable, appinfo.BindInternalColumn),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryBindExternal queries the bind_external edge of a AppInfo.
-func (c *AppInfoClient) QueryBindExternal(ai *AppInfo) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(appinfo.Table, appinfo.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, appinfo.BindExternalTable, appinfo.BindExternalColumn),
-		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *AppInfoClient) Hooks() []Hook {
 	return c.hooks.AppInfo
@@ -1132,107 +1020,107 @@ func (c *AppInfoClient) mutate(ctx context.Context, m *AppInfoMutation) (Value, 
 	}
 }
 
-// AppInstClient is a client for the AppInst schema.
-type AppInstClient struct {
+// AppRunTimeClient is a client for the AppRunTime schema.
+type AppRunTimeClient struct {
 	config
 }
 
-// NewAppInstClient returns a client for the AppInst from the given config.
-func NewAppInstClient(c config) *AppInstClient {
-	return &AppInstClient{config: c}
+// NewAppRunTimeClient returns a client for the AppRunTime from the given config.
+func NewAppRunTimeClient(c config) *AppRunTimeClient {
+	return &AppRunTimeClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `appinst.Hooks(f(g(h())))`.
-func (c *AppInstClient) Use(hooks ...Hook) {
-	c.hooks.AppInst = append(c.hooks.AppInst, hooks...)
+// A call to `Use(f, g, h)` equals to `appruntime.Hooks(f(g(h())))`.
+func (c *AppRunTimeClient) Use(hooks ...Hook) {
+	c.hooks.AppRunTime = append(c.hooks.AppRunTime, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `appinst.Intercept(f(g(h())))`.
-func (c *AppInstClient) Intercept(interceptors ...Interceptor) {
-	c.inters.AppInst = append(c.inters.AppInst, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `appruntime.Intercept(f(g(h())))`.
+func (c *AppRunTimeClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppRunTime = append(c.inters.AppRunTime, interceptors...)
 }
 
-// Create returns a builder for creating a AppInst entity.
-func (c *AppInstClient) Create() *AppInstCreate {
-	mutation := newAppInstMutation(c.config, OpCreate)
-	return &AppInstCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a AppRunTime entity.
+func (c *AppRunTimeClient) Create() *AppRunTimeCreate {
+	mutation := newAppRunTimeMutation(c.config, OpCreate)
+	return &AppRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of AppInst entities.
-func (c *AppInstClient) CreateBulk(builders ...*AppInstCreate) *AppInstCreateBulk {
-	return &AppInstCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of AppRunTime entities.
+func (c *AppRunTimeClient) CreateBulk(builders ...*AppRunTimeCreate) *AppRunTimeCreateBulk {
+	return &AppRunTimeCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *AppInstClient) MapCreateBulk(slice any, setFunc func(*AppInstCreate, int)) *AppInstCreateBulk {
+func (c *AppRunTimeClient) MapCreateBulk(slice any, setFunc func(*AppRunTimeCreate, int)) *AppRunTimeCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &AppInstCreateBulk{err: fmt.Errorf("calling to AppInstClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &AppRunTimeCreateBulk{err: fmt.Errorf("calling to AppRunTimeClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*AppInstCreate, rv.Len())
+	builders := make([]*AppRunTimeCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &AppInstCreateBulk{config: c.config, builders: builders}
+	return &AppRunTimeCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for AppInst.
-func (c *AppInstClient) Update() *AppInstUpdate {
-	mutation := newAppInstMutation(c.config, OpUpdate)
-	return &AppInstUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for AppRunTime.
+func (c *AppRunTimeClient) Update() *AppRunTimeUpdate {
+	mutation := newAppRunTimeMutation(c.config, OpUpdate)
+	return &AppRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AppInstClient) UpdateOne(ai *AppInst) *AppInstUpdateOne {
-	mutation := newAppInstMutation(c.config, OpUpdateOne, withAppInst(ai))
-	return &AppInstUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AppRunTimeClient) UpdateOne(art *AppRunTime) *AppRunTimeUpdateOne {
+	mutation := newAppRunTimeMutation(c.config, OpUpdateOne, withAppRunTime(art))
+	return &AppRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppInstClient) UpdateOneID(id model.InternalID) *AppInstUpdateOne {
-	mutation := newAppInstMutation(c.config, OpUpdateOne, withAppInstID(id))
-	return &AppInstUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *AppRunTimeClient) UpdateOneID(id int) *AppRunTimeUpdateOne {
+	mutation := newAppRunTimeMutation(c.config, OpUpdateOne, withAppRunTimeID(id))
+	return &AppRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for AppInst.
-func (c *AppInstClient) Delete() *AppInstDelete {
-	mutation := newAppInstMutation(c.config, OpDelete)
-	return &AppInstDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for AppRunTime.
+func (c *AppRunTimeClient) Delete() *AppRunTimeDelete {
+	mutation := newAppRunTimeMutation(c.config, OpDelete)
+	return &AppRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *AppInstClient) DeleteOne(ai *AppInst) *AppInstDeleteOne {
-	return c.DeleteOneID(ai.ID)
+func (c *AppRunTimeClient) DeleteOne(art *AppRunTime) *AppRunTimeDeleteOne {
+	return c.DeleteOneID(art.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppInstClient) DeleteOneID(id model.InternalID) *AppInstDeleteOne {
-	builder := c.Delete().Where(appinst.ID(id))
+func (c *AppRunTimeClient) DeleteOneID(id int) *AppRunTimeDeleteOne {
+	builder := c.Delete().Where(appruntime.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AppInstDeleteOne{builder}
+	return &AppRunTimeDeleteOne{builder}
 }
 
-// Query returns a query builder for AppInst.
-func (c *AppInstClient) Query() *AppInstQuery {
-	return &AppInstQuery{
+// Query returns a query builder for AppRunTime.
+func (c *AppRunTimeClient) Query() *AppRunTimeQuery {
+	return &AppRunTimeQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeAppInst},
+		ctx:    &QueryContext{Type: TypeAppRunTime},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a AppInst entity by its id.
-func (c *AppInstClient) Get(ctx context.Context, id model.InternalID) (*AppInst, error) {
-	return c.Query().Where(appinst.ID(id)).Only(ctx)
+// Get returns a AppRunTime entity by its id.
+func (c *AppRunTimeClient) Get(ctx context.Context, id int) (*AppRunTime, error) {
+	return c.Query().Where(appruntime.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppInstClient) GetX(ctx context.Context, id model.InternalID) *AppInst {
+func (c *AppRunTimeClient) GetX(ctx context.Context, id int) *AppRunTime {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1240,148 +1128,148 @@ func (c *AppInstClient) GetX(ctx context.Context, id model.InternalID) *AppInst 
 	return obj
 }
 
-// QueryOwner queries the owner edge of a AppInst.
-func (c *AppInstClient) QueryOwner(ai *AppInst) *UserQuery {
-	query := (&UserClient{config: c.config}).Query()
+// QueryApp queries the app edge of a AppRunTime.
+func (c *AppRunTimeClient) QueryApp(art *AppRunTime) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ai.ID
+		id := art.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(appinst.Table, appinst.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, appinst.OwnerTable, appinst.OwnerColumn),
+			sqlgraph.From(appruntime.Table, appruntime.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, appruntime.AppTable, appruntime.AppColumn),
 		)
-		fromV = sqlgraph.Neighbors(ai.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(art.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *AppInstClient) Hooks() []Hook {
-	return c.hooks.AppInst
+func (c *AppRunTimeClient) Hooks() []Hook {
+	return c.hooks.AppRunTime
 }
 
 // Interceptors returns the client interceptors.
-func (c *AppInstClient) Interceptors() []Interceptor {
-	return c.inters.AppInst
+func (c *AppRunTimeClient) Interceptors() []Interceptor {
+	return c.inters.AppRunTime
 }
 
-func (c *AppInstClient) mutate(ctx context.Context, m *AppInstMutation) (Value, error) {
+func (c *AppRunTimeClient) mutate(ctx context.Context, m *AppRunTimeMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&AppInstCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&AppInstUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&AppInstUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&AppRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&AppInstDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&AppRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown AppInst mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown AppRunTime mutation op: %q", m.Op())
 	}
 }
 
-// AppInstRunTimeClient is a client for the AppInstRunTime schema.
-type AppInstRunTimeClient struct {
+// DeviceClient is a client for the Device schema.
+type DeviceClient struct {
 	config
 }
 
-// NewAppInstRunTimeClient returns a client for the AppInstRunTime from the given config.
-func NewAppInstRunTimeClient(c config) *AppInstRunTimeClient {
-	return &AppInstRunTimeClient{config: c}
+// NewDeviceClient returns a client for the Device from the given config.
+func NewDeviceClient(c config) *DeviceClient {
+	return &DeviceClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `appinstruntime.Hooks(f(g(h())))`.
-func (c *AppInstRunTimeClient) Use(hooks ...Hook) {
-	c.hooks.AppInstRunTime = append(c.hooks.AppInstRunTime, hooks...)
+// A call to `Use(f, g, h)` equals to `device.Hooks(f(g(h())))`.
+func (c *DeviceClient) Use(hooks ...Hook) {
+	c.hooks.Device = append(c.hooks.Device, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `appinstruntime.Intercept(f(g(h())))`.
-func (c *AppInstRunTimeClient) Intercept(interceptors ...Interceptor) {
-	c.inters.AppInstRunTime = append(c.inters.AppInstRunTime, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `device.Intercept(f(g(h())))`.
+func (c *DeviceClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Device = append(c.inters.Device, interceptors...)
 }
 
-// Create returns a builder for creating a AppInstRunTime entity.
-func (c *AppInstRunTimeClient) Create() *AppInstRunTimeCreate {
-	mutation := newAppInstRunTimeMutation(c.config, OpCreate)
-	return &AppInstRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Device entity.
+func (c *DeviceClient) Create() *DeviceCreate {
+	mutation := newDeviceMutation(c.config, OpCreate)
+	return &DeviceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of AppInstRunTime entities.
-func (c *AppInstRunTimeClient) CreateBulk(builders ...*AppInstRunTimeCreate) *AppInstRunTimeCreateBulk {
-	return &AppInstRunTimeCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Device entities.
+func (c *DeviceClient) CreateBulk(builders ...*DeviceCreate) *DeviceCreateBulk {
+	return &DeviceCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *AppInstRunTimeClient) MapCreateBulk(slice any, setFunc func(*AppInstRunTimeCreate, int)) *AppInstRunTimeCreateBulk {
+func (c *DeviceClient) MapCreateBulk(slice any, setFunc func(*DeviceCreate, int)) *DeviceCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &AppInstRunTimeCreateBulk{err: fmt.Errorf("calling to AppInstRunTimeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &DeviceCreateBulk{err: fmt.Errorf("calling to DeviceClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*AppInstRunTimeCreate, rv.Len())
+	builders := make([]*DeviceCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &AppInstRunTimeCreateBulk{config: c.config, builders: builders}
+	return &DeviceCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for AppInstRunTime.
-func (c *AppInstRunTimeClient) Update() *AppInstRunTimeUpdate {
-	mutation := newAppInstRunTimeMutation(c.config, OpUpdate)
-	return &AppInstRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Device.
+func (c *DeviceClient) Update() *DeviceUpdate {
+	mutation := newDeviceMutation(c.config, OpUpdate)
+	return &DeviceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *AppInstRunTimeClient) UpdateOne(airt *AppInstRunTime) *AppInstRunTimeUpdateOne {
-	mutation := newAppInstRunTimeMutation(c.config, OpUpdateOne, withAppInstRunTime(airt))
-	return &AppInstRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *DeviceClient) UpdateOne(d *Device) *DeviceUpdateOne {
+	mutation := newDeviceMutation(c.config, OpUpdateOne, withDevice(d))
+	return &DeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppInstRunTimeClient) UpdateOneID(id int) *AppInstRunTimeUpdateOne {
-	mutation := newAppInstRunTimeMutation(c.config, OpUpdateOne, withAppInstRunTimeID(id))
-	return &AppInstRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *DeviceClient) UpdateOneID(id model.InternalID) *DeviceUpdateOne {
+	mutation := newDeviceMutation(c.config, OpUpdateOne, withDeviceID(id))
+	return &DeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for AppInstRunTime.
-func (c *AppInstRunTimeClient) Delete() *AppInstRunTimeDelete {
-	mutation := newAppInstRunTimeMutation(c.config, OpDelete)
-	return &AppInstRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Device.
+func (c *DeviceClient) Delete() *DeviceDelete {
+	mutation := newDeviceMutation(c.config, OpDelete)
+	return &DeviceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *AppInstRunTimeClient) DeleteOne(airt *AppInstRunTime) *AppInstRunTimeDeleteOne {
-	return c.DeleteOneID(airt.ID)
+func (c *DeviceClient) DeleteOne(d *Device) *DeviceDeleteOne {
+	return c.DeleteOneID(d.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppInstRunTimeClient) DeleteOneID(id int) *AppInstRunTimeDeleteOne {
-	builder := c.Delete().Where(appinstruntime.ID(id))
+func (c *DeviceClient) DeleteOneID(id model.InternalID) *DeviceDeleteOne {
+	builder := c.Delete().Where(device.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &AppInstRunTimeDeleteOne{builder}
+	return &DeviceDeleteOne{builder}
 }
 
-// Query returns a query builder for AppInstRunTime.
-func (c *AppInstRunTimeClient) Query() *AppInstRunTimeQuery {
-	return &AppInstRunTimeQuery{
+// Query returns a query builder for Device.
+func (c *DeviceClient) Query() *DeviceQuery {
+	return &DeviceQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeAppInstRunTime},
+		ctx:    &QueryContext{Type: TypeDevice},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a AppInstRunTime entity by its id.
-func (c *AppInstRunTimeClient) Get(ctx context.Context, id int) (*AppInstRunTime, error) {
-	return c.Query().Where(appinstruntime.ID(id)).Only(ctx)
+// Get returns a Device entity by its id.
+func (c *DeviceClient) Get(ctx context.Context, id model.InternalID) (*Device, error) {
+	return c.Query().Where(device.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppInstRunTimeClient) GetX(ctx context.Context, id int) *AppInstRunTime {
+func (c *DeviceClient) GetX(ctx context.Context, id model.InternalID) *Device {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -1389,209 +1277,60 @@ func (c *AppInstRunTimeClient) GetX(ctx context.Context, id int) *AppInstRunTime
 	return obj
 }
 
-// Hooks returns the client hooks.
-func (c *AppInstRunTimeClient) Hooks() []Hook {
-	return c.hooks.AppInstRunTime
-}
-
-// Interceptors returns the client interceptors.
-func (c *AppInstRunTimeClient) Interceptors() []Interceptor {
-	return c.inters.AppInstRunTime
-}
-
-func (c *AppInstRunTimeClient) mutate(ctx context.Context, m *AppInstRunTimeMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&AppInstRunTimeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&AppInstRunTimeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&AppInstRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&AppInstRunTimeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown AppInstRunTime mutation op: %q", m.Op())
-	}
-}
-
-// DeviceInfoClient is a client for the DeviceInfo schema.
-type DeviceInfoClient struct {
-	config
-}
-
-// NewDeviceInfoClient returns a client for the DeviceInfo from the given config.
-func NewDeviceInfoClient(c config) *DeviceInfoClient {
-	return &DeviceInfoClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `deviceinfo.Hooks(f(g(h())))`.
-func (c *DeviceInfoClient) Use(hooks ...Hook) {
-	c.hooks.DeviceInfo = append(c.hooks.DeviceInfo, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `deviceinfo.Intercept(f(g(h())))`.
-func (c *DeviceInfoClient) Intercept(interceptors ...Interceptor) {
-	c.inters.DeviceInfo = append(c.inters.DeviceInfo, interceptors...)
-}
-
-// Create returns a builder for creating a DeviceInfo entity.
-func (c *DeviceInfoClient) Create() *DeviceInfoCreate {
-	mutation := newDeviceInfoMutation(c.config, OpCreate)
-	return &DeviceInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of DeviceInfo entities.
-func (c *DeviceInfoClient) CreateBulk(builders ...*DeviceInfoCreate) *DeviceInfoCreateBulk {
-	return &DeviceInfoCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *DeviceInfoClient) MapCreateBulk(slice any, setFunc func(*DeviceInfoCreate, int)) *DeviceInfoCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &DeviceInfoCreateBulk{err: fmt.Errorf("calling to DeviceInfoClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*DeviceInfoCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &DeviceInfoCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for DeviceInfo.
-func (c *DeviceInfoClient) Update() *DeviceInfoUpdate {
-	mutation := newDeviceInfoMutation(c.config, OpUpdate)
-	return &DeviceInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *DeviceInfoClient) UpdateOne(di *DeviceInfo) *DeviceInfoUpdateOne {
-	mutation := newDeviceInfoMutation(c.config, OpUpdateOne, withDeviceInfo(di))
-	return &DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *DeviceInfoClient) UpdateOneID(id model.InternalID) *DeviceInfoUpdateOne {
-	mutation := newDeviceInfoMutation(c.config, OpUpdateOne, withDeviceInfoID(id))
-	return &DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for DeviceInfo.
-func (c *DeviceInfoClient) Delete() *DeviceInfoDelete {
-	mutation := newDeviceInfoMutation(c.config, OpDelete)
-	return &DeviceInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *DeviceInfoClient) DeleteOne(di *DeviceInfo) *DeviceInfoDeleteOne {
-	return c.DeleteOneID(di.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *DeviceInfoClient) DeleteOneID(id model.InternalID) *DeviceInfoDeleteOne {
-	builder := c.Delete().Where(deviceinfo.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &DeviceInfoDeleteOne{builder}
-}
-
-// Query returns a query builder for DeviceInfo.
-func (c *DeviceInfoClient) Query() *DeviceInfoQuery {
-	return &DeviceInfoQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeDeviceInfo},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a DeviceInfo entity by its id.
-func (c *DeviceInfoClient) Get(ctx context.Context, id model.InternalID) (*DeviceInfo, error) {
-	return c.Query().Where(deviceinfo.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *DeviceInfoClient) GetX(ctx context.Context, id model.InternalID) *DeviceInfo {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryUser queries the user edge of a DeviceInfo.
-func (c *DeviceInfoClient) QueryUser(di *DeviceInfo) *UserQuery {
-	query := (&UserClient{config: c.config}).Query()
+// QuerySession queries the session edge of a Device.
+func (c *DeviceClient) QuerySession(d *Device) *SessionQuery {
+	query := (&SessionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := di.ID
+		id := d.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, deviceinfo.UserTable, deviceinfo.UserPrimaryKey...),
+			sqlgraph.From(device.Table, device.FieldID, id),
+			sqlgraph.To(session.Table, session.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, device.SessionTable, device.SessionColumn),
 		)
-		fromV = sqlgraph.Neighbors(di.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
-// QueryUserSession queries the user_session edge of a DeviceInfo.
-func (c *DeviceInfoClient) QueryUserSession(di *DeviceInfo) *UserSessionQuery {
-	query := (&UserSessionClient{config: c.config}).Query()
+// QueryApp queries the app edge of a Device.
+func (c *DeviceClient) QueryApp(d *Device) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := di.ID
+		id := d.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, id),
-			sqlgraph.To(usersession.Table, usersession.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, deviceinfo.UserSessionTable, deviceinfo.UserSessionColumn),
+			sqlgraph.From(device.Table, device.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, device.AppTable, device.AppColumn),
 		)
-		fromV = sqlgraph.Neighbors(di.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUserDevice queries the user_device edge of a DeviceInfo.
-func (c *DeviceInfoClient) QueryUserDevice(di *DeviceInfo) *UserDeviceQuery {
-	query := (&UserDeviceClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := di.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(deviceinfo.Table, deviceinfo.FieldID, id),
-			sqlgraph.To(userdevice.Table, userdevice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, deviceinfo.UserDeviceTable, deviceinfo.UserDeviceColumn),
-		)
-		fromV = sqlgraph.Neighbors(di.driver.Dialect(), step)
+		fromV = sqlgraph.Neighbors(d.driver.Dialect(), step)
 		return fromV, nil
 	}
 	return query
 }
 
 // Hooks returns the client hooks.
-func (c *DeviceInfoClient) Hooks() []Hook {
-	return c.hooks.DeviceInfo
+func (c *DeviceClient) Hooks() []Hook {
+	return c.hooks.Device
 }
 
 // Interceptors returns the client interceptors.
-func (c *DeviceInfoClient) Interceptors() []Interceptor {
-	return c.inters.DeviceInfo
+func (c *DeviceClient) Interceptors() []Interceptor {
+	return c.inters.Device
 }
 
-func (c *DeviceInfoClient) mutate(ctx context.Context, m *DeviceInfoMutation) (Value, error) {
+func (c *DeviceClient) mutate(ctx context.Context, m *DeviceMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&DeviceInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&DeviceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&DeviceInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&DeviceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&DeviceInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&DeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&DeviceInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&DeviceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown DeviceInfo mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Device mutation op: %q", m.Op())
 	}
 }
 
@@ -4198,6 +3937,437 @@ func (c *PorterInstanceClient) mutate(ctx context.Context, m *PorterInstanceMuta
 	}
 }
 
+// SessionClient is a client for the Session schema.
+type SessionClient struct {
+	config
+}
+
+// NewSessionClient returns a client for the Session from the given config.
+func NewSessionClient(c config) *SessionClient {
+	return &SessionClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `session.Hooks(f(g(h())))`.
+func (c *SessionClient) Use(hooks ...Hook) {
+	c.hooks.Session = append(c.hooks.Session, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `session.Intercept(f(g(h())))`.
+func (c *SessionClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Session = append(c.inters.Session, interceptors...)
+}
+
+// Create returns a builder for creating a Session entity.
+func (c *SessionClient) Create() *SessionCreate {
+	mutation := newSessionMutation(c.config, OpCreate)
+	return &SessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Session entities.
+func (c *SessionClient) CreateBulk(builders ...*SessionCreate) *SessionCreateBulk {
+	return &SessionCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SessionClient) MapCreateBulk(slice any, setFunc func(*SessionCreate, int)) *SessionCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SessionCreateBulk{err: fmt.Errorf("calling to SessionClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SessionCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SessionCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Session.
+func (c *SessionClient) Update() *SessionUpdate {
+	mutation := newSessionMutation(c.config, OpUpdate)
+	return &SessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SessionClient) UpdateOne(s *Session) *SessionUpdateOne {
+	mutation := newSessionMutation(c.config, OpUpdateOne, withSession(s))
+	return &SessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SessionClient) UpdateOneID(id model.InternalID) *SessionUpdateOne {
+	mutation := newSessionMutation(c.config, OpUpdateOne, withSessionID(id))
+	return &SessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Session.
+func (c *SessionClient) Delete() *SessionDelete {
+	mutation := newSessionMutation(c.config, OpDelete)
+	return &SessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SessionClient) DeleteOne(s *Session) *SessionDeleteOne {
+	return c.DeleteOneID(s.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SessionClient) DeleteOneID(id model.InternalID) *SessionDeleteOne {
+	builder := c.Delete().Where(session.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SessionDeleteOne{builder}
+}
+
+// Query returns a query builder for Session.
+func (c *SessionClient) Query() *SessionQuery {
+	return &SessionQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSession},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Session entity by its id.
+func (c *SessionClient) Get(ctx context.Context, id model.InternalID) (*Session, error) {
+	return c.Query().Where(session.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SessionClient) GetX(ctx context.Context, id model.InternalID) *Session {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryUser queries the user edge of a Session.
+func (c *SessionClient) QueryUser(s *Session) *UserQuery {
+	query := (&UserClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(session.Table, session.FieldID, id),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, session.UserTable, session.UserColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryDevice queries the device edge of a Session.
+func (c *SessionClient) QueryDevice(s *Session) *DeviceQuery {
+	query := (&DeviceClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := s.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(session.Table, session.FieldID, id),
+			sqlgraph.To(device.Table, device.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, session.DeviceTable, session.DeviceColumn),
+		)
+		fromV = sqlgraph.Neighbors(s.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SessionClient) Hooks() []Hook {
+	return c.hooks.Session
+}
+
+// Interceptors returns the client interceptors.
+func (c *SessionClient) Interceptors() []Interceptor {
+	return c.inters.Session
+}
+
+func (c *SessionClient) mutate(ctx context.Context, m *SessionMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SessionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SessionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SessionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Session mutation op: %q", m.Op())
+	}
+}
+
+// StoreAppClient is a client for the StoreApp schema.
+type StoreAppClient struct {
+	config
+}
+
+// NewStoreAppClient returns a client for the StoreApp from the given config.
+func NewStoreAppClient(c config) *StoreAppClient {
+	return &StoreAppClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `storeapp.Hooks(f(g(h())))`.
+func (c *StoreAppClient) Use(hooks ...Hook) {
+	c.hooks.StoreApp = append(c.hooks.StoreApp, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `storeapp.Intercept(f(g(h())))`.
+func (c *StoreAppClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StoreApp = append(c.inters.StoreApp, interceptors...)
+}
+
+// Create returns a builder for creating a StoreApp entity.
+func (c *StoreAppClient) Create() *StoreAppCreate {
+	mutation := newStoreAppMutation(c.config, OpCreate)
+	return &StoreAppCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StoreApp entities.
+func (c *StoreAppClient) CreateBulk(builders ...*StoreAppCreate) *StoreAppCreateBulk {
+	return &StoreAppCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StoreAppClient) MapCreateBulk(slice any, setFunc func(*StoreAppCreate, int)) *StoreAppCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StoreAppCreateBulk{err: fmt.Errorf("calling to StoreAppClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StoreAppCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StoreAppCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StoreApp.
+func (c *StoreAppClient) Update() *StoreAppUpdate {
+	mutation := newStoreAppMutation(c.config, OpUpdate)
+	return &StoreAppUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StoreAppClient) UpdateOne(sa *StoreApp) *StoreAppUpdateOne {
+	mutation := newStoreAppMutation(c.config, OpUpdateOne, withStoreApp(sa))
+	return &StoreAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StoreAppClient) UpdateOneID(id model.InternalID) *StoreAppUpdateOne {
+	mutation := newStoreAppMutation(c.config, OpUpdateOne, withStoreAppID(id))
+	return &StoreAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StoreApp.
+func (c *StoreAppClient) Delete() *StoreAppDelete {
+	mutation := newStoreAppMutation(c.config, OpDelete)
+	return &StoreAppDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StoreAppClient) DeleteOne(sa *StoreApp) *StoreAppDeleteOne {
+	return c.DeleteOneID(sa.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StoreAppClient) DeleteOneID(id model.InternalID) *StoreAppDeleteOne {
+	builder := c.Delete().Where(storeapp.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StoreAppDeleteOne{builder}
+}
+
+// Query returns a query builder for StoreApp.
+func (c *StoreAppClient) Query() *StoreAppQuery {
+	return &StoreAppQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStoreApp},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StoreApp entity by its id.
+func (c *StoreAppClient) Get(ctx context.Context, id model.InternalID) (*StoreApp, error) {
+	return c.Query().Where(storeapp.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StoreAppClient) GetX(ctx context.Context, id model.InternalID) *StoreApp {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *StoreAppClient) Hooks() []Hook {
+	return c.hooks.StoreApp
+}
+
+// Interceptors returns the client interceptors.
+func (c *StoreAppClient) Interceptors() []Interceptor {
+	return c.inters.StoreApp
+}
+
+func (c *StoreAppClient) mutate(ctx context.Context, m *StoreAppMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StoreAppCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StoreAppUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StoreAppUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StoreAppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StoreApp mutation op: %q", m.Op())
+	}
+}
+
+// StoreAppBinaryClient is a client for the StoreAppBinary schema.
+type StoreAppBinaryClient struct {
+	config
+}
+
+// NewStoreAppBinaryClient returns a client for the StoreAppBinary from the given config.
+func NewStoreAppBinaryClient(c config) *StoreAppBinaryClient {
+	return &StoreAppBinaryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `storeappbinary.Hooks(f(g(h())))`.
+func (c *StoreAppBinaryClient) Use(hooks ...Hook) {
+	c.hooks.StoreAppBinary = append(c.hooks.StoreAppBinary, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `storeappbinary.Intercept(f(g(h())))`.
+func (c *StoreAppBinaryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.StoreAppBinary = append(c.inters.StoreAppBinary, interceptors...)
+}
+
+// Create returns a builder for creating a StoreAppBinary entity.
+func (c *StoreAppBinaryClient) Create() *StoreAppBinaryCreate {
+	mutation := newStoreAppBinaryMutation(c.config, OpCreate)
+	return &StoreAppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of StoreAppBinary entities.
+func (c *StoreAppBinaryClient) CreateBulk(builders ...*StoreAppBinaryCreate) *StoreAppBinaryCreateBulk {
+	return &StoreAppBinaryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *StoreAppBinaryClient) MapCreateBulk(slice any, setFunc func(*StoreAppBinaryCreate, int)) *StoreAppBinaryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &StoreAppBinaryCreateBulk{err: fmt.Errorf("calling to StoreAppBinaryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*StoreAppBinaryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &StoreAppBinaryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for StoreAppBinary.
+func (c *StoreAppBinaryClient) Update() *StoreAppBinaryUpdate {
+	mutation := newStoreAppBinaryMutation(c.config, OpUpdate)
+	return &StoreAppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *StoreAppBinaryClient) UpdateOne(sab *StoreAppBinary) *StoreAppBinaryUpdateOne {
+	mutation := newStoreAppBinaryMutation(c.config, OpUpdateOne, withStoreAppBinary(sab))
+	return &StoreAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *StoreAppBinaryClient) UpdateOneID(id model.InternalID) *StoreAppBinaryUpdateOne {
+	mutation := newStoreAppBinaryMutation(c.config, OpUpdateOne, withStoreAppBinaryID(id))
+	return &StoreAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for StoreAppBinary.
+func (c *StoreAppBinaryClient) Delete() *StoreAppBinaryDelete {
+	mutation := newStoreAppBinaryMutation(c.config, OpDelete)
+	return &StoreAppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *StoreAppBinaryClient) DeleteOne(sab *StoreAppBinary) *StoreAppBinaryDeleteOne {
+	return c.DeleteOneID(sab.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *StoreAppBinaryClient) DeleteOneID(id model.InternalID) *StoreAppBinaryDeleteOne {
+	builder := c.Delete().Where(storeappbinary.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &StoreAppBinaryDeleteOne{builder}
+}
+
+// Query returns a query builder for StoreAppBinary.
+func (c *StoreAppBinaryClient) Query() *StoreAppBinaryQuery {
+	return &StoreAppBinaryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeStoreAppBinary},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a StoreAppBinary entity by its id.
+func (c *StoreAppBinaryClient) Get(ctx context.Context, id model.InternalID) (*StoreAppBinary, error) {
+	return c.Query().Where(storeappbinary.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *StoreAppBinaryClient) GetX(ctx context.Context, id model.InternalID) *StoreAppBinary {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *StoreAppBinaryClient) Hooks() []Hook {
+	return c.hooks.StoreAppBinary
+}
+
+// Interceptors returns the client interceptors.
+func (c *StoreAppBinaryClient) Interceptors() []Interceptor {
+	return c.inters.StoreAppBinary
+}
+
+func (c *StoreAppBinaryClient) mutate(ctx context.Context, m *StoreAppBinaryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&StoreAppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&StoreAppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&StoreAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&StoreAppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown StoreAppBinary mutation op: %q", m.Op())
+	}
+}
+
 // SystemNotificationClient is a client for the SystemNotification schema.
 type SystemNotificationClient struct {
 	config
@@ -4588,15 +4758,15 @@ func (c *UserClient) GetX(ctx context.Context, id model.InternalID) *User {
 	return obj
 }
 
-// QueryBindAccount queries the bind_account edge of a User.
-func (c *UserClient) QueryBindAccount(u *User) *AccountQuery {
-	query := (&AccountClient{config: c.config}).Query()
+// QuerySession queries the session edge of a User.
+func (c *UserClient) QuerySession(u *User) *SessionQuery {
+	query := (&SessionClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.BindAccountTable, user.BindAccountColumn),
+			sqlgraph.To(session.Table, session.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.SessionTable, user.SessionColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -4604,15 +4774,15 @@ func (c *UserClient) QueryBindAccount(u *User) *AccountQuery {
 	return query
 }
 
-// QueryPurchasedApp queries the purchased_app edge of a User.
-func (c *UserClient) QueryPurchasedApp(u *User) *AppInfoQuery {
-	query := (&AppInfoClient{config: c.config}).Query()
+// QueryAccount queries the account edge of a User.
+func (c *UserClient) QueryAccount(u *User) *AccountQuery {
+	query := (&AccountClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := u.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AccountTable, user.AccountColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -4629,22 +4799,6 @@ func (c *UserClient) QueryApp(u *User) *AppQuery {
 			sqlgraph.From(user.Table, user.FieldID, id),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.AppTable, user.AppColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryAppInst queries the app_inst edge of a User.
-func (c *UserClient) QueryAppInst(u *User) *AppInstQuery {
-	query := (&AppInstClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(appinst.Table, appinst.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AppInstTable, user.AppInstColumn),
 		)
 		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
 		return fromV, nil
@@ -4780,22 +4934,6 @@ func (c *UserClient) QueryFile(u *User) *FileQuery {
 	return query
 }
 
-// QueryDeviceInfo queries the device_info edge of a User.
-func (c *UserClient) QueryDeviceInfo(u *User) *DeviceInfoQuery {
-	query := (&DeviceInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.DeviceInfoTable, user.DeviceInfoPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryTag queries the tag edge of a User.
 func (c *UserClient) QueryTag(u *User) *TagQuery {
 	query := (&TagClient{config: c.config}).Query()
@@ -4860,22 +4998,6 @@ func (c *UserClient) QueryCreatedUser(u *User) *UserQuery {
 	return query
 }
 
-// QueryUserDevice queries the user_device edge of a User.
-func (c *UserClient) QueryUserDevice(u *User) *UserDeviceQuery {
-	query := (&UserDeviceClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := u.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, id),
-			sqlgraph.To(userdevice.Table, userdevice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, user.UserDeviceTable, user.UserDeviceColumn),
-		)
-		fromV = sqlgraph.Neighbors(u.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *UserClient) Hooks() []Hook {
 	return c.hooks.User
@@ -4901,334 +5023,20 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 	}
 }
 
-// UserDeviceClient is a client for the UserDevice schema.
-type UserDeviceClient struct {
-	config
-}
-
-// NewUserDeviceClient returns a client for the UserDevice from the given config.
-func NewUserDeviceClient(c config) *UserDeviceClient {
-	return &UserDeviceClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `userdevice.Hooks(f(g(h())))`.
-func (c *UserDeviceClient) Use(hooks ...Hook) {
-	c.hooks.UserDevice = append(c.hooks.UserDevice, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `userdevice.Intercept(f(g(h())))`.
-func (c *UserDeviceClient) Intercept(interceptors ...Interceptor) {
-	c.inters.UserDevice = append(c.inters.UserDevice, interceptors...)
-}
-
-// Create returns a builder for creating a UserDevice entity.
-func (c *UserDeviceClient) Create() *UserDeviceCreate {
-	mutation := newUserDeviceMutation(c.config, OpCreate)
-	return &UserDeviceCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of UserDevice entities.
-func (c *UserDeviceClient) CreateBulk(builders ...*UserDeviceCreate) *UserDeviceCreateBulk {
-	return &UserDeviceCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UserDeviceClient) MapCreateBulk(slice any, setFunc func(*UserDeviceCreate, int)) *UserDeviceCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UserDeviceCreateBulk{err: fmt.Errorf("calling to UserDeviceClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UserDeviceCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UserDeviceCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for UserDevice.
-func (c *UserDeviceClient) Update() *UserDeviceUpdate {
-	mutation := newUserDeviceMutation(c.config, OpUpdate)
-	return &UserDeviceUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UserDeviceClient) UpdateOne(ud *UserDevice) *UserDeviceUpdateOne {
-	mutation := newUserDeviceMutation(c.config, OpUpdateOne, withUserDevice(ud))
-	return &UserDeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UserDeviceClient) UpdateOneID(id int) *UserDeviceUpdateOne {
-	mutation := newUserDeviceMutation(c.config, OpUpdateOne, withUserDeviceID(id))
-	return &UserDeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for UserDevice.
-func (c *UserDeviceClient) Delete() *UserDeviceDelete {
-	mutation := newUserDeviceMutation(c.config, OpDelete)
-	return &UserDeviceDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UserDeviceClient) DeleteOne(ud *UserDevice) *UserDeviceDeleteOne {
-	return c.DeleteOneID(ud.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserDeviceClient) DeleteOneID(id int) *UserDeviceDeleteOne {
-	builder := c.Delete().Where(userdevice.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UserDeviceDeleteOne{builder}
-}
-
-// Query returns a query builder for UserDevice.
-func (c *UserDeviceClient) Query() *UserDeviceQuery {
-	return &UserDeviceQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUserDevice},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a UserDevice entity by its id.
-func (c *UserDeviceClient) Get(ctx context.Context, id int) (*UserDevice, error) {
-	return c.Query().Where(userdevice.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UserDeviceClient) GetX(ctx context.Context, id int) *UserDevice {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryDeviceInfo queries the device_info edge of a UserDevice.
-func (c *UserDeviceClient) QueryDeviceInfo(ud *UserDevice) *DeviceInfoQuery {
-	query := (&DeviceInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ud.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(userdevice.Table, userdevice.FieldID, id),
-			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, userdevice.DeviceInfoTable, userdevice.DeviceInfoColumn),
-		)
-		fromV = sqlgraph.Neighbors(ud.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QueryUser queries the user edge of a UserDevice.
-func (c *UserDeviceClient) QueryUser(ud *UserDevice) *UserQuery {
-	query := (&UserClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := ud.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(userdevice.Table, userdevice.FieldID, id),
-			sqlgraph.To(user.Table, user.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, userdevice.UserTable, userdevice.UserColumn),
-		)
-		fromV = sqlgraph.Neighbors(ud.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *UserDeviceClient) Hooks() []Hook {
-	return c.hooks.UserDevice
-}
-
-// Interceptors returns the client interceptors.
-func (c *UserDeviceClient) Interceptors() []Interceptor {
-	return c.inters.UserDevice
-}
-
-func (c *UserDeviceClient) mutate(ctx context.Context, m *UserDeviceMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UserDeviceCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UserDeviceUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UserDeviceUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UserDeviceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown UserDevice mutation op: %q", m.Op())
-	}
-}
-
-// UserSessionClient is a client for the UserSession schema.
-type UserSessionClient struct {
-	config
-}
-
-// NewUserSessionClient returns a client for the UserSession from the given config.
-func NewUserSessionClient(c config) *UserSessionClient {
-	return &UserSessionClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `usersession.Hooks(f(g(h())))`.
-func (c *UserSessionClient) Use(hooks ...Hook) {
-	c.hooks.UserSession = append(c.hooks.UserSession, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `usersession.Intercept(f(g(h())))`.
-func (c *UserSessionClient) Intercept(interceptors ...Interceptor) {
-	c.inters.UserSession = append(c.inters.UserSession, interceptors...)
-}
-
-// Create returns a builder for creating a UserSession entity.
-func (c *UserSessionClient) Create() *UserSessionCreate {
-	mutation := newUserSessionMutation(c.config, OpCreate)
-	return &UserSessionCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of UserSession entities.
-func (c *UserSessionClient) CreateBulk(builders ...*UserSessionCreate) *UserSessionCreateBulk {
-	return &UserSessionCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *UserSessionClient) MapCreateBulk(slice any, setFunc func(*UserSessionCreate, int)) *UserSessionCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &UserSessionCreateBulk{err: fmt.Errorf("calling to UserSessionClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*UserSessionCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &UserSessionCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for UserSession.
-func (c *UserSessionClient) Update() *UserSessionUpdate {
-	mutation := newUserSessionMutation(c.config, OpUpdate)
-	return &UserSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *UserSessionClient) UpdateOne(us *UserSession) *UserSessionUpdateOne {
-	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSession(us))
-	return &UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *UserSessionClient) UpdateOneID(id model.InternalID) *UserSessionUpdateOne {
-	mutation := newUserSessionMutation(c.config, OpUpdateOne, withUserSessionID(id))
-	return &UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for UserSession.
-func (c *UserSessionClient) Delete() *UserSessionDelete {
-	mutation := newUserSessionMutation(c.config, OpDelete)
-	return &UserSessionDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *UserSessionClient) DeleteOne(us *UserSession) *UserSessionDeleteOne {
-	return c.DeleteOneID(us.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *UserSessionClient) DeleteOneID(id model.InternalID) *UserSessionDeleteOne {
-	builder := c.Delete().Where(usersession.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &UserSessionDeleteOne{builder}
-}
-
-// Query returns a query builder for UserSession.
-func (c *UserSessionClient) Query() *UserSessionQuery {
-	return &UserSessionQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeUserSession},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a UserSession entity by its id.
-func (c *UserSessionClient) Get(ctx context.Context, id model.InternalID) (*UserSession, error) {
-	return c.Query().Where(usersession.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *UserSessionClient) GetX(ctx context.Context, id model.InternalID) *UserSession {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryDeviceInfo queries the device_info edge of a UserSession.
-func (c *UserSessionClient) QueryDeviceInfo(us *UserSession) *DeviceInfoQuery {
-	query := (&DeviceInfoClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := us.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(usersession.Table, usersession.FieldID, id),
-			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, usersession.DeviceInfoTable, usersession.DeviceInfoColumn),
-		)
-		fromV = sqlgraph.Neighbors(us.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *UserSessionClient) Hooks() []Hook {
-	return c.hooks.UserSession
-}
-
-// Interceptors returns the client interceptors.
-func (c *UserSessionClient) Interceptors() []Interceptor {
-	return c.inters.UserSession
-}
-
-func (c *UserSessionClient) mutate(ctx context.Context, m *UserSessionMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&UserSessionCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&UserSessionUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&UserSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&UserSessionDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown UserSession mutation op: %q", m.Op())
-	}
-}
-
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
-		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterContext, PorterInstance, SystemNotification, Tag, User,
-		UserDevice, UserSession []ent.Hook
+		Account, App, AppCategory, AppInfo, AppRunTime, Device, Feed, FeedActionSet,
+		FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection, File, Image,
+		NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget,
+		PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
+		SystemNotification, Tag, User []ent.Hook
 	}
 	inters struct {
-		Account, App, AppBinary, AppInfo, AppInst, AppInstRunTime, DeviceInfo, Feed,
-		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
-		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterContext, PorterInstance, SystemNotification, Tag, User,
-		UserDevice, UserSession []ent.Interceptor
+		Account, App, AppCategory, AppInfo, AppRunTime, Device, Feed, FeedActionSet,
+		FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection, File, Image,
+		NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget,
+		PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
+		SystemNotification, Tag, User []ent.Interceptor
 	}
 )

@@ -2,19 +2,13 @@ package bizkether
 
 import (
 	"context"
-	"strconv"
-	"time"
 
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelkether"
-	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPullAppInfoTopic(
@@ -25,52 +19,45 @@ func NewPullAppInfoTopic(
 	return libmq.NewTopic[modelkether.PullAppInfo](
 		"PullAppInfo",
 		func(ctx context.Context, r *modelkether.PullAppInfo) error {
-			if !a.supv.HasAppInfoSource(r.AppInfoID.Source) {
-				return nil
-			}
-			if r.AppInfoID.Internal {
-				return nil
-			}
-			if !r.IgnoreRateLimit {
-				if info, err := infoCache.Get(ctx, r.AppInfoID); err == nil &&
-					info.LatestUpdateTime.Add(libtime.Day).After(time.Now()) {
-					return nil
-				}
-			}
-			id, err := a.id.New()
-			if err != nil {
-				return err
-			}
-			resp, err := a.porter.PullAppInfo(
-				a.supv.WithAppInfoSource(ctx, r.AppInfoID.Source),
-				&porter.PullAppInfoRequest{AppInfoId: &librarian.AppInfoID{
-					Internal:    false,
-					Source:      r.AppInfoID.Source,
-					SourceAppId: r.AppInfoID.SourceAppID,
-				}},
-			)
-			if err != nil {
-				return err
-			}
-			info := converter.ToBizAppInfo(resp.GetAppInfo())
-			info.ID = r.ID
-			info.Internal = false
-			info.Source = r.AppInfoID.Source
-			if info.Type == modelgebura.AppTypeUnspecified {
-				info.Type = modelgebura.AppTypeGame
-			}
-			internalInfo := new(modelgebura.AppInfo)
-			internalInfo.ID = id
-			internalInfo.Internal = true
-			internalInfo.SourceAppID = strconv.FormatInt(int64(internalInfo.ID), 10)
-			internalInfo.BoundInternal = id
-			internalInfo.Type = info.Type
-			err = a.repo.UpsertAppInfo(ctx, info, internalInfo)
-			if err != nil {
-				return err
-			}
-			_ = infoCache.Delete(ctx, r.AppInfoID)
-			_ = updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{id}})
+			// if !a.supv.HasAppInfoSource(r.AppInfoID.Source) {
+			//	return nil
+			//}
+			// if !r.IgnoreRateLimit {
+			//	if info, err := infoCache.Get(ctx, r.AppInfoID); err == nil &&
+			//		info.UpdatedAt.Add(libtime.Day).After(time.Now()) {
+			//		return nil
+			//	}
+			//}
+			// id, err := a.id.New()
+			// if err != nil {
+			//	return err
+			//}
+			// resp, err := a.porter.GetAppInfo(
+			//	a.supv.WithAppInfoSource(ctx, r.AppInfoID.Source),
+			//	&porter.GetAppInfoRequest{
+			//		Source:      r.AppInfoID.Source,
+			//		SourceAppId: r.AppInfoID.SourceAppID,
+			//	},
+			//)
+			// if err != nil {
+			//	return err
+			//}
+			// info := converter.ToBizAppInfo(resp.GetAppInfo())
+			// info.ID = r.ID
+			// info.Source = r.AppInfoID.Source
+			// if info.Type == modelgebura.AppTypeUnspecified {
+			//	info.Type = modelgebura.AppTypeGame
+			//}
+			// internalInfo := new(modelgebura.AppInfo)
+			// internalInfo.ID = id
+			// internalInfo.SourceAppID = strconv.FormatInt(int64(internalInfo.ID), 10)
+			// internalInfo.Type = info.Type
+			// err = a.repo.UpsertAppInfo(ctx, info, internalInfo)
+			// if err != nil {
+			//	return err
+			//}
+			// _ = infoCache.Delete(ctx, r.AppInfoID)
+			// _ = updateAppInfoIndex.Publish(ctx, modelkether.UpdateAppInfoIndex{IDs: []model.InternalID{id}})
 			return nil
 		},
 	)

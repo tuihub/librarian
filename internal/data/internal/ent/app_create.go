@@ -12,7 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -25,9 +26,93 @@ type AppCreate struct {
 	conflict []sql.ConflictOption
 }
 
+// SetVersionNumber sets the "version_number" field.
+func (ac *AppCreate) SetVersionNumber(u uint64) *AppCreate {
+	ac.mutation.SetVersionNumber(u)
+	return ac
+}
+
+// SetVersionDate sets the "version_date" field.
+func (ac *AppCreate) SetVersionDate(t time.Time) *AppCreate {
+	ac.mutation.SetVersionDate(t)
+	return ac
+}
+
+// SetUserID sets the "user_id" field.
+func (ac *AppCreate) SetUserID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetUserID(mi)
+	return ac
+}
+
+// SetCreatorDeviceID sets the "creator_device_id" field.
+func (ac *AppCreate) SetCreatorDeviceID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetCreatorDeviceID(mi)
+	return ac
+}
+
+// SetAppSources sets the "app_sources" field.
+func (ac *AppCreate) SetAppSources(m map[string]string) *AppCreate {
+	ac.mutation.SetAppSources(m)
+	return ac
+}
+
+// SetPublic sets the "public" field.
+func (ac *AppCreate) SetPublic(b bool) *AppCreate {
+	ac.mutation.SetPublic(b)
+	return ac
+}
+
+// SetBoundStoreAppID sets the "bound_store_app_id" field.
+func (ac *AppCreate) SetBoundStoreAppID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetBoundStoreAppID(mi)
+	return ac
+}
+
+// SetNillableBoundStoreAppID sets the "bound_store_app_id" field if the given value is not nil.
+func (ac *AppCreate) SetNillableBoundStoreAppID(mi *model.InternalID) *AppCreate {
+	if mi != nil {
+		ac.SetBoundStoreAppID(*mi)
+	}
+	return ac
+}
+
+// SetStopStoreManage sets the "stop_store_manage" field.
+func (ac *AppCreate) SetStopStoreManage(b bool) *AppCreate {
+	ac.mutation.SetStopStoreManage(b)
+	return ac
+}
+
+// SetNillableStopStoreManage sets the "stop_store_manage" field if the given value is not nil.
+func (ac *AppCreate) SetNillableStopStoreManage(b *bool) *AppCreate {
+	if b != nil {
+		ac.SetStopStoreManage(*b)
+	}
+	return ac
+}
+
 // SetName sets the "name" field.
 func (ac *AppCreate) SetName(s string) *AppCreate {
 	ac.mutation.SetName(s)
+	return ac
+}
+
+// SetType sets the "type" field.
+func (ac *AppCreate) SetType(a app.Type) *AppCreate {
+	ac.mutation.SetType(a)
+	return ac
+}
+
+// SetShortDescription sets the "short_description" field.
+func (ac *AppCreate) SetShortDescription(s string) *AppCreate {
+	ac.mutation.SetShortDescription(s)
+	return ac
+}
+
+// SetNillableShortDescription sets the "short_description" field if the given value is not nil.
+func (ac *AppCreate) SetNillableShortDescription(s *string) *AppCreate {
+	if s != nil {
+		ac.SetShortDescription(*s)
+	}
 	return ac
 }
 
@@ -37,15 +122,125 @@ func (ac *AppCreate) SetDescription(s string) *AppCreate {
 	return ac
 }
 
-// SetDeviceID sets the "device_id" field.
-func (ac *AppCreate) SetDeviceID(mi model.InternalID) *AppCreate {
-	ac.mutation.SetDeviceID(mi)
+// SetNillableDescription sets the "description" field if the given value is not nil.
+func (ac *AppCreate) SetNillableDescription(s *string) *AppCreate {
+	if s != nil {
+		ac.SetDescription(*s)
+	}
 	return ac
 }
 
-// SetPublic sets the "public" field.
-func (ac *AppCreate) SetPublic(b bool) *AppCreate {
-	ac.mutation.SetPublic(b)
+// SetIconImageURL sets the "icon_image_url" field.
+func (ac *AppCreate) SetIconImageURL(s string) *AppCreate {
+	ac.mutation.SetIconImageURL(s)
+	return ac
+}
+
+// SetNillableIconImageURL sets the "icon_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableIconImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetIconImageURL(*s)
+	}
+	return ac
+}
+
+// SetIconImageID sets the "icon_image_id" field.
+func (ac *AppCreate) SetIconImageID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetIconImageID(mi)
+	return ac
+}
+
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (ac *AppCreate) SetBackgroundImageURL(s string) *AppCreate {
+	ac.mutation.SetBackgroundImageURL(s)
+	return ac
+}
+
+// SetNillableBackgroundImageURL sets the "background_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableBackgroundImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetBackgroundImageURL(*s)
+	}
+	return ac
+}
+
+// SetBackgroundImageID sets the "background_image_id" field.
+func (ac *AppCreate) SetBackgroundImageID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetBackgroundImageID(mi)
+	return ac
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (ac *AppCreate) SetCoverImageURL(s string) *AppCreate {
+	ac.mutation.SetCoverImageURL(s)
+	return ac
+}
+
+// SetNillableCoverImageURL sets the "cover_image_url" field if the given value is not nil.
+func (ac *AppCreate) SetNillableCoverImageURL(s *string) *AppCreate {
+	if s != nil {
+		ac.SetCoverImageURL(*s)
+	}
+	return ac
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (ac *AppCreate) SetCoverImageID(mi model.InternalID) *AppCreate {
+	ac.mutation.SetCoverImageID(mi)
+	return ac
+}
+
+// SetReleaseDate sets the "release_date" field.
+func (ac *AppCreate) SetReleaseDate(s string) *AppCreate {
+	ac.mutation.SetReleaseDate(s)
+	return ac
+}
+
+// SetNillableReleaseDate sets the "release_date" field if the given value is not nil.
+func (ac *AppCreate) SetNillableReleaseDate(s *string) *AppCreate {
+	if s != nil {
+		ac.SetReleaseDate(*s)
+	}
+	return ac
+}
+
+// SetDeveloper sets the "developer" field.
+func (ac *AppCreate) SetDeveloper(s string) *AppCreate {
+	ac.mutation.SetDeveloper(s)
+	return ac
+}
+
+// SetNillableDeveloper sets the "developer" field if the given value is not nil.
+func (ac *AppCreate) SetNillableDeveloper(s *string) *AppCreate {
+	if s != nil {
+		ac.SetDeveloper(*s)
+	}
+	return ac
+}
+
+// SetPublisher sets the "publisher" field.
+func (ac *AppCreate) SetPublisher(s string) *AppCreate {
+	ac.mutation.SetPublisher(s)
+	return ac
+}
+
+// SetNillablePublisher sets the "publisher" field if the given value is not nil.
+func (ac *AppCreate) SetNillablePublisher(s *string) *AppCreate {
+	if s != nil {
+		ac.SetPublisher(*s)
+	}
+	return ac
+}
+
+// SetTags sets the "tags" field.
+func (ac *AppCreate) SetTags(s []string) *AppCreate {
+	ac.mutation.SetTags(s)
+	return ac
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (ac *AppCreate) SetAlternativeNames(s []string) *AppCreate {
+	ac.mutation.SetAlternativeNames(s)
 	return ac
 }
 
@@ -83,34 +278,35 @@ func (ac *AppCreate) SetID(mi model.InternalID) *AppCreate {
 	return ac
 }
 
-// SetOwnerID sets the "owner" edge to the User entity by ID.
-func (ac *AppCreate) SetOwnerID(id model.InternalID) *AppCreate {
-	ac.mutation.SetOwnerID(id)
+// SetUser sets the "user" edge to the User entity.
+func (ac *AppCreate) SetUser(u *User) *AppCreate {
+	return ac.SetUserID(u.ID)
+}
+
+// SetDeviceID sets the "device" edge to the Device entity by ID.
+func (ac *AppCreate) SetDeviceID(id model.InternalID) *AppCreate {
+	ac.mutation.SetDeviceID(id)
 	return ac
 }
 
-// SetOwner sets the "owner" edge to the User entity.
-func (ac *AppCreate) SetOwner(u *User) *AppCreate {
-	return ac.SetOwnerID(u.ID)
+// SetDevice sets the "device" edge to the Device entity.
+func (ac *AppCreate) SetDevice(d *Device) *AppCreate {
+	return ac.SetDeviceID(d.ID)
 }
 
-// SetAppInfoID sets the "app_info" edge to the AppInfo entity by ID.
-func (ac *AppCreate) SetAppInfoID(id model.InternalID) *AppCreate {
-	ac.mutation.SetAppInfoID(id)
+// AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
+func (ac *AppCreate) AddAppRunTimeIDs(ids ...int) *AppCreate {
+	ac.mutation.AddAppRunTimeIDs(ids...)
 	return ac
 }
 
-// SetNillableAppInfoID sets the "app_info" edge to the AppInfo entity by ID if the given value is not nil.
-func (ac *AppCreate) SetNillableAppInfoID(id *model.InternalID) *AppCreate {
-	if id != nil {
-		ac = ac.SetAppInfoID(*id)
+// AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
+func (ac *AppCreate) AddAppRunTime(a ...*AppRunTime) *AppCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
 	}
-	return ac
-}
-
-// SetAppInfo sets the "app_info" edge to the AppInfo entity.
-func (ac *AppCreate) SetAppInfo(a *AppInfo) *AppCreate {
-	return ac.SetAppInfoID(a.ID)
+	return ac.AddAppRunTimeIDs(ids...)
 }
 
 // Mutation returns the AppMutation object of the builder.
@@ -160,17 +356,49 @@ func (ac *AppCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ac *AppCreate) check() error {
-	if _, ok := ac.mutation.Name(); !ok {
-		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "App.name"`)}
+	if _, ok := ac.mutation.VersionNumber(); !ok {
+		return &ValidationError{Name: "version_number", err: errors.New(`ent: missing required field "App.version_number"`)}
 	}
-	if _, ok := ac.mutation.Description(); !ok {
-		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "App.description"`)}
+	if _, ok := ac.mutation.VersionDate(); !ok {
+		return &ValidationError{Name: "version_date", err: errors.New(`ent: missing required field "App.version_date"`)}
 	}
-	if _, ok := ac.mutation.DeviceID(); !ok {
-		return &ValidationError{Name: "device_id", err: errors.New(`ent: missing required field "App.device_id"`)}
+	if _, ok := ac.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "App.user_id"`)}
+	}
+	if _, ok := ac.mutation.CreatorDeviceID(); !ok {
+		return &ValidationError{Name: "creator_device_id", err: errors.New(`ent: missing required field "App.creator_device_id"`)}
+	}
+	if _, ok := ac.mutation.AppSources(); !ok {
+		return &ValidationError{Name: "app_sources", err: errors.New(`ent: missing required field "App.app_sources"`)}
 	}
 	if _, ok := ac.mutation.Public(); !ok {
 		return &ValidationError{Name: "public", err: errors.New(`ent: missing required field "App.public"`)}
+	}
+	if _, ok := ac.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "App.name"`)}
+	}
+	if _, ok := ac.mutation.GetType(); !ok {
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "App.type"`)}
+	}
+	if v, ok := ac.mutation.GetType(); ok {
+		if err := app.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "App.type": %w`, err)}
+		}
+	}
+	if _, ok := ac.mutation.IconImageID(); !ok {
+		return &ValidationError{Name: "icon_image_id", err: errors.New(`ent: missing required field "App.icon_image_id"`)}
+	}
+	if _, ok := ac.mutation.BackgroundImageID(); !ok {
+		return &ValidationError{Name: "background_image_id", err: errors.New(`ent: missing required field "App.background_image_id"`)}
+	}
+	if _, ok := ac.mutation.CoverImageID(); !ok {
+		return &ValidationError{Name: "cover_image_id", err: errors.New(`ent: missing required field "App.cover_image_id"`)}
+	}
+	if _, ok := ac.mutation.Tags(); !ok {
+		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "App.tags"`)}
+	}
+	if _, ok := ac.mutation.AlternativeNames(); !ok {
+		return &ValidationError{Name: "alternative_names", err: errors.New(`ent: missing required field "App.alternative_names"`)}
 	}
 	if _, ok := ac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "App.updated_at"`)}
@@ -178,8 +406,11 @@ func (ac *AppCreate) check() error {
 	if _, ok := ac.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "App.created_at"`)}
 	}
-	if len(ac.mutation.OwnerIDs()) == 0 {
-		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "App.owner"`)}
+	if len(ac.mutation.UserIDs()) == 0 {
+		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "App.user"`)}
+	}
+	if len(ac.mutation.DeviceIDs()) == 0 {
+		return &ValidationError{Name: "device", err: errors.New(`ent: missing required edge "App.device"`)}
 	}
 	return nil
 }
@@ -214,21 +445,89 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := ac.mutation.VersionNumber(); ok {
+		_spec.SetField(app.FieldVersionNumber, field.TypeUint64, value)
+		_node.VersionNumber = value
+	}
+	if value, ok := ac.mutation.VersionDate(); ok {
+		_spec.SetField(app.FieldVersionDate, field.TypeTime, value)
+		_node.VersionDate = value
+	}
+	if value, ok := ac.mutation.AppSources(); ok {
+		_spec.SetField(app.FieldAppSources, field.TypeJSON, value)
+		_node.AppSources = value
+	}
+	if value, ok := ac.mutation.Public(); ok {
+		_spec.SetField(app.FieldPublic, field.TypeBool, value)
+		_node.Public = value
+	}
+	if value, ok := ac.mutation.BoundStoreAppID(); ok {
+		_spec.SetField(app.FieldBoundStoreAppID, field.TypeInt64, value)
+		_node.BoundStoreAppID = value
+	}
+	if value, ok := ac.mutation.StopStoreManage(); ok {
+		_spec.SetField(app.FieldStopStoreManage, field.TypeBool, value)
+		_node.StopStoreManage = value
+	}
 	if value, ok := ac.mutation.Name(); ok {
 		_spec.SetField(app.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := ac.mutation.GetType(); ok {
+		_spec.SetField(app.FieldType, field.TypeEnum, value)
+		_node.Type = value
+	}
+	if value, ok := ac.mutation.ShortDescription(); ok {
+		_spec.SetField(app.FieldShortDescription, field.TypeString, value)
+		_node.ShortDescription = value
 	}
 	if value, ok := ac.mutation.Description(); ok {
 		_spec.SetField(app.FieldDescription, field.TypeString, value)
 		_node.Description = value
 	}
-	if value, ok := ac.mutation.DeviceID(); ok {
-		_spec.SetField(app.FieldDeviceID, field.TypeInt64, value)
-		_node.DeviceID = value
+	if value, ok := ac.mutation.IconImageURL(); ok {
+		_spec.SetField(app.FieldIconImageURL, field.TypeString, value)
+		_node.IconImageURL = value
 	}
-	if value, ok := ac.mutation.Public(); ok {
-		_spec.SetField(app.FieldPublic, field.TypeBool, value)
-		_node.Public = value
+	if value, ok := ac.mutation.IconImageID(); ok {
+		_spec.SetField(app.FieldIconImageID, field.TypeInt64, value)
+		_node.IconImageID = value
+	}
+	if value, ok := ac.mutation.BackgroundImageURL(); ok {
+		_spec.SetField(app.FieldBackgroundImageURL, field.TypeString, value)
+		_node.BackgroundImageURL = value
+	}
+	if value, ok := ac.mutation.BackgroundImageID(); ok {
+		_spec.SetField(app.FieldBackgroundImageID, field.TypeInt64, value)
+		_node.BackgroundImageID = value
+	}
+	if value, ok := ac.mutation.CoverImageURL(); ok {
+		_spec.SetField(app.FieldCoverImageURL, field.TypeString, value)
+		_node.CoverImageURL = value
+	}
+	if value, ok := ac.mutation.CoverImageID(); ok {
+		_spec.SetField(app.FieldCoverImageID, field.TypeInt64, value)
+		_node.CoverImageID = value
+	}
+	if value, ok := ac.mutation.ReleaseDate(); ok {
+		_spec.SetField(app.FieldReleaseDate, field.TypeString, value)
+		_node.ReleaseDate = value
+	}
+	if value, ok := ac.mutation.Developer(); ok {
+		_spec.SetField(app.FieldDeveloper, field.TypeString, value)
+		_node.Developer = value
+	}
+	if value, ok := ac.mutation.Publisher(); ok {
+		_spec.SetField(app.FieldPublisher, field.TypeString, value)
+		_node.Publisher = value
+	}
+	if value, ok := ac.mutation.Tags(); ok {
+		_spec.SetField(app.FieldTags, field.TypeJSON, value)
+		_node.Tags = value
+	}
+	if value, ok := ac.mutation.AlternativeNames(); ok {
+		_spec.SetField(app.FieldAlternativeNames, field.TypeJSON, value)
+		_node.AlternativeNames = value
 	}
 	if value, ok := ac.mutation.UpdatedAt(); ok {
 		_spec.SetField(app.FieldUpdatedAt, field.TypeTime, value)
@@ -238,12 +537,12 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		_spec.SetField(app.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := ac.mutation.OwnerIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   app.OwnerTable,
-			Columns: []string{app.OwnerColumn},
+			Table:   app.UserTable,
+			Columns: []string{app.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
@@ -252,24 +551,40 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.user_app = &nodes[0]
+		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := ac.mutation.AppInfoIDs(); len(nodes) > 0 {
+	if nodes := ac.mutation.DeviceIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: true,
-			Table:   app.AppInfoTable,
-			Columns: []string{app.AppInfoColumn},
+			Table:   app.DeviceTable,
+			Columns: []string{app.DeviceColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(device.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.app_info_app = &nodes[0]
+		_node.CreatorDeviceID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AppRunTimeIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   app.AppRunTimeTable,
+			Columns: []string{app.AppRunTimeColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -279,7 +594,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.App.Create().
-//		SetName(v).
+//		SetVersionNumber(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -288,7 +603,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetName(v+v).
+//			SetVersionNumber(v+v).
 //		}).
 //		Exec(ctx)
 func (ac *AppCreate) OnConflict(opts ...sql.ConflictOption) *AppUpsertOne {
@@ -324,6 +639,90 @@ type (
 	}
 )
 
+// SetVersionNumber sets the "version_number" field.
+func (u *AppUpsert) SetVersionNumber(v uint64) *AppUpsert {
+	u.Set(app.FieldVersionNumber, v)
+	return u
+}
+
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppUpsert) UpdateVersionNumber() *AppUpsert {
+	u.SetExcluded(app.FieldVersionNumber)
+	return u
+}
+
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppUpsert) AddVersionNumber(v uint64) *AppUpsert {
+	u.Add(app.FieldVersionNumber, v)
+	return u
+}
+
+// SetVersionDate sets the "version_date" field.
+func (u *AppUpsert) SetVersionDate(v time.Time) *AppUpsert {
+	u.Set(app.FieldVersionDate, v)
+	return u
+}
+
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppUpsert) UpdateVersionDate() *AppUpsert {
+	u.SetExcluded(app.FieldVersionDate)
+	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *AppUpsert) SetUserID(v model.InternalID) *AppUpsert {
+	u.Set(app.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateUserID() *AppUpsert {
+	u.SetExcluded(app.FieldUserID)
+	return u
+}
+
+// SetAppSources sets the "app_sources" field.
+func (u *AppUpsert) SetAppSources(v map[string]string) *AppUpsert {
+	u.Set(app.FieldAppSources, v)
+	return u
+}
+
+// UpdateAppSources sets the "app_sources" field to the value that was provided on create.
+func (u *AppUpsert) UpdateAppSources() *AppUpsert {
+	u.SetExcluded(app.FieldAppSources)
+	return u
+}
+
+// SetPublic sets the "public" field.
+func (u *AppUpsert) SetPublic(v bool) *AppUpsert {
+	u.Set(app.FieldPublic, v)
+	return u
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppUpsert) UpdatePublic() *AppUpsert {
+	u.SetExcluded(app.FieldPublic)
+	return u
+}
+
+// SetStopStoreManage sets the "stop_store_manage" field.
+func (u *AppUpsert) SetStopStoreManage(v bool) *AppUpsert {
+	u.Set(app.FieldStopStoreManage, v)
+	return u
+}
+
+// UpdateStopStoreManage sets the "stop_store_manage" field to the value that was provided on create.
+func (u *AppUpsert) UpdateStopStoreManage() *AppUpsert {
+	u.SetExcluded(app.FieldStopStoreManage)
+	return u
+}
+
+// ClearStopStoreManage clears the value of the "stop_store_manage" field.
+func (u *AppUpsert) ClearStopStoreManage() *AppUpsert {
+	u.SetNull(app.FieldStopStoreManage)
+	return u
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsert) SetName(v string) *AppUpsert {
 	u.Set(app.FieldName, v)
@@ -333,6 +732,36 @@ func (u *AppUpsert) SetName(v string) *AppUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *AppUpsert) UpdateName() *AppUpsert {
 	u.SetExcluded(app.FieldName)
+	return u
+}
+
+// SetType sets the "type" field.
+func (u *AppUpsert) SetType(v app.Type) *AppUpsert {
+	u.Set(app.FieldType, v)
+	return u
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *AppUpsert) UpdateType() *AppUpsert {
+	u.SetExcluded(app.FieldType)
+	return u
+}
+
+// SetShortDescription sets the "short_description" field.
+func (u *AppUpsert) SetShortDescription(v string) *AppUpsert {
+	u.Set(app.FieldShortDescription, v)
+	return u
+}
+
+// UpdateShortDescription sets the "short_description" field to the value that was provided on create.
+func (u *AppUpsert) UpdateShortDescription() *AppUpsert {
+	u.SetExcluded(app.FieldShortDescription)
+	return u
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsert) ClearShortDescription() *AppUpsert {
+	u.SetNull(app.FieldShortDescription)
 	return u
 }
 
@@ -348,33 +777,195 @@ func (u *AppUpsert) UpdateDescription() *AppUpsert {
 	return u
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *AppUpsert) SetDeviceID(v model.InternalID) *AppUpsert {
-	u.Set(app.FieldDeviceID, v)
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsert) ClearDescription() *AppUpsert {
+	u.SetNull(app.FieldDescription)
 	return u
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *AppUpsert) UpdateDeviceID() *AppUpsert {
-	u.SetExcluded(app.FieldDeviceID)
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsert) SetIconImageURL(v string) *AppUpsert {
+	u.Set(app.FieldIconImageURL, v)
 	return u
 }
 
-// AddDeviceID adds v to the "device_id" field.
-func (u *AppUpsert) AddDeviceID(v model.InternalID) *AppUpsert {
-	u.Add(app.FieldDeviceID, v)
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateIconImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldIconImageURL)
 	return u
 }
 
-// SetPublic sets the "public" field.
-func (u *AppUpsert) SetPublic(v bool) *AppUpsert {
-	u.Set(app.FieldPublic, v)
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsert) ClearIconImageURL() *AppUpsert {
+	u.SetNull(app.FieldIconImageURL)
 	return u
 }
 
-// UpdatePublic sets the "public" field to the value that was provided on create.
-func (u *AppUpsert) UpdatePublic() *AppUpsert {
-	u.SetExcluded(app.FieldPublic)
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppUpsert) SetIconImageID(v model.InternalID) *AppUpsert {
+	u.Set(app.FieldIconImageID, v)
+	return u
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateIconImageID() *AppUpsert {
+	u.SetExcluded(app.FieldIconImageID)
+	return u
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppUpsert) AddIconImageID(v model.InternalID) *AppUpsert {
+	u.Add(app.FieldIconImageID, v)
+	return u
+}
+
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsert) SetBackgroundImageURL(v string) *AppUpsert {
+	u.Set(app.FieldBackgroundImageURL, v)
+	return u
+}
+
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateBackgroundImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldBackgroundImageURL)
+	return u
+}
+
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsert) ClearBackgroundImageURL() *AppUpsert {
+	u.SetNull(app.FieldBackgroundImageURL)
+	return u
+}
+
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppUpsert) SetBackgroundImageID(v model.InternalID) *AppUpsert {
+	u.Set(app.FieldBackgroundImageID, v)
+	return u
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateBackgroundImageID() *AppUpsert {
+	u.SetExcluded(app.FieldBackgroundImageID)
+	return u
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppUpsert) AddBackgroundImageID(v model.InternalID) *AppUpsert {
+	u.Add(app.FieldBackgroundImageID, v)
+	return u
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsert) SetCoverImageURL(v string) *AppUpsert {
+	u.Set(app.FieldCoverImageURL, v)
+	return u
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsert) UpdateCoverImageURL() *AppUpsert {
+	u.SetExcluded(app.FieldCoverImageURL)
+	return u
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsert) ClearCoverImageURL() *AppUpsert {
+	u.SetNull(app.FieldCoverImageURL)
+	return u
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppUpsert) SetCoverImageID(v model.InternalID) *AppUpsert {
+	u.Set(app.FieldCoverImageID, v)
+	return u
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppUpsert) UpdateCoverImageID() *AppUpsert {
+	u.SetExcluded(app.FieldCoverImageID)
+	return u
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppUpsert) AddCoverImageID(v model.InternalID) *AppUpsert {
+	u.Add(app.FieldCoverImageID, v)
+	return u
+}
+
+// SetReleaseDate sets the "release_date" field.
+func (u *AppUpsert) SetReleaseDate(v string) *AppUpsert {
+	u.Set(app.FieldReleaseDate, v)
+	return u
+}
+
+// UpdateReleaseDate sets the "release_date" field to the value that was provided on create.
+func (u *AppUpsert) UpdateReleaseDate() *AppUpsert {
+	u.SetExcluded(app.FieldReleaseDate)
+	return u
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsert) ClearReleaseDate() *AppUpsert {
+	u.SetNull(app.FieldReleaseDate)
+	return u
+}
+
+// SetDeveloper sets the "developer" field.
+func (u *AppUpsert) SetDeveloper(v string) *AppUpsert {
+	u.Set(app.FieldDeveloper, v)
+	return u
+}
+
+// UpdateDeveloper sets the "developer" field to the value that was provided on create.
+func (u *AppUpsert) UpdateDeveloper() *AppUpsert {
+	u.SetExcluded(app.FieldDeveloper)
+	return u
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsert) ClearDeveloper() *AppUpsert {
+	u.SetNull(app.FieldDeveloper)
+	return u
+}
+
+// SetPublisher sets the "publisher" field.
+func (u *AppUpsert) SetPublisher(v string) *AppUpsert {
+	u.Set(app.FieldPublisher, v)
+	return u
+}
+
+// UpdatePublisher sets the "publisher" field to the value that was provided on create.
+func (u *AppUpsert) UpdatePublisher() *AppUpsert {
+	u.SetExcluded(app.FieldPublisher)
+	return u
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsert) ClearPublisher() *AppUpsert {
+	u.SetNull(app.FieldPublisher)
+	return u
+}
+
+// SetTags sets the "tags" field.
+func (u *AppUpsert) SetTags(v []string) *AppUpsert {
+	u.Set(app.FieldTags, v)
+	return u
+}
+
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppUpsert) UpdateTags() *AppUpsert {
+	u.SetExcluded(app.FieldTags)
+	return u
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppUpsert) SetAlternativeNames(v []string) *AppUpsert {
+	u.Set(app.FieldAlternativeNames, v)
+	return u
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppUpsert) UpdateAlternativeNames() *AppUpsert {
+	u.SetExcluded(app.FieldAlternativeNames)
 	return u
 }
 
@@ -419,6 +1010,12 @@ func (u *AppUpsertOne) UpdateNewValues() *AppUpsertOne {
 		if _, exists := u.create.mutation.ID(); exists {
 			s.SetIgnore(app.FieldID)
 		}
+		if _, exists := u.create.mutation.CreatorDeviceID(); exists {
+			s.SetIgnore(app.FieldCreatorDeviceID)
+		}
+		if _, exists := u.create.mutation.BoundStoreAppID(); exists {
+			s.SetIgnore(app.FieldBoundStoreAppID)
+		}
 	}))
 	return u
 }
@@ -450,6 +1047,104 @@ func (u *AppUpsertOne) Update(set func(*AppUpsert)) *AppUpsertOne {
 	return u
 }
 
+// SetVersionNumber sets the "version_number" field.
+func (u *AppUpsertOne) SetVersionNumber(v uint64) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersionNumber(v)
+	})
+}
+
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppUpsertOne) AddVersionNumber(v uint64) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddVersionNumber(v)
+	})
+}
+
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateVersionNumber() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersionNumber()
+	})
+}
+
+// SetVersionDate sets the "version_date" field.
+func (u *AppUpsertOne) SetVersionDate(v time.Time) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersionDate(v)
+	})
+}
+
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateVersionDate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersionDate()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *AppUpsertOne) SetUserID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateUserID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetAppSources sets the "app_sources" field.
+func (u *AppUpsertOne) SetAppSources(v map[string]string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppSources(v)
+	})
+}
+
+// UpdateAppSources sets the "app_sources" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateAppSources() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppSources()
+	})
+}
+
+// SetPublic sets the "public" field.
+func (u *AppUpsertOne) SetPublic(v bool) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPublic(v)
+	})
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdatePublic() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePublic()
+	})
+}
+
+// SetStopStoreManage sets the "stop_store_manage" field.
+func (u *AppUpsertOne) SetStopStoreManage(v bool) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetStopStoreManage(v)
+	})
+}
+
+// UpdateStopStoreManage sets the "stop_store_manage" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateStopStoreManage() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateStopStoreManage()
+	})
+}
+
+// ClearStopStoreManage clears the value of the "stop_store_manage" field.
+func (u *AppUpsertOne) ClearStopStoreManage() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearStopStoreManage()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsertOne) SetName(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
@@ -461,6 +1156,41 @@ func (u *AppUpsertOne) SetName(v string) *AppUpsertOne {
 func (u *AppUpsertOne) UpdateName() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *AppUpsertOne) SetType(v app.Type) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateType() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateType()
+	})
+}
+
+// SetShortDescription sets the "short_description" field.
+func (u *AppUpsertOne) SetShortDescription(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetShortDescription(v)
+	})
+}
+
+// UpdateShortDescription sets the "short_description" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateShortDescription() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateShortDescription()
+	})
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsertOne) ClearShortDescription() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearShortDescription()
 	})
 }
 
@@ -478,38 +1208,227 @@ func (u *AppUpsertOne) UpdateDescription() *AppUpsertOne {
 	})
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *AppUpsertOne) SetDeviceID(v model.InternalID) *AppUpsertOne {
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsertOne) ClearDescription() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetDeviceID(v)
+		s.ClearDescription()
 	})
 }
 
-// AddDeviceID adds v to the "device_id" field.
-func (u *AppUpsertOne) AddDeviceID(v model.InternalID) *AppUpsertOne {
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsertOne) SetIconImageURL(v string) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.AddDeviceID(v)
+		s.SetIconImageURL(v)
 	})
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdateDeviceID() *AppUpsertOne {
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateIconImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateDeviceID()
+		s.UpdateIconImageURL()
 	})
 }
 
-// SetPublic sets the "public" field.
-func (u *AppUpsertOne) SetPublic(v bool) *AppUpsertOne {
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsertOne) ClearIconImageURL() *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.SetPublic(v)
+		s.ClearIconImageURL()
 	})
 }
 
-// UpdatePublic sets the "public" field to the value that was provided on create.
-func (u *AppUpsertOne) UpdatePublic() *AppUpsertOne {
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppUpsertOne) SetIconImageID(v model.InternalID) *AppUpsertOne {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdatePublic()
+		s.SetIconImageID(v)
+	})
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppUpsertOne) AddIconImageID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddIconImageID(v)
+	})
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateIconImageID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateIconImageID()
+	})
+}
+
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsertOne) SetBackgroundImageURL(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetBackgroundImageURL(v)
+	})
+}
+
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateBackgroundImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateBackgroundImageURL()
+	})
+}
+
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsertOne) ClearBackgroundImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearBackgroundImageURL()
+	})
+}
+
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppUpsertOne) SetBackgroundImageID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetBackgroundImageID(v)
+	})
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppUpsertOne) AddBackgroundImageID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddBackgroundImageID(v)
+	})
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateBackgroundImageID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateBackgroundImageID()
+	})
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsertOne) SetCoverImageURL(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageURL(v)
+	})
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateCoverImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageURL()
+	})
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsertOne) ClearCoverImageURL() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearCoverImageURL()
+	})
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppUpsertOne) SetCoverImageID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageID(v)
+	})
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppUpsertOne) AddCoverImageID(v model.InternalID) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.AddCoverImageID(v)
+	})
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateCoverImageID() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageID()
+	})
+}
+
+// SetReleaseDate sets the "release_date" field.
+func (u *AppUpsertOne) SetReleaseDate(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetReleaseDate(v)
+	})
+}
+
+// UpdateReleaseDate sets the "release_date" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateReleaseDate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateReleaseDate()
+	})
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsertOne) ClearReleaseDate() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearReleaseDate()
+	})
+}
+
+// SetDeveloper sets the "developer" field.
+func (u *AppUpsertOne) SetDeveloper(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetDeveloper(v)
+	})
+}
+
+// UpdateDeveloper sets the "developer" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateDeveloper() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateDeveloper()
+	})
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsertOne) ClearDeveloper() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDeveloper()
+	})
+}
+
+// SetPublisher sets the "publisher" field.
+func (u *AppUpsertOne) SetPublisher(v string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPublisher(v)
+	})
+}
+
+// UpdatePublisher sets the "publisher" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdatePublisher() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePublisher()
+	})
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsertOne) ClearPublisher() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPublisher()
+	})
+}
+
+// SetTags sets the "tags" field.
+func (u *AppUpsertOne) SetTags(v []string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetTags(v)
+	})
+}
+
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateTags() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateTags()
+	})
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppUpsertOne) SetAlternativeNames(v []string) *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAlternativeNames(v)
+	})
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppUpsertOne) UpdateAlternativeNames() *AppUpsertOne {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAlternativeNames()
 	})
 }
 
@@ -676,7 +1595,7 @@ func (acb *AppCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppUpsert) {
-//			SetName(v+v).
+//			SetVersionNumber(v+v).
 //		}).
 //		Exec(ctx)
 func (acb *AppCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppUpsertBulk {
@@ -723,6 +1642,12 @@ func (u *AppUpsertBulk) UpdateNewValues() *AppUpsertBulk {
 			if _, exists := b.mutation.ID(); exists {
 				s.SetIgnore(app.FieldID)
 			}
+			if _, exists := b.mutation.CreatorDeviceID(); exists {
+				s.SetIgnore(app.FieldCreatorDeviceID)
+			}
+			if _, exists := b.mutation.BoundStoreAppID(); exists {
+				s.SetIgnore(app.FieldBoundStoreAppID)
+			}
 		}
 	}))
 	return u
@@ -755,6 +1680,104 @@ func (u *AppUpsertBulk) Update(set func(*AppUpsert)) *AppUpsertBulk {
 	return u
 }
 
+// SetVersionNumber sets the "version_number" field.
+func (u *AppUpsertBulk) SetVersionNumber(v uint64) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersionNumber(v)
+	})
+}
+
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppUpsertBulk) AddVersionNumber(v uint64) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddVersionNumber(v)
+	})
+}
+
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateVersionNumber() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersionNumber()
+	})
+}
+
+// SetVersionDate sets the "version_date" field.
+func (u *AppUpsertBulk) SetVersionDate(v time.Time) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetVersionDate(v)
+	})
+}
+
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateVersionDate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateVersionDate()
+	})
+}
+
+// SetUserID sets the "user_id" field.
+func (u *AppUpsertBulk) SetUserID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateUserID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateUserID()
+	})
+}
+
+// SetAppSources sets the "app_sources" field.
+func (u *AppUpsertBulk) SetAppSources(v map[string]string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAppSources(v)
+	})
+}
+
+// UpdateAppSources sets the "app_sources" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateAppSources() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAppSources()
+	})
+}
+
+// SetPublic sets the "public" field.
+func (u *AppUpsertBulk) SetPublic(v bool) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPublic(v)
+	})
+}
+
+// UpdatePublic sets the "public" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdatePublic() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePublic()
+	})
+}
+
+// SetStopStoreManage sets the "stop_store_manage" field.
+func (u *AppUpsertBulk) SetStopStoreManage(v bool) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetStopStoreManage(v)
+	})
+}
+
+// UpdateStopStoreManage sets the "stop_store_manage" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateStopStoreManage() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateStopStoreManage()
+	})
+}
+
+// ClearStopStoreManage clears the value of the "stop_store_manage" field.
+func (u *AppUpsertBulk) ClearStopStoreManage() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearStopStoreManage()
+	})
+}
+
 // SetName sets the "name" field.
 func (u *AppUpsertBulk) SetName(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
@@ -766,6 +1789,41 @@ func (u *AppUpsertBulk) SetName(v string) *AppUpsertBulk {
 func (u *AppUpsertBulk) UpdateName() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *AppUpsertBulk) SetType(v app.Type) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateType() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateType()
+	})
+}
+
+// SetShortDescription sets the "short_description" field.
+func (u *AppUpsertBulk) SetShortDescription(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetShortDescription(v)
+	})
+}
+
+// UpdateShortDescription sets the "short_description" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateShortDescription() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateShortDescription()
+	})
+}
+
+// ClearShortDescription clears the value of the "short_description" field.
+func (u *AppUpsertBulk) ClearShortDescription() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearShortDescription()
 	})
 }
 
@@ -783,38 +1841,227 @@ func (u *AppUpsertBulk) UpdateDescription() *AppUpsertBulk {
 	})
 }
 
-// SetDeviceID sets the "device_id" field.
-func (u *AppUpsertBulk) SetDeviceID(v model.InternalID) *AppUpsertBulk {
+// ClearDescription clears the value of the "description" field.
+func (u *AppUpsertBulk) ClearDescription() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetDeviceID(v)
+		s.ClearDescription()
 	})
 }
 
-// AddDeviceID adds v to the "device_id" field.
-func (u *AppUpsertBulk) AddDeviceID(v model.InternalID) *AppUpsertBulk {
+// SetIconImageURL sets the "icon_image_url" field.
+func (u *AppUpsertBulk) SetIconImageURL(v string) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.AddDeviceID(v)
+		s.SetIconImageURL(v)
 	})
 }
 
-// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdateDeviceID() *AppUpsertBulk {
+// UpdateIconImageURL sets the "icon_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateIconImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdateDeviceID()
+		s.UpdateIconImageURL()
 	})
 }
 
-// SetPublic sets the "public" field.
-func (u *AppUpsertBulk) SetPublic(v bool) *AppUpsertBulk {
+// ClearIconImageURL clears the value of the "icon_image_url" field.
+func (u *AppUpsertBulk) ClearIconImageURL() *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.SetPublic(v)
+		s.ClearIconImageURL()
 	})
 }
 
-// UpdatePublic sets the "public" field to the value that was provided on create.
-func (u *AppUpsertBulk) UpdatePublic() *AppUpsertBulk {
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppUpsertBulk) SetIconImageID(v model.InternalID) *AppUpsertBulk {
 	return u.Update(func(s *AppUpsert) {
-		s.UpdatePublic()
+		s.SetIconImageID(v)
+	})
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppUpsertBulk) AddIconImageID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddIconImageID(v)
+	})
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateIconImageID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateIconImageID()
+	})
+}
+
+// SetBackgroundImageURL sets the "background_image_url" field.
+func (u *AppUpsertBulk) SetBackgroundImageURL(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetBackgroundImageURL(v)
+	})
+}
+
+// UpdateBackgroundImageURL sets the "background_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateBackgroundImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateBackgroundImageURL()
+	})
+}
+
+// ClearBackgroundImageURL clears the value of the "background_image_url" field.
+func (u *AppUpsertBulk) ClearBackgroundImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearBackgroundImageURL()
+	})
+}
+
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppUpsertBulk) SetBackgroundImageID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetBackgroundImageID(v)
+	})
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppUpsertBulk) AddBackgroundImageID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddBackgroundImageID(v)
+	})
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateBackgroundImageID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateBackgroundImageID()
+	})
+}
+
+// SetCoverImageURL sets the "cover_image_url" field.
+func (u *AppUpsertBulk) SetCoverImageURL(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageURL(v)
+	})
+}
+
+// UpdateCoverImageURL sets the "cover_image_url" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateCoverImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageURL()
+	})
+}
+
+// ClearCoverImageURL clears the value of the "cover_image_url" field.
+func (u *AppUpsertBulk) ClearCoverImageURL() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearCoverImageURL()
+	})
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppUpsertBulk) SetCoverImageID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetCoverImageID(v)
+	})
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppUpsertBulk) AddCoverImageID(v model.InternalID) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.AddCoverImageID(v)
+	})
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateCoverImageID() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateCoverImageID()
+	})
+}
+
+// SetReleaseDate sets the "release_date" field.
+func (u *AppUpsertBulk) SetReleaseDate(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetReleaseDate(v)
+	})
+}
+
+// UpdateReleaseDate sets the "release_date" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateReleaseDate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateReleaseDate()
+	})
+}
+
+// ClearReleaseDate clears the value of the "release_date" field.
+func (u *AppUpsertBulk) ClearReleaseDate() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearReleaseDate()
+	})
+}
+
+// SetDeveloper sets the "developer" field.
+func (u *AppUpsertBulk) SetDeveloper(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetDeveloper(v)
+	})
+}
+
+// UpdateDeveloper sets the "developer" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateDeveloper() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateDeveloper()
+	})
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (u *AppUpsertBulk) ClearDeveloper() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearDeveloper()
+	})
+}
+
+// SetPublisher sets the "publisher" field.
+func (u *AppUpsertBulk) SetPublisher(v string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetPublisher(v)
+	})
+}
+
+// UpdatePublisher sets the "publisher" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdatePublisher() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdatePublisher()
+	})
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (u *AppUpsertBulk) ClearPublisher() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.ClearPublisher()
+	})
+}
+
+// SetTags sets the "tags" field.
+func (u *AppUpsertBulk) SetTags(v []string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetTags(v)
+	})
+}
+
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateTags() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateTags()
+	})
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppUpsertBulk) SetAlternativeNames(v []string) *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.SetAlternativeNames(v)
+	})
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppUpsertBulk) UpdateAlternativeNames() *AppUpsertBulk {
+	return u.Update(func(s *AppUpsert) {
+		s.UpdateAlternativeNames()
 	})
 }
 

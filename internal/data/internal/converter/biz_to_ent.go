@@ -2,8 +2,9 @@ package converter
 
 import (
 	"github.com/tuihub/librarian/internal/data/internal/ent"
+	"github.com/tuihub/librarian/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
@@ -31,7 +32,7 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserTypeUnspecified @ignore
 	// goverter:enum:map UserTypeAdmin TypeAdmin
 	// goverter:enum:map UserTypeNormal TypeNormal
-	// goverter:enum:map UserTypeSentinel TypeSentinel
+	// goverter:enum:map UserTypeSentinel @ignore
 	// goverter:enum:map UserTypePorter @ignore
 	ToEntUserType(model.UserType) user.Type
 	ToEntUserTypeList([]model.UserType) []user.Type
@@ -50,7 +51,7 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeMacOS SystemTypeMacos
 	// goverter:enum:map SystemTypeLinux SystemTypeLinux
 	// goverter:enum:map SystemTypeWeb SystemTypeWeb
-	ToEntSystemType(model.SystemType) deviceinfo.SystemType
+	ToEntSystemType(model.SystemType) device.SystemType
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map UserStatusUnspecified @ignore
@@ -65,16 +66,17 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterContextStatusDisabled StatusDisabled
 	ToEntPorterContextStatus(modelsupervisor.PorterContextStatus) portercontext.Status
 
-	// goverter:autoMap Details
-	// goverter:useZeroValueOnPointerInconsistency
-	// goverter:ignore Edges
 	// goverter:ignore CreatedAt
 	// goverter:ignore UpdatedAt
 	ToEntAppInfo(modelgebura.AppInfo) ent.AppInfo
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map AppTypeUnspecified @ignore
 	// goverter:enum:map AppTypeGame TypeGame
-	ToEntAppType(modelgebura.AppType) appinfo.Type
+	ToEntAppInfoType(modelgebura.AppType) appinfo.Type
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map AppTypeUnspecified @ignore
+	// goverter:enum:map AppTypeGame TypeGame
+	ToEntAppType(modelgebura.AppType) app.Type
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map FeedConfigStatusUnspecified @ignore

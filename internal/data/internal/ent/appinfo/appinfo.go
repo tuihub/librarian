@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -15,8 +14,6 @@ const (
 	Label = "app_info"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldInternal holds the string denoting the internal field in the database.
-	FieldInternal = "internal"
 	// FieldSource holds the string denoting the source field in the database.
 	FieldSource = "source"
 	// FieldSourceAppID holds the string denoting the source_app_id field in the database.
@@ -33,74 +30,39 @@ const (
 	FieldDescription = "description"
 	// FieldIconImageURL holds the string denoting the icon_image_url field in the database.
 	FieldIconImageURL = "icon_image_url"
+	// FieldIconImageID holds the string denoting the icon_image_id field in the database.
+	FieldIconImageID = "icon_image_id"
 	// FieldBackgroundImageURL holds the string denoting the background_image_url field in the database.
 	FieldBackgroundImageURL = "background_image_url"
+	// FieldBackgroundImageID holds the string denoting the background_image_id field in the database.
+	FieldBackgroundImageID = "background_image_id"
 	// FieldCoverImageURL holds the string denoting the cover_image_url field in the database.
 	FieldCoverImageURL = "cover_image_url"
+	// FieldCoverImageID holds the string denoting the cover_image_id field in the database.
+	FieldCoverImageID = "cover_image_id"
 	// FieldReleaseDate holds the string denoting the release_date field in the database.
 	FieldReleaseDate = "release_date"
 	// FieldDeveloper holds the string denoting the developer field in the database.
 	FieldDeveloper = "developer"
 	// FieldPublisher holds the string denoting the publisher field in the database.
 	FieldPublisher = "publisher"
-	// FieldVersion holds the string denoting the version field in the database.
-	FieldVersion = "version"
+	// FieldTags holds the string denoting the tags field in the database.
+	FieldTags = "tags"
+	// FieldAlternativeNames holds the string denoting the alternative_names field in the database.
+	FieldAlternativeNames = "alternative_names"
+	// FieldRawData holds the string denoting the raw_data field in the database.
+	FieldRawData = "raw_data"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// EdgePurchasedByAccount holds the string denoting the purchased_by_account edge name in mutations.
-	EdgePurchasedByAccount = "purchased_by_account"
-	// EdgePurchasedByUser holds the string denoting the purchased_by_user edge name in mutations.
-	EdgePurchasedByUser = "purchased_by_user"
-	// EdgeApp holds the string denoting the app edge name in mutations.
-	EdgeApp = "app"
-	// EdgeAppBinary holds the string denoting the app_binary edge name in mutations.
-	EdgeAppBinary = "app_binary"
-	// EdgeBindInternal holds the string denoting the bind_internal edge name in mutations.
-	EdgeBindInternal = "bind_internal"
-	// EdgeBindExternal holds the string denoting the bind_external edge name in mutations.
-	EdgeBindExternal = "bind_external"
 	// Table holds the table name of the appinfo in the database.
 	Table = "app_infos"
-	// PurchasedByAccountTable is the table that holds the purchased_by_account relation/edge. The primary key declared below.
-	PurchasedByAccountTable = "account_purchased_app"
-	// PurchasedByAccountInverseTable is the table name for the Account entity.
-	// It exists in this package in order to avoid circular dependency with the "account" package.
-	PurchasedByAccountInverseTable = "accounts"
-	// PurchasedByUserTable is the table that holds the purchased_by_user relation/edge. The primary key declared below.
-	PurchasedByUserTable = "user_purchased_app"
-	// PurchasedByUserInverseTable is the table name for the User entity.
-	// It exists in this package in order to avoid circular dependency with the "user" package.
-	PurchasedByUserInverseTable = "users"
-	// AppTable is the table that holds the app relation/edge.
-	AppTable = "apps"
-	// AppInverseTable is the table name for the App entity.
-	// It exists in this package in order to avoid circular dependency with the "app" package.
-	AppInverseTable = "apps"
-	// AppColumn is the table column denoting the app relation/edge.
-	AppColumn = "app_info_app"
-	// AppBinaryTable is the table that holds the app_binary relation/edge.
-	AppBinaryTable = "app_binaries"
-	// AppBinaryInverseTable is the table name for the AppBinary entity.
-	// It exists in this package in order to avoid circular dependency with the "appbinary" package.
-	AppBinaryInverseTable = "app_binaries"
-	// AppBinaryColumn is the table column denoting the app_binary relation/edge.
-	AppBinaryColumn = "app_info_app_binary"
-	// BindInternalTable is the table that holds the bind_internal relation/edge.
-	BindInternalTable = "app_infos"
-	// BindInternalColumn is the table column denoting the bind_internal relation/edge.
-	BindInternalColumn = "app_info_bind_external"
-	// BindExternalTable is the table that holds the bind_external relation/edge.
-	BindExternalTable = "app_infos"
-	// BindExternalColumn is the table column denoting the bind_external relation/edge.
-	BindExternalColumn = "app_info_bind_external"
 )
 
 // Columns holds all SQL columns for appinfo fields.
 var Columns = []string{
 	FieldID,
-	FieldInternal,
 	FieldSource,
 	FieldSourceAppID,
 	FieldSourceURL,
@@ -109,40 +71,25 @@ var Columns = []string{
 	FieldShortDescription,
 	FieldDescription,
 	FieldIconImageURL,
+	FieldIconImageID,
 	FieldBackgroundImageURL,
+	FieldBackgroundImageID,
 	FieldCoverImageURL,
+	FieldCoverImageID,
 	FieldReleaseDate,
 	FieldDeveloper,
 	FieldPublisher,
-	FieldVersion,
+	FieldTags,
+	FieldAlternativeNames,
+	FieldRawData,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "app_infos"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"app_info_bind_external",
-}
-
-var (
-	// PurchasedByAccountPrimaryKey and PurchasedByAccountColumn2 are the table columns denoting the
-	// primary key for the purchased_by_account relation (M2M).
-	PurchasedByAccountPrimaryKey = []string{"account_id", "app_info_id"}
-	// PurchasedByUserPrimaryKey and PurchasedByUserColumn2 are the table columns denoting the
-	// primary key for the purchased_by_user relation (M2M).
-	PurchasedByUserPrimaryKey = []string{"user_id", "app_info_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -189,11 +136,6 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByInternal orders the results by the internal field.
-func ByInternal(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldInternal, opts...).ToFunc()
-}
-
 // BySource orders the results by the source field.
 func BySource(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSource, opts...).ToFunc()
@@ -234,14 +176,29 @@ func ByIconImageURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldIconImageURL, opts...).ToFunc()
 }
 
+// ByIconImageID orders the results by the icon_image_id field.
+func ByIconImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIconImageID, opts...).ToFunc()
+}
+
 // ByBackgroundImageURL orders the results by the background_image_url field.
 func ByBackgroundImageURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldBackgroundImageURL, opts...).ToFunc()
 }
 
+// ByBackgroundImageID orders the results by the background_image_id field.
+func ByBackgroundImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBackgroundImageID, opts...).ToFunc()
+}
+
 // ByCoverImageURL orders the results by the cover_image_url field.
 func ByCoverImageURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCoverImageURL, opts...).ToFunc()
+}
+
+// ByCoverImageID orders the results by the cover_image_id field.
+func ByCoverImageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCoverImageID, opts...).ToFunc()
 }
 
 // ByReleaseDate orders the results by the release_date field.
@@ -259,9 +216,9 @@ func ByPublisher(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPublisher, opts...).ToFunc()
 }
 
-// ByVersion orders the results by the version field.
-func ByVersion(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldVersion, opts...).ToFunc()
+// ByRawData orders the results by the raw_data field.
+func ByRawData(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRawData, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
@@ -272,123 +229,4 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByPurchasedByAccountCount orders the results by purchased_by_account count.
-func ByPurchasedByAccountCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPurchasedByAccountStep(), opts...)
-	}
-}
-
-// ByPurchasedByAccount orders the results by purchased_by_account terms.
-func ByPurchasedByAccount(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPurchasedByAccountStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByPurchasedByUserCount orders the results by purchased_by_user count.
-func ByPurchasedByUserCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newPurchasedByUserStep(), opts...)
-	}
-}
-
-// ByPurchasedByUser orders the results by purchased_by_user terms.
-func ByPurchasedByUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newPurchasedByUserStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByAppCount orders the results by app count.
-func ByAppCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAppStep(), opts...)
-	}
-}
-
-// ByApp orders the results by app terms.
-func ByApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAppStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByAppBinaryCount orders the results by app_binary count.
-func ByAppBinaryCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newAppBinaryStep(), opts...)
-	}
-}
-
-// ByAppBinary orders the results by app_binary terms.
-func ByAppBinary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newAppBinaryStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
-// ByBindInternalField orders the results by bind_internal field.
-func ByBindInternalField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBindInternalStep(), sql.OrderByField(field, opts...))
-	}
-}
-
-// ByBindExternalCount orders the results by bind_external count.
-func ByBindExternalCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newBindExternalStep(), opts...)
-	}
-}
-
-// ByBindExternal orders the results by bind_external terms.
-func ByBindExternal(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newBindExternalStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-func newPurchasedByAccountStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PurchasedByAccountInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByAccountTable, PurchasedByAccountPrimaryKey...),
-	)
-}
-func newPurchasedByUserStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(PurchasedByUserInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, PurchasedByUserTable, PurchasedByUserPrimaryKey...),
-	)
-}
-func newAppStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AppInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AppTable, AppColumn),
-	)
-}
-func newAppBinaryStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(AppBinaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, AppBinaryTable, AppBinaryColumn),
-	)
-}
-func newBindInternalStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(Table, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, true, BindInternalTable, BindInternalColumn),
-	)
-}
-func newBindExternalStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(Table, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, BindExternalTable, BindExternalColumn),
-	)
 }

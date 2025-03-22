@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/ent"
+	"github.com/tuihub/librarian/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
@@ -39,20 +40,19 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:unknown UserTypeUnspecified
 	// goverter:enum:map TypeAdmin UserTypeAdmin
 	// goverter:enum:map TypeNormal UserTypeNormal
-	// goverter:enum:map TypeSentinel UserTypeSentinel
 	ToLibAuthUserType(user.Type) model.UserType
 	// goverter:enum:unknown UserStatusUnspecified
 	// goverter:enum:map StatusActive UserStatusActive
 	// goverter:enum:map StatusBlocked UserStatusBlocked
 	ToBizUserStatus(user.Status) model.UserStatus
 
-	// goverter:ignore DeviceInfo
+	// goverter:ignore Device
 	// goverter:map CreatedAt CreateAt
-	ToBizUserSession(*ent.UserSession) *model.UserSession
-	ToBizUserSessionList([]*ent.UserSession) []*model.UserSession
+	ToBizUserSession(*ent.Session) *model.Session
+	ToBizUserSessionList([]*ent.Session) []*model.Session
 
-	ToBizDeviceInfo(*ent.DeviceInfo) *model.DeviceInfo
-	ToBizDeviceInfoList([]*ent.DeviceInfo) []*model.DeviceInfo
+	ToBizDeviceInfo(*ent.Device) *model.Device
+	ToBizDeviceInfoList([]*ent.Device) []*model.Device
 	// goverter:enum:unknown SystemTypeUnspecified
 	// goverter:enum:map SystemTypeUnknown SystemTypeUnspecified
 	// goverter:enum:map SystemTypeIos SystemTypeIOS
@@ -61,7 +61,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map SystemTypeWindows SystemTypeWindows
 	// goverter:enum:map SystemTypeMacos SystemTypeMacOS
 	// goverter:enum:map SystemTypeLinux SystemTypeLinux
-	ToBizSystemType(deviceinfo.SystemType) model.SystemType
+	ToBizSystemType(device.SystemType) model.SystemType
 
 	// goverter:map UpdatedAt LatestUpdateTime
 	ToBizAccount(*ent.Account) *model.Account
@@ -82,24 +82,20 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusDisabled PorterContextStatusDisabled
 	ToBizPorterContextStatus(portercontext.Status) modelsupervisor.PorterContextStatus
 
-	// goverter:map . Details
-	// goverter:map UpdatedAt LatestUpdateTime
-	// goverter:ignore BoundInternal
-	// goverter:ignore Tags
 	ToBizAppInfo(*ent.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*ent.AppInfo) []*modelgebura.AppInfo
 	// goverter:enum:unknown AppTypeUnspecified
 	// goverter:enum:map TypeUnknown AppTypeUnspecified
 	// goverter:enum:map TypeGame AppTypeGame
-	ToBizAppType(appinfo.Type) modelgebura.AppType
+	ToBizAppInfoType(appinfo.Type) modelgebura.AppType
 
-	// goverter:ignore AssignedAppInfoID
 	ToBizApp(*ent.App) *modelgebura.App
 	ToBizAppList([]*ent.App) []*modelgebura.App
-	ToBizAppBinary(ent.AppBinary) modelgebura.AppBinary
-
-	ToBizAppInst(*ent.AppInst) *modelgebura.AppInst
-	ToBizAppInstList([]*ent.AppInst) []*modelgebura.AppInst
+	// goverter:enum:unknown AppTypeUnspecified
+	// goverter:enum:map TypeUnknown AppTypeUnspecified
+	// goverter:enum:map TypeGame AppTypeGame
+	ToBizAppType(app.Type) modelgebura.AppType
+	ToBizAppBinary(ent.StoreAppBinary) modelgebura.AppBinary
 
 	// goverter:map LatestPullAt LatestPullTime
 	// goverter:ignore ActionSets

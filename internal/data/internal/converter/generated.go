@@ -5,8 +5,9 @@ package converter
 
 import (
 	ent "github.com/tuihub/librarian/internal/data/internal/ent"
+	app "github.com/tuihub/librarian/internal/data/internal/ent/app"
 	appinfo "github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	deviceinfo "github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	device "github.com/tuihub/librarian/internal/data/internal/ent/device"
 	feedconfig "github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	image "github.com/tuihub/librarian/internal/data/internal/ent/image"
 	notifyflow "github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
@@ -55,15 +56,48 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 	if source != nil {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaApp.Name = (*source).Name
-		modelgeburaApp.Description = (*source).Description
-		modelgeburaApp.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
+		modelgeburaApp.VersionNumber = (*source).VersionNumber
+		modelgeburaApp.VersionDate = TimeToTime((*source).VersionDate)
+		modelgeburaApp.CreatorDeviceID = modelInternalIDToModelInternalID((*source).CreatorDeviceID)
+		if (*source).AppSources != nil {
+			modelgeburaApp.AppSources = make(map[string]string, len((*source).AppSources))
+			for key, value := range (*source).AppSources {
+				modelgeburaApp.AppSources[key] = value
+			}
+		}
 		modelgeburaApp.Public = (*source).Public
+		modelgeburaApp.BoundStoreAppID = modelInternalIDToModelInternalID((*source).BoundStoreAppID)
+		modelgeburaApp.StopStoreManage = (*source).StopStoreManage
+		modelgeburaApp.Name = (*source).Name
+		modelgeburaApp.Type = ToBizAppType((*source).Type)
+		modelgeburaApp.ShortDescription = (*source).ShortDescription
+		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.IconImageURL = (*source).IconImageURL
+		modelgeburaApp.IconImageID = modelInternalIDToModelInternalID((*source).IconImageID)
+		modelgeburaApp.BackgroundImageURL = (*source).BackgroundImageURL
+		modelgeburaApp.BackgroundImageID = modelInternalIDToModelInternalID((*source).BackgroundImageID)
+		modelgeburaApp.CoverImageURL = (*source).CoverImageURL
+		modelgeburaApp.CoverImageID = modelInternalIDToModelInternalID((*source).CoverImageID)
+		modelgeburaApp.ReleaseDate = (*source).ReleaseDate
+		modelgeburaApp.Developer = (*source).Developer
+		modelgeburaApp.Publisher = (*source).Publisher
+		if (*source).Tags != nil {
+			modelgeburaApp.Tags = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				modelgeburaApp.Tags[i] = (*source).Tags[i]
+			}
+		}
+		if (*source).AlternativeNames != nil {
+			modelgeburaApp.AlternativeNames = make([]string, len((*source).AlternativeNames))
+			for j := 0; j < len((*source).AlternativeNames); j++ {
+				modelgeburaApp.AlternativeNames[j] = (*source).AlternativeNames[j]
+			}
+		}
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
 }
-func ToBizAppBinary(source ent.AppBinary) modelgebura.AppBinary {
+func ToBizAppBinary(source ent.StoreAppBinary) modelgebura.AppBinary {
 	var modelgeburaAppBinary modelgebura.AppBinary
 	modelgeburaAppBinary.Name = source.Name
 	modelgeburaAppBinary.SizeBytes = source.SizeBytes
@@ -81,18 +115,36 @@ func ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
 	if source != nil {
 		var modelgeburaAppInfo modelgebura.AppInfo
 		modelgeburaAppInfo.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaAppInfo.Internal = (*source).Internal
 		modelgeburaAppInfo.Source = (*source).Source
 		modelgeburaAppInfo.SourceAppID = (*source).SourceAppID
 		modelgeburaAppInfo.SourceURL = (*source).SourceURL
 		modelgeburaAppInfo.Name = (*source).Name
-		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
+		modelgeburaAppInfo.Type = ToBizAppInfoType((*source).Type)
 		modelgeburaAppInfo.ShortDescription = (*source).ShortDescription
+		modelgeburaAppInfo.Description = (*source).Description
 		modelgeburaAppInfo.IconImageURL = (*source).IconImageURL
+		modelgeburaAppInfo.IconImageID = modelInternalIDToModelInternalID((*source).IconImageID)
 		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageURL
+		modelgeburaAppInfo.BackgroundImageID = modelInternalIDToModelInternalID((*source).BackgroundImageID)
 		modelgeburaAppInfo.CoverImageURL = (*source).CoverImageURL
-		modelgeburaAppInfo.Details = entAppInfoToPModelgeburaAppInfoDetails((*source))
-		modelgeburaAppInfo.LatestUpdateTime = TimeToTime((*source).UpdatedAt)
+		modelgeburaAppInfo.CoverImageID = modelInternalIDToModelInternalID((*source).CoverImageID)
+		modelgeburaAppInfo.ReleaseDate = (*source).ReleaseDate
+		modelgeburaAppInfo.Developer = (*source).Developer
+		modelgeburaAppInfo.Publisher = (*source).Publisher
+		if (*source).Tags != nil {
+			modelgeburaAppInfo.Tags = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				modelgeburaAppInfo.Tags[i] = (*source).Tags[i]
+			}
+		}
+		if (*source).AlternativeNames != nil {
+			modelgeburaAppInfo.AlternativeNames = make([]string, len((*source).AlternativeNames))
+			for j := 0; j < len((*source).AlternativeNames); j++ {
+				modelgeburaAppInfo.AlternativeNames[j] = (*source).AlternativeNames[j]
+			}
+		}
+		modelgeburaAppInfo.RawData = (*source).RawData
+		modelgeburaAppInfo.UpdatedAt = TimeToTime((*source).UpdatedAt)
 		pModelgeburaAppInfo = &modelgeburaAppInfo
 	}
 	return pModelgeburaAppInfo
@@ -107,38 +159,7 @@ func ToBizAppInfoList(source []*ent.AppInfo) []*modelgebura.AppInfo {
 	}
 	return pModelgeburaAppInfoList
 }
-func ToBizAppInst(source *ent.AppInst) *modelgebura.AppInst {
-	var pModelgeburaAppInst *modelgebura.AppInst
-	if source != nil {
-		var modelgeburaAppInst modelgebura.AppInst
-		modelgeburaAppInst.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelgeburaAppInst.AppID = modelInternalIDToModelInternalID((*source).AppID)
-		modelgeburaAppInst.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
-		pModelgeburaAppInst = &modelgeburaAppInst
-	}
-	return pModelgeburaAppInst
-}
-func ToBizAppInstList(source []*ent.AppInst) []*modelgebura.AppInst {
-	var pModelgeburaAppInstList []*modelgebura.AppInst
-	if source != nil {
-		pModelgeburaAppInstList = make([]*modelgebura.AppInst, len(source))
-		for i := 0; i < len(source); i++ {
-			pModelgeburaAppInstList[i] = ToBizAppInst(source[i])
-		}
-	}
-	return pModelgeburaAppInstList
-}
-func ToBizAppList(source []*ent.App) []*modelgebura.App {
-	var pModelgeburaAppList []*modelgebura.App
-	if source != nil {
-		pModelgeburaAppList = make([]*modelgebura.App, len(source))
-		for i := 0; i < len(source); i++ {
-			pModelgeburaAppList[i] = ToBizApp(source[i])
-		}
-	}
-	return pModelgeburaAppList
-}
-func ToBizAppType(source appinfo.Type) modelgebura.AppType {
+func ToBizAppInfoType(source appinfo.Type) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
 	switch source {
 	case appinfo.TypeGame:
@@ -150,30 +171,52 @@ func ToBizAppType(source appinfo.Type) modelgebura.AppType {
 	}
 	return modelgeburaAppType
 }
-func ToBizDeviceInfo(source *ent.DeviceInfo) *model.DeviceInfo {
-	var pModelDeviceInfo *model.DeviceInfo
+func ToBizAppList(source []*ent.App) []*modelgebura.App {
+	var pModelgeburaAppList []*modelgebura.App
 	if source != nil {
-		var modelDeviceInfo model.DeviceInfo
-		modelDeviceInfo.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelDeviceInfo.DeviceName = (*source).DeviceName
-		modelDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
-		modelDeviceInfo.SystemVersion = (*source).SystemVersion
-		modelDeviceInfo.ClientName = (*source).ClientName
-		modelDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
-		modelDeviceInfo.ClientVersion = (*source).ClientVersion
-		pModelDeviceInfo = &modelDeviceInfo
-	}
-	return pModelDeviceInfo
-}
-func ToBizDeviceInfoList(source []*ent.DeviceInfo) []*model.DeviceInfo {
-	var pModelDeviceInfoList []*model.DeviceInfo
-	if source != nil {
-		pModelDeviceInfoList = make([]*model.DeviceInfo, len(source))
+		pModelgeburaAppList = make([]*modelgebura.App, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelDeviceInfoList[i] = ToBizDeviceInfo(source[i])
+			pModelgeburaAppList[i] = ToBizApp(source[i])
 		}
 	}
-	return pModelDeviceInfoList
+	return pModelgeburaAppList
+}
+func ToBizAppType(source app.Type) modelgebura.AppType {
+	var modelgeburaAppType modelgebura.AppType
+	switch source {
+	case app.TypeGame:
+		modelgeburaAppType = modelgebura.AppTypeGame
+	case app.TypeUnknown:
+		modelgeburaAppType = modelgebura.AppTypeUnspecified
+	default:
+		modelgeburaAppType = modelgebura.AppTypeUnspecified
+	}
+	return modelgeburaAppType
+}
+func ToBizDeviceInfo(source *ent.Device) *model.Device {
+	var pModelDevice *model.Device
+	if source != nil {
+		var modelDevice model.Device
+		modelDevice.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelDevice.DeviceName = (*source).DeviceName
+		modelDevice.SystemType = ToBizSystemType((*source).SystemType)
+		modelDevice.SystemVersion = (*source).SystemVersion
+		modelDevice.ClientName = (*source).ClientName
+		modelDevice.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
+		modelDevice.ClientVersion = (*source).ClientVersion
+		pModelDevice = &modelDevice
+	}
+	return pModelDevice
+}
+func ToBizDeviceInfoList(source []*ent.Device) []*model.Device {
+	var pModelDeviceList []*model.Device
+	if source != nil {
+		pModelDeviceList = make([]*model.Device, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelDeviceList[i] = ToBizDeviceInfo(source[i])
+		}
+	}
+	return pModelDeviceList
 }
 func ToBizFeed(source *ent.Feed) *modelfeed.Feed {
 	var pModelfeedFeed *modelfeed.Feed
@@ -585,22 +628,22 @@ func ToBizSystemNotificationType(source systemnotification.Type) modelnetzach.Sy
 	}
 	return modelnetzachSystemNotificationType
 }
-func ToBizSystemType(source deviceinfo.SystemType) model.SystemType {
+func ToBizSystemType(source device.SystemType) model.SystemType {
 	var modelSystemType model.SystemType
 	switch source {
-	case deviceinfo.SystemTypeAndroid:
+	case device.SystemTypeAndroid:
 		modelSystemType = model.SystemTypeAndroid
-	case deviceinfo.SystemTypeIos:
+	case device.SystemTypeIos:
 		modelSystemType = model.SystemTypeIOS
-	case deviceinfo.SystemTypeLinux:
+	case device.SystemTypeLinux:
 		modelSystemType = model.SystemTypeLinux
-	case deviceinfo.SystemTypeMacos:
+	case device.SystemTypeMacos:
 		modelSystemType = model.SystemTypeMacOS
-	case deviceinfo.SystemTypeUnknown:
+	case device.SystemTypeUnknown:
 		modelSystemType = model.SystemTypeUnspecified
-	case deviceinfo.SystemTypeWeb:
+	case device.SystemTypeWeb:
 		modelSystemType = model.SystemTypeWeb
-	case deviceinfo.SystemTypeWindows:
+	case device.SystemTypeWindows:
 		modelSystemType = model.SystemTypeWindows
 	default:
 		modelSystemType = model.SystemTypeUnspecified
@@ -629,28 +672,28 @@ func ToBizUserList(source []*ent.User) []*model.User {
 	}
 	return pModelUserList
 }
-func ToBizUserSession(source *ent.UserSession) *model.UserSession {
-	var pModelUserSession *model.UserSession
+func ToBizUserSession(source *ent.Session) *model.Session {
+	var pModelSession *model.Session
 	if source != nil {
-		var modelUserSession model.UserSession
-		modelUserSession.ID = modelInternalIDToModelInternalID((*source).ID)
-		modelUserSession.UserID = modelInternalIDToModelInternalID((*source).UserID)
-		modelUserSession.RefreshToken = (*source).RefreshToken
-		modelUserSession.CreateAt = TimeToTime((*source).CreatedAt)
-		modelUserSession.ExpireAt = TimeToTime((*source).ExpireAt)
-		pModelUserSession = &modelUserSession
+		var modelSession model.Session
+		modelSession.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelSession.UserID = modelInternalIDToModelInternalID((*source).UserID)
+		modelSession.RefreshToken = (*source).RefreshToken
+		modelSession.CreateAt = TimeToTime((*source).CreatedAt)
+		modelSession.ExpireAt = TimeToTime((*source).ExpireAt)
+		pModelSession = &modelSession
 	}
-	return pModelUserSession
+	return pModelSession
 }
-func ToBizUserSessionList(source []*ent.UserSession) []*model.UserSession {
-	var pModelUserSessionList []*model.UserSession
+func ToBizUserSessionList(source []*ent.Session) []*model.Session {
+	var pModelSessionList []*model.Session
 	if source != nil {
-		pModelUserSessionList = make([]*model.UserSession, len(source))
+		pModelSessionList = make([]*model.Session, len(source))
 		for i := 0; i < len(source); i++ {
-			pModelUserSessionList[i] = ToBizUserSession(source[i])
+			pModelSessionList[i] = ToBizUserSession(source[i])
 		}
 	}
-	return pModelUserSessionList
+	return pModelSessionList
 }
 func ToBizUserStatus(source user.Status) model.UserStatus {
 	var modelUserStatus model.UserStatus
@@ -671,21 +714,10 @@ func ToLibAuthUserType(source user.Type) model.UserType {
 		modelUserType = model.UserTypeAdmin
 	case user.TypeNormal:
 		modelUserType = model.UserTypeNormal
-	case user.TypeSentinel:
-		modelUserType = model.UserTypeSentinel
 	default:
 		modelUserType = model.UserTypeUnspecified
 	}
 	return modelUserType
-}
-func entAppInfoToPModelgeburaAppInfoDetails(source ent.AppInfo) *modelgebura.AppInfoDetails {
-	var modelgeburaAppInfoDetails modelgebura.AppInfoDetails
-	modelgeburaAppInfoDetails.Description = source.Description
-	modelgeburaAppInfoDetails.ReleaseDate = source.ReleaseDate
-	modelgeburaAppInfoDetails.Developer = source.Developer
-	modelgeburaAppInfoDetails.Publisher = source.Publisher
-	modelgeburaAppInfoDetails.Version = source.Version
-	return &modelgeburaAppInfoDetails
 }
 func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterInstance) *modelsupervisor.PorterBinarySummary {
 	var modelsupervisorPorterBinarySummary modelsupervisor.PorterBinarySummary
@@ -818,55 +850,39 @@ func timeTimeToPTimeTime(source time.Time) *time.Time {
 }
 func ToEntAppInfo(source modelgebura.AppInfo) ent.AppInfo {
 	var entAppInfo ent.AppInfo
-	entAppInfo.ID = model.InternalID(source.ID)
-	entAppInfo.Internal = source.Internal
+	entAppInfo.ID = modelInternalIDToModelInternalID2(source.ID)
 	entAppInfo.Source = source.Source
 	entAppInfo.SourceAppID = source.SourceAppID
 	entAppInfo.SourceURL = source.SourceURL
 	entAppInfo.Name = source.Name
-	entAppInfo.Type = ToEntAppType(source.Type)
+	entAppInfo.Type = ToEntAppInfoType(source.Type)
 	entAppInfo.ShortDescription = source.ShortDescription
-	var pString *string
-	if source.Details != nil {
-		pString = &source.Details.Description
-	}
-	if pString != nil {
-		entAppInfo.Description = *pString
-	}
+	entAppInfo.Description = source.Description
 	entAppInfo.IconImageURL = source.IconImageURL
+	entAppInfo.IconImageID = modelInternalIDToModelInternalID2(source.IconImageID)
 	entAppInfo.BackgroundImageURL = source.BackgroundImageURL
+	entAppInfo.BackgroundImageID = modelInternalIDToModelInternalID2(source.BackgroundImageID)
 	entAppInfo.CoverImageURL = source.CoverImageURL
-	var pString2 *string
-	if source.Details != nil {
-		pString2 = &source.Details.ReleaseDate
+	entAppInfo.CoverImageID = modelInternalIDToModelInternalID2(source.CoverImageID)
+	entAppInfo.ReleaseDate = source.ReleaseDate
+	entAppInfo.Developer = source.Developer
+	entAppInfo.Publisher = source.Publisher
+	if source.Tags != nil {
+		entAppInfo.Tags = make([]string, len(source.Tags))
+		for i := 0; i < len(source.Tags); i++ {
+			entAppInfo.Tags[i] = source.Tags[i]
+		}
 	}
-	if pString2 != nil {
-		entAppInfo.ReleaseDate = *pString2
+	if source.AlternativeNames != nil {
+		entAppInfo.AlternativeNames = make([]string, len(source.AlternativeNames))
+		for j := 0; j < len(source.AlternativeNames); j++ {
+			entAppInfo.AlternativeNames[j] = source.AlternativeNames[j]
+		}
 	}
-	var pString3 *string
-	if source.Details != nil {
-		pString3 = &source.Details.Developer
-	}
-	if pString3 != nil {
-		entAppInfo.Developer = *pString3
-	}
-	var pString4 *string
-	if source.Details != nil {
-		pString4 = &source.Details.Publisher
-	}
-	if pString4 != nil {
-		entAppInfo.Publisher = *pString4
-	}
-	var pString5 *string
-	if source.Details != nil {
-		pString5 = &source.Details.Version
-	}
-	if pString5 != nil {
-		entAppInfo.Version = *pString5
-	}
+	entAppInfo.RawData = source.RawData
 	return entAppInfo
 }
-func ToEntAppType(source modelgebura.AppType) appinfo.Type {
+func ToEntAppInfoType(source modelgebura.AppType) appinfo.Type {
 	var appinfoType appinfo.Type
 	switch source {
 	case modelgebura.AppTypeGame:
@@ -875,6 +891,16 @@ func ToEntAppType(source modelgebura.AppType) appinfo.Type {
 	default: // ignored
 	}
 	return appinfoType
+}
+func ToEntAppType(source modelgebura.AppType) app.Type {
+	var appType app.Type
+	switch source {
+	case modelgebura.AppTypeGame:
+		appType = app.TypeGame
+	case modelgebura.AppTypeUnspecified: // ignored
+	default: // ignored
+	}
+	return appType
 }
 func ToEntFeedConfigLatestPullStatus(source modelyesod.FeedConfigPullStatus) feedconfig.LatestPullStatus {
 	var feedconfigLatestPullStatus feedconfig.LatestPullStatus
@@ -1064,25 +1090,25 @@ func ToEntSystemNotificationTypeList(source []modelnetzach.SystemNotificationTyp
 	}
 	return systemnotificationTypeList
 }
-func ToEntSystemType(source model.SystemType) deviceinfo.SystemType {
-	var deviceinfoSystemType deviceinfo.SystemType
+func ToEntSystemType(source model.SystemType) device.SystemType {
+	var deviceSystemType device.SystemType
 	switch source {
 	case model.SystemTypeAndroid:
-		deviceinfoSystemType = deviceinfo.SystemTypeAndroid
+		deviceSystemType = device.SystemTypeAndroid
 	case model.SystemTypeIOS:
-		deviceinfoSystemType = deviceinfo.SystemTypeIos
+		deviceSystemType = device.SystemTypeIos
 	case model.SystemTypeLinux:
-		deviceinfoSystemType = deviceinfo.SystemTypeLinux
+		deviceSystemType = device.SystemTypeLinux
 	case model.SystemTypeMacOS:
-		deviceinfoSystemType = deviceinfo.SystemTypeMacos
+		deviceSystemType = device.SystemTypeMacos
 	case model.SystemTypeUnspecified: // ignored
 	case model.SystemTypeWeb:
-		deviceinfoSystemType = deviceinfo.SystemTypeWeb
+		deviceSystemType = device.SystemTypeWeb
 	case model.SystemTypeWindows:
-		deviceinfoSystemType = deviceinfo.SystemTypeWindows
+		deviceSystemType = device.SystemTypeWindows
 	default: // ignored
 	}
-	return deviceinfoSystemType
+	return deviceSystemType
 }
 func ToEntUserStatus(source model.UserStatus) user.Status {
 	var userStatus user.Status
@@ -1114,8 +1140,7 @@ func ToEntUserType(source model.UserType) user.Type {
 	case model.UserTypeNormal:
 		userType = user.TypeNormal
 	case model.UserTypePorter: // ignored
-	case model.UserTypeSentinel:
-		userType = user.TypeSentinel
+	case model.UserTypeSentinel: // ignored
 	case model.UserTypeUnspecified: // ignored
 	default: // ignored
 	}
@@ -1130,4 +1155,7 @@ func ToEntUserTypeList(source []model.UserType) []user.Type {
 		}
 	}
 	return userTypeList
+}
+func modelInternalIDToModelInternalID2(source model.InternalID) model.InternalID {
+	return model.InternalID(source)
 }

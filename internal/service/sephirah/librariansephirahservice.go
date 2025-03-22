@@ -16,12 +16,15 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	"github.com/tuihub/librarian/internal/service/supervisor"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 
+	"github.com/google/wire"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type LibrarianSephirahServiceService struct {
+var ProviderSet = wire.NewSet(NewLibrarianSephirahService)
+
+type LibrarianSephirahService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
 	a    *bizkether.Kether
@@ -37,7 +40,7 @@ type LibrarianSephirahServiceService struct {
 	info *pb.ServerInstanceSummary
 }
 
-func NewLibrarianSephirahServiceService(
+func NewLibrarianSephirahService(
 	a *bizkether.Kether,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
@@ -57,7 +60,7 @@ func NewLibrarianSephirahServiceService(
 	if config.GetInfo() == nil {
 		config.Info = new(conf.SephirahServer_Info)
 	}
-	res := &LibrarianSephirahServiceService{
+	res := &LibrarianSephirahService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		a:    a,
 		t:    t,
@@ -81,24 +84,26 @@ func NewLibrarianSephirahServiceService(
 	return res
 }
 
-func (s *LibrarianSephirahServiceService) GetServerInformation(ctx context.Context,
+func (s *LibrarianSephirahService) GetServerInformation(ctx context.Context,
 	_ *pb.GetServerInformationRequest) (*pb.GetServerInformationResponse, error) {
 	featureSummary := converter.ToPBServerFeatureSummary(s.s.GetFeatureSummary())
 	featureSummary.FeedItemActions = append(featureSummary.FeedItemActions,
 		converter.ToPBFeatureFlagList(s.y.GetBuiltInFeedActions())...,
 	)
 	return &pb.GetServerInformationResponse{
-		ServerBinarySummary: &pb.ServerBinarySummary{
-			SourceCodeAddress: s.app.SourceCodeAddress,
-			BuildVersion:      s.app.Version,
-			BuildDate:         s.app.BuildDate,
+		ServerInformation: &pb.ServerInformation{
+			ServerBinarySummary: &pb.ServerBinarySummary{
+				SourceCodeAddress: s.app.SourceCodeAddress,
+				BuildVersion:      s.app.Version,
+				BuildDate:         s.app.BuildDate,
+			},
+			ProtocolSummary: &pb.ServerProtocolSummary{
+				Version: s.app.ProtoVersion,
+			},
+			CurrentTime:           timestamppb.New(time.Now()),
+			FeatureSummary:        featureSummary,
+			ServerInstanceSummary: s.info,
+			StatusReport:          nil,
 		},
-		ProtocolSummary: &pb.ServerProtocolSummary{
-			Version: s.app.ProtoVersion,
-		},
-		CurrentTime:           timestamppb.New(time.Now()),
-		FeatureSummary:        featureSummary,
-		ServerInstanceSummary: s.info,
-		StatusReport:          nil,
 	}, nil
 }

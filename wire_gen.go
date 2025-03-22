@@ -178,7 +178,7 @@ func wireApp(librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDisco
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahServiceService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
 	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup3()

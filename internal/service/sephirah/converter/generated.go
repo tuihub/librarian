@@ -11,77 +11,33 @@ import (
 	modelnetzach "github.com/tuihub/librarian/internal/model/modelnetzach"
 	modelsupervisor "github.com/tuihub/librarian/internal/model/modelsupervisor"
 	modelyesod "github.com/tuihub/librarian/internal/model/modelyesod"
-	v11 "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	v1 "github.com/tuihub/protos/pkg/librarian/v1"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	"time"
 )
 
-func ToBizAccountAppRelationType(source v1.AccountAppRelationType) model.AccountAppRelationType {
-	var modelAccountAppRelationType model.AccountAppRelationType
-	switch source {
-	case v1.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_OWN:
-		modelAccountAppRelationType = model.AccountAppRelationTypeOwner
-	case v1.AccountAppRelationType_ACCOUNT_APP_RELATION_TYPE_UNSPECIFIED:
-		modelAccountAppRelationType = model.AccountAppRelationTypeUnspecified
-	default:
-		modelAccountAppRelationType = model.AccountAppRelationTypeUnspecified
-	}
-	return modelAccountAppRelationType
-}
-func ToBizApp(source *v11.App) *modelgebura.App {
+func ToBizApp(source *sephirah.App) *modelgebura.App {
 	var pModelgeburaApp *modelgebura.App
 	if source != nil {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = ToBizInternalID((*source).Id)
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Description = (*source).Description
-		modelgeburaApp.DeviceID = ToBizInternalID((*source).DeviceId)
 		modelgeburaApp.Public = (*source).Public
-		modelgeburaApp.AssignedAppInfoID = ToBizInternalID((*source).AssignedAppInfoId)
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
 }
-func ToBizAppBinary(source *v11.AppBinary) *modelgebura.AppBinary {
-	var pModelgeburaAppBinary *modelgebura.AppBinary
-	if source != nil {
-		var modelgeburaAppBinary modelgebura.AppBinary
-		modelgeburaAppBinary.Name = (*source).Name
-		modelgeburaAppBinary.SizeBytes = (*source).SizeBytes
-		modelgeburaAppBinary.PublicURL = (*source).PublicUrl
-		if (*source).Sha256 != nil {
-			modelgeburaAppBinary.Sha256 = make([]uint8, len((*source).Sha256))
-			for i := 0; i < len((*source).Sha256); i++ {
-				modelgeburaAppBinary.Sha256[i] = (*source).Sha256[i]
-			}
-		}
-		pModelgeburaAppBinary = &modelgeburaAppBinary
-	}
-	return pModelgeburaAppBinary
-}
-func ToBizAppBinaryList(source []*v11.AppBinary) []*modelgebura.AppBinary {
-	var pModelgeburaAppBinaryList []*modelgebura.AppBinary
-	if source != nil {
-		pModelgeburaAppBinaryList = make([]*modelgebura.AppBinary, len(source))
-		for i := 0; i < len(source); i++ {
-			pModelgeburaAppBinaryList[i] = ToBizAppBinary(source[i])
-		}
-	}
-	return pModelgeburaAppBinaryList
-}
-func ToBizAppInfo(source *v1.AppInfo) *modelgebura.AppInfo {
+func ToBizAppInfo(source *sephirah.AppInfo) *modelgebura.AppInfo {
 	var pModelgeburaAppInfo *modelgebura.AppInfo
 	if source != nil {
 		var modelgeburaAppInfo modelgebura.AppInfo
-		modelgeburaAppInfo.ID = ToBizInternalID((*source).Id)
-		modelgeburaAppInfo.Internal = (*source).Internal
 		modelgeburaAppInfo.Source = (*source).Source
 		modelgeburaAppInfo.SourceAppID = (*source).SourceAppId
 		modelgeburaAppInfo.SourceURL = PtrToString((*source).SourceUrl)
 		modelgeburaAppInfo.Name = (*source).Name
 		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
-		modelgeburaAppInfo.ShortDescription = (*source).ShortDescription
 		modelgeburaAppInfo.IconImageURL = (*source).IconImageUrl
 		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageUrl
 		modelgeburaAppInfo.CoverImageURL = (*source).CoverImageUrl
@@ -91,46 +47,11 @@ func ToBizAppInfo(source *v1.AppInfo) *modelgebura.AppInfo {
 				modelgeburaAppInfo.Tags[i] = (*source).Tags[i]
 			}
 		}
-		modelgeburaAppInfo.Details = ToBizAppInfoDetail((*source).Details)
 		pModelgeburaAppInfo = &modelgeburaAppInfo
 	}
 	return pModelgeburaAppInfo
 }
-func ToBizAppInfoDetail(source *v1.AppInfoDetails) *modelgebura.AppInfoDetails {
-	var pModelgeburaAppInfoDetails *modelgebura.AppInfoDetails
-	if source != nil {
-		var modelgeburaAppInfoDetails modelgebura.AppInfoDetails
-		modelgeburaAppInfoDetails.Description = (*source).Description
-		modelgeburaAppInfoDetails.ReleaseDate = (*source).ReleaseDate
-		modelgeburaAppInfoDetails.Developer = (*source).Developer
-		modelgeburaAppInfoDetails.Publisher = (*source).Publisher
-		modelgeburaAppInfoDetails.Version = (*source).Version
-		pModelgeburaAppInfoDetails = &modelgeburaAppInfoDetails
-	}
-	return pModelgeburaAppInfoDetails
-}
-func ToBizAppInfoID(source *v1.AppInfoID) *modelgebura.AppInfoID {
-	var pModelgeburaAppInfoID *modelgebura.AppInfoID
-	if source != nil {
-		var modelgeburaAppInfoID modelgebura.AppInfoID
-		modelgeburaAppInfoID.Internal = (*source).Internal
-		modelgeburaAppInfoID.Source = (*source).Source
-		modelgeburaAppInfoID.SourceAppID = (*source).SourceAppId
-		pModelgeburaAppInfoID = &modelgeburaAppInfoID
-	}
-	return pModelgeburaAppInfoID
-}
-func ToBizAppInfoIDList(source []*v1.AppInfoID) []*modelgebura.AppInfoID {
-	var pModelgeburaAppInfoIDList []*modelgebura.AppInfoID
-	if source != nil {
-		pModelgeburaAppInfoIDList = make([]*modelgebura.AppInfoID, len(source))
-		for i := 0; i < len(source); i++ {
-			pModelgeburaAppInfoIDList[i] = ToBizAppInfoID(source[i])
-		}
-	}
-	return pModelgeburaAppInfoIDList
-}
-func ToBizAppInfoList(source []*v1.AppInfo) []*modelgebura.AppInfo {
+func ToBizAppInfoList(source []*sephirah.AppInfo) []*modelgebura.AppInfo {
 	var pModelgeburaAppInfoList []*modelgebura.AppInfo
 	if source != nil {
 		pModelgeburaAppInfoList = make([]*modelgebura.AppInfo, len(source))
@@ -140,19 +61,19 @@ func ToBizAppInfoList(source []*v1.AppInfo) []*modelgebura.AppInfo {
 	}
 	return pModelgeburaAppInfoList
 }
-func ToBizAppType(source v1.AppType) modelgebura.AppType {
+func ToBizAppType(source sephirah.AppType) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
 	switch source {
-	case v1.AppType_APP_TYPE_GAME:
+	case sephirah.AppType_APP_TYPE_GAME:
 		modelgeburaAppType = modelgebura.AppTypeGame
-	case v1.AppType_APP_TYPE_UNSPECIFIED:
+	case sephirah.AppType_APP_TYPE_UNSPECIFIED:
 		modelgeburaAppType = modelgebura.AppTypeUnspecified
 	default:
 		modelgeburaAppType = modelgebura.AppTypeUnspecified
 	}
 	return modelgeburaAppType
 }
-func ToBizAppTypeList(source []v1.AppType) []modelgebura.AppType {
+func ToBizAppTypeList(source []sephirah.AppType) []modelgebura.AppType {
 	var modelgeburaAppTypeList []modelgebura.AppType
 	if source != nil {
 		modelgeburaAppTypeList = make([]modelgebura.AppType, len(source))
@@ -162,10 +83,10 @@ func ToBizAppTypeList(source []v1.AppType) []modelgebura.AppType {
 	}
 	return modelgeburaAppTypeList
 }
-func ToBizDeviceInfo(source *v11.DeviceInfo) *model.DeviceInfo {
-	var pModelDeviceInfo *model.DeviceInfo
+func ToBizDeviceInfo(source *sephirah.DeviceInfo) *model.Device {
+	var pModelDeviceInfo *model.Device
 	if source != nil {
-		var modelDeviceInfo model.DeviceInfo
+		var modelDeviceInfo model.Device
 		modelDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
 		modelDeviceInfo.DeviceName = (*source).DeviceName
 		modelDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
@@ -208,7 +129,7 @@ func ToBizFeatureRequest(source *v1.FeatureRequest) *modelsupervisor.FeatureRequ
 	}
 	return pModelsupervisorFeatureRequest
 }
-func ToBizFeedActionSet(source *v11.FeedActionSet) *modelyesod.FeedActionSet {
+func ToBizFeedActionSet(source *sephirah.FeedActionSet) *modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
 	if source != nil {
 		var modelyesodFeedActionSet modelyesod.FeedActionSet
@@ -225,7 +146,7 @@ func ToBizFeedActionSet(source *v11.FeedActionSet) *modelyesod.FeedActionSet {
 	}
 	return pModelyesodFeedActionSet
 }
-func ToBizFeedConfig(source *v11.FeedConfig) *modelyesod.FeedConfig {
+func ToBizFeedConfig(source *sephirah.FeedConfig) *modelyesod.FeedConfig {
 	var pModelyesodFeedConfig *modelyesod.FeedConfig
 	if source != nil {
 		var modelyesodFeedConfig modelyesod.FeedConfig
@@ -246,37 +167,37 @@ func ToBizFeedConfig(source *v11.FeedConfig) *modelyesod.FeedConfig {
 	}
 	return pModelyesodFeedConfig
 }
-func ToBizFeedConfigPullStatus(source v11.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus {
+func ToBizFeedConfigPullStatus(source sephirah.FeedConfigPullStatus) modelyesod.FeedConfigPullStatus {
 	var modelyesodFeedConfigPullStatus modelyesod.FeedConfigPullStatus
 	switch source {
-	case v11.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED:
+	case sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_FAILED:
 		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusFailed
-	case v11.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING:
+	case sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_PROCESSING:
 		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusProcessing
-	case v11.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS:
+	case sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_SUCCESS:
 		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusSuccess
-	case v11.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED:
+	case sephirah.FeedConfigPullStatus_FEED_CONFIG_PULL_STATUS_UNSPECIFIED:
 		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusUnspecified
 	default:
 		modelyesodFeedConfigPullStatus = modelyesod.FeedConfigPullStatusUnspecified
 	}
 	return modelyesodFeedConfigPullStatus
 }
-func ToBizFeedConfigStatus(source v11.FeedConfigStatus) modelyesod.FeedConfigStatus {
+func ToBizFeedConfigStatus(source sephirah.FeedConfigStatus) modelyesod.FeedConfigStatus {
 	var modelyesodFeedConfigStatus modelyesod.FeedConfigStatus
 	switch source {
-	case v11.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE:
+	case sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE:
 		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusActive
-	case v11.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND:
+	case sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND:
 		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusSuspend
-	case v11.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED:
+	case sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED:
 		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusUnspecified
 	default:
 		modelyesodFeedConfigStatus = modelyesod.FeedConfigStatusUnspecified
 	}
 	return modelyesodFeedConfigStatus
 }
-func ToBizFeedConfigStatusList(source []v11.FeedConfigStatus) []modelyesod.FeedConfigStatus {
+func ToBizFeedConfigStatusList(source []sephirah.FeedConfigStatus) []modelyesod.FeedConfigStatus {
 	var modelyesodFeedConfigStatusList []modelyesod.FeedConfigStatus
 	if source != nil {
 		modelyesodFeedConfigStatusList = make([]modelyesod.FeedConfigStatus, len(source))
@@ -319,7 +240,7 @@ func ToBizFeedItem(source *v1.FeedItem) *modelfeed.Item {
 	}
 	return pModelfeedItem
 }
-func ToBizFeedItemCollection(source *v11.FeedItemCollection) *modelyesod.FeedItemCollection {
+func ToBizFeedItemCollection(source *sephirah.FeedItemCollection) *modelyesod.FeedItemCollection {
 	var pModelyesodFeedItemCollection *modelyesod.FeedItemCollection
 	if source != nil {
 		var modelyesodFeedItemCollection modelyesod.FeedItemCollection
@@ -331,7 +252,7 @@ func ToBizFeedItemCollection(source *v11.FeedItemCollection) *modelyesod.FeedIte
 	}
 	return pModelyesodFeedItemCollection
 }
-func ToBizFileMetadata(source *v11.FileMetadata) *modelbinah.FileMetadata {
+func ToBizFileMetadata(source *v1.FileMetadata) *modelbinah.FileMetadata {
 	var pModelbinahFileMetadata *modelbinah.FileMetadata
 	if source != nil {
 		var modelbinahFileMetadata modelbinah.FileMetadata
@@ -349,14 +270,14 @@ func ToBizFileMetadata(source *v11.FileMetadata) *modelbinah.FileMetadata {
 	}
 	return pModelbinahFileMetadata
 }
-func ToBizFileType(source v11.FileType) modelbinah.FileType {
+func ToBizFileType(source v1.FileType) modelbinah.FileType {
 	var modelbinahFileType modelbinah.FileType
 	switch source {
-	case v11.FileType_FILE_TYPE_CHESED_IMAGE:
+	case v1.FileType_FILE_TYPE_CHESED_IMAGE:
 		modelbinahFileType = modelbinah.FileTypeChesedImage
-	case v11.FileType_FILE_TYPE_GEBURA_SAVE:
+	case v1.FileType_FILE_TYPE_GEBURA_SAVE:
 		modelbinahFileType = modelbinah.FileTypeGeburaSave
-	case v11.FileType_FILE_TYPE_UNSPECIFIED:
+	case v1.FileType_FILE_TYPE_UNSPECIFIED:
 		modelbinahFileType = modelbinah.FileTypeUnspecified
 	default:
 		modelbinahFileType = modelbinah.FileTypeUnspecified
@@ -373,7 +294,7 @@ func ToBizInternalIDList(source []*v1.InternalID) []model.InternalID {
 	}
 	return modelInternalIDList
 }
-func ToBizNotifyFilter(source *v11.NotifyFilter) *modelnetzach.NotifyFilter {
+func ToBizNotifyFilter(source *sephirah.NotifyFilter) *modelnetzach.NotifyFilter {
 	var pModelnetzachNotifyFilter *modelnetzach.NotifyFilter
 	if source != nil {
 		var modelnetzachNotifyFilter modelnetzach.NotifyFilter
@@ -393,7 +314,7 @@ func ToBizNotifyFilter(source *v11.NotifyFilter) *modelnetzach.NotifyFilter {
 	}
 	return pModelnetzachNotifyFilter
 }
-func ToBizNotifyFlow(source *v11.NotifyFlow) *modelnetzach.NotifyFlow {
+func ToBizNotifyFlow(source *sephirah.NotifyFlow) *modelnetzach.NotifyFlow {
 	var pModelnetzachNotifyFlow *modelnetzach.NotifyFlow
 	if source != nil {
 		var modelnetzachNotifyFlow modelnetzach.NotifyFlow
@@ -417,7 +338,7 @@ func ToBizNotifyFlow(source *v11.NotifyFlow) *modelnetzach.NotifyFlow {
 	}
 	return pModelnetzachNotifyFlow
 }
-func ToBizNotifyFlowSource(source *v11.NotifyFlowSource) *modelnetzach.NotifyFlowSource {
+func ToBizNotifyFlowSource(source *sephirah.NotifyFlowSource) *modelnetzach.NotifyFlowSource {
 	var pModelnetzachNotifyFlowSource *modelnetzach.NotifyFlowSource
 	if source != nil {
 		var modelnetzachNotifyFlowSource modelnetzach.NotifyFlowSource
@@ -427,21 +348,21 @@ func ToBizNotifyFlowSource(source *v11.NotifyFlowSource) *modelnetzach.NotifyFlo
 	}
 	return pModelnetzachNotifyFlowSource
 }
-func ToBizNotifyFlowStatus(source v11.NotifyFlowStatus) modelnetzach.NotifyFlowStatus {
+func ToBizNotifyFlowStatus(source sephirah.NotifyFlowStatus) modelnetzach.NotifyFlowStatus {
 	var modelnetzachNotifyFlowStatus modelnetzach.NotifyFlowStatus
 	switch source {
-	case v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE:
+	case sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE:
 		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusActive
-	case v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND:
+	case sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND:
 		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusSuspend
-	case v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED:
+	case sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED:
 		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusUnspecified
 	default:
 		modelnetzachNotifyFlowStatus = modelnetzach.NotifyFlowStatusUnspecified
 	}
 	return modelnetzachNotifyFlowStatus
 }
-func ToBizNotifyFlowTarget(source *v11.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget {
+func ToBizNotifyFlowTarget(source *sephirah.NotifyFlowTarget) *modelnetzach.NotifyFlowTarget {
 	var pModelnetzachNotifyFlowTarget *modelnetzach.NotifyFlowTarget
 	if source != nil {
 		var modelnetzachNotifyFlowTarget modelnetzach.NotifyFlowTarget
@@ -451,7 +372,7 @@ func ToBizNotifyFlowTarget(source *v11.NotifyFlowTarget) *modelnetzach.NotifyFlo
 	}
 	return pModelnetzachNotifyFlowTarget
 }
-func ToBizNotifyTarget(source *v11.NotifyTarget) *modelnetzach.NotifyTarget {
+func ToBizNotifyTarget(source *sephirah.NotifyTarget) *modelnetzach.NotifyTarget {
 	var pModelnetzachNotifyTarget *modelnetzach.NotifyTarget
 	if source != nil {
 		var modelnetzachNotifyTarget modelnetzach.NotifyTarget
@@ -464,21 +385,21 @@ func ToBizNotifyTarget(source *v11.NotifyTarget) *modelnetzach.NotifyTarget {
 	}
 	return pModelnetzachNotifyTarget
 }
-func ToBizNotifyTargetStatus(source v11.NotifyTargetStatus) modelnetzach.NotifyTargetStatus {
+func ToBizNotifyTargetStatus(source sephirah.NotifyTargetStatus) modelnetzach.NotifyTargetStatus {
 	var modelnetzachNotifyTargetStatus modelnetzach.NotifyTargetStatus
 	switch source {
-	case v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE:
+	case sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE:
 		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusActive
-	case v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND:
+	case sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND:
 		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusSuspend
-	case v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED:
+	case sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED:
 		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusUnspecified
 	default:
 		modelnetzachNotifyTargetStatus = modelnetzach.NotifyTargetStatusUnspecified
 	}
 	return modelnetzachNotifyTargetStatus
 }
-func ToBizNotifyTargetStatusList(source []v11.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus {
+func ToBizNotifyTargetStatusList(source []sephirah.NotifyTargetStatus) []modelnetzach.NotifyTargetStatus {
 	var modelnetzachNotifyTargetStatusList []modelnetzach.NotifyTargetStatus
 	if source != nil {
 		modelnetzachNotifyTargetStatusList = make([]modelnetzach.NotifyTargetStatus, len(source))
@@ -502,7 +423,7 @@ func ToBizPorterBinarySummary(source *v1.PorterBinarySummary) *modelsupervisor.P
 	}
 	return pModelsupervisorPorterBinarySummary
 }
-func ToBizPorterContext(source *v11.PorterContext) *modelsupervisor.PorterContext {
+func ToBizPorterContext(source *sephirah.PorterContext) *modelsupervisor.PorterContext {
 	var pModelsupervisorPorterContext *modelsupervisor.PorterContext
 	if source != nil {
 		var modelsupervisorPorterContext modelsupervisor.PorterContext
@@ -517,32 +438,32 @@ func ToBizPorterContext(source *v11.PorterContext) *modelsupervisor.PorterContex
 	}
 	return pModelsupervisorPorterContext
 }
-func ToBizPorterContextHandleStatus(source v11.PorterContextHandleStatus) modelsupervisor.PorterContextHandleStatus {
+func ToBizPorterContextHandleStatus(source sephirah.PorterContextHandleStatus) modelsupervisor.PorterContextHandleStatus {
 	var modelsupervisorPorterContextHandleStatus modelsupervisor.PorterContextHandleStatus
 	switch source {
-	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE:
+	case sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusActive
-	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED:
+	case sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
-	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED:
+	case sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusDowngraded
-	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING:
+	case sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
-	case v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED:
+	case sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
 	default:
 		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
 	}
 	return modelsupervisorPorterContextHandleStatus
 }
-func ToBizPorterContextStatus(source v11.PorterContextStatus) modelsupervisor.PorterContextStatus {
+func ToBizPorterContextStatus(source sephirah.PorterContextStatus) modelsupervisor.PorterContextStatus {
 	var modelsupervisorPorterContextStatus modelsupervisor.PorterContextStatus
 	switch source {
-	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE:
+	case sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE:
 		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusActive
-	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED:
+	case sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED:
 		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusDisabled
-	case v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED:
+	case sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED:
 		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
 	default:
 		modelsupervisorPorterContextStatus = modelsupervisor.PorterContextStatusUnspecified
@@ -599,25 +520,25 @@ func ToBizPorterFeatureSummary(source *v1.FeatureSummary) *modelsupervisor.Porte
 	}
 	return pModelsupervisorPorterFeatureSummary
 }
-func ToBizSystemNotificationLevel(source v11.SystemNotificationLevel) modelnetzach.SystemNotificationLevel {
+func ToBizSystemNotificationLevel(source sephirah.SystemNotificationLevel) modelnetzach.SystemNotificationLevel {
 	var modelnetzachSystemNotificationLevel modelnetzach.SystemNotificationLevel
 	switch source {
-	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR:
+	case sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelError
-	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO:
+	case sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelInfo
-	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING:
+	case sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelOngoing
-	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED:
+	case sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
-	case v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING:
+	case sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelWarning
 	default:
 		modelnetzachSystemNotificationLevel = modelnetzach.SystemNotificationLevelUnspecified
 	}
 	return modelnetzachSystemNotificationLevel
 }
-func ToBizSystemNotificationLevelList(source []v11.SystemNotificationLevel) []modelnetzach.SystemNotificationLevel {
+func ToBizSystemNotificationLevelList(source []sephirah.SystemNotificationLevel) []modelnetzach.SystemNotificationLevel {
 	var modelnetzachSystemNotificationLevelList []modelnetzach.SystemNotificationLevel
 	if source != nil {
 		modelnetzachSystemNotificationLevelList = make([]modelnetzach.SystemNotificationLevel, len(source))
@@ -627,23 +548,23 @@ func ToBizSystemNotificationLevelList(source []v11.SystemNotificationLevel) []mo
 	}
 	return modelnetzachSystemNotificationLevelList
 }
-func ToBizSystemNotificationStatus(source v11.SystemNotificationStatus) modelnetzach.SystemNotificationStatus {
+func ToBizSystemNotificationStatus(source sephirah.SystemNotificationStatus) modelnetzach.SystemNotificationStatus {
 	var modelnetzachSystemNotificationStatus modelnetzach.SystemNotificationStatus
 	switch source {
-	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED:
+	case sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusDismissed
-	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ:
+	case sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusRead
-	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD:
+	case sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnread
-	case v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED:
+	case sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
 	default:
 		modelnetzachSystemNotificationStatus = modelnetzach.SystemNotificationStatusUnspecified
 	}
 	return modelnetzachSystemNotificationStatus
 }
-func ToBizSystemNotificationStatusList(source []v11.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus {
+func ToBizSystemNotificationStatusList(source []sephirah.SystemNotificationStatus) []modelnetzach.SystemNotificationStatus {
 	var modelnetzachSystemNotificationStatusList []modelnetzach.SystemNotificationStatus
 	if source != nil {
 		modelnetzachSystemNotificationStatusList = make([]modelnetzach.SystemNotificationStatus, len(source))
@@ -653,46 +574,22 @@ func ToBizSystemNotificationStatusList(source []v11.SystemNotificationStatus) []
 	}
 	return modelnetzachSystemNotificationStatusList
 }
-func ToBizSystemNotificationType(source v11.SystemNotificationType) modelnetzach.SystemNotificationType {
-	var modelnetzachSystemNotificationType modelnetzach.SystemNotificationType
-	switch source {
-	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeSystem
-	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
-	case v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUser
-	default:
-		modelnetzachSystemNotificationType = modelnetzach.SystemNotificationTypeUnspecified
-	}
-	return modelnetzachSystemNotificationType
-}
-func ToBizSystemNotificationTypeList(source []v11.SystemNotificationType) []modelnetzach.SystemNotificationType {
-	var modelnetzachSystemNotificationTypeList []modelnetzach.SystemNotificationType
-	if source != nil {
-		modelnetzachSystemNotificationTypeList = make([]modelnetzach.SystemNotificationType, len(source))
-		for i := 0; i < len(source); i++ {
-			modelnetzachSystemNotificationTypeList[i] = ToBizSystemNotificationType(source[i])
-		}
-	}
-	return modelnetzachSystemNotificationTypeList
-}
-func ToBizSystemType(source v11.SystemType) model.SystemType {
+func ToBizSystemType(source sephirah.SystemType) model.SystemType {
 	var modelSystemType model.SystemType
 	switch source {
-	case v11.SystemType_SYSTEM_TYPE_ANDROID:
+	case sephirah.SystemType_SYSTEM_TYPE_ANDROID:
 		modelSystemType = model.SystemTypeAndroid
-	case v11.SystemType_SYSTEM_TYPE_IOS:
+	case sephirah.SystemType_SYSTEM_TYPE_IOS:
 		modelSystemType = model.SystemTypeIOS
-	case v11.SystemType_SYSTEM_TYPE_LINUX:
+	case sephirah.SystemType_SYSTEM_TYPE_LINUX:
 		modelSystemType = model.SystemTypeLinux
-	case v11.SystemType_SYSTEM_TYPE_MACOS:
+	case sephirah.SystemType_SYSTEM_TYPE_MACOS:
 		modelSystemType = model.SystemTypeMacOS
-	case v11.SystemType_SYSTEM_TYPE_UNSPECIFIED:
+	case sephirah.SystemType_SYSTEM_TYPE_UNSPECIFIED:
 		modelSystemType = model.SystemTypeUnspecified
-	case v11.SystemType_SYSTEM_TYPE_WEB:
+	case sephirah.SystemType_SYSTEM_TYPE_WEB:
 		modelSystemType = model.SystemTypeWeb
-	case v11.SystemType_SYSTEM_TYPE_WINDOWS:
+	case sephirah.SystemType_SYSTEM_TYPE_WINDOWS:
 		modelSystemType = model.SystemTypeWindows
 	default:
 		modelSystemType = model.SystemTypeUnspecified
@@ -709,7 +606,7 @@ func ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	}
 	return pModelTimeRange
 }
-func ToBizUser(source *v11.User) *model.User {
+func ToBizUser(source *sephirah.User) *model.User {
 	var pModelUser *model.User
 	if source != nil {
 		var modelUser model.User
@@ -722,21 +619,21 @@ func ToBizUser(source *v11.User) *model.User {
 	}
 	return pModelUser
 }
-func ToBizUserStatus(source v11.UserStatus) model.UserStatus {
+func ToBizUserStatus(source sephirah.UserStatus) model.UserStatus {
 	var modelUserStatus model.UserStatus
 	switch source {
-	case v11.UserStatus_USER_STATUS_ACTIVE:
+	case sephirah.UserStatus_USER_STATUS_ACTIVE:
 		modelUserStatus = model.UserStatusActive
-	case v11.UserStatus_USER_STATUS_BLOCKED:
+	case sephirah.UserStatus_USER_STATUS_BLOCKED:
 		modelUserStatus = model.UserStatusBlocked
-	case v11.UserStatus_USER_STATUS_UNSPECIFIED:
+	case sephirah.UserStatus_USER_STATUS_UNSPECIFIED:
 		modelUserStatus = model.UserStatusUnspecified
 	default:
 		modelUserStatus = model.UserStatusUnspecified
 	}
 	return modelUserStatus
 }
-func ToBizUserStatusList(source []v11.UserStatus) []model.UserStatus {
+func ToBizUserStatusList(source []sephirah.UserStatus) []model.UserStatus {
 	var modelUserStatusList []model.UserStatus
 	if source != nil {
 		modelUserStatusList = make([]model.UserStatus, len(source))
@@ -746,25 +643,25 @@ func ToBizUserStatusList(source []v11.UserStatus) []model.UserStatus {
 	}
 	return modelUserStatusList
 }
-func ToLibAuthUserType(source v11.UserType) model.UserType {
+func ToLibAuthUserType(source sephirah.UserType) model.UserType {
 	var modelUserType model.UserType
 	switch source {
-	case v11.UserType_USER_TYPE_ADMIN:
+	case sephirah.UserType_USER_TYPE_ADMIN:
 		modelUserType = model.UserTypeAdmin
-	case v11.UserType_USER_TYPE_NORMAL:
+	case sephirah.UserType_USER_TYPE_NORMAL:
 		modelUserType = model.UserTypeNormal
-	case v11.UserType_USER_TYPE_PORTER:
+	case sephirah.UserType_USER_TYPE_PORTER:
 		modelUserType = model.UserTypePorter
-	case v11.UserType_USER_TYPE_SENTINEL:
+	case sephirah.UserType_USER_TYPE_SENTINEL:
 		modelUserType = model.UserTypeSentinel
-	case v11.UserType_USER_TYPE_UNSPECIFIED:
+	case sephirah.UserType_USER_TYPE_UNSPECIFIED:
 		modelUserType = model.UserTypeUnspecified
 	default:
 		modelUserType = model.UserTypeUnspecified
 	}
 	return modelUserType
 }
-func ToLibAuthUserTypeList(source []v11.UserType) []model.UserType {
+func ToLibAuthUserTypeList(source []sephirah.UserType) []model.UserType {
 	var modelUserTypeList []model.UserType
 	if source != nil {
 		modelUserTypeList = make([]model.UserType, len(source))
@@ -814,10 +711,10 @@ func pV1FeedPersonToPModelfeedPerson(source *v1.FeedPerson) *modelfeed.Person {
 	}
 	return pModelfeedPerson
 }
-func ToPBAccount(source *model.Account) *v1.Account {
-	var pV1Account *v1.Account
+func ToPBAccount(source *model.Account) *sephirah.Account {
+	var pV1Account *sephirah.Account
 	if source != nil {
-		var v1Account v1.Account
+		var v1Account sephirah.Account
 		v1Account.Id = ToPBInternalID((*source).ID)
 		v1Account.Platform = (*source).Platform
 		v1Account.PlatformAccountId = (*source).PlatformAccountID
@@ -829,61 +726,38 @@ func ToPBAccount(source *model.Account) *v1.Account {
 	}
 	return pV1Account
 }
-func ToPBAccountList(source []*model.Account) []*v1.Account {
-	var pV1AccountList []*v1.Account
+func ToPBAccountList(source []*model.Account) []*sephirah.Account {
+	var pV1AccountList []*sephirah.Account
 	if source != nil {
-		pV1AccountList = make([]*v1.Account, len(source))
+		pV1AccountList = make([]*sephirah.Account, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1AccountList[i] = ToPBAccount(source[i])
 		}
 	}
 	return pV1AccountList
 }
-func ToPBApp(source *modelgebura.App) *v11.App {
-	var pV1App *v11.App
+func ToPBApp(source *modelgebura.App) *sephirah.App {
+	var pV1App *sephirah.App
 	if source != nil {
-		var v1App v11.App
+		var v1App sephirah.App
 		v1App.Id = ToPBInternalID((*source).ID)
+		v1App.Public = (*source).Public
 		v1App.Name = (*source).Name
 		v1App.Description = (*source).Description
-		v1App.AssignedAppInfoId = ToPBInternalID((*source).AssignedAppInfoID)
-		v1App.DeviceId = ToPBInternalID((*source).DeviceID)
-		v1App.Public = (*source).Public
 		pV1App = &v1App
 	}
 	return pV1App
 }
-func ToPBAppBinary(source *modelgebura.AppBinary) *v11.AppBinary {
-	var pV1AppBinary *v11.AppBinary
+func ToPBAppInfo(source *modelgebura.AppInfo) *sephirah.AppInfo {
+	var pV1AppInfo *sephirah.AppInfo
 	if source != nil {
-		var v1AppBinary v11.AppBinary
-		v1AppBinary.Name = (*source).Name
-		v1AppBinary.SizeBytes = (*source).SizeBytes
-		v1AppBinary.PublicUrl = (*source).PublicURL
-		if (*source).Sha256 != nil {
-			v1AppBinary.Sha256 = make([]uint8, len((*source).Sha256))
-			for i := 0; i < len((*source).Sha256); i++ {
-				v1AppBinary.Sha256[i] = (*source).Sha256[i]
-			}
-		}
-		pV1AppBinary = &v1AppBinary
-	}
-	return pV1AppBinary
-}
-func ToPBAppInfo(source *modelgebura.AppInfo) *v1.AppInfo {
-	var pV1AppInfo *v1.AppInfo
-	if source != nil {
-		var v1AppInfo v1.AppInfo
-		v1AppInfo.Id = ToPBInternalID((*source).ID)
-		v1AppInfo.Internal = (*source).Internal
+		var v1AppInfo sephirah.AppInfo
 		v1AppInfo.Source = (*source).Source
 		v1AppInfo.SourceAppId = (*source).SourceAppID
 		pString := (*source).SourceURL
 		v1AppInfo.SourceUrl = &pString
-		v1AppInfo.Details = ToPBAppInfoDetail((*source).Details)
 		v1AppInfo.Name = (*source).Name
 		v1AppInfo.Type = ToPBAppType((*source).Type)
-		v1AppInfo.ShortDescription = (*source).ShortDescription
 		v1AppInfo.IconImageUrl = (*source).IconImageURL
 		v1AppInfo.BackgroundImageUrl = (*source).BackgroundImageURL
 		v1AppInfo.CoverImageUrl = (*source).CoverImageURL
@@ -897,87 +771,42 @@ func ToPBAppInfo(source *modelgebura.AppInfo) *v1.AppInfo {
 	}
 	return pV1AppInfo
 }
-func ToPBAppInfoDetail(source *modelgebura.AppInfoDetails) *v1.AppInfoDetails {
-	var pV1AppInfoDetails *v1.AppInfoDetails
+func ToPBAppInfoList(source []*modelgebura.AppInfo) []*sephirah.AppInfo {
+	var pV1AppInfoList []*sephirah.AppInfo
 	if source != nil {
-		var v1AppInfoDetails v1.AppInfoDetails
-		v1AppInfoDetails.Description = (*source).Description
-		v1AppInfoDetails.ReleaseDate = (*source).ReleaseDate
-		v1AppInfoDetails.Developer = (*source).Developer
-		v1AppInfoDetails.Publisher = (*source).Publisher
-		v1AppInfoDetails.Version = (*source).Version
-		pV1AppInfoDetails = &v1AppInfoDetails
-	}
-	return pV1AppInfoDetails
-}
-func ToPBAppInfoList(source []*modelgebura.AppInfo) []*v1.AppInfo {
-	var pV1AppInfoList []*v1.AppInfo
-	if source != nil {
-		pV1AppInfoList = make([]*v1.AppInfo, len(source))
+		pV1AppInfoList = make([]*sephirah.AppInfo, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1AppInfoList[i] = ToPBAppInfo(source[i])
 		}
 	}
 	return pV1AppInfoList
 }
-func ToPBAppInfoMixed(source *modelgebura.AppInfoMixed) *v1.AppInfoMixed {
-	var pV1AppInfoMixed *v1.AppInfoMixed
+func ToPBAppList(source []*modelgebura.App) []*sephirah.App {
+	var pV1AppList []*sephirah.App
 	if source != nil {
-		var v1AppInfoMixed v1.AppInfoMixed
-		v1AppInfoMixed.Id = ToPBInternalID((*source).ID)
-		v1AppInfoMixed.Details = ToPBAppInfoDetail((*source).Details)
-		v1AppInfoMixed.Name = (*source).Name
-		v1AppInfoMixed.Type = ToPBAppType((*source).Type)
-		v1AppInfoMixed.ShortDescription = (*source).ShortDescription
-		v1AppInfoMixed.IconImageUrl = (*source).IconImageURL
-		v1AppInfoMixed.BackgroundImageUrl = (*source).BackgroundImageURL
-		v1AppInfoMixed.CoverImageUrl = (*source).CoverImageURL
-		if (*source).Tags != nil {
-			v1AppInfoMixed.Tags = make([]string, len((*source).Tags))
-			for i := 0; i < len((*source).Tags); i++ {
-				v1AppInfoMixed.Tags[i] = (*source).Tags[i]
-			}
-		}
-		pV1AppInfoMixed = &v1AppInfoMixed
-	}
-	return pV1AppInfoMixed
-}
-func ToPBAppInfoMixedList(source []*modelgebura.AppInfoMixed) []*v1.AppInfoMixed {
-	var pV1AppInfoMixedList []*v1.AppInfoMixed
-	if source != nil {
-		pV1AppInfoMixedList = make([]*v1.AppInfoMixed, len(source))
-		for i := 0; i < len(source); i++ {
-			pV1AppInfoMixedList[i] = ToPBAppInfoMixed(source[i])
-		}
-	}
-	return pV1AppInfoMixedList
-}
-func ToPBAppList(source []*modelgebura.App) []*v11.App {
-	var pV1AppList []*v11.App
-	if source != nil {
-		pV1AppList = make([]*v11.App, len(source))
+		pV1AppList = make([]*sephirah.App, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1AppList[i] = ToPBApp(source[i])
 		}
 	}
 	return pV1AppList
 }
-func ToPBAppType(source modelgebura.AppType) v1.AppType {
-	var v1AppType v1.AppType
+func ToPBAppType(source modelgebura.AppType) sephirah.AppType {
+	var v1AppType sephirah.AppType
 	switch source {
 	case modelgebura.AppTypeGame:
-		v1AppType = v1.AppType_APP_TYPE_GAME
+		v1AppType = sephirah.AppType_APP_TYPE_GAME
 	case modelgebura.AppTypeUnspecified:
-		v1AppType = v1.AppType_APP_TYPE_UNSPECIFIED
+		v1AppType = sephirah.AppType_APP_TYPE_UNSPECIFIED
 	default:
-		v1AppType = v1.AppType_APP_TYPE_UNSPECIFIED
+		v1AppType = sephirah.AppType_APP_TYPE_UNSPECIFIED
 	}
 	return v1AppType
 }
-func ToPBDeviceInfo(source *model.DeviceInfo) *v11.DeviceInfo {
-	var pV1DeviceInfo *v11.DeviceInfo
+func ToPBDeviceInfo(source *model.Device) *sephirah.DeviceInfo {
+	var pV1DeviceInfo *sephirah.DeviceInfo
 	if source != nil {
-		var v1DeviceInfo v11.DeviceInfo
+		var v1DeviceInfo sephirah.DeviceInfo
 		v1DeviceInfo.DeviceId = ToPBInternalID((*source).ID)
 		v1DeviceInfo.DeviceName = (*source).DeviceName
 		v1DeviceInfo.SystemType = ToPBSystemType((*source).SystemType)
@@ -989,10 +818,10 @@ func ToPBDeviceInfo(source *model.DeviceInfo) *v11.DeviceInfo {
 	}
 	return pV1DeviceInfo
 }
-func ToPBDeviceInfoList(source []*model.DeviceInfo) []*v11.DeviceInfo {
-	var pV1DeviceInfoList []*v11.DeviceInfo
+func ToPBDeviceInfoList(source []*model.Device) []*sephirah.DeviceInfo {
+	var pV1DeviceInfoList []*sephirah.DeviceInfo
 	if source != nil {
-		pV1DeviceInfoList = make([]*v11.DeviceInfo, len(source))
+		pV1DeviceInfoList = make([]*sephirah.DeviceInfo, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1DeviceInfoList[i] = ToPBDeviceInfo(source[i])
 		}
@@ -1072,10 +901,10 @@ func ToPBFeed(source *modelfeed.Feed) *v1.Feed {
 	}
 	return pV1Feed
 }
-func ToPBFeedActionSet(source *modelyesod.FeedActionSet) *v11.FeedActionSet {
-	var pV1FeedActionSet *v11.FeedActionSet
+func ToPBFeedActionSet(source *modelyesod.FeedActionSet) *sephirah.FeedActionSet {
+	var pV1FeedActionSet *sephirah.FeedActionSet
 	if source != nil {
-		var v1FeedActionSet v11.FeedActionSet
+		var v1FeedActionSet sephirah.FeedActionSet
 		v1FeedActionSet.Id = ToPBInternalID((*source).ID)
 		v1FeedActionSet.Name = (*source).Name
 		v1FeedActionSet.Description = (*source).Description
@@ -1089,20 +918,20 @@ func ToPBFeedActionSet(source *modelyesod.FeedActionSet) *v11.FeedActionSet {
 	}
 	return pV1FeedActionSet
 }
-func ToPBFeedActionSetList(source []*modelyesod.FeedActionSet) []*v11.FeedActionSet {
-	var pV1FeedActionSetList []*v11.FeedActionSet
+func ToPBFeedActionSetList(source []*modelyesod.FeedActionSet) []*sephirah.FeedActionSet {
+	var pV1FeedActionSetList []*sephirah.FeedActionSet
 	if source != nil {
-		pV1FeedActionSetList = make([]*v11.FeedActionSet, len(source))
+		pV1FeedActionSetList = make([]*sephirah.FeedActionSet, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1FeedActionSetList[i] = ToPBFeedActionSet(source[i])
 		}
 	}
 	return pV1FeedActionSetList
 }
-func ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.FeedConfig {
-	var pV1FeedConfig *v11.FeedConfig
+func ToPBFeedConfig(source *modelyesod.FeedConfig) *sephirah.FeedConfig {
+	var pV1FeedConfig *sephirah.FeedConfig
 	if source != nil {
-		var v1FeedConfig v11.FeedConfig
+		var v1FeedConfig sephirah.FeedConfig
 		v1FeedConfig.Id = ToPBInternalID((*source).ID)
 		v1FeedConfig.Name = (*source).Name
 		v1FeedConfig.Description = (*source).Description
@@ -1120,17 +949,17 @@ func ToPBFeedConfig(source *modelyesod.FeedConfig) *v11.FeedConfig {
 	}
 	return pV1FeedConfig
 }
-func ToPBFeedConfigStatus(source modelyesod.FeedConfigStatus) v11.FeedConfigStatus {
-	var v1FeedConfigStatus v11.FeedConfigStatus
+func ToPBFeedConfigStatus(source modelyesod.FeedConfigStatus) sephirah.FeedConfigStatus {
+	var v1FeedConfigStatus sephirah.FeedConfigStatus
 	switch source {
 	case modelyesod.FeedConfigStatusActive:
-		v1FeedConfigStatus = v11.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
+		v1FeedConfigStatus = sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_ACTIVE
 	case modelyesod.FeedConfigStatusSuspend:
-		v1FeedConfigStatus = v11.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
+		v1FeedConfigStatus = sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_SUSPEND
 	case modelyesod.FeedConfigStatusUnspecified:
-		v1FeedConfigStatus = v11.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
+		v1FeedConfigStatus = sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
 	default:
-		v1FeedConfigStatus = v11.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
+		v1FeedConfigStatus = sephirah.FeedConfigStatus_FEED_CONFIG_STATUS_UNSPECIFIED
 	}
 	return v1FeedConfigStatus
 }
@@ -1177,10 +1006,10 @@ func ToPBFeedItem(source *modelfeed.Item) *v1.FeedItem {
 	}
 	return pV1FeedItem
 }
-func ToPBFeedItemCollection(source *modelyesod.FeedItemCollection) *v11.FeedItemCollection {
-	var pV1FeedItemCollection *v11.FeedItemCollection
+func ToPBFeedItemCollection(source *modelyesod.FeedItemCollection) *sephirah.FeedItemCollection {
+	var pV1FeedItemCollection *sephirah.FeedItemCollection
 	if source != nil {
-		var v1FeedItemCollection v11.FeedItemCollection
+		var v1FeedItemCollection sephirah.FeedItemCollection
 		v1FeedItemCollection.Id = ToPBInternalID((*source).ID)
 		v1FeedItemCollection.Name = (*source).Name
 		v1FeedItemCollection.Description = (*source).Description
@@ -1189,20 +1018,20 @@ func ToPBFeedItemCollection(source *modelyesod.FeedItemCollection) *v11.FeedItem
 	}
 	return pV1FeedItemCollection
 }
-func ToPBFeedItemCollectionList(source []*modelyesod.FeedItemCollection) []*v11.FeedItemCollection {
-	var pV1FeedItemCollectionList []*v11.FeedItemCollection
+func ToPBFeedItemCollectionList(source []*modelyesod.FeedItemCollection) []*sephirah.FeedItemCollection {
+	var pV1FeedItemCollectionList []*sephirah.FeedItemCollection
 	if source != nil {
-		pV1FeedItemCollectionList = make([]*v11.FeedItemCollection, len(source))
+		pV1FeedItemCollectionList = make([]*sephirah.FeedItemCollection, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1FeedItemCollectionList[i] = ToPBFeedItemCollection(source[i])
 		}
 	}
 	return pV1FeedItemCollectionList
 }
-func ToPBFeedItemDigest(source *modelyesod.FeedItemDigest) *v11.FeedItemDigest {
-	var pV1FeedItemDigest *v11.FeedItemDigest
+func ToPBFeedItemDigest(source *modelyesod.FeedItemDigest) *sephirah.FeedItemDigest {
+	var pV1FeedItemDigest *sephirah.FeedItemDigest
 	if source != nil {
-		var v1FeedItemDigest v11.FeedItemDigest
+		var v1FeedItemDigest sephirah.FeedItemDigest
 		v1FeedItemDigest.FeedId = ToPBInternalID((*source).FeedID)
 		v1FeedItemDigest.ItemId = ToPBInternalID((*source).ItemID)
 		v1FeedItemDigest.AvatarUrl = (*source).AvatarURL
@@ -1224,10 +1053,10 @@ func ToPBFeedItemDigest(source *modelyesod.FeedItemDigest) *v11.FeedItemDigest {
 	}
 	return pV1FeedItemDigest
 }
-func ToPBFeedItemDigestList(source []*modelyesod.FeedItemDigest) []*v11.FeedItemDigest {
-	var pV1FeedItemDigestList []*v11.FeedItemDigest
+func ToPBFeedItemDigestList(source []*modelyesod.FeedItemDigest) []*sephirah.FeedItemDigest {
+	var pV1FeedItemDigestList []*sephirah.FeedItemDigest
 	if source != nil {
-		pV1FeedItemDigestList = make([]*v11.FeedItemDigest, len(source))
+		pV1FeedItemDigestList = make([]*sephirah.FeedItemDigest, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1FeedItemDigestList[i] = ToPBFeedItemDigest(source[i])
 		}
@@ -1244,20 +1073,20 @@ func ToPBFeedItemList(source []*modelfeed.Item) []*v1.FeedItem {
 	}
 	return pV1FeedItemList
 }
-func ToPBFeedWithConfig(source *modelyesod.FeedWithConfig) *v11.ListFeedConfigsResponse_FeedWithConfig {
-	var pV1ListFeedConfigsResponse_FeedWithConfig *v11.ListFeedConfigsResponse_FeedWithConfig
+func ToPBFeedWithConfig(source *modelyesod.FeedWithConfig) *sephirah.ListFeedConfigsResponse_FeedWithConfig {
+	var pV1ListFeedConfigsResponse_FeedWithConfig *sephirah.ListFeedConfigsResponse_FeedWithConfig
 	if source != nil {
-		var v1ListFeedConfigsResponse_FeedWithConfig v11.ListFeedConfigsResponse_FeedWithConfig
+		var v1ListFeedConfigsResponse_FeedWithConfig sephirah.ListFeedConfigsResponse_FeedWithConfig
 		v1ListFeedConfigsResponse_FeedWithConfig.Feed = ToPBFeed((*source).Feed)
 		v1ListFeedConfigsResponse_FeedWithConfig.Config = ToPBFeedConfig((*source).FeedConfig)
 		pV1ListFeedConfigsResponse_FeedWithConfig = &v1ListFeedConfigsResponse_FeedWithConfig
 	}
 	return pV1ListFeedConfigsResponse_FeedWithConfig
 }
-func ToPBFeedWithConfigList(source []*modelyesod.FeedWithConfig) []*v11.ListFeedConfigsResponse_FeedWithConfig {
-	var pV1ListFeedConfigsResponse_FeedWithConfigList []*v11.ListFeedConfigsResponse_FeedWithConfig
+func ToPBFeedWithConfigList(source []*modelyesod.FeedWithConfig) []*sephirah.ListFeedConfigsResponse_FeedWithConfig {
+	var pV1ListFeedConfigsResponse_FeedWithConfigList []*sephirah.ListFeedConfigsResponse_FeedWithConfig
 	if source != nil {
-		pV1ListFeedConfigsResponse_FeedWithConfigList = make([]*v11.ListFeedConfigsResponse_FeedWithConfig, len(source))
+		pV1ListFeedConfigsResponse_FeedWithConfigList = make([]*sephirah.ListFeedConfigsResponse_FeedWithConfig, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1ListFeedConfigsResponse_FeedWithConfigList[i] = ToPBFeedWithConfig(source[i])
 		}
@@ -1274,21 +1103,21 @@ func ToPBInternalIDList(source []model.InternalID) []*v1.InternalID {
 	}
 	return pV1InternalIDList
 }
-func ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *v11.NotifyFlow {
-	var pV1NotifyFlow *v11.NotifyFlow
+func ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *sephirah.NotifyFlow {
+	var pV1NotifyFlow *sephirah.NotifyFlow
 	if source != nil {
-		var v1NotifyFlow v11.NotifyFlow
+		var v1NotifyFlow sephirah.NotifyFlow
 		v1NotifyFlow.Id = ToPBInternalID((*source).ID)
 		v1NotifyFlow.Name = (*source).Name
 		v1NotifyFlow.Description = (*source).Description
 		if (*source).Sources != nil {
-			v1NotifyFlow.Sources = make([]*v11.NotifyFlowSource, len((*source).Sources))
+			v1NotifyFlow.Sources = make([]*sephirah.NotifyFlowSource, len((*source).Sources))
 			for i := 0; i < len((*source).Sources); i++ {
 				v1NotifyFlow.Sources[i] = ToPBNotifyFlowSource((*source).Sources[i])
 			}
 		}
 		if (*source).Targets != nil {
-			v1NotifyFlow.Targets = make([]*v11.NotifyFlowTarget, len((*source).Targets))
+			v1NotifyFlow.Targets = make([]*sephirah.NotifyFlowTarget, len((*source).Targets))
 			for j := 0; j < len((*source).Targets); j++ {
 				v1NotifyFlow.Targets[j] = ToPBNotifyFlowTarget((*source).Targets[j])
 			}
@@ -1298,54 +1127,54 @@ func ToPBNotifyFlow(source *modelnetzach.NotifyFlow) *v11.NotifyFlow {
 	}
 	return pV1NotifyFlow
 }
-func ToPBNotifyFlowList(source []*modelnetzach.NotifyFlow) []*v11.NotifyFlow {
-	var pV1NotifyFlowList []*v11.NotifyFlow
+func ToPBNotifyFlowList(source []*modelnetzach.NotifyFlow) []*sephirah.NotifyFlow {
+	var pV1NotifyFlowList []*sephirah.NotifyFlow
 	if source != nil {
-		pV1NotifyFlowList = make([]*v11.NotifyFlow, len(source))
+		pV1NotifyFlowList = make([]*sephirah.NotifyFlow, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1NotifyFlowList[i] = ToPBNotifyFlow(source[i])
 		}
 	}
 	return pV1NotifyFlowList
 }
-func ToPBNotifyFlowSource(source *modelnetzach.NotifyFlowSource) *v11.NotifyFlowSource {
-	var pV1NotifyFlowSource *v11.NotifyFlowSource
+func ToPBNotifyFlowSource(source *modelnetzach.NotifyFlowSource) *sephirah.NotifyFlowSource {
+	var pV1NotifyFlowSource *sephirah.NotifyFlowSource
 	if source != nil {
-		var v1NotifyFlowSource v11.NotifyFlowSource
+		var v1NotifyFlowSource sephirah.NotifyFlowSource
 		v1NotifyFlowSource.Filter = pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
 		v1NotifyFlowSource.SourceId = ToPBInternalID((*source).SourceID)
 		pV1NotifyFlowSource = &v1NotifyFlowSource
 	}
 	return pV1NotifyFlowSource
 }
-func ToPBNotifyFlowStatus(source modelnetzach.NotifyFlowStatus) v11.NotifyFlowStatus {
-	var v1NotifyFlowStatus v11.NotifyFlowStatus
+func ToPBNotifyFlowStatus(source modelnetzach.NotifyFlowStatus) sephirah.NotifyFlowStatus {
+	var v1NotifyFlowStatus sephirah.NotifyFlowStatus
 	switch source {
 	case modelnetzach.NotifyFlowStatusActive:
-		v1NotifyFlowStatus = v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
+		v1NotifyFlowStatus = sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_ACTIVE
 	case modelnetzach.NotifyFlowStatusSuspend:
-		v1NotifyFlowStatus = v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
+		v1NotifyFlowStatus = sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_SUSPEND
 	case modelnetzach.NotifyFlowStatusUnspecified:
-		v1NotifyFlowStatus = v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
+		v1NotifyFlowStatus = sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	default:
-		v1NotifyFlowStatus = v11.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
+		v1NotifyFlowStatus = sephirah.NotifyFlowStatus_NOTIFY_FLOW_STATUS_UNSPECIFIED
 	}
 	return v1NotifyFlowStatus
 }
-func ToPBNotifyFlowTarget(source *modelnetzach.NotifyFlowTarget) *v11.NotifyFlowTarget {
-	var pV1NotifyFlowTarget *v11.NotifyFlowTarget
+func ToPBNotifyFlowTarget(source *modelnetzach.NotifyFlowTarget) *sephirah.NotifyFlowTarget {
+	var pV1NotifyFlowTarget *sephirah.NotifyFlowTarget
 	if source != nil {
-		var v1NotifyFlowTarget v11.NotifyFlowTarget
+		var v1NotifyFlowTarget sephirah.NotifyFlowTarget
 		v1NotifyFlowTarget.Filter = pModelnetzachNotifyFilterToPV1NotifyFilter((*source).Filter)
 		v1NotifyFlowTarget.TargetId = ToPBInternalID((*source).TargetID)
 		pV1NotifyFlowTarget = &v1NotifyFlowTarget
 	}
 	return pV1NotifyFlowTarget
 }
-func ToPBNotifyTarget(source *modelnetzach.NotifyTarget) *v11.NotifyTarget {
-	var pV1NotifyTarget *v11.NotifyTarget
+func ToPBNotifyTarget(source *modelnetzach.NotifyTarget) *sephirah.NotifyTarget {
+	var pV1NotifyTarget *sephirah.NotifyTarget
 	if source != nil {
-		var v1NotifyTarget v11.NotifyTarget
+		var v1NotifyTarget sephirah.NotifyTarget
 		v1NotifyTarget.Id = ToPBInternalID((*source).ID)
 		v1NotifyTarget.Name = (*source).Name
 		v1NotifyTarget.Description = (*source).Description
@@ -1355,34 +1184,34 @@ func ToPBNotifyTarget(source *modelnetzach.NotifyTarget) *v11.NotifyTarget {
 	}
 	return pV1NotifyTarget
 }
-func ToPBNotifyTargetList(source []*modelnetzach.NotifyTarget) []*v11.NotifyTarget {
-	var pV1NotifyTargetList []*v11.NotifyTarget
+func ToPBNotifyTargetList(source []*modelnetzach.NotifyTarget) []*sephirah.NotifyTarget {
+	var pV1NotifyTargetList []*sephirah.NotifyTarget
 	if source != nil {
-		pV1NotifyTargetList = make([]*v11.NotifyTarget, len(source))
+		pV1NotifyTargetList = make([]*sephirah.NotifyTarget, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1NotifyTargetList[i] = ToPBNotifyTarget(source[i])
 		}
 	}
 	return pV1NotifyTargetList
 }
-func ToPBNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) v11.NotifyTargetStatus {
-	var v1NotifyTargetStatus v11.NotifyTargetStatus
+func ToPBNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) sephirah.NotifyTargetStatus {
+	var v1NotifyTargetStatus sephirah.NotifyTargetStatus
 	switch source {
 	case modelnetzach.NotifyTargetStatusActive:
-		v1NotifyTargetStatus = v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
+		v1NotifyTargetStatus = sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_ACTIVE
 	case modelnetzach.NotifyTargetStatusSuspend:
-		v1NotifyTargetStatus = v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
+		v1NotifyTargetStatus = sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_SUSPEND
 	case modelnetzach.NotifyTargetStatusUnspecified:
-		v1NotifyTargetStatus = v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
+		v1NotifyTargetStatus = sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	default:
-		v1NotifyTargetStatus = v11.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
+		v1NotifyTargetStatus = sephirah.NotifyTargetStatus_NOTIFY_TARGET_STATUS_UNSPECIFIED
 	}
 	return v1NotifyTargetStatus
 }
-func ToPBPorter(source *modelsupervisor.PorterInstanceController) *v11.Porter {
-	var pV1Porter *v11.Porter
+func ToPBPorter(source *modelsupervisor.PorterInstanceController) *sephirah.Porter {
+	var pV1Porter *sephirah.Porter
 	if source != nil {
-		var v1Porter v11.Porter
+		var v1Porter sephirah.Porter
 		v1Porter.Id = ToPBInternalID((*source).PorterInstance.ID)
 		v1Porter.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).PorterInstance.BinarySummary)
 		v1Porter.GlobalName = (*source).PorterInstance.GlobalName
@@ -1397,30 +1226,30 @@ func ToPBPorter(source *modelsupervisor.PorterInstanceController) *v11.Porter {
 	}
 	return pV1Porter
 }
-func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) v11.PorterConnectionStatus {
-	var v1PorterConnectionStatus v11.PorterConnectionStatus
+func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) sephirah.PorterConnectionStatus {
+	var v1PorterConnectionStatus sephirah.PorterConnectionStatus
 	switch source {
 	case modelsupervisor.PorterConnectionStatusActivationFailed:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVATION_FAILED
 	case modelsupervisor.PorterConnectionStatusActive:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
 	case modelsupervisor.PorterConnectionStatusConnected:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
 	case modelsupervisor.PorterConnectionStatusDisconnected:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
 	case modelsupervisor.PorterConnectionStatusDowngraded:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
 	case modelsupervisor.PorterConnectionStatusUnspecified:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	default:
-		v1PorterConnectionStatus = v11.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	}
 	return v1PorterConnectionStatus
 }
-func ToPBPorterContext(source *modelsupervisor.PorterContextController) *v11.PorterContext {
-	var pV1PorterContext *v11.PorterContext
+func ToPBPorterContext(source *modelsupervisor.PorterContextController) *sephirah.PorterContext {
+	var pV1PorterContext *sephirah.PorterContext
 	if source != nil {
-		var v1PorterContext v11.PorterContext
+		var v1PorterContext sephirah.PorterContext
 		v1PorterContext.Id = ToPBInternalID((*source).PorterContext.ID)
 		v1PorterContext.GlobalName = (*source).PorterContext.GlobalName
 		v1PorterContext.Region = (*source).PorterContext.Region
@@ -1434,81 +1263,81 @@ func ToPBPorterContext(source *modelsupervisor.PorterContextController) *v11.Por
 	}
 	return pV1PorterContext
 }
-func ToPBPorterContextHandleStatus(source modelsupervisor.PorterContextHandleStatus) v11.PorterContextHandleStatus {
-	var v1PorterContextHandleStatus v11.PorterContextHandleStatus
+func ToPBPorterContextHandleStatus(source modelsupervisor.PorterContextHandleStatus) sephirah.PorterContextHandleStatus {
+	var v1PorterContextHandleStatus sephirah.PorterContextHandleStatus
 	switch source {
 	case modelsupervisor.PorterContextHandleStatusActive:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_ACTIVE
 	case modelsupervisor.PorterContextHandleStatusBlocked:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
 	case modelsupervisor.PorterContextHandleStatusDowngraded:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_DOWNGRADED
 	case modelsupervisor.PorterContextHandleStatusQueueing:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_QUEUEING
 	case modelsupervisor.PorterContextHandleStatusUnspecified:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	default:
-		v1PorterContextHandleStatus = v11.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
+		v1PorterContextHandleStatus = sephirah.PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_UNSPECIFIED
 	}
 	return v1PorterContextHandleStatus
 }
-func ToPBPorterContextList(source []*modelsupervisor.PorterContextController) []*v11.PorterContext {
-	var pV1PorterContextList []*v11.PorterContext
+func ToPBPorterContextList(source []*modelsupervisor.PorterContextController) []*sephirah.PorterContext {
+	var pV1PorterContextList []*sephirah.PorterContext
 	if source != nil {
-		pV1PorterContextList = make([]*v11.PorterContext, len(source))
+		pV1PorterContextList = make([]*sephirah.PorterContext, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1PorterContextList[i] = ToPBPorterContext(source[i])
 		}
 	}
 	return pV1PorterContextList
 }
-func ToPBPorterContextStatus(source modelsupervisor.PorterContextStatus) v11.PorterContextStatus {
-	var v1PorterContextStatus v11.PorterContextStatus
+func ToPBPorterContextStatus(source modelsupervisor.PorterContextStatus) sephirah.PorterContextStatus {
+	var v1PorterContextStatus sephirah.PorterContextStatus
 	switch source {
 	case modelsupervisor.PorterContextStatusActive:
-		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
+		v1PorterContextStatus = sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE
 	case modelsupervisor.PorterContextStatusDisabled:
-		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
+		v1PorterContextStatus = sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_DISABLED
 	case modelsupervisor.PorterContextStatusUnspecified:
-		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+		v1PorterContextStatus = sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	default:
-		v1PorterContextStatus = v11.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
+		v1PorterContextStatus = sephirah.PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	}
 	return v1PorterContextStatus
 }
-func ToPBPorterGroup(source *modelsupervisor.PorterGroup) *v11.PorterGroup {
-	var pV1PorterGroup *v11.PorterGroup
+func ToPBPorterGroup(source *modelsupervisor.PorterDigest) *sephirah.PorterDigest {
+	var pV1PorterDigest *sephirah.PorterDigest
 	if source != nil {
-		var v1PorterGroup v11.PorterGroup
-		v1PorterGroup.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).BinarySummary)
-		v1PorterGroup.GlobalName = (*source).GlobalName
+		var v1PorterDigest sephirah.PorterDigest
+		v1PorterDigest.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).BinarySummary)
+		v1PorterDigest.GlobalName = (*source).GlobalName
 		if (*source).Regions != nil {
-			v1PorterGroup.Regions = make([]string, len((*source).Regions))
+			v1PorterDigest.Regions = make([]string, len((*source).Regions))
 			for i := 0; i < len((*source).Regions); i++ {
-				v1PorterGroup.Regions[i] = (*source).Regions[i]
+				v1PorterDigest.Regions[i] = (*source).Regions[i]
 			}
 		}
 		pString := (*source).ContextJSONSchema
-		v1PorterGroup.ContextJsonSchema = &pString
-		v1PorterGroup.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).FeatureSummary)
-		pV1PorterGroup = &v1PorterGroup
+		v1PorterDigest.ContextJsonSchema = &pString
+		v1PorterDigest.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).FeatureSummary)
+		pV1PorterDigest = &v1PorterDigest
 	}
-	return pV1PorterGroup
+	return pV1PorterDigest
 }
-func ToPBPorterGroupList(source []*modelsupervisor.PorterGroup) []*v11.PorterGroup {
-	var pV1PorterGroupList []*v11.PorterGroup
+func ToPBPorterGroupList(source []*modelsupervisor.PorterDigest) []*sephirah.PorterDigest {
+	var pV1PorterDigestList []*sephirah.PorterDigest
 	if source != nil {
-		pV1PorterGroupList = make([]*v11.PorterGroup, len(source))
+		pV1PorterDigestList = make([]*sephirah.PorterDigest, len(source))
 		for i := 0; i < len(source); i++ {
-			pV1PorterGroupList[i] = ToPBPorterGroup(source[i])
+			pV1PorterDigestList[i] = ToPBPorterGroup(source[i])
 		}
 	}
-	return pV1PorterGroupList
+	return pV1PorterDigestList
 }
-func ToPBPorterList(source []*modelsupervisor.PorterInstanceController) []*v11.Porter {
-	var pV1PorterList []*v11.Porter
+func ToPBPorterList(source []*modelsupervisor.PorterInstanceController) []*sephirah.Porter {
+	var pV1PorterList []*sephirah.Porter
 	if source != nil {
-		pV1PorterList = make([]*v11.Porter, len(source))
+		pV1PorterList = make([]*sephirah.Porter, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1PorterList[i] = ToPBPorter(source[i])
 		}
@@ -1530,12 +1359,11 @@ func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v1.
 	}
 	return pV1FeatureSummary
 }
-func ToPBSystemNotification(source *modelnetzach.SystemNotification) *v11.SystemNotification {
-	var pV1SystemNotification *v11.SystemNotification
+func ToPBSystemNotification(source *modelnetzach.SystemNotification) *sephirah.SystemNotification {
+	var pV1SystemNotification *sephirah.SystemNotification
 	if source != nil {
-		var v1SystemNotification v11.SystemNotification
+		var v1SystemNotification sephirah.SystemNotification
 		v1SystemNotification.Id = ToPBInternalID((*source).ID)
-		v1SystemNotification.Type = ToPBSystemNotificationType((*source).Type)
 		v1SystemNotification.Level = ToPBSystemNotificationLevel((*source).Level)
 		v1SystemNotification.Status = ToPBSystemNotificationStatus((*source).Status)
 		v1SystemNotification.Title = (*source).Title
@@ -1546,83 +1374,69 @@ func ToPBSystemNotification(source *modelnetzach.SystemNotification) *v11.System
 	}
 	return pV1SystemNotification
 }
-func ToPBSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) v11.SystemNotificationLevel {
-	var v1SystemNotificationLevel v11.SystemNotificationLevel
+func ToPBSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) sephirah.SystemNotificationLevel {
+	var v1SystemNotificationLevel sephirah.SystemNotificationLevel
 	switch source {
 	case modelnetzach.SystemNotificationLevelError:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ERROR
 	case modelnetzach.SystemNotificationLevelInfo:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_INFO
 	case modelnetzach.SystemNotificationLevelOngoing:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_ONGOING
 	case modelnetzach.SystemNotificationLevelUnspecified:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
 	case modelnetzach.SystemNotificationLevelWarning:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_WARNING
 	default:
-		v1SystemNotificationLevel = v11.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
+		v1SystemNotificationLevel = sephirah.SystemNotificationLevel_SYSTEM_NOTIFICATION_LEVEL_UNSPECIFIED
 	}
 	return v1SystemNotificationLevel
 }
-func ToPBSystemNotificationList(source []*modelnetzach.SystemNotification) []*v11.SystemNotification {
-	var pV1SystemNotificationList []*v11.SystemNotification
+func ToPBSystemNotificationList(source []*modelnetzach.SystemNotification) []*sephirah.SystemNotification {
+	var pV1SystemNotificationList []*sephirah.SystemNotification
 	if source != nil {
-		pV1SystemNotificationList = make([]*v11.SystemNotification, len(source))
+		pV1SystemNotificationList = make([]*sephirah.SystemNotification, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1SystemNotificationList[i] = ToPBSystemNotification(source[i])
 		}
 	}
 	return pV1SystemNotificationList
 }
-func ToPBSystemNotificationStatus(source modelnetzach.SystemNotificationStatus) v11.SystemNotificationStatus {
-	var v1SystemNotificationStatus v11.SystemNotificationStatus
+func ToPBSystemNotificationStatus(source modelnetzach.SystemNotificationStatus) sephirah.SystemNotificationStatus {
+	var v1SystemNotificationStatus sephirah.SystemNotificationStatus
 	switch source {
 	case modelnetzach.SystemNotificationStatusDismissed:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED
+		v1SystemNotificationStatus = sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_DISMISSED
 	case modelnetzach.SystemNotificationStatusRead:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
+		v1SystemNotificationStatus = sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_READ
 	case modelnetzach.SystemNotificationStatusUnread:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
+		v1SystemNotificationStatus = sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNREAD
 	case modelnetzach.SystemNotificationStatusUnspecified:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+		v1SystemNotificationStatus = sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
 	default:
-		v1SystemNotificationStatus = v11.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
+		v1SystemNotificationStatus = sephirah.SystemNotificationStatus_SYSTEM_NOTIFICATION_STATUS_UNSPECIFIED
 	}
 	return v1SystemNotificationStatus
 }
-func ToPBSystemNotificationType(source modelnetzach.SystemNotificationType) v11.SystemNotificationType {
-	var v1SystemNotificationType v11.SystemNotificationType
-	switch source {
-	case modelnetzach.SystemNotificationTypeSystem:
-		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_SYSTEM
-	case modelnetzach.SystemNotificationTypeUnspecified:
-		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
-	case modelnetzach.SystemNotificationTypeUser:
-		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_USER
-	default:
-		v1SystemNotificationType = v11.SystemNotificationType_SYSTEM_NOTIFICATION_TYPE_UNSPECIFIED
-	}
-	return v1SystemNotificationType
-}
-func ToPBSystemType(source model.SystemType) v11.SystemType {
-	var v1SystemType v11.SystemType
+func ToPBSystemType(source model.SystemType) sephirah.SystemType {
+	var v1SystemType sephirah.SystemType
 	switch source {
 	case model.SystemTypeAndroid:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_ANDROID
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_ANDROID
 	case model.SystemTypeIOS:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_IOS
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_IOS
 	case model.SystemTypeLinux:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_LINUX
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_LINUX
 	case model.SystemTypeMacOS:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_MACOS
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_MACOS
 	case model.SystemTypeUnspecified:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_UNSPECIFIED
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_UNSPECIFIED
 	case model.SystemTypeWeb:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_WEB
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_WEB
 	case model.SystemTypeWindows:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_WINDOWS
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_WINDOWS
 	default:
-		v1SystemType = v11.SystemType_SYSTEM_TYPE_UNSPECIFIED
+		v1SystemType = sephirah.SystemType_SYSTEM_TYPE_UNSPECIFIED
 	}
 	return v1SystemType
 }
@@ -1636,10 +1450,10 @@ func ToPBTimeRange(source *model.TimeRange) *v1.TimeRange {
 	}
 	return pV1TimeRange
 }
-func ToPBUser(source *model.User) *v11.User {
-	var pV1User *v11.User
+func ToPBUser(source *model.User) *sephirah.User {
+	var pV1User *sephirah.User
 	if source != nil {
-		var v1User v11.User
+		var v1User sephirah.User
 		v1User.Id = ToPBInternalID((*source).ID)
 		v1User.Username = (*source).Username
 		v1User.Type = ToPBUserType((*source).Type)
@@ -1648,68 +1462,68 @@ func ToPBUser(source *model.User) *v11.User {
 	}
 	return pV1User
 }
-func ToPBUserList(source []*model.User) []*v11.User {
-	var pV1UserList []*v11.User
+func ToPBUserList(source []*model.User) []*sephirah.User {
+	var pV1UserList []*sephirah.User
 	if source != nil {
-		pV1UserList = make([]*v11.User, len(source))
+		pV1UserList = make([]*sephirah.User, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1UserList[i] = ToPBUser(source[i])
 		}
 	}
 	return pV1UserList
 }
-func ToPBUserSession(source *model.UserSession) *v11.UserSession {
-	var pV1UserSession *v11.UserSession
+func ToPBUserSession(source *model.Session) *sephirah.UserSession {
+	var pV1UserSession *sephirah.UserSession
 	if source != nil {
-		var v1UserSession v11.UserSession
+		var v1UserSession sephirah.UserSession
 		v1UserSession.Id = ToPBInternalID((*source).ID)
 		v1UserSession.UserId = ToPBInternalID((*source).UserID)
-		v1UserSession.DeviceInfo = ToPBDeviceInfo((*source).DeviceInfo)
+		v1UserSession.DeviceInfo = ToPBDeviceInfo((*source).Device)
 		v1UserSession.CreateTime = ToPBTime((*source).CreateAt)
 		v1UserSession.ExpireTime = ToPBTime((*source).ExpireAt)
 		pV1UserSession = &v1UserSession
 	}
 	return pV1UserSession
 }
-func ToPBUserSessionList(source []*model.UserSession) []*v11.UserSession {
-	var pV1UserSessionList []*v11.UserSession
+func ToPBUserSessionList(source []*model.Session) []*sephirah.UserSession {
+	var pV1UserSessionList []*sephirah.UserSession
 	if source != nil {
-		pV1UserSessionList = make([]*v11.UserSession, len(source))
+		pV1UserSessionList = make([]*sephirah.UserSession, len(source))
 		for i := 0; i < len(source); i++ {
 			pV1UserSessionList[i] = ToPBUserSession(source[i])
 		}
 	}
 	return pV1UserSessionList
 }
-func ToPBUserStatus(source model.UserStatus) v11.UserStatus {
-	var v1UserStatus v11.UserStatus
+func ToPBUserStatus(source model.UserStatus) sephirah.UserStatus {
+	var v1UserStatus sephirah.UserStatus
 	switch source {
 	case model.UserStatusActive:
-		v1UserStatus = v11.UserStatus_USER_STATUS_ACTIVE
+		v1UserStatus = sephirah.UserStatus_USER_STATUS_ACTIVE
 	case model.UserStatusBlocked:
-		v1UserStatus = v11.UserStatus_USER_STATUS_BLOCKED
+		v1UserStatus = sephirah.UserStatus_USER_STATUS_BLOCKED
 	case model.UserStatusUnspecified:
-		v1UserStatus = v11.UserStatus_USER_STATUS_UNSPECIFIED
+		v1UserStatus = sephirah.UserStatus_USER_STATUS_UNSPECIFIED
 	default:
-		v1UserStatus = v11.UserStatus_USER_STATUS_UNSPECIFIED
+		v1UserStatus = sephirah.UserStatus_USER_STATUS_UNSPECIFIED
 	}
 	return v1UserStatus
 }
-func ToPBUserType(source model.UserType) v11.UserType {
-	var v1UserType v11.UserType
+func ToPBUserType(source model.UserType) sephirah.UserType {
+	var v1UserType sephirah.UserType
 	switch source {
 	case model.UserTypeAdmin:
-		v1UserType = v11.UserType_USER_TYPE_ADMIN
+		v1UserType = sephirah.UserType_USER_TYPE_ADMIN
 	case model.UserTypeNormal:
-		v1UserType = v11.UserType_USER_TYPE_NORMAL
+		v1UserType = sephirah.UserType_USER_TYPE_NORMAL
 	case model.UserTypePorter:
-		v1UserType = v11.UserType_USER_TYPE_PORTER
+		v1UserType = sephirah.UserType_USER_TYPE_PORTER
 	case model.UserTypeSentinel:
-		v1UserType = v11.UserType_USER_TYPE_SENTINEL
+		v1UserType = sephirah.UserType_USER_TYPE_SENTINEL
 	case model.UserTypeUnspecified:
-		v1UserType = v11.UserType_USER_TYPE_UNSPECIFIED
+		v1UserType = sephirah.UserType_USER_TYPE_UNSPECIFIED
 	default:
-		v1UserType = v11.UserType_USER_TYPE_UNSPECIFIED
+		v1UserType = sephirah.UserType_USER_TYPE_UNSPECIFIED
 	}
 	return v1UserType
 }
@@ -1723,10 +1537,10 @@ func pModelfeedPersonToPV1FeedPerson(source *modelfeed.Person) *v1.FeedPerson {
 	}
 	return pV1FeedPerson
 }
-func pModelnetzachNotifyFilterToPV1NotifyFilter(source *modelnetzach.NotifyFilter) *v11.NotifyFilter {
-	var pV1NotifyFilter *v11.NotifyFilter
+func pModelnetzachNotifyFilterToPV1NotifyFilter(source *modelnetzach.NotifyFilter) *sephirah.NotifyFilter {
+	var pV1NotifyFilter *sephirah.NotifyFilter
 	if source != nil {
-		var v1NotifyFilter v11.NotifyFilter
+		var v1NotifyFilter sephirah.NotifyFilter
 		if (*source).ExcludeKeywords != nil {
 			v1NotifyFilter.ExcludeKeywords = make([]string, len((*source).ExcludeKeywords))
 			for i := 0; i < len((*source).ExcludeKeywords); i++ {

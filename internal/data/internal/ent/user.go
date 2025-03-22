@@ -26,27 +26,26 @@ type User struct {
 	Status user.Status `json:"status,omitempty"`
 	// Type holds the value of the "type" field.
 	Type user.Type `json:"type,omitempty"`
+	// CreatorID holds the value of the "creator_id" field.
+	CreatorID model.InternalID `json:"creator_id,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
-	Edges             UserEdges `json:"edges"`
-	user_created_user *model.InternalID
-	selectValues      sql.SelectValues
+	Edges        UserEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // UserEdges holds the relations/edges for other nodes in the graph.
 type UserEdges struct {
-	// BindAccount holds the value of the bind_account edge.
-	BindAccount []*Account `json:"bind_account,omitempty"`
-	// PurchasedApp holds the value of the purchased_app edge.
-	PurchasedApp []*AppInfo `json:"purchased_app,omitempty"`
+	// Session holds the value of the session edge.
+	Session []*Session `json:"session,omitempty"`
+	// Account holds the value of the account edge.
+	Account []*Account `json:"account,omitempty"`
 	// App holds the value of the app edge.
 	App []*App `json:"app,omitempty"`
-	// AppInst holds the value of the app_inst edge.
-	AppInst []*AppInst `json:"app_inst,omitempty"`
 	// FeedConfig holds the value of the feed_config edge.
 	FeedConfig []*FeedConfig `json:"feed_config,omitempty"`
 	// FeedActionSet holds the value of the feed_action_set edge.
@@ -63,8 +62,6 @@ type UserEdges struct {
 	Image []*Image `json:"image,omitempty"`
 	// File holds the value of the file edge.
 	File []*File `json:"file,omitempty"`
-	// DeviceInfo holds the value of the device_info edge.
-	DeviceInfo []*DeviceInfo `json:"device_info,omitempty"`
 	// Tag holds the value of the tag edge.
 	Tag []*Tag `json:"tag,omitempty"`
 	// PorterContext holds the value of the porter_context edge.
@@ -73,29 +70,27 @@ type UserEdges struct {
 	Creator *User `json:"creator,omitempty"`
 	// CreatedUser holds the value of the created_user edge.
 	CreatedUser []*User `json:"created_user,omitempty"`
-	// UserDevice holds the value of the user_device edge.
-	UserDevice []*UserDevice `json:"user_device,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [18]bool
+	loadedTypes [15]bool
 }
 
-// BindAccountOrErr returns the BindAccount value or an error if the edge
+// SessionOrErr returns the Session value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) BindAccountOrErr() ([]*Account, error) {
+func (e UserEdges) SessionOrErr() ([]*Session, error) {
 	if e.loadedTypes[0] {
-		return e.BindAccount, nil
+		return e.Session, nil
 	}
-	return nil, &NotLoadedError{edge: "bind_account"}
+	return nil, &NotLoadedError{edge: "session"}
 }
 
-// PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
+// AccountOrErr returns the Account value or an error if the edge
 // was not loaded in eager-loading.
-func (e UserEdges) PurchasedAppOrErr() ([]*AppInfo, error) {
+func (e UserEdges) AccountOrErr() ([]*Account, error) {
 	if e.loadedTypes[1] {
-		return e.PurchasedApp, nil
+		return e.Account, nil
 	}
-	return nil, &NotLoadedError{edge: "purchased_app"}
+	return nil, &NotLoadedError{edge: "account"}
 }
 
 // AppOrErr returns the App value or an error if the edge
@@ -107,19 +102,10 @@ func (e UserEdges) AppOrErr() ([]*App, error) {
 	return nil, &NotLoadedError{edge: "app"}
 }
 
-// AppInstOrErr returns the AppInst value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) AppInstOrErr() ([]*AppInst, error) {
-	if e.loadedTypes[3] {
-		return e.AppInst, nil
-	}
-	return nil, &NotLoadedError{edge: "app_inst"}
-}
-
 // FeedConfigOrErr returns the FeedConfig value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[3] {
 		return e.FeedConfig, nil
 	}
 	return nil, &NotLoadedError{edge: "feed_config"}
@@ -128,7 +114,7 @@ func (e UserEdges) FeedConfigOrErr() ([]*FeedConfig, error) {
 // FeedActionSetOrErr returns the FeedActionSet value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FeedActionSetOrErr() ([]*FeedActionSet, error) {
-	if e.loadedTypes[5] {
+	if e.loadedTypes[4] {
 		return e.FeedActionSet, nil
 	}
 	return nil, &NotLoadedError{edge: "feed_action_set"}
@@ -137,7 +123,7 @@ func (e UserEdges) FeedActionSetOrErr() ([]*FeedActionSet, error) {
 // FeedItemCollectionOrErr returns the FeedItemCollection value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FeedItemCollectionOrErr() ([]*FeedItemCollection, error) {
-	if e.loadedTypes[6] {
+	if e.loadedTypes[5] {
 		return e.FeedItemCollection, nil
 	}
 	return nil, &NotLoadedError{edge: "feed_item_collection"}
@@ -146,7 +132,7 @@ func (e UserEdges) FeedItemCollectionOrErr() ([]*FeedItemCollection, error) {
 // NotifySourceOrErr returns the NotifySource value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifySourceOrErr() ([]*NotifySource, error) {
-	if e.loadedTypes[7] {
+	if e.loadedTypes[6] {
 		return e.NotifySource, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_source"}
@@ -155,7 +141,7 @@ func (e UserEdges) NotifySourceOrErr() ([]*NotifySource, error) {
 // NotifyTargetOrErr returns the NotifyTarget value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
-	if e.loadedTypes[8] {
+	if e.loadedTypes[7] {
 		return e.NotifyTarget, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_target"}
@@ -164,7 +150,7 @@ func (e UserEdges) NotifyTargetOrErr() ([]*NotifyTarget, error) {
 // NotifyFlowOrErr returns the NotifyFlow value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
-	if e.loadedTypes[9] {
+	if e.loadedTypes[8] {
 		return e.NotifyFlow, nil
 	}
 	return nil, &NotLoadedError{edge: "notify_flow"}
@@ -173,7 +159,7 @@ func (e UserEdges) NotifyFlowOrErr() ([]*NotifyFlow, error) {
 // ImageOrErr returns the Image value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) ImageOrErr() ([]*Image, error) {
-	if e.loadedTypes[10] {
+	if e.loadedTypes[9] {
 		return e.Image, nil
 	}
 	return nil, &NotLoadedError{edge: "image"}
@@ -182,25 +168,16 @@ func (e UserEdges) ImageOrErr() ([]*Image, error) {
 // FileOrErr returns the File value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FileOrErr() ([]*File, error) {
-	if e.loadedTypes[11] {
+	if e.loadedTypes[10] {
 		return e.File, nil
 	}
 	return nil, &NotLoadedError{edge: "file"}
 }
 
-// DeviceInfoOrErr returns the DeviceInfo value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) DeviceInfoOrErr() ([]*DeviceInfo, error) {
-	if e.loadedTypes[12] {
-		return e.DeviceInfo, nil
-	}
-	return nil, &NotLoadedError{edge: "device_info"}
-}
-
 // TagOrErr returns the Tag value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) TagOrErr() ([]*Tag, error) {
-	if e.loadedTypes[13] {
+	if e.loadedTypes[11] {
 		return e.Tag, nil
 	}
 	return nil, &NotLoadedError{edge: "tag"}
@@ -209,7 +186,7 @@ func (e UserEdges) TagOrErr() ([]*Tag, error) {
 // PorterContextOrErr returns the PorterContext value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) PorterContextOrErr() ([]*PorterContext, error) {
-	if e.loadedTypes[14] {
+	if e.loadedTypes[12] {
 		return e.PorterContext, nil
 	}
 	return nil, &NotLoadedError{edge: "porter_context"}
@@ -220,7 +197,7 @@ func (e UserEdges) PorterContextOrErr() ([]*PorterContext, error) {
 func (e UserEdges) CreatorOrErr() (*User, error) {
 	if e.Creator != nil {
 		return e.Creator, nil
-	} else if e.loadedTypes[15] {
+	} else if e.loadedTypes[13] {
 		return nil, &NotFoundError{label: user.Label}
 	}
 	return nil, &NotLoadedError{edge: "creator"}
@@ -229,19 +206,10 @@ func (e UserEdges) CreatorOrErr() (*User, error) {
 // CreatedUserOrErr returns the CreatedUser value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) CreatedUserOrErr() ([]*User, error) {
-	if e.loadedTypes[16] {
+	if e.loadedTypes[14] {
 		return e.CreatedUser, nil
 	}
 	return nil, &NotLoadedError{edge: "created_user"}
-}
-
-// UserDeviceOrErr returns the UserDevice value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) UserDeviceOrErr() ([]*UserDevice, error) {
-	if e.loadedTypes[17] {
-		return e.UserDevice, nil
-	}
-	return nil, &NotLoadedError{edge: "user_device"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -249,14 +217,12 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID:
+		case user.FieldID, user.FieldCreatorID:
 			values[i] = new(sql.NullInt64)
 		case user.FieldUsername, user.FieldPassword, user.FieldStatus, user.FieldType:
 			values[i] = new(sql.NullString)
 		case user.FieldUpdatedAt, user.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case user.ForeignKeys[0]: // user_created_user
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -302,6 +268,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				u.Type = user.Type(value.String)
 			}
+		case user.FieldCreatorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field creator_id", values[i])
+			} else if value.Valid {
+				u.CreatorID = model.InternalID(value.Int64)
+			}
 		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -313,13 +285,6 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				u.CreatedAt = value.Time
-			}
-		case user.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_created_user", values[i])
-			} else if value.Valid {
-				u.user_created_user = new(model.InternalID)
-				*u.user_created_user = model.InternalID(value.Int64)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
@@ -334,24 +299,19 @@ func (u *User) Value(name string) (ent.Value, error) {
 	return u.selectValues.Get(name)
 }
 
-// QueryBindAccount queries the "bind_account" edge of the User entity.
-func (u *User) QueryBindAccount() *AccountQuery {
-	return NewUserClient(u.config).QueryBindAccount(u)
+// QuerySession queries the "session" edge of the User entity.
+func (u *User) QuerySession() *SessionQuery {
+	return NewUserClient(u.config).QuerySession(u)
 }
 
-// QueryPurchasedApp queries the "purchased_app" edge of the User entity.
-func (u *User) QueryPurchasedApp() *AppInfoQuery {
-	return NewUserClient(u.config).QueryPurchasedApp(u)
+// QueryAccount queries the "account" edge of the User entity.
+func (u *User) QueryAccount() *AccountQuery {
+	return NewUserClient(u.config).QueryAccount(u)
 }
 
 // QueryApp queries the "app" edge of the User entity.
 func (u *User) QueryApp() *AppQuery {
 	return NewUserClient(u.config).QueryApp(u)
-}
-
-// QueryAppInst queries the "app_inst" edge of the User entity.
-func (u *User) QueryAppInst() *AppInstQuery {
-	return NewUserClient(u.config).QueryAppInst(u)
 }
 
 // QueryFeedConfig queries the "feed_config" edge of the User entity.
@@ -394,11 +354,6 @@ func (u *User) QueryFile() *FileQuery {
 	return NewUserClient(u.config).QueryFile(u)
 }
 
-// QueryDeviceInfo queries the "device_info" edge of the User entity.
-func (u *User) QueryDeviceInfo() *DeviceInfoQuery {
-	return NewUserClient(u.config).QueryDeviceInfo(u)
-}
-
 // QueryTag queries the "tag" edge of the User entity.
 func (u *User) QueryTag() *TagQuery {
 	return NewUserClient(u.config).QueryTag(u)
@@ -417,11 +372,6 @@ func (u *User) QueryCreator() *UserQuery {
 // QueryCreatedUser queries the "created_user" edge of the User entity.
 func (u *User) QueryCreatedUser() *UserQuery {
 	return NewUserClient(u.config).QueryCreatedUser(u)
-}
-
-// QueryUserDevice queries the "user_device" edge of the User entity.
-func (u *User) QueryUserDevice() *UserDeviceQuery {
-	return NewUserClient(u.config).QueryUserDevice(u)
 }
 
 // Update returns a builder for updating this User.
@@ -458,6 +408,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("type=")
 	builder.WriteString(fmt.Sprintf("%v", u.Type))
+	builder.WriteString(", ")
+	builder.WriteString("creator_id=")
+	builder.WriteString(fmt.Sprintf("%v", u.CreatorID))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))

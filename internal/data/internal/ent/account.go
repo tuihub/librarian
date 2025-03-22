@@ -23,6 +23,8 @@ type Account struct {
 	Platform string `json:"platform,omitempty"`
 	// PlatformAccountID holds the value of the "platform_account_id" field.
 	PlatformAccountID string `json:"platform_account_id,omitempty"`
+	// BoundUserID holds the value of the "bound_user_id" field.
+	BoundUserID model.InternalID `json:"bound_user_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// ProfileURL holds the value of the "profile_url" field.
@@ -35,40 +37,28 @@ type Account struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the AccountQuery when eager-loading is set.
-	Edges             AccountEdges `json:"edges"`
-	user_bind_account *model.InternalID
-	selectValues      sql.SelectValues
+	Edges        AccountEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // AccountEdges holds the relations/edges for other nodes in the graph.
 type AccountEdges struct {
-	// PurchasedApp holds the value of the purchased_app edge.
-	PurchasedApp []*AppInfo `json:"purchased_app,omitempty"`
-	// BindUser holds the value of the bind_user edge.
-	BindUser *User `json:"bind_user,omitempty"`
+	// BoundUser holds the value of the bound_user edge.
+	BoundUser *User `json:"bound_user,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
-// PurchasedAppOrErr returns the PurchasedApp value or an error if the edge
-// was not loaded in eager-loading.
-func (e AccountEdges) PurchasedAppOrErr() ([]*AppInfo, error) {
-	if e.loadedTypes[0] {
-		return e.PurchasedApp, nil
-	}
-	return nil, &NotLoadedError{edge: "purchased_app"}
-}
-
-// BindUserOrErr returns the BindUser value or an error if the edge
+// BoundUserOrErr returns the BoundUser value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e AccountEdges) BindUserOrErr() (*User, error) {
-	if e.BindUser != nil {
-		return e.BindUser, nil
-	} else if e.loadedTypes[1] {
+func (e AccountEdges) BoundUserOrErr() (*User, error) {
+	if e.BoundUser != nil {
+		return e.BoundUser, nil
+	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: user.Label}
 	}
-	return nil, &NotLoadedError{edge: "bind_user"}
+	return nil, &NotLoadedError{edge: "bound_user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -76,14 +66,12 @@ func (*Account) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case account.FieldID:
+		case account.FieldID, account.FieldBoundUserID:
 			values[i] = new(sql.NullInt64)
 		case account.FieldPlatform, account.FieldPlatformAccountID, account.FieldName, account.FieldProfileURL, account.FieldAvatarURL:
 			values[i] = new(sql.NullString)
 		case account.FieldUpdatedAt, account.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
-		case account.ForeignKeys[0]: // user_bind_account
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -117,6 +105,12 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.PlatformAccountID = value.String
 			}
+		case account.FieldBoundUserID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field bound_user_id", values[i])
+			} else if value.Valid {
+				a.BoundUserID = model.InternalID(value.Int64)
+			}
 		case account.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -147,13 +141,6 @@ func (a *Account) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				a.CreatedAt = value.Time
 			}
-		case account.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_bind_account", values[i])
-			} else if value.Valid {
-				a.user_bind_account = new(model.InternalID)
-				*a.user_bind_account = model.InternalID(value.Int64)
-			}
 		default:
 			a.selectValues.Set(columns[i], values[i])
 		}
@@ -167,14 +154,9 @@ func (a *Account) Value(name string) (ent.Value, error) {
 	return a.selectValues.Get(name)
 }
 
-// QueryPurchasedApp queries the "purchased_app" edge of the Account entity.
-func (a *Account) QueryPurchasedApp() *AppInfoQuery {
-	return NewAccountClient(a.config).QueryPurchasedApp(a)
-}
-
-// QueryBindUser queries the "bind_user" edge of the Account entity.
-func (a *Account) QueryBindUser() *UserQuery {
-	return NewAccountClient(a.config).QueryBindUser(a)
+// QueryBoundUser queries the "bound_user" edge of the Account entity.
+func (a *Account) QueryBoundUser() *UserQuery {
+	return NewAccountClient(a.config).QueryBoundUser(a)
 }
 
 // Update returns a builder for updating this Account.
@@ -205,6 +187,9 @@ func (a *Account) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("platform_account_id=")
 	builder.WriteString(a.PlatformAccountID)
+	builder.WriteString(", ")
+	builder.WriteString("bound_user_id=")
+	builder.WriteString(fmt.Sprintf("%v", a.BoundUserID))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(a.Name)

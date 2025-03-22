@@ -14,9 +14,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
@@ -27,9 +24,9 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -40,10 +37,9 @@ type UserQuery struct {
 	order                  []user.OrderOption
 	inters                 []Interceptor
 	predicates             []predicate.User
-	withBindAccount        *AccountQuery
-	withPurchasedApp       *AppInfoQuery
+	withSession            *SessionQuery
+	withAccount            *AccountQuery
 	withApp                *AppQuery
-	withAppInst            *AppInstQuery
 	withFeedConfig         *FeedConfigQuery
 	withFeedActionSet      *FeedActionSetQuery
 	withFeedItemCollection *FeedItemCollectionQuery
@@ -52,13 +48,10 @@ type UserQuery struct {
 	withNotifyFlow         *NotifyFlowQuery
 	withImage              *ImageQuery
 	withFile               *FileQuery
-	withDeviceInfo         *DeviceInfoQuery
 	withTag                *TagQuery
 	withPorterContext      *PorterContextQuery
 	withCreator            *UserQuery
 	withCreatedUser        *UserQuery
-	withUserDevice         *UserDeviceQuery
-	withFKs                bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -95,8 +88,30 @@ func (uq *UserQuery) Order(o ...user.OrderOption) *UserQuery {
 	return uq
 }
 
-// QueryBindAccount chains the current query on the "bind_account" edge.
-func (uq *UserQuery) QueryBindAccount() *AccountQuery {
+// QuerySession chains the current query on the "session" edge.
+func (uq *UserQuery) QuerySession() *SessionQuery {
+	query := (&SessionClient{config: uq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := uq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := uq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(user.Table, user.FieldID, selector),
+			sqlgraph.To(session.Table, session.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.SessionTable, user.SessionColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAccount chains the current query on the "account" edge.
+func (uq *UserQuery) QueryAccount() *AccountQuery {
 	query := (&AccountClient{config: uq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := uq.prepareQuery(ctx); err != nil {
@@ -109,29 +124,7 @@ func (uq *UserQuery) QueryBindAccount() *AccountQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(account.Table, account.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.BindAccountTable, user.BindAccountColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryPurchasedApp chains the current query on the "purchased_app" edge.
-func (uq *UserQuery) QueryPurchasedApp() *AppInfoQuery {
-	query := (&AppInfoClient{config: uq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(appinfo.Table, appinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.PurchasedAppTable, user.PurchasedAppPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, user.AccountTable, user.AccountColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -154,28 +147,6 @@ func (uq *UserQuery) QueryApp() *AppQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(app.Table, app.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.AppTable, user.AppColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryAppInst chains the current query on the "app_inst" edge.
-func (uq *UserQuery) QueryAppInst() *AppInstQuery {
-	query := (&AppInstClient{config: uq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(appinst.Table, appinst.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, user.AppInstTable, user.AppInstColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -359,28 +330,6 @@ func (uq *UserQuery) QueryFile() *FileQuery {
 	return query
 }
 
-// QueryDeviceInfo chains the current query on the "device_info" edge.
-func (uq *UserQuery) QueryDeviceInfo() *DeviceInfoQuery {
-	query := (&DeviceInfoClient{config: uq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(deviceinfo.Table, deviceinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.DeviceInfoTable, user.DeviceInfoPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryTag chains the current query on the "tag" edge.
 func (uq *UserQuery) QueryTag() *TagQuery {
 	query := (&TagClient{config: uq.config}).Query()
@@ -462,28 +411,6 @@ func (uq *UserQuery) QueryCreatedUser() *UserQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.CreatedUserTable, user.CreatedUserColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryUserDevice chains the current query on the "user_device" edge.
-func (uq *UserQuery) QueryUserDevice() *UserDeviceQuery {
-	query := (&UserDeviceClient{config: uq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(userdevice.Table, userdevice.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, user.UserDeviceTable, user.UserDeviceColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -683,10 +610,9 @@ func (uq *UserQuery) Clone() *UserQuery {
 		order:                  append([]user.OrderOption{}, uq.order...),
 		inters:                 append([]Interceptor{}, uq.inters...),
 		predicates:             append([]predicate.User{}, uq.predicates...),
-		withBindAccount:        uq.withBindAccount.Clone(),
-		withPurchasedApp:       uq.withPurchasedApp.Clone(),
+		withSession:            uq.withSession.Clone(),
+		withAccount:            uq.withAccount.Clone(),
 		withApp:                uq.withApp.Clone(),
-		withAppInst:            uq.withAppInst.Clone(),
 		withFeedConfig:         uq.withFeedConfig.Clone(),
 		withFeedActionSet:      uq.withFeedActionSet.Clone(),
 		withFeedItemCollection: uq.withFeedItemCollection.Clone(),
@@ -695,37 +621,35 @@ func (uq *UserQuery) Clone() *UserQuery {
 		withNotifyFlow:         uq.withNotifyFlow.Clone(),
 		withImage:              uq.withImage.Clone(),
 		withFile:               uq.withFile.Clone(),
-		withDeviceInfo:         uq.withDeviceInfo.Clone(),
 		withTag:                uq.withTag.Clone(),
 		withPorterContext:      uq.withPorterContext.Clone(),
 		withCreator:            uq.withCreator.Clone(),
 		withCreatedUser:        uq.withCreatedUser.Clone(),
-		withUserDevice:         uq.withUserDevice.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
 	}
 }
 
-// WithBindAccount tells the query-builder to eager-load the nodes that are connected to
-// the "bind_account" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithBindAccount(opts ...func(*AccountQuery)) *UserQuery {
+// WithSession tells the query-builder to eager-load the nodes that are connected to
+// the "session" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithSession(opts ...func(*SessionQuery)) *UserQuery {
+	query := (&SessionClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	uq.withSession = query
+	return uq
+}
+
+// WithAccount tells the query-builder to eager-load the nodes that are connected to
+// the "account" edge. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithAccount(opts ...func(*AccountQuery)) *UserQuery {
 	query := (&AccountClient{config: uq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	uq.withBindAccount = query
-	return uq
-}
-
-// WithPurchasedApp tells the query-builder to eager-load the nodes that are connected to
-// the "purchased_app" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithPurchasedApp(opts ...func(*AppInfoQuery)) *UserQuery {
-	query := (&AppInfoClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withPurchasedApp = query
+	uq.withAccount = query
 	return uq
 }
 
@@ -737,17 +661,6 @@ func (uq *UserQuery) WithApp(opts ...func(*AppQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withApp = query
-	return uq
-}
-
-// WithAppInst tells the query-builder to eager-load the nodes that are connected to
-// the "app_inst" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithAppInst(opts ...func(*AppInstQuery)) *UserQuery {
-	query := (&AppInstClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withAppInst = query
 	return uq
 }
 
@@ -839,17 +752,6 @@ func (uq *UserQuery) WithFile(opts ...func(*FileQuery)) *UserQuery {
 	return uq
 }
 
-// WithDeviceInfo tells the query-builder to eager-load the nodes that are connected to
-// the "device_info" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithDeviceInfo(opts ...func(*DeviceInfoQuery)) *UserQuery {
-	query := (&DeviceInfoClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withDeviceInfo = query
-	return uq
-}
-
 // WithTag tells the query-builder to eager-load the nodes that are connected to
 // the "tag" edge. The optional arguments are used to configure the query builder of the edge.
 func (uq *UserQuery) WithTag(opts ...func(*TagQuery)) *UserQuery {
@@ -891,17 +793,6 @@ func (uq *UserQuery) WithCreatedUser(opts ...func(*UserQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withCreatedUser = query
-	return uq
-}
-
-// WithUserDevice tells the query-builder to eager-load the nodes that are connected to
-// the "user_device" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithUserDevice(opts ...func(*UserDeviceQuery)) *UserQuery {
-	query := (&UserDeviceClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withUserDevice = query
 	return uq
 }
 
@@ -982,13 +873,11 @@ func (uq *UserQuery) prepareQuery(ctx context.Context) error {
 func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, error) {
 	var (
 		nodes       = []*User{}
-		withFKs     = uq.withFKs
 		_spec       = uq.querySpec()
-		loadedTypes = [18]bool{
-			uq.withBindAccount != nil,
-			uq.withPurchasedApp != nil,
+		loadedTypes = [15]bool{
+			uq.withSession != nil,
+			uq.withAccount != nil,
 			uq.withApp != nil,
-			uq.withAppInst != nil,
 			uq.withFeedConfig != nil,
 			uq.withFeedActionSet != nil,
 			uq.withFeedItemCollection != nil,
@@ -997,20 +886,12 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			uq.withNotifyFlow != nil,
 			uq.withImage != nil,
 			uq.withFile != nil,
-			uq.withDeviceInfo != nil,
 			uq.withTag != nil,
 			uq.withPorterContext != nil,
 			uq.withCreator != nil,
 			uq.withCreatedUser != nil,
-			uq.withUserDevice != nil,
 		}
 	)
-	if uq.withCreator != nil {
-		withFKs = true
-	}
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, user.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*User).scanValues(nil, columns)
 	}
@@ -1029,17 +910,17 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := uq.withBindAccount; query != nil {
-		if err := uq.loadBindAccount(ctx, query, nodes,
-			func(n *User) { n.Edges.BindAccount = []*Account{} },
-			func(n *User, e *Account) { n.Edges.BindAccount = append(n.Edges.BindAccount, e) }); err != nil {
+	if query := uq.withSession; query != nil {
+		if err := uq.loadSession(ctx, query, nodes,
+			func(n *User) { n.Edges.Session = []*Session{} },
+			func(n *User, e *Session) { n.Edges.Session = append(n.Edges.Session, e) }); err != nil {
 			return nil, err
 		}
 	}
-	if query := uq.withPurchasedApp; query != nil {
-		if err := uq.loadPurchasedApp(ctx, query, nodes,
-			func(n *User) { n.Edges.PurchasedApp = []*AppInfo{} },
-			func(n *User, e *AppInfo) { n.Edges.PurchasedApp = append(n.Edges.PurchasedApp, e) }); err != nil {
+	if query := uq.withAccount; query != nil {
+		if err := uq.loadAccount(ctx, query, nodes,
+			func(n *User) { n.Edges.Account = []*Account{} },
+			func(n *User, e *Account) { n.Edges.Account = append(n.Edges.Account, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1047,13 +928,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadApp(ctx, query, nodes,
 			func(n *User) { n.Edges.App = []*App{} },
 			func(n *User, e *App) { n.Edges.App = append(n.Edges.App, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := uq.withAppInst; query != nil {
-		if err := uq.loadAppInst(ctx, query, nodes,
-			func(n *User) { n.Edges.AppInst = []*AppInst{} },
-			func(n *User, e *AppInst) { n.Edges.AppInst = append(n.Edges.AppInst, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -1115,13 +989,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withDeviceInfo; query != nil {
-		if err := uq.loadDeviceInfo(ctx, query, nodes,
-			func(n *User) { n.Edges.DeviceInfo = []*DeviceInfo{} },
-			func(n *User, e *DeviceInfo) { n.Edges.DeviceInfo = append(n.Edges.DeviceInfo, e) }); err != nil {
-			return nil, err
-		}
-	}
 	if query := uq.withTag; query != nil {
 		if err := uq.loadTag(ctx, query, nodes,
 			func(n *User) { n.Edges.Tag = []*Tag{} },
@@ -1149,17 +1016,10 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 			return nil, err
 		}
 	}
-	if query := uq.withUserDevice; query != nil {
-		if err := uq.loadUserDevice(ctx, query, nodes,
-			func(n *User) { n.Edges.UserDevice = []*UserDevice{} },
-			func(n *User, e *UserDevice) { n.Edges.UserDevice = append(n.Edges.UserDevice, e) }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
 }
 
-func (uq *UserQuery) loadBindAccount(ctx context.Context, query *AccountQuery, nodes []*User, init func(*User), assign func(*User, *Account)) error {
+func (uq *UserQuery) loadSession(ctx context.Context, query *SessionQuery, nodes []*User, init func(*User), assign func(*User, *Session)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*User)
 	for i := range nodes {
@@ -1169,85 +1029,53 @@ func (uq *UserQuery) loadBindAccount(ctx context.Context, query *AccountQuery, n
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
-	query.Where(predicate.Account(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.BindAccountColumn), fks...))
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(session.FieldUserID)
+	}
+	query.Where(predicate.Session(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.SessionColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_bind_account
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_bind_account" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.UserID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_bind_account" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
 	return nil
 }
-func (uq *UserQuery) loadPurchasedApp(ctx context.Context, query *AppInfoQuery, nodes []*User, init func(*User), assign func(*User, *AppInfo)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[model.InternalID]*User)
-	nids := make(map[model.InternalID]map[*User]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
+func (uq *UserQuery) loadAccount(ctx context.Context, query *AccountQuery, nodes []*User, init func(*User), assign func(*User, *Account)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*User)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
 		if init != nil {
-			init(node)
+			init(nodes[i])
 		}
 	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(user.PurchasedAppTable)
-		s.Join(joinT).On(s.C(appinfo.FieldID), joinT.C(user.PurchasedAppPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(user.PurchasedAppPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(user.PurchasedAppPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(account.FieldBoundUserID)
 	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
-				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*User]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*AppInfo](ctx, query, qr, query.inters)
+	query.Where(predicate.Account(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(user.AccountColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
+		fk := n.BoundUserID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected "purchased_app" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "bound_user_id" returned %v for node %v`, fk, n.ID)
 		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
+		assign(node, n)
 	}
 	return nil
 }
@@ -1261,7 +1089,9 @@ func (uq *UserQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*User
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(app.FieldUserID)
+	}
 	query.Where(predicate.App(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.AppColumn), fks...))
 	}))
@@ -1270,44 +1100,10 @@ func (uq *UserQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*User
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_app
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_app" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
+		fk := n.UserID
+		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_app" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (uq *UserQuery) loadAppInst(ctx context.Context, query *AppInstQuery, nodes []*User, init func(*User), assign func(*User, *AppInst)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*User)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.AppInst(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.AppInstColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.user_app_inst
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_app_inst" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_app_inst" returned %v for node %v`, *fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1560,67 +1356,6 @@ func (uq *UserQuery) loadFile(ctx context.Context, query *FileQuery, nodes []*Us
 	}
 	return nil
 }
-func (uq *UserQuery) loadDeviceInfo(ctx context.Context, query *DeviceInfoQuery, nodes []*User, init func(*User), assign func(*User, *DeviceInfo)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[model.InternalID]*User)
-	nids := make(map[model.InternalID]map[*User]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(user.DeviceInfoTable)
-		s.Join(joinT).On(s.C(deviceinfo.FieldID), joinT.C(user.DeviceInfoPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(user.DeviceInfoPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(user.DeviceInfoPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
-				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*User]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*DeviceInfo](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "device_info" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
 func (uq *UserQuery) loadTag(ctx context.Context, query *TagQuery, nodes []*User, init func(*User), assign func(*User, *Tag)) error {
 	fks := make([]driver.Value, 0, len(nodes))
 	nodeids := make(map[model.InternalID]*User)
@@ -1686,10 +1421,7 @@ func (uq *UserQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*User)
 	for i := range nodes {
-		if nodes[i].user_created_user == nil {
-			continue
-		}
-		fk := *nodes[i].user_created_user
+		fk := nodes[i].CreatorID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -1706,7 +1438,7 @@ func (uq *UserQuery) loadCreator(ctx context.Context, query *UserQuery, nodes []
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "user_created_user" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "creator_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -1724,7 +1456,9 @@ func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, node
 			init(nodes[i])
 		}
 	}
-	query.withFKs = true
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(user.FieldCreatorID)
+	}
 	query.Where(predicate.User(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(user.CreatedUserColumn), fks...))
 	}))
@@ -1733,43 +1467,10 @@ func (uq *UserQuery) loadCreatedUser(ctx context.Context, query *UserQuery, node
 		return err
 	}
 	for _, n := range neighbors {
-		fk := n.user_created_user
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "user_created_user" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_created_user" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
-	}
-	return nil
-}
-func (uq *UserQuery) loadUserDevice(ctx context.Context, query *UserDeviceQuery, nodes []*User, init func(*User), assign func(*User, *UserDevice)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*User)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(userdevice.FieldUserID)
-	}
-	query.Where(predicate.UserDevice(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(user.UserDeviceColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.UserID
+		fk := n.CreatorID
 		node, ok := nodeids[fk]
 		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "user_id" returned %v for node %v`, fk, n.ID)
+			return fmt.Errorf(`unexpected referenced foreign-key "creator_id" returned %v for node %v`, fk, n.ID)
 		}
 		assign(node, n)
 	}
@@ -1800,6 +1501,9 @@ func (uq *UserQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != user.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if uq.withCreator != nil {
+			_spec.Node.AddColumnOnce(user.FieldCreatorID)
 		}
 	}
 	if ps := uq.predicates; len(ps) > 0 {

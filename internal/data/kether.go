@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/app"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
@@ -59,7 +58,6 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		q := tx.AppInfo.Create().
 			SetID(ap.ID).
-			SetInternal(ap.Internal).
 			SetSource(ap.Source).
 			SetSourceAppID(ap.SourceAppID)
 		if len(ap.SourceURL) > 0 {
@@ -69,7 +67,7 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 			q.SetName(ap.Name)
 		}
 		if ap.Type != modelgebura.AppTypeUnspecified {
-			q.SetType(converter.ToEntAppType(ap.Type))
+			q.SetType(converter.ToEntAppInfoType(ap.Type))
 		}
 		if len(ap.ShortDescription) > 0 {
 			q.SetShortDescription(ap.ShortDescription)
@@ -83,22 +81,17 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 		if len(ap.CoverImageURL) > 0 {
 			q.SetCoverImageURL(ap.CoverImageURL)
 		}
-		if ap.Details != nil { //nolint:nestif // TODO
-			if len(ap.Details.Description) > 0 {
-				q.SetDescription(ap.Details.Description)
-			}
-			if len(ap.Details.ReleaseDate) > 0 {
-				q.SetReleaseDate(ap.Details.ReleaseDate)
-			}
-			if len(ap.Details.Developer) > 0 {
-				q.SetDeveloper(ap.Details.Developer)
-			}
-			if len(ap.Details.Publisher) > 0 {
-				q.SetPublisher(ap.Details.Publisher)
-			}
-			if len(ap.Details.Version) > 0 {
-				q.SetVersion(ap.Details.Version)
-			}
+		if len(ap.Description) > 0 {
+			q.SetDescription(ap.Description)
+		}
+		if len(ap.ReleaseDate) > 0 {
+			q.SetReleaseDate(ap.ReleaseDate)
+		}
+		if len(ap.Developer) > 0 {
+			q.SetDeveloper(ap.Developer)
+		}
+		if len(ap.Publisher) > 0 {
+			q.SetPublisher(ap.Publisher)
 		}
 		q.OnConflict(
 			sql.ConflictColumns(appinfo.FieldSource, appinfo.FieldSourceAppID),
@@ -111,7 +104,6 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 		count, err := tx.AppInfo.Query().Where(
 			appinfo.SourceEQ(ap.Source),
 			appinfo.SourceAppIDEQ(ap.SourceAppID),
-			appinfo.HasBindInternalWith(appinfo.IDNEQ(0)),
 		).Count(ctx)
 		if err != nil {
 			return err
@@ -119,17 +111,14 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 		if count == 0 {
 			err = tx.AppInfo.Create().
 				SetID(internal.ID).
-				SetInternal(true).
 				SetSource(internal.Source).
 				SetSourceAppID(internal.SourceAppID).
 				SetName(internal.Name).
-				SetType(converter.ToEntAppType(internal.Type)).
-				SetBindInternalID(internal.BoundInternal).
+				SetType(converter.ToEntAppInfoType(internal.Type)).
 				Exec(ctx)
 			if err != nil {
 				return err
 			}
-			q.SetBindInternalID(internal.ID)
 		}
 		return q.Exec(ctx)
 	})
@@ -138,29 +127,21 @@ func (k *KetherRepo) UpsertAppInfo( //nolint:gocognit //TODO
 func (k *KetherRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppInfo) error {
 	apps := make([]*ent.AppInfoCreate, len(al))
 	for i, ap := range al {
-		if ap.Details == nil {
-			ap.Details = new(modelgebura.AppInfoDetails)
-		}
 		apps[i] = k.data.db.AppInfo.Create().
 			SetID(ap.ID).
-			SetInternal(ap.Internal).
 			SetSource(ap.Source).
 			SetSourceAppID(ap.SourceAppID).
 			SetSourceURL(ap.SourceURL).
 			SetName(ap.Name).
-			SetType(converter.ToEntAppType(ap.Type)).
+			SetType(converter.ToEntAppInfoType(ap.Type)).
 			SetShortDescription(ap.ShortDescription).
 			SetIconImageURL(ap.IconImageURL).
 			SetBackgroundImageURL(ap.BackgroundImageURL).
-			SetCoverImageURL(ap.CoverImageURL)
-		if ap.Details != nil {
-			apps[i].
-				SetDescription(ap.Details.Description).
-				SetReleaseDate(ap.Details.ReleaseDate).
-				SetDeveloper(ap.Details.Developer).
-				SetPublisher(ap.Details.Publisher).
-				SetVersion(ap.Details.Version)
-		}
+			SetCoverImageURL(ap.CoverImageURL).
+			SetDescription(ap.Description).
+			SetReleaseDate(ap.ReleaseDate).
+			SetDeveloper(ap.Developer).
+			SetPublisher(ap.Publisher)
 	}
 	return k.data.db.AppInfo.
 		CreateBulk(apps...).
@@ -173,23 +154,23 @@ func (k *KetherRepo) UpsertAppInfos(ctx context.Context, al []*modelgebura.AppIn
 		Exec(ctx)
 }
 
-func (k *KetherRepo) AccountPurchaseAppInfos(
-	ctx context.Context, id model.InternalID, ids []model.InternalID,
-) error {
-	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
-		appIDs, err := tx.App.Query().Where(
-			app.IDIn(ids...),
-		).
-			IDs(ctx)
-		if err != nil {
-			return err
-		}
-		return k.data.db.Account.
-			UpdateOneID(id).
-			AddPurchasedAppIDs(appIDs...).
-			Exec(ctx)
-	})
-}
+// func (k *KetherRepo) AccountPurchaseAppInfos(
+//	ctx context.Context, id model.InternalID, ids []model.InternalID,
+// ) error {
+//	return k.data.WithTx(ctx, func(tx *ent.Tx) error {
+//		appIDs, err := tx.App.Query().Where(
+//			app.IDIn(ids...),
+//		).
+//			IDs(ctx)
+//		if err != nil {
+//			return err
+//		}
+//		return k.data.db.Account.
+//			UpdateOneID(id).
+//			AddPurchasedAppIDs(appIDs...).
+//			Exec(ctx)
+//	})
+//}
 
 func (k *KetherRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	return k.data.WithTx(ctx, func(tx *ent.Tx) error {

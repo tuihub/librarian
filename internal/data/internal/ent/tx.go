@@ -16,16 +16,14 @@ type Tx struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
-	// AppBinary is the client for interacting with the AppBinary builders.
-	AppBinary *AppBinaryClient
+	// AppCategory is the client for interacting with the AppCategory builders.
+	AppCategory *AppCategoryClient
 	// AppInfo is the client for interacting with the AppInfo builders.
 	AppInfo *AppInfoClient
-	// AppInst is the client for interacting with the AppInst builders.
-	AppInst *AppInstClient
-	// AppInstRunTime is the client for interacting with the AppInstRunTime builders.
-	AppInstRunTime *AppInstRunTimeClient
-	// DeviceInfo is the client for interacting with the DeviceInfo builders.
-	DeviceInfo *DeviceInfoClient
+	// AppRunTime is the client for interacting with the AppRunTime builders.
+	AppRunTime *AppRunTimeClient
+	// Device is the client for interacting with the Device builders.
+	Device *DeviceClient
 	// Feed is the client for interacting with the Feed builders.
 	Feed *FeedClient
 	// FeedActionSet is the client for interacting with the FeedActionSet builders.
@@ -56,16 +54,18 @@ type Tx struct {
 	PorterContext *PorterContextClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
+	// Session is the client for interacting with the Session builders.
+	Session *SessionClient
+	// StoreApp is the client for interacting with the StoreApp builders.
+	StoreApp *StoreAppClient
+	// StoreAppBinary is the client for interacting with the StoreAppBinary builders.
+	StoreAppBinary *StoreAppBinaryClient
 	// SystemNotification is the client for interacting with the SystemNotification builders.
 	SystemNotification *SystemNotificationClient
 	// Tag is the client for interacting with the Tag builders.
 	Tag *TagClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
-	// UserDevice is the client for interacting with the UserDevice builders.
-	UserDevice *UserDeviceClient
-	// UserSession is the client for interacting with the UserSession builders.
-	UserSession *UserSessionClient
 
 	// lazily loaded.
 	client     *Client
@@ -199,11 +199,10 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.App = NewAppClient(tx.config)
-	tx.AppBinary = NewAppBinaryClient(tx.config)
+	tx.AppCategory = NewAppCategoryClient(tx.config)
 	tx.AppInfo = NewAppInfoClient(tx.config)
-	tx.AppInst = NewAppInstClient(tx.config)
-	tx.AppInstRunTime = NewAppInstRunTimeClient(tx.config)
-	tx.DeviceInfo = NewDeviceInfoClient(tx.config)
+	tx.AppRunTime = NewAppRunTimeClient(tx.config)
+	tx.Device = NewDeviceClient(tx.config)
 	tx.Feed = NewFeedClient(tx.config)
 	tx.FeedActionSet = NewFeedActionSetClient(tx.config)
 	tx.FeedConfig = NewFeedConfigClient(tx.config)
@@ -219,11 +218,12 @@ func (tx *Tx) init() {
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.PorterContext = NewPorterContextClient(tx.config)
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
+	tx.Session = NewSessionClient(tx.config)
+	tx.StoreApp = NewStoreAppClient(tx.config)
+	tx.StoreAppBinary = NewStoreAppBinaryClient(tx.config)
 	tx.SystemNotification = NewSystemNotificationClient(tx.config)
 	tx.Tag = NewTagClient(tx.config)
 	tx.User = NewUserClient(tx.config)
-	tx.UserDevice = NewUserDeviceClient(tx.config)
-	tx.UserSession = NewUserSessionClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

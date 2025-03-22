@@ -11,11 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -25,12 +21,6 @@ type AppInfoCreate struct {
 	mutation *AppInfoMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
-}
-
-// SetInternal sets the "internal" field.
-func (aic *AppInfoCreate) SetInternal(b bool) *AppInfoCreate {
-	aic.mutation.SetInternal(b)
-	return aic
 }
 
 // SetSource sets the "source" field.
@@ -113,6 +103,12 @@ func (aic *AppInfoCreate) SetNillableIconImageURL(s *string) *AppInfoCreate {
 	return aic
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (aic *AppInfoCreate) SetIconImageID(mi model.InternalID) *AppInfoCreate {
+	aic.mutation.SetIconImageID(mi)
+	return aic
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (aic *AppInfoCreate) SetBackgroundImageURL(s string) *AppInfoCreate {
 	aic.mutation.SetBackgroundImageURL(s)
@@ -127,6 +123,12 @@ func (aic *AppInfoCreate) SetNillableBackgroundImageURL(s *string) *AppInfoCreat
 	return aic
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (aic *AppInfoCreate) SetBackgroundImageID(mi model.InternalID) *AppInfoCreate {
+	aic.mutation.SetBackgroundImageID(mi)
+	return aic
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (aic *AppInfoCreate) SetCoverImageURL(s string) *AppInfoCreate {
 	aic.mutation.SetCoverImageURL(s)
@@ -138,6 +140,12 @@ func (aic *AppInfoCreate) SetNillableCoverImageURL(s *string) *AppInfoCreate {
 	if s != nil {
 		aic.SetCoverImageURL(*s)
 	}
+	return aic
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (aic *AppInfoCreate) SetCoverImageID(mi model.InternalID) *AppInfoCreate {
+	aic.mutation.SetCoverImageID(mi)
 	return aic
 }
 
@@ -183,17 +191,21 @@ func (aic *AppInfoCreate) SetNillablePublisher(s *string) *AppInfoCreate {
 	return aic
 }
 
-// SetVersion sets the "version" field.
-func (aic *AppInfoCreate) SetVersion(s string) *AppInfoCreate {
-	aic.mutation.SetVersion(s)
+// SetTags sets the "tags" field.
+func (aic *AppInfoCreate) SetTags(s []string) *AppInfoCreate {
+	aic.mutation.SetTags(s)
 	return aic
 }
 
-// SetNillableVersion sets the "version" field if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableVersion(s *string) *AppInfoCreate {
-	if s != nil {
-		aic.SetVersion(*s)
-	}
+// SetAlternativeNames sets the "alternative_names" field.
+func (aic *AppInfoCreate) SetAlternativeNames(s []string) *AppInfoCreate {
+	aic.mutation.SetAlternativeNames(s)
+	return aic
+}
+
+// SetRawData sets the "raw_data" field.
+func (aic *AppInfoCreate) SetRawData(s string) *AppInfoCreate {
+	aic.mutation.SetRawData(s)
 	return aic
 }
 
@@ -229,100 +241,6 @@ func (aic *AppInfoCreate) SetNillableCreatedAt(t *time.Time) *AppInfoCreate {
 func (aic *AppInfoCreate) SetID(mi model.InternalID) *AppInfoCreate {
 	aic.mutation.SetID(mi)
 	return aic
-}
-
-// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
-func (aic *AppInfoCreate) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppInfoCreate {
-	aic.mutation.AddPurchasedByAccountIDs(ids...)
-	return aic
-}
-
-// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
-func (aic *AppInfoCreate) AddPurchasedByAccount(a ...*Account) *AppInfoCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aic.AddPurchasedByAccountIDs(ids...)
-}
-
-// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
-func (aic *AppInfoCreate) AddPurchasedByUserIDs(ids ...model.InternalID) *AppInfoCreate {
-	aic.mutation.AddPurchasedByUserIDs(ids...)
-	return aic
-}
-
-// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
-func (aic *AppInfoCreate) AddPurchasedByUser(u ...*User) *AppInfoCreate {
-	ids := make([]model.InternalID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return aic.AddPurchasedByUserIDs(ids...)
-}
-
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (aic *AppInfoCreate) AddAppIDs(ids ...model.InternalID) *AppInfoCreate {
-	aic.mutation.AddAppIDs(ids...)
-	return aic
-}
-
-// AddApp adds the "app" edges to the App entity.
-func (aic *AppInfoCreate) AddApp(a ...*App) *AppInfoCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aic.AddAppIDs(ids...)
-}
-
-// AddAppBinaryIDs adds the "app_binary" edge to the AppBinary entity by IDs.
-func (aic *AppInfoCreate) AddAppBinaryIDs(ids ...model.InternalID) *AppInfoCreate {
-	aic.mutation.AddAppBinaryIDs(ids...)
-	return aic
-}
-
-// AddAppBinary adds the "app_binary" edges to the AppBinary entity.
-func (aic *AppInfoCreate) AddAppBinary(a ...*AppBinary) *AppInfoCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aic.AddAppBinaryIDs(ids...)
-}
-
-// SetBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID.
-func (aic *AppInfoCreate) SetBindInternalID(id model.InternalID) *AppInfoCreate {
-	aic.mutation.SetBindInternalID(id)
-	return aic
-}
-
-// SetNillableBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID if the given value is not nil.
-func (aic *AppInfoCreate) SetNillableBindInternalID(id *model.InternalID) *AppInfoCreate {
-	if id != nil {
-		aic = aic.SetBindInternalID(*id)
-	}
-	return aic
-}
-
-// SetBindInternal sets the "bind_internal" edge to the AppInfo entity.
-func (aic *AppInfoCreate) SetBindInternal(a *AppInfo) *AppInfoCreate {
-	return aic.SetBindInternalID(a.ID)
-}
-
-// AddBindExternalIDs adds the "bind_external" edge to the AppInfo entity by IDs.
-func (aic *AppInfoCreate) AddBindExternalIDs(ids ...model.InternalID) *AppInfoCreate {
-	aic.mutation.AddBindExternalIDs(ids...)
-	return aic
-}
-
-// AddBindExternal adds the "bind_external" edges to the AppInfo entity.
-func (aic *AppInfoCreate) AddBindExternal(a ...*AppInfo) *AppInfoCreate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aic.AddBindExternalIDs(ids...)
 }
 
 // Mutation returns the AppInfoMutation object of the builder.
@@ -372,9 +290,6 @@ func (aic *AppInfoCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (aic *AppInfoCreate) check() error {
-	if _, ok := aic.mutation.Internal(); !ok {
-		return &ValidationError{Name: "internal", err: errors.New(`ent: missing required field "AppInfo.internal"`)}
-	}
 	if _, ok := aic.mutation.Source(); !ok {
 		return &ValidationError{Name: "source", err: errors.New(`ent: missing required field "AppInfo.source"`)}
 	}
@@ -391,6 +306,24 @@ func (aic *AppInfoCreate) check() error {
 		if err := appinfo.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "AppInfo.type": %w`, err)}
 		}
+	}
+	if _, ok := aic.mutation.IconImageID(); !ok {
+		return &ValidationError{Name: "icon_image_id", err: errors.New(`ent: missing required field "AppInfo.icon_image_id"`)}
+	}
+	if _, ok := aic.mutation.BackgroundImageID(); !ok {
+		return &ValidationError{Name: "background_image_id", err: errors.New(`ent: missing required field "AppInfo.background_image_id"`)}
+	}
+	if _, ok := aic.mutation.CoverImageID(); !ok {
+		return &ValidationError{Name: "cover_image_id", err: errors.New(`ent: missing required field "AppInfo.cover_image_id"`)}
+	}
+	if _, ok := aic.mutation.Tags(); !ok {
+		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "AppInfo.tags"`)}
+	}
+	if _, ok := aic.mutation.AlternativeNames(); !ok {
+		return &ValidationError{Name: "alternative_names", err: errors.New(`ent: missing required field "AppInfo.alternative_names"`)}
+	}
+	if _, ok := aic.mutation.RawData(); !ok {
+		return &ValidationError{Name: "raw_data", err: errors.New(`ent: missing required field "AppInfo.raw_data"`)}
 	}
 	if _, ok := aic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppInfo.updated_at"`)}
@@ -431,10 +364,6 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
-	if value, ok := aic.mutation.Internal(); ok {
-		_spec.SetField(appinfo.FieldInternal, field.TypeBool, value)
-		_node.Internal = value
-	}
 	if value, ok := aic.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 		_node.Source = value
@@ -467,13 +396,25 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(appinfo.FieldIconImageURL, field.TypeString, value)
 		_node.IconImageURL = value
 	}
+	if value, ok := aic.mutation.IconImageID(); ok {
+		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
+		_node.IconImageID = value
+	}
 	if value, ok := aic.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 		_node.BackgroundImageURL = value
 	}
+	if value, ok := aic.mutation.BackgroundImageID(); ok {
+		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
+		_node.BackgroundImageID = value
+	}
 	if value, ok := aic.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 		_node.CoverImageURL = value
+	}
+	if value, ok := aic.mutation.CoverImageID(); ok {
+		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
+		_node.CoverImageID = value
 	}
 	if value, ok := aic.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
@@ -487,9 +428,17 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(appinfo.FieldPublisher, field.TypeString, value)
 		_node.Publisher = value
 	}
-	if value, ok := aic.mutation.Version(); ok {
-		_spec.SetField(appinfo.FieldVersion, field.TypeString, value)
-		_node.Version = value
+	if value, ok := aic.mutation.Tags(); ok {
+		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
+		_node.Tags = value
+	}
+	if value, ok := aic.mutation.AlternativeNames(); ok {
+		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
+		_node.AlternativeNames = value
+	}
+	if value, ok := aic.mutation.RawData(); ok {
+		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
+		_node.RawData = value
 	}
 	if value, ok := aic.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
@@ -499,103 +448,6 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if nodes := aic.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aic.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aic.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aic.mutation.AppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aic.mutation.BindInternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appinfo.BindInternalTable,
-			Columns: []string{appinfo.BindInternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.app_info_bind_external = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := aic.mutation.BindExternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	return _node, _spec
 }
 
@@ -603,7 +455,7 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.AppInfo.Create().
-//		SetInternal(v).
+//		SetSource(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -612,7 +464,7 @@ func (aic *AppInfoCreate) createSpec() (*AppInfo, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppInfoUpsert) {
-//			SetInternal(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (aic *AppInfoCreate) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertOne {
@@ -647,18 +499,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetInternal sets the "internal" field.
-func (u *AppInfoUpsert) SetInternal(v bool) *AppInfoUpsert {
-	u.Set(appinfo.FieldInternal, v)
-	return u
-}
-
-// UpdateInternal sets the "internal" field to the value that was provided on create.
-func (u *AppInfoUpsert) UpdateInternal() *AppInfoUpsert {
-	u.SetExcluded(appinfo.FieldInternal)
-	return u
-}
 
 // SetSource sets the "source" field.
 func (u *AppInfoUpsert) SetSource(v string) *AppInfoUpsert {
@@ -780,6 +620,24 @@ func (u *AppInfoUpsert) ClearIconImageURL() *AppInfoUpsert {
 	return u
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppInfoUpsert) SetIconImageID(v model.InternalID) *AppInfoUpsert {
+	u.Set(appinfo.FieldIconImageID, v)
+	return u
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateIconImageID() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldIconImageID)
+	return u
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppInfoUpsert) AddIconImageID(v model.InternalID) *AppInfoUpsert {
+	u.Add(appinfo.FieldIconImageID, v)
+	return u
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (u *AppInfoUpsert) SetBackgroundImageURL(v string) *AppInfoUpsert {
 	u.Set(appinfo.FieldBackgroundImageURL, v)
@@ -798,6 +656,24 @@ func (u *AppInfoUpsert) ClearBackgroundImageURL() *AppInfoUpsert {
 	return u
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppInfoUpsert) SetBackgroundImageID(v model.InternalID) *AppInfoUpsert {
+	u.Set(appinfo.FieldBackgroundImageID, v)
+	return u
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateBackgroundImageID() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldBackgroundImageID)
+	return u
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppInfoUpsert) AddBackgroundImageID(v model.InternalID) *AppInfoUpsert {
+	u.Add(appinfo.FieldBackgroundImageID, v)
+	return u
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (u *AppInfoUpsert) SetCoverImageURL(v string) *AppInfoUpsert {
 	u.Set(appinfo.FieldCoverImageURL, v)
@@ -813,6 +689,24 @@ func (u *AppInfoUpsert) UpdateCoverImageURL() *AppInfoUpsert {
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
 func (u *AppInfoUpsert) ClearCoverImageURL() *AppInfoUpsert {
 	u.SetNull(appinfo.FieldCoverImageURL)
+	return u
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppInfoUpsert) SetCoverImageID(v model.InternalID) *AppInfoUpsert {
+	u.Set(appinfo.FieldCoverImageID, v)
+	return u
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateCoverImageID() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldCoverImageID)
+	return u
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppInfoUpsert) AddCoverImageID(v model.InternalID) *AppInfoUpsert {
+	u.Add(appinfo.FieldCoverImageID, v)
 	return u
 }
 
@@ -870,21 +764,39 @@ func (u *AppInfoUpsert) ClearPublisher() *AppInfoUpsert {
 	return u
 }
 
-// SetVersion sets the "version" field.
-func (u *AppInfoUpsert) SetVersion(v string) *AppInfoUpsert {
-	u.Set(appinfo.FieldVersion, v)
+// SetTags sets the "tags" field.
+func (u *AppInfoUpsert) SetTags(v []string) *AppInfoUpsert {
+	u.Set(appinfo.FieldTags, v)
 	return u
 }
 
-// UpdateVersion sets the "version" field to the value that was provided on create.
-func (u *AppInfoUpsert) UpdateVersion() *AppInfoUpsert {
-	u.SetExcluded(appinfo.FieldVersion)
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateTags() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldTags)
 	return u
 }
 
-// ClearVersion clears the value of the "version" field.
-func (u *AppInfoUpsert) ClearVersion() *AppInfoUpsert {
-	u.SetNull(appinfo.FieldVersion)
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppInfoUpsert) SetAlternativeNames(v []string) *AppInfoUpsert {
+	u.Set(appinfo.FieldAlternativeNames, v)
+	return u
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateAlternativeNames() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldAlternativeNames)
+	return u
+}
+
+// SetRawData sets the "raw_data" field.
+func (u *AppInfoUpsert) SetRawData(v string) *AppInfoUpsert {
+	u.Set(appinfo.FieldRawData, v)
+	return u
+}
+
+// UpdateRawData sets the "raw_data" field to the value that was provided on create.
+func (u *AppInfoUpsert) UpdateRawData() *AppInfoUpsert {
+	u.SetExcluded(appinfo.FieldRawData)
 	return u
 }
 
@@ -958,20 +870,6 @@ func (u *AppInfoUpsertOne) Update(set func(*AppInfoUpsert)) *AppInfoUpsertOne {
 		set(&AppInfoUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternal sets the "internal" field.
-func (u *AppInfoUpsertOne) SetInternal(v bool) *AppInfoUpsertOne {
-	return u.Update(func(s *AppInfoUpsert) {
-		s.SetInternal(v)
-	})
-}
-
-// UpdateInternal sets the "internal" field to the value that was provided on create.
-func (u *AppInfoUpsertOne) UpdateInternal() *AppInfoUpsertOne {
-	return u.Update(func(s *AppInfoUpsert) {
-		s.UpdateInternal()
-	})
 }
 
 // SetSource sets the "source" field.
@@ -1114,6 +1012,27 @@ func (u *AppInfoUpsertOne) ClearIconImageURL() *AppInfoUpsertOne {
 	})
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppInfoUpsertOne) SetIconImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetIconImageID(v)
+	})
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppInfoUpsertOne) AddIconImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddIconImageID(v)
+	})
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateIconImageID() *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateIconImageID()
+	})
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (u *AppInfoUpsertOne) SetBackgroundImageURL(v string) *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
@@ -1135,6 +1054,27 @@ func (u *AppInfoUpsertOne) ClearBackgroundImageURL() *AppInfoUpsertOne {
 	})
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppInfoUpsertOne) SetBackgroundImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetBackgroundImageID(v)
+	})
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppInfoUpsertOne) AddBackgroundImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddBackgroundImageID(v)
+	})
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateBackgroundImageID() *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateBackgroundImageID()
+	})
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (u *AppInfoUpsertOne) SetCoverImageURL(v string) *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
@@ -1153,6 +1093,27 @@ func (u *AppInfoUpsertOne) UpdateCoverImageURL() *AppInfoUpsertOne {
 func (u *AppInfoUpsertOne) ClearCoverImageURL() *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
 		s.ClearCoverImageURL()
+	})
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppInfoUpsertOne) SetCoverImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetCoverImageID(v)
+	})
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppInfoUpsertOne) AddCoverImageID(v model.InternalID) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddCoverImageID(v)
+	})
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateCoverImageID() *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateCoverImageID()
 	})
 }
 
@@ -1219,24 +1180,45 @@ func (u *AppInfoUpsertOne) ClearPublisher() *AppInfoUpsertOne {
 	})
 }
 
-// SetVersion sets the "version" field.
-func (u *AppInfoUpsertOne) SetVersion(v string) *AppInfoUpsertOne {
+// SetTags sets the "tags" field.
+func (u *AppInfoUpsertOne) SetTags(v []string) *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.SetVersion(v)
+		s.SetTags(v)
 	})
 }
 
-// UpdateVersion sets the "version" field to the value that was provided on create.
-func (u *AppInfoUpsertOne) UpdateVersion() *AppInfoUpsertOne {
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateTags() *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.UpdateVersion()
+		s.UpdateTags()
 	})
 }
 
-// ClearVersion clears the value of the "version" field.
-func (u *AppInfoUpsertOne) ClearVersion() *AppInfoUpsertOne {
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppInfoUpsertOne) SetAlternativeNames(v []string) *AppInfoUpsertOne {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.ClearVersion()
+		s.SetAlternativeNames(v)
+	})
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateAlternativeNames() *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateAlternativeNames()
+	})
+}
+
+// SetRawData sets the "raw_data" field.
+func (u *AppInfoUpsertOne) SetRawData(v string) *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetRawData(v)
+	})
+}
+
+// UpdateRawData sets the "raw_data" field to the value that was provided on create.
+func (u *AppInfoUpsertOne) UpdateRawData() *AppInfoUpsertOne {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateRawData()
 	})
 }
 
@@ -1403,7 +1385,7 @@ func (aicb *AppInfoCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.AppInfoUpsert) {
-//			SetInternal(v+v).
+//			SetSource(v+v).
 //		}).
 //		Exec(ctx)
 func (aicb *AppInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *AppInfoUpsertBulk {
@@ -1480,20 +1462,6 @@ func (u *AppInfoUpsertBulk) Update(set func(*AppInfoUpsert)) *AppInfoUpsertBulk 
 		set(&AppInfoUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetInternal sets the "internal" field.
-func (u *AppInfoUpsertBulk) SetInternal(v bool) *AppInfoUpsertBulk {
-	return u.Update(func(s *AppInfoUpsert) {
-		s.SetInternal(v)
-	})
-}
-
-// UpdateInternal sets the "internal" field to the value that was provided on create.
-func (u *AppInfoUpsertBulk) UpdateInternal() *AppInfoUpsertBulk {
-	return u.Update(func(s *AppInfoUpsert) {
-		s.UpdateInternal()
-	})
 }
 
 // SetSource sets the "source" field.
@@ -1636,6 +1604,27 @@ func (u *AppInfoUpsertBulk) ClearIconImageURL() *AppInfoUpsertBulk {
 	})
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (u *AppInfoUpsertBulk) SetIconImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetIconImageID(v)
+	})
+}
+
+// AddIconImageID adds v to the "icon_image_id" field.
+func (u *AppInfoUpsertBulk) AddIconImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddIconImageID(v)
+	})
+}
+
+// UpdateIconImageID sets the "icon_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateIconImageID() *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateIconImageID()
+	})
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (u *AppInfoUpsertBulk) SetBackgroundImageURL(v string) *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
@@ -1657,6 +1646,27 @@ func (u *AppInfoUpsertBulk) ClearBackgroundImageURL() *AppInfoUpsertBulk {
 	})
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (u *AppInfoUpsertBulk) SetBackgroundImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetBackgroundImageID(v)
+	})
+}
+
+// AddBackgroundImageID adds v to the "background_image_id" field.
+func (u *AppInfoUpsertBulk) AddBackgroundImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddBackgroundImageID(v)
+	})
+}
+
+// UpdateBackgroundImageID sets the "background_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateBackgroundImageID() *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateBackgroundImageID()
+	})
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (u *AppInfoUpsertBulk) SetCoverImageURL(v string) *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
@@ -1675,6 +1685,27 @@ func (u *AppInfoUpsertBulk) UpdateCoverImageURL() *AppInfoUpsertBulk {
 func (u *AppInfoUpsertBulk) ClearCoverImageURL() *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
 		s.ClearCoverImageURL()
+	})
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (u *AppInfoUpsertBulk) SetCoverImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetCoverImageID(v)
+	})
+}
+
+// AddCoverImageID adds v to the "cover_image_id" field.
+func (u *AppInfoUpsertBulk) AddCoverImageID(v model.InternalID) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.AddCoverImageID(v)
+	})
+}
+
+// UpdateCoverImageID sets the "cover_image_id" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateCoverImageID() *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateCoverImageID()
 	})
 }
 
@@ -1741,24 +1772,45 @@ func (u *AppInfoUpsertBulk) ClearPublisher() *AppInfoUpsertBulk {
 	})
 }
 
-// SetVersion sets the "version" field.
-func (u *AppInfoUpsertBulk) SetVersion(v string) *AppInfoUpsertBulk {
+// SetTags sets the "tags" field.
+func (u *AppInfoUpsertBulk) SetTags(v []string) *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.SetVersion(v)
+		s.SetTags(v)
 	})
 }
 
-// UpdateVersion sets the "version" field to the value that was provided on create.
-func (u *AppInfoUpsertBulk) UpdateVersion() *AppInfoUpsertBulk {
+// UpdateTags sets the "tags" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateTags() *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.UpdateVersion()
+		s.UpdateTags()
 	})
 }
 
-// ClearVersion clears the value of the "version" field.
-func (u *AppInfoUpsertBulk) ClearVersion() *AppInfoUpsertBulk {
+// SetAlternativeNames sets the "alternative_names" field.
+func (u *AppInfoUpsertBulk) SetAlternativeNames(v []string) *AppInfoUpsertBulk {
 	return u.Update(func(s *AppInfoUpsert) {
-		s.ClearVersion()
+		s.SetAlternativeNames(v)
+	})
+}
+
+// UpdateAlternativeNames sets the "alternative_names" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateAlternativeNames() *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateAlternativeNames()
+	})
+}
+
+// SetRawData sets the "raw_data" field.
+func (u *AppInfoUpsertBulk) SetRawData(v string) *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.SetRawData(v)
+	})
+}
+
+// UpdateRawData sets the "raw_data" field to the value that was provided on create.
+func (u *AppInfoUpsertBulk) UpdateRawData() *AppInfoUpsertBulk {
+	return u.Update(func(s *AppInfoUpsert) {
+		s.UpdateRawData()
 	})
 }
 

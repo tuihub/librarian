@@ -10,13 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/account"
-	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -30,20 +27,6 @@ type AppInfoUpdate struct {
 // Where appends a list predicates to the AppInfoUpdate builder.
 func (aiu *AppInfoUpdate) Where(ps ...predicate.AppInfo) *AppInfoUpdate {
 	aiu.mutation.Where(ps...)
-	return aiu
-}
-
-// SetInternal sets the "internal" field.
-func (aiu *AppInfoUpdate) SetInternal(b bool) *AppInfoUpdate {
-	aiu.mutation.SetInternal(b)
-	return aiu
-}
-
-// SetNillableInternal sets the "internal" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableInternal(b *bool) *AppInfoUpdate {
-	if b != nil {
-		aiu.SetInternal(*b)
-	}
 	return aiu
 }
 
@@ -183,6 +166,27 @@ func (aiu *AppInfoUpdate) ClearIconImageURL() *AppInfoUpdate {
 	return aiu
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (aiu *AppInfoUpdate) SetIconImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.ResetIconImageID()
+	aiu.mutation.SetIconImageID(mi)
+	return aiu
+}
+
+// SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
+func (aiu *AppInfoUpdate) SetNillableIconImageID(mi *model.InternalID) *AppInfoUpdate {
+	if mi != nil {
+		aiu.SetIconImageID(*mi)
+	}
+	return aiu
+}
+
+// AddIconImageID adds mi to the "icon_image_id" field.
+func (aiu *AppInfoUpdate) AddIconImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.AddIconImageID(mi)
+	return aiu
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (aiu *AppInfoUpdate) SetBackgroundImageURL(s string) *AppInfoUpdate {
 	aiu.mutation.SetBackgroundImageURL(s)
@@ -203,6 +207,27 @@ func (aiu *AppInfoUpdate) ClearBackgroundImageURL() *AppInfoUpdate {
 	return aiu
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (aiu *AppInfoUpdate) SetBackgroundImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.ResetBackgroundImageID()
+	aiu.mutation.SetBackgroundImageID(mi)
+	return aiu
+}
+
+// SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
+func (aiu *AppInfoUpdate) SetNillableBackgroundImageID(mi *model.InternalID) *AppInfoUpdate {
+	if mi != nil {
+		aiu.SetBackgroundImageID(*mi)
+	}
+	return aiu
+}
+
+// AddBackgroundImageID adds mi to the "background_image_id" field.
+func (aiu *AppInfoUpdate) AddBackgroundImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.AddBackgroundImageID(mi)
+	return aiu
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (aiu *AppInfoUpdate) SetCoverImageURL(s string) *AppInfoUpdate {
 	aiu.mutation.SetCoverImageURL(s)
@@ -220,6 +245,27 @@ func (aiu *AppInfoUpdate) SetNillableCoverImageURL(s *string) *AppInfoUpdate {
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
 func (aiu *AppInfoUpdate) ClearCoverImageURL() *AppInfoUpdate {
 	aiu.mutation.ClearCoverImageURL()
+	return aiu
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (aiu *AppInfoUpdate) SetCoverImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.ResetCoverImageID()
+	aiu.mutation.SetCoverImageID(mi)
+	return aiu
+}
+
+// SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
+func (aiu *AppInfoUpdate) SetNillableCoverImageID(mi *model.InternalID) *AppInfoUpdate {
+	if mi != nil {
+		aiu.SetCoverImageID(*mi)
+	}
+	return aiu
+}
+
+// AddCoverImageID adds mi to the "cover_image_id" field.
+func (aiu *AppInfoUpdate) AddCoverImageID(mi model.InternalID) *AppInfoUpdate {
+	aiu.mutation.AddCoverImageID(mi)
 	return aiu
 }
 
@@ -283,23 +329,41 @@ func (aiu *AppInfoUpdate) ClearPublisher() *AppInfoUpdate {
 	return aiu
 }
 
-// SetVersion sets the "version" field.
-func (aiu *AppInfoUpdate) SetVersion(s string) *AppInfoUpdate {
-	aiu.mutation.SetVersion(s)
+// SetTags sets the "tags" field.
+func (aiu *AppInfoUpdate) SetTags(s []string) *AppInfoUpdate {
+	aiu.mutation.SetTags(s)
 	return aiu
 }
 
-// SetNillableVersion sets the "version" field if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableVersion(s *string) *AppInfoUpdate {
+// AppendTags appends s to the "tags" field.
+func (aiu *AppInfoUpdate) AppendTags(s []string) *AppInfoUpdate {
+	aiu.mutation.AppendTags(s)
+	return aiu
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (aiu *AppInfoUpdate) SetAlternativeNames(s []string) *AppInfoUpdate {
+	aiu.mutation.SetAlternativeNames(s)
+	return aiu
+}
+
+// AppendAlternativeNames appends s to the "alternative_names" field.
+func (aiu *AppInfoUpdate) AppendAlternativeNames(s []string) *AppInfoUpdate {
+	aiu.mutation.AppendAlternativeNames(s)
+	return aiu
+}
+
+// SetRawData sets the "raw_data" field.
+func (aiu *AppInfoUpdate) SetRawData(s string) *AppInfoUpdate {
+	aiu.mutation.SetRawData(s)
+	return aiu
+}
+
+// SetNillableRawData sets the "raw_data" field if the given value is not nil.
+func (aiu *AppInfoUpdate) SetNillableRawData(s *string) *AppInfoUpdate {
 	if s != nil {
-		aiu.SetVersion(*s)
+		aiu.SetRawData(*s)
 	}
-	return aiu
-}
-
-// ClearVersion clears the value of the "version" field.
-func (aiu *AppInfoUpdate) ClearVersion() *AppInfoUpdate {
-	aiu.mutation.ClearVersion()
 	return aiu
 }
 
@@ -323,214 +387,9 @@ func (aiu *AppInfoUpdate) SetNillableCreatedAt(t *time.Time) *AppInfoUpdate {
 	return aiu
 }
 
-// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
-func (aiu *AppInfoUpdate) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddPurchasedByAccountIDs(ids...)
-	return aiu
-}
-
-// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
-func (aiu *AppInfoUpdate) AddPurchasedByAccount(a ...*Account) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.AddPurchasedByAccountIDs(ids...)
-}
-
-// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
-func (aiu *AppInfoUpdate) AddPurchasedByUserIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddPurchasedByUserIDs(ids...)
-	return aiu
-}
-
-// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
-func (aiu *AppInfoUpdate) AddPurchasedByUser(u ...*User) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return aiu.AddPurchasedByUserIDs(ids...)
-}
-
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (aiu *AppInfoUpdate) AddAppIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddAppIDs(ids...)
-	return aiu
-}
-
-// AddApp adds the "app" edges to the App entity.
-func (aiu *AppInfoUpdate) AddApp(a ...*App) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.AddAppIDs(ids...)
-}
-
-// AddAppBinaryIDs adds the "app_binary" edge to the AppBinary entity by IDs.
-func (aiu *AppInfoUpdate) AddAppBinaryIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddAppBinaryIDs(ids...)
-	return aiu
-}
-
-// AddAppBinary adds the "app_binary" edges to the AppBinary entity.
-func (aiu *AppInfoUpdate) AddAppBinary(a ...*AppBinary) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.AddAppBinaryIDs(ids...)
-}
-
-// SetBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID.
-func (aiu *AppInfoUpdate) SetBindInternalID(id model.InternalID) *AppInfoUpdate {
-	aiu.mutation.SetBindInternalID(id)
-	return aiu
-}
-
-// SetNillableBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID if the given value is not nil.
-func (aiu *AppInfoUpdate) SetNillableBindInternalID(id *model.InternalID) *AppInfoUpdate {
-	if id != nil {
-		aiu = aiu.SetBindInternalID(*id)
-	}
-	return aiu
-}
-
-// SetBindInternal sets the "bind_internal" edge to the AppInfo entity.
-func (aiu *AppInfoUpdate) SetBindInternal(a *AppInfo) *AppInfoUpdate {
-	return aiu.SetBindInternalID(a.ID)
-}
-
-// AddBindExternalIDs adds the "bind_external" edge to the AppInfo entity by IDs.
-func (aiu *AppInfoUpdate) AddBindExternalIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.AddBindExternalIDs(ids...)
-	return aiu
-}
-
-// AddBindExternal adds the "bind_external" edges to the AppInfo entity.
-func (aiu *AppInfoUpdate) AddBindExternal(a ...*AppInfo) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.AddBindExternalIDs(ids...)
-}
-
 // Mutation returns the AppInfoMutation object of the builder.
 func (aiu *AppInfoUpdate) Mutation() *AppInfoMutation {
 	return aiu.mutation
-}
-
-// ClearPurchasedByAccount clears all "purchased_by_account" edges to the Account entity.
-func (aiu *AppInfoUpdate) ClearPurchasedByAccount() *AppInfoUpdate {
-	aiu.mutation.ClearPurchasedByAccount()
-	return aiu
-}
-
-// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to Account entities by IDs.
-func (aiu *AppInfoUpdate) RemovePurchasedByAccountIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.RemovePurchasedByAccountIDs(ids...)
-	return aiu
-}
-
-// RemovePurchasedByAccount removes "purchased_by_account" edges to Account entities.
-func (aiu *AppInfoUpdate) RemovePurchasedByAccount(a ...*Account) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.RemovePurchasedByAccountIDs(ids...)
-}
-
-// ClearPurchasedByUser clears all "purchased_by_user" edges to the User entity.
-func (aiu *AppInfoUpdate) ClearPurchasedByUser() *AppInfoUpdate {
-	aiu.mutation.ClearPurchasedByUser()
-	return aiu
-}
-
-// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to User entities by IDs.
-func (aiu *AppInfoUpdate) RemovePurchasedByUserIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.RemovePurchasedByUserIDs(ids...)
-	return aiu
-}
-
-// RemovePurchasedByUser removes "purchased_by_user" edges to User entities.
-func (aiu *AppInfoUpdate) RemovePurchasedByUser(u ...*User) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return aiu.RemovePurchasedByUserIDs(ids...)
-}
-
-// ClearApp clears all "app" edges to the App entity.
-func (aiu *AppInfoUpdate) ClearApp() *AppInfoUpdate {
-	aiu.mutation.ClearApp()
-	return aiu
-}
-
-// RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (aiu *AppInfoUpdate) RemoveAppIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.RemoveAppIDs(ids...)
-	return aiu
-}
-
-// RemoveApp removes "app" edges to App entities.
-func (aiu *AppInfoUpdate) RemoveApp(a ...*App) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.RemoveAppIDs(ids...)
-}
-
-// ClearAppBinary clears all "app_binary" edges to the AppBinary entity.
-func (aiu *AppInfoUpdate) ClearAppBinary() *AppInfoUpdate {
-	aiu.mutation.ClearAppBinary()
-	return aiu
-}
-
-// RemoveAppBinaryIDs removes the "app_binary" edge to AppBinary entities by IDs.
-func (aiu *AppInfoUpdate) RemoveAppBinaryIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.RemoveAppBinaryIDs(ids...)
-	return aiu
-}
-
-// RemoveAppBinary removes "app_binary" edges to AppBinary entities.
-func (aiu *AppInfoUpdate) RemoveAppBinary(a ...*AppBinary) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.RemoveAppBinaryIDs(ids...)
-}
-
-// ClearBindInternal clears the "bind_internal" edge to the AppInfo entity.
-func (aiu *AppInfoUpdate) ClearBindInternal() *AppInfoUpdate {
-	aiu.mutation.ClearBindInternal()
-	return aiu
-}
-
-// ClearBindExternal clears all "bind_external" edges to the AppInfo entity.
-func (aiu *AppInfoUpdate) ClearBindExternal() *AppInfoUpdate {
-	aiu.mutation.ClearBindExternal()
-	return aiu
-}
-
-// RemoveBindExternalIDs removes the "bind_external" edge to AppInfo entities by IDs.
-func (aiu *AppInfoUpdate) RemoveBindExternalIDs(ids ...model.InternalID) *AppInfoUpdate {
-	aiu.mutation.RemoveBindExternalIDs(ids...)
-	return aiu
-}
-
-// RemoveBindExternal removes "bind_external" edges to AppInfo entities.
-func (aiu *AppInfoUpdate) RemoveBindExternal(a ...*AppInfo) *AppInfoUpdate {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiu.RemoveBindExternalIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -591,9 +450,6 @@ func (aiu *AppInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
-	if value, ok := aiu.mutation.Internal(); ok {
-		_spec.SetField(appinfo.FieldInternal, field.TypeBool, value)
-	}
 	if value, ok := aiu.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 	}
@@ -630,17 +486,35 @@ func (aiu *AppInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if aiu.mutation.IconImageURLCleared() {
 		_spec.ClearField(appinfo.FieldIconImageURL, field.TypeString)
 	}
+	if value, ok := aiu.mutation.IconImageID(); ok {
+		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiu.mutation.AddedIconImageID(); ok {
+		_spec.AddField(appinfo.FieldIconImageID, field.TypeInt64, value)
+	}
 	if value, ok := aiu.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 	}
 	if aiu.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(appinfo.FieldBackgroundImageURL, field.TypeString)
 	}
+	if value, ok := aiu.mutation.BackgroundImageID(); ok {
+		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiu.mutation.AddedBackgroundImageID(); ok {
+		_spec.AddField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
+	}
 	if value, ok := aiu.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 	}
 	if aiu.mutation.CoverImageURLCleared() {
 		_spec.ClearField(appinfo.FieldCoverImageURL, field.TypeString)
+	}
+	if value, ok := aiu.mutation.CoverImageID(); ok {
+		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiu.mutation.AddedCoverImageID(); ok {
+		_spec.AddField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
 	if value, ok := aiu.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
@@ -660,271 +534,30 @@ func (aiu *AppInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if aiu.mutation.PublisherCleared() {
 		_spec.ClearField(appinfo.FieldPublisher, field.TypeString)
 	}
-	if value, ok := aiu.mutation.Version(); ok {
-		_spec.SetField(appinfo.FieldVersion, field.TypeString, value)
+	if value, ok := aiu.mutation.Tags(); ok {
+		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
 	}
-	if aiu.mutation.VersionCleared() {
-		_spec.ClearField(appinfo.FieldVersion, field.TypeString)
+	if value, ok := aiu.mutation.AppendedTags(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, appinfo.FieldTags, value)
+		})
+	}
+	if value, ok := aiu.mutation.AlternativeNames(); ok {
+		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
+	}
+	if value, ok := aiu.mutation.AppendedAlternativeNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, appinfo.FieldAlternativeNames, value)
+		})
+	}
+	if value, ok := aiu.mutation.RawData(); ok {
+		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
 	}
 	if value, ok := aiu.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := aiu.mutation.CreatedAt(); ok {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
-	}
-	if aiu.mutation.PurchasedByAccountCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.RemovedPurchasedByAccountIDs(); len(nodes) > 0 && !aiu.mutation.PurchasedByAccountCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiu.mutation.PurchasedByUserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.RemovedPurchasedByUserIDs(); len(nodes) > 0 && !aiu.mutation.PurchasedByUserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiu.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.RemovedAppIDs(); len(nodes) > 0 && !aiu.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiu.mutation.AppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !aiu.mutation.AppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.AppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiu.mutation.BindInternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appinfo.BindInternalTable,
-			Columns: []string{appinfo.BindInternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.BindInternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appinfo.BindInternalTable,
-			Columns: []string{appinfo.BindInternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiu.mutation.BindExternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.RemovedBindExternalIDs(); len(nodes) > 0 && !aiu.mutation.BindExternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiu.mutation.BindExternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, aiu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -944,20 +577,6 @@ type AppInfoUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AppInfoMutation
-}
-
-// SetInternal sets the "internal" field.
-func (aiuo *AppInfoUpdateOne) SetInternal(b bool) *AppInfoUpdateOne {
-	aiuo.mutation.SetInternal(b)
-	return aiuo
-}
-
-// SetNillableInternal sets the "internal" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableInternal(b *bool) *AppInfoUpdateOne {
-	if b != nil {
-		aiuo.SetInternal(*b)
-	}
-	return aiuo
 }
 
 // SetSource sets the "source" field.
@@ -1096,6 +715,27 @@ func (aiuo *AppInfoUpdateOne) ClearIconImageURL() *AppInfoUpdateOne {
 	return aiuo
 }
 
+// SetIconImageID sets the "icon_image_id" field.
+func (aiuo *AppInfoUpdateOne) SetIconImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.ResetIconImageID()
+	aiuo.mutation.SetIconImageID(mi)
+	return aiuo
+}
+
+// SetNillableIconImageID sets the "icon_image_id" field if the given value is not nil.
+func (aiuo *AppInfoUpdateOne) SetNillableIconImageID(mi *model.InternalID) *AppInfoUpdateOne {
+	if mi != nil {
+		aiuo.SetIconImageID(*mi)
+	}
+	return aiuo
+}
+
+// AddIconImageID adds mi to the "icon_image_id" field.
+func (aiuo *AppInfoUpdateOne) AddIconImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.AddIconImageID(mi)
+	return aiuo
+}
+
 // SetBackgroundImageURL sets the "background_image_url" field.
 func (aiuo *AppInfoUpdateOne) SetBackgroundImageURL(s string) *AppInfoUpdateOne {
 	aiuo.mutation.SetBackgroundImageURL(s)
@@ -1116,6 +756,27 @@ func (aiuo *AppInfoUpdateOne) ClearBackgroundImageURL() *AppInfoUpdateOne {
 	return aiuo
 }
 
+// SetBackgroundImageID sets the "background_image_id" field.
+func (aiuo *AppInfoUpdateOne) SetBackgroundImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.ResetBackgroundImageID()
+	aiuo.mutation.SetBackgroundImageID(mi)
+	return aiuo
+}
+
+// SetNillableBackgroundImageID sets the "background_image_id" field if the given value is not nil.
+func (aiuo *AppInfoUpdateOne) SetNillableBackgroundImageID(mi *model.InternalID) *AppInfoUpdateOne {
+	if mi != nil {
+		aiuo.SetBackgroundImageID(*mi)
+	}
+	return aiuo
+}
+
+// AddBackgroundImageID adds mi to the "background_image_id" field.
+func (aiuo *AppInfoUpdateOne) AddBackgroundImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.AddBackgroundImageID(mi)
+	return aiuo
+}
+
 // SetCoverImageURL sets the "cover_image_url" field.
 func (aiuo *AppInfoUpdateOne) SetCoverImageURL(s string) *AppInfoUpdateOne {
 	aiuo.mutation.SetCoverImageURL(s)
@@ -1133,6 +794,27 @@ func (aiuo *AppInfoUpdateOne) SetNillableCoverImageURL(s *string) *AppInfoUpdate
 // ClearCoverImageURL clears the value of the "cover_image_url" field.
 func (aiuo *AppInfoUpdateOne) ClearCoverImageURL() *AppInfoUpdateOne {
 	aiuo.mutation.ClearCoverImageURL()
+	return aiuo
+}
+
+// SetCoverImageID sets the "cover_image_id" field.
+func (aiuo *AppInfoUpdateOne) SetCoverImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.ResetCoverImageID()
+	aiuo.mutation.SetCoverImageID(mi)
+	return aiuo
+}
+
+// SetNillableCoverImageID sets the "cover_image_id" field if the given value is not nil.
+func (aiuo *AppInfoUpdateOne) SetNillableCoverImageID(mi *model.InternalID) *AppInfoUpdateOne {
+	if mi != nil {
+		aiuo.SetCoverImageID(*mi)
+	}
+	return aiuo
+}
+
+// AddCoverImageID adds mi to the "cover_image_id" field.
+func (aiuo *AppInfoUpdateOne) AddCoverImageID(mi model.InternalID) *AppInfoUpdateOne {
+	aiuo.mutation.AddCoverImageID(mi)
 	return aiuo
 }
 
@@ -1196,23 +878,41 @@ func (aiuo *AppInfoUpdateOne) ClearPublisher() *AppInfoUpdateOne {
 	return aiuo
 }
 
-// SetVersion sets the "version" field.
-func (aiuo *AppInfoUpdateOne) SetVersion(s string) *AppInfoUpdateOne {
-	aiuo.mutation.SetVersion(s)
+// SetTags sets the "tags" field.
+func (aiuo *AppInfoUpdateOne) SetTags(s []string) *AppInfoUpdateOne {
+	aiuo.mutation.SetTags(s)
 	return aiuo
 }
 
-// SetNillableVersion sets the "version" field if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableVersion(s *string) *AppInfoUpdateOne {
+// AppendTags appends s to the "tags" field.
+func (aiuo *AppInfoUpdateOne) AppendTags(s []string) *AppInfoUpdateOne {
+	aiuo.mutation.AppendTags(s)
+	return aiuo
+}
+
+// SetAlternativeNames sets the "alternative_names" field.
+func (aiuo *AppInfoUpdateOne) SetAlternativeNames(s []string) *AppInfoUpdateOne {
+	aiuo.mutation.SetAlternativeNames(s)
+	return aiuo
+}
+
+// AppendAlternativeNames appends s to the "alternative_names" field.
+func (aiuo *AppInfoUpdateOne) AppendAlternativeNames(s []string) *AppInfoUpdateOne {
+	aiuo.mutation.AppendAlternativeNames(s)
+	return aiuo
+}
+
+// SetRawData sets the "raw_data" field.
+func (aiuo *AppInfoUpdateOne) SetRawData(s string) *AppInfoUpdateOne {
+	aiuo.mutation.SetRawData(s)
+	return aiuo
+}
+
+// SetNillableRawData sets the "raw_data" field if the given value is not nil.
+func (aiuo *AppInfoUpdateOne) SetNillableRawData(s *string) *AppInfoUpdateOne {
 	if s != nil {
-		aiuo.SetVersion(*s)
+		aiuo.SetRawData(*s)
 	}
-	return aiuo
-}
-
-// ClearVersion clears the value of the "version" field.
-func (aiuo *AppInfoUpdateOne) ClearVersion() *AppInfoUpdateOne {
-	aiuo.mutation.ClearVersion()
 	return aiuo
 }
 
@@ -1236,214 +936,9 @@ func (aiuo *AppInfoUpdateOne) SetNillableCreatedAt(t *time.Time) *AppInfoUpdateO
 	return aiuo
 }
 
-// AddPurchasedByAccountIDs adds the "purchased_by_account" edge to the Account entity by IDs.
-func (aiuo *AppInfoUpdateOne) AddPurchasedByAccountIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddPurchasedByAccountIDs(ids...)
-	return aiuo
-}
-
-// AddPurchasedByAccount adds the "purchased_by_account" edges to the Account entity.
-func (aiuo *AppInfoUpdateOne) AddPurchasedByAccount(a ...*Account) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.AddPurchasedByAccountIDs(ids...)
-}
-
-// AddPurchasedByUserIDs adds the "purchased_by_user" edge to the User entity by IDs.
-func (aiuo *AppInfoUpdateOne) AddPurchasedByUserIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddPurchasedByUserIDs(ids...)
-	return aiuo
-}
-
-// AddPurchasedByUser adds the "purchased_by_user" edges to the User entity.
-func (aiuo *AppInfoUpdateOne) AddPurchasedByUser(u ...*User) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return aiuo.AddPurchasedByUserIDs(ids...)
-}
-
-// AddAppIDs adds the "app" edge to the App entity by IDs.
-func (aiuo *AppInfoUpdateOne) AddAppIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddAppIDs(ids...)
-	return aiuo
-}
-
-// AddApp adds the "app" edges to the App entity.
-func (aiuo *AppInfoUpdateOne) AddApp(a ...*App) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.AddAppIDs(ids...)
-}
-
-// AddAppBinaryIDs adds the "app_binary" edge to the AppBinary entity by IDs.
-func (aiuo *AppInfoUpdateOne) AddAppBinaryIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddAppBinaryIDs(ids...)
-	return aiuo
-}
-
-// AddAppBinary adds the "app_binary" edges to the AppBinary entity.
-func (aiuo *AppInfoUpdateOne) AddAppBinary(a ...*AppBinary) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.AddAppBinaryIDs(ids...)
-}
-
-// SetBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID.
-func (aiuo *AppInfoUpdateOne) SetBindInternalID(id model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.SetBindInternalID(id)
-	return aiuo
-}
-
-// SetNillableBindInternalID sets the "bind_internal" edge to the AppInfo entity by ID if the given value is not nil.
-func (aiuo *AppInfoUpdateOne) SetNillableBindInternalID(id *model.InternalID) *AppInfoUpdateOne {
-	if id != nil {
-		aiuo = aiuo.SetBindInternalID(*id)
-	}
-	return aiuo
-}
-
-// SetBindInternal sets the "bind_internal" edge to the AppInfo entity.
-func (aiuo *AppInfoUpdateOne) SetBindInternal(a *AppInfo) *AppInfoUpdateOne {
-	return aiuo.SetBindInternalID(a.ID)
-}
-
-// AddBindExternalIDs adds the "bind_external" edge to the AppInfo entity by IDs.
-func (aiuo *AppInfoUpdateOne) AddBindExternalIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.AddBindExternalIDs(ids...)
-	return aiuo
-}
-
-// AddBindExternal adds the "bind_external" edges to the AppInfo entity.
-func (aiuo *AppInfoUpdateOne) AddBindExternal(a ...*AppInfo) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.AddBindExternalIDs(ids...)
-}
-
 // Mutation returns the AppInfoMutation object of the builder.
 func (aiuo *AppInfoUpdateOne) Mutation() *AppInfoMutation {
 	return aiuo.mutation
-}
-
-// ClearPurchasedByAccount clears all "purchased_by_account" edges to the Account entity.
-func (aiuo *AppInfoUpdateOne) ClearPurchasedByAccount() *AppInfoUpdateOne {
-	aiuo.mutation.ClearPurchasedByAccount()
-	return aiuo
-}
-
-// RemovePurchasedByAccountIDs removes the "purchased_by_account" edge to Account entities by IDs.
-func (aiuo *AppInfoUpdateOne) RemovePurchasedByAccountIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.RemovePurchasedByAccountIDs(ids...)
-	return aiuo
-}
-
-// RemovePurchasedByAccount removes "purchased_by_account" edges to Account entities.
-func (aiuo *AppInfoUpdateOne) RemovePurchasedByAccount(a ...*Account) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.RemovePurchasedByAccountIDs(ids...)
-}
-
-// ClearPurchasedByUser clears all "purchased_by_user" edges to the User entity.
-func (aiuo *AppInfoUpdateOne) ClearPurchasedByUser() *AppInfoUpdateOne {
-	aiuo.mutation.ClearPurchasedByUser()
-	return aiuo
-}
-
-// RemovePurchasedByUserIDs removes the "purchased_by_user" edge to User entities by IDs.
-func (aiuo *AppInfoUpdateOne) RemovePurchasedByUserIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.RemovePurchasedByUserIDs(ids...)
-	return aiuo
-}
-
-// RemovePurchasedByUser removes "purchased_by_user" edges to User entities.
-func (aiuo *AppInfoUpdateOne) RemovePurchasedByUser(u ...*User) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(u))
-	for i := range u {
-		ids[i] = u[i].ID
-	}
-	return aiuo.RemovePurchasedByUserIDs(ids...)
-}
-
-// ClearApp clears all "app" edges to the App entity.
-func (aiuo *AppInfoUpdateOne) ClearApp() *AppInfoUpdateOne {
-	aiuo.mutation.ClearApp()
-	return aiuo
-}
-
-// RemoveAppIDs removes the "app" edge to App entities by IDs.
-func (aiuo *AppInfoUpdateOne) RemoveAppIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.RemoveAppIDs(ids...)
-	return aiuo
-}
-
-// RemoveApp removes "app" edges to App entities.
-func (aiuo *AppInfoUpdateOne) RemoveApp(a ...*App) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.RemoveAppIDs(ids...)
-}
-
-// ClearAppBinary clears all "app_binary" edges to the AppBinary entity.
-func (aiuo *AppInfoUpdateOne) ClearAppBinary() *AppInfoUpdateOne {
-	aiuo.mutation.ClearAppBinary()
-	return aiuo
-}
-
-// RemoveAppBinaryIDs removes the "app_binary" edge to AppBinary entities by IDs.
-func (aiuo *AppInfoUpdateOne) RemoveAppBinaryIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.RemoveAppBinaryIDs(ids...)
-	return aiuo
-}
-
-// RemoveAppBinary removes "app_binary" edges to AppBinary entities.
-func (aiuo *AppInfoUpdateOne) RemoveAppBinary(a ...*AppBinary) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.RemoveAppBinaryIDs(ids...)
-}
-
-// ClearBindInternal clears the "bind_internal" edge to the AppInfo entity.
-func (aiuo *AppInfoUpdateOne) ClearBindInternal() *AppInfoUpdateOne {
-	aiuo.mutation.ClearBindInternal()
-	return aiuo
-}
-
-// ClearBindExternal clears all "bind_external" edges to the AppInfo entity.
-func (aiuo *AppInfoUpdateOne) ClearBindExternal() *AppInfoUpdateOne {
-	aiuo.mutation.ClearBindExternal()
-	return aiuo
-}
-
-// RemoveBindExternalIDs removes the "bind_external" edge to AppInfo entities by IDs.
-func (aiuo *AppInfoUpdateOne) RemoveBindExternalIDs(ids ...model.InternalID) *AppInfoUpdateOne {
-	aiuo.mutation.RemoveBindExternalIDs(ids...)
-	return aiuo
-}
-
-// RemoveBindExternal removes "bind_external" edges to AppInfo entities.
-func (aiuo *AppInfoUpdateOne) RemoveBindExternal(a ...*AppInfo) *AppInfoUpdateOne {
-	ids := make([]model.InternalID, len(a))
-	for i := range a {
-		ids[i] = a[i].ID
-	}
-	return aiuo.RemoveBindExternalIDs(ids...)
 }
 
 // Where appends a list predicates to the AppInfoUpdate builder.
@@ -1534,9 +1029,6 @@ func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err 
 			}
 		}
 	}
-	if value, ok := aiuo.mutation.Internal(); ok {
-		_spec.SetField(appinfo.FieldInternal, field.TypeBool, value)
-	}
 	if value, ok := aiuo.mutation.Source(); ok {
 		_spec.SetField(appinfo.FieldSource, field.TypeString, value)
 	}
@@ -1573,17 +1065,35 @@ func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err 
 	if aiuo.mutation.IconImageURLCleared() {
 		_spec.ClearField(appinfo.FieldIconImageURL, field.TypeString)
 	}
+	if value, ok := aiuo.mutation.IconImageID(); ok {
+		_spec.SetField(appinfo.FieldIconImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiuo.mutation.AddedIconImageID(); ok {
+		_spec.AddField(appinfo.FieldIconImageID, field.TypeInt64, value)
+	}
 	if value, ok := aiuo.mutation.BackgroundImageURL(); ok {
 		_spec.SetField(appinfo.FieldBackgroundImageURL, field.TypeString, value)
 	}
 	if aiuo.mutation.BackgroundImageURLCleared() {
 		_spec.ClearField(appinfo.FieldBackgroundImageURL, field.TypeString)
 	}
+	if value, ok := aiuo.mutation.BackgroundImageID(); ok {
+		_spec.SetField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiuo.mutation.AddedBackgroundImageID(); ok {
+		_spec.AddField(appinfo.FieldBackgroundImageID, field.TypeInt64, value)
+	}
 	if value, ok := aiuo.mutation.CoverImageURL(); ok {
 		_spec.SetField(appinfo.FieldCoverImageURL, field.TypeString, value)
 	}
 	if aiuo.mutation.CoverImageURLCleared() {
 		_spec.ClearField(appinfo.FieldCoverImageURL, field.TypeString)
+	}
+	if value, ok := aiuo.mutation.CoverImageID(); ok {
+		_spec.SetField(appinfo.FieldCoverImageID, field.TypeInt64, value)
+	}
+	if value, ok := aiuo.mutation.AddedCoverImageID(); ok {
+		_spec.AddField(appinfo.FieldCoverImageID, field.TypeInt64, value)
 	}
 	if value, ok := aiuo.mutation.ReleaseDate(); ok {
 		_spec.SetField(appinfo.FieldReleaseDate, field.TypeString, value)
@@ -1603,271 +1113,30 @@ func (aiuo *AppInfoUpdateOne) sqlSave(ctx context.Context) (_node *AppInfo, err 
 	if aiuo.mutation.PublisherCleared() {
 		_spec.ClearField(appinfo.FieldPublisher, field.TypeString)
 	}
-	if value, ok := aiuo.mutation.Version(); ok {
-		_spec.SetField(appinfo.FieldVersion, field.TypeString, value)
+	if value, ok := aiuo.mutation.Tags(); ok {
+		_spec.SetField(appinfo.FieldTags, field.TypeJSON, value)
 	}
-	if aiuo.mutation.VersionCleared() {
-		_spec.ClearField(appinfo.FieldVersion, field.TypeString)
+	if value, ok := aiuo.mutation.AppendedTags(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, appinfo.FieldTags, value)
+		})
+	}
+	if value, ok := aiuo.mutation.AlternativeNames(); ok {
+		_spec.SetField(appinfo.FieldAlternativeNames, field.TypeJSON, value)
+	}
+	if value, ok := aiuo.mutation.AppendedAlternativeNames(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, appinfo.FieldAlternativeNames, value)
+		})
+	}
+	if value, ok := aiuo.mutation.RawData(); ok {
+		_spec.SetField(appinfo.FieldRawData, field.TypeString, value)
 	}
 	if value, ok := aiuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(appinfo.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := aiuo.mutation.CreatedAt(); ok {
 		_spec.SetField(appinfo.FieldCreatedAt, field.TypeTime, value)
-	}
-	if aiuo.mutation.PurchasedByAccountCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.RemovedPurchasedByAccountIDs(); len(nodes) > 0 && !aiuo.mutation.PurchasedByAccountCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.PurchasedByAccountIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByAccountTable,
-			Columns: appinfo.PurchasedByAccountPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(account.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiuo.mutation.PurchasedByUserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.RemovedPurchasedByUserIDs(); len(nodes) > 0 && !aiuo.mutation.PurchasedByUserCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.PurchasedByUserIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   appinfo.PurchasedByUserTable,
-			Columns: appinfo.PurchasedByUserPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiuo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.RemovedAppIDs(); len(nodes) > 0 && !aiuo.mutation.AppCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.AppIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppTable,
-			Columns: []string{appinfo.AppColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiuo.mutation.AppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.RemovedAppBinaryIDs(); len(nodes) > 0 && !aiuo.mutation.AppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.AppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.AppBinaryTable,
-			Columns: []string{appinfo.AppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appbinary.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiuo.mutation.BindInternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appinfo.BindInternalTable,
-			Columns: []string{appinfo.BindInternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.BindInternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: true,
-			Table:   appinfo.BindInternalTable,
-			Columns: []string{appinfo.BindInternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if aiuo.mutation.BindExternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.RemovedBindExternalIDs(); len(nodes) > 0 && !aiuo.mutation.BindExternalCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := aiuo.mutation.BindExternalIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   appinfo.BindExternalTable,
-			Columns: []string{appinfo.BindExternalColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &AppInfo{config: aiuo.config}
 	_spec.Assign = _node.assignValues

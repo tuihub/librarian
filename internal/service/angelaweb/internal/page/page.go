@@ -114,3 +114,40 @@ func (b *Builder) UserForm(c *fiber.Ctx) error {
 		"Method": method,
 	})
 }
+
+func (b *Builder) PorterList(c *fiber.Ctx) error {
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+
+	pageSize := 10 // Porters per page
+
+	porters, total, err := b.t.ListPorters(c.UserContext(), model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+	})
+
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString("Error fetching porters")
+	}
+
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+
+	return c.Render("porter", fiber.Map{
+		"Title":   "插件管理",
+		"Porters": porters,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
+	})
+}

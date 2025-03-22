@@ -14,11 +14,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinst"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appinstruntime"
-	"github.com/tuihub/librarian/internal/data/internal/ent/deviceinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feed"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedconfig"
@@ -34,11 +33,12 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/session"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/internal/data/internal/ent/tag"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
-	"github.com/tuihub/librarian/internal/data/internal/ent/userdevice"
-	"github.com/tuihub/librarian/internal/data/internal/ent/usersession"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -101,11 +101,10 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			account.Table:            account.ValidColumn,
 			app.Table:                app.ValidColumn,
-			appbinary.Table:          appbinary.ValidColumn,
+			appcategory.Table:        appcategory.ValidColumn,
 			appinfo.Table:            appinfo.ValidColumn,
-			appinst.Table:            appinst.ValidColumn,
-			appinstruntime.Table:     appinstruntime.ValidColumn,
-			deviceinfo.Table:         deviceinfo.ValidColumn,
+			appruntime.Table:         appruntime.ValidColumn,
+			device.Table:             device.ValidColumn,
 			feed.Table:               feed.ValidColumn,
 			feedactionset.Table:      feedactionset.ValidColumn,
 			feedconfig.Table:         feedconfig.ValidColumn,
@@ -121,11 +120,12 @@ func checkColumn(table, column string) error {
 			notifytarget.Table:       notifytarget.ValidColumn,
 			portercontext.Table:      portercontext.ValidColumn,
 			porterinstance.Table:     porterinstance.ValidColumn,
+			session.Table:            session.ValidColumn,
+			storeapp.Table:           storeapp.ValidColumn,
+			storeappbinary.Table:     storeappbinary.ValidColumn,
 			systemnotification.Table: systemnotification.ValidColumn,
 			tag.Table:                tag.ValidColumn,
 			user.Table:               user.ValidColumn,
-			userdevice.Table:         userdevice.ValidColumn,
-			usersession.Table:        usersession.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

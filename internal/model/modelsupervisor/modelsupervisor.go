@@ -121,7 +121,7 @@ const (
 	PorterContextHandleStatusBlocked
 )
 
-type PorterGroup struct {
+type PorterDigest struct {
 	BinarySummary     *PorterBinarySummary
 	GlobalName        string
 	Regions           []string

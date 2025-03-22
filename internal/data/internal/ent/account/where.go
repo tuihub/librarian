@@ -66,6 +66,12 @@ func PlatformAccountID(v string) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldPlatformAccountID, v))
 }
 
+// BoundUserID applies equality check predicate on the "bound_user_id" field. It's identical to BoundUserIDEQ.
+func BoundUserID(v model.InternalID) predicate.Account {
+	vc := int64(v)
+	return predicate.Account(sql.FieldEQ(FieldBoundUserID, vc))
+}
+
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.Account {
 	return predicate.Account(sql.FieldEQ(FieldName, v))
@@ -219,6 +225,46 @@ func PlatformAccountIDEqualFold(v string) predicate.Account {
 // PlatformAccountIDContainsFold applies the ContainsFold predicate on the "platform_account_id" field.
 func PlatformAccountIDContainsFold(v string) predicate.Account {
 	return predicate.Account(sql.FieldContainsFold(FieldPlatformAccountID, v))
+}
+
+// BoundUserIDEQ applies the EQ predicate on the "bound_user_id" field.
+func BoundUserIDEQ(v model.InternalID) predicate.Account {
+	vc := int64(v)
+	return predicate.Account(sql.FieldEQ(FieldBoundUserID, vc))
+}
+
+// BoundUserIDNEQ applies the NEQ predicate on the "bound_user_id" field.
+func BoundUserIDNEQ(v model.InternalID) predicate.Account {
+	vc := int64(v)
+	return predicate.Account(sql.FieldNEQ(FieldBoundUserID, vc))
+}
+
+// BoundUserIDIn applies the In predicate on the "bound_user_id" field.
+func BoundUserIDIn(vs ...model.InternalID) predicate.Account {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.Account(sql.FieldIn(FieldBoundUserID, v...))
+}
+
+// BoundUserIDNotIn applies the NotIn predicate on the "bound_user_id" field.
+func BoundUserIDNotIn(vs ...model.InternalID) predicate.Account {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.Account(sql.FieldNotIn(FieldBoundUserID, v...))
+}
+
+// BoundUserIDIsNil applies the IsNil predicate on the "bound_user_id" field.
+func BoundUserIDIsNil() predicate.Account {
+	return predicate.Account(sql.FieldIsNull(FieldBoundUserID))
+}
+
+// BoundUserIDNotNil applies the NotNil predicate on the "bound_user_id" field.
+func BoundUserIDNotNil() predicate.Account {
+	return predicate.Account(sql.FieldNotNull(FieldBoundUserID))
 }
 
 // NameEQ applies the EQ predicate on the "name" field.
@@ -496,44 +542,21 @@ func CreatedAtLTE(v time.Time) predicate.Account {
 	return predicate.Account(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// HasPurchasedApp applies the HasEdge predicate on the "purchased_app" edge.
-func HasPurchasedApp() predicate.Account {
+// HasBoundUser applies the HasEdge predicate on the "bound_user" edge.
+func HasBoundUser() predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, PurchasedAppTable, PurchasedAppPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2O, true, BoundUserTable, BoundUserColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasPurchasedAppWith applies the HasEdge predicate on the "purchased_app" edge with a given conditions (other predicates).
-func HasPurchasedAppWith(preds ...predicate.AppInfo) predicate.Account {
+// HasBoundUserWith applies the HasEdge predicate on the "bound_user" edge with a given conditions (other predicates).
+func HasBoundUserWith(preds ...predicate.User) predicate.Account {
 	return predicate.Account(func(s *sql.Selector) {
-		step := newPurchasedAppStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasBindUser applies the HasEdge predicate on the "bind_user" edge.
-func HasBindUser() predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, true, BindUserTable, BindUserColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasBindUserWith applies the HasEdge predicate on the "bind_user" edge with a given conditions (other predicates).
-func HasBindUserWith(preds ...predicate.User) predicate.Account {
-	return predicate.Account(func(s *sql.Selector) {
-		step := newBindUserStep()
+		step := newBoundUserStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

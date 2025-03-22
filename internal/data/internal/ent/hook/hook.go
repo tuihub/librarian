@@ -33,16 +33,16 @@ func (f AppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppMutation", m)
 }
 
-// The AppBinaryFunc type is an adapter to allow the use of ordinary
-// function as AppBinary mutator.
-type AppBinaryFunc func(context.Context, *ent.AppBinaryMutation) (ent.Value, error)
+// The AppCategoryFunc type is an adapter to allow the use of ordinary
+// function as AppCategory mutator.
+type AppCategoryFunc func(context.Context, *ent.AppCategoryMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AppBinaryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AppBinaryMutation); ok {
+func (f AppCategoryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppCategoryMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppBinaryMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppCategoryMutation", m)
 }
 
 // The AppInfoFunc type is an adapter to allow the use of ordinary
@@ -57,40 +57,28 @@ func (f AppInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInfoMutation", m)
 }
 
-// The AppInstFunc type is an adapter to allow the use of ordinary
-// function as AppInst mutator.
-type AppInstFunc func(context.Context, *ent.AppInstMutation) (ent.Value, error)
+// The AppRunTimeFunc type is an adapter to allow the use of ordinary
+// function as AppRunTime mutator.
+type AppRunTimeFunc func(context.Context, *ent.AppRunTimeMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AppInstFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AppInstMutation); ok {
+func (f AppRunTimeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppRunTimeMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInstMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppRunTimeMutation", m)
 }
 
-// The AppInstRunTimeFunc type is an adapter to allow the use of ordinary
-// function as AppInstRunTime mutator.
-type AppInstRunTimeFunc func(context.Context, *ent.AppInstRunTimeMutation) (ent.Value, error)
+// The DeviceFunc type is an adapter to allow the use of ordinary
+// function as Device mutator.
+type DeviceFunc func(context.Context, *ent.DeviceMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f AppInstRunTimeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AppInstRunTimeMutation); ok {
+func (f DeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.DeviceMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppInstRunTimeMutation", m)
-}
-
-// The DeviceInfoFunc type is an adapter to allow the use of ordinary
-// function as DeviceInfo mutator.
-type DeviceInfoFunc func(context.Context, *ent.DeviceInfoMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f DeviceInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.DeviceInfoMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeviceInfoMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.DeviceMutation", m)
 }
 
 // The FeedFunc type is an adapter to allow the use of ordinary
@@ -273,6 +261,42 @@ func (f PorterInstanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterInstanceMutation", m)
 }
 
+// The SessionFunc type is an adapter to allow the use of ordinary
+// function as Session mutator.
+type SessionFunc func(context.Context, *ent.SessionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SessionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SessionMutation", m)
+}
+
+// The StoreAppFunc type is an adapter to allow the use of ordinary
+// function as StoreApp mutator.
+type StoreAppFunc func(context.Context, *ent.StoreAppMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StoreAppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StoreAppMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StoreAppMutation", m)
+}
+
+// The StoreAppBinaryFunc type is an adapter to allow the use of ordinary
+// function as StoreAppBinary mutator.
+type StoreAppBinaryFunc func(context.Context, *ent.StoreAppBinaryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f StoreAppBinaryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.StoreAppBinaryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.StoreAppBinaryMutation", m)
+}
+
 // The SystemNotificationFunc type is an adapter to allow the use of ordinary
 // function as SystemNotification mutator.
 type SystemNotificationFunc func(context.Context, *ent.SystemNotificationMutation) (ent.Value, error)
@@ -307,30 +331,6 @@ func (f UserFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error)
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserMutation", m)
-}
-
-// The UserDeviceFunc type is an adapter to allow the use of ordinary
-// function as UserDevice mutator.
-type UserDeviceFunc func(context.Context, *ent.UserDeviceMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UserDeviceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UserDeviceMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserDeviceMutation", m)
-}
-
-// The UserSessionFunc type is an adapter to allow the use of ordinary
-// function as UserSession mutator.
-type UserSessionFunc func(context.Context, *ent.UserSessionMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f UserSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.UserSessionMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.UserSessionMutation", m)
 }
 
 // Condition is a hook condition function.

@@ -5,30 +5,30 @@ import (
 
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-func (s *LibrarianSephirahServiceService) CreateNotifyTarget(ctx context.Context, req *pb.CreateNotifyTargetRequest) (
-	*pb.CreateNotifyTargetResponse, error) {
+func (s *LibrarianSephirahService) CreateNotifyTarget(ctx context.Context, req *sephirah.CreateNotifyTargetRequest) (
+	*sephirah.CreateNotifyTargetResponse, error) {
 	id, err := s.n.CreateNotifyTarget(ctx, converter.ToBizNotifyTarget(req.GetTarget()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateNotifyTargetResponse{
+	return &sephirah.CreateNotifyTargetResponse{
 		Id: converter.ToPBInternalID(id),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) UpdateNotifyTarget(ctx context.Context, req *pb.UpdateNotifyTargetRequest) (
-	*pb.UpdateNotifyTargetResponse, error) {
+func (s *LibrarianSephirahService) UpdateNotifyTarget(ctx context.Context, req *sephirah.UpdateNotifyTargetRequest) (
+	*sephirah.UpdateNotifyTargetResponse, error) {
 	err := s.n.UpdateNotifyTarget(ctx, converter.ToBizNotifyTarget(req.GetTarget()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UpdateNotifyTargetResponse{}, nil
+	return &sephirah.UpdateNotifyTargetResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListNotifyTargets(ctx context.Context, req *pb.ListNotifyTargetsRequest) (
-	*pb.ListNotifyTargetsResponse, error) {
+func (s *LibrarianSephirahService) ListNotifyTargets(ctx context.Context, req *sephirah.ListNotifyTargetsRequest) (
+	*sephirah.ListNotifyTargetsResponse, error) {
 	t, total, err := s.n.ListNotifyTargets(ctx,
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
@@ -37,31 +37,31 @@ func (s *LibrarianSephirahServiceService) ListNotifyTargets(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListNotifyTargetsResponse{
+	return &sephirah.ListNotifyTargetsResponse{
 		Paging:  &librarian.PagingResponse{TotalSize: total},
 		Targets: converter.ToPBNotifyTargetList(t),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) CreateNotifyFlow(ctx context.Context, req *pb.CreateNotifyFlowRequest) (
-	*pb.CreateNotifyFlowResponse, error) {
+func (s *LibrarianSephirahService) CreateNotifyFlow(ctx context.Context, req *sephirah.CreateNotifyFlowRequest) (
+	*sephirah.CreateNotifyFlowResponse, error) {
 	id, err := s.n.CreateNotifyFlow(ctx, converter.ToBizNotifyFlow(req.GetFlow()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.CreateNotifyFlowResponse{
+	return &sephirah.CreateNotifyFlowResponse{
 		Id: converter.ToPBInternalID(id),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) UpdateNotifyFlow(ctx context.Context, req *pb.UpdateNotifyFlowRequest) (
-	*pb.UpdateNotifyFlowResponse, error) {
+func (s *LibrarianSephirahService) UpdateNotifyFlow(ctx context.Context, req *sephirah.UpdateNotifyFlowRequest) (
+	*sephirah.UpdateNotifyFlowResponse, error) {
 	err := s.n.UpdateNotifyFlow(ctx, converter.ToBizNotifyFlow(req.GetFlow()))
 	if err != nil {
 		return nil, err
 	}
-	return &pb.UpdateNotifyFlowResponse{}, nil
+	return &sephirah.UpdateNotifyFlowResponse{}, nil
 }
-func (s *LibrarianSephirahServiceService) ListNotifyFlows(ctx context.Context, req *pb.ListNotifyFlowsRequest) (
-	*pb.ListNotifyFlowsResponse, error) {
+func (s *LibrarianSephirahService) ListNotifyFlows(ctx context.Context, req *sephirah.ListNotifyFlowsRequest) (
+	*sephirah.ListNotifyFlowsResponse, error) {
 	res, total, err := s.n.ListNotifyFlows(ctx,
 		model.ToBizPaging(req.GetPaging()),
 		converter.ToBizInternalIDList(req.GetIdFilter()),
@@ -69,23 +69,22 @@ func (s *LibrarianSephirahServiceService) ListNotifyFlows(ctx context.Context, r
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListNotifyFlowsResponse{
+	return &sephirah.ListNotifyFlowsResponse{
 		Paging: &librarian.PagingResponse{TotalSize: total},
 		Flows:  converter.ToPBNotifyFlowList(res),
 	}, nil
 }
-func (s *LibrarianSephirahServiceService) ListSystemNotifications(ctx context.Context, req *pb.ListSystemNotificationsRequest) (
-	*pb.ListSystemNotificationsResponse, error) {
+func (s *LibrarianSephirahService) ListSystemNotifications(ctx context.Context, req *sephirah.ListSystemNotificationsRequest) (
+	*sephirah.ListSystemNotificationsResponse, error) {
 	res, total, err := s.n.ListSystemNotifications(ctx,
 		model.ToBizPaging(req.GetPaging()),
-		converter.ToBizSystemNotificationTypeList(req.GetTypeFilter()),
 		converter.ToBizSystemNotificationLevelList(req.GetLevelFilter()),
 		converter.ToBizSystemNotificationStatusList(req.GetStatusFilter()),
 	)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ListSystemNotificationsResponse{
+	return &sephirah.ListSystemNotificationsResponse{
 		Paging:        &librarian.PagingResponse{TotalSize: total},
 		Notifications: converter.ToPBSystemNotificationList(res),
 	}, nil
