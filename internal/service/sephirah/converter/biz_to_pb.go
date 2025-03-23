@@ -49,6 +49,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 
 	// goverter:map CreateAt CreateTime
 	// goverter:map ExpireAt ExpireTime
+	// goverter:map Device DeviceInfo
 	ToPBUserSession(*model.Session) *sephirah.UserSession
 	ToPBUserSessionList([]*model.Session) []*sephirah.UserSession
 

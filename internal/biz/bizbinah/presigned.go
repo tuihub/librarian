@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
@@ -15,7 +16,7 @@ func (b *Binah) PresignedUploadFile(ctx context.Context) (string, *errors.Error)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res, err := b.repo.PresignedPutObject(ctx, BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
+	res, err := b.repo.PresignedPutObject(ctx, data.BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -43,7 +44,7 @@ func (b *Binah) PresignedDownloadFile(ctx context.Context) (string, *errors.Erro
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	res, err := b.repo.PresignedGetObject(ctx, BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
+	res, err := b.repo.PresignedGetObject(ctx, data.BucketDefault, strconv.FormatInt(int64(metadata.ID), 10), libtime.Day)
 	if err != nil {
 		return "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

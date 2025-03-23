@@ -60,8 +60,8 @@ type App struct {
 	CreatorDeviceID    model.InternalID
 	AppSources         map[string]string
 	Public             bool
-	BoundStoreAppID    model.InternalID
-	StopStoreManage    bool
+	BoundStoreAppID    *model.InternalID
+	StopStoreManage    *bool
 	Name               string
 	Type               AppType
 	ShortDescription   string

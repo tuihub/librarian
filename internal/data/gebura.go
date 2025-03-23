@@ -279,8 +279,6 @@ func (g *GeburaRepo) CreateApp(ctx context.Context, userID model.InternalID, a *
 		SetCreatorDeviceID(a.CreatorDeviceID).
 		SetAppSources(a.AppSources).
 		SetPublic(a.Public).
-		SetBoundStoreAppID(a.BoundStoreAppID).
-		SetStopStoreManage(a.StopStoreManage).
 		SetName(a.Name).
 		SetType(converter.ToEntAppType(a.Type)).
 		SetShortDescription(a.ShortDescription).
@@ -296,6 +294,12 @@ func (g *GeburaRepo) CreateApp(ctx context.Context, userID model.InternalID, a *
 		SetPublisher(a.Publisher).
 		SetTags(a.Tags).
 		SetAlternativeNames(a.AlternativeNames)
+	if a.BoundStoreAppID != nil {
+		q.SetBoundStoreAppID(*a.BoundStoreAppID)
+	}
+	if a.StopStoreManage != nil {
+		q.SetStopStoreManage(*a.StopStoreManage)
+	}
 	return q.Exec(ctx)
 }
 
@@ -314,7 +318,6 @@ func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, a 
 			SetVersionDate(a.VersionDate).
 			SetAppSources(a.AppSources).
 			SetPublic(a.Public).
-			SetStopStoreManage(a.StopStoreManage).
 			SetName(a.Name).
 			SetType(converter.ToEntAppType(a.Type)).
 			SetShortDescription(a.ShortDescription).
@@ -330,6 +333,9 @@ func (g *GeburaRepo) UpdateApp(ctx context.Context, ownerID model.InternalID, a 
 			SetPublisher(a.Publisher).
 			SetTags(a.Tags).
 			SetAlternativeNames(a.AlternativeNames)
+		if a.StopStoreManage != nil {
+			q.SetStopStoreManage(*a.StopStoreManage)
+		}
 		return q.Exec(ctx)
 	})
 }

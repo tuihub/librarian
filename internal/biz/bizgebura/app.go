@@ -9,6 +9,8 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"github.com/samber/lo"
 )
 
 func (g *Gebura) CreateApp(
@@ -41,7 +43,7 @@ func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) error {
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	if old.BoundStoreAppID != 0 && !a.StopStoreManage {
+	if old.BoundStoreAppID != nil && !lo.FromPtrOr(a.StopStoreManage, false) {
 		return pb.ErrorErrorReasonBadRequest("under store manage")
 	}
 	err = g.repo.UpdateApp(ctx, claims.UserID, a)

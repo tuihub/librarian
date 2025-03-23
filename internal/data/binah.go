@@ -2,31 +2,28 @@ package data
 
 import (
 	"context"
+	"errors"
 	"io"
 	"net/url"
 	"time"
 
-	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/minio/minio-go/v7"
-	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type binahRepo struct {
+type BinahRepo struct {
 	mc      *minio.Client
-	buckets map[bizbinah.Bucket]string
+	buckets map[Bucket]string
 }
 
-func NewBinahRepo(c *conf.S3) (bizbinah.BinahRepo, error) {
-	if c == nil {
-		return new(binahRepo), nil
+func NewBinahRepo(c *conf.S3) (*BinahRepo, error) {
+	if c == nil || len(c.GetDriver()) == 0 {
+		return new(BinahRepo), nil
 	}
-	minioClient, err := minio.New(c.GetEndPoint(), &minio.Options{ //nolint:exhaustruct //TODO
-		Creds:  credentials.NewStaticV4(c.GetAccessKey(), c.GetSecretKey(), ""),
-		Secure: c.GetUseSsl(),
-	})
+	minioClient, err := libs3.NewS3(c)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +31,7 @@ func NewBinahRepo(c *conf.S3) (bizbinah.BinahRepo, error) {
 	bucketName := defaultBucketName()
 	location := "us-east-1"
 	for i, v := range bucketName {
-		if i == bizbinah.BucketUnspecified {
+		if i == BucketUnspecified {
 			continue
 		}
 		if err = initBucket(minioClient, v, location); err != nil {
@@ -42,7 +39,7 @@ func NewBinahRepo(c *conf.S3) (bizbinah.BinahRepo, error) {
 		}
 	}
 
-	return &binahRepo{
+	return &BinahRepo{
 		mc:      minioClient,
 		buckets: bucketName,
 	}, nil
@@ -72,18 +69,31 @@ func initBucket(mc *minio.Client, bucketName, location string) error {
 	return nil
 }
 
-func defaultBucketName() map[bizbinah.Bucket]string {
-	return map[bizbinah.Bucket]string{
-		bizbinah.BucketUnspecified: "",
-		bizbinah.BucketDefault:     "default",
+type Bucket int
+
+const (
+	BucketUnspecified Bucket = iota
+	BucketDefault
+)
+
+func defaultBucketName() map[Bucket]string {
+	return map[Bucket]string{
+		BucketUnspecified: "",
+		BucketDefault:     "default",
 	}
 }
 
-func (s *binahRepo) FeatureEnabled() bool {
-	return s.mc != nil
+func (s *BinahRepo) check() error {
+	if s.mc != nil {
+		return nil
+	}
+	return errors.New("storage feature is not enabled")
 }
 
-func (s *binahRepo) PutObject(ctx context.Context, r io.Reader, bucket bizbinah.Bucket, objectName string) error {
+func (s *BinahRepo) PutObject(ctx context.Context, r io.Reader, bucket Bucket, objectName string) error {
+	if err := s.check(); err != nil {
+		return err
+	}
 	_, err := s.mc.PutObject(
 		ctx,
 		s.buckets[bucket],
@@ -95,12 +105,15 @@ func (s *binahRepo) PutObject(ctx context.Context, r io.Reader, bucket bizbinah.
 	return err
 }
 
-func (s *binahRepo) PresignedPutObject(
+func (s *BinahRepo) PresignedPutObject(
 	ctx context.Context,
-	bucket bizbinah.Bucket,
+	bucket Bucket,
 	objectName string,
 	expires time.Duration,
 ) (string, error) {
+	if err := s.check(); err != nil {
+		return "", err
+	}
 	res, err := s.mc.PresignedPutObject(ctx, s.buckets[bucket], objectName, expires)
 	if err != nil {
 		return "", err
@@ -108,12 +121,15 @@ func (s *binahRepo) PresignedPutObject(
 	return res.String(), nil
 }
 
-func (s *binahRepo) PresignedGetObject(
+func (s *BinahRepo) PresignedGetObject(
 	ctx context.Context,
-	bucket bizbinah.Bucket,
+	bucket Bucket,
 	objectName string,
 	expires time.Duration,
 ) (string, error) {
+	if err := s.check(); err != nil {
+		return "", err
+	}
 	reqParams := make(url.Values)
 	res, err := s.mc.PresignedGetObject(ctx, s.buckets[bucket], objectName, expires, reqParams)
 	if err != nil {

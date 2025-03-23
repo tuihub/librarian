@@ -24,6 +24,7 @@ import (
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend ToBizInternalID
+// goverter:extend ToBizInternalIDPtr
 // goverter:extend ToBizTime
 // goverter:extend ToBizDuration
 // goverter:extend PtrToString
@@ -80,17 +81,22 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizPorterBinarySummary(*librarian.PorterBinarySummary) *modelsupervisor.PorterBinarySummary
 
 	// goverter:ignore ID
-	// goverter:ignore Internal
 	// goverter:ignore ShortDescription
-	// goverter:ignore Details
-	// goverter:ignore BoundInternal
-	// goverter:ignore LatestUpdateTime
+	// goverter:ignore ReleaseDate
+	// goverter:map AltNames AlternativeNames
+	// goverter:ignore RawData
+	// goverter:ignore UpdatedAt
 	ToBizAppInfo(*sephirah.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*sephirah.AppInfo) []*modelgebura.AppInfo
 	ToBizAppTypeList([]sephirah.AppType) []modelgebura.AppType
 
-	// goverter:ignore DeviceID
-	// goverter:ignore AssignedAppInfoID
+	// goverter:map VersionUpdateTime VersionDate
+	// goverter:map BoundAppSource AppSources
+	// goverter:map BoundStoreApp BoundStoreAppID
+	// goverter:map StopStoreManaging StopStoreManage
+	// goverter:ignore ShortDescription
+	// goverter:ignore ReleaseDate
+	// goverter:map AltNames AlternativeNames
 	ToBizApp(*sephirah.App) *modelgebura.App
 	// goverter:enum:unknown AppTypeUnspecified
 	// goverter:enum:map AppType_APP_TYPE_UNSPECIFIED AppTypeUnspecified

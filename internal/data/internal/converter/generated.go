@@ -66,8 +66,9 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 			}
 		}
 		modelgeburaApp.Public = (*source).Public
-		modelgeburaApp.BoundStoreAppID = modelInternalIDToModelInternalID((*source).BoundStoreAppID)
-		modelgeburaApp.StopStoreManage = (*source).StopStoreManage
+		modelgeburaApp.BoundStoreAppID = modelInternalIDToPModelInternalID((*source).BoundStoreAppID)
+		pBool := (*source).StopStoreManage
+		modelgeburaApp.StopStoreManage = &pBool
 		modelgeburaApp.Name = (*source).Name
 		modelgeburaApp.Type = ToBizAppType((*source).Type)
 		modelgeburaApp.ShortDescription = (*source).ShortDescription
@@ -731,6 +732,10 @@ func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterIns
 }
 func modelInternalIDToModelInternalID(source model.InternalID) model.InternalID {
 	return model.InternalID(source)
+}
+func modelInternalIDToPModelInternalID(source model.InternalID) *model.InternalID {
+	pModelInternalID := modelInternalIDToModelInternalID(source)
+	return &pModelInternalID
 }
 func pModelfeedEnclosureToPModelfeedEnclosure(source *modelfeed.Enclosure) *modelfeed.Enclosure {
 	var pModelfeedEnclosure *modelfeed.Enclosure

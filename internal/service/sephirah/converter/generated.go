@@ -22,9 +22,44 @@ func ToBizApp(source *sephirah.App) *modelgebura.App {
 	if source != nil {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = ToBizInternalID((*source).Id)
-		modelgeburaApp.Name = (*source).Name
-		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.VersionNumber = (*source).VersionNumber
+		modelgeburaApp.VersionDate = ToBizTime((*source).VersionUpdateTime)
+		modelgeburaApp.CreatorDeviceID = ToBizInternalID((*source).CreatorDeviceId)
+		if (*source).BoundAppSource != nil {
+			modelgeburaApp.AppSources = make(map[string]string, len((*source).BoundAppSource))
+			for key, value := range (*source).BoundAppSource {
+				modelgeburaApp.AppSources[key] = value
+			}
+		}
 		modelgeburaApp.Public = (*source).Public
+		modelgeburaApp.BoundStoreAppID = ToBizInternalIDPtr((*source).BoundStoreApp)
+		if (*source).StopStoreManaging != nil {
+			xbool := *(*source).StopStoreManaging
+			modelgeburaApp.StopStoreManage = &xbool
+		}
+		modelgeburaApp.Name = (*source).Name
+		modelgeburaApp.Type = ToBizAppType((*source).Type)
+		modelgeburaApp.Description = (*source).Description
+		modelgeburaApp.IconImageURL = (*source).IconImageUrl
+		modelgeburaApp.IconImageID = ToBizInternalID((*source).IconImageId)
+		modelgeburaApp.BackgroundImageURL = (*source).BackgroundImageUrl
+		modelgeburaApp.BackgroundImageID = ToBizInternalID((*source).BackgroundImageId)
+		modelgeburaApp.CoverImageURL = (*source).CoverImageUrl
+		modelgeburaApp.CoverImageID = ToBizInternalID((*source).CoverImageId)
+		modelgeburaApp.Developer = (*source).Developer
+		modelgeburaApp.Publisher = (*source).Publisher
+		if (*source).Tags != nil {
+			modelgeburaApp.Tags = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				modelgeburaApp.Tags[i] = (*source).Tags[i]
+			}
+		}
+		if (*source).AltNames != nil {
+			modelgeburaApp.AlternativeNames = make([]string, len((*source).AltNames))
+			for j := 0; j < len((*source).AltNames); j++ {
+				modelgeburaApp.AlternativeNames[j] = (*source).AltNames[j]
+			}
+		}
 		pModelgeburaApp = &modelgeburaApp
 	}
 	return pModelgeburaApp
@@ -38,13 +73,25 @@ func ToBizAppInfo(source *sephirah.AppInfo) *modelgebura.AppInfo {
 		modelgeburaAppInfo.SourceURL = PtrToString((*source).SourceUrl)
 		modelgeburaAppInfo.Name = (*source).Name
 		modelgeburaAppInfo.Type = ToBizAppType((*source).Type)
+		modelgeburaAppInfo.Description = (*source).Description
 		modelgeburaAppInfo.IconImageURL = (*source).IconImageUrl
+		modelgeburaAppInfo.IconImageID = ToBizInternalID((*source).IconImageId)
 		modelgeburaAppInfo.BackgroundImageURL = (*source).BackgroundImageUrl
+		modelgeburaAppInfo.BackgroundImageID = ToBizInternalID((*source).BackgroundImageId)
 		modelgeburaAppInfo.CoverImageURL = (*source).CoverImageUrl
+		modelgeburaAppInfo.CoverImageID = ToBizInternalID((*source).CoverImageId)
+		modelgeburaAppInfo.Developer = (*source).Developer
+		modelgeburaAppInfo.Publisher = (*source).Publisher
 		if (*source).Tags != nil {
 			modelgeburaAppInfo.Tags = make([]string, len((*source).Tags))
 			for i := 0; i < len((*source).Tags); i++ {
 				modelgeburaAppInfo.Tags[i] = (*source).Tags[i]
+			}
+		}
+		if (*source).AltNames != nil {
+			modelgeburaAppInfo.AlternativeNames = make([]string, len((*source).AltNames))
+			for j := 0; j < len((*source).AltNames); j++ {
+				modelgeburaAppInfo.AlternativeNames[j] = (*source).AltNames[j]
 			}
 		}
 		pModelgeburaAppInfo = &modelgeburaAppInfo
@@ -84,19 +131,19 @@ func ToBizAppTypeList(source []sephirah.AppType) []modelgebura.AppType {
 	return modelgeburaAppTypeList
 }
 func ToBizDeviceInfo(source *sephirah.DeviceInfo) *model.Device {
-	var pModelDeviceInfo *model.Device
+	var pModelDevice *model.Device
 	if source != nil {
-		var modelDeviceInfo model.Device
-		modelDeviceInfo.ID = ToBizInternalID((*source).DeviceId)
-		modelDeviceInfo.DeviceName = (*source).DeviceName
-		modelDeviceInfo.SystemType = ToBizSystemType((*source).SystemType)
-		modelDeviceInfo.SystemVersion = (*source).SystemVersion
-		modelDeviceInfo.ClientName = (*source).ClientName
-		modelDeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
-		modelDeviceInfo.ClientVersion = (*source).ClientVersion
-		pModelDeviceInfo = &modelDeviceInfo
+		var modelDevice model.Device
+		modelDevice.ID = ToBizInternalID((*source).DeviceId)
+		modelDevice.DeviceName = (*source).DeviceName
+		modelDevice.SystemType = ToBizSystemType((*source).SystemType)
+		modelDevice.SystemVersion = (*source).SystemVersion
+		modelDevice.ClientName = (*source).ClientName
+		modelDevice.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
+		modelDevice.ClientVersion = (*source).ClientVersion
+		pModelDevice = &modelDevice
 	}
-	return pModelDeviceInfo
+	return pModelDevice
 }
 func ToBizFeatureFlag(source *v1.FeatureFlag) *modelsupervisor.FeatureFlag {
 	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag

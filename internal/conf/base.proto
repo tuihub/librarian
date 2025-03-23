@@ -22,10 +22,11 @@ message Database {
 }
 
 message S3 {
-  string end_point = 1;
-  string access_key = 2;
-  string secret_key = 3;
-  bool use_ssl = 4;
+  string driver = 1;
+  string end_point = 2;
+  string access_key = 3;
+  string secret_key = 4;
+  bool use_ssl = 5;
 }
 
 message MQ {

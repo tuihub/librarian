@@ -16,6 +16,7 @@ password = "librarian"
 no_ssl = true
 
 [s3]
+driver = "minio"
 end_point = "127.0.0.1:9000"
 access_key = "librarian"
 secret_key = "librarian"

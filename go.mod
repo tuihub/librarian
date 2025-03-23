@@ -35,6 +35,7 @@ require (
 	github.com/redis/go-redis/v9 v9.7.3
 	github.com/samber/lo v1.49.1
 	github.com/sony/sonyflake v1.2.0
+	github.com/spf13/afero v1.2.1
 	github.com/tuihub/protos v0.5.0
 	go.opentelemetry.io/otel v1.34.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.10.0

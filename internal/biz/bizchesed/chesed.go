@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -32,7 +31,7 @@ var ProviderSet = wire.NewSet(
 
 type Chesed struct {
 	repo        *data.ChesedRepo
-	b           bizbinah.BinahRepo
+	b           *data.BinahRepo
 	id          *libidgenerator.IDGenerator
 	search      libsearch.Search
 	porter      porter.LibrarianPorterServiceClient
@@ -45,7 +44,7 @@ type Chesed struct {
 
 func NewChesed(
 	repo *data.ChesedRepo,
-	b bizbinah.BinahRepo,
+	b *data.BinahRepo,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	cron *libcron.Cron,
@@ -150,7 +149,7 @@ func (c *Chesed) ScanImage(ctx context.Context) error {
 		return nil
 	}
 	for _, image := range images {
-		data, err := c.b.PresignedGetObject(ctx, bizbinah.BucketDefault, strconv.FormatInt(int64(image.ID), 10), libtime.Day)
+		data, err := c.b.PresignedGetObject(ctx, data.BucketDefault, strconv.FormatInt(int64(image.ID), 10), libtime.Day)
 		if err != nil {
 			return err
 		}

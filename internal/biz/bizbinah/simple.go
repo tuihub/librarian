@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelbinah"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
@@ -16,7 +17,7 @@ import (
 
 type SimpleUploadFile struct {
 	id       model.InternalID
-	repo     BinahRepo
+	repo     *data.BinahRepo
 	callback modelbinah.CallbackFunc
 	file     *os.File
 	Writer   io.Writer
@@ -53,5 +54,5 @@ func (f *SimpleUploadFile) Finish(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	return f.repo.PutObject(ctx, f.file, BucketDefault, strconv.FormatInt(int64(f.id), 10))
+	return f.repo.PutObject(ctx, f.file, data.BucketDefault, strconv.FormatInt(int64(f.id), 10))
 }

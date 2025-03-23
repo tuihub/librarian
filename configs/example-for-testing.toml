@@ -10,6 +10,7 @@ timeout = "60s"
 driver = "memory"
 
 [s3]
+driver = "file"
 
 [auth]
 password_salt = "test"
