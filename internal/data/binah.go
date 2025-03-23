@@ -10,12 +10,10 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/logger"
-
-	"github.com/minio/minio-go/v7"
 )
 
 type BinahRepo struct {
-	mc      *minio.Client
+	mc      libs3.S3
 	buckets map[Bucket]string
 }
 
@@ -29,12 +27,11 @@ func NewBinahRepo(c *conf.S3) (*BinahRepo, error) {
 	}
 
 	bucketName := defaultBucketName()
-	location := "us-east-1"
 	for i, v := range bucketName {
 		if i == BucketUnspecified {
 			continue
 		}
-		if err = initBucket(minioClient, v, location); err != nil {
+		if err = initBucket(minioClient, v); err != nil {
 			return nil, err
 		}
 	}
@@ -45,27 +42,26 @@ func NewBinahRepo(c *conf.S3) (*BinahRepo, error) {
 	}, nil
 }
 
-func initBucket(mc *minio.Client, bucketName, location string) error {
-	err := mc.MakeBucket(
+func initBucket(mc libs3.S3, bucketName string) error {
+	// Check to see if we already own this bucket (which happens if you run this twice)
+	exists, err := mc.BucketExists(context.Background(), bucketName)
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+	if exists {
+		logger.Infof("We already own %s\n", bucketName)
+		return nil
+	}
+	err = mc.MakeBucket(
 		context.Background(),
 		bucketName,
-		minio.MakeBucketOptions{
-			Region:        location,
-			ObjectLocking: false,
-		},
 	)
 	if err != nil {
-		// Check to see if we already own this bucket (which happens if you run this twice)
-		exists, errBucketExists := mc.BucketExists(context.Background(), bucketName)
-		if errBucketExists == nil && exists {
-			logger.Infof("We already own %s\n", bucketName)
-		} else {
-			logger.Error(err)
-			return err
-		}
-	} else {
-		logger.Infof("Successfully created %s\n", bucketName)
+		logger.Error(err)
+		return err
 	}
+	logger.Infof("Successfully created %s\n", bucketName)
 	return nil
 }
 
@@ -100,7 +96,6 @@ func (s *BinahRepo) PutObject(ctx context.Context, r io.Reader, bucket Bucket, o
 		objectName,
 		r,
 		-1,
-		minio.PutObjectOptions{}, //nolint:exhaustruct // default value
 	)
 	return err
 }

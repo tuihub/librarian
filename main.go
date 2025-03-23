@@ -10,6 +10,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
@@ -51,13 +52,14 @@ func newApp(
 	cron *libcron.Cron,
 	obs *libobserve.BuiltInObserver,
 	consul *conf.Consul,
+	s3 libs3.S3,
 ) (*kratos.App, error) {
 	options := []kratos.Option{
 		kratos.ID(id + name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs, hs, aw, mq, cron, obs),
+		kratos.Server(gs, hs, aw, mq, cron, obs, s3),
 	}
 	r, err := libapp.NewRegistrar(consul)
 	if err == nil {

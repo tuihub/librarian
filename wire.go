@@ -18,6 +18,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
@@ -61,6 +62,7 @@ func wireApp(
 			libobserve.ProviderSet,
 			libidgenerator.ProviderSet,
 			libsearch.ProviderSet,
+			libs3.ProviderSet,
 			ProviderSet,
 		),
 	)
