@@ -23,6 +23,7 @@ import (
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend ToPBInternalID
+// goverter:extend ToPBInternalIDPtr
 // goverter:extend ToPBTime
 // goverter:extend ToPBTimePtr
 // goverter:extend ToPBDuration
@@ -35,8 +36,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
 
 	// goverter:map ID DeviceId
-	ToPBDeviceInfo(*model.Device) *sephirah.DeviceInfo
-	ToPBDeviceInfoList([]*model.Device) []*sephirah.DeviceInfo
+	ToPBDeviceInfo(*model.Device) *sephirah.Device
+	ToPBDeviceInfoList([]*model.Device) []*sephirah.Device
 	// goverter:enum:unknown SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeUnspecified SystemType_SYSTEM_TYPE_UNSPECIFIED
 	// goverter:enum:map SystemTypeIOS SystemType_SYSTEM_TYPE_IOS
@@ -60,8 +61,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserTypeUnspecified UserType_USER_TYPE_UNSPECIFIED
 	// goverter:enum:map UserTypeAdmin UserType_USER_TYPE_ADMIN
 	// goverter:enum:map UserTypeNormal UserType_USER_TYPE_NORMAL
-	// goverter:enum:map UserTypeSentinel UserType_USER_TYPE_SENTINEL
-	// goverter:enum:map UserTypePorter UserType_USER_TYPE_PORTER
+	// goverter:enum:map UserTypeSentinel @ignore
+	// goverter:enum:map UserTypePorter @ignore
 	ToPBUserType(model.UserType) sephirah.UserType
 	// goverter:enum:unknown UserStatus_USER_STATUS_UNSPECIFIED
 	// goverter:enum:map UserStatusUnspecified UserStatus_USER_STATUS_UNSPECIFIED
@@ -100,16 +101,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterContextHandleStatusBlocked PorterContextHandleStatus_PORTER_CONTEXT_HANDLE_STATUS_BLOCKED
 	ToPBPorterContextHandleStatus(modelsupervisor.PorterContextHandleStatus) sephirah.PorterContextHandleStatus
 
-	ToPBPorterGroup(*modelsupervisor.PorterDigest) *sephirah.PorterDigest
-	ToPBPorterGroupList([]*modelsupervisor.PorterDigest) []*sephirah.PorterDigest
+	ToPBPorterDigest(*modelsupervisor.PorterDigest) *sephirah.PorterDigest
+	ToPBPorterDigestList([]*modelsupervisor.PorterDigest) []*sephirah.PorterDigest
 
-	// goverter:ignore Description
-	// goverter:ignore IconImageId
-	// goverter:ignore BackgroundImageId
-	// goverter:ignore CoverImageId
-	// goverter:ignore Developer
-	// goverter:ignore Publisher
-	// goverter:ignore AltNames
+	// goverter:map AlternativeNames AltNames
 	ToPBAppInfo(*modelgebura.AppInfo) *sephirah.AppInfo
 	ToPBAppInfoList([]*modelgebura.AppInfo) []*sephirah.AppInfo
 	// goverter:enum:unknown AppType_APP_TYPE_UNSPECIFIED
@@ -117,25 +112,12 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppTypeGame AppType_APP_TYPE_GAME
 	ToPBAppType(modelgebura.AppType) sephirah.AppType
 
-	// goverter:ignore VersionNumber
-	// goverter:ignore VersionUpdateTime
-	// goverter:ignore CreatorDeviceId
-	// goverter:ignore BoundAppSource
-	// goverter:ignore BoundStoreApp
-	// goverter:ignore StopStoreManaging
-	// goverter:ignore Type
-	// goverter:ignore IconImageUrl
-	// goverter:ignore IconImageId
-	// goverter:ignore BackgroundImageUrl
-	// goverter:ignore BackgroundImageId
-	// goverter:ignore CoverImageUrl
-	// goverter:ignore CoverImageId
-	// goverter:ignore Tags
-	// goverter:ignore AltNames
-	// goverter:ignore Developer
-	// goverter:ignore Publisher
+	// goverter:map AlternativeNames AltNames
 	ToPBApp(*modelgebura.App) *sephirah.App
 	ToPBAppList([]*modelgebura.App) []*sephirah.App
+
+	ToPBAppRunTime(*modelgebura.AppRunTime) *sephirah.AppRunTime
+	ToPBAppRunTimeList([]*modelgebura.AppRunTime) []*sephirah.AppRunTime
 
 	// ToPBAppInst(*modelgebura.AppInst) *sephirah.AppInst
 	// ToPBAppInstList([]*modelgebura.AppInst) []*sephirah.AppInst
@@ -208,6 +190,13 @@ func DurationPBToDuration(t *durationpb.Duration) time.Duration {
 
 func ToPBInternalID(id model.InternalID) *librarian.InternalID {
 	return &librarian.InternalID{Id: int64(id)}
+}
+
+func ToPBInternalIDPtr(id *model.InternalID) *librarian.InternalID {
+	if id == nil {
+		return nil
+	}
+	return &librarian.InternalID{Id: int64(*id)}
 }
 
 func ToPBTime(t time.Time) *timestamppb.Timestamp {

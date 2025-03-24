@@ -303,7 +303,7 @@ func (s *LibrarianSephirahService) ListPorterDigests(
 		return nil, err
 	}
 	return &sephirah.ListPorterDigestsResponse{
-		Paging:       &librarian.PagingResponse{TotalSize: total},
-		PorterGroups: converter.ToPBPorterGroupList(groups),
+		Paging:        &librarian.PagingResponse{TotalSize: total},
+		PorterDigests: converter.ToPBPorterGroupList(groups),
 	}, nil
 }

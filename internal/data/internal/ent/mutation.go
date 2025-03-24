@@ -912,8 +912,8 @@ type AppMutation struct {
 	cleareduser             bool
 	device                  *model.InternalID
 	cleareddevice           bool
-	app_run_time            map[int]struct{}
-	removedapp_run_time     map[int]struct{}
+	app_run_time            map[model.InternalID]struct{}
+	removedapp_run_time     map[model.InternalID]struct{}
 	clearedapp_run_time     bool
 	done                    bool
 	oldValue                func(context.Context) (*App, error)
@@ -2253,9 +2253,9 @@ func (m *AppMutation) ResetDevice() {
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by ids.
-func (m *AppMutation) AddAppRunTimeIDs(ids ...int) {
+func (m *AppMutation) AddAppRunTimeIDs(ids ...model.InternalID) {
 	if m.app_run_time == nil {
-		m.app_run_time = make(map[int]struct{})
+		m.app_run_time = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
 		m.app_run_time[ids[i]] = struct{}{}
@@ -2273,9 +2273,9 @@ func (m *AppMutation) AppRunTimeCleared() bool {
 }
 
 // RemoveAppRunTimeIDs removes the "app_run_time" edge to the AppRunTime entity by IDs.
-func (m *AppMutation) RemoveAppRunTimeIDs(ids ...int) {
+func (m *AppMutation) RemoveAppRunTimeIDs(ids ...model.InternalID) {
 	if m.removedapp_run_time == nil {
-		m.removedapp_run_time = make(map[int]struct{})
+		m.removedapp_run_time = make(map[model.InternalID]struct{})
 	}
 	for i := range ids {
 		delete(m.app_run_time, ids[i])
@@ -2284,7 +2284,7 @@ func (m *AppMutation) RemoveAppRunTimeIDs(ids ...int) {
 }
 
 // RemovedAppRunTime returns the removed IDs of the "app_run_time" edge to the AppRunTime entity.
-func (m *AppMutation) RemovedAppRunTimeIDs() (ids []int) {
+func (m *AppMutation) RemovedAppRunTimeIDs() (ids []model.InternalID) {
 	for id := range m.removedapp_run_time {
 		ids = append(ids, id)
 	}
@@ -2292,7 +2292,7 @@ func (m *AppMutation) RemovedAppRunTimeIDs() (ids []int) {
 }
 
 // AppRunTimeIDs returns the "app_run_time" edge IDs in the mutation.
-func (m *AppMutation) AppRunTimeIDs() (ids []int) {
+func (m *AppMutation) AppRunTimeIDs() (ids []model.InternalID) {
 	for id := range m.app_run_time {
 		ids = append(ids, id)
 	}
@@ -5512,22 +5512,24 @@ func (m *AppInfoMutation) ResetEdge(name string) error {
 // AppRunTimeMutation represents an operation that mutates the AppRunTime nodes in the graph.
 type AppRunTimeMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	user_id         *model.InternalID
-	adduser_id      *model.InternalID
-	start_time      *time.Time
-	run_duration    *time.Duration
-	addrun_duration *time.Duration
-	updated_at      *time.Time
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	app             *model.InternalID
-	clearedapp      bool
-	done            bool
-	oldValue        func(context.Context) (*AppRunTime, error)
-	predicates      []predicate.AppRunTime
+	op            Op
+	typ           string
+	id            *model.InternalID
+	user_id       *model.InternalID
+	adduser_id    *model.InternalID
+	device_id     *model.InternalID
+	adddevice_id  *model.InternalID
+	start_time    *time.Time
+	duration      *time.Duration
+	addduration   *time.Duration
+	updated_at    *time.Time
+	created_at    *time.Time
+	clearedFields map[string]struct{}
+	app           *model.InternalID
+	clearedapp    bool
+	done          bool
+	oldValue      func(context.Context) (*AppRunTime, error)
+	predicates    []predicate.AppRunTime
 }
 
 var _ ent.Mutation = (*AppRunTimeMutation)(nil)
@@ -5550,7 +5552,7 @@ func newAppRunTimeMutation(c config, op Op, opts ...appruntimeOption) *AppRunTim
 }
 
 // withAppRunTimeID sets the ID field of the mutation.
-func withAppRunTimeID(id int) appruntimeOption {
+func withAppRunTimeID(id model.InternalID) appruntimeOption {
 	return func(m *AppRunTimeMutation) {
 		var (
 			err   error
@@ -5600,9 +5602,15 @@ func (m AppRunTimeMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppRunTime entities.
+func (m *AppRunTimeMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppRunTimeMutation) ID() (id int, exists bool) {
+func (m *AppRunTimeMutation) ID() (id model.InternalID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -5613,12 +5621,12 @@ func (m *AppRunTimeMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppRunTimeMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppRunTimeMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []model.InternalID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -5720,6 +5728,62 @@ func (m *AppRunTimeMutation) ResetAppID() {
 	m.app = nil
 }
 
+// SetDeviceID sets the "device_id" field.
+func (m *AppRunTimeMutation) SetDeviceID(mi model.InternalID) {
+	m.device_id = &mi
+	m.adddevice_id = nil
+}
+
+// DeviceID returns the value of the "device_id" field in the mutation.
+func (m *AppRunTimeMutation) DeviceID() (r model.InternalID, exists bool) {
+	v := m.device_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceID returns the old "device_id" field's value of the AppRunTime entity.
+// If the AppRunTime object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppRunTimeMutation) OldDeviceID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceID: %w", err)
+	}
+	return oldValue.DeviceID, nil
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (m *AppRunTimeMutation) AddDeviceID(mi model.InternalID) {
+	if m.adddevice_id != nil {
+		*m.adddevice_id += mi
+	} else {
+		m.adddevice_id = &mi
+	}
+}
+
+// AddedDeviceID returns the value that was added to the "device_id" field in this mutation.
+func (m *AppRunTimeMutation) AddedDeviceID() (r model.InternalID, exists bool) {
+	v := m.adddevice_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDeviceID resets all changes to the "device_id" field.
+func (m *AppRunTimeMutation) ResetDeviceID() {
+	m.device_id = nil
+	m.adddevice_id = nil
+}
+
 // SetStartTime sets the "start_time" field.
 func (m *AppRunTimeMutation) SetStartTime(t time.Time) {
 	m.start_time = &t
@@ -5756,60 +5820,60 @@ func (m *AppRunTimeMutation) ResetStartTime() {
 	m.start_time = nil
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (m *AppRunTimeMutation) SetRunDuration(t time.Duration) {
-	m.run_duration = &t
-	m.addrun_duration = nil
+// SetDuration sets the "duration" field.
+func (m *AppRunTimeMutation) SetDuration(t time.Duration) {
+	m.duration = &t
+	m.addduration = nil
 }
 
-// RunDuration returns the value of the "run_duration" field in the mutation.
-func (m *AppRunTimeMutation) RunDuration() (r time.Duration, exists bool) {
-	v := m.run_duration
+// Duration returns the value of the "duration" field in the mutation.
+func (m *AppRunTimeMutation) Duration() (r time.Duration, exists bool) {
+	v := m.duration
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRunDuration returns the old "run_duration" field's value of the AppRunTime entity.
+// OldDuration returns the old "duration" field's value of the AppRunTime entity.
 // If the AppRunTime object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppRunTimeMutation) OldRunDuration(ctx context.Context) (v time.Duration, err error) {
+func (m *AppRunTimeMutation) OldDuration(ctx context.Context) (v time.Duration, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRunDuration is only allowed on UpdateOne operations")
+		return v, errors.New("OldDuration is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRunDuration requires an ID field in the mutation")
+		return v, errors.New("OldDuration requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRunDuration: %w", err)
+		return v, fmt.Errorf("querying old value for OldDuration: %w", err)
 	}
-	return oldValue.RunDuration, nil
+	return oldValue.Duration, nil
 }
 
-// AddRunDuration adds t to the "run_duration" field.
-func (m *AppRunTimeMutation) AddRunDuration(t time.Duration) {
-	if m.addrun_duration != nil {
-		*m.addrun_duration += t
+// AddDuration adds t to the "duration" field.
+func (m *AppRunTimeMutation) AddDuration(t time.Duration) {
+	if m.addduration != nil {
+		*m.addduration += t
 	} else {
-		m.addrun_duration = &t
+		m.addduration = &t
 	}
 }
 
-// AddedRunDuration returns the value that was added to the "run_duration" field in this mutation.
-func (m *AppRunTimeMutation) AddedRunDuration() (r time.Duration, exists bool) {
-	v := m.addrun_duration
+// AddedDuration returns the value that was added to the "duration" field in this mutation.
+func (m *AppRunTimeMutation) AddedDuration() (r time.Duration, exists bool) {
+	v := m.addduration
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetRunDuration resets all changes to the "run_duration" field.
-func (m *AppRunTimeMutation) ResetRunDuration() {
-	m.run_duration = nil
-	m.addrun_duration = nil
+// ResetDuration resets all changes to the "duration" field.
+func (m *AppRunTimeMutation) ResetDuration() {
+	m.duration = nil
+	m.addduration = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -5945,18 +6009,21 @@ func (m *AppRunTimeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *AppRunTimeMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.user_id != nil {
 		fields = append(fields, appruntime.FieldUserID)
 	}
 	if m.app != nil {
 		fields = append(fields, appruntime.FieldAppID)
 	}
+	if m.device_id != nil {
+		fields = append(fields, appruntime.FieldDeviceID)
+	}
 	if m.start_time != nil {
 		fields = append(fields, appruntime.FieldStartTime)
 	}
-	if m.run_duration != nil {
-		fields = append(fields, appruntime.FieldRunDuration)
+	if m.duration != nil {
+		fields = append(fields, appruntime.FieldDuration)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, appruntime.FieldUpdatedAt)
@@ -5976,10 +6043,12 @@ func (m *AppRunTimeMutation) Field(name string) (ent.Value, bool) {
 		return m.UserID()
 	case appruntime.FieldAppID:
 		return m.AppID()
+	case appruntime.FieldDeviceID:
+		return m.DeviceID()
 	case appruntime.FieldStartTime:
 		return m.StartTime()
-	case appruntime.FieldRunDuration:
-		return m.RunDuration()
+	case appruntime.FieldDuration:
+		return m.Duration()
 	case appruntime.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case appruntime.FieldCreatedAt:
@@ -5997,10 +6066,12 @@ func (m *AppRunTimeMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUserID(ctx)
 	case appruntime.FieldAppID:
 		return m.OldAppID(ctx)
+	case appruntime.FieldDeviceID:
+		return m.OldDeviceID(ctx)
 	case appruntime.FieldStartTime:
 		return m.OldStartTime(ctx)
-	case appruntime.FieldRunDuration:
-		return m.OldRunDuration(ctx)
+	case appruntime.FieldDuration:
+		return m.OldDuration(ctx)
 	case appruntime.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case appruntime.FieldCreatedAt:
@@ -6028,6 +6099,13 @@ func (m *AppRunTimeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAppID(v)
 		return nil
+	case appruntime.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceID(v)
+		return nil
 	case appruntime.FieldStartTime:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -6035,12 +6113,12 @@ func (m *AppRunTimeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetStartTime(v)
 		return nil
-	case appruntime.FieldRunDuration:
+	case appruntime.FieldDuration:
 		v, ok := value.(time.Duration)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRunDuration(v)
+		m.SetDuration(v)
 		return nil
 	case appruntime.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -6067,8 +6145,11 @@ func (m *AppRunTimeMutation) AddedFields() []string {
 	if m.adduser_id != nil {
 		fields = append(fields, appruntime.FieldUserID)
 	}
-	if m.addrun_duration != nil {
-		fields = append(fields, appruntime.FieldRunDuration)
+	if m.adddevice_id != nil {
+		fields = append(fields, appruntime.FieldDeviceID)
+	}
+	if m.addduration != nil {
+		fields = append(fields, appruntime.FieldDuration)
 	}
 	return fields
 }
@@ -6080,8 +6161,10 @@ func (m *AppRunTimeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case appruntime.FieldUserID:
 		return m.AddedUserID()
-	case appruntime.FieldRunDuration:
-		return m.AddedRunDuration()
+	case appruntime.FieldDeviceID:
+		return m.AddedDeviceID()
+	case appruntime.FieldDuration:
+		return m.AddedDuration()
 	}
 	return nil, false
 }
@@ -6098,12 +6181,19 @@ func (m *AppRunTimeMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUserID(v)
 		return nil
-	case appruntime.FieldRunDuration:
+	case appruntime.FieldDeviceID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeviceID(v)
+		return nil
+	case appruntime.FieldDuration:
 		v, ok := value.(time.Duration)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddRunDuration(v)
+		m.AddDuration(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppRunTime numeric field %s", name)
@@ -6138,11 +6228,14 @@ func (m *AppRunTimeMutation) ResetField(name string) error {
 	case appruntime.FieldAppID:
 		m.ResetAppID()
 		return nil
+	case appruntime.FieldDeviceID:
+		m.ResetDeviceID()
+		return nil
 	case appruntime.FieldStartTime:
 		m.ResetStartTime()
 		return nil
-	case appruntime.FieldRunDuration:
-		m.ResetRunDuration()
+	case appruntime.FieldDuration:
+		m.ResetDuration()
 		return nil
 	case appruntime.FieldUpdatedAt:
 		m.ResetUpdatedAt()

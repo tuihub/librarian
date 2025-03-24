@@ -1081,7 +1081,7 @@ func (c *AppRunTimeClient) UpdateOne(art *AppRunTime) *AppRunTimeUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppRunTimeClient) UpdateOneID(id int) *AppRunTimeUpdateOne {
+func (c *AppRunTimeClient) UpdateOneID(id model.InternalID) *AppRunTimeUpdateOne {
 	mutation := newAppRunTimeMutation(c.config, OpUpdateOne, withAppRunTimeID(id))
 	return &AppRunTimeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -1098,7 +1098,7 @@ func (c *AppRunTimeClient) DeleteOne(art *AppRunTime) *AppRunTimeDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppRunTimeClient) DeleteOneID(id int) *AppRunTimeDeleteOne {
+func (c *AppRunTimeClient) DeleteOneID(id model.InternalID) *AppRunTimeDeleteOne {
 	builder := c.Delete().Where(appruntime.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -1115,12 +1115,12 @@ func (c *AppRunTimeClient) Query() *AppRunTimeQuery {
 }
 
 // Get returns a AppRunTime entity by its id.
-func (c *AppRunTimeClient) Get(ctx context.Context, id int) (*AppRunTime, error) {
+func (c *AppRunTimeClient) Get(ctx context.Context, id model.InternalID) (*AppRunTime, error) {
 	return c.Query().Where(appruntime.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppRunTimeClient) GetX(ctx context.Context, id int) *AppRunTime {
+func (c *AppRunTimeClient) GetX(ctx context.Context, id model.InternalID) *AppRunTime {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

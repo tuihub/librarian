@@ -8,6 +8,7 @@ import (
 	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 
+	"github.com/samber/lo"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -216,38 +217,62 @@ func (s *LibrarianSephirahService) ListApps(
 //		}
 //	}
 
-// func (s *LibrarianSephirahService) AddAppRunTime(
-//	ctx context.Context,
-//	req *sephirah.AddAppInstRunTimeRequest,
-// ) (*sephirah.AddAppInstRunTimeResponse, error) {
-//	err := s.g.AddAppRunTime(ctx,
-//		converter.ToBizInternalID(req.GetAppInstId()),
-//		converter.ToBizTimeRange(req.GetTimeRange()),
-//	)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &sephirah.AddAppInstRunTimeResponse{}, nil
-// }
-// func (s *LibrarianSephirahService) SumAppRunTime(
-//	ctx context.Context,
-//	req *sephirah.SumAppInstRunTimeRequest,
-// ) (*sephirah.SumAppInstRunTimeResponse, error) {
-//	if req.GetTimeAggregation().GetAggregationType() != librarian.TimeAggregation_AGGREGATION_TYPE_OVERALL {
-//		return nil, sephirah.ErrorErrorReasonBadRequest("unsupported aggregation type")
-//	}
-//	res, err := s.g.SumAppRunTime(ctx,
-//		converter.ToBizInternalID(req.GetAppInstId()),
-//		converter.ToBizTimeRange(req.GetTimeAggregation().GetTimeRange()),
-//	)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &sephirah.SumAppInstRunTimeResponse{RunTimeGroups: []*sephirah.SumAppInstRunTimeResponse_Group{{
-//		TimeRange: req.GetTimeAggregation().GetTimeRange(),
-//		Duration:  converter.ToPBDuration(res),
-//	}}}, nil
-// }
+func (s *LibrarianSephirahService) BatchCreateAppRunTime(
+	ctx context.Context,
+	req *sephirah.BatchCreateAppRunTimeRequest,
+) (*sephirah.BatchCreateAppRunTimeResponse, error) {
+	err := s.g.BatchCreateAppRunTime(ctx,
+		converter.ToBizAppRunTimeList(req.GetAppRunTimes()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.BatchCreateAppRunTimeResponse{}, nil
+}
+func (s *LibrarianSephirahService) SumAppRunTime(
+	ctx context.Context,
+	req *sephirah.SumAppRunTimeRequest,
+) (*sephirah.SumAppRunTimeResponse, error) {
+	res, err := s.g.SumAppRunTime(ctx,
+		converter.ToBizInternalIDList(req.GetAppIdFilter()),
+		converter.ToBizInternalIDList(req.GetDeviceIdFilter()),
+		converter.ToBizTimeRange(req.GetTimeRangeCross()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.SumAppRunTimeResponse{
+		RunTimeSum: converter.ToPBDuration(lo.FromPtr(res)),
+	}, nil
+}
+func (s *LibrarianSephirahService) ListAppRunTimes(
+	ctx context.Context,
+	req *sephirah.ListAppRunTimesRequest,
+) (*sephirah.ListAppRunTimesResponse, error) {
+	res, total, err := s.g.ListAppRunTimes(ctx,
+		model.ToBizPaging(req.GetPaging()),
+		converter.ToBizInternalIDList(req.GetAppIdFilter()),
+		converter.ToBizInternalIDList(req.GetDeviceIdFilter()),
+		converter.ToBizTimeRange(req.GetTimeRangeCross()),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.ListAppRunTimesResponse{
+		Paging:      &librarian.PagingResponse{TotalSize: int64(total)},
+		AppRunTimes: converter.ToPBAppRunTimeList(res),
+	}, nil
+}
+func (s *LibrarianSephirahService) DeleteAppRunTime(
+	ctx context.Context,
+	req *sephirah.DeleteAppRunTimeRequest,
+) (*sephirah.DeleteAppRunTimeResponse, error) {
+	err := s.g.DeleteAppRunTime(ctx, converter.ToBizInternalID(req.GetId()))
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.DeleteAppRunTimeResponse{}, nil
+}
 
 func (s *LibrarianSephirahService) UploadAppSaveFile(
 	ctx context.Context,

@@ -295,14 +295,14 @@ func (ac *AppCreate) SetDevice(d *Device) *AppCreate {
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (ac *AppCreate) AddAppRunTimeIDs(ids ...int) *AppCreate {
+func (ac *AppCreate) AddAppRunTimeIDs(ids ...model.InternalID) *AppCreate {
 	ac.mutation.AddAppRunTimeIDs(ids...)
 	return ac
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
 func (ac *AppCreate) AddAppRunTime(a ...*AppRunTime) *AppCreate {
-	ids := make([]int, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -579,7 +579,7 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -17,10 +17,12 @@ type AppRunTime struct {
 
 func (AppRunTime) Fields() []ent.Field {
 	return []ent.Field{
+		defaultPrimaryKey(),
 		field.Int64("user_id").GoType(model.InternalID(0)),
 		field.Int64("app_id").GoType(model.InternalID(0)),
+		field.Int64("device_id").GoType(model.InternalID(0)),
 		field.Time("start_time"),
-		field.Int64("run_duration").GoType(time.Duration(0)),
+		field.Int64("duration").GoType(time.Duration(0)),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -31,7 +33,7 @@ func (AppRunTime) Fields() []ent.Field {
 func (AppRunTime) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("user_id", "app_id"),
-		index.Fields("start_time", "run_duration").Unique(),
+		index.Fields("start_time", "duration").Unique(),
 	}
 }
 

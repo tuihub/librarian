@@ -31,6 +31,7 @@ import (
 // goverter:extend DurationPBToDuration
 type toBizConverter interface { //nolint:unused // used by generator
 	ToBizTimeRange(*librarian.TimeRange) *model.TimeRange
+	ToBizTimeRangeList([]*librarian.TimeRange) []*model.TimeRange
 	ToBizPorterFeatureSummary(*librarian.FeatureSummary) *modelsupervisor.PorterFeatureSummary
 	ToBizFeatureFlag(*librarian.FeatureFlag) *modelsupervisor.FeatureFlag
 	ToBizFeatureRequest(*librarian.FeatureRequest) *modelsupervisor.FeatureRequest
@@ -38,7 +39,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizInternalIDList([]*librarian.InternalID) []model.InternalID
 
 	// goverter:map DeviceId ID
-	ToBizDeviceInfo(*sephirah.DeviceInfo) *model.Device
+	ToBizDeviceInfo(*sephirah.Device) *model.Device
 	// goverter:enum:unknown SystemTypeUnspecified
 	// goverter:enum:map SystemType_SYSTEM_TYPE_UNSPECIFIED SystemTypeUnspecified
 	// goverter:enum:map SystemType_SYSTEM_TYPE_IOS SystemTypeIOS
@@ -53,8 +54,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map UserType_USER_TYPE_UNSPECIFIED UserTypeUnspecified
 	// goverter:enum:map UserType_USER_TYPE_ADMIN UserTypeAdmin
 	// goverter:enum:map UserType_USER_TYPE_NORMAL UserTypeNormal
-	// goverter:enum:map UserType_USER_TYPE_SENTINEL UserTypeSentinel
-	// goverter:enum:map UserType_USER_TYPE_PORTER UserTypePorter
 	ToLibAuthUserType(sephirah.UserType) model.UserType
 	ToLibAuthUserTypeList([]sephirah.UserType) []model.UserType
 	ToBizUserStatusList([]sephirah.UserStatus) []model.UserStatus
@@ -90,10 +89,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppInfoList([]*sephirah.AppInfo) []*modelgebura.AppInfo
 	ToBizAppTypeList([]sephirah.AppType) []modelgebura.AppType
 
-	// goverter:map VersionUpdateTime VersionDate
-	// goverter:map BoundAppSource AppSources
-	// goverter:map BoundStoreApp BoundStoreAppID
-	// goverter:map StopStoreManaging StopStoreManage
 	// goverter:ignore ShortDescription
 	// goverter:ignore ReleaseDate
 	// goverter:map AltNames AlternativeNames
@@ -102,6 +97,9 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppType_APP_TYPE_UNSPECIFIED AppTypeUnspecified
 	// goverter:enum:map AppType_APP_TYPE_GAME AppTypeGame
 	ToBizAppType(sephirah.AppType) modelgebura.AppType
+
+	ToBizAppRunTime(*sephirah.AppRunTime) *modelgebura.AppRunTime
+	ToBizAppRunTimeList([]*sephirah.AppRunTime) []*modelgebura.AppRunTime
 
 	// ToBizAppInst(*sephirah.AppInst) *modelgebura.AppInst
 
@@ -167,6 +165,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map FileType_FILE_TYPE_UNSPECIFIED FileTypeUnspecified
 	// goverter:enum:map FileType_FILE_TYPE_GEBURA_SAVE FileTypeGeburaSave
 	// goverter:enum:map FileType_FILE_TYPE_CHESED_IMAGE FileTypeChesedImage
+	// goverter:enum:map FileType_FILE_TYPE_GEBURA_APP_INFO_IMAGE FileTypeGeburaAppInfoImage
 	ToBizFileType(librarian.FileType) modelbinah.FileType
 }
 

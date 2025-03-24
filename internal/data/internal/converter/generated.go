@@ -182,6 +182,28 @@ func ToBizAppList(source []*ent.App) []*modelgebura.App {
 	}
 	return pModelgeburaAppList
 }
+func ToBizAppRunTime(source *ent.AppRunTime) *modelgebura.AppRunTime {
+	var pModelgeburaAppRunTime *modelgebura.AppRunTime
+	if source != nil {
+		var modelgeburaAppRunTime modelgebura.AppRunTime
+		modelgeburaAppRunTime.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppRunTime.AppID = modelInternalIDToModelInternalID((*source).AppID)
+		modelgeburaAppRunTime.DeviceID = modelInternalIDToModelInternalID((*source).DeviceID)
+		modelgeburaAppRunTime.RunTime = entAppRunTimeToPModelTimeRange((*source))
+		pModelgeburaAppRunTime = &modelgeburaAppRunTime
+	}
+	return pModelgeburaAppRunTime
+}
+func ToBizAppRunTimeList(source []*ent.AppRunTime) []*modelgebura.AppRunTime {
+	var pModelgeburaAppRunTimeList []*modelgebura.AppRunTime
+	if source != nil {
+		pModelgeburaAppRunTimeList = make([]*modelgebura.AppRunTime, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppRunTimeList[i] = ToBizAppRunTime(source[i])
+		}
+	}
+	return pModelgeburaAppRunTimeList
+}
 func ToBizAppType(source app.Type) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
 	switch source {
@@ -719,6 +741,12 @@ func ToLibAuthUserType(source user.Type) model.UserType {
 		modelUserType = model.UserTypeUnspecified
 	}
 	return modelUserType
+}
+func entAppRunTimeToPModelTimeRange(source ent.AppRunTime) *model.TimeRange {
+	var modelTimeRange model.TimeRange
+	modelTimeRange.StartTime = TimeToTime(source.StartTime)
+	modelTimeRange.Duration = time.Duration(source.Duration)
+	return &modelTimeRange
 }
 func entPorterInstanceToPModelsupervisorPorterBinarySummary(source ent.PorterInstance) *modelsupervisor.PorterBinarySummary {
 	var modelsupervisorPorterBinarySummary modelsupervisor.PorterBinarySummary

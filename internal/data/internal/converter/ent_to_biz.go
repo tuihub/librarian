@@ -95,6 +95,9 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map TypeUnknown AppTypeUnspecified
 	// goverter:enum:map TypeGame AppTypeGame
 	ToBizAppType(app.Type) modelgebura.AppType
+	// goverter:map . RunTime
+	ToBizAppRunTime(*ent.AppRunTime) *modelgebura.AppRunTime
+	ToBizAppRunTimeList([]*ent.AppRunTime) []*modelgebura.AppRunTime
 	ToBizAppBinary(ent.StoreAppBinary) modelgebura.AppBinary
 
 	// goverter:map LatestPullAt LatestPullTime

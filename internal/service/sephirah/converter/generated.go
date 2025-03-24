@@ -23,18 +23,18 @@ func ToBizApp(source *sephirah.App) *modelgebura.App {
 		var modelgeburaApp modelgebura.App
 		modelgeburaApp.ID = ToBizInternalID((*source).Id)
 		modelgeburaApp.VersionNumber = (*source).VersionNumber
-		modelgeburaApp.VersionDate = ToBizTime((*source).VersionUpdateTime)
+		modelgeburaApp.VersionDate = ToBizTime((*source).VersionDate)
 		modelgeburaApp.CreatorDeviceID = ToBizInternalID((*source).CreatorDeviceId)
-		if (*source).BoundAppSource != nil {
-			modelgeburaApp.AppSources = make(map[string]string, len((*source).BoundAppSource))
-			for key, value := range (*source).BoundAppSource {
+		if (*source).AppSources != nil {
+			modelgeburaApp.AppSources = make(map[string]string, len((*source).AppSources))
+			for key, value := range (*source).AppSources {
 				modelgeburaApp.AppSources[key] = value
 			}
 		}
 		modelgeburaApp.Public = (*source).Public
-		modelgeburaApp.BoundStoreAppID = ToBizInternalIDPtr((*source).BoundStoreApp)
-		if (*source).StopStoreManaging != nil {
-			xbool := *(*source).StopStoreManaging
+		modelgeburaApp.BoundStoreAppID = ToBizInternalIDPtr((*source).BoundStoreAppId)
+		if (*source).StopStoreManage != nil {
+			xbool := *(*source).StopStoreManage
 			modelgeburaApp.StopStoreManage = &xbool
 		}
 		modelgeburaApp.Name = (*source).Name
@@ -108,6 +108,28 @@ func ToBizAppInfoList(source []*sephirah.AppInfo) []*modelgebura.AppInfo {
 	}
 	return pModelgeburaAppInfoList
 }
+func ToBizAppRunTime(source *sephirah.AppRunTime) *modelgebura.AppRunTime {
+	var pModelgeburaAppRunTime *modelgebura.AppRunTime
+	if source != nil {
+		var modelgeburaAppRunTime modelgebura.AppRunTime
+		modelgeburaAppRunTime.ID = ToBizInternalID((*source).Id)
+		modelgeburaAppRunTime.AppID = ToBizInternalID((*source).AppId)
+		modelgeburaAppRunTime.DeviceID = ToBizInternalID((*source).DeviceId)
+		modelgeburaAppRunTime.RunTime = ToBizTimeRange((*source).RunTime)
+		pModelgeburaAppRunTime = &modelgeburaAppRunTime
+	}
+	return pModelgeburaAppRunTime
+}
+func ToBizAppRunTimeList(source []*sephirah.AppRunTime) []*modelgebura.AppRunTime {
+	var pModelgeburaAppRunTimeList []*modelgebura.AppRunTime
+	if source != nil {
+		pModelgeburaAppRunTimeList = make([]*modelgebura.AppRunTime, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaAppRunTimeList[i] = ToBizAppRunTime(source[i])
+		}
+	}
+	return pModelgeburaAppRunTimeList
+}
 func ToBizAppType(source sephirah.AppType) modelgebura.AppType {
 	var modelgeburaAppType modelgebura.AppType
 	switch source {
@@ -130,7 +152,7 @@ func ToBizAppTypeList(source []sephirah.AppType) []modelgebura.AppType {
 	}
 	return modelgeburaAppTypeList
 }
-func ToBizDeviceInfo(source *sephirah.DeviceInfo) *model.Device {
+func ToBizDeviceInfo(source *sephirah.Device) *model.Device {
 	var pModelDevice *model.Device
 	if source != nil {
 		var modelDevice model.Device
@@ -322,6 +344,8 @@ func ToBizFileType(source v1.FileType) modelbinah.FileType {
 	switch source {
 	case v1.FileType_FILE_TYPE_CHESED_IMAGE:
 		modelbinahFileType = modelbinah.FileTypeChesedImage
+	case v1.FileType_FILE_TYPE_GEBURA_APP_INFO_IMAGE:
+		modelbinahFileType = modelbinah.FileTypeGeburaAppInfoImage
 	case v1.FileType_FILE_TYPE_GEBURA_SAVE:
 		modelbinahFileType = modelbinah.FileTypeGeburaSave
 	case v1.FileType_FILE_TYPE_UNSPECIFIED:
@@ -653,6 +677,16 @@ func ToBizTimeRange(source *v1.TimeRange) *model.TimeRange {
 	}
 	return pModelTimeRange
 }
+func ToBizTimeRangeList(source []*v1.TimeRange) []*model.TimeRange {
+	var pModelTimeRangeList []*model.TimeRange
+	if source != nil {
+		pModelTimeRangeList = make([]*model.TimeRange, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelTimeRangeList[i] = ToBizTimeRange(source[i])
+		}
+	}
+	return pModelTimeRangeList
+}
 func ToBizUser(source *sephirah.User) *model.User {
 	var pModelUser *model.User
 	if source != nil {
@@ -697,10 +731,6 @@ func ToLibAuthUserType(source sephirah.UserType) model.UserType {
 		modelUserType = model.UserTypeAdmin
 	case sephirah.UserType_USER_TYPE_NORMAL:
 		modelUserType = model.UserTypeNormal
-	case sephirah.UserType_USER_TYPE_PORTER:
-		modelUserType = model.UserTypePorter
-	case sephirah.UserType_USER_TYPE_SENTINEL:
-		modelUserType = model.UserTypeSentinel
 	case sephirah.UserType_USER_TYPE_UNSPECIFIED:
 		modelUserType = model.UserTypeUnspecified
 	default:
@@ -788,9 +818,44 @@ func ToPBApp(source *modelgebura.App) *sephirah.App {
 	if source != nil {
 		var v1App sephirah.App
 		v1App.Id = ToPBInternalID((*source).ID)
+		v1App.VersionNumber = (*source).VersionNumber
+		v1App.VersionDate = ToPBTime((*source).VersionDate)
+		v1App.CreatorDeviceId = ToPBInternalID((*source).CreatorDeviceID)
+		if (*source).AppSources != nil {
+			v1App.AppSources = make(map[string]string, len((*source).AppSources))
+			for key, value := range (*source).AppSources {
+				v1App.AppSources[key] = value
+			}
+		}
 		v1App.Public = (*source).Public
+		v1App.BoundStoreAppId = ToPBInternalIDPtr((*source).BoundStoreAppID)
+		if (*source).StopStoreManage != nil {
+			xbool := *(*source).StopStoreManage
+			v1App.StopStoreManage = &xbool
+		}
 		v1App.Name = (*source).Name
+		v1App.Type = ToPBAppType((*source).Type)
 		v1App.Description = (*source).Description
+		v1App.IconImageUrl = (*source).IconImageURL
+		v1App.IconImageId = ToPBInternalID((*source).IconImageID)
+		v1App.BackgroundImageUrl = (*source).BackgroundImageURL
+		v1App.BackgroundImageId = ToPBInternalID((*source).BackgroundImageID)
+		v1App.CoverImageUrl = (*source).CoverImageURL
+		v1App.CoverImageId = ToPBInternalID((*source).CoverImageID)
+		if (*source).Tags != nil {
+			v1App.Tags = make([]string, len((*source).Tags))
+			for i := 0; i < len((*source).Tags); i++ {
+				v1App.Tags[i] = (*source).Tags[i]
+			}
+		}
+		if (*source).AlternativeNames != nil {
+			v1App.AltNames = make([]string, len((*source).AlternativeNames))
+			for j := 0; j < len((*source).AlternativeNames); j++ {
+				v1App.AltNames[j] = (*source).AlternativeNames[j]
+			}
+		}
+		v1App.Developer = (*source).Developer
+		v1App.Publisher = (*source).Publisher
 		pV1App = &v1App
 	}
 	return pV1App
@@ -805,15 +870,27 @@ func ToPBAppInfo(source *modelgebura.AppInfo) *sephirah.AppInfo {
 		v1AppInfo.SourceUrl = &pString
 		v1AppInfo.Name = (*source).Name
 		v1AppInfo.Type = ToPBAppType((*source).Type)
+		v1AppInfo.Description = (*source).Description
 		v1AppInfo.IconImageUrl = (*source).IconImageURL
+		v1AppInfo.IconImageId = ToPBInternalID((*source).IconImageID)
 		v1AppInfo.BackgroundImageUrl = (*source).BackgroundImageURL
+		v1AppInfo.BackgroundImageId = ToPBInternalID((*source).BackgroundImageID)
 		v1AppInfo.CoverImageUrl = (*source).CoverImageURL
+		v1AppInfo.CoverImageId = ToPBInternalID((*source).CoverImageID)
 		if (*source).Tags != nil {
 			v1AppInfo.Tags = make([]string, len((*source).Tags))
 			for i := 0; i < len((*source).Tags); i++ {
 				v1AppInfo.Tags[i] = (*source).Tags[i]
 			}
 		}
+		if (*source).AlternativeNames != nil {
+			v1AppInfo.AltNames = make([]string, len((*source).AlternativeNames))
+			for j := 0; j < len((*source).AlternativeNames); j++ {
+				v1AppInfo.AltNames[j] = (*source).AlternativeNames[j]
+			}
+		}
+		v1AppInfo.Developer = (*source).Developer
+		v1AppInfo.Publisher = (*source).Publisher
 		pV1AppInfo = &v1AppInfo
 	}
 	return pV1AppInfo
@@ -838,6 +915,28 @@ func ToPBAppList(source []*modelgebura.App) []*sephirah.App {
 	}
 	return pV1AppList
 }
+func ToPBAppRunTime(source *modelgebura.AppRunTime) *sephirah.AppRunTime {
+	var pV1AppRunTime *sephirah.AppRunTime
+	if source != nil {
+		var v1AppRunTime sephirah.AppRunTime
+		v1AppRunTime.Id = ToPBInternalID((*source).ID)
+		v1AppRunTime.AppId = ToPBInternalID((*source).AppID)
+		v1AppRunTime.DeviceId = ToPBInternalID((*source).DeviceID)
+		v1AppRunTime.RunTime = ToPBTimeRange((*source).RunTime)
+		pV1AppRunTime = &v1AppRunTime
+	}
+	return pV1AppRunTime
+}
+func ToPBAppRunTimeList(source []*modelgebura.AppRunTime) []*sephirah.AppRunTime {
+	var pV1AppRunTimeList []*sephirah.AppRunTime
+	if source != nil {
+		pV1AppRunTimeList = make([]*sephirah.AppRunTime, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1AppRunTimeList[i] = ToPBAppRunTime(source[i])
+		}
+	}
+	return pV1AppRunTimeList
+}
 func ToPBAppType(source modelgebura.AppType) sephirah.AppType {
 	var v1AppType sephirah.AppType
 	switch source {
@@ -850,30 +949,30 @@ func ToPBAppType(source modelgebura.AppType) sephirah.AppType {
 	}
 	return v1AppType
 }
-func ToPBDeviceInfo(source *model.Device) *sephirah.DeviceInfo {
-	var pV1DeviceInfo *sephirah.DeviceInfo
+func ToPBDeviceInfo(source *model.Device) *sephirah.Device {
+	var pV1Device *sephirah.Device
 	if source != nil {
-		var v1DeviceInfo sephirah.DeviceInfo
-		v1DeviceInfo.DeviceId = ToPBInternalID((*source).ID)
-		v1DeviceInfo.DeviceName = (*source).DeviceName
-		v1DeviceInfo.SystemType = ToPBSystemType((*source).SystemType)
-		v1DeviceInfo.SystemVersion = (*source).SystemVersion
-		v1DeviceInfo.ClientName = (*source).ClientName
-		v1DeviceInfo.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
-		v1DeviceInfo.ClientVersion = (*source).ClientVersion
-		pV1DeviceInfo = &v1DeviceInfo
+		var v1Device sephirah.Device
+		v1Device.DeviceId = ToPBInternalID((*source).ID)
+		v1Device.DeviceName = (*source).DeviceName
+		v1Device.SystemType = ToPBSystemType((*source).SystemType)
+		v1Device.SystemVersion = (*source).SystemVersion
+		v1Device.ClientName = (*source).ClientName
+		v1Device.ClientSourceCodeAddress = (*source).ClientSourceCodeAddress
+		v1Device.ClientVersion = (*source).ClientVersion
+		pV1Device = &v1Device
 	}
-	return pV1DeviceInfo
+	return pV1Device
 }
-func ToPBDeviceInfoList(source []*model.Device) []*sephirah.DeviceInfo {
-	var pV1DeviceInfoList []*sephirah.DeviceInfo
+func ToPBDeviceInfoList(source []*model.Device) []*sephirah.Device {
+	var pV1DeviceList []*sephirah.Device
 	if source != nil {
-		pV1DeviceInfoList = make([]*sephirah.DeviceInfo, len(source))
+		pV1DeviceList = make([]*sephirah.Device, len(source))
 		for i := 0; i < len(source); i++ {
-			pV1DeviceInfoList[i] = ToPBDeviceInfo(source[i])
+			pV1DeviceList[i] = ToPBDeviceInfo(source[i])
 		}
 	}
-	return pV1DeviceInfoList
+	return pV1DeviceList
 }
 func ToPBEnclosure(source *modelfeed.Enclosure) *v1.FeedEnclosure {
 	var pV1FeedEnclosure *v1.FeedEnclosure
@@ -1563,10 +1662,8 @@ func ToPBUserType(source model.UserType) sephirah.UserType {
 		v1UserType = sephirah.UserType_USER_TYPE_ADMIN
 	case model.UserTypeNormal:
 		v1UserType = sephirah.UserType_USER_TYPE_NORMAL
-	case model.UserTypePorter:
-		v1UserType = sephirah.UserType_USER_TYPE_PORTER
-	case model.UserTypeSentinel:
-		v1UserType = sephirah.UserType_USER_TYPE_SENTINEL
+	case model.UserTypePorter: // ignored
+	case model.UserTypeSentinel: // ignored
 	case model.UserTypeUnspecified:
 		v1UserType = sephirah.UserType_USER_TYPE_UNSPECIFIED
 	default:

@@ -65,6 +65,27 @@ func (artu *AppRunTimeUpdate) SetNillableAppID(mi *model.InternalID) *AppRunTime
 	return artu
 }
 
+// SetDeviceID sets the "device_id" field.
+func (artu *AppRunTimeUpdate) SetDeviceID(mi model.InternalID) *AppRunTimeUpdate {
+	artu.mutation.ResetDeviceID()
+	artu.mutation.SetDeviceID(mi)
+	return artu
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (artu *AppRunTimeUpdate) SetNillableDeviceID(mi *model.InternalID) *AppRunTimeUpdate {
+	if mi != nil {
+		artu.SetDeviceID(*mi)
+	}
+	return artu
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (artu *AppRunTimeUpdate) AddDeviceID(mi model.InternalID) *AppRunTimeUpdate {
+	artu.mutation.AddDeviceID(mi)
+	return artu
+}
+
 // SetStartTime sets the "start_time" field.
 func (artu *AppRunTimeUpdate) SetStartTime(t time.Time) *AppRunTimeUpdate {
 	artu.mutation.SetStartTime(t)
@@ -79,24 +100,24 @@ func (artu *AppRunTimeUpdate) SetNillableStartTime(t *time.Time) *AppRunTimeUpda
 	return artu
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (artu *AppRunTimeUpdate) SetRunDuration(t time.Duration) *AppRunTimeUpdate {
-	artu.mutation.ResetRunDuration()
-	artu.mutation.SetRunDuration(t)
+// SetDuration sets the "duration" field.
+func (artu *AppRunTimeUpdate) SetDuration(t time.Duration) *AppRunTimeUpdate {
+	artu.mutation.ResetDuration()
+	artu.mutation.SetDuration(t)
 	return artu
 }
 
-// SetNillableRunDuration sets the "run_duration" field if the given value is not nil.
-func (artu *AppRunTimeUpdate) SetNillableRunDuration(t *time.Duration) *AppRunTimeUpdate {
+// SetNillableDuration sets the "duration" field if the given value is not nil.
+func (artu *AppRunTimeUpdate) SetNillableDuration(t *time.Duration) *AppRunTimeUpdate {
 	if t != nil {
-		artu.SetRunDuration(*t)
+		artu.SetDuration(*t)
 	}
 	return artu
 }
 
-// AddRunDuration adds t to the "run_duration" field.
-func (artu *AppRunTimeUpdate) AddRunDuration(t time.Duration) *AppRunTimeUpdate {
-	artu.mutation.AddRunDuration(t)
+// AddDuration adds t to the "duration" field.
+func (artu *AppRunTimeUpdate) AddDuration(t time.Duration) *AppRunTimeUpdate {
+	artu.mutation.AddDuration(t)
 	return artu
 }
 
@@ -184,7 +205,7 @@ func (artu *AppRunTimeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := artu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
 	if ps := artu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -198,14 +219,20 @@ func (artu *AppRunTimeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := artu.mutation.AddedUserID(); ok {
 		_spec.AddField(appruntime.FieldUserID, field.TypeInt64, value)
 	}
+	if value, ok := artu.mutation.DeviceID(); ok {
+		_spec.SetField(appruntime.FieldDeviceID, field.TypeInt64, value)
+	}
+	if value, ok := artu.mutation.AddedDeviceID(); ok {
+		_spec.AddField(appruntime.FieldDeviceID, field.TypeInt64, value)
+	}
 	if value, ok := artu.mutation.StartTime(); ok {
 		_spec.SetField(appruntime.FieldStartTime, field.TypeTime, value)
 	}
-	if value, ok := artu.mutation.RunDuration(); ok {
-		_spec.SetField(appruntime.FieldRunDuration, field.TypeInt64, value)
+	if value, ok := artu.mutation.Duration(); ok {
+		_spec.SetField(appruntime.FieldDuration, field.TypeInt64, value)
 	}
-	if value, ok := artu.mutation.AddedRunDuration(); ok {
-		_spec.AddField(appruntime.FieldRunDuration, field.TypeInt64, value)
+	if value, ok := artu.mutation.AddedDuration(); ok {
+		_spec.AddField(appruntime.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := artu.mutation.UpdatedAt(); ok {
 		_spec.SetField(appruntime.FieldUpdatedAt, field.TypeTime, value)
@@ -297,6 +324,27 @@ func (artuo *AppRunTimeUpdateOne) SetNillableAppID(mi *model.InternalID) *AppRun
 	return artuo
 }
 
+// SetDeviceID sets the "device_id" field.
+func (artuo *AppRunTimeUpdateOne) SetDeviceID(mi model.InternalID) *AppRunTimeUpdateOne {
+	artuo.mutation.ResetDeviceID()
+	artuo.mutation.SetDeviceID(mi)
+	return artuo
+}
+
+// SetNillableDeviceID sets the "device_id" field if the given value is not nil.
+func (artuo *AppRunTimeUpdateOne) SetNillableDeviceID(mi *model.InternalID) *AppRunTimeUpdateOne {
+	if mi != nil {
+		artuo.SetDeviceID(*mi)
+	}
+	return artuo
+}
+
+// AddDeviceID adds mi to the "device_id" field.
+func (artuo *AppRunTimeUpdateOne) AddDeviceID(mi model.InternalID) *AppRunTimeUpdateOne {
+	artuo.mutation.AddDeviceID(mi)
+	return artuo
+}
+
 // SetStartTime sets the "start_time" field.
 func (artuo *AppRunTimeUpdateOne) SetStartTime(t time.Time) *AppRunTimeUpdateOne {
 	artuo.mutation.SetStartTime(t)
@@ -311,24 +359,24 @@ func (artuo *AppRunTimeUpdateOne) SetNillableStartTime(t *time.Time) *AppRunTime
 	return artuo
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (artuo *AppRunTimeUpdateOne) SetRunDuration(t time.Duration) *AppRunTimeUpdateOne {
-	artuo.mutation.ResetRunDuration()
-	artuo.mutation.SetRunDuration(t)
+// SetDuration sets the "duration" field.
+func (artuo *AppRunTimeUpdateOne) SetDuration(t time.Duration) *AppRunTimeUpdateOne {
+	artuo.mutation.ResetDuration()
+	artuo.mutation.SetDuration(t)
 	return artuo
 }
 
-// SetNillableRunDuration sets the "run_duration" field if the given value is not nil.
-func (artuo *AppRunTimeUpdateOne) SetNillableRunDuration(t *time.Duration) *AppRunTimeUpdateOne {
+// SetNillableDuration sets the "duration" field if the given value is not nil.
+func (artuo *AppRunTimeUpdateOne) SetNillableDuration(t *time.Duration) *AppRunTimeUpdateOne {
 	if t != nil {
-		artuo.SetRunDuration(*t)
+		artuo.SetDuration(*t)
 	}
 	return artuo
 }
 
-// AddRunDuration adds t to the "run_duration" field.
-func (artuo *AppRunTimeUpdateOne) AddRunDuration(t time.Duration) *AppRunTimeUpdateOne {
-	artuo.mutation.AddRunDuration(t)
+// AddDuration adds t to the "duration" field.
+func (artuo *AppRunTimeUpdateOne) AddDuration(t time.Duration) *AppRunTimeUpdateOne {
+	artuo.mutation.AddDuration(t)
 	return artuo
 }
 
@@ -429,7 +477,7 @@ func (artuo *AppRunTimeUpdateOne) sqlSave(ctx context.Context) (_node *AppRunTim
 	if err := artuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
 	id, ok := artuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "AppRunTime.id" for update`)}
@@ -460,14 +508,20 @@ func (artuo *AppRunTimeUpdateOne) sqlSave(ctx context.Context) (_node *AppRunTim
 	if value, ok := artuo.mutation.AddedUserID(); ok {
 		_spec.AddField(appruntime.FieldUserID, field.TypeInt64, value)
 	}
+	if value, ok := artuo.mutation.DeviceID(); ok {
+		_spec.SetField(appruntime.FieldDeviceID, field.TypeInt64, value)
+	}
+	if value, ok := artuo.mutation.AddedDeviceID(); ok {
+		_spec.AddField(appruntime.FieldDeviceID, field.TypeInt64, value)
+	}
 	if value, ok := artuo.mutation.StartTime(); ok {
 		_spec.SetField(appruntime.FieldStartTime, field.TypeTime, value)
 	}
-	if value, ok := artuo.mutation.RunDuration(); ok {
-		_spec.SetField(appruntime.FieldRunDuration, field.TypeInt64, value)
+	if value, ok := artuo.mutation.Duration(); ok {
+		_spec.SetField(appruntime.FieldDuration, field.TypeInt64, value)
 	}
-	if value, ok := artuo.mutation.AddedRunDuration(); ok {
-		_spec.AddField(appruntime.FieldRunDuration, field.TypeInt64, value)
+	if value, ok := artuo.mutation.AddedDuration(); ok {
+		_spec.AddField(appruntime.FieldDuration, field.TypeInt64, value)
 	}
 	if value, ok := artuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(appruntime.FieldUpdatedAt, field.TypeTime, value)

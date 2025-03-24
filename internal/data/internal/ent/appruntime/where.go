@@ -12,47 +12,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.AppRunTime {
+func ID(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.AppRunTime {
+func IDEQ(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.AppRunTime {
+func IDNEQ(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.AppRunTime {
+func IDIn(ids ...model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.AppRunTime {
+func IDNotIn(ids ...model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.AppRunTime {
+func IDGT(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.AppRunTime {
+func IDGTE(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.AppRunTime {
+func IDLT(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.AppRunTime {
+func IDLTE(id model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldLTE(FieldID, id))
 }
 
@@ -68,15 +68,21 @@ func AppID(v model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldEQ(FieldAppID, vc))
 }
 
+// DeviceID applies equality check predicate on the "device_id" field. It's identical to DeviceIDEQ.
+func DeviceID(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldEQ(FieldDeviceID, vc))
+}
+
 // StartTime applies equality check predicate on the "start_time" field. It's identical to StartTimeEQ.
 func StartTime(v time.Time) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldEQ(FieldStartTime, v))
 }
 
-// RunDuration applies equality check predicate on the "run_duration" field. It's identical to RunDurationEQ.
-func RunDuration(v time.Duration) predicate.AppRunTime {
+// Duration applies equality check predicate on the "duration" field. It's identical to DurationEQ.
+func Duration(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldEQ(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldEQ(FieldDuration, vc))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -173,6 +179,60 @@ func AppIDNotIn(vs ...model.InternalID) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldNotIn(FieldAppID, v...))
 }
 
+// DeviceIDEQ applies the EQ predicate on the "device_id" field.
+func DeviceIDEQ(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldEQ(FieldDeviceID, vc))
+}
+
+// DeviceIDNEQ applies the NEQ predicate on the "device_id" field.
+func DeviceIDNEQ(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldNEQ(FieldDeviceID, vc))
+}
+
+// DeviceIDIn applies the In predicate on the "device_id" field.
+func DeviceIDIn(vs ...model.InternalID) predicate.AppRunTime {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppRunTime(sql.FieldIn(FieldDeviceID, v...))
+}
+
+// DeviceIDNotIn applies the NotIn predicate on the "device_id" field.
+func DeviceIDNotIn(vs ...model.InternalID) predicate.AppRunTime {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.AppRunTime(sql.FieldNotIn(FieldDeviceID, v...))
+}
+
+// DeviceIDGT applies the GT predicate on the "device_id" field.
+func DeviceIDGT(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldGT(FieldDeviceID, vc))
+}
+
+// DeviceIDGTE applies the GTE predicate on the "device_id" field.
+func DeviceIDGTE(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldGTE(FieldDeviceID, vc))
+}
+
+// DeviceIDLT applies the LT predicate on the "device_id" field.
+func DeviceIDLT(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldLT(FieldDeviceID, vc))
+}
+
+// DeviceIDLTE applies the LTE predicate on the "device_id" field.
+func DeviceIDLTE(v model.InternalID) predicate.AppRunTime {
+	vc := int64(v)
+	return predicate.AppRunTime(sql.FieldLTE(FieldDeviceID, vc))
+}
+
 // StartTimeEQ applies the EQ predicate on the "start_time" field.
 func StartTimeEQ(v time.Time) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldEQ(FieldStartTime, v))
@@ -213,58 +273,58 @@ func StartTimeLTE(v time.Time) predicate.AppRunTime {
 	return predicate.AppRunTime(sql.FieldLTE(FieldStartTime, v))
 }
 
-// RunDurationEQ applies the EQ predicate on the "run_duration" field.
-func RunDurationEQ(v time.Duration) predicate.AppRunTime {
+// DurationEQ applies the EQ predicate on the "duration" field.
+func DurationEQ(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldEQ(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldEQ(FieldDuration, vc))
 }
 
-// RunDurationNEQ applies the NEQ predicate on the "run_duration" field.
-func RunDurationNEQ(v time.Duration) predicate.AppRunTime {
+// DurationNEQ applies the NEQ predicate on the "duration" field.
+func DurationNEQ(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldNEQ(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldNEQ(FieldDuration, vc))
 }
 
-// RunDurationIn applies the In predicate on the "run_duration" field.
-func RunDurationIn(vs ...time.Duration) predicate.AppRunTime {
+// DurationIn applies the In predicate on the "duration" field.
+func DurationIn(vs ...time.Duration) predicate.AppRunTime {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.AppRunTime(sql.FieldIn(FieldRunDuration, v...))
+	return predicate.AppRunTime(sql.FieldIn(FieldDuration, v...))
 }
 
-// RunDurationNotIn applies the NotIn predicate on the "run_duration" field.
-func RunDurationNotIn(vs ...time.Duration) predicate.AppRunTime {
+// DurationNotIn applies the NotIn predicate on the "duration" field.
+func DurationNotIn(vs ...time.Duration) predicate.AppRunTime {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.AppRunTime(sql.FieldNotIn(FieldRunDuration, v...))
+	return predicate.AppRunTime(sql.FieldNotIn(FieldDuration, v...))
 }
 
-// RunDurationGT applies the GT predicate on the "run_duration" field.
-func RunDurationGT(v time.Duration) predicate.AppRunTime {
+// DurationGT applies the GT predicate on the "duration" field.
+func DurationGT(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldGT(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldGT(FieldDuration, vc))
 }
 
-// RunDurationGTE applies the GTE predicate on the "run_duration" field.
-func RunDurationGTE(v time.Duration) predicate.AppRunTime {
+// DurationGTE applies the GTE predicate on the "duration" field.
+func DurationGTE(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldGTE(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldGTE(FieldDuration, vc))
 }
 
-// RunDurationLT applies the LT predicate on the "run_duration" field.
-func RunDurationLT(v time.Duration) predicate.AppRunTime {
+// DurationLT applies the LT predicate on the "duration" field.
+func DurationLT(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldLT(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldLT(FieldDuration, vc))
 }
 
-// RunDurationLTE applies the LTE predicate on the "run_duration" field.
-func RunDurationLTE(v time.Duration) predicate.AppRunTime {
+// DurationLTE applies the LTE predicate on the "duration" field.
+func DurationLTE(v time.Duration) predicate.AppRunTime {
 	vc := int64(v)
-	return predicate.AppRunTime(sql.FieldLTE(FieldRunDuration, vc))
+	return predicate.AppRunTime(sql.FieldLTE(FieldDuration, vc))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

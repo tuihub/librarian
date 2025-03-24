@@ -18,10 +18,12 @@ const (
 	FieldUserID = "user_id"
 	// FieldAppID holds the string denoting the app_id field in the database.
 	FieldAppID = "app_id"
+	// FieldDeviceID holds the string denoting the device_id field in the database.
+	FieldDeviceID = "device_id"
 	// FieldStartTime holds the string denoting the start_time field in the database.
 	FieldStartTime = "start_time"
-	// FieldRunDuration holds the string denoting the run_duration field in the database.
-	FieldRunDuration = "run_duration"
+	// FieldDuration holds the string denoting the duration field in the database.
+	FieldDuration = "duration"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -44,8 +46,9 @@ var Columns = []string{
 	FieldID,
 	FieldUserID,
 	FieldAppID,
+	FieldDeviceID,
 	FieldStartTime,
-	FieldRunDuration,
+	FieldDuration,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -87,14 +90,19 @@ func ByAppID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppID, opts...).ToFunc()
 }
 
+// ByDeviceID orders the results by the device_id field.
+func ByDeviceID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceID, opts...).ToFunc()
+}
+
 // ByStartTime orders the results by the start_time field.
 func ByStartTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStartTime, opts...).ToFunc()
 }
 
-// ByRunDuration orders the results by the run_duration field.
-func ByRunDuration(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRunDuration, opts...).ToFunc()
+// ByDuration orders the results by the duration field.
+func ByDuration(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDuration, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

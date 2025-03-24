@@ -90,13 +90,13 @@ func init() {
 	appruntimeFields := schema.AppRunTime{}.Fields()
 	_ = appruntimeFields
 	// appruntimeDescUpdatedAt is the schema descriptor for updated_at field.
-	appruntimeDescUpdatedAt := appruntimeFields[4].Descriptor()
+	appruntimeDescUpdatedAt := appruntimeFields[6].Descriptor()
 	// appruntime.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	appruntime.DefaultUpdatedAt = appruntimeDescUpdatedAt.Default.(func() time.Time)
 	// appruntime.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	appruntime.UpdateDefaultUpdatedAt = appruntimeDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// appruntimeDescCreatedAt is the schema descriptor for created_at field.
-	appruntimeDescCreatedAt := appruntimeFields[5].Descriptor()
+	appruntimeDescCreatedAt := appruntimeFields[7].Descriptor()
 	// appruntime.DefaultCreatedAt holds the default value on creation for the created_at field.
 	appruntime.DefaultCreatedAt = appruntimeDescCreatedAt.Default.(func() time.Time)
 	deviceFields := schema.Device{}.Fields()

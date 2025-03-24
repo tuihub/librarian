@@ -107,8 +107,8 @@ func (artq *AppRunTimeQuery) FirstX(ctx context.Context) *AppRunTime {
 
 // FirstID returns the first AppRunTime ID from the query.
 // Returns a *NotFoundError when no AppRunTime ID was found.
-func (artq *AppRunTimeQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (artq *AppRunTimeQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = artq.Limit(1).IDs(setContextOp(ctx, artq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (artq *AppRunTimeQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (artq *AppRunTimeQuery) FirstIDX(ctx context.Context) int {
+func (artq *AppRunTimeQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := artq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +158,8 @@ func (artq *AppRunTimeQuery) OnlyX(ctx context.Context) *AppRunTime {
 // OnlyID is like Only, but returns the only AppRunTime ID in the query.
 // Returns a *NotSingularError when more than one AppRunTime ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (artq *AppRunTimeQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (artq *AppRunTimeQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = artq.Limit(2).IDs(setContextOp(ctx, artq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +175,7 @@ func (artq *AppRunTimeQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (artq *AppRunTimeQuery) OnlyIDX(ctx context.Context) int {
+func (artq *AppRunTimeQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := artq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +203,7 @@ func (artq *AppRunTimeQuery) AllX(ctx context.Context) []*AppRunTime {
 }
 
 // IDs executes the query and returns a list of AppRunTime IDs.
-func (artq *AppRunTimeQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (artq *AppRunTimeQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if artq.ctx.Unique == nil && artq.path != nil {
 		artq.Unique(true)
 	}
@@ -215,7 +215,7 @@ func (artq *AppRunTimeQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (artq *AppRunTimeQuery) IDsX(ctx context.Context) []int {
+func (artq *AppRunTimeQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := artq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -442,7 +442,7 @@ func (artq *AppRunTimeQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (artq *AppRunTimeQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(appruntime.Table, appruntime.Columns, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
 	_spec.From = artq.sql
 	if unique := artq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

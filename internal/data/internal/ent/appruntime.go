@@ -18,15 +18,17 @@ import (
 type AppRunTime struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID model.InternalID `json:"user_id,omitempty"`
 	// AppID holds the value of the "app_id" field.
 	AppID model.InternalID `json:"app_id,omitempty"`
+	// DeviceID holds the value of the "device_id" field.
+	DeviceID model.InternalID `json:"device_id,omitempty"`
 	// StartTime holds the value of the "start_time" field.
 	StartTime time.Time `json:"start_time,omitempty"`
-	// RunDuration holds the value of the "run_duration" field.
-	RunDuration time.Duration `json:"run_duration,omitempty"`
+	// Duration holds the value of the "duration" field.
+	Duration time.Duration `json:"duration,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -62,7 +64,7 @@ func (*AppRunTime) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appruntime.FieldID, appruntime.FieldUserID, appruntime.FieldAppID, appruntime.FieldRunDuration:
+		case appruntime.FieldID, appruntime.FieldUserID, appruntime.FieldAppID, appruntime.FieldDeviceID, appruntime.FieldDuration:
 			values[i] = new(sql.NullInt64)
 		case appruntime.FieldStartTime, appruntime.FieldUpdatedAt, appruntime.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -82,11 +84,11 @@ func (art *AppRunTime) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case appruntime.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				art.ID = model.InternalID(value.Int64)
 			}
-			art.ID = int(value.Int64)
 		case appruntime.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
@@ -99,17 +101,23 @@ func (art *AppRunTime) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				art.AppID = model.InternalID(value.Int64)
 			}
+		case appruntime.FieldDeviceID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field device_id", values[i])
+			} else if value.Valid {
+				art.DeviceID = model.InternalID(value.Int64)
+			}
 		case appruntime.FieldStartTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field start_time", values[i])
 			} else if value.Valid {
 				art.StartTime = value.Time
 			}
-		case appruntime.FieldRunDuration:
+		case appruntime.FieldDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field run_duration", values[i])
+				return fmt.Errorf("unexpected type %T for field duration", values[i])
 			} else if value.Valid {
-				art.RunDuration = time.Duration(value.Int64)
+				art.Duration = time.Duration(value.Int64)
 			}
 		case appruntime.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -170,11 +178,14 @@ func (art *AppRunTime) String() string {
 	builder.WriteString("app_id=")
 	builder.WriteString(fmt.Sprintf("%v", art.AppID))
 	builder.WriteString(", ")
+	builder.WriteString("device_id=")
+	builder.WriteString(fmt.Sprintf("%v", art.DeviceID))
+	builder.WriteString(", ")
 	builder.WriteString("start_time=")
 	builder.WriteString(art.StartTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("run_duration=")
-	builder.WriteString(fmt.Sprintf("%v", art.RunDuration))
+	builder.WriteString("duration=")
+	builder.WriteString(fmt.Sprintf("%v", art.Duration))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(art.UpdatedAt.Format(time.ANSIC))

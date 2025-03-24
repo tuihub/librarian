@@ -428,39 +428,49 @@ func (g *GeburaRepo) ListApps(
 //		Strings(ctx)
 //}
 
-func (g *GeburaRepo) AddAppRunTime(
+func (g *GeburaRepo) BatchCreateAppRunTime(
 	ctx context.Context,
 	userID model.InternalID,
-	instID model.InternalID,
-	timeRange *model.TimeRange,
+	runTimes []*modelgebura.AppRunTime,
 ) error {
-	return g.data.db.AppRunTime.Create().
-		SetUserID(userID).
-		SetAppID(instID).
-		SetStartTime(timeRange.StartTime).
-		SetRunDuration(timeRange.Duration).
-		Exec(ctx)
+	rt := make([]*ent.AppRunTimeCreate, 0, len(runTimes))
+	for _, runTime := range runTimes {
+		rt = append(rt, g.data.db.AppRunTime.Create().
+			SetID(runTime.ID).
+			SetUserID(userID).
+			SetAppID(runTime.AppID).
+			SetStartTime(runTime.RunTime.StartTime).
+			SetDuration(runTime.RunTime.Duration),
+		)
+	}
+	return g.data.db.AppRunTime.CreateBulk(rt...).Exec(ctx)
 }
 
 func (g *GeburaRepo) SumAppRunTime(
 	ctx context.Context,
 	userID model.InternalID,
-	instID model.InternalID,
+	appIDs []model.InternalID,
+	deviceIDs []model.InternalID,
 	timeRange *model.TimeRange,
 ) (time.Duration, error) {
 	var v []struct {
 		Sum time.Duration
 	}
-	err := g.data.db.AppRunTime.Query().Where(
-		appruntime.UserIDEQ(userID),
-		appruntime.AppIDEQ(instID),
-		appruntime.And(
-			appruntime.StartTimeGTE(timeRange.StartTime),
-			appruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
-		),
-	).Aggregate(
-		ent.Sum(appruntime.FieldRunDuration),
-	).Scan(ctx, &v)
+	q := g.data.db.AppRunTime.Query().Where(
+		appruntime.UserIDEQ(userID))
+	if len(appIDs) > 0 {
+		q.Where(appruntime.AppIDIn(appIDs...))
+	}
+	if len(deviceIDs) > 0 {
+		q.Where(appruntime.DeviceIDIn(deviceIDs...))
+	}
+	err := q.Where(appruntime.And(
+		appruntime.StartTimeGTE(timeRange.StartTime),
+		appruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+	)).
+		Aggregate(
+			ent.Sum(appruntime.FieldDuration),
+		).Scan(ctx, &v)
 	if err != nil {
 		return time.Duration(0), err
 	}
@@ -469,4 +479,45 @@ func (g *GeburaRepo) SumAppRunTime(
 		res += rt.Sum
 	}
 	return res, nil
+}
+
+func (g *GeburaRepo) ListAppRunTimes(
+	ctx context.Context,
+	userID model.InternalID,
+	paging model.Paging,
+	appIDs []model.InternalID,
+	deviceIDs []model.InternalID,
+	timeRange *model.TimeRange,
+) ([]*modelgebura.AppRunTime, int, error) {
+	q := g.data.db.AppRunTime.Query().Where(
+		appruntime.UserIDEQ(userID),
+	)
+	if len(appIDs) > 0 {
+		q.Where(appruntime.AppIDIn(appIDs...))
+	}
+	if len(deviceIDs) > 0 {
+		q.Where(appruntime.DeviceIDIn(deviceIDs...))
+	}
+	if timeRange != nil {
+		q.Where(appruntime.And(
+			appruntime.StartTimeGTE(timeRange.StartTime),
+			appruntime.StartTimeLTE(timeRange.StartTime.Add(timeRange.Duration)),
+		))
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	res, err := q.
+		Limit(paging.ToLimit()).
+		Offset(paging.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizAppRunTimeList(res), total, nil
+}
+
+func (g *GeburaRepo) DeleteAppRunTime(ctx context.Context, userID model.InternalID, id model.InternalID) error {
+	return g.data.db.AppRunTime.DeleteOneID(id).Exec(ctx)
 }

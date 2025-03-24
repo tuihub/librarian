@@ -36,15 +36,21 @@ func (artc *AppRunTimeCreate) SetAppID(mi model.InternalID) *AppRunTimeCreate {
 	return artc
 }
 
+// SetDeviceID sets the "device_id" field.
+func (artc *AppRunTimeCreate) SetDeviceID(mi model.InternalID) *AppRunTimeCreate {
+	artc.mutation.SetDeviceID(mi)
+	return artc
+}
+
 // SetStartTime sets the "start_time" field.
 func (artc *AppRunTimeCreate) SetStartTime(t time.Time) *AppRunTimeCreate {
 	artc.mutation.SetStartTime(t)
 	return artc
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (artc *AppRunTimeCreate) SetRunDuration(t time.Duration) *AppRunTimeCreate {
-	artc.mutation.SetRunDuration(t)
+// SetDuration sets the "duration" field.
+func (artc *AppRunTimeCreate) SetDuration(t time.Duration) *AppRunTimeCreate {
+	artc.mutation.SetDuration(t)
 	return artc
 }
 
@@ -73,6 +79,12 @@ func (artc *AppRunTimeCreate) SetNillableCreatedAt(t *time.Time) *AppRunTimeCrea
 	if t != nil {
 		artc.SetCreatedAt(*t)
 	}
+	return artc
+}
+
+// SetID sets the "id" field.
+func (artc *AppRunTimeCreate) SetID(mi model.InternalID) *AppRunTimeCreate {
+	artc.mutation.SetID(mi)
 	return artc
 }
 
@@ -134,11 +146,14 @@ func (artc *AppRunTimeCreate) check() error {
 	if _, ok := artc.mutation.AppID(); !ok {
 		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppRunTime.app_id"`)}
 	}
+	if _, ok := artc.mutation.DeviceID(); !ok {
+		return &ValidationError{Name: "device_id", err: errors.New(`ent: missing required field "AppRunTime.device_id"`)}
+	}
 	if _, ok := artc.mutation.StartTime(); !ok {
 		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "AppRunTime.start_time"`)}
 	}
-	if _, ok := artc.mutation.RunDuration(); !ok {
-		return &ValidationError{Name: "run_duration", err: errors.New(`ent: missing required field "AppRunTime.run_duration"`)}
+	if _, ok := artc.mutation.Duration(); !ok {
+		return &ValidationError{Name: "duration", err: errors.New(`ent: missing required field "AppRunTime.duration"`)}
 	}
 	if _, ok := artc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppRunTime.updated_at"`)}
@@ -163,8 +178,10 @@ func (artc *AppRunTimeCreate) sqlSave(ctx context.Context) (*AppRunTime, error) 
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = model.InternalID(id)
+	}
 	artc.mutation.id = &_node.ID
 	artc.mutation.done = true
 	return _node, nil
@@ -173,20 +190,28 @@ func (artc *AppRunTimeCreate) sqlSave(ctx context.Context) (*AppRunTime, error) 
 func (artc *AppRunTimeCreate) createSpec() (*AppRunTime, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AppRunTime{config: artc.config}
-		_spec = sqlgraph.NewCreateSpec(appruntime.Table, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(appruntime.Table, sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = artc.conflict
+	if id, ok := artc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := artc.mutation.UserID(); ok {
 		_spec.SetField(appruntime.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
+	}
+	if value, ok := artc.mutation.DeviceID(); ok {
+		_spec.SetField(appruntime.FieldDeviceID, field.TypeInt64, value)
+		_node.DeviceID = value
 	}
 	if value, ok := artc.mutation.StartTime(); ok {
 		_spec.SetField(appruntime.FieldStartTime, field.TypeTime, value)
 		_node.StartTime = value
 	}
-	if value, ok := artc.mutation.RunDuration(); ok {
-		_spec.SetField(appruntime.FieldRunDuration, field.TypeInt64, value)
-		_node.RunDuration = value
+	if value, ok := artc.mutation.Duration(); ok {
+		_spec.SetField(appruntime.FieldDuration, field.TypeInt64, value)
+		_node.Duration = value
 	}
 	if value, ok := artc.mutation.UpdatedAt(); ok {
 		_spec.SetField(appruntime.FieldUpdatedAt, field.TypeTime, value)
@@ -295,6 +320,24 @@ func (u *AppRunTimeUpsert) UpdateAppID() *AppRunTimeUpsert {
 	return u
 }
 
+// SetDeviceID sets the "device_id" field.
+func (u *AppRunTimeUpsert) SetDeviceID(v model.InternalID) *AppRunTimeUpsert {
+	u.Set(appruntime.FieldDeviceID, v)
+	return u
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppRunTimeUpsert) UpdateDeviceID() *AppRunTimeUpsert {
+	u.SetExcluded(appruntime.FieldDeviceID)
+	return u
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppRunTimeUpsert) AddDeviceID(v model.InternalID) *AppRunTimeUpsert {
+	u.Add(appruntime.FieldDeviceID, v)
+	return u
+}
+
 // SetStartTime sets the "start_time" field.
 func (u *AppRunTimeUpsert) SetStartTime(v time.Time) *AppRunTimeUpsert {
 	u.Set(appruntime.FieldStartTime, v)
@@ -307,21 +350,21 @@ func (u *AppRunTimeUpsert) UpdateStartTime() *AppRunTimeUpsert {
 	return u
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppRunTimeUpsert) SetRunDuration(v time.Duration) *AppRunTimeUpsert {
-	u.Set(appruntime.FieldRunDuration, v)
+// SetDuration sets the "duration" field.
+func (u *AppRunTimeUpsert) SetDuration(v time.Duration) *AppRunTimeUpsert {
+	u.Set(appruntime.FieldDuration, v)
 	return u
 }
 
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppRunTimeUpsert) UpdateRunDuration() *AppRunTimeUpsert {
-	u.SetExcluded(appruntime.FieldRunDuration)
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *AppRunTimeUpsert) UpdateDuration() *AppRunTimeUpsert {
+	u.SetExcluded(appruntime.FieldDuration)
 	return u
 }
 
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppRunTimeUpsert) AddRunDuration(v time.Duration) *AppRunTimeUpsert {
-	u.Add(appruntime.FieldRunDuration, v)
+// AddDuration adds v to the "duration" field.
+func (u *AppRunTimeUpsert) AddDuration(v time.Duration) *AppRunTimeUpsert {
+	u.Add(appruntime.FieldDuration, v)
 	return u
 }
 
@@ -349,16 +392,24 @@ func (u *AppRunTimeUpsert) UpdateCreatedAt() *AppRunTimeUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.AppRunTime.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appruntime.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppRunTimeUpsertOne) UpdateNewValues() *AppRunTimeUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(appruntime.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -424,6 +475,27 @@ func (u *AppRunTimeUpsertOne) UpdateAppID() *AppRunTimeUpsertOne {
 	})
 }
 
+// SetDeviceID sets the "device_id" field.
+func (u *AppRunTimeUpsertOne) SetDeviceID(v model.InternalID) *AppRunTimeUpsertOne {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppRunTimeUpsertOne) AddDeviceID(v model.InternalID) *AppRunTimeUpsertOne {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppRunTimeUpsertOne) UpdateDeviceID() *AppRunTimeUpsertOne {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
 // SetStartTime sets the "start_time" field.
 func (u *AppRunTimeUpsertOne) SetStartTime(v time.Time) *AppRunTimeUpsertOne {
 	return u.Update(func(s *AppRunTimeUpsert) {
@@ -438,24 +510,24 @@ func (u *AppRunTimeUpsertOne) UpdateStartTime() *AppRunTimeUpsertOne {
 	})
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppRunTimeUpsertOne) SetRunDuration(v time.Duration) *AppRunTimeUpsertOne {
+// SetDuration sets the "duration" field.
+func (u *AppRunTimeUpsertOne) SetDuration(v time.Duration) *AppRunTimeUpsertOne {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.SetRunDuration(v)
+		s.SetDuration(v)
 	})
 }
 
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppRunTimeUpsertOne) AddRunDuration(v time.Duration) *AppRunTimeUpsertOne {
+// AddDuration adds v to the "duration" field.
+func (u *AppRunTimeUpsertOne) AddDuration(v time.Duration) *AppRunTimeUpsertOne {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.AddRunDuration(v)
+		s.AddDuration(v)
 	})
 }
 
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppRunTimeUpsertOne) UpdateRunDuration() *AppRunTimeUpsertOne {
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *AppRunTimeUpsertOne) UpdateDuration() *AppRunTimeUpsertOne {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.UpdateRunDuration()
+		s.UpdateDuration()
 	})
 }
 
@@ -503,7 +575,7 @@ func (u *AppRunTimeUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppRunTimeUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AppRunTimeUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -512,7 +584,7 @@ func (u *AppRunTimeUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppRunTimeUpsertOne) IDX(ctx context.Context) int {
+func (u *AppRunTimeUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -567,9 +639,9 @@ func (artcb *AppRunTimeCreateBulk) Save(ctx context.Context) ([]*AppRunTime, err
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -657,10 +729,20 @@ type AppRunTimeUpsertBulk struct {
 //	client.AppRunTime.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appruntime.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppRunTimeUpsertBulk) UpdateNewValues() *AppRunTimeUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(appruntime.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -726,6 +808,27 @@ func (u *AppRunTimeUpsertBulk) UpdateAppID() *AppRunTimeUpsertBulk {
 	})
 }
 
+// SetDeviceID sets the "device_id" field.
+func (u *AppRunTimeUpsertBulk) SetDeviceID(v model.InternalID) *AppRunTimeUpsertBulk {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.SetDeviceID(v)
+	})
+}
+
+// AddDeviceID adds v to the "device_id" field.
+func (u *AppRunTimeUpsertBulk) AddDeviceID(v model.InternalID) *AppRunTimeUpsertBulk {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.AddDeviceID(v)
+	})
+}
+
+// UpdateDeviceID sets the "device_id" field to the value that was provided on create.
+func (u *AppRunTimeUpsertBulk) UpdateDeviceID() *AppRunTimeUpsertBulk {
+	return u.Update(func(s *AppRunTimeUpsert) {
+		s.UpdateDeviceID()
+	})
+}
+
 // SetStartTime sets the "start_time" field.
 func (u *AppRunTimeUpsertBulk) SetStartTime(v time.Time) *AppRunTimeUpsertBulk {
 	return u.Update(func(s *AppRunTimeUpsert) {
@@ -740,24 +843,24 @@ func (u *AppRunTimeUpsertBulk) UpdateStartTime() *AppRunTimeUpsertBulk {
 	})
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppRunTimeUpsertBulk) SetRunDuration(v time.Duration) *AppRunTimeUpsertBulk {
+// SetDuration sets the "duration" field.
+func (u *AppRunTimeUpsertBulk) SetDuration(v time.Duration) *AppRunTimeUpsertBulk {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.SetRunDuration(v)
+		s.SetDuration(v)
 	})
 }
 
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppRunTimeUpsertBulk) AddRunDuration(v time.Duration) *AppRunTimeUpsertBulk {
+// AddDuration adds v to the "duration" field.
+func (u *AppRunTimeUpsertBulk) AddDuration(v time.Duration) *AppRunTimeUpsertBulk {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.AddRunDuration(v)
+		s.AddDuration(v)
 	})
 }
 
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppRunTimeUpsertBulk) UpdateRunDuration() *AppRunTimeUpsertBulk {
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *AppRunTimeUpsertBulk) UpdateDuration() *AppRunTimeUpsertBulk {
 	return u.Update(func(s *AppRunTimeUpsert) {
-		s.UpdateRunDuration()
+		s.UpdateDuration()
 	})
 }
 

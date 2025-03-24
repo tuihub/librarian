@@ -422,14 +422,14 @@ func (au *AppUpdate) SetUser(u *User) *AppUpdate {
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (au *AppUpdate) AddAppRunTimeIDs(ids ...int) *AppUpdate {
+func (au *AppUpdate) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.AddAppRunTimeIDs(ids...)
 	return au
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
 func (au *AppUpdate) AddAppRunTime(a ...*AppRunTime) *AppUpdate {
-	ids := make([]int, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -454,14 +454,14 @@ func (au *AppUpdate) ClearAppRunTime() *AppUpdate {
 }
 
 // RemoveAppRunTimeIDs removes the "app_run_time" edge to AppRunTime entities by IDs.
-func (au *AppUpdate) RemoveAppRunTimeIDs(ids ...int) *AppUpdate {
+func (au *AppUpdate) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdate {
 	au.mutation.RemoveAppRunTimeIDs(ids...)
 	return au
 }
 
 // RemoveAppRunTime removes "app_run_time" edges to AppRunTime entities.
 func (au *AppUpdate) RemoveAppRunTime(a ...*AppRunTime) *AppUpdate {
-	ids := make([]int, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -687,7 +687,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -700,7 +700,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -716,7 +716,7 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1134,14 +1134,14 @@ func (auo *AppUpdateOne) SetUser(u *User) *AppUpdateOne {
 }
 
 // AddAppRunTimeIDs adds the "app_run_time" edge to the AppRunTime entity by IDs.
-func (auo *AppUpdateOne) AddAppRunTimeIDs(ids ...int) *AppUpdateOne {
+func (auo *AppUpdateOne) AddAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.AddAppRunTimeIDs(ids...)
 	return auo
 }
 
 // AddAppRunTime adds the "app_run_time" edges to the AppRunTime entity.
 func (auo *AppUpdateOne) AddAppRunTime(a ...*AppRunTime) *AppUpdateOne {
-	ids := make([]int, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -1166,14 +1166,14 @@ func (auo *AppUpdateOne) ClearAppRunTime() *AppUpdateOne {
 }
 
 // RemoveAppRunTimeIDs removes the "app_run_time" edge to AppRunTime entities by IDs.
-func (auo *AppUpdateOne) RemoveAppRunTimeIDs(ids ...int) *AppUpdateOne {
+func (auo *AppUpdateOne) RemoveAppRunTimeIDs(ids ...model.InternalID) *AppUpdateOne {
 	auo.mutation.RemoveAppRunTimeIDs(ids...)
 	return auo
 }
 
 // RemoveAppRunTime removes "app_run_time" edges to AppRunTime entities.
 func (auo *AppUpdateOne) RemoveAppRunTime(a ...*AppRunTime) *AppUpdateOne {
-	ids := make([]int, len(a))
+	ids := make([]model.InternalID, len(a))
 	for i := range a {
 		ids[i] = a[i].ID
 	}
@@ -1429,7 +1429,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -1442,7 +1442,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -1458,7 +1458,7 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Columns: []string{app.AppRunTimeColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

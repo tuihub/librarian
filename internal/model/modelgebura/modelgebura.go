@@ -79,6 +79,13 @@ type App struct {
 	AlternativeNames   []string
 }
 
+type AppRunTime struct {
+	ID       model.InternalID
+	AppID    model.InternalID
+	DeviceID model.InternalID
+	RunTime  *model.TimeRange
+}
+
 type AppBinary struct {
 	Name      string
 	SizeBytes int64

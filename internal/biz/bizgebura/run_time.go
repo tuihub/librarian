@@ -7,51 +7,97 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (g *Gebura) AddAppRunTime(
+func (g *Gebura) BatchCreateAppRunTime(
 	ctx context.Context,
-	instID model.InternalID,
-	timeRange *model.TimeRange,
+	runTimes []*modelgebura.AppRunTime,
 ) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
 	}
-	if timeRange == nil {
-		return pb.ErrorErrorReasonBadRequest("empty time range")
+	for _, runTime := range runTimes {
+		if runTime == nil || runTime.RunTime == nil {
+			return pb.ErrorErrorReasonBadRequest("empty time range")
+		}
+		if runTime.RunTime.Duration <= 0 {
+			return pb.ErrorErrorReasonBadRequest("invalid time range")
+		}
 	}
-	if timeRange.Duration <= 0 {
-		return pb.ErrorErrorReasonBadRequest("invalid time range")
+	ids, err := g.id.BatchNew(len(runTimes))
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err)
 	}
-	err := g.repo.AddAppRunTime(ctx, claims.UserID, instID, timeRange)
+	for i, runTime := range runTimes {
+		runTime.ID = ids[i]
+	}
+	err = g.repo.BatchCreateAppRunTime(ctx, claims.UserID, runTimes)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	return nil
 }
 
-func (g *Gebura) SumAppInstRunTime(
+func (g *Gebura) SumAppRunTime(
 	ctx context.Context,
-	instID model.InternalID,
+	appIDs []model.InternalID,
+	deviceIDs []model.InternalID,
 	timeRange *model.TimeRange,
-) (time.Duration, error) {
+) (*time.Duration, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
-		return time.Duration(0), bizutils.NoPermissionError()
+		return nil, bizutils.NoPermissionError()
 	}
 	if timeRange == nil {
-		return time.Duration(0), pb.ErrorErrorReasonBadRequest("empty time range")
+		return nil, pb.ErrorErrorReasonBadRequest("empty time range")
 	}
 	if timeRange.Duration <= 0 {
-		return time.Duration(0), pb.ErrorErrorReasonBadRequest("invalid time range")
+		return nil, pb.ErrorErrorReasonBadRequest("invalid time range")
 	}
-	res, err := g.repo.SumAppRunTime(ctx, claims.UserID, instID, timeRange)
+	res, err := g.repo.SumAppRunTime(ctx, claims.UserID, appIDs, deviceIDs, timeRange)
 	if err != nil {
-		return time.Duration(0), pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return res, nil
+	return &res, nil
+}
+
+func (g *Gebura) ListAppRunTimes(
+	ctx context.Context,
+	paging model.Paging,
+	appIDs []model.InternalID,
+	deviceIDs []model.InternalID,
+	timeRange *model.TimeRange,
+) ([]*modelgebura.AppRunTime, int, error) {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return nil, 0, bizutils.NoPermissionError()
+	}
+	if timeRange == nil {
+		return nil, 0, pb.ErrorErrorReasonBadRequest("empty time range")
+	}
+	if timeRange.Duration <= 0 {
+		return nil, 0, pb.ErrorErrorReasonBadRequest("invalid time range")
+	}
+	res, total, err := g.repo.ListAppRunTimes(ctx, claims.UserID, paging, appIDs, deviceIDs, timeRange)
+	if err != nil {
+		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return res, total, nil
+}
+
+func (g *Gebura) DeleteAppRunTime(ctx context.Context, id model.InternalID) error {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
+	}
+	err := g.repo.DeleteAppRunTime(ctx, claims.UserID, id)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return nil
 }

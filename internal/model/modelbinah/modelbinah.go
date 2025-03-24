@@ -20,6 +20,7 @@ const (
 	FileTypeUnspecified FileType = iota
 	FileTypeGeburaSave
 	FileTypeChesedImage
+	FileTypeGeburaAppInfoImage
 )
 
 const MaxFileSize = 256 << 20
