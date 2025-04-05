@@ -3,6 +3,7 @@ package angelaweb
 import (
 	"net/http"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
@@ -50,4 +51,13 @@ func (a *AngelaWeb) setupRoutes() {
 	auth.Get("/porters", a.pageBuilder.PorterList)
 
 	auth.Get("/config", a.pageBuilder.ConfigList)
+
+	// 404 处理 - 放在所有路由之后
+	a.app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).Render("error", fiber.Map{
+			"Title":     "页面未找到",
+			"Message":   "您访问的页面不存在",
+			"ErrorType": "not_found",
+		})
+	})
 }
