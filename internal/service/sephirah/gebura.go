@@ -292,3 +292,32 @@ func (s *LibrarianSephirahService) ListAppSaveFiles(
 ) (*sephirah.ListAppSaveFilesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListGameSaveFile not implemented")
 }
+
+func (s *LibrarianSephirahService) ListAppCategories(
+	ctx context.Context,
+	req *sephirah.ListAppCategoriesRequest,
+) (*sephirah.ListAppCategoriesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAppCategories not implemented")
+}
+func (s *LibrarianSephirahService) CreateAppCategory(
+	ctx context.Context,
+	req *sephirah.CreateAppCategoryRequest,
+) (*sephirah.CreateAppCategoryResponse, error) {
+	ac, err := s.g.CreateAppCategory(ctx, converter.ToBizAppCategory(req.GetAppCategory()))
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.CreateAppCategoryResponse{Id: converter.ToPBInternalID(ac.ID)}, nil
+}
+func (s *LibrarianSephirahService) UpdateAppCategory(
+	ctx context.Context,
+	req *sephirah.UpdateAppCategoryRequest,
+) (*sephirah.UpdateAppCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAppCategory not implemented")
+}
+func (s *LibrarianSephirahService) DeleteAppCategory(
+	ctx context.Context,
+	req *sephirah.DeleteAppCategoryRequest,
+) (*sephirah.DeleteAppCategoryResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAppCategory not implemented")
+}

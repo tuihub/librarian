@@ -71,6 +71,10 @@ const (
 	EdgeDevice = "device"
 	// EdgeAppRunTime holds the string denoting the app_run_time edge name in mutations.
 	EdgeAppRunTime = "app_run_time"
+	// EdgeAppCategory holds the string denoting the app_category edge name in mutations.
+	EdgeAppCategory = "app_category"
+	// EdgeAppAppCategory holds the string denoting the app_app_category edge name in mutations.
+	EdgeAppAppCategory = "app_app_category"
 	// Table holds the table name of the app in the database.
 	Table = "apps"
 	// UserTable is the table that holds the user relation/edge.
@@ -94,6 +98,18 @@ const (
 	AppRunTimeInverseTable = "app_run_times"
 	// AppRunTimeColumn is the table column denoting the app_run_time relation/edge.
 	AppRunTimeColumn = "app_id"
+	// AppCategoryTable is the table that holds the app_category relation/edge. The primary key declared below.
+	AppCategoryTable = "app_app_categories"
+	// AppCategoryInverseTable is the table name for the AppCategory entity.
+	// It exists in this package in order to avoid circular dependency with the "appcategory" package.
+	AppCategoryInverseTable = "app_categories"
+	// AppAppCategoryTable is the table that holds the app_app_category relation/edge.
+	AppAppCategoryTable = "app_app_categories"
+	// AppAppCategoryInverseTable is the table name for the AppAppCategory entity.
+	// It exists in this package in order to avoid circular dependency with the "appappcategory" package.
+	AppAppCategoryInverseTable = "app_app_categories"
+	// AppAppCategoryColumn is the table column denoting the app_app_category relation/edge.
+	AppAppCategoryColumn = "app_id"
 )
 
 // Columns holds all SQL columns for app fields.
@@ -125,6 +141,12 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
+
+var (
+	// AppCategoryPrimaryKey and AppCategoryColumn2 are the table columns denoting the
+	// primary key for the app_category relation (M2M).
+	AppCategoryPrimaryKey = []string{"app_category_id", "app_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -313,6 +335,34 @@ func ByAppRunTime(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newAppRunTimeStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByAppCategoryCount orders the results by app_category count.
+func ByAppCategoryCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppCategoryStep(), opts...)
+	}
+}
+
+// ByAppCategory orders the results by app_category terms.
+func ByAppCategory(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppCategoryStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByAppAppCategoryCount orders the results by app_app_category count.
+func ByAppAppCategoryCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newAppAppCategoryStep(), opts...)
+	}
+}
+
+// ByAppAppCategory orders the results by app_app_category terms.
+func ByAppAppCategory(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newAppAppCategoryStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newUserStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -332,5 +382,19 @@ func newAppRunTimeStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(AppRunTimeInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, AppRunTimeTable, AppRunTimeColumn),
+	)
+}
+func newAppCategoryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppCategoryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, AppCategoryTable, AppCategoryPrimaryKey...),
+	)
+}
+func newAppAppCategoryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(AppAppCategoryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, AppAppCategoryTable, AppAppCategoryColumn),
 	)
 }

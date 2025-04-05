@@ -17,20 +17,52 @@ import (
 type AppCategory struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID model.InternalID `json:"user_id,omitempty"`
-	// AppID holds the value of the "app_id" field.
-	AppID model.InternalID `json:"app_id,omitempty"`
-	// StartTime holds the value of the "start_time" field.
-	StartTime time.Time `json:"start_time,omitempty"`
-	// RunDuration holds the value of the "run_duration" field.
-	RunDuration time.Duration `json:"run_duration,omitempty"`
+	// VersionNumber holds the value of the "version_number" field.
+	VersionNumber uint64 `json:"version_number,omitempty"`
+	// VersionDate holds the value of the "version_date" field.
+	VersionDate time.Time `json:"version_date,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the AppCategoryQuery when eager-loading is set.
+	Edges        AppCategoryEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// AppCategoryEdges holds the relations/edges for other nodes in the graph.
+type AppCategoryEdges struct {
+	// App holds the value of the app edge.
+	App []*App `json:"app,omitempty"`
+	// AppAppCategory holds the value of the app_app_category edge.
+	AppAppCategory []*AppAppCategory `json:"app_app_category,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// AppOrErr returns the App value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppCategoryEdges) AppOrErr() ([]*App, error) {
+	if e.loadedTypes[0] {
+		return e.App, nil
+	}
+	return nil, &NotLoadedError{edge: "app"}
+}
+
+// AppAppCategoryOrErr returns the AppAppCategory value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppCategoryEdges) AppAppCategoryOrErr() ([]*AppAppCategory, error) {
+	if e.loadedTypes[1] {
+		return e.AppAppCategory, nil
+	}
+	return nil, &NotLoadedError{edge: "app_app_category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -38,9 +70,11 @@ func (*AppCategory) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case appcategory.FieldID, appcategory.FieldUserID, appcategory.FieldAppID, appcategory.FieldRunDuration:
+		case appcategory.FieldID, appcategory.FieldUserID, appcategory.FieldVersionNumber:
 			values[i] = new(sql.NullInt64)
-		case appcategory.FieldStartTime, appcategory.FieldUpdatedAt, appcategory.FieldCreatedAt:
+		case appcategory.FieldName:
+			values[i] = new(sql.NullString)
+		case appcategory.FieldVersionDate, appcategory.FieldUpdatedAt, appcategory.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -58,34 +92,34 @@ func (ac *AppCategory) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case appcategory.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				ac.ID = model.InternalID(value.Int64)
 			}
-			ac.ID = int(value.Int64)
 		case appcategory.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value.Valid {
 				ac.UserID = model.InternalID(value.Int64)
 			}
-		case appcategory.FieldAppID:
+		case appcategory.FieldVersionNumber:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_id", values[i])
+				return fmt.Errorf("unexpected type %T for field version_number", values[i])
 			} else if value.Valid {
-				ac.AppID = model.InternalID(value.Int64)
+				ac.VersionNumber = uint64(value.Int64)
 			}
-		case appcategory.FieldStartTime:
+		case appcategory.FieldVersionDate:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field start_time", values[i])
+				return fmt.Errorf("unexpected type %T for field version_date", values[i])
 			} else if value.Valid {
-				ac.StartTime = value.Time
+				ac.VersionDate = value.Time
 			}
-		case appcategory.FieldRunDuration:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field run_duration", values[i])
+		case appcategory.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				ac.RunDuration = time.Duration(value.Int64)
+				ac.Name = value.String
 			}
 		case appcategory.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -110,6 +144,16 @@ func (ac *AppCategory) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (ac *AppCategory) Value(name string) (ent.Value, error) {
 	return ac.selectValues.Get(name)
+}
+
+// QueryApp queries the "app" edge of the AppCategory entity.
+func (ac *AppCategory) QueryApp() *AppQuery {
+	return NewAppCategoryClient(ac.config).QueryApp(ac)
+}
+
+// QueryAppAppCategory queries the "app_app_category" edge of the AppCategory entity.
+func (ac *AppCategory) QueryAppAppCategory() *AppAppCategoryQuery {
+	return NewAppCategoryClient(ac.config).QueryAppAppCategory(ac)
 }
 
 // Update returns a builder for updating this AppCategory.
@@ -138,14 +182,14 @@ func (ac *AppCategory) String() string {
 	builder.WriteString("user_id=")
 	builder.WriteString(fmt.Sprintf("%v", ac.UserID))
 	builder.WriteString(", ")
-	builder.WriteString("app_id=")
-	builder.WriteString(fmt.Sprintf("%v", ac.AppID))
+	builder.WriteString("version_number=")
+	builder.WriteString(fmt.Sprintf("%v", ac.VersionNumber))
 	builder.WriteString(", ")
-	builder.WriteString("start_time=")
-	builder.WriteString(ac.StartTime.Format(time.ANSIC))
+	builder.WriteString("version_date=")
+	builder.WriteString(ac.VersionDate.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("run_duration=")
-	builder.WriteString(fmt.Sprintf("%v", ac.RunDuration))
+	builder.WriteString("name=")
+	builder.WriteString(ac.Name)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(ac.UpdatedAt.Format(time.ANSIC))

@@ -6,52 +6,53 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.AppCategory {
+func ID(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.AppCategory {
+func IDEQ(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.AppCategory {
+func IDNEQ(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.AppCategory {
+func IDIn(ids ...model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.AppCategory {
+func IDNotIn(ids ...model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.AppCategory {
+func IDGT(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.AppCategory {
+func IDGTE(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.AppCategory {
+func IDLT(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.AppCategory {
+func IDLTE(id model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldLTE(FieldID, id))
 }
 
@@ -61,21 +62,19 @@ func UserID(v model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldEQ(FieldUserID, vc))
 }
 
-// AppID applies equality check predicate on the "app_id" field. It's identical to AppIDEQ.
-func AppID(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldEQ(FieldAppID, vc))
+// VersionNumber applies equality check predicate on the "version_number" field. It's identical to VersionNumberEQ.
+func VersionNumber(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldVersionNumber, v))
 }
 
-// StartTime applies equality check predicate on the "start_time" field. It's identical to StartTimeEQ.
-func StartTime(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldEQ(FieldStartTime, v))
+// VersionDate applies equality check predicate on the "version_date" field. It's identical to VersionDateEQ.
+func VersionDate(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldVersionDate, v))
 }
 
-// RunDuration applies equality check predicate on the "run_duration" field. It's identical to RunDurationEQ.
-func RunDuration(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldEQ(FieldRunDuration, vc))
+// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
+func Name(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldName, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -142,152 +141,149 @@ func UserIDLTE(v model.InternalID) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldLTE(FieldUserID, vc))
 }
 
-// AppIDEQ applies the EQ predicate on the "app_id" field.
-func AppIDEQ(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldEQ(FieldAppID, vc))
+// VersionNumberEQ applies the EQ predicate on the "version_number" field.
+func VersionNumberEQ(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldVersionNumber, v))
 }
 
-// AppIDNEQ applies the NEQ predicate on the "app_id" field.
-func AppIDNEQ(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldNEQ(FieldAppID, vc))
+// VersionNumberNEQ applies the NEQ predicate on the "version_number" field.
+func VersionNumberNEQ(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNEQ(FieldVersionNumber, v))
 }
 
-// AppIDIn applies the In predicate on the "app_id" field.
-func AppIDIn(vs ...model.InternalID) predicate.AppCategory {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.AppCategory(sql.FieldIn(FieldAppID, v...))
+// VersionNumberIn applies the In predicate on the "version_number" field.
+func VersionNumberIn(vs ...uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldIn(FieldVersionNumber, vs...))
 }
 
-// AppIDNotIn applies the NotIn predicate on the "app_id" field.
-func AppIDNotIn(vs ...model.InternalID) predicate.AppCategory {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.AppCategory(sql.FieldNotIn(FieldAppID, v...))
+// VersionNumberNotIn applies the NotIn predicate on the "version_number" field.
+func VersionNumberNotIn(vs ...uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNotIn(FieldVersionNumber, vs...))
 }
 
-// AppIDGT applies the GT predicate on the "app_id" field.
-func AppIDGT(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldGT(FieldAppID, vc))
+// VersionNumberGT applies the GT predicate on the "version_number" field.
+func VersionNumberGT(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGT(FieldVersionNumber, v))
 }
 
-// AppIDGTE applies the GTE predicate on the "app_id" field.
-func AppIDGTE(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldGTE(FieldAppID, vc))
+// VersionNumberGTE applies the GTE predicate on the "version_number" field.
+func VersionNumberGTE(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGTE(FieldVersionNumber, v))
 }
 
-// AppIDLT applies the LT predicate on the "app_id" field.
-func AppIDLT(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldLT(FieldAppID, vc))
+// VersionNumberLT applies the LT predicate on the "version_number" field.
+func VersionNumberLT(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLT(FieldVersionNumber, v))
 }
 
-// AppIDLTE applies the LTE predicate on the "app_id" field.
-func AppIDLTE(v model.InternalID) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldLTE(FieldAppID, vc))
+// VersionNumberLTE applies the LTE predicate on the "version_number" field.
+func VersionNumberLTE(v uint64) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLTE(FieldVersionNumber, v))
 }
 
-// StartTimeEQ applies the EQ predicate on the "start_time" field.
-func StartTimeEQ(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldEQ(FieldStartTime, v))
+// VersionDateEQ applies the EQ predicate on the "version_date" field.
+func VersionDateEQ(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldVersionDate, v))
 }
 
-// StartTimeNEQ applies the NEQ predicate on the "start_time" field.
-func StartTimeNEQ(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldNEQ(FieldStartTime, v))
+// VersionDateNEQ applies the NEQ predicate on the "version_date" field.
+func VersionDateNEQ(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNEQ(FieldVersionDate, v))
 }
 
-// StartTimeIn applies the In predicate on the "start_time" field.
-func StartTimeIn(vs ...time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldIn(FieldStartTime, vs...))
+// VersionDateIn applies the In predicate on the "version_date" field.
+func VersionDateIn(vs ...time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldIn(FieldVersionDate, vs...))
 }
 
-// StartTimeNotIn applies the NotIn predicate on the "start_time" field.
-func StartTimeNotIn(vs ...time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldNotIn(FieldStartTime, vs...))
+// VersionDateNotIn applies the NotIn predicate on the "version_date" field.
+func VersionDateNotIn(vs ...time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNotIn(FieldVersionDate, vs...))
 }
 
-// StartTimeGT applies the GT predicate on the "start_time" field.
-func StartTimeGT(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldGT(FieldStartTime, v))
+// VersionDateGT applies the GT predicate on the "version_date" field.
+func VersionDateGT(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGT(FieldVersionDate, v))
 }
 
-// StartTimeGTE applies the GTE predicate on the "start_time" field.
-func StartTimeGTE(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldGTE(FieldStartTime, v))
+// VersionDateGTE applies the GTE predicate on the "version_date" field.
+func VersionDateGTE(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGTE(FieldVersionDate, v))
 }
 
-// StartTimeLT applies the LT predicate on the "start_time" field.
-func StartTimeLT(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldLT(FieldStartTime, v))
+// VersionDateLT applies the LT predicate on the "version_date" field.
+func VersionDateLT(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLT(FieldVersionDate, v))
 }
 
-// StartTimeLTE applies the LTE predicate on the "start_time" field.
-func StartTimeLTE(v time.Time) predicate.AppCategory {
-	return predicate.AppCategory(sql.FieldLTE(FieldStartTime, v))
+// VersionDateLTE applies the LTE predicate on the "version_date" field.
+func VersionDateLTE(v time.Time) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLTE(FieldVersionDate, v))
 }
 
-// RunDurationEQ applies the EQ predicate on the "run_duration" field.
-func RunDurationEQ(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldEQ(FieldRunDuration, vc))
+// NameEQ applies the EQ predicate on the "name" field.
+func NameEQ(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEQ(FieldName, v))
 }
 
-// RunDurationNEQ applies the NEQ predicate on the "run_duration" field.
-func RunDurationNEQ(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldNEQ(FieldRunDuration, vc))
+// NameNEQ applies the NEQ predicate on the "name" field.
+func NameNEQ(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNEQ(FieldName, v))
 }
 
-// RunDurationIn applies the In predicate on the "run_duration" field.
-func RunDurationIn(vs ...time.Duration) predicate.AppCategory {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.AppCategory(sql.FieldIn(FieldRunDuration, v...))
+// NameIn applies the In predicate on the "name" field.
+func NameIn(vs ...string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldIn(FieldName, vs...))
 }
 
-// RunDurationNotIn applies the NotIn predicate on the "run_duration" field.
-func RunDurationNotIn(vs ...time.Duration) predicate.AppCategory {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.AppCategory(sql.FieldNotIn(FieldRunDuration, v...))
+// NameNotIn applies the NotIn predicate on the "name" field.
+func NameNotIn(vs ...string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldNotIn(FieldName, vs...))
 }
 
-// RunDurationGT applies the GT predicate on the "run_duration" field.
-func RunDurationGT(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldGT(FieldRunDuration, vc))
+// NameGT applies the GT predicate on the "name" field.
+func NameGT(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGT(FieldName, v))
 }
 
-// RunDurationGTE applies the GTE predicate on the "run_duration" field.
-func RunDurationGTE(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldGTE(FieldRunDuration, vc))
+// NameGTE applies the GTE predicate on the "name" field.
+func NameGTE(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldGTE(FieldName, v))
 }
 
-// RunDurationLT applies the LT predicate on the "run_duration" field.
-func RunDurationLT(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldLT(FieldRunDuration, vc))
+// NameLT applies the LT predicate on the "name" field.
+func NameLT(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLT(FieldName, v))
 }
 
-// RunDurationLTE applies the LTE predicate on the "run_duration" field.
-func RunDurationLTE(v time.Duration) predicate.AppCategory {
-	vc := int64(v)
-	return predicate.AppCategory(sql.FieldLTE(FieldRunDuration, vc))
+// NameLTE applies the LTE predicate on the "name" field.
+func NameLTE(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldLTE(FieldName, v))
+}
+
+// NameContains applies the Contains predicate on the "name" field.
+func NameContains(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldContains(FieldName, v))
+}
+
+// NameHasPrefix applies the HasPrefix predicate on the "name" field.
+func NameHasPrefix(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldHasPrefix(FieldName, v))
+}
+
+// NameHasSuffix applies the HasSuffix predicate on the "name" field.
+func NameHasSuffix(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldHasSuffix(FieldName, v))
+}
+
+// NameEqualFold applies the EqualFold predicate on the "name" field.
+func NameEqualFold(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldEqualFold(FieldName, v))
+}
+
+// NameContainsFold applies the ContainsFold predicate on the "name" field.
+func NameContainsFold(v string) predicate.AppCategory {
+	return predicate.AppCategory(sql.FieldContainsFold(FieldName, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -368,6 +364,52 @@ func CreatedAtLT(v time.Time) predicate.AppCategory {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.AppCategory {
 	return predicate.AppCategory(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasApp applies the HasEdge predicate on the "app" edge.
+func HasApp() predicate.AppCategory {
+	return predicate.AppCategory(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, AppTable, AppPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppWith applies the HasEdge predicate on the "app" edge with a given conditions (other predicates).
+func HasAppWith(preds ...predicate.App) predicate.AppCategory {
+	return predicate.AppCategory(func(s *sql.Selector) {
+		step := newAppStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAppAppCategory applies the HasEdge predicate on the "app_app_category" edge.
+func HasAppAppCategory() predicate.AppCategory {
+	return predicate.AppCategory(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, AppAppCategoryTable, AppAppCategoryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppAppCategoryWith applies the HasEdge predicate on the "app_app_category" edge with a given conditions (other predicates).
+func HasAppAppCategoryWith(preds ...predicate.AppAppCategory) predicate.AppCategory {
+	return predicate.AppCategory(func(s *sql.Selector) {
+		step := newAppAppCategoryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

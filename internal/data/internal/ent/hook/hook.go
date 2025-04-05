@@ -33,6 +33,18 @@ func (f AppFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) 
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppMutation", m)
 }
 
+// The AppAppCategoryFunc type is an adapter to allow the use of ordinary
+// function as AppAppCategory mutator.
+type AppAppCategoryFunc func(context.Context, *ent.AppAppCategoryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AppAppCategoryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.AppAppCategoryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AppAppCategoryMutation", m)
+}
+
 // The AppCategoryFunc type is an adapter to allow the use of ordinary
 // function as AppCategory mutator.
 type AppCategoryFunc func(context.Context, *ent.AppCategoryMutation) (ent.Value, error)

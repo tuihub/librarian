@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
@@ -55,6 +56,7 @@ const (
 	// Node types.
 	TypeAccount            = "Account"
 	TypeApp                = "App"
+	TypeAppAppCategory     = "AppAppCategory"
 	TypeAppCategory        = "AppCategory"
 	TypeAppInfo            = "AppInfo"
 	TypeAppRunTime         = "AppRunTime"
@@ -915,6 +917,12 @@ type AppMutation struct {
 	app_run_time            map[model.InternalID]struct{}
 	removedapp_run_time     map[model.InternalID]struct{}
 	clearedapp_run_time     bool
+	app_category            map[model.InternalID]struct{}
+	removedapp_category     map[model.InternalID]struct{}
+	clearedapp_category     bool
+	app_app_category        map[int]struct{}
+	removedapp_app_category map[int]struct{}
+	clearedapp_app_category bool
 	done                    bool
 	oldValue                func(context.Context) (*App, error)
 	predicates              []predicate.App
@@ -2306,6 +2314,114 @@ func (m *AppMutation) ResetAppRunTime() {
 	m.removedapp_run_time = nil
 }
 
+// AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by ids.
+func (m *AppMutation) AddAppCategoryIDs(ids ...model.InternalID) {
+	if m.app_category == nil {
+		m.app_category = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app_category[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppCategory clears the "app_category" edge to the AppCategory entity.
+func (m *AppMutation) ClearAppCategory() {
+	m.clearedapp_category = true
+}
+
+// AppCategoryCleared reports if the "app_category" edge to the AppCategory entity was cleared.
+func (m *AppMutation) AppCategoryCleared() bool {
+	return m.clearedapp_category
+}
+
+// RemoveAppCategoryIDs removes the "app_category" edge to the AppCategory entity by IDs.
+func (m *AppMutation) RemoveAppCategoryIDs(ids ...model.InternalID) {
+	if m.removedapp_category == nil {
+		m.removedapp_category = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app_category, ids[i])
+		m.removedapp_category[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppCategory returns the removed IDs of the "app_category" edge to the AppCategory entity.
+func (m *AppMutation) RemovedAppCategoryIDs() (ids []model.InternalID) {
+	for id := range m.removedapp_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppCategoryIDs returns the "app_category" edge IDs in the mutation.
+func (m *AppMutation) AppCategoryIDs() (ids []model.InternalID) {
+	for id := range m.app_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppCategory resets all changes to the "app_category" edge.
+func (m *AppMutation) ResetAppCategory() {
+	m.app_category = nil
+	m.clearedapp_category = false
+	m.removedapp_category = nil
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by ids.
+func (m *AppMutation) AddAppAppCategoryIDs(ids ...int) {
+	if m.app_app_category == nil {
+		m.app_app_category = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.app_app_category[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppAppCategory clears the "app_app_category" edge to the AppAppCategory entity.
+func (m *AppMutation) ClearAppAppCategory() {
+	m.clearedapp_app_category = true
+}
+
+// AppAppCategoryCleared reports if the "app_app_category" edge to the AppAppCategory entity was cleared.
+func (m *AppMutation) AppAppCategoryCleared() bool {
+	return m.clearedapp_app_category
+}
+
+// RemoveAppAppCategoryIDs removes the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (m *AppMutation) RemoveAppAppCategoryIDs(ids ...int) {
+	if m.removedapp_app_category == nil {
+		m.removedapp_app_category = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.app_app_category, ids[i])
+		m.removedapp_app_category[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppAppCategory returns the removed IDs of the "app_app_category" edge to the AppAppCategory entity.
+func (m *AppMutation) RemovedAppAppCategoryIDs() (ids []int) {
+	for id := range m.removedapp_app_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppAppCategoryIDs returns the "app_app_category" edge IDs in the mutation.
+func (m *AppMutation) AppAppCategoryIDs() (ids []int) {
+	for id := range m.app_app_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppAppCategory resets all changes to the "app_app_category" edge.
+func (m *AppMutation) ResetAppAppCategory() {
+	m.app_app_category = nil
+	m.clearedapp_app_category = false
+	m.removedapp_app_category = nil
+}
+
 // Where appends a list predicates to the AppMutation builder.
 func (m *AppMutation) Where(ps ...predicate.App) {
 	m.predicates = append(m.predicates, ps...)
@@ -2973,7 +3089,7 @@ func (m *AppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.user != nil {
 		edges = append(edges, app.EdgeUser)
 	}
@@ -2982,6 +3098,12 @@ func (m *AppMutation) AddedEdges() []string {
 	}
 	if m.app_run_time != nil {
 		edges = append(edges, app.EdgeAppRunTime)
+	}
+	if m.app_category != nil {
+		edges = append(edges, app.EdgeAppCategory)
+	}
+	if m.app_app_category != nil {
+		edges = append(edges, app.EdgeAppAppCategory)
 	}
 	return edges
 }
@@ -3004,15 +3126,33 @@ func (m *AppMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeAppCategory:
+		ids := make([]ent.Value, 0, len(m.app_category))
+		for id := range m.app_category {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgeAppAppCategory:
+		ids := make([]ent.Value, 0, len(m.app_app_category))
+		for id := range m.app_app_category {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.removedapp_run_time != nil {
 		edges = append(edges, app.EdgeAppRunTime)
+	}
+	if m.removedapp_category != nil {
+		edges = append(edges, app.EdgeAppCategory)
+	}
+	if m.removedapp_app_category != nil {
+		edges = append(edges, app.EdgeAppAppCategory)
 	}
 	return edges
 }
@@ -3027,13 +3167,25 @@ func (m *AppMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case app.EdgeAppCategory:
+		ids := make([]ent.Value, 0, len(m.removedapp_category))
+		for id := range m.removedapp_category {
+			ids = append(ids, id)
+		}
+		return ids
+	case app.EdgeAppAppCategory:
+		ids := make([]ent.Value, 0, len(m.removedapp_app_category))
+		for id := range m.removedapp_app_category {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 5)
 	if m.cleareduser {
 		edges = append(edges, app.EdgeUser)
 	}
@@ -3042,6 +3194,12 @@ func (m *AppMutation) ClearedEdges() []string {
 	}
 	if m.clearedapp_run_time {
 		edges = append(edges, app.EdgeAppRunTime)
+	}
+	if m.clearedapp_category {
+		edges = append(edges, app.EdgeAppCategory)
+	}
+	if m.clearedapp_app_category {
+		edges = append(edges, app.EdgeAppAppCategory)
 	}
 	return edges
 }
@@ -3056,6 +3214,10 @@ func (m *AppMutation) EdgeCleared(name string) bool {
 		return m.cleareddevice
 	case app.EdgeAppRunTime:
 		return m.clearedapp_run_time
+	case app.EdgeAppCategory:
+		return m.clearedapp_category
+	case app.EdgeAppAppCategory:
+		return m.clearedapp_app_category
 	}
 	return false
 }
@@ -3087,29 +3249,523 @@ func (m *AppMutation) ResetEdge(name string) error {
 	case app.EdgeAppRunTime:
 		m.ResetAppRunTime()
 		return nil
+	case app.EdgeAppCategory:
+		m.ResetAppCategory()
+		return nil
+	case app.EdgeAppAppCategory:
+		m.ResetAppAppCategory()
+		return nil
 	}
 	return fmt.Errorf("unknown App edge %s", name)
+}
+
+// AppAppCategoryMutation represents an operation that mutates the AppAppCategory nodes in the graph.
+type AppAppCategoryMutation struct {
+	config
+	op                  Op
+	typ                 string
+	id                  *int
+	clearedFields       map[string]struct{}
+	app_category        *model.InternalID
+	clearedapp_category bool
+	app                 *model.InternalID
+	clearedapp          bool
+	done                bool
+	oldValue            func(context.Context) (*AppAppCategory, error)
+	predicates          []predicate.AppAppCategory
+}
+
+var _ ent.Mutation = (*AppAppCategoryMutation)(nil)
+
+// appappcategoryOption allows management of the mutation configuration using functional options.
+type appappcategoryOption func(*AppAppCategoryMutation)
+
+// newAppAppCategoryMutation creates new mutation for the AppAppCategory entity.
+func newAppAppCategoryMutation(c config, op Op, opts ...appappcategoryOption) *AppAppCategoryMutation {
+	m := &AppAppCategoryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeAppAppCategory,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withAppAppCategoryID sets the ID field of the mutation.
+func withAppAppCategoryID(id int) appappcategoryOption {
+	return func(m *AppAppCategoryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *AppAppCategory
+		)
+		m.oldValue = func(ctx context.Context) (*AppAppCategory, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().AppAppCategory.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withAppAppCategory sets the old AppAppCategory of the mutation.
+func withAppAppCategory(node *AppAppCategory) appappcategoryOption {
+	return func(m *AppAppCategoryMutation) {
+		m.oldValue = func(context.Context) (*AppAppCategory, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m AppAppCategoryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m AppAppCategoryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *AppAppCategoryMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *AppAppCategoryMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().AppAppCategory.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetAppCategoryID sets the "app_category_id" field.
+func (m *AppAppCategoryMutation) SetAppCategoryID(mi model.InternalID) {
+	m.app_category = &mi
+}
+
+// AppCategoryID returns the value of the "app_category_id" field in the mutation.
+func (m *AppAppCategoryMutation) AppCategoryID() (r model.InternalID, exists bool) {
+	v := m.app_category
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppCategoryID returns the old "app_category_id" field's value of the AppAppCategory entity.
+// If the AppAppCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppAppCategoryMutation) OldAppCategoryID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppCategoryID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppCategoryID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppCategoryID: %w", err)
+	}
+	return oldValue.AppCategoryID, nil
+}
+
+// ResetAppCategoryID resets all changes to the "app_category_id" field.
+func (m *AppAppCategoryMutation) ResetAppCategoryID() {
+	m.app_category = nil
+}
+
+// SetAppID sets the "app_id" field.
+func (m *AppAppCategoryMutation) SetAppID(mi model.InternalID) {
+	m.app = &mi
+}
+
+// AppID returns the value of the "app_id" field in the mutation.
+func (m *AppAppCategoryMutation) AppID() (r model.InternalID, exists bool) {
+	v := m.app
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppID returns the old "app_id" field's value of the AppAppCategory entity.
+// If the AppAppCategory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *AppAppCategoryMutation) OldAppID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+	}
+	return oldValue.AppID, nil
+}
+
+// ResetAppID resets all changes to the "app_id" field.
+func (m *AppAppCategoryMutation) ResetAppID() {
+	m.app = nil
+}
+
+// ClearAppCategory clears the "app_category" edge to the AppCategory entity.
+func (m *AppAppCategoryMutation) ClearAppCategory() {
+	m.clearedapp_category = true
+	m.clearedFields[appappcategory.FieldAppCategoryID] = struct{}{}
+}
+
+// AppCategoryCleared reports if the "app_category" edge to the AppCategory entity was cleared.
+func (m *AppAppCategoryMutation) AppCategoryCleared() bool {
+	return m.clearedapp_category
+}
+
+// AppCategoryIDs returns the "app_category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppCategoryID instead. It exists only for internal usage by the builders.
+func (m *AppAppCategoryMutation) AppCategoryIDs() (ids []model.InternalID) {
+	if id := m.app_category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetAppCategory resets all changes to the "app_category" edge.
+func (m *AppAppCategoryMutation) ResetAppCategory() {
+	m.app_category = nil
+	m.clearedapp_category = false
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (m *AppAppCategoryMutation) ClearApp() {
+	m.clearedapp = true
+	m.clearedFields[appappcategory.FieldAppID] = struct{}{}
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *AppAppCategoryMutation) AppCleared() bool {
+	return m.clearedapp
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// AppID instead. It exists only for internal usage by the builders.
+func (m *AppAppCategoryMutation) AppIDs() (ids []model.InternalID) {
+	if id := m.app; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *AppAppCategoryMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+}
+
+// Where appends a list predicates to the AppAppCategoryMutation builder.
+func (m *AppAppCategoryMutation) Where(ps ...predicate.AppAppCategory) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the AppAppCategoryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *AppAppCategoryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.AppAppCategory, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *AppAppCategoryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *AppAppCategoryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (AppAppCategory).
+func (m *AppAppCategoryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *AppAppCategoryMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.app_category != nil {
+		fields = append(fields, appappcategory.FieldAppCategoryID)
+	}
+	if m.app != nil {
+		fields = append(fields, appappcategory.FieldAppID)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *AppAppCategoryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case appappcategory.FieldAppCategoryID:
+		return m.AppCategoryID()
+	case appappcategory.FieldAppID:
+		return m.AppID()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *AppAppCategoryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case appappcategory.FieldAppCategoryID:
+		return m.OldAppCategoryID(ctx)
+	case appappcategory.FieldAppID:
+		return m.OldAppID(ctx)
+	}
+	return nil, fmt.Errorf("unknown AppAppCategory field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppAppCategoryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case appappcategory.FieldAppCategoryID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppCategoryID(v)
+		return nil
+	case appappcategory.FieldAppID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppID(v)
+		return nil
+	}
+	return fmt.Errorf("unknown AppAppCategory field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *AppAppCategoryMutation) AddedFields() []string {
+	var fields []string
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *AppAppCategoryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *AppAppCategoryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown AppAppCategory numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *AppAppCategoryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *AppAppCategoryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *AppAppCategoryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown AppAppCategory nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *AppAppCategoryMutation) ResetField(name string) error {
+	switch name {
+	case appappcategory.FieldAppCategoryID:
+		m.ResetAppCategoryID()
+		return nil
+	case appappcategory.FieldAppID:
+		m.ResetAppID()
+		return nil
+	}
+	return fmt.Errorf("unknown AppAppCategory field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *AppAppCategoryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.app_category != nil {
+		edges = append(edges, appappcategory.EdgeAppCategory)
+	}
+	if m.app != nil {
+		edges = append(edges, appappcategory.EdgeApp)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *AppAppCategoryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appappcategory.EdgeAppCategory:
+		if id := m.app_category; id != nil {
+			return []ent.Value{*id}
+		}
+	case appappcategory.EdgeApp:
+		if id := m.app; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *AppAppCategoryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 2)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *AppAppCategoryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *AppAppCategoryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 2)
+	if m.clearedapp_category {
+		edges = append(edges, appappcategory.EdgeAppCategory)
+	}
+	if m.clearedapp {
+		edges = append(edges, appappcategory.EdgeApp)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *AppAppCategoryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appappcategory.EdgeAppCategory:
+		return m.clearedapp_category
+	case appappcategory.EdgeApp:
+		return m.clearedapp
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *AppAppCategoryMutation) ClearEdge(name string) error {
+	switch name {
+	case appappcategory.EdgeAppCategory:
+		m.ClearAppCategory()
+		return nil
+	case appappcategory.EdgeApp:
+		m.ClearApp()
+		return nil
+	}
+	return fmt.Errorf("unknown AppAppCategory unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *AppAppCategoryMutation) ResetEdge(name string) error {
+	switch name {
+	case appappcategory.EdgeAppCategory:
+		m.ResetAppCategory()
+		return nil
+	case appappcategory.EdgeApp:
+		m.ResetApp()
+		return nil
+	}
+	return fmt.Errorf("unknown AppAppCategory edge %s", name)
 }
 
 // AppCategoryMutation represents an operation that mutates the AppCategory nodes in the graph.
 type AppCategoryMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	user_id         *model.InternalID
-	adduser_id      *model.InternalID
-	app_id          *model.InternalID
-	addapp_id       *model.InternalID
-	start_time      *time.Time
-	run_duration    *time.Duration
-	addrun_duration *time.Duration
-	updated_at      *time.Time
-	created_at      *time.Time
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*AppCategory, error)
-	predicates      []predicate.AppCategory
+	op                      Op
+	typ                     string
+	id                      *model.InternalID
+	user_id                 *model.InternalID
+	adduser_id              *model.InternalID
+	version_number          *uint64
+	addversion_number       *int64
+	version_date            *time.Time
+	name                    *string
+	updated_at              *time.Time
+	created_at              *time.Time
+	clearedFields           map[string]struct{}
+	app                     map[model.InternalID]struct{}
+	removedapp              map[model.InternalID]struct{}
+	clearedapp              bool
+	app_app_category        map[int]struct{}
+	removedapp_app_category map[int]struct{}
+	clearedapp_app_category bool
+	done                    bool
+	oldValue                func(context.Context) (*AppCategory, error)
+	predicates              []predicate.AppCategory
 }
 
 var _ ent.Mutation = (*AppCategoryMutation)(nil)
@@ -3132,7 +3788,7 @@ func newAppCategoryMutation(c config, op Op, opts ...appcategoryOption) *AppCate
 }
 
 // withAppCategoryID sets the ID field of the mutation.
-func withAppCategoryID(id int) appcategoryOption {
+func withAppCategoryID(id model.InternalID) appcategoryOption {
 	return func(m *AppCategoryMutation) {
 		var (
 			err   error
@@ -3182,9 +3838,15 @@ func (m AppCategoryMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of AppCategory entities.
+func (m *AppCategoryMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *AppCategoryMutation) ID() (id int, exists bool) {
+func (m *AppCategoryMutation) ID() (id model.InternalID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -3195,12 +3857,12 @@ func (m *AppCategoryMutation) ID() (id int, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *AppCategoryMutation) IDs(ctx context.Context) ([]int, error) {
+func (m *AppCategoryMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int{id}, nil
+			return []model.InternalID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -3266,152 +3928,132 @@ func (m *AppCategoryMutation) ResetUserID() {
 	m.adduser_id = nil
 }
 
-// SetAppID sets the "app_id" field.
-func (m *AppCategoryMutation) SetAppID(mi model.InternalID) {
-	m.app_id = &mi
-	m.addapp_id = nil
+// SetVersionNumber sets the "version_number" field.
+func (m *AppCategoryMutation) SetVersionNumber(u uint64) {
+	m.version_number = &u
+	m.addversion_number = nil
 }
 
-// AppID returns the value of the "app_id" field in the mutation.
-func (m *AppCategoryMutation) AppID() (r model.InternalID, exists bool) {
-	v := m.app_id
+// VersionNumber returns the value of the "version_number" field in the mutation.
+func (m *AppCategoryMutation) VersionNumber() (r uint64, exists bool) {
+	v := m.version_number
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAppID returns the old "app_id" field's value of the AppCategory entity.
+// OldVersionNumber returns the old "version_number" field's value of the AppCategory entity.
 // If the AppCategory object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppCategoryMutation) OldAppID(ctx context.Context) (v model.InternalID, err error) {
+func (m *AppCategoryMutation) OldVersionNumber(ctx context.Context) (v uint64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAppID is only allowed on UpdateOne operations")
+		return v, errors.New("OldVersionNumber is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAppID requires an ID field in the mutation")
+		return v, errors.New("OldVersionNumber requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAppID: %w", err)
+		return v, fmt.Errorf("querying old value for OldVersionNumber: %w", err)
 	}
-	return oldValue.AppID, nil
+	return oldValue.VersionNumber, nil
 }
 
-// AddAppID adds mi to the "app_id" field.
-func (m *AppCategoryMutation) AddAppID(mi model.InternalID) {
-	if m.addapp_id != nil {
-		*m.addapp_id += mi
+// AddVersionNumber adds u to the "version_number" field.
+func (m *AppCategoryMutation) AddVersionNumber(u int64) {
+	if m.addversion_number != nil {
+		*m.addversion_number += u
 	} else {
-		m.addapp_id = &mi
+		m.addversion_number = &u
 	}
 }
 
-// AddedAppID returns the value that was added to the "app_id" field in this mutation.
-func (m *AppCategoryMutation) AddedAppID() (r model.InternalID, exists bool) {
-	v := m.addapp_id
+// AddedVersionNumber returns the value that was added to the "version_number" field in this mutation.
+func (m *AppCategoryMutation) AddedVersionNumber() (r int64, exists bool) {
+	v := m.addversion_number
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAppID resets all changes to the "app_id" field.
-func (m *AppCategoryMutation) ResetAppID() {
-	m.app_id = nil
-	m.addapp_id = nil
+// ResetVersionNumber resets all changes to the "version_number" field.
+func (m *AppCategoryMutation) ResetVersionNumber() {
+	m.version_number = nil
+	m.addversion_number = nil
 }
 
-// SetStartTime sets the "start_time" field.
-func (m *AppCategoryMutation) SetStartTime(t time.Time) {
-	m.start_time = &t
+// SetVersionDate sets the "version_date" field.
+func (m *AppCategoryMutation) SetVersionDate(t time.Time) {
+	m.version_date = &t
 }
 
-// StartTime returns the value of the "start_time" field in the mutation.
-func (m *AppCategoryMutation) StartTime() (r time.Time, exists bool) {
-	v := m.start_time
+// VersionDate returns the value of the "version_date" field in the mutation.
+func (m *AppCategoryMutation) VersionDate() (r time.Time, exists bool) {
+	v := m.version_date
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldStartTime returns the old "start_time" field's value of the AppCategory entity.
+// OldVersionDate returns the old "version_date" field's value of the AppCategory entity.
 // If the AppCategory object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppCategoryMutation) OldStartTime(ctx context.Context) (v time.Time, err error) {
+func (m *AppCategoryMutation) OldVersionDate(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldVersionDate is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldStartTime requires an ID field in the mutation")
+		return v, errors.New("OldVersionDate requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldVersionDate: %w", err)
 	}
-	return oldValue.StartTime, nil
+	return oldValue.VersionDate, nil
 }
 
-// ResetStartTime resets all changes to the "start_time" field.
-func (m *AppCategoryMutation) ResetStartTime() {
-	m.start_time = nil
+// ResetVersionDate resets all changes to the "version_date" field.
+func (m *AppCategoryMutation) ResetVersionDate() {
+	m.version_date = nil
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (m *AppCategoryMutation) SetRunDuration(t time.Duration) {
-	m.run_duration = &t
-	m.addrun_duration = nil
+// SetName sets the "name" field.
+func (m *AppCategoryMutation) SetName(s string) {
+	m.name = &s
 }
 
-// RunDuration returns the value of the "run_duration" field in the mutation.
-func (m *AppCategoryMutation) RunDuration() (r time.Duration, exists bool) {
-	v := m.run_duration
+// Name returns the value of the "name" field in the mutation.
+func (m *AppCategoryMutation) Name() (r string, exists bool) {
+	v := m.name
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldRunDuration returns the old "run_duration" field's value of the AppCategory entity.
+// OldName returns the old "name" field's value of the AppCategory entity.
 // If the AppCategory object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AppCategoryMutation) OldRunDuration(ctx context.Context) (v time.Duration, err error) {
+func (m *AppCategoryMutation) OldName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRunDuration is only allowed on UpdateOne operations")
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRunDuration requires an ID field in the mutation")
+		return v, errors.New("OldName requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRunDuration: %w", err)
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
 	}
-	return oldValue.RunDuration, nil
+	return oldValue.Name, nil
 }
 
-// AddRunDuration adds t to the "run_duration" field.
-func (m *AppCategoryMutation) AddRunDuration(t time.Duration) {
-	if m.addrun_duration != nil {
-		*m.addrun_duration += t
-	} else {
-		m.addrun_duration = &t
-	}
-}
-
-// AddedRunDuration returns the value that was added to the "run_duration" field in this mutation.
-func (m *AppCategoryMutation) AddedRunDuration() (r time.Duration, exists bool) {
-	v := m.addrun_duration
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetRunDuration resets all changes to the "run_duration" field.
-func (m *AppCategoryMutation) ResetRunDuration() {
-	m.run_duration = nil
-	m.addrun_duration = nil
+// ResetName resets all changes to the "name" field.
+func (m *AppCategoryMutation) ResetName() {
+	m.name = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -3486,6 +4128,114 @@ func (m *AppCategoryMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddAppIDs adds the "app" edge to the App entity by ids.
+func (m *AppCategoryMutation) AddAppIDs(ids ...model.InternalID) {
+	if m.app == nil {
+		m.app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app[ids[i]] = struct{}{}
+	}
+}
+
+// ClearApp clears the "app" edge to the App entity.
+func (m *AppCategoryMutation) ClearApp() {
+	m.clearedapp = true
+}
+
+// AppCleared reports if the "app" edge to the App entity was cleared.
+func (m *AppCategoryMutation) AppCleared() bool {
+	return m.clearedapp
+}
+
+// RemoveAppIDs removes the "app" edge to the App entity by IDs.
+func (m *AppCategoryMutation) RemoveAppIDs(ids ...model.InternalID) {
+	if m.removedapp == nil {
+		m.removedapp = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app, ids[i])
+		m.removedapp[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedApp returns the removed IDs of the "app" edge to the App entity.
+func (m *AppCategoryMutation) RemovedAppIDs() (ids []model.InternalID) {
+	for id := range m.removedapp {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppIDs returns the "app" edge IDs in the mutation.
+func (m *AppCategoryMutation) AppIDs() (ids []model.InternalID) {
+	for id := range m.app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetApp resets all changes to the "app" edge.
+func (m *AppCategoryMutation) ResetApp() {
+	m.app = nil
+	m.clearedapp = false
+	m.removedapp = nil
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by ids.
+func (m *AppCategoryMutation) AddAppAppCategoryIDs(ids ...int) {
+	if m.app_app_category == nil {
+		m.app_app_category = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.app_app_category[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppAppCategory clears the "app_app_category" edge to the AppAppCategory entity.
+func (m *AppCategoryMutation) ClearAppAppCategory() {
+	m.clearedapp_app_category = true
+}
+
+// AppAppCategoryCleared reports if the "app_app_category" edge to the AppAppCategory entity was cleared.
+func (m *AppCategoryMutation) AppAppCategoryCleared() bool {
+	return m.clearedapp_app_category
+}
+
+// RemoveAppAppCategoryIDs removes the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (m *AppCategoryMutation) RemoveAppAppCategoryIDs(ids ...int) {
+	if m.removedapp_app_category == nil {
+		m.removedapp_app_category = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.app_app_category, ids[i])
+		m.removedapp_app_category[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppAppCategory returns the removed IDs of the "app_app_category" edge to the AppAppCategory entity.
+func (m *AppCategoryMutation) RemovedAppAppCategoryIDs() (ids []int) {
+	for id := range m.removedapp_app_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppAppCategoryIDs returns the "app_app_category" edge IDs in the mutation.
+func (m *AppCategoryMutation) AppAppCategoryIDs() (ids []int) {
+	for id := range m.app_app_category {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppAppCategory resets all changes to the "app_app_category" edge.
+func (m *AppCategoryMutation) ResetAppAppCategory() {
+	m.app_app_category = nil
+	m.clearedapp_app_category = false
+	m.removedapp_app_category = nil
+}
+
 // Where appends a list predicates to the AppCategoryMutation builder.
 func (m *AppCategoryMutation) Where(ps ...predicate.AppCategory) {
 	m.predicates = append(m.predicates, ps...)
@@ -3524,14 +4274,14 @@ func (m *AppCategoryMutation) Fields() []string {
 	if m.user_id != nil {
 		fields = append(fields, appcategory.FieldUserID)
 	}
-	if m.app_id != nil {
-		fields = append(fields, appcategory.FieldAppID)
+	if m.version_number != nil {
+		fields = append(fields, appcategory.FieldVersionNumber)
 	}
-	if m.start_time != nil {
-		fields = append(fields, appcategory.FieldStartTime)
+	if m.version_date != nil {
+		fields = append(fields, appcategory.FieldVersionDate)
 	}
-	if m.run_duration != nil {
-		fields = append(fields, appcategory.FieldRunDuration)
+	if m.name != nil {
+		fields = append(fields, appcategory.FieldName)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, appcategory.FieldUpdatedAt)
@@ -3549,12 +4299,12 @@ func (m *AppCategoryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case appcategory.FieldUserID:
 		return m.UserID()
-	case appcategory.FieldAppID:
-		return m.AppID()
-	case appcategory.FieldStartTime:
-		return m.StartTime()
-	case appcategory.FieldRunDuration:
-		return m.RunDuration()
+	case appcategory.FieldVersionNumber:
+		return m.VersionNumber()
+	case appcategory.FieldVersionDate:
+		return m.VersionDate()
+	case appcategory.FieldName:
+		return m.Name()
 	case appcategory.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case appcategory.FieldCreatedAt:
@@ -3570,12 +4320,12 @@ func (m *AppCategoryMutation) OldField(ctx context.Context, name string) (ent.Va
 	switch name {
 	case appcategory.FieldUserID:
 		return m.OldUserID(ctx)
-	case appcategory.FieldAppID:
-		return m.OldAppID(ctx)
-	case appcategory.FieldStartTime:
-		return m.OldStartTime(ctx)
-	case appcategory.FieldRunDuration:
-		return m.OldRunDuration(ctx)
+	case appcategory.FieldVersionNumber:
+		return m.OldVersionNumber(ctx)
+	case appcategory.FieldVersionDate:
+		return m.OldVersionDate(ctx)
+	case appcategory.FieldName:
+		return m.OldName(ctx)
 	case appcategory.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case appcategory.FieldCreatedAt:
@@ -3596,26 +4346,26 @@ func (m *AppCategoryMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUserID(v)
 		return nil
-	case appcategory.FieldAppID:
-		v, ok := value.(model.InternalID)
+	case appcategory.FieldVersionNumber:
+		v, ok := value.(uint64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAppID(v)
+		m.SetVersionNumber(v)
 		return nil
-	case appcategory.FieldStartTime:
+	case appcategory.FieldVersionDate:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetStartTime(v)
+		m.SetVersionDate(v)
 		return nil
-	case appcategory.FieldRunDuration:
-		v, ok := value.(time.Duration)
+	case appcategory.FieldName:
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRunDuration(v)
+		m.SetName(v)
 		return nil
 	case appcategory.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -3642,11 +4392,8 @@ func (m *AppCategoryMutation) AddedFields() []string {
 	if m.adduser_id != nil {
 		fields = append(fields, appcategory.FieldUserID)
 	}
-	if m.addapp_id != nil {
-		fields = append(fields, appcategory.FieldAppID)
-	}
-	if m.addrun_duration != nil {
-		fields = append(fields, appcategory.FieldRunDuration)
+	if m.addversion_number != nil {
+		fields = append(fields, appcategory.FieldVersionNumber)
 	}
 	return fields
 }
@@ -3658,10 +4405,8 @@ func (m *AppCategoryMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case appcategory.FieldUserID:
 		return m.AddedUserID()
-	case appcategory.FieldAppID:
-		return m.AddedAppID()
-	case appcategory.FieldRunDuration:
-		return m.AddedRunDuration()
+	case appcategory.FieldVersionNumber:
+		return m.AddedVersionNumber()
 	}
 	return nil, false
 }
@@ -3678,19 +4423,12 @@ func (m *AppCategoryMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUserID(v)
 		return nil
-	case appcategory.FieldAppID:
-		v, ok := value.(model.InternalID)
+	case appcategory.FieldVersionNumber:
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAppID(v)
-		return nil
-	case appcategory.FieldRunDuration:
-		v, ok := value.(time.Duration)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddRunDuration(v)
+		m.AddVersionNumber(v)
 		return nil
 	}
 	return fmt.Errorf("unknown AppCategory numeric field %s", name)
@@ -3722,14 +4460,14 @@ func (m *AppCategoryMutation) ResetField(name string) error {
 	case appcategory.FieldUserID:
 		m.ResetUserID()
 		return nil
-	case appcategory.FieldAppID:
-		m.ResetAppID()
+	case appcategory.FieldVersionNumber:
+		m.ResetVersionNumber()
 		return nil
-	case appcategory.FieldStartTime:
-		m.ResetStartTime()
+	case appcategory.FieldVersionDate:
+		m.ResetVersionDate()
 		return nil
-	case appcategory.FieldRunDuration:
-		m.ResetRunDuration()
+	case appcategory.FieldName:
+		m.ResetName()
 		return nil
 	case appcategory.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -3743,49 +4481,111 @@ func (m *AppCategoryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *AppCategoryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.app != nil {
+		edges = append(edges, appcategory.EdgeApp)
+	}
+	if m.app_app_category != nil {
+		edges = append(edges, appcategory.EdgeAppAppCategory)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *AppCategoryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case appcategory.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.app))
+		for id := range m.app {
+			ids = append(ids, id)
+		}
+		return ids
+	case appcategory.EdgeAppAppCategory:
+		ids := make([]ent.Value, 0, len(m.app_app_category))
+		for id := range m.app_app_category {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *AppCategoryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.removedapp != nil {
+		edges = append(edges, appcategory.EdgeApp)
+	}
+	if m.removedapp_app_category != nil {
+		edges = append(edges, appcategory.EdgeAppAppCategory)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *AppCategoryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case appcategory.EdgeApp:
+		ids := make([]ent.Value, 0, len(m.removedapp))
+		for id := range m.removedapp {
+			ids = append(ids, id)
+		}
+		return ids
+	case appcategory.EdgeAppAppCategory:
+		ids := make([]ent.Value, 0, len(m.removedapp_app_category))
+		for id := range m.removedapp_app_category {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *AppCategoryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedapp {
+		edges = append(edges, appcategory.EdgeApp)
+	}
+	if m.clearedapp_app_category {
+		edges = append(edges, appcategory.EdgeAppAppCategory)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *AppCategoryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case appcategory.EdgeApp:
+		return m.clearedapp
+	case appcategory.EdgeAppAppCategory:
+		return m.clearedapp_app_category
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *AppCategoryMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown AppCategory unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *AppCategoryMutation) ResetEdge(name string) error {
+	switch name {
+	case appcategory.EdgeApp:
+		m.ResetApp()
+		return nil
+	case appcategory.EdgeAppAppCategory:
+		m.ResetAppAppCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown AppCategory edge %s", name)
 }
 

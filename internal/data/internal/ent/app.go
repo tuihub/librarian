@@ -85,9 +85,13 @@ type AppEdges struct {
 	Device *Device `json:"device,omitempty"`
 	// AppRunTime holds the value of the app_run_time edge.
 	AppRunTime []*AppRunTime `json:"app_run_time,omitempty"`
+	// AppCategory holds the value of the app_category edge.
+	AppCategory []*AppCategory `json:"app_category,omitempty"`
+	// AppAppCategory holds the value of the app_app_category edge.
+	AppAppCategory []*AppAppCategory `json:"app_app_category,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [3]bool
+	loadedTypes [5]bool
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -119,6 +123,24 @@ func (e AppEdges) AppRunTimeOrErr() ([]*AppRunTime, error) {
 		return e.AppRunTime, nil
 	}
 	return nil, &NotLoadedError{edge: "app_run_time"}
+}
+
+// AppCategoryOrErr returns the AppCategory value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) AppCategoryOrErr() ([]*AppCategory, error) {
+	if e.loadedTypes[3] {
+		return e.AppCategory, nil
+	}
+	return nil, &NotLoadedError{edge: "app_category"}
+}
+
+// AppAppCategoryOrErr returns the AppAppCategory value or an error if the edge
+// was not loaded in eager-loading.
+func (e AppEdges) AppAppCategoryOrErr() ([]*AppAppCategory, error) {
+	if e.loadedTypes[4] {
+		return e.AppAppCategory, nil
+	}
+	return nil, &NotLoadedError{edge: "app_app_category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -339,6 +361,16 @@ func (a *App) QueryDevice() *DeviceQuery {
 // QueryAppRunTime queries the "app_run_time" edge of the App entity.
 func (a *App) QueryAppRunTime() *AppRunTimeQuery {
 	return NewAppClient(a.config).QueryAppRunTime(a)
+}
+
+// QueryAppCategory queries the "app_category" edge of the App entity.
+func (a *App) QueryAppCategory() *AppCategoryQuery {
+	return NewAppClient(a.config).QueryAppCategory(a)
+}
+
+// QueryAppAppCategory queries the "app_app_category" edge of the App entity.
+func (a *App) QueryAppAppCategory() *AppAppCategoryQuery {
+	return NewAppClient(a.config).QueryAppAppCategory(a)
 }
 
 // Update returns a builder for updating this App.

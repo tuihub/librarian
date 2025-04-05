@@ -521,3 +521,14 @@ func (g *GeburaRepo) ListAppRunTimes(
 func (g *GeburaRepo) DeleteAppRunTime(ctx context.Context, userID model.InternalID, id model.InternalID) error {
 	return g.data.db.AppRunTime.DeleteOneID(id).Exec(ctx)
 }
+
+func (g *GeburaRepo) CreateAppCategory(ctx context.Context, userID model.InternalID, ac *modelgebura.AppCategory) error {
+	q := g.data.db.AppCategory.Create().
+		SetID(ac.ID).
+		SetUserID(userID).
+		SetVersionNumber(ac.VersionNumber).
+		SetVersionDate(ac.VersionDate).
+		SetName(ac.Name).
+		AddAppIDs(ac.AppIDs...)
+	return q.Exec(ctx)
+}

@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -309,6 +311,36 @@ func (ac *AppCreate) AddAppRunTime(a ...*AppRunTime) *AppCreate {
 	return ac.AddAppRunTimeIDs(ids...)
 }
 
+// AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
+func (ac *AppCreate) AddAppCategoryIDs(ids ...model.InternalID) *AppCreate {
+	ac.mutation.AddAppCategoryIDs(ids...)
+	return ac
+}
+
+// AddAppCategory adds the "app_category" edges to the AppCategory entity.
+func (ac *AppCreate) AddAppCategory(a ...*AppCategory) *AppCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddAppCategoryIDs(ids...)
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (ac *AppCreate) AddAppAppCategoryIDs(ids ...int) *AppCreate {
+	ac.mutation.AddAppAppCategoryIDs(ids...)
+	return ac
+}
+
+// AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
+func (ac *AppCreate) AddAppAppCategory(a ...*AppAppCategory) *AppCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return ac.AddAppAppCategoryIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (ac *AppCreate) Mutation() *AppMutation {
 	return ac.mutation
@@ -580,6 +612,38 @@ func (ac *AppCreate) createSpec() (*App, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ac.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
