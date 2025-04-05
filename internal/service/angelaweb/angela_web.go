@@ -38,6 +38,7 @@ var embedDirView embed.FS
 var embedDirStatic embed.FS
 
 func NewAngelaWeb(
+	digests []*model.ConfigDigest,
 	auth *libauth.Auth,
 	t *biztiphereth.Tiphereth,
 	userCountCache *libcache.Key[model.UserCount],
@@ -54,7 +55,7 @@ func NewAngelaWeb(
 
 	res := &AngelaWeb{
 		apiHandler:  api.NewHandler(t, userCountCache),
-		pageBuilder: page.NewBuilder(t, userCountCache),
+		pageBuilder: page.NewBuilder(t, digests, userCountCache),
 		auth:        auth,
 		app:         app,
 	}

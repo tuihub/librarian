@@ -48,4 +48,6 @@ func (a *AngelaWeb) setupRoutes() {
 	auth.Get("/users/edit/:id", a.pageBuilder.UserForm)
 
 	auth.Get("/porters", a.pageBuilder.PorterList)
+
+	auth.Get("/config", a.pageBuilder.ConfigList)
 }

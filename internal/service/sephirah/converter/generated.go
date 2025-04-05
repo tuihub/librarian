@@ -1451,7 +1451,7 @@ func ToPBPorterContextStatus(source modelsupervisor.PorterContextStatus) sephira
 	}
 	return v1PorterContextStatus
 }
-func ToPBPorterGroup(source *modelsupervisor.PorterDigest) *sephirah.PorterDigest {
+func ToPBPorterDigest(source *modelsupervisor.PorterDigest) *sephirah.PorterDigest {
 	var pV1PorterDigest *sephirah.PorterDigest
 	if source != nil {
 		var v1PorterDigest sephirah.PorterDigest
@@ -1470,12 +1470,12 @@ func ToPBPorterGroup(source *modelsupervisor.PorterDigest) *sephirah.PorterDiges
 	}
 	return pV1PorterDigest
 }
-func ToPBPorterGroupList(source []*modelsupervisor.PorterDigest) []*sephirah.PorterDigest {
+func ToPBPorterDigestList(source []*modelsupervisor.PorterDigest) []*sephirah.PorterDigest {
 	var pV1PorterDigestList []*sephirah.PorterDigest
 	if source != nil {
 		pV1PorterDigestList = make([]*sephirah.PorterDigest, len(source))
 		for i := 0; i < len(source); i++ {
-			pV1PorterDigestList[i] = ToPBPorterGroup(source[i])
+			pV1PorterDigestList[i] = ToPBPorterDigest(source[i])
 		}
 	}
 	return pV1PorterDigestList

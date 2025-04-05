@@ -14,15 +14,18 @@ import (
 
 type Builder struct {
 	t              *biztiphereth.Tiphereth
+	configDigests  []*model.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
 
 func NewBuilder(
 	t *biztiphereth.Tiphereth,
+	configDigests []*model.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
 	return &Builder{
 		t:              t,
+		configDigests:  configDigests,
 		userCountCache: userCountCache,
 	}
 }
@@ -149,5 +152,13 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 			"PrevPage":    pageNum - 1,
 			"NextPage":    pageNum + 1,
 		},
+	})
+}
+
+// ConfigList renders the configuration digests page.
+func (b *Builder) ConfigList(c *fiber.Ctx) error {
+	return c.Render("config", fiber.Map{
+		"Title":   "系统配置",
+		"Configs": b.configDigests,
 	})
 }

@@ -1,0 +1,27 @@
+<div class="mb-6">
+    <h2 class="text-2xl font-bold mb-4">系统配置</h2>
+    <p class="text-gray-600 mb-4">当前系统配置摘要信息</p>
+</div>
+
+<div class="overflow-x-auto">
+    <table class="min-w-full bg-white border border-gray-200">
+        <thead>
+            <tr class="bg-gray-100">
+                <th class="py-2 px-4 border-b border-r text-left">服务</th>
+                <th class="py-2 px-4 border-b border-r text-left">状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Configs}}
+            <tr class="hover:bg-gray-50">
+                <td class="py-2 px-4 border-b border-r">{{.Name}}</td>
+                <td class="py-2 px-4 border-b border-r font-mono">{{.Status}}</td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="4" class="py-4 text-center text-gray-500">没有配置数据</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>

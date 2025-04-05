@@ -20,6 +20,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/sephirah"
@@ -31,6 +32,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(
+	[]*model.ConfigDigest,
 	*conf.Librarian_EnableServiceDiscovery,
 	*conf.SephirahServer,
 	*conf.Database,

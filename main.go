@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
 	"github.com/tuihub/librarian/internal/lib/libzap"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
+	"github.com/samber/lo"
 	"go.uber.org/zap"
 )
 
@@ -71,8 +73,8 @@ func newApp(
 func main() {
 	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
 	stdLogger.Infof("=== Configuring ===")
-	stdLogger.Infof("[Service] Name: %s", name)
-	stdLogger.Infof("[Service] Version: %s", version)
+	stdLogger.Infof("[Service\t] Name: %s", name)
+	stdLogger.Infof("[Service\t] Version: %s", version)
 	appSettings, err := libapp.NewAppSettings(id, name, version, protoVersion, date)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)
@@ -83,7 +85,8 @@ func main() {
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	logConfigDigest(&bc, stdLogger)
+	digests := genConfigDigest(&bc)
+	logConfigDigest(digests, stdLogger)
 
 	if bc.GetEnableServiceDiscovery() == nil {
 		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
@@ -102,6 +105,7 @@ func main() {
 	}
 
 	app, cleanup, err := wireApp(
+		digests,
 		bc.GetEnableServiceDiscovery(),
 		bc.GetServer(),
 		bc.GetDatabase(),
@@ -150,52 +154,69 @@ func minerClientSelector(
 	return inproc.Miner, nil
 }
 
-func logConfigDigest(bc *conf.Librarian, logger *zap.SugaredLogger) { //nolint:gocognit // no need
-	if bc == nil {
-		logger.Warnf("Config not specified")
-		return
-	}
-	if bc.GetServer() == nil {
-		logger.Warnf("[Server\t] Not specified")
-	} else {
-		if bc.GetServer().GetInfo() != nil && len(bc.GetServer().GetInfo().GetName()) > 0 {
-			logger.Infof("[Server\t] Name: %s", bc.GetServer().GetInfo().GetName())
-		}
-		if bc.GetServer().GetGrpc() != nil {
-			logger.Infof("[Server\t] Listen gRPC on: %s", bc.GetServer().GetGrpc().GetAddr())
-		}
-		if bc.GetServer().GetGrpcWeb() != nil {
-			logger.Infof("[Server\t] Listen gRPC-Web on: %s", bc.GetServer().GetGrpcWeb().GetAddr())
-		}
-	}
-	if bc.GetDatabase() == nil || len(bc.GetDatabase().GetDriver()) == 0 {
-		logger.Warnf("[DB\t\t] Not specified")
-	} else {
-		logger.Infof("[DB\t\t] Configured - Driver %s", bc.GetDatabase().GetDriver())
-	}
-	if bc.GetMq() == nil || len(bc.GetMq().GetDriver()) == 0 {
-		logger.Warnf("[MQ\t\t] Not specified")
-	} else {
-		logger.Infof("[MQ\t\t] Configured - Driver %s", bc.GetMq().GetDriver())
-	}
-	if bc.GetCache() == nil || len(bc.GetCache().GetDriver()) == 0 {
-		logger.Warnf("[Cache\t] Not specified")
-	} else {
-		logger.Infof("[Cache\t] Configured - Driver %s", bc.GetCache().GetDriver())
-	}
-	if bc.GetConsul() == nil || len(bc.GetConsul().GetAddr()) == 0 {
-		logger.Warnf("[Consul\t] Not specified")
-	} else {
-		logger.Infof("[Consul\t] Configured")
-	}
-	if bc.GetSentry() == nil || len(bc.GetSentry().GetDsn()) == 0 {
-		logger.Warnf("[Sentry\t] Not specified")
-	} else {
-		logger.Infof("[Sentry\t] Configured")
-	}
-	if bc.GetOtlp() == nil || len(bc.GetOtlp().GetProtocol()) == 0 {
-		logger.Warnf("[OTLP\t] Not specified")
-	} else {
-		logger.Infof("[OTLP\t] Configured - Protocol %s", bc.GetOtlp().GetProtocol())
+func genConfigDigest(c *conf.Librarian) []*model.ConfigDigest {
+	var digests []*model.ConfigDigest
+
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "Server gRPC",
+		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpc() != nil),
+		Driver:  nil,
+		Listen:  lo.ToPtr(c.GetServer().GetGrpc().GetAddr()),
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "Server gRPC-Web",
+		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpcWeb() != nil),
+		Driver:  nil,
+		Listen:  lo.ToPtr(c.GetServer().GetGrpcWeb().GetAddr()),
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "DB",
+		Enabled: lo.ToPtr(c.GetDatabase() != nil && len(c.GetDatabase().GetDriver()) != 0),
+		Driver:  lo.ToPtr(c.GetDatabase().GetDriver()),
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "MQ",
+		Enabled: lo.ToPtr(c.GetMq() != nil && len(c.GetMq().GetDriver()) != 0),
+		Driver:  lo.ToPtr(c.GetMq().GetDriver()),
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "Cache",
+		Enabled: lo.ToPtr(c.GetCache() != nil && len(c.GetCache().GetDriver()) != 0),
+		Driver:  lo.ToPtr(c.GetCache().GetDriver()),
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "S3",
+		Enabled: lo.ToPtr(c.GetS3() != nil && len(c.GetS3().GetDriver()) != 0),
+		Driver:  lo.ToPtr(c.GetS3().GetDriver()),
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "Consul",
+		Enabled: lo.ToPtr(c.GetConsul() != nil && len(c.GetConsul().GetAddr()) != 0),
+		Driver:  nil,
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "Sentry",
+		Enabled: lo.ToPtr(c.GetSentry() != nil && len(c.GetSentry().GetDsn()) != 0),
+		Driver:  nil,
+		Listen:  nil,
+	})
+	digests = append(digests, &model.ConfigDigest{
+		Name:    "OTLP",
+		Enabled: lo.ToPtr(c.GetOtlp() != nil && len(c.GetOtlp().GetProtocol()) != 0),
+		Driver:  nil,
+		Listen:  nil,
+	})
+
+	return digests
+}
+
+func logConfigDigest(digests []*model.ConfigDigest, logger *zap.SugaredLogger) {
+	for _, d := range digests {
+		logger.Info(d.String())
 	}
 }
