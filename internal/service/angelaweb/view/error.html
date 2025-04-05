@@ -1,17 +1,17 @@
 <div class="min-h-[70vh] flex flex-col justify-center items-center px-6 py-12">
     <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4">{{.Title}}</h2>
-        <p class="text-lg text-gray-600 mb-8">{{.Message}}</p>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">{{if eq .ErrorType "not_found"}}{{localize .Ctx "PageNotFound"}}{{else}}{{localize .Ctx "TokenExpired"}}{{end}}</h2>
+        <p class="text-lg text-gray-600 mb-8">{{if eq .ErrorType "not_found"}}{{localize .Ctx "PageNotFoundMessage"}}{{else}}{{localize .Ctx "TokenExpiredMessage"}}{{end}}</p>
         
         <div class="flex justify-center space-x-4">
             {{if eq .ErrorType "token_expired"}}
             <a href="/login" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-6 rounded-md transition duration-200">
-                去登录
+                {{localize .Ctx "Login"}}
             </a>
             {{end}}
             
             <a href="/" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-md transition duration-200">
-                返回首页
+                {{localize .Ctx "BackToHome"}}
             </a>
         </div>
     </div>

@@ -1,14 +1,14 @@
 <div class="mb-6">
-    <h2 class="text-2xl font-bold mb-4">系统配置</h2>
-    <p class="text-gray-600 mb-4">当前系统配置摘要信息</p>
+    <h2 class="text-2xl font-bold mb-4">{{localize .Ctx "ConfigTitle"}}</h2>
+    <p class="text-gray-600 mb-4">{{localize .Ctx "ConfigDescription"}}</p>
 </div>
 
 <div class="overflow-x-auto">
     <table class="min-w-full bg-white border border-gray-200">
         <thead>
             <tr class="bg-gray-100">
-                <th class="py-2 px-4 border-b border-r text-left">服务</th>
-                <th class="py-2 px-4 border-b border-r text-left">状态</th>
+                <th class="py-2 px-4 border-b border-r text-left">{{localize .Ctx "Service"}}</th>
+                <th class="py-2 px-4 border-b border-r text-left">{{localize .Ctx "Status"}}</th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +19,7 @@
             </tr>
             {{else}}
             <tr>
-                <td colspan="4" class="py-4 text-center text-gray-500">没有配置数据</td>
+                <td colspan="4" class="py-4 text-center text-gray-500">{{localize .Ctx "NoConfigData"}}</td>
             </tr>
             {{end}}
         </tbody>

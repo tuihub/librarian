@@ -3,6 +3,7 @@ package angelaweb
 import (
 	"context"
 	"embed"
+	"fmt"
 	"net/http"
 
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
@@ -12,10 +13,13 @@ import (
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
 
+	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
 	"github.com/google/wire"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"github.com/samber/lo"
 )
 
 var ProviderSet = wire.NewSet(NewAngelaWeb)
@@ -37,6 +41,11 @@ var embedDirView embed.FS
 //go:embed static/*
 var embedDirStatic embed.FS
 
+// Embed locales
+//
+//go:embed locales/*
+var embedDirLocales embed.FS
+
 func NewAngelaWeb(
 	digests []*model.ConfigDigest,
 	auth *libauth.Auth,
@@ -45,6 +54,38 @@ func NewAngelaWeb(
 ) *AngelaWeb {
 	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".html")
 	viewsEngine.Directory = "view"
+
+	viewsEngine.AddFunc("localize", func(c *fiber.Ctx, args ...any) string {
+		strArgs := lo.Map(args, func(v any, _ int) string {
+			return fmt.Sprint(v)
+		})
+		if len(strArgs) == 0 {
+			return ""
+		}
+		key := strArgs[0]
+		if len(strArgs) == 1 {
+			localize, err := fiberi18n.Localize(c, key)
+			if err != nil {
+				return key
+			}
+			return localize
+		}
+		if len(strArgs)%2 == 0 {
+			return key
+		}
+		data := make(map[string]string)
+		for i := 1; i < len(strArgs); i += 2 {
+			data[strArgs[i]] = strArgs[i+1]
+		}
+		localize, err := fiberi18n.Localize(c, &i18n.LocalizeConfig{ //nolint:exhaustruct // no need
+			MessageID:    key,
+			TemplateData: data,
+		})
+		if err != nil {
+			return key
+		}
+		return localize
+	})
 
 	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
 		Views:       viewsEngine,
