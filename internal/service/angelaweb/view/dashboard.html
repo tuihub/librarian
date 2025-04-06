@@ -1,21 +1,41 @@
-<div class="mb-6">
-    <h2 class="text-2xl font-bold mb-4">{{localize .Ctx "DashboardTitle"}}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-blue-500 text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-lg font-semibold mb-2">{{localize .Ctx "TotalUsers"}}</h3>
-            <p class="text-3xl font-bold">{{.UserCount}}</p>
+<div class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-lg">
+            <div class="p-6">
+                <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100">{{localize .Ctx "UserStatistics"}}</h3>
+                <dl class="mt-5 grid grid-cols-1 gap-5">
+                    <div class="relative overflow-hidden rounded-lg bg-slate-50 dark:bg-slate-800 px-4 py-5">
+                        <dt class="truncate text-sm font-medium text-slate-700 dark:text-slate-200">{{localize .Ctx "TotalUsers"}}</dt>
+                        <dd class="mt-1">
+                            <p class="text-2xl font-semibold text-blue-600 dark:text-blue-300">{{.UserCount}}</p>
+                        </dd>
+                    </div>
+                    <div class="relative overflow-hidden rounded-lg bg-slate-50 dark:bg-slate-800 px-4 py-5">
+                        <dt class="truncate text-sm font-medium text-slate-700 dark:text-slate-200">{{localize .Ctx "ActiveUsers"}}</dt>
+                        <dd class="mt-1">
+                            <p class="text-2xl font-semibold text-blue-600 dark:text-blue-300">{{.ActiveUserCount}}</p>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </div>
     </div>
-</div>
 
-<div>
-    <h2 class="text-2xl font-bold mb-4">{{localize .Ctx "QuickActions"}}</h2>
-    <div class="flex space-x-4">
-        <a href="/users" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded transition duration-200">
-            {{localize .Ctx "ViewUserList"}}
-        </a>
-        <a href="/users/new" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded transition duration-200">
-            {{localize .Ctx "CreateNewUser"}}
-        </a>
+    <div class="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-lg p-6">
+        <h3 class="text-lg font-medium text-slate-900 dark:text-slate-100 mb-4">{{localize .Ctx "QuickActions"}}</h3>
+        <div class="flex flex-wrap gap-4">
+            <a href="/users" class="inline-flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg transition duration-200">
+                <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM6 8a6 6 0 1 1 12 0A6 6 0 0 1 6 8zm2 10a3 3 0 0 0-3 3 1 1 0 1 1-2 0 5 5 0 0 1 5-5h8a5 5 0 0 1 5 5 1 1 0 1 1-2 0 3 3 0 0 0-3-3H8z"/>
+                </svg>
+                {{localize .Ctx "ViewUserList"}}
+            </a>
+            <a href="/users/new" class="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition duration-200">
+                <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4v16m8-8H4"/>
+                </svg>
+                {{localize .Ctx "CreateNewUser"}}
+            </a>
+        </div>
     </div>
 </div>
