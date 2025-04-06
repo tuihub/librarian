@@ -120,6 +120,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBAppRunTimeList([]*modelgebura.AppRunTime) []*sephirah.AppRunTime
 
 	ToPBAppCategory(*modelgebura.AppCategory) *sephirah.AppCategory
+	ToPBAppCategoryList([]*modelgebura.AppCategory) []*sephirah.AppCategory
 
 	// ToPBAppInst(*modelgebura.AppInst) *sephirah.AppInst
 	// ToPBAppInstList([]*modelgebura.AppInst) []*sephirah.AppInst

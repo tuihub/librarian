@@ -99,6 +99,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppRunTime(*ent.AppRunTime) *modelgebura.AppRunTime
 	ToBizAppRunTimeList([]*ent.AppRunTime) []*modelgebura.AppRunTime
 	ToBizAppBinary(ent.StoreAppBinary) modelgebura.AppBinary
+	// goverter:ignore AppIDs
+	ToBizAppCategory(*ent.AppCategory) *modelgebura.AppCategory
 
 	// goverter:map LatestPullAt LatestPullTime
 	// goverter:ignore ActionSets

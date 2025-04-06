@@ -886,6 +886,16 @@ func ToPBAppCategory(source *modelgebura.AppCategory) *sephirah.AppCategory {
 	}
 	return pV1AppCategory
 }
+func ToPBAppCategoryList(source []*modelgebura.AppCategory) []*sephirah.AppCategory {
+	var pV1AppCategoryList []*sephirah.AppCategory
+	if source != nil {
+		pV1AppCategoryList = make([]*sephirah.AppCategory, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1AppCategoryList[i] = ToPBAppCategory(source[i])
+		}
+	}
+	return pV1AppCategoryList
+}
 func ToPBAppInfo(source *modelgebura.AppInfo) *sephirah.AppInfo {
 	var pV1AppInfo *sephirah.AppInfo
 	if source != nil {

@@ -2,6 +2,8 @@ package data
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
+	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
@@ -531,4 +533,27 @@ func (g *GeburaRepo) CreateAppCategory(ctx context.Context, userID model.Interna
 		SetName(ac.Name).
 		AddAppIDs(ac.AppIDs...)
 	return q.Exec(ctx)
+}
+func (g *GeburaRepo) GetAppCategory(ctx context.Context, id model.InternalID) (*modelgebura.AppCategory, error) {
+	res, err := g.data.db.AppCategory.Query().
+		Where(appcategory.IDEQ(id)).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizAppCategory(res), nil
+}
+func (g *GeburaRepo) ListAppCategory(ctx context.Context, userID model.InternalID) ([]*modelgebura.AppCategory, error) {
+	q := g.data.db.AppCategory.Query().
+		WithAppAppCategory().
+		Where(appcategory.UserIDEQ(userID))
+	acs, err := q.All(ctx)
+	if err != nil {
+		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	res := make([]*modelgebura.AppCategory, len(acs))
+	for i := range acs {
+		res[i] = converter.ToBizAppCategoryExtend(acs[i])
+	}
+	return res, nil
 }

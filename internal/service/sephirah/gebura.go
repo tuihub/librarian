@@ -297,7 +297,13 @@ func (s *LibrarianSephirahService) ListAppCategories(
 	ctx context.Context,
 	req *sephirah.ListAppCategoriesRequest,
 ) (*sephirah.ListAppCategoriesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListAppCategories not implemented")
+	aps, err := s.g.ListAppCategories(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.ListAppCategoriesResponse{
+		AppCategories: converter.ToPBAppCategoryList(aps),
+	}, nil
 }
 func (s *LibrarianSephirahService) CreateAppCategory(
 	ctx context.Context,
@@ -309,12 +315,19 @@ func (s *LibrarianSephirahService) CreateAppCategory(
 	}
 	return &sephirah.CreateAppCategoryResponse{Id: converter.ToPBInternalID(ac.ID)}, nil
 }
-func (s *LibrarianSephirahService) UpdateAppCategory(
-	ctx context.Context,
-	req *sephirah.UpdateAppCategoryRequest,
-) (*sephirah.UpdateAppCategoryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAppCategory not implemented")
-}
+
+// func (s *LibrarianSephirahService) UpdateAppCategory(
+//
+//	ctx context.Context,
+//	req *sephirah.UpdateAppCategoryRequest,
+//
+//	) (*sephirah.UpdateAppCategoryResponse, error) {
+//		err := s.g.UpdateAppCategory(ctx, converter.ToBizAppCategory(req.GetAppCategory()))
+//		if err != nil {
+//			return nil, err
+//		}
+//		return &sephirah.UpdateAppCategoryResponse{}, nil
+//	}
 func (s *LibrarianSephirahService) DeleteAppCategory(
 	ctx context.Context,
 	req *sephirah.DeleteAppCategoryRequest,

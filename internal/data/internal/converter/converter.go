@@ -3,6 +3,8 @@
 package converter
 
 import (
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"strings"
 
 	"github.com/tuihub/librarian/internal/data/internal/ent"
@@ -79,4 +81,18 @@ func ToBizFeedItemDigest(a *ent.FeedItem) *modelyesod.FeedItemDigest {
 	}
 	// TODO incomplete
 	return digest
+}
+
+func ToBizAppCategoryExtend(ac *ent.AppCategory) *modelgebura.AppCategory {
+	res := ToBizAppCategory(ac)
+	if res == nil {
+		return res
+	}
+	if len(ac.Edges.AppAppCategory) > 0 {
+		res.AppIDs = make([]model.InternalID, 0, len(ac.Edges.AppAppCategory))
+		for _, aac := range ac.Edges.AppAppCategory {
+			res.AppIDs = append(res.AppIDs, aac.AppID)
+		}
+	}
+	return res
 }
