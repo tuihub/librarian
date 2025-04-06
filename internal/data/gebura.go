@@ -557,3 +557,62 @@ func (g *GeburaRepo) ListAppCategory(ctx context.Context, userID model.InternalI
 	}
 	return res, nil
 }
+func (g *GeburaRepo) UpdateAppCategory(
+	ctx context.Context,
+	userID model.InternalID,
+	ac *modelgebura.AppCategory) error {
+	q := g.data.db.AppCategory.Query().
+		WithAppAppCategory().
+		Where(appcategory.IDEQ(ac.ID))
+	old, err := q.Only(ctx)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
+	for _, aac := range old.Edges.AppAppCategory {
+		oldAppIDs = append(oldAppIDs, aac.AppID)
+	}
+	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := tx.AppCategory.Update().
+			Where(
+				appcategory.IDEQ(ac.ID),
+				appcategory.UserIDEQ(userID),
+			).
+			SetName(ac.Name).
+			SetVersionNumber(old.VersionNumber + 1).
+			SetVersionDate(time.Now()).
+			RemoveAppIDs(oldAppIDs...).
+			AddAppIDs(ac.AppIDs...)
+		return q.Exec(ctx)
+	})
+}
+func (g *GeburaRepo) DeleteAppCategory(
+	ctx context.Context,
+	userID model.InternalID,
+	id model.InternalID,
+) error {
+	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		q := g.data.db.AppCategory.Query().
+			WithAppAppCategory().
+			Where(appcategory.IDEQ(id))
+		old, err := q.Only(ctx)
+		if err != nil {
+			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		}
+		oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
+		for _, aac := range old.Edges.AppAppCategory {
+			oldAppIDs = append(oldAppIDs, aac.AppID)
+		}
+		err = tx.AppCategory.Update().
+			Where(
+				appcategory.IDEQ(id),
+				appcategory.UserIDEQ(userID),
+			).
+			RemoveAppIDs(oldAppIDs...).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		return tx.AppCategory.DeleteOneID(id).Exec(ctx)
+	})
+}

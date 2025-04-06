@@ -315,22 +315,23 @@ func (s *LibrarianSephirahService) CreateAppCategory(
 	}
 	return &sephirah.CreateAppCategoryResponse{Id: converter.ToPBInternalID(ac.ID)}, nil
 }
-
-// func (s *LibrarianSephirahService) UpdateAppCategory(
-//
-//	ctx context.Context,
-//	req *sephirah.UpdateAppCategoryRequest,
-//
-//	) (*sephirah.UpdateAppCategoryResponse, error) {
-//		err := s.g.UpdateAppCategory(ctx, converter.ToBizAppCategory(req.GetAppCategory()))
-//		if err != nil {
-//			return nil, err
-//		}
-//		return &sephirah.UpdateAppCategoryResponse{}, nil
-//	}
+func (s *LibrarianSephirahService) UpdateAppCategory(
+	ctx context.Context,
+	req *sephirah.UpdateAppCategoryRequest,
+) (*sephirah.UpdateAppCategoryResponse, error) {
+	err := s.g.UpdateAppCategory(ctx, converter.ToBizAppCategory(req.GetAppCategory()))
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.UpdateAppCategoryResponse{}, nil
+}
 func (s *LibrarianSephirahService) DeleteAppCategory(
 	ctx context.Context,
 	req *sephirah.DeleteAppCategoryRequest,
 ) (*sephirah.DeleteAppCategoryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteAppCategory not implemented")
+	err := s.g.DeleteAppCategory(ctx, converter.ToBizInternalID(req.GetId()))
+	if err != nil {
+		return nil, err
+	}
+	return &sephirah.DeleteAppCategoryResponse{}, nil
 }

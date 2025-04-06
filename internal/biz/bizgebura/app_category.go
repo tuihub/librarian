@@ -2,6 +2,7 @@ package bizgebura
 
 import (
 	"context"
+	"github.com/tuihub/librarian/internal/model"
 	"time"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
@@ -40,14 +41,26 @@ func (g *Gebura) ListAppCategories(ctx context.Context) ([]*modelgebura.AppCateg
 	return acList, nil
 }
 
-//func (g *Gebura) UpdateAppCategory(ctx context.Context, ac *modelgebura.AppCategory) error {
-//	claims := libauth.FromContextAssertUserType(ctx)
-//	if claims == nil {
-//		return bizutils.NoPermissionError()
-//	}
-//	err := g.repo.UpdateAppCategory(ctx, claims.UserID, ac)
-//	if err != nil {
-//		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-//	}
-//	return nil
-//}
+func (g *Gebura) UpdateAppCategory(ctx context.Context, ac *modelgebura.AppCategory) error {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
+	}
+	err := g.repo.UpdateAppCategory(ctx, claims.UserID, ac)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return nil
+}
+
+func (g *Gebura) DeleteAppCategory(ctx context.Context, id model.InternalID) error {
+	claims := libauth.FromContextAssertUserType(ctx)
+	if claims == nil {
+		return bizutils.NoPermissionError()
+	}
+	err := g.repo.DeleteAppCategory(ctx, claims.UserID, id)
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	return nil
+}
