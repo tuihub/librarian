@@ -195,7 +195,7 @@ func wireApp(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.L
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(arg, libauthAuth, tiphereth, key)
+	angelaWeb := angelaweb.NewAngelaWeb(settings, arg, libauthAuth, tiphereth, key)
 	libs3S3, err := libs3.NewS3(s3)
 	if err != nil {
 		cleanup3()

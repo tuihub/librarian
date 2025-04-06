@@ -4,9 +4,11 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"io"
 	"net/http"
 
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
@@ -15,7 +17,7 @@ import (
 
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/logger"
+	fiberlog "github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/template/html/v2"
 	"github.com/google/wire"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -47,6 +49,7 @@ var embedDirStatic embed.FS
 var embedDirLocales embed.FS
 
 func NewAngelaWeb(
+	settings *libapp.Settings,
 	digests []*model.ConfigDigest,
 	auth *libauth.Auth,
 	t *biztiphereth.Tiphereth,
@@ -87,12 +90,12 @@ func NewAngelaWeb(
 		return localize
 	})
 
+	fiberlog.SetOutput(io.Discard)
+
 	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
 		Views:       viewsEngine,
 		ViewsLayout: "layout/default",
 	})
-
-	app.Use(logger.New())
 
 	res := &AngelaWeb{
 		apiHandler:  api.NewHandler(t, userCountCache),
@@ -100,6 +103,7 @@ func NewAngelaWeb(
 		auth:        auth,
 		app:         app,
 	}
+	res.setupMiddlewares(settings)
 	res.setupRoutes()
 	return res
 }

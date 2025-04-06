@@ -9,5 +9,6 @@ func getInherentSettings() InherentSettings {
 		EnablePanicRecovery: true,
 		LogLevel:            libzap.InfoLevel,
 		DefaultConfPath:     "./configs/config.toml",
+		BuildType:           BuildTypeDefault,
 	}
 }

@@ -9,5 +9,6 @@ func getInherentSettings() InherentSettings {
 		EnablePanicRecovery: true,
 		LogLevel:            libzap.ErrorLevel,
 		DefaultConfPath:     "",
+		BuildType:           BuildTypeRelease,
 	}
 }

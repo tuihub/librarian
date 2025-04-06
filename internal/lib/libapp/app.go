@@ -58,15 +58,15 @@ func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, er
 		return nil, err
 	} else {
 		as = Settings{
-			name,
-			e,
-			getInherentSettings(),
-			flags,
-			version,
-			protoVersion,
-			date,
-			"https://github.com/TuiHub/Librarian",
-			false,
+			Name:              name,
+			env:               e,
+			InherentSettings:  getInherentSettings(),
+			Flags:             flags,
+			Version:           version,
+			ProtoVersion:      protoVersion,
+			BuildDate:         date,
+			SourceCodeAddress: "https://github.com/TuiHub/Librarian",
+			DemoMode:          false,
 		}
 	}
 	if as.ConfPath == "" {
