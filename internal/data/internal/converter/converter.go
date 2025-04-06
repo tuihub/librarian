@@ -3,11 +3,11 @@
 package converter
 
 import (
-	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"strings"
 
 	"github.com/tuihub/librarian/internal/data/internal/ent"
+	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 )

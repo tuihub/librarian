@@ -2,11 +2,11 @@ package bizgebura
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/model"
 	"time"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
@@ -34,7 +34,7 @@ func (g *Gebura) ListAppCategories(ctx context.Context) ([]*modelgebura.AppCateg
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
 	}
-	acList, err := g.repo.ListAppCategory(ctx, claims.UserID)
+	acList, err := g.repo.ListAppCategories(ctx, claims.UserID)
 	if err != nil {
 		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

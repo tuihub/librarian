@@ -2,13 +2,12 @@ package data
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
-	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -543,13 +542,13 @@ func (g *GeburaRepo) GetAppCategory(ctx context.Context, id model.InternalID) (*
 	}
 	return converter.ToBizAppCategory(res), nil
 }
-func (g *GeburaRepo) ListAppCategory(ctx context.Context, userID model.InternalID) ([]*modelgebura.AppCategory, error) {
-	q := g.data.db.AppCategory.Query().
+func (g *GeburaRepo) ListAppCategories(ctx context.Context, userID model.InternalID) ([]*modelgebura.AppCategory, error) {
+	acs, err := g.data.db.AppCategory.Query().
 		WithAppAppCategory().
-		Where(appcategory.UserIDEQ(userID))
-	acs, err := q.All(ctx)
+		Where(appcategory.UserIDEQ(userID)).
+		All(ctx)
 	if err != nil {
-		return nil, pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return nil, err
 	}
 	res := make([]*modelgebura.AppCategory, len(acs))
 	for i := range acs {
@@ -561,12 +560,12 @@ func (g *GeburaRepo) UpdateAppCategory(
 	ctx context.Context,
 	userID model.InternalID,
 	ac *modelgebura.AppCategory) error {
-	q := g.data.db.AppCategory.Query().
+	old, err := g.data.db.AppCategory.Query().
 		WithAppAppCategory().
-		Where(appcategory.IDEQ(ac.ID))
-	old, err := q.Only(ctx)
+		Where(appcategory.IDEQ(ac.ID)).
+		Only(ctx)
 	if err != nil {
-		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return err
 	}
 	oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
 	for _, aac := range old.Edges.AppAppCategory {
@@ -591,18 +590,18 @@ func (g *GeburaRepo) DeleteAppCategory(
 	userID model.InternalID,
 	id model.InternalID,
 ) error {
+	old, err := g.data.db.AppCategory.Query().
+		WithAppAppCategory().
+		Where(appcategory.IDEQ(id)).
+		Only(ctx)
+	if err != nil {
+		return err
+	}
+	oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
+	for _, aac := range old.Edges.AppAppCategory {
+		oldAppIDs = append(oldAppIDs, aac.AppID)
+	}
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		q := g.data.db.AppCategory.Query().
-			WithAppAppCategory().
-			Where(appcategory.IDEQ(id))
-		old, err := q.Only(ctx)
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
-		oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
-		for _, aac := range old.Edges.AppAppCategory {
-			oldAppIDs = append(oldAppIDs, aac.AppID)
-		}
 		err = tx.AppCategory.Update().
 			Where(
 				appcategory.IDEQ(id),
