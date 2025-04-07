@@ -563,7 +563,7 @@ func (g *GeburaRepo) UpdateAppCategory(
 	ac *modelgebura.AppCategory) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		// get old
-		old, err := g.data.db.AppCategory.Query().
+		old, err := tx.AppCategory.Query().
 			Where(
 				appcategory.IDEQ(ac.ID),
 				appcategory.UserIDEQ(userID),
