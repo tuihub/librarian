@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/converter"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
@@ -561,16 +562,25 @@ func (g *GeburaRepo) UpdateAppCategory(
 	userID model.InternalID,
 	ac *modelgebura.AppCategory) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		// get old
 		old, err := g.data.db.AppCategory.Query().
-			WithAppAppCategory().
-			Where(appcategory.IDEQ(ac.ID)).
+			Where(
+				appcategory.IDEQ(ac.ID),
+				appcategory.UserIDEQ(userID),
+			).
 			Only(ctx)
 		if err != nil {
 			return err
 		}
-		oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
-		for _, aac := range old.Edges.AppAppCategory {
-			oldAppIDs = append(oldAppIDs, aac.AppID)
+		// remove existing
+		_, err = tx.AppAppCategory.Delete().Where(
+			appappcategory.HasAppCategoryWith(
+				appcategory.IDEQ(ac.ID),
+				appcategory.UserIDEQ(userID),
+			),
+		).Exec(ctx)
+		if err != nil {
+			return err
 		}
 		q := tx.AppCategory.Update().
 			Where(
@@ -580,7 +590,6 @@ func (g *GeburaRepo) UpdateAppCategory(
 			SetName(ac.Name).
 			SetVersionNumber(old.VersionNumber + 1).
 			SetVersionDate(time.Now()).
-			RemoveAppIDs(oldAppIDs...).
 			AddAppIDs(ac.AppIDs...)
 		return q.Exec(ctx)
 	})
@@ -591,27 +600,19 @@ func (g *GeburaRepo) DeleteAppCategory(
 	id model.InternalID,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		old, err := g.data.db.AppCategory.Query().
-			WithAppAppCategory().
-			Where(appcategory.IDEQ(id)).
-			Only(ctx)
-		if err != nil {
-			return err
-		}
-		oldAppIDs := make([]model.InternalID, 0, len(old.Edges.AppAppCategory))
-		for _, aac := range old.Edges.AppAppCategory {
-			oldAppIDs = append(oldAppIDs, aac.AppID)
-		}
-		err = tx.AppCategory.Update().
-			Where(
+		_, err := tx.AppAppCategory.Delete().Where(
+			appappcategory.HasAppCategoryWith(
 				appcategory.IDEQ(id),
 				appcategory.UserIDEQ(userID),
-			).
-			RemoveAppIDs(oldAppIDs...).
-			Exec(ctx)
+			),
+		).Exec(ctx)
 		if err != nil {
 			return err
 		}
-		return tx.AppCategory.DeleteOneID(id).Exec(ctx)
+		_, err = tx.AppCategory.Delete().Where(
+			appcategory.IDEQ(id),
+			appcategory.UserIDEQ(userID),
+		).Exec(ctx)
+		return err
 	})
 }
