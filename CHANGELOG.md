@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.3.0](https://github.com/tuihub/librarian/compare/v0.2.11...v0.3.0) (2025-04-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor project struct ([#119](https://github.com/tuihub/librarian/issues/119))
+
+### Features
+
+* **angelaweb:** add config page ([33324b8](https://github.com/tuihub/librarian/commit/33324b87b4f062f791ff8abdbf73b55e72860230))
+* **angelaweb:** add dark mode ([b9616c5](https://github.com/tuihub/librarian/commit/b9616c5c3fefed5a9734ebe0db5d004ce2597ffd))
+* **angelaweb:** add error page ([77adf6a](https://github.com/tuihub/librarian/commit/77adf6ac1a7ddd1e51d39c4fda528c6fe6e73ae2))
+* **angelaweb:** add i18n ([55cad2e](https://github.com/tuihub/librarian/commit/55cad2eed833c7fb7c44c4450932f88c40d2eb7e))
+* **angelaweb:** add middlewares ([5bc4a16](https://github.com/tuihub/librarian/commit/5bc4a16fa5189cda77274866b9c93a31308bbe9b))
+* **angelaweb:** add tailwindcss cli ([3341ed5](https://github.com/tuihub/librarian/commit/3341ed583af22df74b7b46d1420c20b99cf189a3))
+* **gebura:** impl AppCategory ([#122](https://github.com/tuihub/librarian/issues/122)) ([545ba62](https://github.com/tuihub/librarian/commit/545ba62495e7372a8195c5b4c53b436c67913258))
+* impl app run time ([add77f7](https://github.com/tuihub/librarian/commit/add77f74236670b199a62a43eb07c71c8c11aa5a))
+* refactor project struct ([#119](https://github.com/tuihub/librarian/issues/119)) ([ff85334](https://github.com/tuihub/librarian/commit/ff853342df56755a7446d65fe90338f6cee5e3d3))
+* support fakes3 serve ([32b7bf5](https://github.com/tuihub/librarian/commit/32b7bf5d96125ec12581c7369aea2faf78f7753c))
+* support file storage ([fdfad3f](https://github.com/tuihub/librarian/commit/fdfad3f1133ca73a73687d1cfbb14a53f36634cc))
+* update proto to v0.4.25 ([5128c7a](https://github.com/tuihub/librarian/commit/5128c7ab915a63c628063911e221c5b1b56e8334))
+* upgrade protos to v0.5.0 ([36d0cf8](https://github.com/tuihub/librarian/commit/36d0cf8d04aec6a55cfaa34d23b62812645b5daf))
+
+
+### Bug Fixes
+
+* support client local device id ([c7040d3](https://github.com/tuihub/librarian/commit/c7040d355f9e97c2ffeaa18b3d94e964173c9279))
+* update golangci-lint to v1.62.2 ([47ef35b](https://github.com/tuihub/librarian/commit/47ef35b32c2e0f4a8e85b89f64bb7804aafbda8c))
+* upgrade golangci-lint ([82da9b0](https://github.com/tuihub/librarian/commit/82da9b006157527b7bc760340b2fdfdedbef89ec))
+
 ## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
 
 
