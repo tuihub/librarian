@@ -72,6 +72,18 @@ type PorterContext func(*sql.Selector)
 // PorterInstance is the predicate function for porterinstance builders.
 type PorterInstance func(*sql.Selector)
 
+// SentinelAppBinary is the predicate function for sentinelappbinary builders.
+type SentinelAppBinary func(*sql.Selector)
+
+// SentinelAppBinaryFile is the predicate function for sentinelappbinaryfile builders.
+type SentinelAppBinaryFile func(*sql.Selector)
+
+// SentinelInfo is the predicate function for sentinelinfo builders.
+type SentinelInfo func(*sql.Selector)
+
+// SentinelLibrary is the predicate function for sentinellibrary builders.
+type SentinelLibrary func(*sql.Selector)
+
 // Session is the predicate function for session builders.
 type Session func(*sql.Selector)
 

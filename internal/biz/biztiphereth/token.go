@@ -171,7 +171,7 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) SentinelRefreshToken( //nolint:gocognit // TODO
+func (t *Tiphereth) SentinelRefreshToken(
 	ctx context.Context,
 ) (model.AccessToken, model.RefreshToken, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx, model.UserTypeSentinel)

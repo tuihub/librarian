@@ -534,15 +534,7 @@ func (g *GeburaRepo) CreateAppCategory(ctx context.Context, userID model.Interna
 		AddAppIDs(ac.AppIDs...)
 	return q.Exec(ctx)
 }
-func (g *GeburaRepo) GetAppCategory(ctx context.Context, id model.InternalID) (*modelgebura.AppCategory, error) {
-	res, err := g.data.db.AppCategory.Query().
-		Where(appcategory.IDEQ(id)).
-		Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizAppCategory(res), nil
-}
+
 func (g *GeburaRepo) ListAppCategories(ctx context.Context, userID model.InternalID) ([]*modelgebura.AppCategory, error) {
 	acs, err := g.data.db.AppCategory.Query().
 		WithAppAppCategory().
@@ -557,6 +549,7 @@ func (g *GeburaRepo) ListAppCategories(ctx context.Context, userID model.Interna
 	}
 	return res, nil
 }
+
 func (g *GeburaRepo) UpdateAppCategory(
 	ctx context.Context,
 	userID model.InternalID,
@@ -594,6 +587,7 @@ func (g *GeburaRepo) UpdateAppCategory(
 		return q.Exec(ctx)
 	})
 }
+
 func (g *GeburaRepo) DeleteAppCategory(
 	ctx context.Context,
 	userID model.InternalID,

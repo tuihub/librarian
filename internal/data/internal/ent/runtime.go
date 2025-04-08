@@ -27,6 +27,10 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/internal/data/internal/ent/schema"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
@@ -307,6 +311,54 @@ func init() {
 	porterinstanceDescCreatedAt := porterinstanceFields[14].Descriptor()
 	// porterinstance.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterinstance.DefaultCreatedAt = porterinstanceDescCreatedAt.Default.(func() time.Time)
+	sentinelappbinaryFields := schema.SentinelAppBinary{}.Fields()
+	_ = sentinelappbinaryFields
+	// sentinelappbinaryDescUpdatedAt is the schema descriptor for updated_at field.
+	sentinelappbinaryDescUpdatedAt := sentinelappbinaryFields[8].Descriptor()
+	// sentinelappbinary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sentinelappbinary.DefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.Default.(func() time.Time)
+	// sentinelappbinary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sentinelappbinary.UpdateDefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// sentinelappbinaryDescCreatedAt is the schema descriptor for created_at field.
+	sentinelappbinaryDescCreatedAt := sentinelappbinaryFields[9].Descriptor()
+	// sentinelappbinary.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sentinelappbinary.DefaultCreatedAt = sentinelappbinaryDescCreatedAt.Default.(func() time.Time)
+	sentinelappbinaryfileFields := schema.SentinelAppBinaryFile{}.Fields()
+	_ = sentinelappbinaryfileFields
+	// sentinelappbinaryfileDescUpdatedAt is the schema descriptor for updated_at field.
+	sentinelappbinaryfileDescUpdatedAt := sentinelappbinaryfileFields[6].Descriptor()
+	// sentinelappbinaryfile.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sentinelappbinaryfile.DefaultUpdatedAt = sentinelappbinaryfileDescUpdatedAt.Default.(func() time.Time)
+	// sentinelappbinaryfile.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sentinelappbinaryfile.UpdateDefaultUpdatedAt = sentinelappbinaryfileDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// sentinelappbinaryfileDescCreatedAt is the schema descriptor for created_at field.
+	sentinelappbinaryfileDescCreatedAt := sentinelappbinaryfileFields[7].Descriptor()
+	// sentinelappbinaryfile.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sentinelappbinaryfile.DefaultCreatedAt = sentinelappbinaryfileDescCreatedAt.Default.(func() time.Time)
+	sentinelinfoFields := schema.SentinelInfo{}.Fields()
+	_ = sentinelinfoFields
+	// sentinelinfoDescUpdatedAt is the schema descriptor for updated_at field.
+	sentinelinfoDescUpdatedAt := sentinelinfoFields[5].Descriptor()
+	// sentinelinfo.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sentinelinfo.DefaultUpdatedAt = sentinelinfoDescUpdatedAt.Default.(func() time.Time)
+	// sentinelinfo.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sentinelinfo.UpdateDefaultUpdatedAt = sentinelinfoDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// sentinelinfoDescCreatedAt is the schema descriptor for created_at field.
+	sentinelinfoDescCreatedAt := sentinelinfoFields[6].Descriptor()
+	// sentinelinfo.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sentinelinfo.DefaultCreatedAt = sentinelinfoDescCreatedAt.Default.(func() time.Time)
+	sentinellibraryFields := schema.SentinelLibrary{}.Fields()
+	_ = sentinellibraryFields
+	// sentinellibraryDescUpdatedAt is the schema descriptor for updated_at field.
+	sentinellibraryDescUpdatedAt := sentinellibraryFields[3].Descriptor()
+	// sentinellibrary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sentinellibrary.DefaultUpdatedAt = sentinellibraryDescUpdatedAt.Default.(func() time.Time)
+	// sentinellibrary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	sentinellibrary.UpdateDefaultUpdatedAt = sentinellibraryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// sentinellibraryDescCreatedAt is the schema descriptor for created_at field.
+	sentinellibraryDescCreatedAt := sentinellibraryFields[4].Descriptor()
+	// sentinellibrary.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sentinellibrary.DefaultCreatedAt = sentinellibraryDescCreatedAt.Default.(func() time.Time)
 	sessionFields := schema.Session{}.Fields()
 	_ = sessionFields
 	// sessionDescUpdatedAt is the schema descriptor for updated_at field.

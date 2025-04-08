@@ -34,6 +34,10 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
@@ -100,34 +104,38 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			account.Table:            account.ValidColumn,
-			app.Table:                app.ValidColumn,
-			appappcategory.Table:     appappcategory.ValidColumn,
-			appcategory.Table:        appcategory.ValidColumn,
-			appinfo.Table:            appinfo.ValidColumn,
-			appruntime.Table:         appruntime.ValidColumn,
-			device.Table:             device.ValidColumn,
-			feed.Table:               feed.ValidColumn,
-			feedactionset.Table:      feedactionset.ValidColumn,
-			feedconfig.Table:         feedconfig.ValidColumn,
-			feedconfigaction.Table:   feedconfigaction.ValidColumn,
-			feeditem.Table:           feeditem.ValidColumn,
-			feeditemcollection.Table: feeditemcollection.ValidColumn,
-			file.Table:               file.ValidColumn,
-			image.Table:              image.ValidColumn,
-			notifyflow.Table:         notifyflow.ValidColumn,
-			notifyflowsource.Table:   notifyflowsource.ValidColumn,
-			notifyflowtarget.Table:   notifyflowtarget.ValidColumn,
-			notifysource.Table:       notifysource.ValidColumn,
-			notifytarget.Table:       notifytarget.ValidColumn,
-			portercontext.Table:      portercontext.ValidColumn,
-			porterinstance.Table:     porterinstance.ValidColumn,
-			session.Table:            session.ValidColumn,
-			storeapp.Table:           storeapp.ValidColumn,
-			storeappbinary.Table:     storeappbinary.ValidColumn,
-			systemnotification.Table: systemnotification.ValidColumn,
-			tag.Table:                tag.ValidColumn,
-			user.Table:               user.ValidColumn,
+			account.Table:               account.ValidColumn,
+			app.Table:                   app.ValidColumn,
+			appappcategory.Table:        appappcategory.ValidColumn,
+			appcategory.Table:           appcategory.ValidColumn,
+			appinfo.Table:               appinfo.ValidColumn,
+			appruntime.Table:            appruntime.ValidColumn,
+			device.Table:                device.ValidColumn,
+			feed.Table:                  feed.ValidColumn,
+			feedactionset.Table:         feedactionset.ValidColumn,
+			feedconfig.Table:            feedconfig.ValidColumn,
+			feedconfigaction.Table:      feedconfigaction.ValidColumn,
+			feeditem.Table:              feeditem.ValidColumn,
+			feeditemcollection.Table:    feeditemcollection.ValidColumn,
+			file.Table:                  file.ValidColumn,
+			image.Table:                 image.ValidColumn,
+			notifyflow.Table:            notifyflow.ValidColumn,
+			notifyflowsource.Table:      notifyflowsource.ValidColumn,
+			notifyflowtarget.Table:      notifyflowtarget.ValidColumn,
+			notifysource.Table:          notifysource.ValidColumn,
+			notifytarget.Table:          notifytarget.ValidColumn,
+			portercontext.Table:         portercontext.ValidColumn,
+			porterinstance.Table:        porterinstance.ValidColumn,
+			sentinelappbinary.Table:     sentinelappbinary.ValidColumn,
+			sentinelappbinaryfile.Table: sentinelappbinaryfile.ValidColumn,
+			sentinelinfo.Table:          sentinelinfo.ValidColumn,
+			sentinellibrary.Table:       sentinellibrary.ValidColumn,
+			session.Table:               session.ValidColumn,
+			storeapp.Table:              storeapp.ValidColumn,
+			storeappbinary.Table:        storeappbinary.ValidColumn,
+			systemnotification.Table:    systemnotification.ValidColumn,
+			tag.Table:                   tag.ValidColumn,
+			user.Table:                  user.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

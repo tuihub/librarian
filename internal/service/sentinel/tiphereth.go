@@ -2,6 +2,7 @@ package sentinel
 
 import (
 	"context"
+
 	"github.com/tuihub/librarian/internal/lib/logger"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 )
