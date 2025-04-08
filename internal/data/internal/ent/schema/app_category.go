@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -16,10 +17,11 @@ type AppCategory struct {
 
 func (AppCategory) Fields() []ent.Field {
 	return []ent.Field{
+		defaultPrimaryKey(),
 		field.Int64("user_id").GoType(model.InternalID(0)),
-		field.Int64("app_id").GoType(model.InternalID(0)),
-		field.Time("start_time"),
-		field.Int64("run_duration").GoType(time.Duration(0)),
+		field.Uint64("version_number"),
+		field.Time("version_date"),
+		field.String("name"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
@@ -29,11 +31,13 @@ func (AppCategory) Fields() []ent.Field {
 
 func (AppCategory) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("user_id", "app_id", "start_time", "run_duration").
-			Unique(),
+		index.Fields("user_id"),
 	}
 }
 
 func (AppCategory) Edges() []ent.Edge {
-	return []ent.Edge{}
+	return []ent.Edge{
+		edge.To("app", App.Type).
+			Through("app_app_category", AppAppCategory.Type),
+	}
 }

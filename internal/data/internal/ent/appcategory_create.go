@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -29,21 +31,21 @@ func (acc *AppCategoryCreate) SetUserID(mi model.InternalID) *AppCategoryCreate 
 	return acc
 }
 
-// SetAppID sets the "app_id" field.
-func (acc *AppCategoryCreate) SetAppID(mi model.InternalID) *AppCategoryCreate {
-	acc.mutation.SetAppID(mi)
+// SetVersionNumber sets the "version_number" field.
+func (acc *AppCategoryCreate) SetVersionNumber(u uint64) *AppCategoryCreate {
+	acc.mutation.SetVersionNumber(u)
 	return acc
 }
 
-// SetStartTime sets the "start_time" field.
-func (acc *AppCategoryCreate) SetStartTime(t time.Time) *AppCategoryCreate {
-	acc.mutation.SetStartTime(t)
+// SetVersionDate sets the "version_date" field.
+func (acc *AppCategoryCreate) SetVersionDate(t time.Time) *AppCategoryCreate {
+	acc.mutation.SetVersionDate(t)
 	return acc
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (acc *AppCategoryCreate) SetRunDuration(t time.Duration) *AppCategoryCreate {
-	acc.mutation.SetRunDuration(t)
+// SetName sets the "name" field.
+func (acc *AppCategoryCreate) SetName(s string) *AppCategoryCreate {
+	acc.mutation.SetName(s)
 	return acc
 }
 
@@ -73,6 +75,42 @@ func (acc *AppCategoryCreate) SetNillableCreatedAt(t *time.Time) *AppCategoryCre
 		acc.SetCreatedAt(*t)
 	}
 	return acc
+}
+
+// SetID sets the "id" field.
+func (acc *AppCategoryCreate) SetID(mi model.InternalID) *AppCategoryCreate {
+	acc.mutation.SetID(mi)
+	return acc
+}
+
+// AddAppIDs adds the "app" edge to the App entity by IDs.
+func (acc *AppCategoryCreate) AddAppIDs(ids ...model.InternalID) *AppCategoryCreate {
+	acc.mutation.AddAppIDs(ids...)
+	return acc
+}
+
+// AddApp adds the "app" edges to the App entity.
+func (acc *AppCategoryCreate) AddApp(a ...*App) *AppCategoryCreate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return acc.AddAppIDs(ids...)
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (acc *AppCategoryCreate) AddAppAppCategoryIDs(ids ...int) *AppCategoryCreate {
+	acc.mutation.AddAppAppCategoryIDs(ids...)
+	return acc
+}
+
+// AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
+func (acc *AppCategoryCreate) AddAppAppCategory(a ...*AppAppCategory) *AppCategoryCreate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return acc.AddAppAppCategoryIDs(ids...)
 }
 
 // Mutation returns the AppCategoryMutation object of the builder.
@@ -125,14 +163,14 @@ func (acc *AppCategoryCreate) check() error {
 	if _, ok := acc.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "AppCategory.user_id"`)}
 	}
-	if _, ok := acc.mutation.AppID(); !ok {
-		return &ValidationError{Name: "app_id", err: errors.New(`ent: missing required field "AppCategory.app_id"`)}
+	if _, ok := acc.mutation.VersionNumber(); !ok {
+		return &ValidationError{Name: "version_number", err: errors.New(`ent: missing required field "AppCategory.version_number"`)}
 	}
-	if _, ok := acc.mutation.StartTime(); !ok {
-		return &ValidationError{Name: "start_time", err: errors.New(`ent: missing required field "AppCategory.start_time"`)}
+	if _, ok := acc.mutation.VersionDate(); !ok {
+		return &ValidationError{Name: "version_date", err: errors.New(`ent: missing required field "AppCategory.version_date"`)}
 	}
-	if _, ok := acc.mutation.RunDuration(); !ok {
-		return &ValidationError{Name: "run_duration", err: errors.New(`ent: missing required field "AppCategory.run_duration"`)}
+	if _, ok := acc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "AppCategory.name"`)}
 	}
 	if _, ok := acc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "AppCategory.updated_at"`)}
@@ -154,8 +192,10 @@ func (acc *AppCategoryCreate) sqlSave(ctx context.Context) (*AppCategory, error)
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = model.InternalID(id)
+	}
 	acc.mutation.id = &_node.ID
 	acc.mutation.done = true
 	return _node, nil
@@ -164,24 +204,28 @@ func (acc *AppCategoryCreate) sqlSave(ctx context.Context) (*AppCategory, error)
 func (acc *AppCategoryCreate) createSpec() (*AppCategory, *sqlgraph.CreateSpec) {
 	var (
 		_node = &AppCategory{config: acc.config}
-		_spec = sqlgraph.NewCreateSpec(appcategory.Table, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(appcategory.Table, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = acc.conflict
+	if id, ok := acc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := acc.mutation.UserID(); ok {
 		_spec.SetField(appcategory.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
-	if value, ok := acc.mutation.AppID(); ok {
-		_spec.SetField(appcategory.FieldAppID, field.TypeInt64, value)
-		_node.AppID = value
+	if value, ok := acc.mutation.VersionNumber(); ok {
+		_spec.SetField(appcategory.FieldVersionNumber, field.TypeUint64, value)
+		_node.VersionNumber = value
 	}
-	if value, ok := acc.mutation.StartTime(); ok {
-		_spec.SetField(appcategory.FieldStartTime, field.TypeTime, value)
-		_node.StartTime = value
+	if value, ok := acc.mutation.VersionDate(); ok {
+		_spec.SetField(appcategory.FieldVersionDate, field.TypeTime, value)
+		_node.VersionDate = value
 	}
-	if value, ok := acc.mutation.RunDuration(); ok {
-		_spec.SetField(appcategory.FieldRunDuration, field.TypeInt64, value)
-		_node.RunDuration = value
+	if value, ok := acc.mutation.Name(); ok {
+		_spec.SetField(appcategory.FieldName, field.TypeString, value)
+		_node.Name = value
 	}
 	if value, ok := acc.mutation.UpdatedAt(); ok {
 		_spec.SetField(appcategory.FieldUpdatedAt, field.TypeTime, value)
@@ -190,6 +234,38 @@ func (acc *AppCategoryCreate) createSpec() (*AppCategory, *sqlgraph.CreateSpec) 
 	if value, ok := acc.mutation.CreatedAt(); ok {
 		_spec.SetField(appcategory.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := acc.mutation.AppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   appcategory.AppTable,
+			Columns: appcategory.AppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(app.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := acc.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   appcategory.AppAppCategoryTable,
+			Columns: []string{appcategory.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -261,51 +337,45 @@ func (u *AppCategoryUpsert) AddUserID(v model.InternalID) *AppCategoryUpsert {
 	return u
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppCategoryUpsert) SetAppID(v model.InternalID) *AppCategoryUpsert {
-	u.Set(appcategory.FieldAppID, v)
+// SetVersionNumber sets the "version_number" field.
+func (u *AppCategoryUpsert) SetVersionNumber(v uint64) *AppCategoryUpsert {
+	u.Set(appcategory.FieldVersionNumber, v)
 	return u
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppCategoryUpsert) UpdateAppID() *AppCategoryUpsert {
-	u.SetExcluded(appcategory.FieldAppID)
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppCategoryUpsert) UpdateVersionNumber() *AppCategoryUpsert {
+	u.SetExcluded(appcategory.FieldVersionNumber)
 	return u
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppCategoryUpsert) AddAppID(v model.InternalID) *AppCategoryUpsert {
-	u.Add(appcategory.FieldAppID, v)
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppCategoryUpsert) AddVersionNumber(v uint64) *AppCategoryUpsert {
+	u.Add(appcategory.FieldVersionNumber, v)
 	return u
 }
 
-// SetStartTime sets the "start_time" field.
-func (u *AppCategoryUpsert) SetStartTime(v time.Time) *AppCategoryUpsert {
-	u.Set(appcategory.FieldStartTime, v)
+// SetVersionDate sets the "version_date" field.
+func (u *AppCategoryUpsert) SetVersionDate(v time.Time) *AppCategoryUpsert {
+	u.Set(appcategory.FieldVersionDate, v)
 	return u
 }
 
-// UpdateStartTime sets the "start_time" field to the value that was provided on create.
-func (u *AppCategoryUpsert) UpdateStartTime() *AppCategoryUpsert {
-	u.SetExcluded(appcategory.FieldStartTime)
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppCategoryUpsert) UpdateVersionDate() *AppCategoryUpsert {
+	u.SetExcluded(appcategory.FieldVersionDate)
 	return u
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppCategoryUpsert) SetRunDuration(v time.Duration) *AppCategoryUpsert {
-	u.Set(appcategory.FieldRunDuration, v)
+// SetName sets the "name" field.
+func (u *AppCategoryUpsert) SetName(v string) *AppCategoryUpsert {
+	u.Set(appcategory.FieldName, v)
 	return u
 }
 
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppCategoryUpsert) UpdateRunDuration() *AppCategoryUpsert {
-	u.SetExcluded(appcategory.FieldRunDuration)
-	return u
-}
-
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppCategoryUpsert) AddRunDuration(v time.Duration) *AppCategoryUpsert {
-	u.Add(appcategory.FieldRunDuration, v)
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppCategoryUpsert) UpdateName() *AppCategoryUpsert {
+	u.SetExcluded(appcategory.FieldName)
 	return u
 }
 
@@ -333,16 +403,24 @@ func (u *AppCategoryUpsert) UpdateCreatedAt() *AppCategoryUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.AppCategory.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appcategory.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppCategoryUpsertOne) UpdateNewValues() *AppCategoryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(appcategory.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -394,59 +472,52 @@ func (u *AppCategoryUpsertOne) UpdateUserID() *AppCategoryUpsertOne {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppCategoryUpsertOne) SetAppID(v model.InternalID) *AppCategoryUpsertOne {
+// SetVersionNumber sets the "version_number" field.
+func (u *AppCategoryUpsertOne) SetVersionNumber(v uint64) *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetAppID(v)
+		s.SetVersionNumber(v)
 	})
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppCategoryUpsertOne) AddAppID(v model.InternalID) *AppCategoryUpsertOne {
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppCategoryUpsertOne) AddVersionNumber(v uint64) *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.AddAppID(v)
+		s.AddVersionNumber(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppCategoryUpsertOne) UpdateAppID() *AppCategoryUpsertOne {
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppCategoryUpsertOne) UpdateVersionNumber() *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateAppID()
+		s.UpdateVersionNumber()
 	})
 }
 
-// SetStartTime sets the "start_time" field.
-func (u *AppCategoryUpsertOne) SetStartTime(v time.Time) *AppCategoryUpsertOne {
+// SetVersionDate sets the "version_date" field.
+func (u *AppCategoryUpsertOne) SetVersionDate(v time.Time) *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetStartTime(v)
+		s.SetVersionDate(v)
 	})
 }
 
-// UpdateStartTime sets the "start_time" field to the value that was provided on create.
-func (u *AppCategoryUpsertOne) UpdateStartTime() *AppCategoryUpsertOne {
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppCategoryUpsertOne) UpdateVersionDate() *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateStartTime()
+		s.UpdateVersionDate()
 	})
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppCategoryUpsertOne) SetRunDuration(v time.Duration) *AppCategoryUpsertOne {
+// SetName sets the "name" field.
+func (u *AppCategoryUpsertOne) SetName(v string) *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetRunDuration(v)
+		s.SetName(v)
 	})
 }
 
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppCategoryUpsertOne) AddRunDuration(v time.Duration) *AppCategoryUpsertOne {
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppCategoryUpsertOne) UpdateName() *AppCategoryUpsertOne {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.AddRunDuration(v)
-	})
-}
-
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppCategoryUpsertOne) UpdateRunDuration() *AppCategoryUpsertOne {
-	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateRunDuration()
+		s.UpdateName()
 	})
 }
 
@@ -494,7 +565,7 @@ func (u *AppCategoryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *AppCategoryUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *AppCategoryUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -503,7 +574,7 @@ func (u *AppCategoryUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *AppCategoryUpsertOne) IDX(ctx context.Context) int {
+func (u *AppCategoryUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -558,9 +629,9 @@ func (accb *AppCategoryCreateBulk) Save(ctx context.Context) ([]*AppCategory, er
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -648,10 +719,20 @@ type AppCategoryUpsertBulk struct {
 //	client.AppCategory.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(appcategory.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *AppCategoryUpsertBulk) UpdateNewValues() *AppCategoryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(appcategory.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -703,59 +784,52 @@ func (u *AppCategoryUpsertBulk) UpdateUserID() *AppCategoryUpsertBulk {
 	})
 }
 
-// SetAppID sets the "app_id" field.
-func (u *AppCategoryUpsertBulk) SetAppID(v model.InternalID) *AppCategoryUpsertBulk {
+// SetVersionNumber sets the "version_number" field.
+func (u *AppCategoryUpsertBulk) SetVersionNumber(v uint64) *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetAppID(v)
+		s.SetVersionNumber(v)
 	})
 }
 
-// AddAppID adds v to the "app_id" field.
-func (u *AppCategoryUpsertBulk) AddAppID(v model.InternalID) *AppCategoryUpsertBulk {
+// AddVersionNumber adds v to the "version_number" field.
+func (u *AppCategoryUpsertBulk) AddVersionNumber(v uint64) *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.AddAppID(v)
+		s.AddVersionNumber(v)
 	})
 }
 
-// UpdateAppID sets the "app_id" field to the value that was provided on create.
-func (u *AppCategoryUpsertBulk) UpdateAppID() *AppCategoryUpsertBulk {
+// UpdateVersionNumber sets the "version_number" field to the value that was provided on create.
+func (u *AppCategoryUpsertBulk) UpdateVersionNumber() *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateAppID()
+		s.UpdateVersionNumber()
 	})
 }
 
-// SetStartTime sets the "start_time" field.
-func (u *AppCategoryUpsertBulk) SetStartTime(v time.Time) *AppCategoryUpsertBulk {
+// SetVersionDate sets the "version_date" field.
+func (u *AppCategoryUpsertBulk) SetVersionDate(v time.Time) *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetStartTime(v)
+		s.SetVersionDate(v)
 	})
 }
 
-// UpdateStartTime sets the "start_time" field to the value that was provided on create.
-func (u *AppCategoryUpsertBulk) UpdateStartTime() *AppCategoryUpsertBulk {
+// UpdateVersionDate sets the "version_date" field to the value that was provided on create.
+func (u *AppCategoryUpsertBulk) UpdateVersionDate() *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateStartTime()
+		s.UpdateVersionDate()
 	})
 }
 
-// SetRunDuration sets the "run_duration" field.
-func (u *AppCategoryUpsertBulk) SetRunDuration(v time.Duration) *AppCategoryUpsertBulk {
+// SetName sets the "name" field.
+func (u *AppCategoryUpsertBulk) SetName(v string) *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.SetRunDuration(v)
+		s.SetName(v)
 	})
 }
 
-// AddRunDuration adds v to the "run_duration" field.
-func (u *AppCategoryUpsertBulk) AddRunDuration(v time.Duration) *AppCategoryUpsertBulk {
+// UpdateName sets the "name" field to the value that was provided on create.
+func (u *AppCategoryUpsertBulk) UpdateName() *AppCategoryUpsertBulk {
 	return u.Update(func(s *AppCategoryUpsert) {
-		s.AddRunDuration(v)
-	})
-}
-
-// UpdateRunDuration sets the "run_duration" field to the value that was provided on create.
-func (u *AppCategoryUpsertBulk) UpdateRunDuration() *AppCategoryUpsertBulk {
-	return u.Update(func(s *AppCategoryUpsert) {
-		s.UpdateRunDuration()
+		s.UpdateName()
 	})
 }
 

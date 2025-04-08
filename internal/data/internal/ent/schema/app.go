@@ -70,5 +70,8 @@ func (App) Edges() []ent.Edge {
 			Unique().
 			Immutable(),
 		edge.To("app_run_time", AppRunTime.Type),
+		edge.From("app_category", AppCategory.Type).
+			Ref("app").
+			Through("app_app_category", AppAppCategory.Type),
 	}
 }

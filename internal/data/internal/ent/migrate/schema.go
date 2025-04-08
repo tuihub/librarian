@@ -97,13 +97,46 @@ var (
 			},
 		},
 	}
+	// AppAppCategoriesColumns holds the columns for the "app_app_categories" table.
+	AppAppCategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "app_category_id", Type: field.TypeInt64},
+		{Name: "app_id", Type: field.TypeInt64},
+	}
+	// AppAppCategoriesTable holds the schema information for the "app_app_categories" table.
+	AppAppCategoriesTable = &schema.Table{
+		Name:       "app_app_categories",
+		Columns:    AppAppCategoriesColumns,
+		PrimaryKey: []*schema.Column{AppAppCategoriesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "app_app_categories_app_categories_app_category",
+				Columns:    []*schema.Column{AppAppCategoriesColumns[1]},
+				RefColumns: []*schema.Column{AppCategoriesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "app_app_categories_apps_app",
+				Columns:    []*schema.Column{AppAppCategoriesColumns[2]},
+				RefColumns: []*schema.Column{AppsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "appappcategory_app_category_id_app_id",
+				Unique:  true,
+				Columns: []*schema.Column{AppAppCategoriesColumns[1], AppAppCategoriesColumns[2]},
+			},
+		},
+	}
 	// AppCategoriesColumns holds the columns for the "app_categories" table.
 	AppCategoriesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeInt64},
 		{Name: "user_id", Type: field.TypeInt64},
-		{Name: "app_id", Type: field.TypeInt64},
-		{Name: "start_time", Type: field.TypeTime},
-		{Name: "run_duration", Type: field.TypeInt64},
+		{Name: "version_number", Type: field.TypeUint64},
+		{Name: "version_date", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
@@ -114,9 +147,9 @@ var (
 		PrimaryKey: []*schema.Column{AppCategoriesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "appcategory_user_id_app_id_start_time_run_duration",
-				Unique:  true,
-				Columns: []*schema.Column{AppCategoriesColumns[1], AppCategoriesColumns[2], AppCategoriesColumns[3], AppCategoriesColumns[4]},
+				Name:    "appcategory_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{AppCategoriesColumns[1]},
 			},
 		},
 	}
@@ -878,6 +911,7 @@ var (
 	Tables = []*schema.Table{
 		AccountsTable,
 		AppsTable,
+		AppAppCategoriesTable,
 		AppCategoriesTable,
 		AppInfosTable,
 		AppRunTimesTable,
@@ -911,6 +945,8 @@ func init() {
 	AccountsTable.ForeignKeys[0].RefTable = UsersTable
 	AppsTable.ForeignKeys[0].RefTable = DevicesTable
 	AppsTable.ForeignKeys[1].RefTable = UsersTable
+	AppAppCategoriesTable.ForeignKeys[0].RefTable = AppCategoriesTable
+	AppAppCategoriesTable.ForeignKeys[1].RefTable = AppsTable
 	AppRunTimesTable.ForeignKeys[0].RefTable = AppsTable
 	FeedsTable.ForeignKeys[0].RefTable = FeedConfigsTable
 	FeedActionSetsTable.ForeignKeys[0].RefTable = UsersTable

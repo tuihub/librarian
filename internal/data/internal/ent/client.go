@@ -18,6 +18,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
@@ -54,6 +55,8 @@ type Client struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
+	// AppAppCategory is the client for interacting with the AppAppCategory builders.
+	AppAppCategory *AppAppCategoryClient
 	// AppCategory is the client for interacting with the AppCategory builders.
 	AppCategory *AppCategoryClient
 	// AppInfo is the client for interacting with the AppInfo builders.
@@ -117,6 +120,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Account = NewAccountClient(c.config)
 	c.App = NewAppClient(c.config)
+	c.AppAppCategory = NewAppAppCategoryClient(c.config)
 	c.AppCategory = NewAppCategoryClient(c.config)
 	c.AppInfo = NewAppInfoClient(c.config)
 	c.AppRunTime = NewAppRunTimeClient(c.config)
@@ -236,6 +240,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:             cfg,
 		Account:            NewAccountClient(cfg),
 		App:                NewAppClient(cfg),
+		AppAppCategory:     NewAppAppCategoryClient(cfg),
 		AppCategory:        NewAppCategoryClient(cfg),
 		AppInfo:            NewAppInfoClient(cfg),
 		AppRunTime:         NewAppRunTimeClient(cfg),
@@ -282,6 +287,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:             cfg,
 		Account:            NewAccountClient(cfg),
 		App:                NewAppClient(cfg),
+		AppAppCategory:     NewAppAppCategoryClient(cfg),
 		AppCategory:        NewAppCategoryClient(cfg),
 		AppInfo:            NewAppInfoClient(cfg),
 		AppRunTime:         NewAppRunTimeClient(cfg),
@@ -336,11 +342,11 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.Account, c.App, c.AppCategory, c.AppInfo, c.AppRunTime, c.Device, c.Feed,
-		c.FeedActionSet, c.FeedConfig, c.FeedConfigAction, c.FeedItem,
-		c.FeedItemCollection, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
-		c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget, c.PorterContext,
-		c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
+		c.Account, c.App, c.AppAppCategory, c.AppCategory, c.AppInfo, c.AppRunTime,
+		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
+		c.PorterContext, c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
 		c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Use(hooks...)
@@ -351,11 +357,11 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Account, c.App, c.AppCategory, c.AppInfo, c.AppRunTime, c.Device, c.Feed,
-		c.FeedActionSet, c.FeedConfig, c.FeedConfigAction, c.FeedItem,
-		c.FeedItemCollection, c.File, c.Image, c.NotifyFlow, c.NotifyFlowSource,
-		c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget, c.PorterContext,
-		c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
+		c.Account, c.App, c.AppAppCategory, c.AppCategory, c.AppInfo, c.AppRunTime,
+		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
+		c.PorterContext, c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
 		c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Intercept(interceptors...)
@@ -369,6 +375,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Account.mutate(ctx, m)
 	case *AppMutation:
 		return c.App.mutate(ctx, m)
+	case *AppAppCategoryMutation:
+		return c.AppAppCategory.mutate(ctx, m)
 	case *AppCategoryMutation:
 		return c.AppCategory.mutate(ctx, m)
 	case *AppInfoMutation:
@@ -729,6 +737,38 @@ func (c *AppClient) QueryAppRunTime(a *App) *AppRunTimeQuery {
 	return query
 }
 
+// QueryAppCategory queries the app_category edge of a App.
+func (c *AppClient) QueryAppCategory(a *App) *AppCategoryQuery {
+	query := (&AppCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(appcategory.Table, appcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.AppCategoryTable, app.AppCategoryPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppAppCategory queries the app_app_category edge of a App.
+func (c *AppClient) QueryAppAppCategory(a *App) *AppAppCategoryQuery {
+	query := (&AppAppCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, id),
+			sqlgraph.To(appappcategory.Table, appappcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, app.AppAppCategoryTable, app.AppAppCategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *AppClient) Hooks() []Hook {
 	return c.hooks.App
@@ -751,6 +791,171 @@ func (c *AppClient) mutate(ctx context.Context, m *AppMutation) (Value, error) {
 		return (&AppDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown App mutation op: %q", m.Op())
+	}
+}
+
+// AppAppCategoryClient is a client for the AppAppCategory schema.
+type AppAppCategoryClient struct {
+	config
+}
+
+// NewAppAppCategoryClient returns a client for the AppAppCategory from the given config.
+func NewAppAppCategoryClient(c config) *AppAppCategoryClient {
+	return &AppAppCategoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `appappcategory.Hooks(f(g(h())))`.
+func (c *AppAppCategoryClient) Use(hooks ...Hook) {
+	c.hooks.AppAppCategory = append(c.hooks.AppAppCategory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `appappcategory.Intercept(f(g(h())))`.
+func (c *AppAppCategoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AppAppCategory = append(c.inters.AppAppCategory, interceptors...)
+}
+
+// Create returns a builder for creating a AppAppCategory entity.
+func (c *AppAppCategoryClient) Create() *AppAppCategoryCreate {
+	mutation := newAppAppCategoryMutation(c.config, OpCreate)
+	return &AppAppCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AppAppCategory entities.
+func (c *AppAppCategoryClient) CreateBulk(builders ...*AppAppCategoryCreate) *AppAppCategoryCreateBulk {
+	return &AppAppCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *AppAppCategoryClient) MapCreateBulk(slice any, setFunc func(*AppAppCategoryCreate, int)) *AppAppCategoryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &AppAppCategoryCreateBulk{err: fmt.Errorf("calling to AppAppCategoryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*AppAppCategoryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &AppAppCategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AppAppCategory.
+func (c *AppAppCategoryClient) Update() *AppAppCategoryUpdate {
+	mutation := newAppAppCategoryMutation(c.config, OpUpdate)
+	return &AppAppCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AppAppCategoryClient) UpdateOne(aac *AppAppCategory) *AppAppCategoryUpdateOne {
+	mutation := newAppAppCategoryMutation(c.config, OpUpdateOne, withAppAppCategory(aac))
+	return &AppAppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AppAppCategoryClient) UpdateOneID(id int) *AppAppCategoryUpdateOne {
+	mutation := newAppAppCategoryMutation(c.config, OpUpdateOne, withAppAppCategoryID(id))
+	return &AppAppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AppAppCategory.
+func (c *AppAppCategoryClient) Delete() *AppAppCategoryDelete {
+	mutation := newAppAppCategoryMutation(c.config, OpDelete)
+	return &AppAppCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AppAppCategoryClient) DeleteOne(aac *AppAppCategory) *AppAppCategoryDeleteOne {
+	return c.DeleteOneID(aac.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AppAppCategoryClient) DeleteOneID(id int) *AppAppCategoryDeleteOne {
+	builder := c.Delete().Where(appappcategory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AppAppCategoryDeleteOne{builder}
+}
+
+// Query returns a query builder for AppAppCategory.
+func (c *AppAppCategoryClient) Query() *AppAppCategoryQuery {
+	return &AppAppCategoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAppAppCategory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AppAppCategory entity by its id.
+func (c *AppAppCategoryClient) Get(ctx context.Context, id int) (*AppAppCategory, error) {
+	return c.Query().Where(appappcategory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AppAppCategoryClient) GetX(ctx context.Context, id int) *AppAppCategory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryAppCategory queries the app_category edge of a AppAppCategory.
+func (c *AppAppCategoryClient) QueryAppCategory(aac *AppAppCategory) *AppCategoryQuery {
+	query := (&AppCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := aac.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appappcategory.Table, appappcategory.FieldID, id),
+			sqlgraph.To(appcategory.Table, appcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, appappcategory.AppCategoryTable, appappcategory.AppCategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(aac.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryApp queries the app edge of a AppAppCategory.
+func (c *AppAppCategoryClient) QueryApp(aac *AppAppCategory) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := aac.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appappcategory.Table, appappcategory.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, appappcategory.AppTable, appappcategory.AppColumn),
+		)
+		fromV = sqlgraph.Neighbors(aac.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AppAppCategoryClient) Hooks() []Hook {
+	return c.hooks.AppAppCategory
+}
+
+// Interceptors returns the client interceptors.
+func (c *AppAppCategoryClient) Interceptors() []Interceptor {
+	return c.inters.AppAppCategory
+}
+
+func (c *AppAppCategoryClient) mutate(ctx context.Context, m *AppAppCategoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&AppAppCategoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&AppAppCategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&AppAppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&AppAppCategoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown AppAppCategory mutation op: %q", m.Op())
 	}
 }
 
@@ -815,7 +1020,7 @@ func (c *AppCategoryClient) UpdateOne(ac *AppCategory) *AppCategoryUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *AppCategoryClient) UpdateOneID(id int) *AppCategoryUpdateOne {
+func (c *AppCategoryClient) UpdateOneID(id model.InternalID) *AppCategoryUpdateOne {
 	mutation := newAppCategoryMutation(c.config, OpUpdateOne, withAppCategoryID(id))
 	return &AppCategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -832,7 +1037,7 @@ func (c *AppCategoryClient) DeleteOne(ac *AppCategory) *AppCategoryDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AppCategoryClient) DeleteOneID(id int) *AppCategoryDeleteOne {
+func (c *AppCategoryClient) DeleteOneID(id model.InternalID) *AppCategoryDeleteOne {
 	builder := c.Delete().Where(appcategory.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -849,17 +1054,49 @@ func (c *AppCategoryClient) Query() *AppCategoryQuery {
 }
 
 // Get returns a AppCategory entity by its id.
-func (c *AppCategoryClient) Get(ctx context.Context, id int) (*AppCategory, error) {
+func (c *AppCategoryClient) Get(ctx context.Context, id model.InternalID) (*AppCategory, error) {
 	return c.Query().Where(appcategory.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *AppCategoryClient) GetX(ctx context.Context, id int) *AppCategory {
+func (c *AppCategoryClient) GetX(ctx context.Context, id model.InternalID) *AppCategory {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryApp queries the app edge of a AppCategory.
+func (c *AppCategoryClient) QueryApp(ac *AppCategory) *AppQuery {
+	query := (&AppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ac.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appcategory.Table, appcategory.FieldID, id),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, appcategory.AppTable, appcategory.AppPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(ac.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryAppAppCategory queries the app_app_category edge of a AppCategory.
+func (c *AppCategoryClient) QueryAppAppCategory(ac *AppCategory) *AppAppCategoryQuery {
+	query := (&AppAppCategoryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ac.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appcategory.Table, appcategory.FieldID, id),
+			sqlgraph.To(appappcategory.Table, appappcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, appcategory.AppAppCategoryTable, appcategory.AppAppCategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(ac.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
@@ -5026,17 +5263,17 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Account, App, AppCategory, AppInfo, AppRunTime, Device, Feed, FeedActionSet,
-		FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection, File, Image,
-		NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget,
-		PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
+		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
+		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
+		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		NotifyTarget, PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
 		SystemNotification, Tag, User []ent.Hook
 	}
 	inters struct {
-		Account, App, AppCategory, AppInfo, AppRunTime, Device, Feed, FeedActionSet,
-		FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection, File, Image,
-		NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource, NotifyTarget,
-		PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
+		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
+		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
+		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		NotifyTarget, PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
 		SystemNotification, Tag, User []ent.Interceptor
 	}
 )

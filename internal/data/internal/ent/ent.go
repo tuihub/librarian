@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/account"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
@@ -101,6 +102,7 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			account.Table:            account.ValidColumn,
 			app.Table:                app.ValidColumn,
+			appappcategory.Table:     appappcategory.ValidColumn,
 			appcategory.Table:        appcategory.ValidColumn,
 			appinfo.Table:            appinfo.ValidColumn,
 			appruntime.Table:         appruntime.ValidColumn,

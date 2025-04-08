@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -436,6 +438,36 @@ func (au *AppUpdate) AddAppRunTime(a ...*AppRunTime) *AppUpdate {
 	return au.AddAppRunTimeIDs(ids...)
 }
 
+// AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
+func (au *AppUpdate) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.AddAppCategoryIDs(ids...)
+	return au
+}
+
+// AddAppCategory adds the "app_category" edges to the AppCategory entity.
+func (au *AppUpdate) AddAppCategory(a ...*AppCategory) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddAppCategoryIDs(ids...)
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (au *AppUpdate) AddAppAppCategoryIDs(ids ...int) *AppUpdate {
+	au.mutation.AddAppAppCategoryIDs(ids...)
+	return au
+}
+
+// AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
+func (au *AppUpdate) AddAppAppCategory(a ...*AppAppCategory) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.AddAppAppCategoryIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (au *AppUpdate) Mutation() *AppMutation {
 	return au.mutation
@@ -466,6 +498,48 @@ func (au *AppUpdate) RemoveAppRunTime(a ...*AppRunTime) *AppUpdate {
 		ids[i] = a[i].ID
 	}
 	return au.RemoveAppRunTimeIDs(ids...)
+}
+
+// ClearAppCategory clears all "app_category" edges to the AppCategory entity.
+func (au *AppUpdate) ClearAppCategory() *AppUpdate {
+	au.mutation.ClearAppCategory()
+	return au
+}
+
+// RemoveAppCategoryIDs removes the "app_category" edge to AppCategory entities by IDs.
+func (au *AppUpdate) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdate {
+	au.mutation.RemoveAppCategoryIDs(ids...)
+	return au
+}
+
+// RemoveAppCategory removes "app_category" edges to AppCategory entities.
+func (au *AppUpdate) RemoveAppCategory(a ...*AppCategory) *AppUpdate {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveAppCategoryIDs(ids...)
+}
+
+// ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
+func (au *AppUpdate) ClearAppAppCategory() *AppUpdate {
+	au.mutation.ClearAppAppCategory()
+	return au
+}
+
+// RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
+func (au *AppUpdate) RemoveAppAppCategoryIDs(ids ...int) *AppUpdate {
+	au.mutation.RemoveAppAppCategoryIDs(ids...)
+	return au
+}
+
+// RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
+func (au *AppUpdate) RemoveAppAppCategory(a ...*AppAppCategory) *AppUpdate {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return au.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -717,6 +791,96 @@ func (au *AppUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.AppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !au.mutation.AppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.AppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if au.mutation.AppAppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !au.mutation.AppAppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := au.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -1148,6 +1312,36 @@ func (auo *AppUpdateOne) AddAppRunTime(a ...*AppRunTime) *AppUpdateOne {
 	return auo.AddAppRunTimeIDs(ids...)
 }
 
+// AddAppCategoryIDs adds the "app_category" edge to the AppCategory entity by IDs.
+func (auo *AppUpdateOne) AddAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.AddAppCategoryIDs(ids...)
+	return auo
+}
+
+// AddAppCategory adds the "app_category" edges to the AppCategory entity.
+func (auo *AppUpdateOne) AddAppCategory(a ...*AppCategory) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddAppCategoryIDs(ids...)
+}
+
+// AddAppAppCategoryIDs adds the "app_app_category" edge to the AppAppCategory entity by IDs.
+func (auo *AppUpdateOne) AddAppAppCategoryIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.AddAppAppCategoryIDs(ids...)
+	return auo
+}
+
+// AddAppAppCategory adds the "app_app_category" edges to the AppAppCategory entity.
+func (auo *AppUpdateOne) AddAppAppCategory(a ...*AppAppCategory) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.AddAppAppCategoryIDs(ids...)
+}
+
 // Mutation returns the AppMutation object of the builder.
 func (auo *AppUpdateOne) Mutation() *AppMutation {
 	return auo.mutation
@@ -1178,6 +1372,48 @@ func (auo *AppUpdateOne) RemoveAppRunTime(a ...*AppRunTime) *AppUpdateOne {
 		ids[i] = a[i].ID
 	}
 	return auo.RemoveAppRunTimeIDs(ids...)
+}
+
+// ClearAppCategory clears all "app_category" edges to the AppCategory entity.
+func (auo *AppUpdateOne) ClearAppCategory() *AppUpdateOne {
+	auo.mutation.ClearAppCategory()
+	return auo
+}
+
+// RemoveAppCategoryIDs removes the "app_category" edge to AppCategory entities by IDs.
+func (auo *AppUpdateOne) RemoveAppCategoryIDs(ids ...model.InternalID) *AppUpdateOne {
+	auo.mutation.RemoveAppCategoryIDs(ids...)
+	return auo
+}
+
+// RemoveAppCategory removes "app_category" edges to AppCategory entities.
+func (auo *AppUpdateOne) RemoveAppCategory(a ...*AppCategory) *AppUpdateOne {
+	ids := make([]model.InternalID, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveAppCategoryIDs(ids...)
+}
+
+// ClearAppAppCategory clears all "app_app_category" edges to the AppAppCategory entity.
+func (auo *AppUpdateOne) ClearAppAppCategory() *AppUpdateOne {
+	auo.mutation.ClearAppAppCategory()
+	return auo
+}
+
+// RemoveAppAppCategoryIDs removes the "app_app_category" edge to AppAppCategory entities by IDs.
+func (auo *AppUpdateOne) RemoveAppAppCategoryIDs(ids ...int) *AppUpdateOne {
+	auo.mutation.RemoveAppAppCategoryIDs(ids...)
+	return auo
+}
+
+// RemoveAppAppCategory removes "app_app_category" edges to AppAppCategory entities.
+func (auo *AppUpdateOne) RemoveAppAppCategory(a ...*AppAppCategory) *AppUpdateOne {
+	ids := make([]int, len(a))
+	for i := range a {
+		ids[i] = a[i].ID
+	}
+	return auo.RemoveAppAppCategoryIDs(ids...)
 }
 
 // Where appends a list predicates to the AppUpdate builder.
@@ -1459,6 +1695,96 @@ func (auo *AppUpdateOne) sqlSave(ctx context.Context) (_node *App, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(appruntime.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.AppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedAppCategoryIDs(); len(nodes) > 0 && !auo.mutation.AppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.AppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   app.AppCategoryTable,
+			Columns: app.AppCategoryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if auo.mutation.AppAppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.RemovedAppAppCategoryIDs(); len(nodes) > 0 && !auo.mutation.AppAppCategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := auo.mutation.AppAppCategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   app.AppAppCategoryTable,
+			Columns: []string{app.AppAppCategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(appappcategory.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

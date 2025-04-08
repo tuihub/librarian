@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/device"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
@@ -23,13 +25,15 @@ import (
 // AppQuery is the builder for querying App entities.
 type AppQuery struct {
 	config
-	ctx            *QueryContext
-	order          []app.OrderOption
-	inters         []Interceptor
-	predicates     []predicate.App
-	withUser       *UserQuery
-	withDevice     *DeviceQuery
-	withAppRunTime *AppRunTimeQuery
+	ctx                *QueryContext
+	order              []app.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.App
+	withUser           *UserQuery
+	withDevice         *DeviceQuery
+	withAppRunTime     *AppRunTimeQuery
+	withAppCategory    *AppCategoryQuery
+	withAppAppCategory *AppAppCategoryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -125,6 +129,50 @@ func (aq *AppQuery) QueryAppRunTime() *AppRunTimeQuery {
 			sqlgraph.From(app.Table, app.FieldID, selector),
 			sqlgraph.To(appruntime.Table, appruntime.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, app.AppRunTimeTable, app.AppRunTimeColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAppCategory chains the current query on the "app_category" edge.
+func (aq *AppQuery) QueryAppCategory() *AppCategoryQuery {
+	query := (&AppCategoryClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, selector),
+			sqlgraph.To(appcategory.Table, appcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, app.AppCategoryTable, app.AppCategoryPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAppAppCategory chains the current query on the "app_app_category" edge.
+func (aq *AppQuery) QueryAppAppCategory() *AppAppCategoryQuery {
+	query := (&AppAppCategoryClient{config: aq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := aq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := aq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(app.Table, app.FieldID, selector),
+			sqlgraph.To(appappcategory.Table, appappcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, app.AppAppCategoryTable, app.AppAppCategoryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(aq.driver.Dialect(), step)
 		return fromU, nil
@@ -319,14 +367,16 @@ func (aq *AppQuery) Clone() *AppQuery {
 		return nil
 	}
 	return &AppQuery{
-		config:         aq.config,
-		ctx:            aq.ctx.Clone(),
-		order:          append([]app.OrderOption{}, aq.order...),
-		inters:         append([]Interceptor{}, aq.inters...),
-		predicates:     append([]predicate.App{}, aq.predicates...),
-		withUser:       aq.withUser.Clone(),
-		withDevice:     aq.withDevice.Clone(),
-		withAppRunTime: aq.withAppRunTime.Clone(),
+		config:             aq.config,
+		ctx:                aq.ctx.Clone(),
+		order:              append([]app.OrderOption{}, aq.order...),
+		inters:             append([]Interceptor{}, aq.inters...),
+		predicates:         append([]predicate.App{}, aq.predicates...),
+		withUser:           aq.withUser.Clone(),
+		withDevice:         aq.withDevice.Clone(),
+		withAppRunTime:     aq.withAppRunTime.Clone(),
+		withAppCategory:    aq.withAppCategory.Clone(),
+		withAppAppCategory: aq.withAppAppCategory.Clone(),
 		// clone intermediate query.
 		sql:  aq.sql.Clone(),
 		path: aq.path,
@@ -363,6 +413,28 @@ func (aq *AppQuery) WithAppRunTime(opts ...func(*AppRunTimeQuery)) *AppQuery {
 		opt(query)
 	}
 	aq.withAppRunTime = query
+	return aq
+}
+
+// WithAppCategory tells the query-builder to eager-load the nodes that are connected to
+// the "app_category" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithAppCategory(opts ...func(*AppCategoryQuery)) *AppQuery {
+	query := (&AppCategoryClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withAppCategory = query
+	return aq
+}
+
+// WithAppAppCategory tells the query-builder to eager-load the nodes that are connected to
+// the "app_app_category" edge. The optional arguments are used to configure the query builder of the edge.
+func (aq *AppQuery) WithAppAppCategory(opts ...func(*AppAppCategoryQuery)) *AppQuery {
+	query := (&AppAppCategoryClient{config: aq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	aq.withAppAppCategory = query
 	return aq
 }
 
@@ -444,10 +516,12 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 	var (
 		nodes       = []*App{}
 		_spec       = aq.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [5]bool{
 			aq.withUser != nil,
 			aq.withDevice != nil,
 			aq.withAppRunTime != nil,
+			aq.withAppCategory != nil,
+			aq.withAppAppCategory != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -484,6 +558,20 @@ func (aq *AppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*App, err
 		if err := aq.loadAppRunTime(ctx, query, nodes,
 			func(n *App) { n.Edges.AppRunTime = []*AppRunTime{} },
 			func(n *App, e *AppRunTime) { n.Edges.AppRunTime = append(n.Edges.AppRunTime, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withAppCategory; query != nil {
+		if err := aq.loadAppCategory(ctx, query, nodes,
+			func(n *App) { n.Edges.AppCategory = []*AppCategory{} },
+			func(n *App, e *AppCategory) { n.Edges.AppCategory = append(n.Edges.AppCategory, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := aq.withAppAppCategory; query != nil {
+		if err := aq.loadAppAppCategory(ctx, query, nodes,
+			func(n *App) { n.Edges.AppAppCategory = []*AppAppCategory{} },
+			func(n *App, e *AppAppCategory) { n.Edges.AppAppCategory = append(n.Edges.AppAppCategory, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -563,6 +651,97 @@ func (aq *AppQuery) loadAppRunTime(ctx context.Context, query *AppRunTimeQuery, 
 	}
 	query.Where(predicate.AppRunTime(func(s *sql.Selector) {
 		s.Where(sql.InValues(s.C(app.AppRunTimeColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
+}
+func (aq *AppQuery) loadAppCategory(ctx context.Context, query *AppCategoryQuery, nodes []*App, init func(*App), assign func(*App, *AppCategory)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*App)
+	nids := make(map[model.InternalID]map[*App]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(app.AppCategoryTable)
+		s.Join(joinT).On(s.C(appcategory.FieldID), joinT.C(app.AppCategoryPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(app.AppCategoryPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(app.AppCategoryPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*App]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*AppCategory](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "app_category" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (aq *AppQuery) loadAppAppCategory(ctx context.Context, query *AppAppCategoryQuery, nodes []*App, init func(*App), assign func(*App, *AppAppCategory)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*App)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appappcategory.FieldAppID)
+	}
+	query.Where(predicate.AppAppCategory(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(app.AppAppCategoryColumn), fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {

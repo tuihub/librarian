@@ -1397,6 +1397,52 @@ func HasAppRunTimeWith(preds ...predicate.AppRunTime) predicate.App {
 	})
 }
 
+// HasAppCategory applies the HasEdge predicate on the "app_category" edge.
+func HasAppCategory() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, AppCategoryTable, AppCategoryPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppCategoryWith applies the HasEdge predicate on the "app_category" edge with a given conditions (other predicates).
+func HasAppCategoryWith(preds ...predicate.AppCategory) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := newAppCategoryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasAppAppCategory applies the HasEdge predicate on the "app_app_category" edge.
+func HasAppAppCategory() predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, AppAppCategoryTable, AppAppCategoryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppAppCategoryWith applies the HasEdge predicate on the "app_app_category" edge with a given conditions (other predicates).
+func HasAppAppCategoryWith(preds ...predicate.AppAppCategory) predicate.App {
+	return predicate.App(func(s *sql.Selector) {
+		step := newAppAppCategoryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.App) predicate.App {
 	return predicate.App(sql.AndPredicates(predicates...))

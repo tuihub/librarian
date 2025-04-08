@@ -111,6 +111,18 @@ func ToBizAppBinary(source ent.StoreAppBinary) modelgebura.AppBinary {
 	}
 	return modelgeburaAppBinary
 }
+func ToBizAppCategory(source *ent.AppCategory) *modelgebura.AppCategory {
+	var pModelgeburaAppCategory *modelgebura.AppCategory
+	if source != nil {
+		var modelgeburaAppCategory modelgebura.AppCategory
+		modelgeburaAppCategory.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaAppCategory.VersionNumber = (*source).VersionNumber
+		modelgeburaAppCategory.VersionDate = TimeToTime((*source).VersionDate)
+		modelgeburaAppCategory.Name = (*source).Name
+		pModelgeburaAppCategory = &modelgeburaAppCategory
+	}
+	return pModelgeburaAppCategory
+}
 func ToBizAppInfo(source *ent.AppInfo) *modelgebura.AppInfo {
 	var pModelgeburaAppInfo *modelgebura.AppInfo
 	if source != nil {

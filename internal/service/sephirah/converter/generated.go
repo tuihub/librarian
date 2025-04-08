@@ -64,6 +64,19 @@ func ToBizApp(source *sephirah.App) *modelgebura.App {
 	}
 	return pModelgeburaApp
 }
+func ToBizAppCategory(source *sephirah.AppCategory) *modelgebura.AppCategory {
+	var pModelgeburaAppCategory *modelgebura.AppCategory
+	if source != nil {
+		var modelgeburaAppCategory modelgebura.AppCategory
+		modelgeburaAppCategory.ID = ToBizInternalID((*source).Id)
+		modelgeburaAppCategory.VersionNumber = (*source).VersionNumber
+		modelgeburaAppCategory.VersionDate = ToBizTime((*source).VersionDate)
+		modelgeburaAppCategory.Name = (*source).Name
+		modelgeburaAppCategory.AppIDs = ToBizInternalIDList((*source).AppIds)
+		pModelgeburaAppCategory = &modelgeburaAppCategory
+	}
+	return pModelgeburaAppCategory
+}
 func ToBizAppInfo(source *sephirah.AppInfo) *modelgebura.AppInfo {
 	var pModelgeburaAppInfo *modelgebura.AppInfo
 	if source != nil {
@@ -859,6 +872,29 @@ func ToPBApp(source *modelgebura.App) *sephirah.App {
 		pV1App = &v1App
 	}
 	return pV1App
+}
+func ToPBAppCategory(source *modelgebura.AppCategory) *sephirah.AppCategory {
+	var pV1AppCategory *sephirah.AppCategory
+	if source != nil {
+		var v1AppCategory sephirah.AppCategory
+		v1AppCategory.Id = ToPBInternalID((*source).ID)
+		v1AppCategory.VersionNumber = (*source).VersionNumber
+		v1AppCategory.VersionDate = ToPBTime((*source).VersionDate)
+		v1AppCategory.Name = (*source).Name
+		v1AppCategory.AppIds = ToPBInternalIDList((*source).AppIDs)
+		pV1AppCategory = &v1AppCategory
+	}
+	return pV1AppCategory
+}
+func ToPBAppCategoryList(source []*modelgebura.AppCategory) []*sephirah.AppCategory {
+	var pV1AppCategoryList []*sephirah.AppCategory
+	if source != nil {
+		pV1AppCategoryList = make([]*sephirah.AppCategory, len(source))
+		for i := 0; i < len(source); i++ {
+			pV1AppCategoryList[i] = ToPBAppCategory(source[i])
+		}
+	}
+	return pV1AppCategoryList
 }
 func ToPBAppInfo(source *modelgebura.AppInfo) *sephirah.AppInfo {
 	var pV1AppInfo *sephirah.AppInfo

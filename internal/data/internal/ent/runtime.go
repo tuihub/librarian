@@ -66,13 +66,13 @@ func init() {
 	appcategoryFields := schema.AppCategory{}.Fields()
 	_ = appcategoryFields
 	// appcategoryDescUpdatedAt is the schema descriptor for updated_at field.
-	appcategoryDescUpdatedAt := appcategoryFields[4].Descriptor()
+	appcategoryDescUpdatedAt := appcategoryFields[5].Descriptor()
 	// appcategory.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	appcategory.DefaultUpdatedAt = appcategoryDescUpdatedAt.Default.(func() time.Time)
 	// appcategory.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	appcategory.UpdateDefaultUpdatedAt = appcategoryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// appcategoryDescCreatedAt is the schema descriptor for created_at field.
-	appcategoryDescCreatedAt := appcategoryFields[5].Descriptor()
+	appcategoryDescCreatedAt := appcategoryFields[6].Descriptor()
 	// appcategory.DefaultCreatedAt holds the default value on creation for the created_at field.
 	appcategory.DefaultCreatedAt = appcategoryDescCreatedAt.Default.(func() time.Time)
 	appinfoFields := schema.AppInfo{}.Fields()

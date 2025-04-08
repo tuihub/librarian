@@ -16,6 +16,8 @@ type Tx struct {
 	Account *AccountClient
 	// App is the client for interacting with the App builders.
 	App *AppClient
+	// AppAppCategory is the client for interacting with the AppAppCategory builders.
+	AppAppCategory *AppAppCategoryClient
 	// AppCategory is the client for interacting with the AppCategory builders.
 	AppCategory *AppCategoryClient
 	// AppInfo is the client for interacting with the AppInfo builders.
@@ -199,6 +201,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Account = NewAccountClient(tx.config)
 	tx.App = NewAppClient(tx.config)
+	tx.AppAppCategory = NewAppAppCategoryClient(tx.config)
 	tx.AppCategory = NewAppCategoryClient(tx.config)
 	tx.AppInfo = NewAppInfoClient(tx.config)
 	tx.AppRunTime = NewAppRunTimeClient(tx.config)

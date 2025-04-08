@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -11,17 +12,22 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/internal/data/internal/ent/app"
+	"github.com/tuihub/librarian/internal/data/internal/ent/appappcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // AppCategoryQuery is the builder for querying AppCategory entities.
 type AppCategoryQuery struct {
 	config
-	ctx        *QueryContext
-	order      []appcategory.OrderOption
-	inters     []Interceptor
-	predicates []predicate.AppCategory
+	ctx                *QueryContext
+	order              []appcategory.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.AppCategory
+	withApp            *AppQuery
+	withAppAppCategory *AppAppCategoryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +64,50 @@ func (acq *AppCategoryQuery) Order(o ...appcategory.OrderOption) *AppCategoryQue
 	return acq
 }
 
+// QueryApp chains the current query on the "app" edge.
+func (acq *AppCategoryQuery) QueryApp() *AppQuery {
+	query := (&AppClient{config: acq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := acq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := acq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appcategory.Table, appcategory.FieldID, selector),
+			sqlgraph.To(app.Table, app.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, appcategory.AppTable, appcategory.AppPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(acq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryAppAppCategory chains the current query on the "app_app_category" edge.
+func (acq *AppCategoryQuery) QueryAppAppCategory() *AppAppCategoryQuery {
+	query := (&AppAppCategoryClient{config: acq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := acq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := acq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(appcategory.Table, appcategory.FieldID, selector),
+			sqlgraph.To(appappcategory.Table, appappcategory.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, appcategory.AppAppCategoryTable, appcategory.AppAppCategoryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(acq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
 // First returns the first AppCategory entity from the query.
 // Returns a *NotFoundError when no AppCategory was found.
 func (acq *AppCategoryQuery) First(ctx context.Context) (*AppCategory, error) {
@@ -82,8 +132,8 @@ func (acq *AppCategoryQuery) FirstX(ctx context.Context) *AppCategory {
 
 // FirstID returns the first AppCategory ID from the query.
 // Returns a *NotFoundError when no AppCategory ID was found.
-func (acq *AppCategoryQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (acq *AppCategoryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = acq.Limit(1).IDs(setContextOp(ctx, acq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -95,7 +145,7 @@ func (acq *AppCategoryQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (acq *AppCategoryQuery) FirstIDX(ctx context.Context) int {
+func (acq *AppCategoryQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := acq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -133,8 +183,8 @@ func (acq *AppCategoryQuery) OnlyX(ctx context.Context) *AppCategory {
 // OnlyID is like Only, but returns the only AppCategory ID in the query.
 // Returns a *NotSingularError when more than one AppCategory ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (acq *AppCategoryQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (acq *AppCategoryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = acq.Limit(2).IDs(setContextOp(ctx, acq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -150,7 +200,7 @@ func (acq *AppCategoryQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (acq *AppCategoryQuery) OnlyIDX(ctx context.Context) int {
+func (acq *AppCategoryQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := acq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,7 +228,7 @@ func (acq *AppCategoryQuery) AllX(ctx context.Context) []*AppCategory {
 }
 
 // IDs executes the query and returns a list of AppCategory IDs.
-func (acq *AppCategoryQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (acq *AppCategoryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if acq.ctx.Unique == nil && acq.path != nil {
 		acq.Unique(true)
 	}
@@ -190,7 +240,7 @@ func (acq *AppCategoryQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (acq *AppCategoryQuery) IDsX(ctx context.Context) []int {
+func (acq *AppCategoryQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := acq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -245,15 +295,39 @@ func (acq *AppCategoryQuery) Clone() *AppCategoryQuery {
 		return nil
 	}
 	return &AppCategoryQuery{
-		config:     acq.config,
-		ctx:        acq.ctx.Clone(),
-		order:      append([]appcategory.OrderOption{}, acq.order...),
-		inters:     append([]Interceptor{}, acq.inters...),
-		predicates: append([]predicate.AppCategory{}, acq.predicates...),
+		config:             acq.config,
+		ctx:                acq.ctx.Clone(),
+		order:              append([]appcategory.OrderOption{}, acq.order...),
+		inters:             append([]Interceptor{}, acq.inters...),
+		predicates:         append([]predicate.AppCategory{}, acq.predicates...),
+		withApp:            acq.withApp.Clone(),
+		withAppAppCategory: acq.withAppAppCategory.Clone(),
 		// clone intermediate query.
 		sql:  acq.sql.Clone(),
 		path: acq.path,
 	}
+}
+
+// WithApp tells the query-builder to eager-load the nodes that are connected to
+// the "app" edge. The optional arguments are used to configure the query builder of the edge.
+func (acq *AppCategoryQuery) WithApp(opts ...func(*AppQuery)) *AppCategoryQuery {
+	query := (&AppClient{config: acq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	acq.withApp = query
+	return acq
+}
+
+// WithAppAppCategory tells the query-builder to eager-load the nodes that are connected to
+// the "app_app_category" edge. The optional arguments are used to configure the query builder of the edge.
+func (acq *AppCategoryQuery) WithAppAppCategory(opts ...func(*AppAppCategoryQuery)) *AppCategoryQuery {
+	query := (&AppAppCategoryClient{config: acq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	acq.withAppAppCategory = query
+	return acq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +406,12 @@ func (acq *AppCategoryQuery) prepareQuery(ctx context.Context) error {
 
 func (acq *AppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*AppCategory, error) {
 	var (
-		nodes = []*AppCategory{}
-		_spec = acq.querySpec()
+		nodes       = []*AppCategory{}
+		_spec       = acq.querySpec()
+		loadedTypes = [2]bool{
+			acq.withApp != nil,
+			acq.withAppAppCategory != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*AppCategory).scanValues(nil, columns)
@@ -341,6 +419,7 @@ func (acq *AppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &AppCategory{config: acq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +431,113 @@ func (acq *AppCategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := acq.withApp; query != nil {
+		if err := acq.loadApp(ctx, query, nodes,
+			func(n *AppCategory) { n.Edges.App = []*App{} },
+			func(n *AppCategory, e *App) { n.Edges.App = append(n.Edges.App, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := acq.withAppAppCategory; query != nil {
+		if err := acq.loadAppAppCategory(ctx, query, nodes,
+			func(n *AppCategory) { n.Edges.AppAppCategory = []*AppAppCategory{} },
+			func(n *AppCategory, e *AppAppCategory) { n.Edges.AppAppCategory = append(n.Edges.AppAppCategory, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (acq *AppCategoryQuery) loadApp(ctx context.Context, query *AppQuery, nodes []*AppCategory, init func(*AppCategory), assign func(*AppCategory, *App)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*AppCategory)
+	nids := make(map[model.InternalID]map[*AppCategory]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(appcategory.AppTable)
+		s.Join(joinT).On(s.C(app.FieldID), joinT.C(appcategory.AppPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(appcategory.AppPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(appcategory.AppPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*AppCategory]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*App](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "app" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (acq *AppCategoryQuery) loadAppAppCategory(ctx context.Context, query *AppAppCategoryQuery, nodes []*AppCategory, init func(*AppCategory), assign func(*AppCategory, *AppAppCategory)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*AppCategory)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(appappcategory.FieldAppCategoryID)
+	}
+	query.Where(predicate.AppAppCategory(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(appcategory.AppAppCategoryColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.AppCategoryID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "app_category_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (acq *AppCategoryQuery) sqlCount(ctx context.Context) (int, error) {
@@ -365,7 +550,7 @@ func (acq *AppCategoryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (acq *AppCategoryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(appcategory.Table, appcategory.Columns, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(appcategory.Table, appcategory.Columns, sqlgraph.NewFieldSpec(appcategory.FieldID, field.TypeInt64))
 	_spec.From = acq.sql
 	if unique := acq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

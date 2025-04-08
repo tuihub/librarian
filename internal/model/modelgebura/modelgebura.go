@@ -99,3 +99,11 @@ type AppBinaryChunk struct {
 	PublicURL string
 	Sha256    []byte
 }
+
+type AppCategory struct {
+	ID            model.InternalID
+	VersionNumber uint64
+	VersionDate   time.Time
+	Name          string
+	AppIDs        []model.InternalID
+}

@@ -12,6 +12,9 @@ type Account func(*sql.Selector)
 // App is the predicate function for app builders.
 type App func(*sql.Selector)
 
+// AppAppCategory is the predicate function for appappcategory builders.
+type AppAppCategory func(*sql.Selector)
+
 // AppCategory is the predicate function for appcategory builders.
 type AppCategory func(*sql.Selector)
 

@@ -101,6 +101,8 @@ type toBizConverter interface { //nolint:unused // used by generator
 	ToBizAppRunTime(*sephirah.AppRunTime) *modelgebura.AppRunTime
 	ToBizAppRunTimeList([]*sephirah.AppRunTime) []*modelgebura.AppRunTime
 
+	ToBizAppCategory(*sephirah.AppCategory) *modelgebura.AppCategory
+
 	// ToBizAppInst(*sephirah.AppInst) *modelgebura.AppInst
 
 	// goverter:ignore DigestDescription
