@@ -22,6 +22,7 @@ func NewLibrarianSentinelService(
 	g *bizgebura.Gebura,
 ) pb.LibrarianSentinelServiceServer {
 	return &LibrarianSentinelService{
+		UnimplementedLibrarianSentinelServiceServer: pb.UnimplementedLibrarianSentinelServiceServer{},
 		t: t,
 		g: g,
 	}
