@@ -648,10 +648,9 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 		if err != nil {
 			return err
 		}
-		oldLibsMap := make(map[int64]*ent.SentinelLibrary, len(oldLibs))
-		for _, lib := range oldLibs {
-			oldLibsMap[lib.ReportedID] = lib
-		}
+		oldLibsMap := lo.Associate(oldLibs, func(lib *ent.SentinelLibrary) (int64, *ent.SentinelLibrary) {
+			return lib.ReportedID, lib
+		})
 		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(info.Libraries))
 		for _, lib := range info.Libraries {
 			var reportSeq int64
