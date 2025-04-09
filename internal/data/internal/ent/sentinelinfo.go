@@ -18,9 +18,7 @@ import (
 type SentinelInfo struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID model.InternalID `json:"user_id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// URL holds the value of the "url" field.
 	URL string `json:"url,omitempty"`
 	// AlternativeUrls holds the value of the "alternative_urls" field.
@@ -64,7 +62,7 @@ func (*SentinelInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelinfo.FieldAlternativeUrls:
 			values[i] = new([]byte)
-		case sentinelinfo.FieldID, sentinelinfo.FieldUserID:
+		case sentinelinfo.FieldID:
 			values[i] = new(sql.NullInt64)
 		case sentinelinfo.FieldURL, sentinelinfo.FieldGetTokenPath, sentinelinfo.FieldDownloadFileBasePath:
 			values[i] = new(sql.NullString)
@@ -86,16 +84,10 @@ func (si *SentinelInfo) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case sentinelinfo.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			si.ID = int(value.Int64)
-		case sentinelinfo.FieldUserID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				si.UserID = model.InternalID(value.Int64)
+				si.ID = model.InternalID(value.Int64)
 			}
 		case sentinelinfo.FieldURL:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -176,9 +168,6 @@ func (si *SentinelInfo) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelInfo(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", si.ID))
-	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", si.UserID))
-	builder.WriteString(", ")
 	builder.WriteString("url=")
 	builder.WriteString(si.URL)
 	builder.WriteString(", ")

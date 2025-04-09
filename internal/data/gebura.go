@@ -11,9 +11,13 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
+
+	"entgo.io/ent/dialect/sql"
 )
 
 type GeburaRepo struct {
@@ -608,5 +612,70 @@ func (g *GeburaRepo) DeleteAppCategory(
 			appcategory.UserIDEQ(userID),
 		).Exec(ctx)
 		return err
+	})
+}
+
+func (g *GeburaRepo) UpsertSentinelInfo(
+	ctx context.Context,
+	info *modelgebura.SentinelInfo,
+) error {
+	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		// upsert sentinel info
+		q := tx.SentinelInfo.Create().
+			SetID(info.ID).
+			SetURL(info.Url).
+			SetAlternativeUrls(info.AlternativeUrls).
+			SetGetTokenPath(info.GetTokenPath).
+			SetDownloadFileBasePath(info.DownloadFileBasePath)
+		err := q.OnConflict(sql.ConflictColumns(sentinelinfo.FieldID)).
+			UpdateNewValues().
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		// upsert libraries
+		sInfo, err := tx.SentinelInfo.Query().
+			Where(sentinelinfo.IDEQ(info.ID)).
+			Only(ctx)
+		if err != nil {
+			return err
+		}
+		oldLibs, err := tx.SentinelLibrary.Query().
+			Where(sentinellibrary.SentinelInfoIDEQ(sInfo.ID)).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		oldLibsMap := make(map[int64]*ent.SentinelLibrary, len(oldLibs))
+		for _, lib := range oldLibs {
+			oldLibsMap[lib.ReportedID] = lib
+		}
+		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(info.Libraries))
+		for _, lib := range info.Libraries {
+			var reportSeq int64
+			if oldLib, exists := oldLibsMap[lib.ReportedID]; exists {
+				reportSeq = oldLib.ReportSequence + 1
+			} else {
+				reportSeq = 0
+			}
+			newLibs = append(newLibs, tx.SentinelLibrary.Create().
+				SetID(lib.ID).
+				SetSentinelInfoID(sInfo.ID).
+				SetReportedID(lib.ReportedID).
+				SetDownloadBasePath(lib.DownloadBasePath).
+				SetReportSequence(reportSeq))
+		}
+		return tx.SentinelLibrary.CreateBulk(newLibs...).
+			OnConflict(
+				sql.ConflictColumns(
+					sentinellibrary.FieldSentinelInfoID,
+					sentinellibrary.FieldReportedID,
+				),
+				resolveWithIgnores([]string{
+					sentinellibrary.FieldID,
+				}),
+			).
+			UpdateNewValues().
+			Exec(ctx)
 	})
 }

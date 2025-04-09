@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFileUpdate is the builder for updating SentinelAppBinaryFile entities.
@@ -30,15 +31,15 @@ func (sabfu *SentinelAppBinaryFileUpdate) Where(ps ...predicate.SentinelAppBinar
 }
 
 // SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryID(i int) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetSentinelAppBinaryID(i)
+func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.SetSentinelAppBinaryID(mi)
 	return sabfu
 }
 
 // SetNillableSentinelAppBinaryID sets the "sentinel_app_binary_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryID(i *int) *SentinelAppBinaryFileUpdate {
-	if i != nil {
-		sabfu.SetSentinelAppBinaryID(*i)
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryID(mi *model.InternalID) *SentinelAppBinaryFileUpdate {
+	if mi != nil {
+		sabfu.SetSentinelAppBinaryID(*mi)
 	}
 	return sabfu
 }
@@ -202,7 +203,7 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 	if err := sabfu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
 	if ps := sabfu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -245,7 +246,7 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -258,7 +259,7 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -287,15 +288,15 @@ type SentinelAppBinaryFileUpdateOne struct {
 }
 
 // SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryID(i int) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetSentinelAppBinaryID(i)
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.SetSentinelAppBinaryID(mi)
 	return sabfuo
 }
 
 // SetNillableSentinelAppBinaryID sets the "sentinel_app_binary_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryID(i *int) *SentinelAppBinaryFileUpdateOne {
-	if i != nil {
-		sabfuo.SetSentinelAppBinaryID(*i)
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryID(mi *model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	if mi != nil {
+		sabfuo.SetSentinelAppBinaryID(*mi)
 	}
 	return sabfuo
 }
@@ -472,7 +473,7 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 	if err := sabfuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
 	id, ok := sabfuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelAppBinaryFile.id" for update`)}
@@ -532,7 +533,7 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -545,7 +546,7 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

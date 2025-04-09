@@ -24,12 +24,6 @@ type SentinelInfoCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetUserID sets the "user_id" field.
-func (sic *SentinelInfoCreate) SetUserID(mi model.InternalID) *SentinelInfoCreate {
-	sic.mutation.SetUserID(mi)
-	return sic
-}
-
 // SetURL sets the "url" field.
 func (sic *SentinelInfoCreate) SetURL(s string) *SentinelInfoCreate {
 	sic.mutation.SetURL(s)
@@ -90,15 +84,21 @@ func (sic *SentinelInfoCreate) SetNillableCreatedAt(t *time.Time) *SentinelInfoC
 	return sic
 }
 
+// SetID sets the "id" field.
+func (sic *SentinelInfoCreate) SetID(mi model.InternalID) *SentinelInfoCreate {
+	sic.mutation.SetID(mi)
+	return sic
+}
+
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (sic *SentinelInfoCreate) AddSentinelLibraryIDs(ids ...int) *SentinelInfoCreate {
+func (sic *SentinelInfoCreate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoCreate {
 	sic.mutation.AddSentinelLibraryIDs(ids...)
 	return sic
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
 func (sic *SentinelInfoCreate) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoCreate {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -152,9 +152,6 @@ func (sic *SentinelInfoCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sic *SentinelInfoCreate) check() error {
-	if _, ok := sic.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "SentinelInfo.user_id"`)}
-	}
 	if _, ok := sic.mutation.URL(); !ok {
 		return &ValidationError{Name: "url", err: errors.New(`ent: missing required field "SentinelInfo.url"`)}
 	}
@@ -181,8 +178,10 @@ func (sic *SentinelInfoCreate) sqlSave(ctx context.Context) (*SentinelInfo, erro
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = model.InternalID(id)
+	}
 	sic.mutation.id = &_node.ID
 	sic.mutation.done = true
 	return _node, nil
@@ -191,12 +190,12 @@ func (sic *SentinelInfoCreate) sqlSave(ctx context.Context) (*SentinelInfo, erro
 func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SentinelInfo{config: sic.config}
-		_spec = sqlgraph.NewCreateSpec(sentinelinfo.Table, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(sentinelinfo.Table, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = sic.conflict
-	if value, ok := sic.mutation.UserID(); ok {
-		_spec.SetField(sentinelinfo.FieldUserID, field.TypeInt64, value)
-		_node.UserID = value
+	if id, ok := sic.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
 	}
 	if value, ok := sic.mutation.URL(); ok {
 		_spec.SetField(sentinelinfo.FieldURL, field.TypeString, value)
@@ -230,7 +229,7 @@ func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -245,7 +244,7 @@ func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec
 // of the `INSERT` statement. For example:
 //
 //	client.SentinelInfo.Create().
-//		SetUserID(v).
+//		SetURL(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -254,7 +253,7 @@ func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelInfoUpsert) {
-//			SetUserID(v+v).
+//			SetURL(v+v).
 //		}).
 //		Exec(ctx)
 func (sic *SentinelInfoCreate) OnConflict(opts ...sql.ConflictOption) *SentinelInfoUpsertOne {
@@ -289,24 +288,6 @@ type (
 		*sql.UpdateSet
 	}
 )
-
-// SetUserID sets the "user_id" field.
-func (u *SentinelInfoUpsert) SetUserID(v model.InternalID) *SentinelInfoUpsert {
-	u.Set(sentinelinfo.FieldUserID, v)
-	return u
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *SentinelInfoUpsert) UpdateUserID() *SentinelInfoUpsert {
-	u.SetExcluded(sentinelinfo.FieldUserID)
-	return u
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *SentinelInfoUpsert) AddUserID(v model.InternalID) *SentinelInfoUpsert {
-	u.Add(sentinelinfo.FieldUserID, v)
-	return u
-}
 
 // SetURL sets the "url" field.
 func (u *SentinelInfoUpsert) SetURL(v string) *SentinelInfoUpsert {
@@ -392,16 +373,24 @@ func (u *SentinelInfoUpsert) UpdateCreatedAt() *SentinelInfoUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.SentinelInfo.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinelinfo.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelInfoUpsertOne) UpdateNewValues() *SentinelInfoUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(sentinelinfo.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -430,27 +419,6 @@ func (u *SentinelInfoUpsertOne) Update(set func(*SentinelInfoUpsert)) *SentinelI
 		set(&SentinelInfoUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetUserID sets the "user_id" field.
-func (u *SentinelInfoUpsertOne) SetUserID(v model.InternalID) *SentinelInfoUpsertOne {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.SetUserID(v)
-	})
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *SentinelInfoUpsertOne) AddUserID(v model.InternalID) *SentinelInfoUpsertOne {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.AddUserID(v)
-	})
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *SentinelInfoUpsertOne) UpdateUserID() *SentinelInfoUpsertOne {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.UpdateUserID()
-	})
 }
 
 // SetURL sets the "url" field.
@@ -567,7 +535,7 @@ func (u *SentinelInfoUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SentinelInfoUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *SentinelInfoUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -576,7 +544,7 @@ func (u *SentinelInfoUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SentinelInfoUpsertOne) IDX(ctx context.Context) int {
+func (u *SentinelInfoUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -631,9 +599,9 @@ func (sicb *SentinelInfoCreateBulk) Save(ctx context.Context) ([]*SentinelInfo, 
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -686,7 +654,7 @@ func (sicb *SentinelInfoCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelInfoUpsert) {
-//			SetUserID(v+v).
+//			SetURL(v+v).
 //		}).
 //		Exec(ctx)
 func (sicb *SentinelInfoCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelInfoUpsertBulk {
@@ -721,10 +689,20 @@ type SentinelInfoUpsertBulk struct {
 //	client.SentinelInfo.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinelinfo.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelInfoUpsertBulk) UpdateNewValues() *SentinelInfoUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(sentinelinfo.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -753,27 +731,6 @@ func (u *SentinelInfoUpsertBulk) Update(set func(*SentinelInfoUpsert)) *Sentinel
 		set(&SentinelInfoUpsert{UpdateSet: update})
 	}))
 	return u
-}
-
-// SetUserID sets the "user_id" field.
-func (u *SentinelInfoUpsertBulk) SetUserID(v model.InternalID) *SentinelInfoUpsertBulk {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.SetUserID(v)
-	})
-}
-
-// AddUserID adds v to the "user_id" field.
-func (u *SentinelInfoUpsertBulk) AddUserID(v model.InternalID) *SentinelInfoUpsertBulk {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.AddUserID(v)
-	})
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *SentinelInfoUpsertBulk) UpdateUserID() *SentinelInfoUpsertBulk {
-	return u.Update(func(s *SentinelInfoUpsert) {
-		s.UpdateUserID()
-	})
 }
 
 // SetURL sets the "url" field.

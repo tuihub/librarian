@@ -31,27 +31,6 @@ func (siu *SentinelInfoUpdate) Where(ps ...predicate.SentinelInfo) *SentinelInfo
 	return siu
 }
 
-// SetUserID sets the "user_id" field.
-func (siu *SentinelInfoUpdate) SetUserID(mi model.InternalID) *SentinelInfoUpdate {
-	siu.mutation.ResetUserID()
-	siu.mutation.SetUserID(mi)
-	return siu
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (siu *SentinelInfoUpdate) SetNillableUserID(mi *model.InternalID) *SentinelInfoUpdate {
-	if mi != nil {
-		siu.SetUserID(*mi)
-	}
-	return siu
-}
-
-// AddUserID adds mi to the "user_id" field.
-func (siu *SentinelInfoUpdate) AddUserID(mi model.InternalID) *SentinelInfoUpdate {
-	siu.mutation.AddUserID(mi)
-	return siu
-}
-
 // SetURL sets the "url" field.
 func (siu *SentinelInfoUpdate) SetURL(s string) *SentinelInfoUpdate {
 	siu.mutation.SetURL(s)
@@ -139,14 +118,14 @@ func (siu *SentinelInfoUpdate) SetNillableCreatedAt(t *time.Time) *SentinelInfoU
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (siu *SentinelInfoUpdate) AddSentinelLibraryIDs(ids ...int) *SentinelInfoUpdate {
+func (siu *SentinelInfoUpdate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoUpdate {
 	siu.mutation.AddSentinelLibraryIDs(ids...)
 	return siu
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
 func (siu *SentinelInfoUpdate) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoUpdate {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -165,14 +144,14 @@ func (siu *SentinelInfoUpdate) ClearSentinelLibrary() *SentinelInfoUpdate {
 }
 
 // RemoveSentinelLibraryIDs removes the "sentinel_library" edge to SentinelLibrary entities by IDs.
-func (siu *SentinelInfoUpdate) RemoveSentinelLibraryIDs(ids ...int) *SentinelInfoUpdate {
+func (siu *SentinelInfoUpdate) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoUpdate {
 	siu.mutation.RemoveSentinelLibraryIDs(ids...)
 	return siu
 }
 
 // RemoveSentinelLibrary removes "sentinel_library" edges to SentinelLibrary entities.
 func (siu *SentinelInfoUpdate) RemoveSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoUpdate {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -216,19 +195,13 @@ func (siu *SentinelInfoUpdate) defaults() {
 }
 
 func (siu *SentinelInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64))
 	if ps := siu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := siu.mutation.UserID(); ok {
-		_spec.SetField(sentinelinfo.FieldUserID, field.TypeInt64, value)
-	}
-	if value, ok := siu.mutation.AddedUserID(); ok {
-		_spec.AddField(sentinelinfo.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := siu.mutation.URL(); ok {
 		_spec.SetField(sentinelinfo.FieldURL, field.TypeString, value)
@@ -267,7 +240,7 @@ func (siu *SentinelInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -280,7 +253,7 @@ func (siu *SentinelInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -296,7 +269,7 @@ func (siu *SentinelInfoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -322,27 +295,6 @@ type SentinelInfoUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SentinelInfoMutation
-}
-
-// SetUserID sets the "user_id" field.
-func (siuo *SentinelInfoUpdateOne) SetUserID(mi model.InternalID) *SentinelInfoUpdateOne {
-	siuo.mutation.ResetUserID()
-	siuo.mutation.SetUserID(mi)
-	return siuo
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (siuo *SentinelInfoUpdateOne) SetNillableUserID(mi *model.InternalID) *SentinelInfoUpdateOne {
-	if mi != nil {
-		siuo.SetUserID(*mi)
-	}
-	return siuo
-}
-
-// AddUserID adds mi to the "user_id" field.
-func (siuo *SentinelInfoUpdateOne) AddUserID(mi model.InternalID) *SentinelInfoUpdateOne {
-	siuo.mutation.AddUserID(mi)
-	return siuo
 }
 
 // SetURL sets the "url" field.
@@ -432,14 +384,14 @@ func (siuo *SentinelInfoUpdateOne) SetNillableCreatedAt(t *time.Time) *SentinelI
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (siuo *SentinelInfoUpdateOne) AddSentinelLibraryIDs(ids ...int) *SentinelInfoUpdateOne {
+func (siuo *SentinelInfoUpdateOne) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoUpdateOne {
 	siuo.mutation.AddSentinelLibraryIDs(ids...)
 	return siuo
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
 func (siuo *SentinelInfoUpdateOne) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoUpdateOne {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -458,14 +410,14 @@ func (siuo *SentinelInfoUpdateOne) ClearSentinelLibrary() *SentinelInfoUpdateOne
 }
 
 // RemoveSentinelLibraryIDs removes the "sentinel_library" edge to SentinelLibrary entities by IDs.
-func (siuo *SentinelInfoUpdateOne) RemoveSentinelLibraryIDs(ids ...int) *SentinelInfoUpdateOne {
+func (siuo *SentinelInfoUpdateOne) RemoveSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoUpdateOne {
 	siuo.mutation.RemoveSentinelLibraryIDs(ids...)
 	return siuo
 }
 
 // RemoveSentinelLibrary removes "sentinel_library" edges to SentinelLibrary entities.
 func (siuo *SentinelInfoUpdateOne) RemoveSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoUpdateOne {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -522,7 +474,7 @@ func (siuo *SentinelInfoUpdateOne) defaults() {
 }
 
 func (siuo *SentinelInfoUpdateOne) sqlSave(ctx context.Context) (_node *SentinelInfo, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64))
 	id, ok := siuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelInfo.id" for update`)}
@@ -546,12 +498,6 @@ func (siuo *SentinelInfoUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := siuo.mutation.UserID(); ok {
-		_spec.SetField(sentinelinfo.FieldUserID, field.TypeInt64, value)
-	}
-	if value, ok := siuo.mutation.AddedUserID(); ok {
-		_spec.AddField(sentinelinfo.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := siuo.mutation.URL(); ok {
 		_spec.SetField(sentinelinfo.FieldURL, field.TypeString, value)
@@ -590,7 +536,7 @@ func (siuo *SentinelInfoUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -603,7 +549,7 @@ func (siuo *SentinelInfoUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -619,7 +565,7 @@ func (siuo *SentinelInfoUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -54,10 +54,10 @@ func ToBizApp(source *sephirah.App) *modelgebura.App {
 				modelgeburaApp.Tags[i] = (*source).Tags[i]
 			}
 		}
-		if (*source).AltNames != nil {
-			modelgeburaApp.AlternativeNames = make([]string, len((*source).AltNames))
-			for j := 0; j < len((*source).AltNames); j++ {
-				modelgeburaApp.AlternativeNames[j] = (*source).AltNames[j]
+		if (*source).NameAlternatives != nil {
+			modelgeburaApp.AlternativeNames = make([]string, len((*source).NameAlternatives))
+			for j := 0; j < len((*source).NameAlternatives); j++ {
+				modelgeburaApp.AlternativeNames[j] = (*source).NameAlternatives[j]
 			}
 		}
 		pModelgeburaApp = &modelgeburaApp
@@ -101,10 +101,10 @@ func ToBizAppInfo(source *sephirah.AppInfo) *modelgebura.AppInfo {
 				modelgeburaAppInfo.Tags[i] = (*source).Tags[i]
 			}
 		}
-		if (*source).AltNames != nil {
-			modelgeburaAppInfo.AlternativeNames = make([]string, len((*source).AltNames))
-			for j := 0; j < len((*source).AltNames); j++ {
-				modelgeburaAppInfo.AlternativeNames[j] = (*source).AltNames[j]
+		if (*source).NameAlternatives != nil {
+			modelgeburaAppInfo.AlternativeNames = make([]string, len((*source).NameAlternatives))
+			for j := 0; j < len((*source).NameAlternatives); j++ {
+				modelgeburaAppInfo.AlternativeNames[j] = (*source).NameAlternatives[j]
 			}
 		}
 		pModelgeburaAppInfo = &modelgeburaAppInfo
@@ -862,9 +862,9 @@ func ToPBApp(source *modelgebura.App) *sephirah.App {
 			}
 		}
 		if (*source).AlternativeNames != nil {
-			v1App.AltNames = make([]string, len((*source).AlternativeNames))
+			v1App.NameAlternatives = make([]string, len((*source).AlternativeNames))
 			for j := 0; j < len((*source).AlternativeNames); j++ {
-				v1App.AltNames[j] = (*source).AlternativeNames[j]
+				v1App.NameAlternatives[j] = (*source).AlternativeNames[j]
 			}
 		}
 		v1App.Developer = (*source).Developer
@@ -920,9 +920,9 @@ func ToPBAppInfo(source *modelgebura.AppInfo) *sephirah.AppInfo {
 			}
 		}
 		if (*source).AlternativeNames != nil {
-			v1AppInfo.AltNames = make([]string, len((*source).AlternativeNames))
+			v1AppInfo.NameAlternatives = make([]string, len((*source).AlternativeNames))
 			for j := 0; j < len((*source).AlternativeNames); j++ {
-				v1AppInfo.AltNames[j] = (*source).AlternativeNames[j]
+				v1AppInfo.NameAlternatives[j] = (*source).AlternativeNames[j]
 			}
 		}
 		v1AppInfo.Developer = (*source).Developer

@@ -12,54 +12,48 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.SentinelInfo {
+func ID(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.SentinelInfo {
+func IDEQ(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.SentinelInfo {
+func IDNEQ(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.SentinelInfo {
+func IDIn(ids ...model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.SentinelInfo {
+func IDNotIn(ids ...model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.SentinelInfo {
+func IDGT(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.SentinelInfo {
+func IDGTE(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.SentinelInfo {
+func IDLT(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.SentinelInfo {
+func IDLTE(id model.InternalID) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldLTE(FieldID, id))
-}
-
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldEQ(FieldUserID, vc))
 }
 
 // URL applies equality check predicate on the "url" field. It's identical to URLEQ.
@@ -85,60 +79,6 @@ func UpdatedAt(v time.Time) predicate.SentinelInfo {
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.SentinelInfo {
 	return predicate.SentinelInfo(sql.FieldEQ(FieldCreatedAt, v))
-}
-
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldEQ(FieldUserID, vc))
-}
-
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldNEQ(FieldUserID, vc))
-}
-
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...model.InternalID) predicate.SentinelInfo {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.SentinelInfo(sql.FieldIn(FieldUserID, v...))
-}
-
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...model.InternalID) predicate.SentinelInfo {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = int64(vs[i])
-	}
-	return predicate.SentinelInfo(sql.FieldNotIn(FieldUserID, v...))
-}
-
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldGT(FieldUserID, vc))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldGTE(FieldUserID, vc))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldLT(FieldUserID, vc))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v model.InternalID) predicate.SentinelInfo {
-	vc := int64(v)
-	return predicate.SentinelInfo(sql.FieldLTE(FieldUserID, vc))
 }
 
 // URLEQ applies the EQ predicate on the "url" field.

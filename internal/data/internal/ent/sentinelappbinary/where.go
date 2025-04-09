@@ -8,56 +8,58 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.SentinelAppBinary {
+func ID(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.SentinelAppBinary {
+func IDEQ(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.SentinelAppBinary {
+func IDNEQ(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.SentinelAppBinary {
+func IDIn(ids ...model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.SentinelAppBinary {
+func IDNotIn(ids ...model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.SentinelAppBinary {
+func IDGT(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.SentinelAppBinary {
+func IDGTE(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.SentinelAppBinary {
+func IDLT(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.SentinelAppBinary {
+func IDLTE(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldLTE(FieldID, id))
 }
 
 // SentinelLibraryID applies equality check predicate on the "sentinel_library_id" field. It's identical to SentinelLibraryIDEQ.
-func SentinelLibraryID(v int) predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldEQ(FieldSentinelLibraryID, v))
+func SentinelLibraryID(v model.InternalID) predicate.SentinelAppBinary {
+	vc := int64(v)
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldSentinelLibraryID, vc))
 }
 
 // GeneratedID applies equality check predicate on the "generated_id" field. It's identical to GeneratedIDEQ.
@@ -105,24 +107,39 @@ func CreatedAt(v time.Time) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldEQ(FieldCreatedAt, v))
 }
 
+// ReportSequence applies equality check predicate on the "report_sequence" field. It's identical to ReportSequenceEQ.
+func ReportSequence(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldReportSequence, v))
+}
+
 // SentinelLibraryIDEQ applies the EQ predicate on the "sentinel_library_id" field.
-func SentinelLibraryIDEQ(v int) predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldEQ(FieldSentinelLibraryID, v))
+func SentinelLibraryIDEQ(v model.InternalID) predicate.SentinelAppBinary {
+	vc := int64(v)
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldSentinelLibraryID, vc))
 }
 
 // SentinelLibraryIDNEQ applies the NEQ predicate on the "sentinel_library_id" field.
-func SentinelLibraryIDNEQ(v int) predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldNEQ(FieldSentinelLibraryID, v))
+func SentinelLibraryIDNEQ(v model.InternalID) predicate.SentinelAppBinary {
+	vc := int64(v)
+	return predicate.SentinelAppBinary(sql.FieldNEQ(FieldSentinelLibraryID, vc))
 }
 
 // SentinelLibraryIDIn applies the In predicate on the "sentinel_library_id" field.
-func SentinelLibraryIDIn(vs ...int) predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldIn(FieldSentinelLibraryID, vs...))
+func SentinelLibraryIDIn(vs ...model.InternalID) predicate.SentinelAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.SentinelAppBinary(sql.FieldIn(FieldSentinelLibraryID, v...))
 }
 
 // SentinelLibraryIDNotIn applies the NotIn predicate on the "sentinel_library_id" field.
-func SentinelLibraryIDNotIn(vs ...int) predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldNotIn(FieldSentinelLibraryID, vs...))
+func SentinelLibraryIDNotIn(vs ...model.InternalID) predicate.SentinelAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.SentinelAppBinary(sql.FieldNotIn(FieldSentinelLibraryID, v...))
 }
 
 // GeneratedIDEQ applies the EQ predicate on the "generated_id" field.
@@ -618,6 +635,46 @@ func CreatedAtLT(v time.Time) predicate.SentinelAppBinary {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// ReportSequenceEQ applies the EQ predicate on the "report_sequence" field.
+func ReportSequenceEQ(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldReportSequence, v))
+}
+
+// ReportSequenceNEQ applies the NEQ predicate on the "report_sequence" field.
+func ReportSequenceNEQ(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldNEQ(FieldReportSequence, v))
+}
+
+// ReportSequenceIn applies the In predicate on the "report_sequence" field.
+func ReportSequenceIn(vs ...int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldIn(FieldReportSequence, vs...))
+}
+
+// ReportSequenceNotIn applies the NotIn predicate on the "report_sequence" field.
+func ReportSequenceNotIn(vs ...int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldNotIn(FieldReportSequence, vs...))
+}
+
+// ReportSequenceGT applies the GT predicate on the "report_sequence" field.
+func ReportSequenceGT(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldGT(FieldReportSequence, v))
+}
+
+// ReportSequenceGTE applies the GTE predicate on the "report_sequence" field.
+func ReportSequenceGTE(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldGTE(FieldReportSequence, v))
+}
+
+// ReportSequenceLT applies the LT predicate on the "report_sequence" field.
+func ReportSequenceLT(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldLT(FieldReportSequence, v))
+}
+
+// ReportSequenceLTE applies the LTE predicate on the "report_sequence" field.
+func ReportSequenceLTE(v int64) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldLTE(FieldReportSequence, v))
 }
 
 // HasSentinelLibrary applies the HasEdge predicate on the "sentinel_library" edge.

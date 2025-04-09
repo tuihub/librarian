@@ -14,8 +14,6 @@ const (
 	Label = "sentinel_info"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldUserID holds the string denoting the user_id field in the database.
-	FieldUserID = "user_id"
 	// FieldURL holds the string denoting the url field in the database.
 	FieldURL = "url"
 	// FieldAlternativeUrls holds the string denoting the alternative_urls field in the database.
@@ -44,7 +42,6 @@ const (
 // Columns holds all SQL columns for sentinelinfo fields.
 var Columns = []string{
 	FieldID,
-	FieldUserID,
 	FieldURL,
 	FieldAlternativeUrls,
 	FieldGetTokenPath,
@@ -78,11 +75,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByUserID orders the results by the user_id field.
-func ByUserID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByURL orders the results by the url field.

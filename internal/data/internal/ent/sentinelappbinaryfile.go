@@ -11,15 +11,16 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFile is the model entity for the SentinelAppBinaryFile schema.
 type SentinelAppBinaryFile struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
 	// SentinelAppBinaryID holds the value of the "sentinel_app_binary_id" field.
-	SentinelAppBinaryID int `json:"sentinel_app_binary_id,omitempty"`
+	SentinelAppBinaryID model.InternalID `json:"sentinel_app_binary_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -89,16 +90,16 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 	for i := range columns {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value.Valid {
+				sabf.ID = model.InternalID(value.Int64)
 			}
-			sabf.ID = int(value.Int64)
 		case sentinelappbinaryfile.FieldSentinelAppBinaryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelAppBinaryID = int(value.Int64)
+				sabf.SentinelAppBinaryID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinaryfile.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {

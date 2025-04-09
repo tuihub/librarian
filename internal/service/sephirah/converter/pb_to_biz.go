@@ -82,7 +82,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore ID
 	// goverter:ignore ShortDescription
 	// goverter:ignore ReleaseDate
-	// goverter:map AltNames AlternativeNames
+	// goverter:map NameAlternatives AlternativeNames
 	// goverter:ignore RawData
 	// goverter:ignore UpdatedAt
 	ToBizAppInfo(*sephirah.AppInfo) *modelgebura.AppInfo
@@ -91,7 +91,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 
 	// goverter:ignore ShortDescription
 	// goverter:ignore ReleaseDate
-	// goverter:map AltNames AlternativeNames
+	// goverter:map NameAlternatives AlternativeNames
 	ToBizApp(*sephirah.App) *modelgebura.App
 	// goverter:enum:unknown AppTypeUnspecified
 	// goverter:enum:map AppType_APP_TYPE_UNSPECIFIED AppTypeUnspecified

@@ -3,6 +3,8 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -15,7 +17,8 @@ type SentinelAppBinaryFile struct {
 
 func (SentinelAppBinaryFile) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("sentinel_app_binary_id"),
+		defaultPrimaryKey(),
+		field.Int64("sentinel_app_binary_id").GoType(model.InternalID(0)),
 		field.String("name"),
 		field.Int64("size_bytes"),
 		field.Bytes("sha256"),

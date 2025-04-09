@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelLibraryUpdate is the builder for updating SentinelLibrary entities.
@@ -31,15 +32,15 @@ func (slu *SentinelLibraryUpdate) Where(ps ...predicate.SentinelLibrary) *Sentin
 }
 
 // SetSentinelInfoID sets the "sentinel_info_id" field.
-func (slu *SentinelLibraryUpdate) SetSentinelInfoID(i int) *SentinelLibraryUpdate {
-	slu.mutation.SetSentinelInfoID(i)
+func (slu *SentinelLibraryUpdate) SetSentinelInfoID(mi model.InternalID) *SentinelLibraryUpdate {
+	slu.mutation.SetSentinelInfoID(mi)
 	return slu
 }
 
 // SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableSentinelInfoID(i *int) *SentinelLibraryUpdate {
-	if i != nil {
-		slu.SetSentinelInfoID(*i)
+func (slu *SentinelLibraryUpdate) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelLibraryUpdate {
+	if mi != nil {
+		slu.SetSentinelInfoID(*mi)
 	}
 	return slu
 }
@@ -99,20 +100,41 @@ func (slu *SentinelLibraryUpdate) SetNillableCreatedAt(t *time.Time) *SentinelLi
 	return slu
 }
 
+// SetReportSequence sets the "report_sequence" field.
+func (slu *SentinelLibraryUpdate) SetReportSequence(i int64) *SentinelLibraryUpdate {
+	slu.mutation.ResetReportSequence()
+	slu.mutation.SetReportSequence(i)
+	return slu
+}
+
+// SetNillableReportSequence sets the "report_sequence" field if the given value is not nil.
+func (slu *SentinelLibraryUpdate) SetNillableReportSequence(i *int64) *SentinelLibraryUpdate {
+	if i != nil {
+		slu.SetReportSequence(*i)
+	}
+	return slu
+}
+
+// AddReportSequence adds i to the "report_sequence" field.
+func (slu *SentinelLibraryUpdate) AddReportSequence(i int64) *SentinelLibraryUpdate {
+	slu.mutation.AddReportSequence(i)
+	return slu
+}
+
 // SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
 func (slu *SentinelLibraryUpdate) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryUpdate {
 	return slu.SetSentinelInfoID(s.ID)
 }
 
 // AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (slu *SentinelLibraryUpdate) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdate {
+func (slu *SentinelLibraryUpdate) AddSentinelAppBinaryIDs(ids ...model.InternalID) *SentinelLibraryUpdate {
 	slu.mutation.AddSentinelAppBinaryIDs(ids...)
 	return slu
 }
 
 // AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
 func (slu *SentinelLibraryUpdate) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdate {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -137,14 +159,14 @@ func (slu *SentinelLibraryUpdate) ClearSentinelAppBinary() *SentinelLibraryUpdat
 }
 
 // RemoveSentinelAppBinaryIDs removes the "sentinel_app_binary" edge to SentinelAppBinary entities by IDs.
-func (slu *SentinelLibraryUpdate) RemoveSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdate {
+func (slu *SentinelLibraryUpdate) RemoveSentinelAppBinaryIDs(ids ...model.InternalID) *SentinelLibraryUpdate {
 	slu.mutation.RemoveSentinelAppBinaryIDs(ids...)
 	return slu
 }
 
 // RemoveSentinelAppBinary removes "sentinel_app_binary" edges to SentinelAppBinary entities.
 func (slu *SentinelLibraryUpdate) RemoveSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdate {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -199,7 +221,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 	if err := slu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	if ps := slu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -222,6 +244,12 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := slu.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldCreatedAt, field.TypeTime, value)
 	}
+	if value, ok := slu.mutation.ReportSequence(); ok {
+		_spec.SetField(sentinellibrary.FieldReportSequence, field.TypeInt64, value)
+	}
+	if value, ok := slu.mutation.AddedReportSequence(); ok {
+		_spec.AddField(sentinellibrary.FieldReportSequence, field.TypeInt64, value)
+	}
 	if slu.mutation.SentinelInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -230,7 +258,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{sentinellibrary.SentinelInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -243,7 +271,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{sentinellibrary.SentinelInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -259,7 +287,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -272,7 +300,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -288,7 +316,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -317,15 +345,15 @@ type SentinelLibraryUpdateOne struct {
 }
 
 // SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sluo *SentinelLibraryUpdateOne) SetSentinelInfoID(i int) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetSentinelInfoID(i)
+func (sluo *SentinelLibraryUpdateOne) SetSentinelInfoID(mi model.InternalID) *SentinelLibraryUpdateOne {
+	sluo.mutation.SetSentinelInfoID(mi)
 	return sluo
 }
 
 // SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableSentinelInfoID(i *int) *SentinelLibraryUpdateOne {
-	if i != nil {
-		sluo.SetSentinelInfoID(*i)
+func (sluo *SentinelLibraryUpdateOne) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelLibraryUpdateOne {
+	if mi != nil {
+		sluo.SetSentinelInfoID(*mi)
 	}
 	return sluo
 }
@@ -385,20 +413,41 @@ func (sluo *SentinelLibraryUpdateOne) SetNillableCreatedAt(t *time.Time) *Sentin
 	return sluo
 }
 
+// SetReportSequence sets the "report_sequence" field.
+func (sluo *SentinelLibraryUpdateOne) SetReportSequence(i int64) *SentinelLibraryUpdateOne {
+	sluo.mutation.ResetReportSequence()
+	sluo.mutation.SetReportSequence(i)
+	return sluo
+}
+
+// SetNillableReportSequence sets the "report_sequence" field if the given value is not nil.
+func (sluo *SentinelLibraryUpdateOne) SetNillableReportSequence(i *int64) *SentinelLibraryUpdateOne {
+	if i != nil {
+		sluo.SetReportSequence(*i)
+	}
+	return sluo
+}
+
+// AddReportSequence adds i to the "report_sequence" field.
+func (sluo *SentinelLibraryUpdateOne) AddReportSequence(i int64) *SentinelLibraryUpdateOne {
+	sluo.mutation.AddReportSequence(i)
+	return sluo
+}
+
 // SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
 func (sluo *SentinelLibraryUpdateOne) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryUpdateOne {
 	return sluo.SetSentinelInfoID(s.ID)
 }
 
 // AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (sluo *SentinelLibraryUpdateOne) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdateOne {
+func (sluo *SentinelLibraryUpdateOne) AddSentinelAppBinaryIDs(ids ...model.InternalID) *SentinelLibraryUpdateOne {
 	sluo.mutation.AddSentinelAppBinaryIDs(ids...)
 	return sluo
 }
 
 // AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
 func (sluo *SentinelLibraryUpdateOne) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdateOne {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -423,14 +472,14 @@ func (sluo *SentinelLibraryUpdateOne) ClearSentinelAppBinary() *SentinelLibraryU
 }
 
 // RemoveSentinelAppBinaryIDs removes the "sentinel_app_binary" edge to SentinelAppBinary entities by IDs.
-func (sluo *SentinelLibraryUpdateOne) RemoveSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdateOne {
+func (sluo *SentinelLibraryUpdateOne) RemoveSentinelAppBinaryIDs(ids ...model.InternalID) *SentinelLibraryUpdateOne {
 	sluo.mutation.RemoveSentinelAppBinaryIDs(ids...)
 	return sluo
 }
 
 // RemoveSentinelAppBinary removes "sentinel_app_binary" edges to SentinelAppBinary entities.
 func (sluo *SentinelLibraryUpdateOne) RemoveSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdateOne {
-	ids := make([]int, len(s))
+	ids := make([]model.InternalID, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -498,7 +547,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 	if err := sluo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	id, ok := sluo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelLibrary.id" for update`)}
@@ -538,6 +587,12 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 	if value, ok := sluo.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldCreatedAt, field.TypeTime, value)
 	}
+	if value, ok := sluo.mutation.ReportSequence(); ok {
+		_spec.SetField(sentinellibrary.FieldReportSequence, field.TypeInt64, value)
+	}
+	if value, ok := sluo.mutation.AddedReportSequence(); ok {
+		_spec.AddField(sentinellibrary.FieldReportSequence, field.TypeInt64, value)
+	}
 	if sluo.mutation.SentinelInfoCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
@@ -546,7 +601,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Columns: []string{sentinellibrary.SentinelInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -559,7 +614,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Columns: []string{sentinellibrary.SentinelInfoColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -575,7 +630,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -588,7 +643,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -604,7 +659,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

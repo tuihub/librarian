@@ -110,7 +110,7 @@ type AppCategory struct {
 
 //nolint:stylecheck // no check for Url
 type SentinelInfo struct {
-	UserID               model.InternalID
+	ID                   model.InternalID
 	Url                  string
 	AlternativeUrls      []string
 	GetTokenPath         string
@@ -119,23 +119,28 @@ type SentinelInfo struct {
 }
 
 type SentinelLibrary struct {
+	ID               model.InternalID
 	ReportedID       int64
 	DownloadBasePath string
 	AppBinaries      []*SentinelAppBinary
+	ReportedSequence int64
 }
 
 type SentinelAppBinary struct {
-	GeneratedID string
-	SizeBytes   int64
-	NeedToken   bool
-	Files       []*SentinelAppBinaryFile
-	Name        string
-	Version     string
-	Developer   string
-	Publisher   string
+	ID               model.InternalID
+	GeneratedID      string
+	SizeBytes        int64
+	NeedToken        bool
+	Files            []*SentinelAppBinaryFile
+	Name             string
+	Version          string
+	Developer        string
+	Publisher        string
+	ReportedSequence int64
 }
 
 type SentinelAppBinaryFile struct {
+	ID             model.InternalID
 	Name           string
 	SizeBytes      int64
 	Sha256         []byte

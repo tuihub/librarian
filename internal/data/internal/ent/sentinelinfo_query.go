@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelInfoQuery is the builder for querying SentinelInfo entities.
@@ -107,8 +108,8 @@ func (siq *SentinelInfoQuery) FirstX(ctx context.Context) *SentinelInfo {
 
 // FirstID returns the first SentinelInfo ID from the query.
 // Returns a *NotFoundError when no SentinelInfo ID was found.
-func (siq *SentinelInfoQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (siq *SentinelInfoQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = siq.Limit(1).IDs(setContextOp(ctx, siq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +121,7 @@ func (siq *SentinelInfoQuery) FirstID(ctx context.Context) (id int, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (siq *SentinelInfoQuery) FirstIDX(ctx context.Context) int {
+func (siq *SentinelInfoQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := siq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +159,8 @@ func (siq *SentinelInfoQuery) OnlyX(ctx context.Context) *SentinelInfo {
 // OnlyID is like Only, but returns the only SentinelInfo ID in the query.
 // Returns a *NotSingularError when more than one SentinelInfo ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (siq *SentinelInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (siq *SentinelInfoQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = siq.Limit(2).IDs(setContextOp(ctx, siq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +176,7 @@ func (siq *SentinelInfoQuery) OnlyID(ctx context.Context) (id int, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (siq *SentinelInfoQuery) OnlyIDX(ctx context.Context) int {
+func (siq *SentinelInfoQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := siq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +204,7 @@ func (siq *SentinelInfoQuery) AllX(ctx context.Context) []*SentinelInfo {
 }
 
 // IDs executes the query and returns a list of SentinelInfo IDs.
-func (siq *SentinelInfoQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (siq *SentinelInfoQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if siq.ctx.Unique == nil && siq.path != nil {
 		siq.Unique(true)
 	}
@@ -215,7 +216,7 @@ func (siq *SentinelInfoQuery) IDs(ctx context.Context) (ids []int, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (siq *SentinelInfoQuery) IDsX(ctx context.Context) []int {
+func (siq *SentinelInfoQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := siq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -299,12 +300,12 @@ func (siq *SentinelInfoQuery) WithSentinelLibrary(opts ...func(*SentinelLibraryQ
 // Example:
 //
 //	var v []struct {
-//		UserID model.InternalID `json:"user_id,omitempty"`
+//		URL string `json:"url,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SentinelInfo.Query().
-//		GroupBy(sentinelinfo.FieldUserID).
+//		GroupBy(sentinelinfo.FieldURL).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (siq *SentinelInfoQuery) GroupBy(field string, fields ...string) *SentinelInfoGroupBy {
@@ -322,11 +323,11 @@ func (siq *SentinelInfoQuery) GroupBy(field string, fields ...string) *SentinelI
 // Example:
 //
 //	var v []struct {
-//		UserID model.InternalID `json:"user_id,omitempty"`
+//		URL string `json:"url,omitempty"`
 //	}
 //
 //	client.SentinelInfo.Query().
-//		Select(sentinelinfo.FieldUserID).
+//		Select(sentinelinfo.FieldURL).
 //		Scan(ctx, &v)
 func (siq *SentinelInfoQuery) Select(fields ...string) *SentinelInfoSelect {
 	siq.ctx.Fields = append(siq.ctx.Fields, fields...)
@@ -407,7 +408,7 @@ func (siq *SentinelInfoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([
 
 func (siq *SentinelInfoQuery) loadSentinelLibrary(ctx context.Context, query *SentinelLibraryQuery, nodes []*SentinelInfo, init func(*SentinelInfo), assign func(*SentinelInfo, *SentinelLibrary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*SentinelInfo)
+	nodeids := make(map[model.InternalID]*SentinelInfo)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -446,7 +447,7 @@ func (siq *SentinelInfoQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (siq *SentinelInfoQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(sentinelinfo.Table, sentinelinfo.Columns, sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64))
 	_spec.From = siq.sql
 	if unique := siq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

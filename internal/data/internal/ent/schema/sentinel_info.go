@@ -3,12 +3,9 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 type SentinelInfo struct {
@@ -17,7 +14,7 @@ type SentinelInfo struct {
 
 func (SentinelInfo) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("user_id").GoType(model.InternalID(0)),
+		defaultPrimaryKey(),
 		field.String("url"),
 		field.Strings("alternative_urls").Optional(),
 		field.String("get_token_path").Optional(),
@@ -30,9 +27,7 @@ func (SentinelInfo) Fields() []ent.Field {
 }
 
 func (SentinelInfo) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("user_id"),
-	}
+	return []ent.Index{}
 }
 
 func (SentinelInfo) Edges() []ent.Edge {
