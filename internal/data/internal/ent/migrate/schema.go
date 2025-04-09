@@ -776,6 +776,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{SentinelAppBinariesColumns[1]},
 			},
+			{
+				Name:    "sentinelappbinary_report_sequence",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[10]},
+			},
 		},
 	}
 	// SentinelAppBinaryFilesColumns holds the columns for the "sentinel_app_binary_files" table.
@@ -855,6 +860,11 @@ var (
 				Name:    "sentinellibrary_sentinel_info_id_reported_id",
 				Unique:  true,
 				Columns: []*schema.Column{SentinelLibrariesColumns[6], SentinelLibrariesColumns[1]},
+			},
+			{
+				Name:    "sentinellibrary_report_sequence",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelLibrariesColumns[5]},
 			},
 		},
 	}

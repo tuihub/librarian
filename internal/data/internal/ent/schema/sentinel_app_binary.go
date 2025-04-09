@@ -39,6 +39,7 @@ func (SentinelAppBinary) Indexes() []ent.Index {
 		index.Fields("sentinel_library_id", "generated_id").
 			Unique(),
 		index.Fields("generated_id"),
+		index.Fields("report_sequence"),
 	}
 }
 

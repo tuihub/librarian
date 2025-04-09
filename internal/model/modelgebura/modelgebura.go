@@ -127,16 +127,17 @@ type SentinelLibrary struct {
 }
 
 type SentinelAppBinary struct {
-	ID               model.InternalID
-	GeneratedID      string
-	SizeBytes        int64
-	NeedToken        bool
-	Files            []*SentinelAppBinaryFile
-	Name             string
-	Version          string
-	Developer        string
-	Publisher        string
-	ReportedSequence int64
+	ID                model.InternalID
+	SentinelLibraryID int64
+	GeneratedID       string
+	SizeBytes         int64
+	NeedToken         bool
+	Files             []*SentinelAppBinaryFile
+	Name              string
+	Version           string
+	Developer         string
+	Publisher         string
+	ReportedSequence  int64
 }
 
 type SentinelAppBinaryFile struct {

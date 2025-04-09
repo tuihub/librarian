@@ -12,6 +12,7 @@ func ToBizSentinelAppBinary(source *sentinel.SentinelLibraryAppBinary) *modelgeb
 	var pModelgeburaSentinelAppBinary *modelgebura.SentinelAppBinary
 	if source != nil {
 		var modelgeburaSentinelAppBinary modelgebura.SentinelAppBinary
+		modelgeburaSentinelAppBinary.SentinelLibraryID = (*source).SentinelLibraryId
 		modelgeburaSentinelAppBinary.GeneratedID = (*source).SentinelGeneratedId
 		modelgeburaSentinelAppBinary.SizeBytes = (*source).SizeBytes
 		modelgeburaSentinelAppBinary.NeedToken = (*source).NeedToken
@@ -46,6 +47,16 @@ func ToBizSentinelAppBinaryFile(source *sentinel.SentinelLibraryAppBinaryFile) *
 		pModelgeburaSentinelAppBinaryFile = &modelgeburaSentinelAppBinaryFile
 	}
 	return pModelgeburaSentinelAppBinaryFile
+}
+func ToBizSentinelAppBinaryList(source []*sentinel.SentinelLibraryAppBinary) []*modelgebura.SentinelAppBinary {
+	var pModelgeburaSentinelAppBinaryList []*modelgebura.SentinelAppBinary
+	if source != nil {
+		pModelgeburaSentinelAppBinaryList = make([]*modelgebura.SentinelAppBinary, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaSentinelAppBinaryList[i] = ToBizSentinelAppBinary(source[i])
+		}
+	}
+	return pModelgeburaSentinelAppBinaryList
 }
 func ToBizSentinelInfo(source *sentinel.ReportSentinelInformationRequest) *modelgebura.SentinelInfo {
 	var pModelgeburaSentinelInfo *modelgebura.SentinelInfo

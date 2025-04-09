@@ -33,6 +33,7 @@ func (SentinelLibrary) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sentinel_info_id", "reported_id").
 			Unique(),
+		index.Fields("report_sequence"),
 	}
 }
 

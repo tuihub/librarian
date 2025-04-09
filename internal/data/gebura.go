@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -18,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/samber/lo"
 )
 
 type GeburaRepo struct {
@@ -677,5 +679,107 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 			).
 			UpdateNewValues().
 			Exec(ctx)
+	})
+}
+
+func (g *GeburaRepo) UpsertAppBinaries(
+	ctx context.Context,
+	sentinelID model.InternalID,
+	abs []*modelgebura.SentinelAppBinary,
+) error {
+	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		sInfo, err := tx.SentinelInfo.Query().
+			Where(sentinelinfo.IDEQ(sentinelID)).
+			WithSentinelLibrary().
+			Only(ctx)
+		if err != nil {
+			return err
+		}
+		slibReportedIDs := lo.Map(sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary, _ int) int64 {
+			return lib.ReportedID
+		})
+		slibReportedIDEntMap := lo.Associate(
+			sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary,
+			) (int64, *ent.SentinelLibrary) {
+				return lib.ReportedID, lib
+			})
+		// remove all existing binary files
+		_, err = tx.SentinelAppBinary.Delete().Where(
+			sentinelappbinary.HasSentinelLibraryWith(
+				sentinellibrary.SentinelInfoIDEQ(sentinelID),
+				sentinellibrary.ReportedIDIn(slibReportedIDs...),
+			),
+		).Exec(ctx)
+		if err != nil {
+			return err
+		}
+		// upsert binaries
+		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
+		for _, ab := range abs {
+			newAbs = append(newAbs, tx.SentinelAppBinary.Create().
+				SetID(ab.ID).
+				SetSentinelLibraryID(slibReportedIDEntMap[ab.SentinelLibraryID].ID).
+				SetGeneratedID(ab.GeneratedID).
+				SetSizeBytes(ab.SizeBytes).
+				SetNeedToken(ab.NeedToken).
+				SetName(ab.Name).
+				SetVersion(ab.Version).
+				SetDeveloper(ab.Developer).
+				SetPublisher(ab.Publisher).
+				SetReportSequence(slibReportedIDEntMap[ab.SentinelLibraryID].ReportSequence))
+		}
+		err = tx.SentinelAppBinary.CreateBulk(newAbs...).
+			OnConflict(
+				sql.ConflictColumns(
+					sentinelappbinary.FieldSentinelLibraryID,
+					sentinelappbinary.FieldGeneratedID,
+				),
+				resolveWithIgnores([]string{
+					sentinellibrary.FieldID,
+				}),
+			).
+			UpdateNewValues().
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
+		// insert all binary files
+		slibIDs := lo.Map(sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary, _ int) model.InternalID {
+			return lib.ID
+		})
+		abGeneratedIDs := lo.Map(abs, func(ab *modelgebura.SentinelAppBinary, _ int) string {
+			return ab.GeneratedID
+		})
+		dbAbs, err := tx.SentinelAppBinary.Query().
+			Where(
+				sentinelappbinary.SentinelLibraryIDIn(slibIDs...),
+				sentinelappbinary.GeneratedIDIn(abGeneratedIDs...),
+			).
+			All(ctx)
+		if err != nil {
+			return err
+		}
+		dbAbGeneratedIDIDMap := lo.Associate(dbAbs, func(ab *ent.SentinelAppBinary) (string, model.InternalID) {
+			return ab.GeneratedID, ab.ID
+		})
+		for _, ab := range abs {
+			abfs := make([]*ent.SentinelAppBinaryFileCreate, 0, len(ab.Files))
+			for _, f := range ab.Files {
+				abfs = append(abfs, tx.SentinelAppBinaryFile.Create().
+					SetID(f.ID).
+					SetSentinelAppBinaryID(dbAbGeneratedIDIDMap[ab.GeneratedID]).
+					SetName(f.Name).
+					SetSizeBytes(f.SizeBytes).
+					SetSha256(f.Sha256).
+					SetServerFilePath(f.ServerFilePath).
+					SetChunksInfo(f.ChunksInfo))
+			}
+			err = tx.SentinelAppBinaryFile.CreateBulk(abfs...).
+				Exec(ctx)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
 	})
 }

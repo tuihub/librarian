@@ -25,6 +25,7 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map SentinelGeneratedId GeneratedID
 	// goverter:ignore ReportedSequence
 	ToBizSentinelAppBinary(*sentinel.SentinelLibraryAppBinary) *modelgebura.SentinelAppBinary
+	ToBizSentinelAppBinaryList([]*sentinel.SentinelLibraryAppBinary) []*modelgebura.SentinelAppBinary
 	// goverter:ignore ID
 	ToBizSentinelAppBinaryFile(*sentinel.SentinelLibraryAppBinaryFile) *modelgebura.SentinelAppBinaryFile
 }
