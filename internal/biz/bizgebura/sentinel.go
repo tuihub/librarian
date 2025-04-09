@@ -10,7 +10,7 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
-func (g *Gebura) UpdateSentinelInfo(
+func (g *Gebura) UpsertSentinelInfo(
 	ctx context.Context, info *modelgebura.SentinelInfo,
 ) error {
 	claims := libauth.FromContextAssertUserType(ctx, model.UserTypeSentinel)
