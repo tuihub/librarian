@@ -734,7 +734,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 					sentinelappbinary.FieldGeneratedID,
 				),
 				resolveWithIgnores([]string{
-					sentinellibrary.FieldID,
+					sentinelappbinary.FieldID,
 				}),
 			).
 			UpdateNewValues().
