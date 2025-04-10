@@ -17,7 +17,6 @@ type SentinelLibrary struct {
 
 func (SentinelLibrary) Fields() []ent.Field {
 	return []ent.Field{
-		defaultPrimaryKey(),
 		field.Int64("sentinel_info_id").GoType(model.InternalID(0)),
 		field.Int64("reported_id"),
 		field.String("download_base_path"),
@@ -25,7 +24,7 @@ func (SentinelLibrary) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int64("report_sequence"),
+		field.Int64("library_report_sequence"),
 	}
 }
 
@@ -33,7 +32,7 @@ func (SentinelLibrary) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("sentinel_info_id", "reported_id").
 			Unique(),
-		index.Fields("report_sequence"),
+		index.Fields("library_report_sequence"),
 	}
 }
 

@@ -31,6 +31,10 @@ type SentinelInfo struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// LibraryReportSequence holds the value of the "library_report_sequence" field.
+	LibraryReportSequence int64 `json:"library_report_sequence,omitempty"`
+	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
+	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SentinelInfoQuery when eager-loading is set.
 	Edges        SentinelInfoEdges `json:"edges"`
@@ -62,7 +66,7 @@ func (*SentinelInfo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelinfo.FieldAlternativeUrls:
 			values[i] = new([]byte)
-		case sentinelinfo.FieldID:
+		case sentinelinfo.FieldID, sentinelinfo.FieldLibraryReportSequence, sentinelinfo.FieldAppBinaryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinelinfo.FieldURL, sentinelinfo.FieldGetTokenPath, sentinelinfo.FieldDownloadFileBasePath:
 			values[i] = new(sql.NullString)
@@ -127,6 +131,18 @@ func (si *SentinelInfo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				si.CreatedAt = value.Time
 			}
+		case sentinelinfo.FieldLibraryReportSequence:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field library_report_sequence", values[i])
+			} else if value.Valid {
+				si.LibraryReportSequence = value.Int64
+			}
+		case sentinelinfo.FieldAppBinaryReportSequence:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field app_binary_report_sequence", values[i])
+			} else if value.Valid {
+				si.AppBinaryReportSequence = value.Int64
+			}
 		default:
 			si.selectValues.Set(columns[i], values[i])
 		}
@@ -185,6 +201,12 @@ func (si *SentinelInfo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(si.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("library_report_sequence=")
+	builder.WriteString(fmt.Sprintf("%v", si.LibraryReportSequence))
+	builder.WriteString(", ")
+	builder.WriteString("app_binary_report_sequence=")
+	builder.WriteString(fmt.Sprintf("%v", si.AppBinaryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

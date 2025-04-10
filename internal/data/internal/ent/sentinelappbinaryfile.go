@@ -11,16 +11,15 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFile is the model entity for the SentinelAppBinaryFile schema.
 type SentinelAppBinaryFile struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID model.InternalID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// SentinelAppBinaryID holds the value of the "sentinel_app_binary_id" field.
-	SentinelAppBinaryID model.InternalID `json:"sentinel_app_binary_id,omitempty"`
+	SentinelAppBinaryID int `json:"sentinel_app_binary_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -35,6 +34,8 @@ type SentinelAppBinaryFile struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
+	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
+	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SentinelAppBinaryFileQuery when eager-loading is set.
 	Edges        SentinelAppBinaryFileEdges `json:"edges"`
@@ -68,7 +69,7 @@ func (*SentinelAppBinaryFile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldSha256:
 			values[i] = new([]byte)
-		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelAppBinaryID, sentinelappbinaryfile.FieldSizeBytes:
+		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelAppBinaryID, sentinelappbinaryfile.FieldSizeBytes, sentinelappbinaryfile.FieldAppBinaryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinelappbinaryfile.FieldName, sentinelappbinaryfile.FieldServerFilePath, sentinelappbinaryfile.FieldChunksInfo:
 			values[i] = new(sql.NullString)
@@ -90,16 +91,16 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 	for i := range columns {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				sabf.ID = model.InternalID(value.Int64)
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			sabf.ID = int(value.Int64)
 		case sentinelappbinaryfile.FieldSentinelAppBinaryID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelAppBinaryID = model.InternalID(value.Int64)
+				sabf.SentinelAppBinaryID = int(value.Int64)
 			}
 		case sentinelappbinaryfile.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -142,6 +143,12 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				sabf.CreatedAt = value.Time
+			}
+		case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field app_binary_report_sequence", values[i])
+			} else if value.Valid {
+				sabf.AppBinaryReportSequence = value.Int64
 			}
 		default:
 			sabf.selectValues.Set(columns[i], values[i])
@@ -207,6 +214,9 @@ func (sabf *SentinelAppBinaryFile) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(sabf.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("app_binary_report_sequence=")
+	builder.WriteString(fmt.Sprintf("%v", sabf.AppBinaryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

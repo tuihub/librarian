@@ -30,6 +30,8 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// FieldAppBinaryReportSequence holds the string denoting the app_binary_report_sequence field in the database.
+	FieldAppBinaryReportSequence = "app_binary_report_sequence"
 	// EdgeSentinelAppBinary holds the string denoting the sentinel_app_binary edge name in mutations.
 	EdgeSentinelAppBinary = "sentinel_app_binary"
 	// Table holds the table name of the sentinelappbinaryfile in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldChunksInfo,
 	FieldUpdatedAt,
 	FieldCreatedAt,
+	FieldAppBinaryReportSequence,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -116,6 +119,11 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByAppBinaryReportSequence orders the results by the app_binary_report_sequence field.
+func ByAppBinaryReportSequence(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAppBinaryReportSequence, opts...).ToFunc()
 }
 
 // BySentinelAppBinaryField orders the results by sentinel_app_binary field.

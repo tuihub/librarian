@@ -23,6 +23,8 @@ func (SentinelInfo) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
+		field.Int64("library_report_sequence"),
+		field.Int64("app_binary_report_sequence"),
 	}
 }
 

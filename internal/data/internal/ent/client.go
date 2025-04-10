@@ -4269,7 +4269,7 @@ func (c *SentinelAppBinaryClient) UpdateOne(sab *SentinelAppBinary) *SentinelApp
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *SentinelAppBinaryClient) UpdateOneID(id model.InternalID) *SentinelAppBinaryUpdateOne {
+func (c *SentinelAppBinaryClient) UpdateOneID(id int) *SentinelAppBinaryUpdateOne {
 	mutation := newSentinelAppBinaryMutation(c.config, OpUpdateOne, withSentinelAppBinaryID(id))
 	return &SentinelAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -4286,7 +4286,7 @@ func (c *SentinelAppBinaryClient) DeleteOne(sab *SentinelAppBinary) *SentinelApp
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *SentinelAppBinaryClient) DeleteOneID(id model.InternalID) *SentinelAppBinaryDeleteOne {
+func (c *SentinelAppBinaryClient) DeleteOneID(id int) *SentinelAppBinaryDeleteOne {
 	builder := c.Delete().Where(sentinelappbinary.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -4303,12 +4303,12 @@ func (c *SentinelAppBinaryClient) Query() *SentinelAppBinaryQuery {
 }
 
 // Get returns a SentinelAppBinary entity by its id.
-func (c *SentinelAppBinaryClient) Get(ctx context.Context, id model.InternalID) (*SentinelAppBinary, error) {
+func (c *SentinelAppBinaryClient) Get(ctx context.Context, id int) (*SentinelAppBinary, error) {
 	return c.Query().Where(sentinelappbinary.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *SentinelAppBinaryClient) GetX(ctx context.Context, id model.InternalID) *SentinelAppBinary {
+func (c *SentinelAppBinaryClient) GetX(ctx context.Context, id int) *SentinelAppBinary {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -4434,7 +4434,7 @@ func (c *SentinelAppBinaryFileClient) UpdateOne(sabf *SentinelAppBinaryFile) *Se
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *SentinelAppBinaryFileClient) UpdateOneID(id model.InternalID) *SentinelAppBinaryFileUpdateOne {
+func (c *SentinelAppBinaryFileClient) UpdateOneID(id int) *SentinelAppBinaryFileUpdateOne {
 	mutation := newSentinelAppBinaryFileMutation(c.config, OpUpdateOne, withSentinelAppBinaryFileID(id))
 	return &SentinelAppBinaryFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -4451,7 +4451,7 @@ func (c *SentinelAppBinaryFileClient) DeleteOne(sabf *SentinelAppBinaryFile) *Se
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *SentinelAppBinaryFileClient) DeleteOneID(id model.InternalID) *SentinelAppBinaryFileDeleteOne {
+func (c *SentinelAppBinaryFileClient) DeleteOneID(id int) *SentinelAppBinaryFileDeleteOne {
 	builder := c.Delete().Where(sentinelappbinaryfile.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -4468,12 +4468,12 @@ func (c *SentinelAppBinaryFileClient) Query() *SentinelAppBinaryFileQuery {
 }
 
 // Get returns a SentinelAppBinaryFile entity by its id.
-func (c *SentinelAppBinaryFileClient) Get(ctx context.Context, id model.InternalID) (*SentinelAppBinaryFile, error) {
+func (c *SentinelAppBinaryFileClient) Get(ctx context.Context, id int) (*SentinelAppBinaryFile, error) {
 	return c.Query().Where(sentinelappbinaryfile.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *SentinelAppBinaryFileClient) GetX(ctx context.Context, id model.InternalID) *SentinelAppBinaryFile {
+func (c *SentinelAppBinaryFileClient) GetX(ctx context.Context, id int) *SentinelAppBinaryFile {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -4732,7 +4732,7 @@ func (c *SentinelLibraryClient) UpdateOne(sl *SentinelLibrary) *SentinelLibraryU
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *SentinelLibraryClient) UpdateOneID(id model.InternalID) *SentinelLibraryUpdateOne {
+func (c *SentinelLibraryClient) UpdateOneID(id int) *SentinelLibraryUpdateOne {
 	mutation := newSentinelLibraryMutation(c.config, OpUpdateOne, withSentinelLibraryID(id))
 	return &SentinelLibraryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -4749,7 +4749,7 @@ func (c *SentinelLibraryClient) DeleteOne(sl *SentinelLibrary) *SentinelLibraryD
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *SentinelLibraryClient) DeleteOneID(id model.InternalID) *SentinelLibraryDeleteOne {
+func (c *SentinelLibraryClient) DeleteOneID(id int) *SentinelLibraryDeleteOne {
 	builder := c.Delete().Where(sentinellibrary.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -4766,12 +4766,12 @@ func (c *SentinelLibraryClient) Query() *SentinelLibraryQuery {
 }
 
 // Get returns a SentinelLibrary entity by its id.
-func (c *SentinelLibraryClient) Get(ctx context.Context, id model.InternalID) (*SentinelLibrary, error) {
+func (c *SentinelLibraryClient) Get(ctx context.Context, id int) (*SentinelLibrary, error) {
 	return c.Query().Where(sentinellibrary.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *SentinelLibraryClient) GetX(ctx context.Context, id model.InternalID) *SentinelLibrary {
+func (c *SentinelLibraryClient) GetX(ctx context.Context, id int) *SentinelLibrary {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

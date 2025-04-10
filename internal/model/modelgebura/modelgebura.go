@@ -119,15 +119,12 @@ type SentinelInfo struct {
 }
 
 type SentinelLibrary struct {
-	ID               model.InternalID
 	ReportedID       int64
 	DownloadBasePath string
 	AppBinaries      []*SentinelAppBinary
-	ReportedSequence int64
 }
 
 type SentinelAppBinary struct {
-	ID                model.InternalID
 	SentinelLibraryID int64
 	GeneratedID       string
 	SizeBytes         int64
@@ -137,11 +134,9 @@ type SentinelAppBinary struct {
 	Version           string
 	Developer         string
 	Publisher         string
-	ReportedSequence  int64
 }
 
 type SentinelAppBinaryFile struct {
-	ID             model.InternalID
 	Name           string
 	SizeBytes      int64
 	Sha256         []byte

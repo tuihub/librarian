@@ -12,47 +12,47 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id model.InternalID) predicate.SentinelLibrary {
+func ID(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id model.InternalID) predicate.SentinelLibrary {
+func IDEQ(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id model.InternalID) predicate.SentinelLibrary {
+func IDNEQ(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...model.InternalID) predicate.SentinelLibrary {
+func IDIn(ids ...int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...model.InternalID) predicate.SentinelLibrary {
+func IDNotIn(ids ...int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id model.InternalID) predicate.SentinelLibrary {
+func IDGT(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id model.InternalID) predicate.SentinelLibrary {
+func IDGTE(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id model.InternalID) predicate.SentinelLibrary {
+func IDLT(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id model.InternalID) predicate.SentinelLibrary {
+func IDLTE(id int) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLTE(FieldID, id))
 }
 
@@ -82,9 +82,9 @@ func CreatedAt(v time.Time) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// ReportSequence applies equality check predicate on the "report_sequence" field. It's identical to ReportSequenceEQ.
-func ReportSequence(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldEQ(FieldReportSequence, v))
+// LibraryReportSequence applies equality check predicate on the "library_report_sequence" field. It's identical to LibraryReportSequenceEQ.
+func LibraryReportSequence(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldLibraryReportSequence, v))
 }
 
 // SentinelInfoIDEQ applies the EQ predicate on the "sentinel_info_id" field.
@@ -302,44 +302,44 @@ func CreatedAtLTE(v time.Time) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLTE(FieldCreatedAt, v))
 }
 
-// ReportSequenceEQ applies the EQ predicate on the "report_sequence" field.
-func ReportSequenceEQ(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldEQ(FieldReportSequence, v))
+// LibraryReportSequenceEQ applies the EQ predicate on the "library_report_sequence" field.
+func LibraryReportSequenceEQ(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldLibraryReportSequence, v))
 }
 
-// ReportSequenceNEQ applies the NEQ predicate on the "report_sequence" field.
-func ReportSequenceNEQ(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldNEQ(FieldReportSequence, v))
+// LibraryReportSequenceNEQ applies the NEQ predicate on the "library_report_sequence" field.
+func LibraryReportSequenceNEQ(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldNEQ(FieldLibraryReportSequence, v))
 }
 
-// ReportSequenceIn applies the In predicate on the "report_sequence" field.
-func ReportSequenceIn(vs ...int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldIn(FieldReportSequence, vs...))
+// LibraryReportSequenceIn applies the In predicate on the "library_report_sequence" field.
+func LibraryReportSequenceIn(vs ...int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldIn(FieldLibraryReportSequence, vs...))
 }
 
-// ReportSequenceNotIn applies the NotIn predicate on the "report_sequence" field.
-func ReportSequenceNotIn(vs ...int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldNotIn(FieldReportSequence, vs...))
+// LibraryReportSequenceNotIn applies the NotIn predicate on the "library_report_sequence" field.
+func LibraryReportSequenceNotIn(vs ...int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldNotIn(FieldLibraryReportSequence, vs...))
 }
 
-// ReportSequenceGT applies the GT predicate on the "report_sequence" field.
-func ReportSequenceGT(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldGT(FieldReportSequence, v))
+// LibraryReportSequenceGT applies the GT predicate on the "library_report_sequence" field.
+func LibraryReportSequenceGT(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldGT(FieldLibraryReportSequence, v))
 }
 
-// ReportSequenceGTE applies the GTE predicate on the "report_sequence" field.
-func ReportSequenceGTE(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldGTE(FieldReportSequence, v))
+// LibraryReportSequenceGTE applies the GTE predicate on the "library_report_sequence" field.
+func LibraryReportSequenceGTE(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldGTE(FieldLibraryReportSequence, v))
 }
 
-// ReportSequenceLT applies the LT predicate on the "report_sequence" field.
-func ReportSequenceLT(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldLT(FieldReportSequence, v))
+// LibraryReportSequenceLT applies the LT predicate on the "library_report_sequence" field.
+func LibraryReportSequenceLT(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldLT(FieldLibraryReportSequence, v))
 }
 
-// ReportSequenceLTE applies the LTE predicate on the "report_sequence" field.
-func ReportSequenceLTE(v int64) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(sql.FieldLTE(FieldReportSequence, v))
+// LibraryReportSequenceLTE applies the LTE predicate on the "library_report_sequence" field.
+func LibraryReportSequenceLTE(v int64) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldLTE(FieldLibraryReportSequence, v))
 }
 
 // HasSentinelInfo applies the HasEdge predicate on the "sentinel_info" edge.

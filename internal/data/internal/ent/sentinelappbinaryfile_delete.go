@@ -40,7 +40,7 @@ func (sabfd *SentinelAppBinaryFileDelete) ExecX(ctx context.Context) int {
 }
 
 func (sabfd *SentinelAppBinaryFileDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(sentinelappbinaryfile.Table, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewDeleteSpec(sentinelappbinaryfile.Table, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
 	if ps := sabfd.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

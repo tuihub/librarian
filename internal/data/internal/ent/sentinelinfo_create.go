@@ -84,6 +84,18 @@ func (sic *SentinelInfoCreate) SetNillableCreatedAt(t *time.Time) *SentinelInfoC
 	return sic
 }
 
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (sic *SentinelInfoCreate) SetLibraryReportSequence(i int64) *SentinelInfoCreate {
+	sic.mutation.SetLibraryReportSequence(i)
+	return sic
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (sic *SentinelInfoCreate) SetAppBinaryReportSequence(i int64) *SentinelInfoCreate {
+	sic.mutation.SetAppBinaryReportSequence(i)
+	return sic
+}
+
 // SetID sets the "id" field.
 func (sic *SentinelInfoCreate) SetID(mi model.InternalID) *SentinelInfoCreate {
 	sic.mutation.SetID(mi)
@@ -91,14 +103,14 @@ func (sic *SentinelInfoCreate) SetID(mi model.InternalID) *SentinelInfoCreate {
 }
 
 // AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by IDs.
-func (sic *SentinelInfoCreate) AddSentinelLibraryIDs(ids ...model.InternalID) *SentinelInfoCreate {
+func (sic *SentinelInfoCreate) AddSentinelLibraryIDs(ids ...int) *SentinelInfoCreate {
 	sic.mutation.AddSentinelLibraryIDs(ids...)
 	return sic
 }
 
 // AddSentinelLibrary adds the "sentinel_library" edges to the SentinelLibrary entity.
 func (sic *SentinelInfoCreate) AddSentinelLibrary(s ...*SentinelLibrary) *SentinelInfoCreate {
-	ids := make([]model.InternalID, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -164,6 +176,12 @@ func (sic *SentinelInfoCreate) check() error {
 	if _, ok := sic.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SentinelInfo.created_at"`)}
 	}
+	if _, ok := sic.mutation.LibraryReportSequence(); !ok {
+		return &ValidationError{Name: "library_report_sequence", err: errors.New(`ent: missing required field "SentinelInfo.library_report_sequence"`)}
+	}
+	if _, ok := sic.mutation.AppBinaryReportSequence(); !ok {
+		return &ValidationError{Name: "app_binary_report_sequence", err: errors.New(`ent: missing required field "SentinelInfo.app_binary_report_sequence"`)}
+	}
 	return nil
 }
 
@@ -221,6 +239,14 @@ func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec
 		_spec.SetField(sentinelinfo.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if value, ok := sic.mutation.LibraryReportSequence(); ok {
+		_spec.SetField(sentinelinfo.FieldLibraryReportSequence, field.TypeInt64, value)
+		_node.LibraryReportSequence = value
+	}
+	if value, ok := sic.mutation.AppBinaryReportSequence(); ok {
+		_spec.SetField(sentinelinfo.FieldAppBinaryReportSequence, field.TypeInt64, value)
+		_node.AppBinaryReportSequence = value
+	}
 	if nodes := sic.mutation.SentinelLibraryIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
@@ -229,7 +255,7 @@ func (sic *SentinelInfoCreate) createSpec() (*SentinelInfo, *sqlgraph.CreateSpec
 			Columns: []string{sentinelinfo.SentinelLibraryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -370,6 +396,42 @@ func (u *SentinelInfoUpsert) SetCreatedAt(v time.Time) *SentinelInfoUpsert {
 // UpdateCreatedAt sets the "created_at" field to the value that was provided on create.
 func (u *SentinelInfoUpsert) UpdateCreatedAt() *SentinelInfoUpsert {
 	u.SetExcluded(sentinelinfo.FieldCreatedAt)
+	return u
+}
+
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelInfoUpsert) SetLibraryReportSequence(v int64) *SentinelInfoUpsert {
+	u.Set(sentinelinfo.FieldLibraryReportSequence, v)
+	return u
+}
+
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsert) UpdateLibraryReportSequence() *SentinelInfoUpsert {
+	u.SetExcluded(sentinelinfo.FieldLibraryReportSequence)
+	return u
+}
+
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelInfoUpsert) AddLibraryReportSequence(v int64) *SentinelInfoUpsert {
+	u.Add(sentinelinfo.FieldLibraryReportSequence, v)
+	return u
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsert) SetAppBinaryReportSequence(v int64) *SentinelInfoUpsert {
+	u.Set(sentinelinfo.FieldAppBinaryReportSequence, v)
+	return u
+}
+
+// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsert) UpdateAppBinaryReportSequence() *SentinelInfoUpsert {
+	u.SetExcluded(sentinelinfo.FieldAppBinaryReportSequence)
+	return u
+}
+
+// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsert) AddAppBinaryReportSequence(v int64) *SentinelInfoUpsert {
+	u.Add(sentinelinfo.FieldAppBinaryReportSequence, v)
 	return u
 }
 
@@ -516,6 +578,48 @@ func (u *SentinelInfoUpsertOne) SetCreatedAt(v time.Time) *SentinelInfoUpsertOne
 func (u *SentinelInfoUpsertOne) UpdateCreatedAt() *SentinelInfoUpsertOne {
 	return u.Update(func(s *SentinelInfoUpsert) {
 		s.UpdateCreatedAt()
+	})
+}
+
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelInfoUpsertOne) SetLibraryReportSequence(v int64) *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.SetLibraryReportSequence(v)
+	})
+}
+
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelInfoUpsertOne) AddLibraryReportSequence(v int64) *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.AddLibraryReportSequence(v)
+	})
+}
+
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsertOne) UpdateLibraryReportSequence() *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.UpdateLibraryReportSequence()
+	})
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsertOne) SetAppBinaryReportSequence(v int64) *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.SetAppBinaryReportSequence(v)
+	})
+}
+
+// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsertOne) AddAppBinaryReportSequence(v int64) *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.AddAppBinaryReportSequence(v)
+	})
+}
+
+// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsertOne) UpdateAppBinaryReportSequence() *SentinelInfoUpsertOne {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.UpdateAppBinaryReportSequence()
 	})
 }
 
@@ -828,6 +932,48 @@ func (u *SentinelInfoUpsertBulk) SetCreatedAt(v time.Time) *SentinelInfoUpsertBu
 func (u *SentinelInfoUpsertBulk) UpdateCreatedAt() *SentinelInfoUpsertBulk {
 	return u.Update(func(s *SentinelInfoUpsert) {
 		s.UpdateCreatedAt()
+	})
+}
+
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelInfoUpsertBulk) SetLibraryReportSequence(v int64) *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.SetLibraryReportSequence(v)
+	})
+}
+
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelInfoUpsertBulk) AddLibraryReportSequence(v int64) *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.AddLibraryReportSequence(v)
+	})
+}
+
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsertBulk) UpdateLibraryReportSequence() *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.UpdateLibraryReportSequence()
+	})
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsertBulk) SetAppBinaryReportSequence(v int64) *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.SetAppBinaryReportSequence(v)
+	})
+}
+
+// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
+func (u *SentinelInfoUpsertBulk) AddAppBinaryReportSequence(v int64) *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.AddAppBinaryReportSequence(v)
+	})
+}
+
+// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
+func (u *SentinelInfoUpsertBulk) UpdateAppBinaryReportSequence() *SentinelInfoUpsertBulk {
+	return u.Update(func(s *SentinelInfoUpsert) {
+		s.UpdateAppBinaryReportSequence()
 	})
 }
 

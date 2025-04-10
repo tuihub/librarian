@@ -71,15 +71,9 @@ func (slc *SentinelLibraryCreate) SetNillableCreatedAt(t *time.Time) *SentinelLi
 	return slc
 }
 
-// SetReportSequence sets the "report_sequence" field.
-func (slc *SentinelLibraryCreate) SetReportSequence(i int64) *SentinelLibraryCreate {
-	slc.mutation.SetReportSequence(i)
-	return slc
-}
-
-// SetID sets the "id" field.
-func (slc *SentinelLibraryCreate) SetID(mi model.InternalID) *SentinelLibraryCreate {
-	slc.mutation.SetID(mi)
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (slc *SentinelLibraryCreate) SetLibraryReportSequence(i int64) *SentinelLibraryCreate {
+	slc.mutation.SetLibraryReportSequence(i)
 	return slc
 }
 
@@ -89,14 +83,14 @@ func (slc *SentinelLibraryCreate) SetSentinelInfo(s *SentinelInfo) *SentinelLibr
 }
 
 // AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (slc *SentinelLibraryCreate) AddSentinelAppBinaryIDs(ids ...model.InternalID) *SentinelLibraryCreate {
+func (slc *SentinelLibraryCreate) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryCreate {
 	slc.mutation.AddSentinelAppBinaryIDs(ids...)
 	return slc
 }
 
 // AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
 func (slc *SentinelLibraryCreate) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryCreate {
-	ids := make([]model.InternalID, len(s))
+	ids := make([]int, len(s))
 	for i := range s {
 		ids[i] = s[i].ID
 	}
@@ -165,8 +159,8 @@ func (slc *SentinelLibraryCreate) check() error {
 	if _, ok := slc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SentinelLibrary.created_at"`)}
 	}
-	if _, ok := slc.mutation.ReportSequence(); !ok {
-		return &ValidationError{Name: "report_sequence", err: errors.New(`ent: missing required field "SentinelLibrary.report_sequence"`)}
+	if _, ok := slc.mutation.LibraryReportSequence(); !ok {
+		return &ValidationError{Name: "library_report_sequence", err: errors.New(`ent: missing required field "SentinelLibrary.library_report_sequence"`)}
 	}
 	if len(slc.mutation.SentinelInfoIDs()) == 0 {
 		return &ValidationError{Name: "sentinel_info", err: errors.New(`ent: missing required edge "SentinelLibrary.sentinel_info"`)}
@@ -185,10 +179,8 @@ func (slc *SentinelLibraryCreate) sqlSave(ctx context.Context) (*SentinelLibrary
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = model.InternalID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	slc.mutation.id = &_node.ID
 	slc.mutation.done = true
 	return _node, nil
@@ -197,13 +189,9 @@ func (slc *SentinelLibraryCreate) sqlSave(ctx context.Context) (*SentinelLibrary
 func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SentinelLibrary{config: slc.config}
-		_spec = sqlgraph.NewCreateSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
+		_spec = sqlgraph.NewCreateSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = slc.conflict
-	if id, ok := slc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
 	if value, ok := slc.mutation.ReportedID(); ok {
 		_spec.SetField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 		_node.ReportedID = value
@@ -220,9 +208,9 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 		_spec.SetField(sentinellibrary.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := slc.mutation.ReportSequence(); ok {
-		_spec.SetField(sentinellibrary.FieldReportSequence, field.TypeInt64, value)
-		_node.ReportSequence = value
+	if value, ok := slc.mutation.LibraryReportSequence(); ok {
+		_spec.SetField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
+		_node.LibraryReportSequence = value
 	}
 	if nodes := slc.mutation.SentinelInfoIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -249,7 +237,7 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -375,42 +363,34 @@ func (u *SentinelLibraryUpsert) UpdateCreatedAt() *SentinelLibraryUpsert {
 	return u
 }
 
-// SetReportSequence sets the "report_sequence" field.
-func (u *SentinelLibraryUpsert) SetReportSequence(v int64) *SentinelLibraryUpsert {
-	u.Set(sentinellibrary.FieldReportSequence, v)
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelLibraryUpsert) SetLibraryReportSequence(v int64) *SentinelLibraryUpsert {
+	u.Set(sentinellibrary.FieldLibraryReportSequence, v)
 	return u
 }
 
-// UpdateReportSequence sets the "report_sequence" field to the value that was provided on create.
-func (u *SentinelLibraryUpsert) UpdateReportSequence() *SentinelLibraryUpsert {
-	u.SetExcluded(sentinellibrary.FieldReportSequence)
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelLibraryUpsert) UpdateLibraryReportSequence() *SentinelLibraryUpsert {
+	u.SetExcluded(sentinellibrary.FieldLibraryReportSequence)
 	return u
 }
 
-// AddReportSequence adds v to the "report_sequence" field.
-func (u *SentinelLibraryUpsert) AddReportSequence(v int64) *SentinelLibraryUpsert {
-	u.Add(sentinellibrary.FieldReportSequence, v)
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelLibraryUpsert) AddLibraryReportSequence(v int64) *SentinelLibraryUpsert {
+	u.Add(sentinellibrary.FieldLibraryReportSequence, v)
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.SentinelLibrary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(sentinellibrary.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelLibraryUpsertOne) UpdateNewValues() *SentinelLibraryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(sentinellibrary.FieldID)
-		}
-	}))
 	return u
 }
 
@@ -518,24 +498,24 @@ func (u *SentinelLibraryUpsertOne) UpdateCreatedAt() *SentinelLibraryUpsertOne {
 	})
 }
 
-// SetReportSequence sets the "report_sequence" field.
-func (u *SentinelLibraryUpsertOne) SetReportSequence(v int64) *SentinelLibraryUpsertOne {
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelLibraryUpsertOne) SetLibraryReportSequence(v int64) *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.SetReportSequence(v)
+		s.SetLibraryReportSequence(v)
 	})
 }
 
-// AddReportSequence adds v to the "report_sequence" field.
-func (u *SentinelLibraryUpsertOne) AddReportSequence(v int64) *SentinelLibraryUpsertOne {
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelLibraryUpsertOne) AddLibraryReportSequence(v int64) *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.AddReportSequence(v)
+		s.AddLibraryReportSequence(v)
 	})
 }
 
-// UpdateReportSequence sets the "report_sequence" field to the value that was provided on create.
-func (u *SentinelLibraryUpsertOne) UpdateReportSequence() *SentinelLibraryUpsertOne {
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertOne) UpdateLibraryReportSequence() *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.UpdateReportSequence()
+		s.UpdateLibraryReportSequence()
 	})
 }
 
@@ -555,7 +535,7 @@ func (u *SentinelLibraryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
+func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id int, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -564,7 +544,7 @@ func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id model.InternalID,
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SentinelLibraryUpsertOne) IDX(ctx context.Context) model.InternalID {
+func (u *SentinelLibraryUpsertOne) IDX(ctx context.Context) int {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -619,9 +599,9 @@ func (slcb *SentinelLibraryCreateBulk) Save(ctx context.Context) ([]*SentinelLib
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = model.InternalID(id)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -709,20 +689,10 @@ type SentinelLibraryUpsertBulk struct {
 //	client.SentinelLibrary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(sentinellibrary.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelLibraryUpsertBulk) UpdateNewValues() *SentinelLibraryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(sentinellibrary.FieldID)
-			}
-		}
-	}))
 	return u
 }
 
@@ -830,24 +800,24 @@ func (u *SentinelLibraryUpsertBulk) UpdateCreatedAt() *SentinelLibraryUpsertBulk
 	})
 }
 
-// SetReportSequence sets the "report_sequence" field.
-func (u *SentinelLibraryUpsertBulk) SetReportSequence(v int64) *SentinelLibraryUpsertBulk {
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (u *SentinelLibraryUpsertBulk) SetLibraryReportSequence(v int64) *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.SetReportSequence(v)
+		s.SetLibraryReportSequence(v)
 	})
 }
 
-// AddReportSequence adds v to the "report_sequence" field.
-func (u *SentinelLibraryUpsertBulk) AddReportSequence(v int64) *SentinelLibraryUpsertBulk {
+// AddLibraryReportSequence adds v to the "library_report_sequence" field.
+func (u *SentinelLibraryUpsertBulk) AddLibraryReportSequence(v int64) *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.AddReportSequence(v)
+		s.AddLibraryReportSequence(v)
 	})
 }
 
-// UpdateReportSequence sets the "report_sequence" field to the value that was provided on create.
-func (u *SentinelLibraryUpsertBulk) UpdateReportSequence() *SentinelLibraryUpsertBulk {
+// UpdateLibraryReportSequence sets the "library_report_sequence" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertBulk) UpdateLibraryReportSequence() *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.UpdateReportSequence()
+		s.UpdateLibraryReportSequence()
 	})
 }
 

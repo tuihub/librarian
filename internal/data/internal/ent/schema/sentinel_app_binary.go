@@ -3,8 +3,6 @@ package schema
 import (
 	"time"
 
-	"github.com/tuihub/librarian/internal/model"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -17,8 +15,7 @@ type SentinelAppBinary struct {
 
 func (SentinelAppBinary) Fields() []ent.Field {
 	return []ent.Field{
-		defaultPrimaryKey(),
-		field.Int64("sentinel_library_id").GoType(model.InternalID(0)),
+		field.Int("sentinel_library_id"),
 		field.String("generated_id"),
 		field.Int64("size_bytes"),
 		field.Bool("need_token"),
@@ -30,7 +27,7 @@ func (SentinelAppBinary) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int64("report_sequence"),
+		field.Int64("app_binary_report_sequence"),
 	}
 }
 
@@ -39,7 +36,7 @@ func (SentinelAppBinary) Indexes() []ent.Index {
 		index.Fields("sentinel_library_id", "generated_id").
 			Unique(),
 		index.Fields("generated_id"),
-		index.Fields("report_sequence"),
+		index.Fields("app_binary_report_sequence"),
 	}
 }
 

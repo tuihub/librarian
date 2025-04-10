@@ -26,6 +26,10 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// FieldLibraryReportSequence holds the string denoting the library_report_sequence field in the database.
+	FieldLibraryReportSequence = "library_report_sequence"
+	// FieldAppBinaryReportSequence holds the string denoting the app_binary_report_sequence field in the database.
+	FieldAppBinaryReportSequence = "app_binary_report_sequence"
 	// EdgeSentinelLibrary holds the string denoting the sentinel_library edge name in mutations.
 	EdgeSentinelLibrary = "sentinel_library"
 	// Table holds the table name of the sentinelinfo in the database.
@@ -48,6 +52,8 @@ var Columns = []string{
 	FieldDownloadFileBasePath,
 	FieldUpdatedAt,
 	FieldCreatedAt,
+	FieldLibraryReportSequence,
+	FieldAppBinaryReportSequence,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -100,6 +106,16 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByLibraryReportSequence orders the results by the library_report_sequence field.
+func ByLibraryReportSequence(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLibraryReportSequence, opts...).ToFunc()
+}
+
+// ByAppBinaryReportSequence orders the results by the app_binary_report_sequence field.
+func ByAppBinaryReportSequence(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAppBinaryReportSequence, opts...).ToFunc()
 }
 
 // BySentinelLibraryCount orders the results by sentinel_library count.

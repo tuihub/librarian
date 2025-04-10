@@ -132,8 +132,8 @@ func (slq *SentinelLibraryQuery) FirstX(ctx context.Context) *SentinelLibrary {
 
 // FirstID returns the first SentinelLibrary ID from the query.
 // Returns a *NotFoundError when no SentinelLibrary ID was found.
-func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
-	var ids []model.InternalID
+func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = slq.Limit(1).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -145,7 +145,7 @@ func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.Internal
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) model.InternalID {
+func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) int {
 	id, err := slq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -183,8 +183,8 @@ func (slq *SentinelLibraryQuery) OnlyX(ctx context.Context) *SentinelLibrary {
 // OnlyID is like Only, but returns the only SentinelLibrary ID in the query.
 // Returns a *NotSingularError when more than one SentinelLibrary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
-	var ids []model.InternalID
+func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id int, err error) {
+	var ids []int
 	if ids, err = slq.Limit(2).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -200,7 +200,7 @@ func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalI
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) model.InternalID {
+func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) int {
 	id, err := slq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -228,7 +228,7 @@ func (slq *SentinelLibraryQuery) AllX(ctx context.Context) []*SentinelLibrary {
 }
 
 // IDs executes the query and returns a list of SentinelLibrary IDs.
-func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
+func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []int, err error) {
 	if slq.ctx.Unique == nil && slq.path != nil {
 		slq.Unique(true)
 	}
@@ -240,7 +240,7 @@ func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []model.InternalI
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []model.InternalID {
+func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []int {
 	ids, err := slq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -480,7 +480,7 @@ func (slq *SentinelLibraryQuery) loadSentinelInfo(ctx context.Context, query *Se
 }
 func (slq *SentinelLibraryQuery) loadSentinelAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *SentinelAppBinary)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[model.InternalID]*SentinelLibrary)
+	nodeids := make(map[int]*SentinelLibrary)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -519,7 +519,7 @@ func (slq *SentinelLibraryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewQuerySpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
 	_spec.From = slq.sql
 	if unique := slq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

@@ -18,7 +18,7 @@ import (
 type SentinelLibrary struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID model.InternalID `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// SentinelInfoID holds the value of the "sentinel_info_id" field.
 	SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
 	// ReportedID holds the value of the "reported_id" field.
@@ -29,8 +29,8 @@ type SentinelLibrary struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
-	// ReportSequence holds the value of the "report_sequence" field.
-	ReportSequence int64 `json:"report_sequence,omitempty"`
+	// LibraryReportSequence holds the value of the "library_report_sequence" field.
+	LibraryReportSequence int64 `json:"library_report_sequence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SentinelLibraryQuery when eager-loading is set.
 	Edges        SentinelLibraryEdges `json:"edges"`
@@ -73,7 +73,7 @@ func (*SentinelLibrary) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sentinellibrary.FieldID, sentinellibrary.FieldSentinelInfoID, sentinellibrary.FieldReportedID, sentinellibrary.FieldReportSequence:
+		case sentinellibrary.FieldID, sentinellibrary.FieldSentinelInfoID, sentinellibrary.FieldReportedID, sentinellibrary.FieldLibraryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinellibrary.FieldDownloadBasePath:
 			values[i] = new(sql.NullString)
@@ -95,11 +95,11 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case sentinellibrary.FieldID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field id", values[i])
-			} else if value.Valid {
-				sl.ID = model.InternalID(value.Int64)
+			value, ok := values[i].(*sql.NullInt64)
+			if !ok {
+				return fmt.Errorf("unexpected type %T for field id", value)
 			}
+			sl.ID = int(value.Int64)
 		case sentinellibrary.FieldSentinelInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field sentinel_info_id", values[i])
@@ -130,11 +130,11 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sl.CreatedAt = value.Time
 			}
-		case sentinellibrary.FieldReportSequence:
+		case sentinellibrary.FieldLibraryReportSequence:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field report_sequence", values[i])
+				return fmt.Errorf("unexpected type %T for field library_report_sequence", values[i])
 			} else if value.Valid {
-				sl.ReportSequence = value.Int64
+				sl.LibraryReportSequence = value.Int64
 			}
 		default:
 			sl.selectValues.Set(columns[i], values[i])
@@ -197,8 +197,8 @@ func (sl *SentinelLibrary) String() string {
 	builder.WriteString("created_at=")
 	builder.WriteString(sl.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("report_sequence=")
-	builder.WriteString(fmt.Sprintf("%v", sl.ReportSequence))
+	builder.WriteString("library_report_sequence=")
+	builder.WriteString(fmt.Sprintf("%v", sl.LibraryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }
