@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
@@ -12,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
@@ -622,49 +624,49 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 	info *modelgebura.SentinelInfo,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		sInfo, err := tx.SentinelInfo.Query().
+			Where(sentinelinfo.IDEQ(info.ID)).
+			Only(ctx)
+		var libReportSeq int64
+		if err != nil {
+			if !ent.IsNotFound(err) {
+				return err
+			}
+			libReportSeq = 0
+		} else {
+			libReportSeq = sInfo.LibraryReportSequence + 1
+		}
 		// upsert sentinel info
 		q := tx.SentinelInfo.Create().
 			SetID(info.ID).
 			SetURL(info.Url).
 			SetAlternativeUrls(info.AlternativeUrls).
 			SetGetTokenPath(info.GetTokenPath).
-			SetDownloadFileBasePath(info.DownloadFileBasePath)
-		err := q.OnConflict(sql.ConflictColumns(sentinelinfo.FieldID)).
+			SetDownloadFileBasePath(info.DownloadFileBasePath).
+			SetLibraryReportSequence(libReportSeq)
+		err = q.OnConflict(sql.ConflictColumns(sentinelinfo.FieldID)).
 			UpdateNewValues().
 			Exec(ctx)
 		if err != nil {
 			return err
 		}
 		// upsert libraries
-		sInfo, err := tx.SentinelInfo.Query().
-			Where(sentinelinfo.IDEQ(info.ID)).
-			Only(ctx)
-		if err != nil {
-			return err
+		if libReportSeq == 0 {
+			sInfo, err = tx.SentinelInfo.Query().
+				Where(sentinelinfo.IDEQ(info.ID)).
+				Only(ctx)
+			if err != nil {
+				return err
+			}
 		}
-		oldLibs, err := tx.SentinelLibrary.Query().
-			Where(sentinellibrary.SentinelInfoIDEQ(sInfo.ID)).
-			All(ctx)
-		if err != nil {
-			return err
-		}
-		oldLibsMap := lo.Associate(oldLibs, func(lib *ent.SentinelLibrary) (int64, *ent.SentinelLibrary) {
-			return lib.ReportedID, lib
-		})
 		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(info.Libraries))
 		for _, lib := range info.Libraries {
-			var reportSeq int64
-			if oldLib, exists := oldLibsMap[lib.ReportedID]; exists {
-				reportSeq = oldLib.ReportSequence + 1
-			} else {
-				reportSeq = 0
-			}
 			newLibs = append(newLibs, tx.SentinelLibrary.Create().
-				SetID(lib.ID).
 				SetSentinelInfoID(sInfo.ID).
 				SetReportedID(lib.ReportedID).
 				SetDownloadBasePath(lib.DownloadBasePath).
-				SetReportSequence(reportSeq))
+				SetLibraryReportSequence(sInfo.LibraryReportSequence),
+			)
 		}
 		return tx.SentinelLibrary.CreateBulk(newLibs...).
 			OnConflict(
@@ -672,9 +674,6 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 					sentinellibrary.FieldSentinelInfoID,
 					sentinellibrary.FieldReportedID,
 				),
-				resolveWithIgnores([]string{
-					sentinellibrary.FieldID,
-				}),
 			).
 			UpdateNewValues().
 			Exec(ctx)
@@ -687,6 +686,14 @@ func (g *GeburaRepo) UpsertAppBinaries(
 	abs []*modelgebura.SentinelAppBinary,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
+		// update AppBinaryReportSequence
+		err := tx.SentinelInfo.Update().
+			Where(sentinelinfo.IDEQ(sentinelID)).
+			AddAppBinaryReportSequence(1).
+			Exec(ctx)
+		if err != nil {
+			return err
+		}
 		sInfo, err := tx.SentinelInfo.Query().
 			Where(sentinelinfo.IDEQ(sentinelID)).
 			WithSentinelLibrary().
@@ -694,30 +701,20 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		if err != nil {
 			return err
 		}
-		slibReportedIDs := lo.Map(sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary, _ int) int64 {
-			return lib.ReportedID
-		})
+		// upsert binaries
 		slibReportedIDEntMap := lo.Associate(
 			sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary,
 			) (int64, *ent.SentinelLibrary) {
 				return lib.ReportedID, lib
 			})
-		// remove all existing binary files
-		_, err = tx.SentinelAppBinary.Delete().Where(
-			sentinelappbinary.HasSentinelLibraryWith(
-				sentinellibrary.SentinelInfoIDEQ(sentinelID),
-				sentinellibrary.ReportedIDIn(slibReportedIDs...),
-			),
-		).Exec(ctx)
-		if err != nil {
-			return err
-		}
-		// upsert binaries
 		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
 		for _, ab := range abs {
+			slibEnt, exists := slibReportedIDEntMap[ab.SentinelLibraryID]
+			if !exists {
+				return errors.New("invalid app_binary data: associated sentinel library id not exists")
+			}
 			newAbs = append(newAbs, tx.SentinelAppBinary.Create().
-				SetID(ab.ID).
-				SetSentinelLibraryID(slibReportedIDEntMap[ab.SentinelLibraryID].ID).
+				SetSentinelLibrary(slibEnt).
 				SetGeneratedID(ab.GeneratedID).
 				SetSizeBytes(ab.SizeBytes).
 				SetNeedToken(ab.NeedToken).
@@ -725,7 +722,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 				SetVersion(ab.Version).
 				SetDeveloper(ab.Developer).
 				SetPublisher(ab.Publisher).
-				SetReportSequence(slibReportedIDEntMap[ab.SentinelLibraryID].ReportSequence))
+				SetAppBinaryReportSequence(sInfo.AppBinaryReportSequence))
 		}
 		err = tx.SentinelAppBinary.CreateBulk(newAbs...).
 			OnConflict(
@@ -742,42 +739,61 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		if err != nil {
 			return err
 		}
-		// insert all binary files
-		slibIDs := lo.Map(sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary, _ int) model.InternalID {
-			return lib.ID
-		})
-		abGeneratedIDs := lo.Map(abs, func(ab *modelgebura.SentinelAppBinary, _ int) string {
-			return ab.GeneratedID
-		})
-		dbAbs, err := tx.SentinelAppBinary.Query().
-			Where(
-				sentinelappbinary.SentinelLibraryIDIn(slibIDs...),
-				sentinelappbinary.GeneratedIDIn(abGeneratedIDs...),
-			).
-			All(ctx)
+		// upsert binary files
+		dbAbs, err := tx.SentinelAppBinary.Query().Where(
+			sentinelappbinary.HasSentinelLibraryWith(
+				sentinellibrary.HasSentinelInfoWith(
+					sentinelinfo.IDEQ(sentinelID),
+				),
+			),
+		).All(ctx)
 		if err != nil {
 			return err
 		}
-		dbAbGeneratedIDIDMap := lo.Associate(dbAbs, func(ab *ent.SentinelAppBinary) (string, model.InternalID) {
-			return ab.GeneratedID, ab.ID
+		type AbKey struct {
+			SlibID int64
+			GenID  string
+		}
+		abSlibIDGenIDEntMap := lo.Associate(dbAbs, func(ab *ent.SentinelAppBinary) (AbKey, *ent.SentinelAppBinary) {
+			return AbKey{
+				SlibID: ab.Edges.SentinelLibrary.ReportedID,
+				GenID:  ab.GeneratedID,
+			}, ab
 		})
+		abfCount := lo.Sum(lo.Map(abs, func(ab *modelgebura.SentinelAppBinary, _ int) int {
+			return len(ab.Files)
+		}))
+		newAbfs := make([]*ent.SentinelAppBinaryFileCreate, 0, abfCount)
 		for _, ab := range abs {
-			abfs := make([]*ent.SentinelAppBinaryFileCreate, 0, len(ab.Files))
+			abEnt, exists := abSlibIDGenIDEntMap[AbKey{ab.SentinelLibraryID, ab.GeneratedID}]
+			if !exists {
+				return errors.New("invalid app_binary_file data: associated app binary not exists")
+			}
 			for _, f := range ab.Files {
-				abfs = append(abfs, tx.SentinelAppBinaryFile.Create().
-					SetID(f.ID).
-					SetSentinelAppBinaryID(dbAbGeneratedIDIDMap[ab.GeneratedID]).
+				newAbfs = append(newAbfs, tx.SentinelAppBinaryFile.Create().
+					SetSentinelAppBinaryID(abEnt.ID).
 					SetName(f.Name).
 					SetSizeBytes(f.SizeBytes).
 					SetSha256(f.Sha256).
 					SetServerFilePath(f.ServerFilePath).
-					SetChunksInfo(f.ChunksInfo))
+					SetChunksInfo(f.ChunksInfo).
+					SetAppBinaryReportSequence(sInfo.AppBinaryReportSequence))
 			}
-			err = tx.SentinelAppBinaryFile.CreateBulk(abfs...).
-				Exec(ctx)
-			if err != nil {
-				return err
-			}
+		}
+		err = tx.SentinelAppBinaryFile.CreateBulk(newAbfs...).
+			OnConflict(
+				sql.ConflictColumns(
+					sentinelappbinaryfile.FieldSentinelAppBinaryID,
+					sentinelappbinaryfile.FieldServerFilePath,
+				),
+				resolveWithIgnores([]string{
+					sentinelappbinaryfile.FieldID,
+				}),
+			).
+			UpdateNewValues().
+			Exec(ctx)
+		if err != nil {
+			return err
 		}
 		return nil
 	})

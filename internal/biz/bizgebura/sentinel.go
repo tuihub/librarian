@@ -18,14 +18,7 @@ func (g *Gebura) UpsertSentinelInfo(
 		return bizutils.NoPermissionError()
 	}
 	info.ID = claims.UserID
-	var err error
-	for _, lib := range info.Libraries {
-		lib.ID, err = g.id.New()
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
-	}
-	err = g.repo.UpsertSentinelInfo(ctx, info)
+	err := g.repo.UpsertSentinelInfo(ctx, info)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
@@ -40,20 +33,7 @@ func (g *Gebura) UpsertAppBinaries(
 		return bizutils.NoPermissionError()
 	}
 	sentinelID := claims.UserID
-	var err error
-	for _, ab := range abs {
-		ab.ID, err = g.id.New()
-		if err != nil {
-			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
-		for _, f := range ab.Files {
-			f.ID, err = g.id.New()
-			if err != nil {
-				return pb.ErrorErrorReasonUnspecified("%s", err.Error())
-			}
-		}
-	}
-	err = g.repo.UpsertAppBinaries(ctx, sentinelID, abs)
+	err := g.repo.UpsertAppBinaries(ctx, sentinelID, abs)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
