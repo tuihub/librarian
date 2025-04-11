@@ -23,6 +23,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
+	"github.com/tuihub/librarian/internal/service/sentinel"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 
@@ -54,6 +55,7 @@ func wireApp(
 			biz.ProviderSet,
 			client.ProviderSet,
 			supervisor.ProviderSet,
+			sentinel.ProviderSet,
 			sephirah.ProviderSet,
 			server.ProviderSet,
 			inprocgrpc.ProviderSet,

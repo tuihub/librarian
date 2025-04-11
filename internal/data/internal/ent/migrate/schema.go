@@ -737,6 +737,132 @@ var (
 			},
 		},
 	}
+	// SentinelAppBinariesColumns holds the columns for the "sentinel_app_binaries" table.
+	SentinelAppBinariesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "sentinel_info_id", Type: field.TypeInt64},
+		{Name: "sentinel_library_reported_id", Type: field.TypeInt64},
+		{Name: "generated_id", Type: field.TypeString},
+		{Name: "size_bytes", Type: field.TypeInt64},
+		{Name: "need_token", Type: field.TypeBool},
+		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "version", Type: field.TypeString, Nullable: true},
+		{Name: "developer", Type: field.TypeString, Nullable: true},
+		{Name: "publisher", Type: field.TypeString, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "app_binary_report_sequence", Type: field.TypeInt64},
+	}
+	// SentinelAppBinariesTable holds the schema information for the "sentinel_app_binaries" table.
+	SentinelAppBinariesTable = &schema.Table{
+		Name:       "sentinel_app_binaries",
+		Columns:    SentinelAppBinariesColumns,
+		PrimaryKey: []*schema.Column{SentinelAppBinariesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sentinelappbinary_sentinel_info_id_sentinel_library_reported_id_generated_id",
+				Unique:  true,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[1], SentinelAppBinariesColumns[2], SentinelAppBinariesColumns[3]},
+			},
+			{
+				Name:    "sentinelappbinary_generated_id",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[3]},
+			},
+			{
+				Name:    "sentinelappbinary_app_binary_report_sequence",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[12]},
+			},
+		},
+	}
+	// SentinelAppBinaryFilesColumns holds the columns for the "sentinel_app_binary_files" table.
+	SentinelAppBinaryFilesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "sentinel_info_id", Type: field.TypeInt64},
+		{Name: "sentinel_library_reported_id", Type: field.TypeInt64},
+		{Name: "sentinel_app_binary_generated_id", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString},
+		{Name: "size_bytes", Type: field.TypeInt64},
+		{Name: "sha256", Type: field.TypeBytes},
+		{Name: "server_file_path", Type: field.TypeString},
+		{Name: "chunks_info", Type: field.TypeString, Nullable: true},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "app_binary_report_sequence", Type: field.TypeInt64},
+	}
+	// SentinelAppBinaryFilesTable holds the schema information for the "sentinel_app_binary_files" table.
+	SentinelAppBinaryFilesTable = &schema.Table{
+		Name:       "sentinel_app_binary_files",
+		Columns:    SentinelAppBinaryFilesColumns,
+		PrimaryKey: []*schema.Column{SentinelAppBinaryFilesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sentinelappbinaryfile_sentinel_info_id_sentinel_library_reported_id_sentinel_app_binary_generated_id_server_file_path",
+				Unique:  true,
+				Columns: []*schema.Column{SentinelAppBinaryFilesColumns[1], SentinelAppBinaryFilesColumns[2], SentinelAppBinaryFilesColumns[3], SentinelAppBinaryFilesColumns[7]},
+			},
+			{
+				Name:    "sentinelappbinaryfile_app_binary_report_sequence",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelAppBinaryFilesColumns[11]},
+			},
+		},
+	}
+	// SentinelInfosColumns holds the columns for the "sentinel_infos" table.
+	SentinelInfosColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64},
+		{Name: "url", Type: field.TypeString},
+		{Name: "alternative_urls", Type: field.TypeJSON, Nullable: true},
+		{Name: "get_token_path", Type: field.TypeString, Nullable: true},
+		{Name: "download_file_base_path", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "library_report_sequence", Type: field.TypeInt64},
+		{Name: "app_binary_report_sequence", Type: field.TypeInt64},
+	}
+	// SentinelInfosTable holds the schema information for the "sentinel_infos" table.
+	SentinelInfosTable = &schema.Table{
+		Name:       "sentinel_infos",
+		Columns:    SentinelInfosColumns,
+		PrimaryKey: []*schema.Column{SentinelInfosColumns[0]},
+	}
+	// SentinelLibrariesColumns holds the columns for the "sentinel_libraries" table.
+	SentinelLibrariesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "reported_id", Type: field.TypeInt64},
+		{Name: "download_base_path", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "library_report_sequence", Type: field.TypeInt64},
+		{Name: "sentinel_info_id", Type: field.TypeInt64},
+	}
+	// SentinelLibrariesTable holds the schema information for the "sentinel_libraries" table.
+	SentinelLibrariesTable = &schema.Table{
+		Name:       "sentinel_libraries",
+		Columns:    SentinelLibrariesColumns,
+		PrimaryKey: []*schema.Column{SentinelLibrariesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sentinel_libraries_sentinel_infos_sentinel_info",
+				Columns:    []*schema.Column{SentinelLibrariesColumns[6]},
+				RefColumns: []*schema.Column{SentinelInfosColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sentinellibrary_sentinel_info_id_reported_id",
+				Unique:  true,
+				Columns: []*schema.Column{SentinelLibrariesColumns[6], SentinelLibrariesColumns[1]},
+			},
+			{
+				Name:    "sentinellibrary_library_report_sequence",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelLibrariesColumns[5]},
+			},
+		},
+	}
 	// SessionsColumns holds the columns for the "sessions" table.
 	SessionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -931,6 +1057,10 @@ var (
 		NotifyTargetsTable,
 		PorterContextsTable,
 		PorterInstancesTable,
+		SentinelAppBinariesTable,
+		SentinelAppBinaryFilesTable,
+		SentinelInfosTable,
+		SentinelLibrariesTable,
 		SessionsTable,
 		StoreAppsTable,
 		StoreAppBinariesTable,
@@ -968,6 +1098,7 @@ func init() {
 	NotifySourcesTable.ForeignKeys[2].RefTable = UsersTable
 	NotifyTargetsTable.ForeignKeys[0].RefTable = UsersTable
 	PorterContextsTable.ForeignKeys[0].RefTable = UsersTable
+	SentinelLibrariesTable.ForeignKeys[0].RefTable = SentinelInfosTable
 	SessionsTable.ForeignKeys[0].RefTable = DevicesTable
 	SessionsTable.ForeignKeys[1].RefTable = UsersTable
 	TagsTable.ForeignKeys[0].RefTable = UsersTable

@@ -6,6 +6,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsentry"
+	sentinelpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -23,6 +24,7 @@ func NewGRPCServer(
 	c *conf.SephirahServer,
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
+	sentinelserver sentinelpb.LibrarianSentinelServiceServer,
 	app *libapp.Settings,
 	observer *libobserve.BuiltInObserver,
 ) (*grpc.Server, error) {
@@ -74,5 +76,6 @@ func NewGRPCServer(
 	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianSephirahServiceServer(srv, greeter)
+	sentinelpb.RegisterLibrarianSentinelServiceServer(srv, sentinelserver)
 	return srv, nil
 }

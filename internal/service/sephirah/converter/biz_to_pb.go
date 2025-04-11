@@ -104,7 +104,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBPorterDigest(*modelsupervisor.PorterDigest) *sephirah.PorterDigest
 	ToPBPorterDigestList([]*modelsupervisor.PorterDigest) []*sephirah.PorterDigest
 
-	// goverter:map AlternativeNames AltNames
+	// goverter:map AlternativeNames NameAlternatives
 	ToPBAppInfo(*modelgebura.AppInfo) *sephirah.AppInfo
 	ToPBAppInfoList([]*modelgebura.AppInfo) []*sephirah.AppInfo
 	// goverter:enum:unknown AppType_APP_TYPE_UNSPECIFIED
@@ -112,7 +112,7 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map AppTypeGame AppType_APP_TYPE_GAME
 	ToPBAppType(modelgebura.AppType) sephirah.AppType
 
-	// goverter:map AlternativeNames AltNames
+	// goverter:map AlternativeNames NameAlternatives
 	ToPBApp(*modelgebura.App) *sephirah.App
 	ToPBAppList([]*modelgebura.App) []*sephirah.App
 

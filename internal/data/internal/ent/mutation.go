@@ -34,6 +34,10 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
@@ -54,34 +58,38 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAccount            = "Account"
-	TypeApp                = "App"
-	TypeAppAppCategory     = "AppAppCategory"
-	TypeAppCategory        = "AppCategory"
-	TypeAppInfo            = "AppInfo"
-	TypeAppRunTime         = "AppRunTime"
-	TypeDevice             = "Device"
-	TypeFeed               = "Feed"
-	TypeFeedActionSet      = "FeedActionSet"
-	TypeFeedConfig         = "FeedConfig"
-	TypeFeedConfigAction   = "FeedConfigAction"
-	TypeFeedItem           = "FeedItem"
-	TypeFeedItemCollection = "FeedItemCollection"
-	TypeFile               = "File"
-	TypeImage              = "Image"
-	TypeNotifyFlow         = "NotifyFlow"
-	TypeNotifyFlowSource   = "NotifyFlowSource"
-	TypeNotifyFlowTarget   = "NotifyFlowTarget"
-	TypeNotifySource       = "NotifySource"
-	TypeNotifyTarget       = "NotifyTarget"
-	TypePorterContext      = "PorterContext"
-	TypePorterInstance     = "PorterInstance"
-	TypeSession            = "Session"
-	TypeStoreApp           = "StoreApp"
-	TypeStoreAppBinary     = "StoreAppBinary"
-	TypeSystemNotification = "SystemNotification"
-	TypeTag                = "Tag"
-	TypeUser               = "User"
+	TypeAccount               = "Account"
+	TypeApp                   = "App"
+	TypeAppAppCategory        = "AppAppCategory"
+	TypeAppCategory           = "AppCategory"
+	TypeAppInfo               = "AppInfo"
+	TypeAppRunTime            = "AppRunTime"
+	TypeDevice                = "Device"
+	TypeFeed                  = "Feed"
+	TypeFeedActionSet         = "FeedActionSet"
+	TypeFeedConfig            = "FeedConfig"
+	TypeFeedConfigAction      = "FeedConfigAction"
+	TypeFeedItem              = "FeedItem"
+	TypeFeedItemCollection    = "FeedItemCollection"
+	TypeFile                  = "File"
+	TypeImage                 = "Image"
+	TypeNotifyFlow            = "NotifyFlow"
+	TypeNotifyFlowSource      = "NotifyFlowSource"
+	TypeNotifyFlowTarget      = "NotifyFlowTarget"
+	TypeNotifySource          = "NotifySource"
+	TypeNotifyTarget          = "NotifyTarget"
+	TypePorterContext         = "PorterContext"
+	TypePorterInstance        = "PorterInstance"
+	TypeSentinelAppBinary     = "SentinelAppBinary"
+	TypeSentinelAppBinaryFile = "SentinelAppBinaryFile"
+	TypeSentinelInfo          = "SentinelInfo"
+	TypeSentinelLibrary       = "SentinelLibrary"
+	TypeSession               = "Session"
+	TypeStoreApp              = "StoreApp"
+	TypeStoreAppBinary        = "StoreAppBinary"
+	TypeSystemNotification    = "SystemNotification"
+	TypeTag                   = "Tag"
+	TypeUser                  = "User"
 )
 
 // AccountMutation represents an operation that mutates the Account nodes in the graph.
@@ -21843,6 +21851,3812 @@ func (m *PorterInstanceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *PorterInstanceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown PorterInstance edge %s", name)
+}
+
+// SentinelAppBinaryMutation represents an operation that mutates the SentinelAppBinary nodes in the graph.
+type SentinelAppBinaryMutation struct {
+	config
+	op                              Op
+	typ                             string
+	id                              *int
+	sentinel_info_id                *model.InternalID
+	addsentinel_info_id             *model.InternalID
+	sentinel_library_reported_id    *int64
+	addsentinel_library_reported_id *int64
+	generated_id                    *string
+	size_bytes                      *int64
+	addsize_bytes                   *int64
+	need_token                      *bool
+	name                            *string
+	version                         *string
+	developer                       *string
+	publisher                       *string
+	updated_at                      *time.Time
+	created_at                      *time.Time
+	app_binary_report_sequence      *int64
+	addapp_binary_report_sequence   *int64
+	clearedFields                   map[string]struct{}
+	done                            bool
+	oldValue                        func(context.Context) (*SentinelAppBinary, error)
+	predicates                      []predicate.SentinelAppBinary
+}
+
+var _ ent.Mutation = (*SentinelAppBinaryMutation)(nil)
+
+// sentinelappbinaryOption allows management of the mutation configuration using functional options.
+type sentinelappbinaryOption func(*SentinelAppBinaryMutation)
+
+// newSentinelAppBinaryMutation creates new mutation for the SentinelAppBinary entity.
+func newSentinelAppBinaryMutation(c config, op Op, opts ...sentinelappbinaryOption) *SentinelAppBinaryMutation {
+	m := &SentinelAppBinaryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSentinelAppBinary,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSentinelAppBinaryID sets the ID field of the mutation.
+func withSentinelAppBinaryID(id int) sentinelappbinaryOption {
+	return func(m *SentinelAppBinaryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SentinelAppBinary
+		)
+		m.oldValue = func(ctx context.Context) (*SentinelAppBinary, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SentinelAppBinary.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSentinelAppBinary sets the old SentinelAppBinary of the mutation.
+func withSentinelAppBinary(node *SentinelAppBinary) sentinelappbinaryOption {
+	return func(m *SentinelAppBinaryMutation) {
+		m.oldValue = func(context.Context) (*SentinelAppBinary, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SentinelAppBinaryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SentinelAppBinaryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SentinelAppBinaryMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SentinelAppBinaryMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SentinelAppBinary.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (m *SentinelAppBinaryMutation) SetSentinelInfoID(mi model.InternalID) {
+	m.sentinel_info_id = &mi
+	m.addsentinel_info_id = nil
+}
+
+// SentinelInfoID returns the value of the "sentinel_info_id" field in the mutation.
+func (m *SentinelAppBinaryMutation) SentinelInfoID() (r model.InternalID, exists bool) {
+	v := m.sentinel_info_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelInfoID returns the old "sentinel_info_id" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldSentinelInfoID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelInfoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelInfoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelInfoID: %w", err)
+	}
+	return oldValue.SentinelInfoID, nil
+}
+
+// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
+func (m *SentinelAppBinaryMutation) AddSentinelInfoID(mi model.InternalID) {
+	if m.addsentinel_info_id != nil {
+		*m.addsentinel_info_id += mi
+	} else {
+		m.addsentinel_info_id = &mi
+	}
+}
+
+// AddedSentinelInfoID returns the value that was added to the "sentinel_info_id" field in this mutation.
+func (m *SentinelAppBinaryMutation) AddedSentinelInfoID() (r model.InternalID, exists bool) {
+	v := m.addsentinel_info_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSentinelInfoID resets all changes to the "sentinel_info_id" field.
+func (m *SentinelAppBinaryMutation) ResetSentinelInfoID() {
+	m.sentinel_info_id = nil
+	m.addsentinel_info_id = nil
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryMutation) SetSentinelLibraryReportedID(i int64) {
+	m.sentinel_library_reported_id = &i
+	m.addsentinel_library_reported_id = nil
+}
+
+// SentinelLibraryReportedID returns the value of the "sentinel_library_reported_id" field in the mutation.
+func (m *SentinelAppBinaryMutation) SentinelLibraryReportedID() (r int64, exists bool) {
+	v := m.sentinel_library_reported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelLibraryReportedID returns the old "sentinel_library_reported_id" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldSentinelLibraryReportedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelLibraryReportedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelLibraryReportedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelLibraryReportedID: %w", err)
+	}
+	return oldValue.SentinelLibraryReportedID, nil
+}
+
+// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryMutation) AddSentinelLibraryReportedID(i int64) {
+	if m.addsentinel_library_reported_id != nil {
+		*m.addsentinel_library_reported_id += i
+	} else {
+		m.addsentinel_library_reported_id = &i
+	}
+}
+
+// AddedSentinelLibraryReportedID returns the value that was added to the "sentinel_library_reported_id" field in this mutation.
+func (m *SentinelAppBinaryMutation) AddedSentinelLibraryReportedID() (r int64, exists bool) {
+	v := m.addsentinel_library_reported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSentinelLibraryReportedID resets all changes to the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryMutation) ResetSentinelLibraryReportedID() {
+	m.sentinel_library_reported_id = nil
+	m.addsentinel_library_reported_id = nil
+}
+
+// SetGeneratedID sets the "generated_id" field.
+func (m *SentinelAppBinaryMutation) SetGeneratedID(s string) {
+	m.generated_id = &s
+}
+
+// GeneratedID returns the value of the "generated_id" field in the mutation.
+func (m *SentinelAppBinaryMutation) GeneratedID() (r string, exists bool) {
+	v := m.generated_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGeneratedID returns the old "generated_id" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldGeneratedID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGeneratedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGeneratedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGeneratedID: %w", err)
+	}
+	return oldValue.GeneratedID, nil
+}
+
+// ResetGeneratedID resets all changes to the "generated_id" field.
+func (m *SentinelAppBinaryMutation) ResetGeneratedID() {
+	m.generated_id = nil
+}
+
+// SetSizeBytes sets the "size_bytes" field.
+func (m *SentinelAppBinaryMutation) SetSizeBytes(i int64) {
+	m.size_bytes = &i
+	m.addsize_bytes = nil
+}
+
+// SizeBytes returns the value of the "size_bytes" field in the mutation.
+func (m *SentinelAppBinaryMutation) SizeBytes() (r int64, exists bool) {
+	v := m.size_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSizeBytes returns the old "size_bytes" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
+	}
+	return oldValue.SizeBytes, nil
+}
+
+// AddSizeBytes adds i to the "size_bytes" field.
+func (m *SentinelAppBinaryMutation) AddSizeBytes(i int64) {
+	if m.addsize_bytes != nil {
+		*m.addsize_bytes += i
+	} else {
+		m.addsize_bytes = &i
+	}
+}
+
+// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
+func (m *SentinelAppBinaryMutation) AddedSizeBytes() (r int64, exists bool) {
+	v := m.addsize_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSizeBytes resets all changes to the "size_bytes" field.
+func (m *SentinelAppBinaryMutation) ResetSizeBytes() {
+	m.size_bytes = nil
+	m.addsize_bytes = nil
+}
+
+// SetNeedToken sets the "need_token" field.
+func (m *SentinelAppBinaryMutation) SetNeedToken(b bool) {
+	m.need_token = &b
+}
+
+// NeedToken returns the value of the "need_token" field in the mutation.
+func (m *SentinelAppBinaryMutation) NeedToken() (r bool, exists bool) {
+	v := m.need_token
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNeedToken returns the old "need_token" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldNeedToken(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNeedToken is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNeedToken requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNeedToken: %w", err)
+	}
+	return oldValue.NeedToken, nil
+}
+
+// ResetNeedToken resets all changes to the "need_token" field.
+func (m *SentinelAppBinaryMutation) ResetNeedToken() {
+	m.need_token = nil
+}
+
+// SetName sets the "name" field.
+func (m *SentinelAppBinaryMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *SentinelAppBinaryMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ClearName clears the value of the "name" field.
+func (m *SentinelAppBinaryMutation) ClearName() {
+	m.name = nil
+	m.clearedFields[sentinelappbinary.FieldName] = struct{}{}
+}
+
+// NameCleared returns if the "name" field was cleared in this mutation.
+func (m *SentinelAppBinaryMutation) NameCleared() bool {
+	_, ok := m.clearedFields[sentinelappbinary.FieldName]
+	return ok
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *SentinelAppBinaryMutation) ResetName() {
+	m.name = nil
+	delete(m.clearedFields, sentinelappbinary.FieldName)
+}
+
+// SetVersion sets the "version" field.
+func (m *SentinelAppBinaryMutation) SetVersion(s string) {
+	m.version = &s
+}
+
+// Version returns the value of the "version" field in the mutation.
+func (m *SentinelAppBinaryMutation) Version() (r string, exists bool) {
+	v := m.version
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldVersion returns the old "version" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldVersion(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldVersion is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldVersion requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldVersion: %w", err)
+	}
+	return oldValue.Version, nil
+}
+
+// ClearVersion clears the value of the "version" field.
+func (m *SentinelAppBinaryMutation) ClearVersion() {
+	m.version = nil
+	m.clearedFields[sentinelappbinary.FieldVersion] = struct{}{}
+}
+
+// VersionCleared returns if the "version" field was cleared in this mutation.
+func (m *SentinelAppBinaryMutation) VersionCleared() bool {
+	_, ok := m.clearedFields[sentinelappbinary.FieldVersion]
+	return ok
+}
+
+// ResetVersion resets all changes to the "version" field.
+func (m *SentinelAppBinaryMutation) ResetVersion() {
+	m.version = nil
+	delete(m.clearedFields, sentinelappbinary.FieldVersion)
+}
+
+// SetDeveloper sets the "developer" field.
+func (m *SentinelAppBinaryMutation) SetDeveloper(s string) {
+	m.developer = &s
+}
+
+// Developer returns the value of the "developer" field in the mutation.
+func (m *SentinelAppBinaryMutation) Developer() (r string, exists bool) {
+	v := m.developer
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeveloper returns the old "developer" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldDeveloper(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeveloper is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeveloper requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeveloper: %w", err)
+	}
+	return oldValue.Developer, nil
+}
+
+// ClearDeveloper clears the value of the "developer" field.
+func (m *SentinelAppBinaryMutation) ClearDeveloper() {
+	m.developer = nil
+	m.clearedFields[sentinelappbinary.FieldDeveloper] = struct{}{}
+}
+
+// DeveloperCleared returns if the "developer" field was cleared in this mutation.
+func (m *SentinelAppBinaryMutation) DeveloperCleared() bool {
+	_, ok := m.clearedFields[sentinelappbinary.FieldDeveloper]
+	return ok
+}
+
+// ResetDeveloper resets all changes to the "developer" field.
+func (m *SentinelAppBinaryMutation) ResetDeveloper() {
+	m.developer = nil
+	delete(m.clearedFields, sentinelappbinary.FieldDeveloper)
+}
+
+// SetPublisher sets the "publisher" field.
+func (m *SentinelAppBinaryMutation) SetPublisher(s string) {
+	m.publisher = &s
+}
+
+// Publisher returns the value of the "publisher" field in the mutation.
+func (m *SentinelAppBinaryMutation) Publisher() (r string, exists bool) {
+	v := m.publisher
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublisher returns the old "publisher" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldPublisher(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublisher is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublisher requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublisher: %w", err)
+	}
+	return oldValue.Publisher, nil
+}
+
+// ClearPublisher clears the value of the "publisher" field.
+func (m *SentinelAppBinaryMutation) ClearPublisher() {
+	m.publisher = nil
+	m.clearedFields[sentinelappbinary.FieldPublisher] = struct{}{}
+}
+
+// PublisherCleared returns if the "publisher" field was cleared in this mutation.
+func (m *SentinelAppBinaryMutation) PublisherCleared() bool {
+	_, ok := m.clearedFields[sentinelappbinary.FieldPublisher]
+	return ok
+}
+
+// ResetPublisher resets all changes to the "publisher" field.
+func (m *SentinelAppBinaryMutation) ResetPublisher() {
+	m.publisher = nil
+	delete(m.clearedFields, sentinelappbinary.FieldPublisher)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *SentinelAppBinaryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *SentinelAppBinaryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *SentinelAppBinaryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *SentinelAppBinaryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *SentinelAppBinaryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *SentinelAppBinaryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryMutation) SetAppBinaryReportSequence(i int64) {
+	m.app_binary_report_sequence = &i
+	m.addapp_binary_report_sequence = nil
+}
+
+// AppBinaryReportSequence returns the value of the "app_binary_report_sequence" field in the mutation.
+func (m *SentinelAppBinaryMutation) AppBinaryReportSequence() (r int64, exists bool) {
+	v := m.app_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppBinaryReportSequence returns the old "app_binary_report_sequence" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldAppBinaryReportSequence(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppBinaryReportSequence is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppBinaryReportSequence requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppBinaryReportSequence: %w", err)
+	}
+	return oldValue.AppBinaryReportSequence, nil
+}
+
+// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryMutation) AddAppBinaryReportSequence(i int64) {
+	if m.addapp_binary_report_sequence != nil {
+		*m.addapp_binary_report_sequence += i
+	} else {
+		m.addapp_binary_report_sequence = &i
+	}
+}
+
+// AddedAppBinaryReportSequence returns the value that was added to the "app_binary_report_sequence" field in this mutation.
+func (m *SentinelAppBinaryMutation) AddedAppBinaryReportSequence() (r int64, exists bool) {
+	v := m.addapp_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAppBinaryReportSequence resets all changes to the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryMutation) ResetAppBinaryReportSequence() {
+	m.app_binary_report_sequence = nil
+	m.addapp_binary_report_sequence = nil
+}
+
+// Where appends a list predicates to the SentinelAppBinaryMutation builder.
+func (m *SentinelAppBinaryMutation) Where(ps ...predicate.SentinelAppBinary) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the SentinelAppBinaryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *SentinelAppBinaryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SentinelAppBinary, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *SentinelAppBinaryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SentinelAppBinaryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (SentinelAppBinary).
+func (m *SentinelAppBinaryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SentinelAppBinaryMutation) Fields() []string {
+	fields := make([]string, 0, 12)
+	if m.sentinel_info_id != nil {
+		fields = append(fields, sentinelappbinary.FieldSentinelInfoID)
+	}
+	if m.sentinel_library_reported_id != nil {
+		fields = append(fields, sentinelappbinary.FieldSentinelLibraryReportedID)
+	}
+	if m.generated_id != nil {
+		fields = append(fields, sentinelappbinary.FieldGeneratedID)
+	}
+	if m.size_bytes != nil {
+		fields = append(fields, sentinelappbinary.FieldSizeBytes)
+	}
+	if m.need_token != nil {
+		fields = append(fields, sentinelappbinary.FieldNeedToken)
+	}
+	if m.name != nil {
+		fields = append(fields, sentinelappbinary.FieldName)
+	}
+	if m.version != nil {
+		fields = append(fields, sentinelappbinary.FieldVersion)
+	}
+	if m.developer != nil {
+		fields = append(fields, sentinelappbinary.FieldDeveloper)
+	}
+	if m.publisher != nil {
+		fields = append(fields, sentinelappbinary.FieldPublisher)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, sentinelappbinary.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, sentinelappbinary.FieldCreatedAt)
+	}
+	if m.app_binary_report_sequence != nil {
+		fields = append(fields, sentinelappbinary.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SentinelAppBinaryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		return m.SentinelInfoID()
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		return m.SentinelLibraryReportedID()
+	case sentinelappbinary.FieldGeneratedID:
+		return m.GeneratedID()
+	case sentinelappbinary.FieldSizeBytes:
+		return m.SizeBytes()
+	case sentinelappbinary.FieldNeedToken:
+		return m.NeedToken()
+	case sentinelappbinary.FieldName:
+		return m.Name()
+	case sentinelappbinary.FieldVersion:
+		return m.Version()
+	case sentinelappbinary.FieldDeveloper:
+		return m.Developer()
+	case sentinelappbinary.FieldPublisher:
+		return m.Publisher()
+	case sentinelappbinary.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case sentinelappbinary.FieldCreatedAt:
+		return m.CreatedAt()
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		return m.AppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SentinelAppBinaryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		return m.OldSentinelInfoID(ctx)
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		return m.OldSentinelLibraryReportedID(ctx)
+	case sentinelappbinary.FieldGeneratedID:
+		return m.OldGeneratedID(ctx)
+	case sentinelappbinary.FieldSizeBytes:
+		return m.OldSizeBytes(ctx)
+	case sentinelappbinary.FieldNeedToken:
+		return m.OldNeedToken(ctx)
+	case sentinelappbinary.FieldName:
+		return m.OldName(ctx)
+	case sentinelappbinary.FieldVersion:
+		return m.OldVersion(ctx)
+	case sentinelappbinary.FieldDeveloper:
+		return m.OldDeveloper(ctx)
+	case sentinelappbinary.FieldPublisher:
+		return m.OldPublisher(ctx)
+	case sentinelappbinary.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case sentinelappbinary.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		return m.OldAppBinaryReportSequence(ctx)
+	}
+	return nil, fmt.Errorf("unknown SentinelAppBinary field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelAppBinaryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelInfoID(v)
+		return nil
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelLibraryReportedID(v)
+		return nil
+	case sentinelappbinary.FieldGeneratedID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGeneratedID(v)
+		return nil
+	case sentinelappbinary.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSizeBytes(v)
+		return nil
+	case sentinelappbinary.FieldNeedToken:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNeedToken(v)
+		return nil
+	case sentinelappbinary.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case sentinelappbinary.FieldVersion:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetVersion(v)
+		return nil
+	case sentinelappbinary.FieldDeveloper:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeveloper(v)
+		return nil
+	case sentinelappbinary.FieldPublisher:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublisher(v)
+		return nil
+	case sentinelappbinary.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case sentinelappbinary.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinary field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SentinelAppBinaryMutation) AddedFields() []string {
+	var fields []string
+	if m.addsentinel_info_id != nil {
+		fields = append(fields, sentinelappbinary.FieldSentinelInfoID)
+	}
+	if m.addsentinel_library_reported_id != nil {
+		fields = append(fields, sentinelappbinary.FieldSentinelLibraryReportedID)
+	}
+	if m.addsize_bytes != nil {
+		fields = append(fields, sentinelappbinary.FieldSizeBytes)
+	}
+	if m.addapp_binary_report_sequence != nil {
+		fields = append(fields, sentinelappbinary.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SentinelAppBinaryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		return m.AddedSentinelInfoID()
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		return m.AddedSentinelLibraryReportedID()
+	case sentinelappbinary.FieldSizeBytes:
+		return m.AddedSizeBytes()
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		return m.AddedAppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelAppBinaryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSentinelInfoID(v)
+		return nil
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSentinelLibraryReportedID(v)
+		return nil
+	case sentinelappbinary.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSizeBytes(v)
+		return nil
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinary numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SentinelAppBinaryMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(sentinelappbinary.FieldName) {
+		fields = append(fields, sentinelappbinary.FieldName)
+	}
+	if m.FieldCleared(sentinelappbinary.FieldVersion) {
+		fields = append(fields, sentinelappbinary.FieldVersion)
+	}
+	if m.FieldCleared(sentinelappbinary.FieldDeveloper) {
+		fields = append(fields, sentinelappbinary.FieldDeveloper)
+	}
+	if m.FieldCleared(sentinelappbinary.FieldPublisher) {
+		fields = append(fields, sentinelappbinary.FieldPublisher)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SentinelAppBinaryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SentinelAppBinaryMutation) ClearField(name string) error {
+	switch name {
+	case sentinelappbinary.FieldName:
+		m.ClearName()
+		return nil
+	case sentinelappbinary.FieldVersion:
+		m.ClearVersion()
+		return nil
+	case sentinelappbinary.FieldDeveloper:
+		m.ClearDeveloper()
+		return nil
+	case sentinelappbinary.FieldPublisher:
+		m.ClearPublisher()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinary nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SentinelAppBinaryMutation) ResetField(name string) error {
+	switch name {
+	case sentinelappbinary.FieldSentinelInfoID:
+		m.ResetSentinelInfoID()
+		return nil
+	case sentinelappbinary.FieldSentinelLibraryReportedID:
+		m.ResetSentinelLibraryReportedID()
+		return nil
+	case sentinelappbinary.FieldGeneratedID:
+		m.ResetGeneratedID()
+		return nil
+	case sentinelappbinary.FieldSizeBytes:
+		m.ResetSizeBytes()
+		return nil
+	case sentinelappbinary.FieldNeedToken:
+		m.ResetNeedToken()
+		return nil
+	case sentinelappbinary.FieldName:
+		m.ResetName()
+		return nil
+	case sentinelappbinary.FieldVersion:
+		m.ResetVersion()
+		return nil
+	case sentinelappbinary.FieldDeveloper:
+		m.ResetDeveloper()
+		return nil
+	case sentinelappbinary.FieldPublisher:
+		m.ResetPublisher()
+		return nil
+	case sentinelappbinary.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case sentinelappbinary.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case sentinelappbinary.FieldAppBinaryReportSequence:
+		m.ResetAppBinaryReportSequence()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinary field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SentinelAppBinaryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SentinelAppBinaryMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SentinelAppBinaryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SentinelAppBinaryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SentinelAppBinaryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SentinelAppBinaryMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SentinelAppBinaryMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown SentinelAppBinary unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SentinelAppBinaryMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown SentinelAppBinary edge %s", name)
+}
+
+// SentinelAppBinaryFileMutation represents an operation that mutates the SentinelAppBinaryFile nodes in the graph.
+type SentinelAppBinaryFileMutation struct {
+	config
+	op                               Op
+	typ                              string
+	id                               *int
+	sentinel_info_id                 *model.InternalID
+	addsentinel_info_id              *model.InternalID
+	sentinel_library_reported_id     *int64
+	addsentinel_library_reported_id  *int64
+	sentinel_app_binary_generated_id *string
+	name                             *string
+	size_bytes                       *int64
+	addsize_bytes                    *int64
+	sha256                           *[]byte
+	server_file_path                 *string
+	chunks_info                      *string
+	updated_at                       *time.Time
+	created_at                       *time.Time
+	app_binary_report_sequence       *int64
+	addapp_binary_report_sequence    *int64
+	clearedFields                    map[string]struct{}
+	done                             bool
+	oldValue                         func(context.Context) (*SentinelAppBinaryFile, error)
+	predicates                       []predicate.SentinelAppBinaryFile
+}
+
+var _ ent.Mutation = (*SentinelAppBinaryFileMutation)(nil)
+
+// sentinelappbinaryfileOption allows management of the mutation configuration using functional options.
+type sentinelappbinaryfileOption func(*SentinelAppBinaryFileMutation)
+
+// newSentinelAppBinaryFileMutation creates new mutation for the SentinelAppBinaryFile entity.
+func newSentinelAppBinaryFileMutation(c config, op Op, opts ...sentinelappbinaryfileOption) *SentinelAppBinaryFileMutation {
+	m := &SentinelAppBinaryFileMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSentinelAppBinaryFile,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSentinelAppBinaryFileID sets the ID field of the mutation.
+func withSentinelAppBinaryFileID(id int) sentinelappbinaryfileOption {
+	return func(m *SentinelAppBinaryFileMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SentinelAppBinaryFile
+		)
+		m.oldValue = func(ctx context.Context) (*SentinelAppBinaryFile, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SentinelAppBinaryFile.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSentinelAppBinaryFile sets the old SentinelAppBinaryFile of the mutation.
+func withSentinelAppBinaryFile(node *SentinelAppBinaryFile) sentinelappbinaryfileOption {
+	return func(m *SentinelAppBinaryFileMutation) {
+		m.oldValue = func(context.Context) (*SentinelAppBinaryFile, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SentinelAppBinaryFileMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SentinelAppBinaryFileMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SentinelAppBinaryFileMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SentinelAppBinaryFileMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SentinelAppBinaryFile.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (m *SentinelAppBinaryFileMutation) SetSentinelInfoID(mi model.InternalID) {
+	m.sentinel_info_id = &mi
+	m.addsentinel_info_id = nil
+}
+
+// SentinelInfoID returns the value of the "sentinel_info_id" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) SentinelInfoID() (r model.InternalID, exists bool) {
+	v := m.sentinel_info_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelInfoID returns the old "sentinel_info_id" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldSentinelInfoID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelInfoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelInfoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelInfoID: %w", err)
+	}
+	return oldValue.SentinelInfoID, nil
+}
+
+// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
+func (m *SentinelAppBinaryFileMutation) AddSentinelInfoID(mi model.InternalID) {
+	if m.addsentinel_info_id != nil {
+		*m.addsentinel_info_id += mi
+	} else {
+		m.addsentinel_info_id = &mi
+	}
+}
+
+// AddedSentinelInfoID returns the value that was added to the "sentinel_info_id" field in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedSentinelInfoID() (r model.InternalID, exists bool) {
+	v := m.addsentinel_info_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSentinelInfoID resets all changes to the "sentinel_info_id" field.
+func (m *SentinelAppBinaryFileMutation) ResetSentinelInfoID() {
+	m.sentinel_info_id = nil
+	m.addsentinel_info_id = nil
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryFileMutation) SetSentinelLibraryReportedID(i int64) {
+	m.sentinel_library_reported_id = &i
+	m.addsentinel_library_reported_id = nil
+}
+
+// SentinelLibraryReportedID returns the value of the "sentinel_library_reported_id" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) SentinelLibraryReportedID() (r int64, exists bool) {
+	v := m.sentinel_library_reported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelLibraryReportedID returns the old "sentinel_library_reported_id" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldSentinelLibraryReportedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelLibraryReportedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelLibraryReportedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelLibraryReportedID: %w", err)
+	}
+	return oldValue.SentinelLibraryReportedID, nil
+}
+
+// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryFileMutation) AddSentinelLibraryReportedID(i int64) {
+	if m.addsentinel_library_reported_id != nil {
+		*m.addsentinel_library_reported_id += i
+	} else {
+		m.addsentinel_library_reported_id = &i
+	}
+}
+
+// AddedSentinelLibraryReportedID returns the value that was added to the "sentinel_library_reported_id" field in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedSentinelLibraryReportedID() (r int64, exists bool) {
+	v := m.addsentinel_library_reported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSentinelLibraryReportedID resets all changes to the "sentinel_library_reported_id" field.
+func (m *SentinelAppBinaryFileMutation) ResetSentinelLibraryReportedID() {
+	m.sentinel_library_reported_id = nil
+	m.addsentinel_library_reported_id = nil
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (m *SentinelAppBinaryFileMutation) SetSentinelAppBinaryGeneratedID(s string) {
+	m.sentinel_app_binary_generated_id = &s
+}
+
+// SentinelAppBinaryGeneratedID returns the value of the "sentinel_app_binary_generated_id" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) SentinelAppBinaryGeneratedID() (r string, exists bool) {
+	v := m.sentinel_app_binary_generated_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelAppBinaryGeneratedID returns the old "sentinel_app_binary_generated_id" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldSentinelAppBinaryGeneratedID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelAppBinaryGeneratedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelAppBinaryGeneratedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelAppBinaryGeneratedID: %w", err)
+	}
+	return oldValue.SentinelAppBinaryGeneratedID, nil
+}
+
+// ResetSentinelAppBinaryGeneratedID resets all changes to the "sentinel_app_binary_generated_id" field.
+func (m *SentinelAppBinaryFileMutation) ResetSentinelAppBinaryGeneratedID() {
+	m.sentinel_app_binary_generated_id = nil
+}
+
+// SetName sets the "name" field.
+func (m *SentinelAppBinaryFileMutation) SetName(s string) {
+	m.name = &s
+}
+
+// Name returns the value of the "name" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) Name() (r string, exists bool) {
+	v := m.name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldName returns the old "name" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldName: %w", err)
+	}
+	return oldValue.Name, nil
+}
+
+// ResetName resets all changes to the "name" field.
+func (m *SentinelAppBinaryFileMutation) ResetName() {
+	m.name = nil
+}
+
+// SetSizeBytes sets the "size_bytes" field.
+func (m *SentinelAppBinaryFileMutation) SetSizeBytes(i int64) {
+	m.size_bytes = &i
+	m.addsize_bytes = nil
+}
+
+// SizeBytes returns the value of the "size_bytes" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) SizeBytes() (r int64, exists bool) {
+	v := m.size_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSizeBytes returns the old "size_bytes" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
+	}
+	return oldValue.SizeBytes, nil
+}
+
+// AddSizeBytes adds i to the "size_bytes" field.
+func (m *SentinelAppBinaryFileMutation) AddSizeBytes(i int64) {
+	if m.addsize_bytes != nil {
+		*m.addsize_bytes += i
+	} else {
+		m.addsize_bytes = &i
+	}
+}
+
+// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedSizeBytes() (r int64, exists bool) {
+	v := m.addsize_bytes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetSizeBytes resets all changes to the "size_bytes" field.
+func (m *SentinelAppBinaryFileMutation) ResetSizeBytes() {
+	m.size_bytes = nil
+	m.addsize_bytes = nil
+}
+
+// SetSha256 sets the "sha256" field.
+func (m *SentinelAppBinaryFileMutation) SetSha256(b []byte) {
+	m.sha256 = &b
+}
+
+// Sha256 returns the value of the "sha256" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) Sha256() (r []byte, exists bool) {
+	v := m.sha256
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSha256 returns the old "sha256" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldSha256(ctx context.Context) (v []byte, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSha256 is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSha256 requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSha256: %w", err)
+	}
+	return oldValue.Sha256, nil
+}
+
+// ResetSha256 resets all changes to the "sha256" field.
+func (m *SentinelAppBinaryFileMutation) ResetSha256() {
+	m.sha256 = nil
+}
+
+// SetServerFilePath sets the "server_file_path" field.
+func (m *SentinelAppBinaryFileMutation) SetServerFilePath(s string) {
+	m.server_file_path = &s
+}
+
+// ServerFilePath returns the value of the "server_file_path" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) ServerFilePath() (r string, exists bool) {
+	v := m.server_file_path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldServerFilePath returns the old "server_file_path" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldServerFilePath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldServerFilePath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldServerFilePath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldServerFilePath: %w", err)
+	}
+	return oldValue.ServerFilePath, nil
+}
+
+// ResetServerFilePath resets all changes to the "server_file_path" field.
+func (m *SentinelAppBinaryFileMutation) ResetServerFilePath() {
+	m.server_file_path = nil
+}
+
+// SetChunksInfo sets the "chunks_info" field.
+func (m *SentinelAppBinaryFileMutation) SetChunksInfo(s string) {
+	m.chunks_info = &s
+}
+
+// ChunksInfo returns the value of the "chunks_info" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) ChunksInfo() (r string, exists bool) {
+	v := m.chunks_info
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldChunksInfo returns the old "chunks_info" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldChunksInfo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldChunksInfo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldChunksInfo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldChunksInfo: %w", err)
+	}
+	return oldValue.ChunksInfo, nil
+}
+
+// ClearChunksInfo clears the value of the "chunks_info" field.
+func (m *SentinelAppBinaryFileMutation) ClearChunksInfo() {
+	m.chunks_info = nil
+	m.clearedFields[sentinelappbinaryfile.FieldChunksInfo] = struct{}{}
+}
+
+// ChunksInfoCleared returns if the "chunks_info" field was cleared in this mutation.
+func (m *SentinelAppBinaryFileMutation) ChunksInfoCleared() bool {
+	_, ok := m.clearedFields[sentinelappbinaryfile.FieldChunksInfo]
+	return ok
+}
+
+// ResetChunksInfo resets all changes to the "chunks_info" field.
+func (m *SentinelAppBinaryFileMutation) ResetChunksInfo() {
+	m.chunks_info = nil
+	delete(m.clearedFields, sentinelappbinaryfile.FieldChunksInfo)
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *SentinelAppBinaryFileMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *SentinelAppBinaryFileMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *SentinelAppBinaryFileMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *SentinelAppBinaryFileMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryFileMutation) SetAppBinaryReportSequence(i int64) {
+	m.app_binary_report_sequence = &i
+	m.addapp_binary_report_sequence = nil
+}
+
+// AppBinaryReportSequence returns the value of the "app_binary_report_sequence" field in the mutation.
+func (m *SentinelAppBinaryFileMutation) AppBinaryReportSequence() (r int64, exists bool) {
+	v := m.app_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppBinaryReportSequence returns the old "app_binary_report_sequence" field's value of the SentinelAppBinaryFile entity.
+// If the SentinelAppBinaryFile object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryFileMutation) OldAppBinaryReportSequence(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppBinaryReportSequence is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppBinaryReportSequence requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppBinaryReportSequence: %w", err)
+	}
+	return oldValue.AppBinaryReportSequence, nil
+}
+
+// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryFileMutation) AddAppBinaryReportSequence(i int64) {
+	if m.addapp_binary_report_sequence != nil {
+		*m.addapp_binary_report_sequence += i
+	} else {
+		m.addapp_binary_report_sequence = &i
+	}
+}
+
+// AddedAppBinaryReportSequence returns the value that was added to the "app_binary_report_sequence" field in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedAppBinaryReportSequence() (r int64, exists bool) {
+	v := m.addapp_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAppBinaryReportSequence resets all changes to the "app_binary_report_sequence" field.
+func (m *SentinelAppBinaryFileMutation) ResetAppBinaryReportSequence() {
+	m.app_binary_report_sequence = nil
+	m.addapp_binary_report_sequence = nil
+}
+
+// Where appends a list predicates to the SentinelAppBinaryFileMutation builder.
+func (m *SentinelAppBinaryFileMutation) Where(ps ...predicate.SentinelAppBinaryFile) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the SentinelAppBinaryFileMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *SentinelAppBinaryFileMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SentinelAppBinaryFile, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *SentinelAppBinaryFileMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SentinelAppBinaryFileMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (SentinelAppBinaryFile).
+func (m *SentinelAppBinaryFileMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SentinelAppBinaryFileMutation) Fields() []string {
+	fields := make([]string, 0, 11)
+	if m.sentinel_info_id != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSentinelInfoID)
+	}
+	if m.sentinel_library_reported_id != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSentinelLibraryReportedID)
+	}
+	if m.sentinel_app_binary_generated_id != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID)
+	}
+	if m.name != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldName)
+	}
+	if m.size_bytes != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSizeBytes)
+	}
+	if m.sha256 != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSha256)
+	}
+	if m.server_file_path != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldServerFilePath)
+	}
+	if m.chunks_info != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldChunksInfo)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldCreatedAt)
+	}
+	if m.app_binary_report_sequence != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SentinelAppBinaryFileMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		return m.SentinelInfoID()
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		return m.SentinelLibraryReportedID()
+	case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
+		return m.SentinelAppBinaryGeneratedID()
+	case sentinelappbinaryfile.FieldName:
+		return m.Name()
+	case sentinelappbinaryfile.FieldSizeBytes:
+		return m.SizeBytes()
+	case sentinelappbinaryfile.FieldSha256:
+		return m.Sha256()
+	case sentinelappbinaryfile.FieldServerFilePath:
+		return m.ServerFilePath()
+	case sentinelappbinaryfile.FieldChunksInfo:
+		return m.ChunksInfo()
+	case sentinelappbinaryfile.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case sentinelappbinaryfile.FieldCreatedAt:
+		return m.CreatedAt()
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		return m.AppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SentinelAppBinaryFileMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		return m.OldSentinelInfoID(ctx)
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		return m.OldSentinelLibraryReportedID(ctx)
+	case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
+		return m.OldSentinelAppBinaryGeneratedID(ctx)
+	case sentinelappbinaryfile.FieldName:
+		return m.OldName(ctx)
+	case sentinelappbinaryfile.FieldSizeBytes:
+		return m.OldSizeBytes(ctx)
+	case sentinelappbinaryfile.FieldSha256:
+		return m.OldSha256(ctx)
+	case sentinelappbinaryfile.FieldServerFilePath:
+		return m.OldServerFilePath(ctx)
+	case sentinelappbinaryfile.FieldChunksInfo:
+		return m.OldChunksInfo(ctx)
+	case sentinelappbinaryfile.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case sentinelappbinaryfile.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		return m.OldAppBinaryReportSequence(ctx)
+	}
+	return nil, fmt.Errorf("unknown SentinelAppBinaryFile field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelAppBinaryFileMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelInfoID(v)
+		return nil
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelLibraryReportedID(v)
+		return nil
+	case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelAppBinaryGeneratedID(v)
+		return nil
+	case sentinelappbinaryfile.FieldName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetName(v)
+		return nil
+	case sentinelappbinaryfile.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSizeBytes(v)
+		return nil
+	case sentinelappbinaryfile.FieldSha256:
+		v, ok := value.([]byte)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSha256(v)
+		return nil
+	case sentinelappbinaryfile.FieldServerFilePath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetServerFilePath(v)
+		return nil
+	case sentinelappbinaryfile.FieldChunksInfo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetChunksInfo(v)
+		return nil
+	case sentinelappbinaryfile.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case sentinelappbinaryfile.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinaryFile field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedFields() []string {
+	var fields []string
+	if m.addsentinel_info_id != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSentinelInfoID)
+	}
+	if m.addsentinel_library_reported_id != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSentinelLibraryReportedID)
+	}
+	if m.addsize_bytes != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldSizeBytes)
+	}
+	if m.addapp_binary_report_sequence != nil {
+		fields = append(fields, sentinelappbinaryfile.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SentinelAppBinaryFileMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		return m.AddedSentinelInfoID()
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		return m.AddedSentinelLibraryReportedID()
+	case sentinelappbinaryfile.FieldSizeBytes:
+		return m.AddedSizeBytes()
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		return m.AddedAppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelAppBinaryFileMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSentinelInfoID(v)
+		return nil
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSentinelLibraryReportedID(v)
+		return nil
+	case sentinelappbinaryfile.FieldSizeBytes:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddSizeBytes(v)
+		return nil
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinaryFile numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SentinelAppBinaryFileMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(sentinelappbinaryfile.FieldChunksInfo) {
+		fields = append(fields, sentinelappbinaryfile.FieldChunksInfo)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SentinelAppBinaryFileMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SentinelAppBinaryFileMutation) ClearField(name string) error {
+	switch name {
+	case sentinelappbinaryfile.FieldChunksInfo:
+		m.ClearChunksInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinaryFile nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SentinelAppBinaryFileMutation) ResetField(name string) error {
+	switch name {
+	case sentinelappbinaryfile.FieldSentinelInfoID:
+		m.ResetSentinelInfoID()
+		return nil
+	case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+		m.ResetSentinelLibraryReportedID()
+		return nil
+	case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
+		m.ResetSentinelAppBinaryGeneratedID()
+		return nil
+	case sentinelappbinaryfile.FieldName:
+		m.ResetName()
+		return nil
+	case sentinelappbinaryfile.FieldSizeBytes:
+		m.ResetSizeBytes()
+		return nil
+	case sentinelappbinaryfile.FieldSha256:
+		m.ResetSha256()
+		return nil
+	case sentinelappbinaryfile.FieldServerFilePath:
+		m.ResetServerFilePath()
+		return nil
+	case sentinelappbinaryfile.FieldChunksInfo:
+		m.ResetChunksInfo()
+		return nil
+	case sentinelappbinaryfile.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case sentinelappbinaryfile.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		m.ResetAppBinaryReportSequence()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelAppBinaryFile field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SentinelAppBinaryFileMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SentinelAppBinaryFileMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SentinelAppBinaryFileMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SentinelAppBinaryFileMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SentinelAppBinaryFileMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SentinelAppBinaryFileMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown SentinelAppBinaryFile unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SentinelAppBinaryFileMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown SentinelAppBinaryFile edge %s", name)
+}
+
+// SentinelInfoMutation represents an operation that mutates the SentinelInfo nodes in the graph.
+type SentinelInfoMutation struct {
+	config
+	op                            Op
+	typ                           string
+	id                            *model.InternalID
+	url                           *string
+	alternative_urls              *[]string
+	appendalternative_urls        []string
+	get_token_path                *string
+	download_file_base_path       *string
+	updated_at                    *time.Time
+	created_at                    *time.Time
+	library_report_sequence       *int64
+	addlibrary_report_sequence    *int64
+	app_binary_report_sequence    *int64
+	addapp_binary_report_sequence *int64
+	clearedFields                 map[string]struct{}
+	sentinel_library              map[int]struct{}
+	removedsentinel_library       map[int]struct{}
+	clearedsentinel_library       bool
+	done                          bool
+	oldValue                      func(context.Context) (*SentinelInfo, error)
+	predicates                    []predicate.SentinelInfo
+}
+
+var _ ent.Mutation = (*SentinelInfoMutation)(nil)
+
+// sentinelinfoOption allows management of the mutation configuration using functional options.
+type sentinelinfoOption func(*SentinelInfoMutation)
+
+// newSentinelInfoMutation creates new mutation for the SentinelInfo entity.
+func newSentinelInfoMutation(c config, op Op, opts ...sentinelinfoOption) *SentinelInfoMutation {
+	m := &SentinelInfoMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSentinelInfo,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSentinelInfoID sets the ID field of the mutation.
+func withSentinelInfoID(id model.InternalID) sentinelinfoOption {
+	return func(m *SentinelInfoMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SentinelInfo
+		)
+		m.oldValue = func(ctx context.Context) (*SentinelInfo, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SentinelInfo.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSentinelInfo sets the old SentinelInfo of the mutation.
+func withSentinelInfo(node *SentinelInfo) sentinelinfoOption {
+	return func(m *SentinelInfoMutation) {
+		m.oldValue = func(context.Context) (*SentinelInfo, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SentinelInfoMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SentinelInfoMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of SentinelInfo entities.
+func (m *SentinelInfoMutation) SetID(id model.InternalID) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SentinelInfoMutation) ID() (id model.InternalID, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SentinelInfoMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []model.InternalID{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SentinelInfo.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetURL sets the "url" field.
+func (m *SentinelInfoMutation) SetURL(s string) {
+	m.url = &s
+}
+
+// URL returns the value of the "url" field in the mutation.
+func (m *SentinelInfoMutation) URL() (r string, exists bool) {
+	v := m.url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldURL returns the old "url" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldURL(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldURL: %w", err)
+	}
+	return oldValue.URL, nil
+}
+
+// ResetURL resets all changes to the "url" field.
+func (m *SentinelInfoMutation) ResetURL() {
+	m.url = nil
+}
+
+// SetAlternativeUrls sets the "alternative_urls" field.
+func (m *SentinelInfoMutation) SetAlternativeUrls(s []string) {
+	m.alternative_urls = &s
+	m.appendalternative_urls = nil
+}
+
+// AlternativeUrls returns the value of the "alternative_urls" field in the mutation.
+func (m *SentinelInfoMutation) AlternativeUrls() (r []string, exists bool) {
+	v := m.alternative_urls
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAlternativeUrls returns the old "alternative_urls" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldAlternativeUrls(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAlternativeUrls is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAlternativeUrls requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAlternativeUrls: %w", err)
+	}
+	return oldValue.AlternativeUrls, nil
+}
+
+// AppendAlternativeUrls adds s to the "alternative_urls" field.
+func (m *SentinelInfoMutation) AppendAlternativeUrls(s []string) {
+	m.appendalternative_urls = append(m.appendalternative_urls, s...)
+}
+
+// AppendedAlternativeUrls returns the list of values that were appended to the "alternative_urls" field in this mutation.
+func (m *SentinelInfoMutation) AppendedAlternativeUrls() ([]string, bool) {
+	if len(m.appendalternative_urls) == 0 {
+		return nil, false
+	}
+	return m.appendalternative_urls, true
+}
+
+// ClearAlternativeUrls clears the value of the "alternative_urls" field.
+func (m *SentinelInfoMutation) ClearAlternativeUrls() {
+	m.alternative_urls = nil
+	m.appendalternative_urls = nil
+	m.clearedFields[sentinelinfo.FieldAlternativeUrls] = struct{}{}
+}
+
+// AlternativeUrlsCleared returns if the "alternative_urls" field was cleared in this mutation.
+func (m *SentinelInfoMutation) AlternativeUrlsCleared() bool {
+	_, ok := m.clearedFields[sentinelinfo.FieldAlternativeUrls]
+	return ok
+}
+
+// ResetAlternativeUrls resets all changes to the "alternative_urls" field.
+func (m *SentinelInfoMutation) ResetAlternativeUrls() {
+	m.alternative_urls = nil
+	m.appendalternative_urls = nil
+	delete(m.clearedFields, sentinelinfo.FieldAlternativeUrls)
+}
+
+// SetGetTokenPath sets the "get_token_path" field.
+func (m *SentinelInfoMutation) SetGetTokenPath(s string) {
+	m.get_token_path = &s
+}
+
+// GetTokenPath returns the value of the "get_token_path" field in the mutation.
+func (m *SentinelInfoMutation) GetTokenPath() (r string, exists bool) {
+	v := m.get_token_path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGetTokenPath returns the old "get_token_path" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldGetTokenPath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGetTokenPath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGetTokenPath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGetTokenPath: %w", err)
+	}
+	return oldValue.GetTokenPath, nil
+}
+
+// ClearGetTokenPath clears the value of the "get_token_path" field.
+func (m *SentinelInfoMutation) ClearGetTokenPath() {
+	m.get_token_path = nil
+	m.clearedFields[sentinelinfo.FieldGetTokenPath] = struct{}{}
+}
+
+// GetTokenPathCleared returns if the "get_token_path" field was cleared in this mutation.
+func (m *SentinelInfoMutation) GetTokenPathCleared() bool {
+	_, ok := m.clearedFields[sentinelinfo.FieldGetTokenPath]
+	return ok
+}
+
+// ResetGetTokenPath resets all changes to the "get_token_path" field.
+func (m *SentinelInfoMutation) ResetGetTokenPath() {
+	m.get_token_path = nil
+	delete(m.clearedFields, sentinelinfo.FieldGetTokenPath)
+}
+
+// SetDownloadFileBasePath sets the "download_file_base_path" field.
+func (m *SentinelInfoMutation) SetDownloadFileBasePath(s string) {
+	m.download_file_base_path = &s
+}
+
+// DownloadFileBasePath returns the value of the "download_file_base_path" field in the mutation.
+func (m *SentinelInfoMutation) DownloadFileBasePath() (r string, exists bool) {
+	v := m.download_file_base_path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDownloadFileBasePath returns the old "download_file_base_path" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldDownloadFileBasePath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDownloadFileBasePath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDownloadFileBasePath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDownloadFileBasePath: %w", err)
+	}
+	return oldValue.DownloadFileBasePath, nil
+}
+
+// ResetDownloadFileBasePath resets all changes to the "download_file_base_path" field.
+func (m *SentinelInfoMutation) ResetDownloadFileBasePath() {
+	m.download_file_base_path = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *SentinelInfoMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *SentinelInfoMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *SentinelInfoMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *SentinelInfoMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *SentinelInfoMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *SentinelInfoMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (m *SentinelInfoMutation) SetLibraryReportSequence(i int64) {
+	m.library_report_sequence = &i
+	m.addlibrary_report_sequence = nil
+}
+
+// LibraryReportSequence returns the value of the "library_report_sequence" field in the mutation.
+func (m *SentinelInfoMutation) LibraryReportSequence() (r int64, exists bool) {
+	v := m.library_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLibraryReportSequence returns the old "library_report_sequence" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldLibraryReportSequence(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLibraryReportSequence is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLibraryReportSequence requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLibraryReportSequence: %w", err)
+	}
+	return oldValue.LibraryReportSequence, nil
+}
+
+// AddLibraryReportSequence adds i to the "library_report_sequence" field.
+func (m *SentinelInfoMutation) AddLibraryReportSequence(i int64) {
+	if m.addlibrary_report_sequence != nil {
+		*m.addlibrary_report_sequence += i
+	} else {
+		m.addlibrary_report_sequence = &i
+	}
+}
+
+// AddedLibraryReportSequence returns the value that was added to the "library_report_sequence" field in this mutation.
+func (m *SentinelInfoMutation) AddedLibraryReportSequence() (r int64, exists bool) {
+	v := m.addlibrary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLibraryReportSequence resets all changes to the "library_report_sequence" field.
+func (m *SentinelInfoMutation) ResetLibraryReportSequence() {
+	m.library_report_sequence = nil
+	m.addlibrary_report_sequence = nil
+}
+
+// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
+func (m *SentinelInfoMutation) SetAppBinaryReportSequence(i int64) {
+	m.app_binary_report_sequence = &i
+	m.addapp_binary_report_sequence = nil
+}
+
+// AppBinaryReportSequence returns the value of the "app_binary_report_sequence" field in the mutation.
+func (m *SentinelInfoMutation) AppBinaryReportSequence() (r int64, exists bool) {
+	v := m.app_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAppBinaryReportSequence returns the old "app_binary_report_sequence" field's value of the SentinelInfo entity.
+// If the SentinelInfo object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelInfoMutation) OldAppBinaryReportSequence(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAppBinaryReportSequence is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAppBinaryReportSequence requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAppBinaryReportSequence: %w", err)
+	}
+	return oldValue.AppBinaryReportSequence, nil
+}
+
+// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
+func (m *SentinelInfoMutation) AddAppBinaryReportSequence(i int64) {
+	if m.addapp_binary_report_sequence != nil {
+		*m.addapp_binary_report_sequence += i
+	} else {
+		m.addapp_binary_report_sequence = &i
+	}
+}
+
+// AddedAppBinaryReportSequence returns the value that was added to the "app_binary_report_sequence" field in this mutation.
+func (m *SentinelInfoMutation) AddedAppBinaryReportSequence() (r int64, exists bool) {
+	v := m.addapp_binary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAppBinaryReportSequence resets all changes to the "app_binary_report_sequence" field.
+func (m *SentinelInfoMutation) ResetAppBinaryReportSequence() {
+	m.app_binary_report_sequence = nil
+	m.addapp_binary_report_sequence = nil
+}
+
+// AddSentinelLibraryIDs adds the "sentinel_library" edge to the SentinelLibrary entity by ids.
+func (m *SentinelInfoMutation) AddSentinelLibraryIDs(ids ...int) {
+	if m.sentinel_library == nil {
+		m.sentinel_library = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.sentinel_library[ids[i]] = struct{}{}
+	}
+}
+
+// ClearSentinelLibrary clears the "sentinel_library" edge to the SentinelLibrary entity.
+func (m *SentinelInfoMutation) ClearSentinelLibrary() {
+	m.clearedsentinel_library = true
+}
+
+// SentinelLibraryCleared reports if the "sentinel_library" edge to the SentinelLibrary entity was cleared.
+func (m *SentinelInfoMutation) SentinelLibraryCleared() bool {
+	return m.clearedsentinel_library
+}
+
+// RemoveSentinelLibraryIDs removes the "sentinel_library" edge to the SentinelLibrary entity by IDs.
+func (m *SentinelInfoMutation) RemoveSentinelLibraryIDs(ids ...int) {
+	if m.removedsentinel_library == nil {
+		m.removedsentinel_library = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.sentinel_library, ids[i])
+		m.removedsentinel_library[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedSentinelLibrary returns the removed IDs of the "sentinel_library" edge to the SentinelLibrary entity.
+func (m *SentinelInfoMutation) RemovedSentinelLibraryIDs() (ids []int) {
+	for id := range m.removedsentinel_library {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// SentinelLibraryIDs returns the "sentinel_library" edge IDs in the mutation.
+func (m *SentinelInfoMutation) SentinelLibraryIDs() (ids []int) {
+	for id := range m.sentinel_library {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetSentinelLibrary resets all changes to the "sentinel_library" edge.
+func (m *SentinelInfoMutation) ResetSentinelLibrary() {
+	m.sentinel_library = nil
+	m.clearedsentinel_library = false
+	m.removedsentinel_library = nil
+}
+
+// Where appends a list predicates to the SentinelInfoMutation builder.
+func (m *SentinelInfoMutation) Where(ps ...predicate.SentinelInfo) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the SentinelInfoMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *SentinelInfoMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SentinelInfo, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *SentinelInfoMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SentinelInfoMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (SentinelInfo).
+func (m *SentinelInfoMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SentinelInfoMutation) Fields() []string {
+	fields := make([]string, 0, 8)
+	if m.url != nil {
+		fields = append(fields, sentinelinfo.FieldURL)
+	}
+	if m.alternative_urls != nil {
+		fields = append(fields, sentinelinfo.FieldAlternativeUrls)
+	}
+	if m.get_token_path != nil {
+		fields = append(fields, sentinelinfo.FieldGetTokenPath)
+	}
+	if m.download_file_base_path != nil {
+		fields = append(fields, sentinelinfo.FieldDownloadFileBasePath)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, sentinelinfo.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, sentinelinfo.FieldCreatedAt)
+	}
+	if m.library_report_sequence != nil {
+		fields = append(fields, sentinelinfo.FieldLibraryReportSequence)
+	}
+	if m.app_binary_report_sequence != nil {
+		fields = append(fields, sentinelinfo.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SentinelInfoMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelinfo.FieldURL:
+		return m.URL()
+	case sentinelinfo.FieldAlternativeUrls:
+		return m.AlternativeUrls()
+	case sentinelinfo.FieldGetTokenPath:
+		return m.GetTokenPath()
+	case sentinelinfo.FieldDownloadFileBasePath:
+		return m.DownloadFileBasePath()
+	case sentinelinfo.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case sentinelinfo.FieldCreatedAt:
+		return m.CreatedAt()
+	case sentinelinfo.FieldLibraryReportSequence:
+		return m.LibraryReportSequence()
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		return m.AppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SentinelInfoMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case sentinelinfo.FieldURL:
+		return m.OldURL(ctx)
+	case sentinelinfo.FieldAlternativeUrls:
+		return m.OldAlternativeUrls(ctx)
+	case sentinelinfo.FieldGetTokenPath:
+		return m.OldGetTokenPath(ctx)
+	case sentinelinfo.FieldDownloadFileBasePath:
+		return m.OldDownloadFileBasePath(ctx)
+	case sentinelinfo.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case sentinelinfo.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case sentinelinfo.FieldLibraryReportSequence:
+		return m.OldLibraryReportSequence(ctx)
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		return m.OldAppBinaryReportSequence(ctx)
+	}
+	return nil, fmt.Errorf("unknown SentinelInfo field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelInfoMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case sentinelinfo.FieldURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetURL(v)
+		return nil
+	case sentinelinfo.FieldAlternativeUrls:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAlternativeUrls(v)
+		return nil
+	case sentinelinfo.FieldGetTokenPath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGetTokenPath(v)
+		return nil
+	case sentinelinfo.FieldDownloadFileBasePath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDownloadFileBasePath(v)
+		return nil
+	case sentinelinfo.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case sentinelinfo.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case sentinelinfo.FieldLibraryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLibraryReportSequence(v)
+		return nil
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelInfo field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SentinelInfoMutation) AddedFields() []string {
+	var fields []string
+	if m.addlibrary_report_sequence != nil {
+		fields = append(fields, sentinelinfo.FieldLibraryReportSequence)
+	}
+	if m.addapp_binary_report_sequence != nil {
+		fields = append(fields, sentinelinfo.FieldAppBinaryReportSequence)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SentinelInfoMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case sentinelinfo.FieldLibraryReportSequence:
+		return m.AddedLibraryReportSequence()
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		return m.AddedAppBinaryReportSequence()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelInfoMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case sentinelinfo.FieldLibraryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLibraryReportSequence(v)
+		return nil
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAppBinaryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelInfo numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SentinelInfoMutation) ClearedFields() []string {
+	var fields []string
+	if m.FieldCleared(sentinelinfo.FieldAlternativeUrls) {
+		fields = append(fields, sentinelinfo.FieldAlternativeUrls)
+	}
+	if m.FieldCleared(sentinelinfo.FieldGetTokenPath) {
+		fields = append(fields, sentinelinfo.FieldGetTokenPath)
+	}
+	return fields
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SentinelInfoMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SentinelInfoMutation) ClearField(name string) error {
+	switch name {
+	case sentinelinfo.FieldAlternativeUrls:
+		m.ClearAlternativeUrls()
+		return nil
+	case sentinelinfo.FieldGetTokenPath:
+		m.ClearGetTokenPath()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelInfo nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SentinelInfoMutation) ResetField(name string) error {
+	switch name {
+	case sentinelinfo.FieldURL:
+		m.ResetURL()
+		return nil
+	case sentinelinfo.FieldAlternativeUrls:
+		m.ResetAlternativeUrls()
+		return nil
+	case sentinelinfo.FieldGetTokenPath:
+		m.ResetGetTokenPath()
+		return nil
+	case sentinelinfo.FieldDownloadFileBasePath:
+		m.ResetDownloadFileBasePath()
+		return nil
+	case sentinelinfo.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case sentinelinfo.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case sentinelinfo.FieldLibraryReportSequence:
+		m.ResetLibraryReportSequence()
+		return nil
+	case sentinelinfo.FieldAppBinaryReportSequence:
+		m.ResetAppBinaryReportSequence()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelInfo field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SentinelInfoMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.sentinel_library != nil {
+		edges = append(edges, sentinelinfo.EdgeSentinelLibrary)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SentinelInfoMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sentinelinfo.EdgeSentinelLibrary:
+		ids := make([]ent.Value, 0, len(m.sentinel_library))
+		for id := range m.sentinel_library {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SentinelInfoMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.removedsentinel_library != nil {
+		edges = append(edges, sentinelinfo.EdgeSentinelLibrary)
+	}
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SentinelInfoMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case sentinelinfo.EdgeSentinelLibrary:
+		ids := make([]ent.Value, 0, len(m.removedsentinel_library))
+		for id := range m.removedsentinel_library {
+			ids = append(ids, id)
+		}
+		return ids
+	}
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SentinelInfoMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedsentinel_library {
+		edges = append(edges, sentinelinfo.EdgeSentinelLibrary)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SentinelInfoMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sentinelinfo.EdgeSentinelLibrary:
+		return m.clearedsentinel_library
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SentinelInfoMutation) ClearEdge(name string) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown SentinelInfo unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SentinelInfoMutation) ResetEdge(name string) error {
+	switch name {
+	case sentinelinfo.EdgeSentinelLibrary:
+		m.ResetSentinelLibrary()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelInfo edge %s", name)
+}
+
+// SentinelLibraryMutation represents an operation that mutates the SentinelLibrary nodes in the graph.
+type SentinelLibraryMutation struct {
+	config
+	op                         Op
+	typ                        string
+	id                         *int
+	reported_id                *int64
+	addreported_id             *int64
+	download_base_path         *string
+	updated_at                 *time.Time
+	created_at                 *time.Time
+	library_report_sequence    *int64
+	addlibrary_report_sequence *int64
+	clearedFields              map[string]struct{}
+	sentinel_info              *model.InternalID
+	clearedsentinel_info       bool
+	done                       bool
+	oldValue                   func(context.Context) (*SentinelLibrary, error)
+	predicates                 []predicate.SentinelLibrary
+}
+
+var _ ent.Mutation = (*SentinelLibraryMutation)(nil)
+
+// sentinellibraryOption allows management of the mutation configuration using functional options.
+type sentinellibraryOption func(*SentinelLibraryMutation)
+
+// newSentinelLibraryMutation creates new mutation for the SentinelLibrary entity.
+func newSentinelLibraryMutation(c config, op Op, opts ...sentinellibraryOption) *SentinelLibraryMutation {
+	m := &SentinelLibraryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeSentinelLibrary,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withSentinelLibraryID sets the ID field of the mutation.
+func withSentinelLibraryID(id int) sentinellibraryOption {
+	return func(m *SentinelLibraryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *SentinelLibrary
+		)
+		m.oldValue = func(ctx context.Context) (*SentinelLibrary, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().SentinelLibrary.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withSentinelLibrary sets the old SentinelLibrary of the mutation.
+func withSentinelLibrary(node *SentinelLibrary) sentinellibraryOption {
+	return func(m *SentinelLibraryMutation) {
+		m.oldValue = func(context.Context) (*SentinelLibrary, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m SentinelLibraryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m SentinelLibraryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *SentinelLibraryMutation) ID() (id int, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *SentinelLibraryMutation) IDs(ctx context.Context) ([]int, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().SentinelLibrary.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (m *SentinelLibraryMutation) SetSentinelInfoID(mi model.InternalID) {
+	m.sentinel_info = &mi
+}
+
+// SentinelInfoID returns the value of the "sentinel_info_id" field in the mutation.
+func (m *SentinelLibraryMutation) SentinelInfoID() (r model.InternalID, exists bool) {
+	v := m.sentinel_info
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSentinelInfoID returns the old "sentinel_info_id" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldSentinelInfoID(ctx context.Context) (v model.InternalID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSentinelInfoID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSentinelInfoID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSentinelInfoID: %w", err)
+	}
+	return oldValue.SentinelInfoID, nil
+}
+
+// ResetSentinelInfoID resets all changes to the "sentinel_info_id" field.
+func (m *SentinelLibraryMutation) ResetSentinelInfoID() {
+	m.sentinel_info = nil
+}
+
+// SetReportedID sets the "reported_id" field.
+func (m *SentinelLibraryMutation) SetReportedID(i int64) {
+	m.reported_id = &i
+	m.addreported_id = nil
+}
+
+// ReportedID returns the value of the "reported_id" field in the mutation.
+func (m *SentinelLibraryMutation) ReportedID() (r int64, exists bool) {
+	v := m.reported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldReportedID returns the old "reported_id" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldReportedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldReportedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldReportedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldReportedID: %w", err)
+	}
+	return oldValue.ReportedID, nil
+}
+
+// AddReportedID adds i to the "reported_id" field.
+func (m *SentinelLibraryMutation) AddReportedID(i int64) {
+	if m.addreported_id != nil {
+		*m.addreported_id += i
+	} else {
+		m.addreported_id = &i
+	}
+}
+
+// AddedReportedID returns the value that was added to the "reported_id" field in this mutation.
+func (m *SentinelLibraryMutation) AddedReportedID() (r int64, exists bool) {
+	v := m.addreported_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetReportedID resets all changes to the "reported_id" field.
+func (m *SentinelLibraryMutation) ResetReportedID() {
+	m.reported_id = nil
+	m.addreported_id = nil
+}
+
+// SetDownloadBasePath sets the "download_base_path" field.
+func (m *SentinelLibraryMutation) SetDownloadBasePath(s string) {
+	m.download_base_path = &s
+}
+
+// DownloadBasePath returns the value of the "download_base_path" field in the mutation.
+func (m *SentinelLibraryMutation) DownloadBasePath() (r string, exists bool) {
+	v := m.download_base_path
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDownloadBasePath returns the old "download_base_path" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldDownloadBasePath(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDownloadBasePath is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDownloadBasePath requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDownloadBasePath: %w", err)
+	}
+	return oldValue.DownloadBasePath, nil
+}
+
+// ResetDownloadBasePath resets all changes to the "download_base_path" field.
+func (m *SentinelLibraryMutation) ResetDownloadBasePath() {
+	m.download_base_path = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *SentinelLibraryMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *SentinelLibraryMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *SentinelLibraryMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *SentinelLibraryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *SentinelLibraryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *SentinelLibraryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetLibraryReportSequence sets the "library_report_sequence" field.
+func (m *SentinelLibraryMutation) SetLibraryReportSequence(i int64) {
+	m.library_report_sequence = &i
+	m.addlibrary_report_sequence = nil
+}
+
+// LibraryReportSequence returns the value of the "library_report_sequence" field in the mutation.
+func (m *SentinelLibraryMutation) LibraryReportSequence() (r int64, exists bool) {
+	v := m.library_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLibraryReportSequence returns the old "library_report_sequence" field's value of the SentinelLibrary entity.
+// If the SentinelLibrary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelLibraryMutation) OldLibraryReportSequence(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLibraryReportSequence is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLibraryReportSequence requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLibraryReportSequence: %w", err)
+	}
+	return oldValue.LibraryReportSequence, nil
+}
+
+// AddLibraryReportSequence adds i to the "library_report_sequence" field.
+func (m *SentinelLibraryMutation) AddLibraryReportSequence(i int64) {
+	if m.addlibrary_report_sequence != nil {
+		*m.addlibrary_report_sequence += i
+	} else {
+		m.addlibrary_report_sequence = &i
+	}
+}
+
+// AddedLibraryReportSequence returns the value that was added to the "library_report_sequence" field in this mutation.
+func (m *SentinelLibraryMutation) AddedLibraryReportSequence() (r int64, exists bool) {
+	v := m.addlibrary_report_sequence
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetLibraryReportSequence resets all changes to the "library_report_sequence" field.
+func (m *SentinelLibraryMutation) ResetLibraryReportSequence() {
+	m.library_report_sequence = nil
+	m.addlibrary_report_sequence = nil
+}
+
+// ClearSentinelInfo clears the "sentinel_info" edge to the SentinelInfo entity.
+func (m *SentinelLibraryMutation) ClearSentinelInfo() {
+	m.clearedsentinel_info = true
+	m.clearedFields[sentinellibrary.FieldSentinelInfoID] = struct{}{}
+}
+
+// SentinelInfoCleared reports if the "sentinel_info" edge to the SentinelInfo entity was cleared.
+func (m *SentinelLibraryMutation) SentinelInfoCleared() bool {
+	return m.clearedsentinel_info
+}
+
+// SentinelInfoIDs returns the "sentinel_info" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SentinelInfoID instead. It exists only for internal usage by the builders.
+func (m *SentinelLibraryMutation) SentinelInfoIDs() (ids []model.InternalID) {
+	if id := m.sentinel_info; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetSentinelInfo resets all changes to the "sentinel_info" edge.
+func (m *SentinelLibraryMutation) ResetSentinelInfo() {
+	m.sentinel_info = nil
+	m.clearedsentinel_info = false
+}
+
+// Where appends a list predicates to the SentinelLibraryMutation builder.
+func (m *SentinelLibraryMutation) Where(ps ...predicate.SentinelLibrary) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the SentinelLibraryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *SentinelLibraryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.SentinelLibrary, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *SentinelLibraryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *SentinelLibraryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (SentinelLibrary).
+func (m *SentinelLibraryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *SentinelLibraryMutation) Fields() []string {
+	fields := make([]string, 0, 6)
+	if m.sentinel_info != nil {
+		fields = append(fields, sentinellibrary.FieldSentinelInfoID)
+	}
+	if m.reported_id != nil {
+		fields = append(fields, sentinellibrary.FieldReportedID)
+	}
+	if m.download_base_path != nil {
+		fields = append(fields, sentinellibrary.FieldDownloadBasePath)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, sentinellibrary.FieldUpdatedAt)
+	}
+	if m.created_at != nil {
+		fields = append(fields, sentinellibrary.FieldCreatedAt)
+	}
+	if m.library_report_sequence != nil {
+		fields = append(fields, sentinellibrary.FieldLibraryReportSequence)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *SentinelLibraryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case sentinellibrary.FieldSentinelInfoID:
+		return m.SentinelInfoID()
+	case sentinellibrary.FieldReportedID:
+		return m.ReportedID()
+	case sentinellibrary.FieldDownloadBasePath:
+		return m.DownloadBasePath()
+	case sentinellibrary.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case sentinellibrary.FieldCreatedAt:
+		return m.CreatedAt()
+	case sentinellibrary.FieldLibraryReportSequence:
+		return m.LibraryReportSequence()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *SentinelLibraryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case sentinellibrary.FieldSentinelInfoID:
+		return m.OldSentinelInfoID(ctx)
+	case sentinellibrary.FieldReportedID:
+		return m.OldReportedID(ctx)
+	case sentinellibrary.FieldDownloadBasePath:
+		return m.OldDownloadBasePath(ctx)
+	case sentinellibrary.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case sentinellibrary.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case sentinellibrary.FieldLibraryReportSequence:
+		return m.OldLibraryReportSequence(ctx)
+	}
+	return nil, fmt.Errorf("unknown SentinelLibrary field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelLibraryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case sentinellibrary.FieldSentinelInfoID:
+		v, ok := value.(model.InternalID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSentinelInfoID(v)
+		return nil
+	case sentinellibrary.FieldReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetReportedID(v)
+		return nil
+	case sentinellibrary.FieldDownloadBasePath:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDownloadBasePath(v)
+		return nil
+	case sentinellibrary.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case sentinellibrary.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case sentinellibrary.FieldLibraryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLibraryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelLibrary field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *SentinelLibraryMutation) AddedFields() []string {
+	var fields []string
+	if m.addreported_id != nil {
+		fields = append(fields, sentinellibrary.FieldReportedID)
+	}
+	if m.addlibrary_report_sequence != nil {
+		fields = append(fields, sentinellibrary.FieldLibraryReportSequence)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *SentinelLibraryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case sentinellibrary.FieldReportedID:
+		return m.AddedReportedID()
+	case sentinellibrary.FieldLibraryReportSequence:
+		return m.AddedLibraryReportSequence()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *SentinelLibraryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case sentinellibrary.FieldReportedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddReportedID(v)
+		return nil
+	case sentinellibrary.FieldLibraryReportSequence:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddLibraryReportSequence(v)
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelLibrary numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *SentinelLibraryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *SentinelLibraryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *SentinelLibraryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown SentinelLibrary nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *SentinelLibraryMutation) ResetField(name string) error {
+	switch name {
+	case sentinellibrary.FieldSentinelInfoID:
+		m.ResetSentinelInfoID()
+		return nil
+	case sentinellibrary.FieldReportedID:
+		m.ResetReportedID()
+		return nil
+	case sentinellibrary.FieldDownloadBasePath:
+		m.ResetDownloadBasePath()
+		return nil
+	case sentinellibrary.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case sentinellibrary.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case sentinellibrary.FieldLibraryReportSequence:
+		m.ResetLibraryReportSequence()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelLibrary field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *SentinelLibraryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.sentinel_info != nil {
+		edges = append(edges, sentinellibrary.EdgeSentinelInfo)
+	}
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *SentinelLibraryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sentinellibrary.EdgeSentinelInfo:
+		if id := m.sentinel_info; id != nil {
+			return []ent.Value{*id}
+		}
+	}
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *SentinelLibraryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 1)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *SentinelLibraryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *SentinelLibraryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 1)
+	if m.clearedsentinel_info {
+		edges = append(edges, sentinellibrary.EdgeSentinelInfo)
+	}
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *SentinelLibraryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sentinellibrary.EdgeSentinelInfo:
+		return m.clearedsentinel_info
+	}
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *SentinelLibraryMutation) ClearEdge(name string) error {
+	switch name {
+	case sentinellibrary.EdgeSentinelInfo:
+		m.ClearSentinelInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelLibrary unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *SentinelLibraryMutation) ResetEdge(name string) error {
+	switch name {
+	case sentinellibrary.EdgeSentinelInfo:
+		m.ResetSentinelInfo()
+		return nil
+	}
+	return fmt.Errorf("unknown SentinelLibrary edge %s", name)
 }
 
 // SessionMutation represents an operation that mutates the Session nodes in the graph.

@@ -56,6 +56,14 @@ type Tx struct {
 	PorterContext *PorterContextClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
+	// SentinelAppBinary is the client for interacting with the SentinelAppBinary builders.
+	SentinelAppBinary *SentinelAppBinaryClient
+	// SentinelAppBinaryFile is the client for interacting with the SentinelAppBinaryFile builders.
+	SentinelAppBinaryFile *SentinelAppBinaryFileClient
+	// SentinelInfo is the client for interacting with the SentinelInfo builders.
+	SentinelInfo *SentinelInfoClient
+	// SentinelLibrary is the client for interacting with the SentinelLibrary builders.
+	SentinelLibrary *SentinelLibraryClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
 	// StoreApp is the client for interacting with the StoreApp builders.
@@ -221,6 +229,10 @@ func (tx *Tx) init() {
 	tx.NotifyTarget = NewNotifyTargetClient(tx.config)
 	tx.PorterContext = NewPorterContextClient(tx.config)
 	tx.PorterInstance = NewPorterInstanceClient(tx.config)
+	tx.SentinelAppBinary = NewSentinelAppBinaryClient(tx.config)
+	tx.SentinelAppBinaryFile = NewSentinelAppBinaryFileClient(tx.config)
+	tx.SentinelInfo = NewSentinelInfoClient(tx.config)
+	tx.SentinelLibrary = NewSentinelLibraryClient(tx.config)
 	tx.Session = NewSessionClient(tx.config)
 	tx.StoreApp = NewStoreAppClient(tx.config)
 	tx.StoreAppBinary = NewStoreAppBinaryClient(tx.config)
