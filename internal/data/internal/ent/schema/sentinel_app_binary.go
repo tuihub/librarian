@@ -51,7 +51,7 @@ func (SentinelAppBinary) Edges() []ent.Edge {
 		//	Required().
 		//	Unique().
 		//	Field("sentinel_library_id"),
-		//edge.From("sentinel_app_binary_file", SentinelAppBinaryFile.Type).
+		// edge.From("sentinel_app_binary_file", SentinelAppBinaryFile.Type).
 		//	Ref("sentinel_app_binary"),
 	}
 }

@@ -627,13 +627,16 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 			Where(sentinelinfo.IDEQ(info.ID)).
 			Only(ctx)
 		var libReportSeq int64
+		var appBinaryReportSeq int64
 		if err != nil {
 			if !ent.IsNotFound(err) {
 				return err
 			}
 			libReportSeq = 0
+			appBinaryReportSeq = 0
 		} else {
 			libReportSeq = sInfo.LibraryReportSequence + 1
+			appBinaryReportSeq = sInfo.AppBinaryReportSequence
 		}
 		// upsert sentinel info
 		q := tx.SentinelInfo.Create().
@@ -642,7 +645,8 @@ func (g *GeburaRepo) UpsertSentinelInfo(
 			SetAlternativeUrls(info.AlternativeUrls).
 			SetGetTokenPath(info.GetTokenPath).
 			SetDownloadFileBasePath(info.DownloadFileBasePath).
-			SetLibraryReportSequence(libReportSeq)
+			SetLibraryReportSequence(libReportSeq).
+			SetAppBinaryReportSequence(appBinaryReportSeq)
 		err = q.OnConflict(sql.ConflictColumns(sentinelinfo.FieldID)).
 			UpdateNewValues().
 			Exec(ctx)
