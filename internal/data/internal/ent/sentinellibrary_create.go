@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
@@ -80,21 +79,6 @@ func (slc *SentinelLibraryCreate) SetLibraryReportSequence(i int64) *SentinelLib
 // SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
 func (slc *SentinelLibraryCreate) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryCreate {
 	return slc.SetSentinelInfoID(s.ID)
-}
-
-// AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (slc *SentinelLibraryCreate) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryCreate {
-	slc.mutation.AddSentinelAppBinaryIDs(ids...)
-	return slc
-}
-
-// AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
-func (slc *SentinelLibraryCreate) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryCreate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return slc.AddSentinelAppBinaryIDs(ids...)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
@@ -227,22 +211,6 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.SentinelInfoID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := slc.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

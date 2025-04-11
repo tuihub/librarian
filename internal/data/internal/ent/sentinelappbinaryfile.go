@@ -9,8 +9,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFile is the model entity for the SentinelAppBinaryFile schema.
@@ -18,8 +18,12 @@ type SentinelAppBinaryFile struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// SentinelAppBinaryID holds the value of the "sentinel_app_binary_id" field.
-	SentinelAppBinaryID int `json:"sentinel_app_binary_id,omitempty"`
+	// SentinelInfoID holds the value of the "sentinel_info_id" field.
+	SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+	// SentinelLibraryReportedID holds the value of the "sentinel_library_reported_id" field.
+	SentinelLibraryReportedID int64 `json:"sentinel_library_reported_id,omitempty"`
+	// SentinelAppBinaryGeneratedID holds the value of the "sentinel_app_binary_generated_id" field.
+	SentinelAppBinaryGeneratedID string `json:"sentinel_app_binary_generated_id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -36,30 +40,7 @@ type SentinelAppBinaryFile struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
 	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
-	// Edges holds the relations/edges for other nodes in the graph.
-	// The values are being populated by the SentinelAppBinaryFileQuery when eager-loading is set.
-	Edges        SentinelAppBinaryFileEdges `json:"edges"`
-	selectValues sql.SelectValues
-}
-
-// SentinelAppBinaryFileEdges holds the relations/edges for other nodes in the graph.
-type SentinelAppBinaryFileEdges struct {
-	// SentinelAppBinary holds the value of the sentinel_app_binary edge.
-	SentinelAppBinary *SentinelAppBinary `json:"sentinel_app_binary,omitempty"`
-	// loadedTypes holds the information for reporting if a
-	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
-}
-
-// SentinelAppBinaryOrErr returns the SentinelAppBinary value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e SentinelAppBinaryFileEdges) SentinelAppBinaryOrErr() (*SentinelAppBinary, error) {
-	if e.SentinelAppBinary != nil {
-		return e.SentinelAppBinary, nil
-	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: sentinelappbinary.Label}
-	}
-	return nil, &NotLoadedError{edge: "sentinel_app_binary"}
+	selectValues            sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -69,9 +50,9 @@ func (*SentinelAppBinaryFile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldSha256:
 			values[i] = new([]byte)
-		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelAppBinaryID, sentinelappbinaryfile.FieldSizeBytes, sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelInfoID, sentinelappbinaryfile.FieldSentinelLibraryReportedID, sentinelappbinaryfile.FieldSizeBytes, sentinelappbinaryfile.FieldAppBinaryReportSequence:
 			values[i] = new(sql.NullInt64)
-		case sentinelappbinaryfile.FieldName, sentinelappbinaryfile.FieldServerFilePath, sentinelappbinaryfile.FieldChunksInfo:
+		case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, sentinelappbinaryfile.FieldName, sentinelappbinaryfile.FieldServerFilePath, sentinelappbinaryfile.FieldChunksInfo:
 			values[i] = new(sql.NullString)
 		case sentinelappbinaryfile.FieldUpdatedAt, sentinelappbinaryfile.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -96,11 +77,23 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			sabf.ID = int(value.Int64)
-		case sentinelappbinaryfile.FieldSentinelAppBinaryID:
+		case sentinelappbinaryfile.FieldSentinelInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_id", values[i])
+				return fmt.Errorf("unexpected type %T for field sentinel_info_id", values[i])
 			} else if value.Valid {
-				sabf.SentinelAppBinaryID = int(value.Int64)
+				sabf.SentinelInfoID = model.InternalID(value.Int64)
+			}
+		case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sentinel_library_reported_id", values[i])
+			} else if value.Valid {
+				sabf.SentinelLibraryReportedID = value.Int64
+			}
+		case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field sentinel_app_binary_generated_id", values[i])
+			} else if value.Valid {
+				sabf.SentinelAppBinaryGeneratedID = value.String
 			}
 		case sentinelappbinaryfile.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -163,11 +156,6 @@ func (sabf *SentinelAppBinaryFile) Value(name string) (ent.Value, error) {
 	return sabf.selectValues.Get(name)
 }
 
-// QuerySentinelAppBinary queries the "sentinel_app_binary" edge of the SentinelAppBinaryFile entity.
-func (sabf *SentinelAppBinaryFile) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
-	return NewSentinelAppBinaryFileClient(sabf.config).QuerySentinelAppBinary(sabf)
-}
-
 // Update returns a builder for updating this SentinelAppBinaryFile.
 // Note that you need to call SentinelAppBinaryFile.Unwrap() before calling this method if this SentinelAppBinaryFile
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -191,8 +179,14 @@ func (sabf *SentinelAppBinaryFile) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelAppBinaryFile(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sabf.ID))
-	builder.WriteString("sentinel_app_binary_id=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelAppBinaryID))
+	builder.WriteString("sentinel_info_id=")
+	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelInfoID))
+	builder.WriteString(", ")
+	builder.WriteString("sentinel_library_reported_id=")
+	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelLibraryReportedID))
+	builder.WriteString(", ")
+	builder.WriteString("sentinel_app_binary_generated_id=")
+	builder.WriteString(sabf.SentinelAppBinaryGeneratedID)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(sabf.Name)

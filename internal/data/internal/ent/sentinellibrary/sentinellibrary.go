@@ -28,8 +28,6 @@ const (
 	FieldLibraryReportSequence = "library_report_sequence"
 	// EdgeSentinelInfo holds the string denoting the sentinel_info edge name in mutations.
 	EdgeSentinelInfo = "sentinel_info"
-	// EdgeSentinelAppBinary holds the string denoting the sentinel_app_binary edge name in mutations.
-	EdgeSentinelAppBinary = "sentinel_app_binary"
 	// Table holds the table name of the sentinellibrary in the database.
 	Table = "sentinel_libraries"
 	// SentinelInfoTable is the table that holds the sentinel_info relation/edge.
@@ -39,13 +37,6 @@ const (
 	SentinelInfoInverseTable = "sentinel_infos"
 	// SentinelInfoColumn is the table column denoting the sentinel_info relation/edge.
 	SentinelInfoColumn = "sentinel_info_id"
-	// SentinelAppBinaryTable is the table that holds the sentinel_app_binary relation/edge.
-	SentinelAppBinaryTable = "sentinel_app_binaries"
-	// SentinelAppBinaryInverseTable is the table name for the SentinelAppBinary entity.
-	// It exists in this package in order to avoid circular dependency with the "sentinelappbinary" package.
-	SentinelAppBinaryInverseTable = "sentinel_app_binaries"
-	// SentinelAppBinaryColumn is the table column denoting the sentinel_app_binary relation/edge.
-	SentinelAppBinaryColumn = "sentinel_library_id"
 )
 
 // Columns holds all SQL columns for sentinellibrary fields.
@@ -122,31 +113,10 @@ func BySentinelInfoField(field string, opts ...sql.OrderTermOption) OrderOption 
 		sqlgraph.OrderByNeighborTerms(s, newSentinelInfoStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// BySentinelAppBinaryCount orders the results by sentinel_app_binary count.
-func BySentinelAppBinaryCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSentinelAppBinaryStep(), opts...)
-	}
-}
-
-// BySentinelAppBinary orders the results by sentinel_app_binary terms.
-func BySentinelAppBinary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSentinelAppBinaryStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newSentinelInfoStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SentinelInfoInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, false, SentinelInfoTable, SentinelInfoColumn),
-	)
-}
-func newSentinelAppBinaryStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SentinelAppBinaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, true, SentinelAppBinaryTable, SentinelAppBinaryColumn),
 	)
 }

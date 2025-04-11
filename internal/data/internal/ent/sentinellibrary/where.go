@@ -365,29 +365,6 @@ func HasSentinelInfoWith(preds ...predicate.SentinelInfo) predicate.SentinelLibr
 	})
 }
 
-// HasSentinelAppBinary applies the HasEdge predicate on the "sentinel_app_binary" edge.
-func HasSentinelAppBinary() predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, SentinelAppBinaryTable, SentinelAppBinaryColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasSentinelAppBinaryWith applies the HasEdge predicate on the "sentinel_app_binary" edge with a given conditions (other predicates).
-func HasSentinelAppBinaryWith(preds ...predicate.SentinelAppBinary) predicate.SentinelLibrary {
-	return predicate.SentinelLibrary(func(s *sql.Selector) {
-		step := newSentinelAppBinaryStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.SentinelLibrary) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.AndPredicates(predicates...))

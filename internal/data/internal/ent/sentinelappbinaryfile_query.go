@@ -12,18 +12,16 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
 )
 
 // SentinelAppBinaryFileQuery is the builder for querying SentinelAppBinaryFile entities.
 type SentinelAppBinaryFileQuery struct {
 	config
-	ctx                   *QueryContext
-	order                 []sentinelappbinaryfile.OrderOption
-	inters                []Interceptor
-	predicates            []predicate.SentinelAppBinaryFile
-	withSentinelAppBinary *SentinelAppBinaryQuery
+	ctx        *QueryContext
+	order      []sentinelappbinaryfile.OrderOption
+	inters     []Interceptor
+	predicates []predicate.SentinelAppBinaryFile
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,28 +56,6 @@ func (sabfq *SentinelAppBinaryFileQuery) Unique(unique bool) *SentinelAppBinaryF
 func (sabfq *SentinelAppBinaryFileQuery) Order(o ...sentinelappbinaryfile.OrderOption) *SentinelAppBinaryFileQuery {
 	sabfq.order = append(sabfq.order, o...)
 	return sabfq
-}
-
-// QuerySentinelAppBinary chains the current query on the "sentinel_app_binary" edge.
-func (sabfq *SentinelAppBinaryFileQuery) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
-	query := (&SentinelAppBinaryClient{config: sabfq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := sabfq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := sabfq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinelappbinaryfile.Table, sentinelappbinaryfile.FieldID, selector),
-			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, sentinelappbinaryfile.SentinelAppBinaryTable, sentinelappbinaryfile.SentinelAppBinaryColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(sabfq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
 }
 
 // First returns the first SentinelAppBinaryFile entity from the query.
@@ -269,27 +245,15 @@ func (sabfq *SentinelAppBinaryFileQuery) Clone() *SentinelAppBinaryFileQuery {
 		return nil
 	}
 	return &SentinelAppBinaryFileQuery{
-		config:                sabfq.config,
-		ctx:                   sabfq.ctx.Clone(),
-		order:                 append([]sentinelappbinaryfile.OrderOption{}, sabfq.order...),
-		inters:                append([]Interceptor{}, sabfq.inters...),
-		predicates:            append([]predicate.SentinelAppBinaryFile{}, sabfq.predicates...),
-		withSentinelAppBinary: sabfq.withSentinelAppBinary.Clone(),
+		config:     sabfq.config,
+		ctx:        sabfq.ctx.Clone(),
+		order:      append([]sentinelappbinaryfile.OrderOption{}, sabfq.order...),
+		inters:     append([]Interceptor{}, sabfq.inters...),
+		predicates: append([]predicate.SentinelAppBinaryFile{}, sabfq.predicates...),
 		// clone intermediate query.
 		sql:  sabfq.sql.Clone(),
 		path: sabfq.path,
 	}
-}
-
-// WithSentinelAppBinary tells the query-builder to eager-load the nodes that are connected to
-// the "sentinel_app_binary" edge. The optional arguments are used to configure the query builder of the edge.
-func (sabfq *SentinelAppBinaryFileQuery) WithSentinelAppBinary(opts ...func(*SentinelAppBinaryQuery)) *SentinelAppBinaryFileQuery {
-	query := (&SentinelAppBinaryClient{config: sabfq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	sabfq.withSentinelAppBinary = query
-	return sabfq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -298,12 +262,12 @@ func (sabfq *SentinelAppBinaryFileQuery) WithSentinelAppBinary(opts ...func(*Sen
 // Example:
 //
 //	var v []struct {
-//		SentinelAppBinaryID int `json:"sentinel_app_binary_id,omitempty"`
+//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SentinelAppBinaryFile.Query().
-//		GroupBy(sentinelappbinaryfile.FieldSentinelAppBinaryID).
+//		GroupBy(sentinelappbinaryfile.FieldSentinelInfoID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sabfq *SentinelAppBinaryFileQuery) GroupBy(field string, fields ...string) *SentinelAppBinaryFileGroupBy {
@@ -321,11 +285,11 @@ func (sabfq *SentinelAppBinaryFileQuery) GroupBy(field string, fields ...string)
 // Example:
 //
 //	var v []struct {
-//		SentinelAppBinaryID int `json:"sentinel_app_binary_id,omitempty"`
+//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
 //	}
 //
 //	client.SentinelAppBinaryFile.Query().
-//		Select(sentinelappbinaryfile.FieldSentinelAppBinaryID).
+//		Select(sentinelappbinaryfile.FieldSentinelInfoID).
 //		Scan(ctx, &v)
 func (sabfq *SentinelAppBinaryFileQuery) Select(fields ...string) *SentinelAppBinaryFileSelect {
 	sabfq.ctx.Fields = append(sabfq.ctx.Fields, fields...)
@@ -368,11 +332,8 @@ func (sabfq *SentinelAppBinaryFileQuery) prepareQuery(ctx context.Context) error
 
 func (sabfq *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SentinelAppBinaryFile, error) {
 	var (
-		nodes       = []*SentinelAppBinaryFile{}
-		_spec       = sabfq.querySpec()
-		loadedTypes = [1]bool{
-			sabfq.withSentinelAppBinary != nil,
-		}
+		nodes = []*SentinelAppBinaryFile{}
+		_spec = sabfq.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SentinelAppBinaryFile).scanValues(nil, columns)
@@ -380,7 +341,6 @@ func (sabfq *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...qu
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SentinelAppBinaryFile{config: sabfq.config}
 		nodes = append(nodes, node)
-		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -392,43 +352,7 @@ func (sabfq *SentinelAppBinaryFileQuery) sqlAll(ctx context.Context, hooks ...qu
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := sabfq.withSentinelAppBinary; query != nil {
-		if err := sabfq.loadSentinelAppBinary(ctx, query, nodes, nil,
-			func(n *SentinelAppBinaryFile, e *SentinelAppBinary) { n.Edges.SentinelAppBinary = e }); err != nil {
-			return nil, err
-		}
-	}
 	return nodes, nil
-}
-
-func (sabfq *SentinelAppBinaryFileQuery) loadSentinelAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*SentinelAppBinaryFile, init func(*SentinelAppBinaryFile), assign func(*SentinelAppBinaryFile, *SentinelAppBinary)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*SentinelAppBinaryFile)
-	for i := range nodes {
-		fk := nodes[i].SentinelAppBinaryID
-		if _, ok := nodeids[fk]; !ok {
-			ids = append(ids, fk)
-		}
-		nodeids[fk] = append(nodeids[fk], nodes[i])
-	}
-	if len(ids) == 0 {
-		return nil
-	}
-	query.Where(sentinelappbinary.IDIn(ids...))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nodeids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "sentinel_app_binary_id" returned %v`, n.ID)
-		}
-		for i := range nodes {
-			assign(nodes[i], n)
-		}
-	}
-	return nil
 }
 
 func (sabfq *SentinelAppBinaryFileQuery) sqlCount(ctx context.Context) (int, error) {
@@ -455,9 +379,6 @@ func (sabfq *SentinelAppBinaryFileQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != sentinelappbinaryfile.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
-		}
-		if sabfq.withSentinelAppBinary != nil {
-			_spec.Node.AddColumnOnce(sentinelappbinaryfile.FieldSentinelAppBinaryID)
 		}
 	}
 	if ps := sabfq.predicates; len(ps) > 0 {

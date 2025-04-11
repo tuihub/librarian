@@ -4316,38 +4316,6 @@ func (c *SentinelAppBinaryClient) GetX(ctx context.Context, id int) *SentinelApp
 	return obj
 }
 
-// QuerySentinelLibrary queries the sentinel_library edge of a SentinelAppBinary.
-func (c *SentinelAppBinaryClient) QuerySentinelLibrary(sab *SentinelAppBinary) *SentinelLibraryQuery {
-	query := (&SentinelLibraryClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := sab.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinelappbinary.Table, sentinelappbinary.FieldID, id),
-			sqlgraph.To(sentinellibrary.Table, sentinellibrary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, sentinelappbinary.SentinelLibraryTable, sentinelappbinary.SentinelLibraryColumn),
-		)
-		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QuerySentinelAppBinaryFile queries the sentinel_app_binary_file edge of a SentinelAppBinary.
-func (c *SentinelAppBinaryClient) QuerySentinelAppBinaryFile(sab *SentinelAppBinary) *SentinelAppBinaryFileQuery {
-	query := (&SentinelAppBinaryFileClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := sab.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinelappbinary.Table, sentinelappbinary.FieldID, id),
-			sqlgraph.To(sentinelappbinaryfile.Table, sentinelappbinaryfile.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, sentinelappbinary.SentinelAppBinaryFileTable, sentinelappbinary.SentinelAppBinaryFileColumn),
-		)
-		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *SentinelAppBinaryClient) Hooks() []Hook {
 	return c.hooks.SentinelAppBinary
@@ -4479,22 +4447,6 @@ func (c *SentinelAppBinaryFileClient) GetX(ctx context.Context, id int) *Sentine
 		panic(err)
 	}
 	return obj
-}
-
-// QuerySentinelAppBinary queries the sentinel_app_binary edge of a SentinelAppBinaryFile.
-func (c *SentinelAppBinaryFileClient) QuerySentinelAppBinary(sabf *SentinelAppBinaryFile) *SentinelAppBinaryQuery {
-	query := (&SentinelAppBinaryClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := sabf.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinelappbinaryfile.Table, sentinelappbinaryfile.FieldID, id),
-			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, sentinelappbinaryfile.SentinelAppBinaryTable, sentinelappbinaryfile.SentinelAppBinaryColumn),
-		)
-		fromV = sqlgraph.Neighbors(sabf.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
 }
 
 // Hooks returns the client hooks.
@@ -4788,22 +4740,6 @@ func (c *SentinelLibraryClient) QuerySentinelInfo(sl *SentinelLibrary) *Sentinel
 			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, id),
 			sqlgraph.To(sentinelinfo.Table, sentinelinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, sentinellibrary.SentinelInfoTable, sentinellibrary.SentinelInfoColumn),
-		)
-		fromV = sqlgraph.Neighbors(sl.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// QuerySentinelAppBinary queries the sentinel_app_binary edge of a SentinelLibrary.
-func (c *SentinelLibraryClient) QuerySentinelAppBinary(sl *SentinelLibrary) *SentinelAppBinaryQuery {
-	query := (&SentinelAppBinaryClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := sl.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, id),
-			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, sentinellibrary.SentinelAppBinaryTable, sentinellibrary.SentinelAppBinaryColumn),
 		)
 		fromV = sqlgraph.Neighbors(sl.driver.Dialect(), step)
 		return fromV, nil

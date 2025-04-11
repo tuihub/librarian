@@ -42,7 +42,7 @@ func (SentinelLibrary) Edges() []ent.Edge {
 			Required().
 			Unique().
 			Field("sentinel_info_id"),
-		edge.From("sentinel_app_binary", SentinelAppBinary.Type).
-			Ref("sentinel_library"),
+		// edge.From("sentinel_app_binary", SentinelAppBinary.Type).
+		//	Ref("sentinel_library"),
 	}
 }

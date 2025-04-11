@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"errors"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
@@ -702,19 +701,11 @@ func (g *GeburaRepo) UpsertAppBinaries(
 			return err
 		}
 		// upsert binaries
-		slibReportedIDEntMap := lo.Associate(
-			sInfo.Edges.SentinelLibrary, func(lib *ent.SentinelLibrary,
-			) (int64, *ent.SentinelLibrary) {
-				return lib.ReportedID, lib
-			})
 		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
 		for _, ab := range abs {
-			slibEnt, exists := slibReportedIDEntMap[ab.SentinelLibraryID]
-			if !exists {
-				return errors.New("invalid app_binary data: associated sentinel library id not exists")
-			}
 			newAbs = append(newAbs, tx.SentinelAppBinary.Create().
-				SetSentinelLibrary(slibEnt).
+				SetSentinelInfoID(sentinelID).
+				SetSentinelLibraryReportedID(ab.SentinelLibraryID).
 				SetGeneratedID(ab.GeneratedID).
 				SetSizeBytes(ab.SizeBytes).
 				SetNeedToken(ab.NeedToken).
@@ -727,7 +718,8 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		err = tx.SentinelAppBinary.CreateBulk(newAbs...).
 			OnConflict(
 				sql.ConflictColumns(
-					sentinelappbinary.FieldSentinelLibraryID,
+					sentinelappbinary.FieldSentinelInfoID,
+					sentinelappbinary.FieldSentinelLibraryReportedID,
 					sentinelappbinary.FieldGeneratedID,
 				),
 				resolveWithIgnores([]string{
@@ -740,38 +732,16 @@ func (g *GeburaRepo) UpsertAppBinaries(
 			return err
 		}
 		// upsert binary files
-		dbAbs, err := tx.SentinelAppBinary.Query().Where(
-			sentinelappbinary.HasSentinelLibraryWith(
-				sentinellibrary.HasSentinelInfoWith(
-					sentinelinfo.IDEQ(sentinelID),
-				),
-			),
-		).All(ctx)
-		if err != nil {
-			return err
-		}
-		type AbKey struct {
-			SlibID int64
-			GenID  string
-		}
-		abSlibIDGenIDEntMap := lo.Associate(dbAbs, func(ab *ent.SentinelAppBinary) (AbKey, *ent.SentinelAppBinary) {
-			return AbKey{
-				SlibID: ab.Edges.SentinelLibrary.ReportedID,
-				GenID:  ab.GeneratedID,
-			}, ab
-		})
 		abfCount := lo.Sum(lo.Map(abs, func(ab *modelgebura.SentinelAppBinary, _ int) int {
 			return len(ab.Files)
 		}))
 		newAbfs := make([]*ent.SentinelAppBinaryFileCreate, 0, abfCount)
 		for _, ab := range abs {
-			abEnt, exists := abSlibIDGenIDEntMap[AbKey{ab.SentinelLibraryID, ab.GeneratedID}]
-			if !exists {
-				return errors.New("invalid app_binary_file data: associated app binary not exists")
-			}
 			for _, f := range ab.Files {
 				newAbfs = append(newAbfs, tx.SentinelAppBinaryFile.Create().
-					SetSentinelAppBinaryID(abEnt.ID).
+					SetSentinelInfoID(sentinelID).
+					SetSentinelLibraryReportedID(ab.SentinelLibraryID).
+					SetSentinelAppBinaryGeneratedID(ab.GeneratedID).
 					SetName(f.Name).
 					SetSizeBytes(f.SizeBytes).
 					SetSha256(f.Sha256).
@@ -783,7 +753,9 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		err = tx.SentinelAppBinaryFile.CreateBulk(newAbfs...).
 			OnConflict(
 				sql.ConflictColumns(
-					sentinelappbinaryfile.FieldSentinelAppBinaryID,
+					sentinelappbinaryfile.FieldSentinelInfoID,
+					sentinelappbinaryfile.FieldSentinelLibraryReportedID,
+					sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID,
 					sentinelappbinaryfile.FieldServerFilePath,
 				),
 				resolveWithIgnores([]string{

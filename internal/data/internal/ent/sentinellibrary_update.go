@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
@@ -126,21 +125,6 @@ func (slu *SentinelLibraryUpdate) SetSentinelInfo(s *SentinelInfo) *SentinelLibr
 	return slu.SetSentinelInfoID(s.ID)
 }
 
-// AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (slu *SentinelLibraryUpdate) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdate {
-	slu.mutation.AddSentinelAppBinaryIDs(ids...)
-	return slu
-}
-
-// AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
-func (slu *SentinelLibraryUpdate) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return slu.AddSentinelAppBinaryIDs(ids...)
-}
-
 // Mutation returns the SentinelLibraryMutation object of the builder.
 func (slu *SentinelLibraryUpdate) Mutation() *SentinelLibraryMutation {
 	return slu.mutation
@@ -150,27 +134,6 @@ func (slu *SentinelLibraryUpdate) Mutation() *SentinelLibraryMutation {
 func (slu *SentinelLibraryUpdate) ClearSentinelInfo() *SentinelLibraryUpdate {
 	slu.mutation.ClearSentinelInfo()
 	return slu
-}
-
-// ClearSentinelAppBinary clears all "sentinel_app_binary" edges to the SentinelAppBinary entity.
-func (slu *SentinelLibraryUpdate) ClearSentinelAppBinary() *SentinelLibraryUpdate {
-	slu.mutation.ClearSentinelAppBinary()
-	return slu
-}
-
-// RemoveSentinelAppBinaryIDs removes the "sentinel_app_binary" edge to SentinelAppBinary entities by IDs.
-func (slu *SentinelLibraryUpdate) RemoveSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdate {
-	slu.mutation.RemoveSentinelAppBinaryIDs(ids...)
-	return slu
-}
-
-// RemoveSentinelAppBinary removes "sentinel_app_binary" edges to SentinelAppBinary entities.
-func (slu *SentinelLibraryUpdate) RemoveSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return slu.RemoveSentinelAppBinaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -272,51 +235,6 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if slu.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := slu.mutation.RemovedSentinelAppBinaryIDs(); len(nodes) > 0 && !slu.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := slu.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -439,21 +357,6 @@ func (sluo *SentinelLibraryUpdateOne) SetSentinelInfo(s *SentinelInfo) *Sentinel
 	return sluo.SetSentinelInfoID(s.ID)
 }
 
-// AddSentinelAppBinaryIDs adds the "sentinel_app_binary" edge to the SentinelAppBinary entity by IDs.
-func (sluo *SentinelLibraryUpdateOne) AddSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdateOne {
-	sluo.mutation.AddSentinelAppBinaryIDs(ids...)
-	return sluo
-}
-
-// AddSentinelAppBinary adds the "sentinel_app_binary" edges to the SentinelAppBinary entity.
-func (sluo *SentinelLibraryUpdateOne) AddSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return sluo.AddSentinelAppBinaryIDs(ids...)
-}
-
 // Mutation returns the SentinelLibraryMutation object of the builder.
 func (sluo *SentinelLibraryUpdateOne) Mutation() *SentinelLibraryMutation {
 	return sluo.mutation
@@ -463,27 +366,6 @@ func (sluo *SentinelLibraryUpdateOne) Mutation() *SentinelLibraryMutation {
 func (sluo *SentinelLibraryUpdateOne) ClearSentinelInfo() *SentinelLibraryUpdateOne {
 	sluo.mutation.ClearSentinelInfo()
 	return sluo
-}
-
-// ClearSentinelAppBinary clears all "sentinel_app_binary" edges to the SentinelAppBinary entity.
-func (sluo *SentinelLibraryUpdateOne) ClearSentinelAppBinary() *SentinelLibraryUpdateOne {
-	sluo.mutation.ClearSentinelAppBinary()
-	return sluo
-}
-
-// RemoveSentinelAppBinaryIDs removes the "sentinel_app_binary" edge to SentinelAppBinary entities by IDs.
-func (sluo *SentinelLibraryUpdateOne) RemoveSentinelAppBinaryIDs(ids ...int) *SentinelLibraryUpdateOne {
-	sluo.mutation.RemoveSentinelAppBinaryIDs(ids...)
-	return sluo
-}
-
-// RemoveSentinelAppBinary removes "sentinel_app_binary" edges to SentinelAppBinary entities.
-func (sluo *SentinelLibraryUpdateOne) RemoveSentinelAppBinary(s ...*SentinelAppBinary) *SentinelLibraryUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return sluo.RemoveSentinelAppBinaryIDs(ids...)
 }
 
 // Where appends a list predicates to the SentinelLibraryUpdate builder.
@@ -615,51 +497,6 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if sluo.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sluo.mutation.RemovedSentinelAppBinaryIDs(); len(nodes) > 0 && !sluo.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sluo.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: true,
-			Table:   sentinellibrary.SentinelAppBinaryTable,
-			Columns: []string{sentinellibrary.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

@@ -41,11 +41,9 @@ type SentinelLibrary struct {
 type SentinelLibraryEdges struct {
 	// SentinelInfo holds the value of the sentinel_info edge.
 	SentinelInfo *SentinelInfo `json:"sentinel_info,omitempty"`
-	// SentinelAppBinary holds the value of the sentinel_app_binary edge.
-	SentinelAppBinary []*SentinelAppBinary `json:"sentinel_app_binary,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // SentinelInfoOrErr returns the SentinelInfo value or an error if the edge
@@ -57,15 +55,6 @@ func (e SentinelLibraryEdges) SentinelInfoOrErr() (*SentinelInfo, error) {
 		return nil, &NotFoundError{label: sentinelinfo.Label}
 	}
 	return nil, &NotLoadedError{edge: "sentinel_info"}
-}
-
-// SentinelAppBinaryOrErr returns the SentinelAppBinary value or an error if the edge
-// was not loaded in eager-loading.
-func (e SentinelLibraryEdges) SentinelAppBinaryOrErr() ([]*SentinelAppBinary, error) {
-	if e.loadedTypes[1] {
-		return e.SentinelAppBinary, nil
-	}
-	return nil, &NotLoadedError{edge: "sentinel_app_binary"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -152,11 +141,6 @@ func (sl *SentinelLibrary) Value(name string) (ent.Value, error) {
 // QuerySentinelInfo queries the "sentinel_info" edge of the SentinelLibrary entity.
 func (sl *SentinelLibrary) QuerySentinelInfo() *SentinelInfoQuery {
 	return NewSentinelLibraryClient(sl.config).QuerySentinelInfo(sl)
-}
-
-// QuerySentinelAppBinary queries the "sentinel_app_binary" edge of the SentinelLibrary entity.
-func (sl *SentinelLibrary) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
-	return NewSentinelLibraryClient(sl.config).QuerySentinelAppBinary(sl)
 }
 
 // Update returns a builder for updating this SentinelLibrary.

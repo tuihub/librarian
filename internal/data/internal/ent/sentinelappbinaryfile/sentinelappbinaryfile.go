@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
-	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -14,8 +13,12 @@ const (
 	Label = "sentinel_app_binary_file"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldSentinelAppBinaryID holds the string denoting the sentinel_app_binary_id field in the database.
-	FieldSentinelAppBinaryID = "sentinel_app_binary_id"
+	// FieldSentinelInfoID holds the string denoting the sentinel_info_id field in the database.
+	FieldSentinelInfoID = "sentinel_info_id"
+	// FieldSentinelLibraryReportedID holds the string denoting the sentinel_library_reported_id field in the database.
+	FieldSentinelLibraryReportedID = "sentinel_library_reported_id"
+	// FieldSentinelAppBinaryGeneratedID holds the string denoting the sentinel_app_binary_generated_id field in the database.
+	FieldSentinelAppBinaryGeneratedID = "sentinel_app_binary_generated_id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
 	// FieldSizeBytes holds the string denoting the size_bytes field in the database.
@@ -32,23 +35,16 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldAppBinaryReportSequence holds the string denoting the app_binary_report_sequence field in the database.
 	FieldAppBinaryReportSequence = "app_binary_report_sequence"
-	// EdgeSentinelAppBinary holds the string denoting the sentinel_app_binary edge name in mutations.
-	EdgeSentinelAppBinary = "sentinel_app_binary"
 	// Table holds the table name of the sentinelappbinaryfile in the database.
 	Table = "sentinel_app_binary_files"
-	// SentinelAppBinaryTable is the table that holds the sentinel_app_binary relation/edge.
-	SentinelAppBinaryTable = "sentinel_app_binary_files"
-	// SentinelAppBinaryInverseTable is the table name for the SentinelAppBinary entity.
-	// It exists in this package in order to avoid circular dependency with the "sentinelappbinary" package.
-	SentinelAppBinaryInverseTable = "sentinel_app_binaries"
-	// SentinelAppBinaryColumn is the table column denoting the sentinel_app_binary relation/edge.
-	SentinelAppBinaryColumn = "sentinel_app_binary_id"
 )
 
 // Columns holds all SQL columns for sentinelappbinaryfile fields.
 var Columns = []string{
 	FieldID,
-	FieldSentinelAppBinaryID,
+	FieldSentinelInfoID,
+	FieldSentinelLibraryReportedID,
+	FieldSentinelAppBinaryGeneratedID,
 	FieldName,
 	FieldSizeBytes,
 	FieldSha256,
@@ -86,9 +82,19 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// BySentinelAppBinaryID orders the results by the sentinel_app_binary_id field.
-func BySentinelAppBinaryID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSentinelAppBinaryID, opts...).ToFunc()
+// BySentinelInfoID orders the results by the sentinel_info_id field.
+func BySentinelInfoID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelInfoID, opts...).ToFunc()
+}
+
+// BySentinelLibraryReportedID orders the results by the sentinel_library_reported_id field.
+func BySentinelLibraryReportedID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelLibraryReportedID, opts...).ToFunc()
+}
+
+// BySentinelAppBinaryGeneratedID orders the results by the sentinel_app_binary_generated_id field.
+func BySentinelAppBinaryGeneratedID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelAppBinaryGeneratedID, opts...).ToFunc()
 }
 
 // ByName orders the results by the name field.
@@ -124,18 +130,4 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByAppBinaryReportSequence orders the results by the app_binary_report_sequence field.
 func ByAppBinaryReportSequence(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppBinaryReportSequence, opts...).ToFunc()
-}
-
-// BySentinelAppBinaryField orders the results by sentinel_app_binary field.
-func BySentinelAppBinaryField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSentinelAppBinaryStep(), sql.OrderByField(field, opts...))
-	}
-}
-func newSentinelAppBinaryStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SentinelAppBinaryInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, SentinelAppBinaryTable, SentinelAppBinaryColumn),
-	)
 }

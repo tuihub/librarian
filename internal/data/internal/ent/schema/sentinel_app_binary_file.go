@@ -3,8 +3,9 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
-	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 )
@@ -15,7 +16,10 @@ type SentinelAppBinaryFile struct {
 
 func (SentinelAppBinaryFile) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int("sentinel_app_binary_id"),
+		// field.Int("sentinel_app_binary_id"),
+		field.Int64("sentinel_info_id").GoType(model.InternalID(0)),
+		field.Int64("sentinel_library_reported_id"),
+		field.String("sentinel_app_binary_generated_id"),
 		field.String("name"),
 		field.Int64("size_bytes"),
 		field.Bytes("sha256"),
@@ -31,7 +35,10 @@ func (SentinelAppBinaryFile) Fields() []ent.Field {
 
 func (SentinelAppBinaryFile) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("sentinel_app_binary_id", "server_file_path").
+		// index.Fields("sentinel_app_binary_id", "server_file_path").
+		//	Unique(),
+		index.Fields("sentinel_info_id", "sentinel_library_reported_id",
+			"sentinel_app_binary_generated_id", "server_file_path").
 			Unique(),
 		index.Fields("app_binary_report_sequence"),
 	}
@@ -39,9 +46,9 @@ func (SentinelAppBinaryFile) Indexes() []ent.Index {
 
 func (SentinelAppBinaryFile) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("sentinel_app_binary", SentinelAppBinary.Type).
-			Required().
-			Unique().
-			Field("sentinel_app_binary_id"),
+		// edge.To("sentinel_app_binary", SentinelAppBinary.Type).
+		//	Required().
+		//	Unique().
+		//	Field("sentinel_app_binary_id"),
 	}
 }

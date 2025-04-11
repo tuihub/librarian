@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFileUpdate is the builder for updating SentinelAppBinaryFile entities.
@@ -29,16 +29,58 @@ func (sabfu *SentinelAppBinaryFileUpdate) Where(ps ...predicate.SentinelAppBinar
 	return sabfu
 }
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryID(i int) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.SetSentinelAppBinaryID(i)
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.ResetSentinelInfoID()
+	sabfu.mutation.SetSentinelInfoID(mi)
 	return sabfu
 }
 
-// SetNillableSentinelAppBinaryID sets the "sentinel_app_binary_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryID(i *int) *SentinelAppBinaryFileUpdate {
+// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryFileUpdate {
+	if mi != nil {
+		sabfu.SetSentinelInfoID(*mi)
+	}
+	return sabfu
+}
+
+// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.AddSentinelInfoID(mi)
+	return sabfu
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.ResetSentinelLibraryReportedID()
+	sabfu.mutation.SetSentinelLibraryReportedID(i)
+	return sabfu
+}
+
+// SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryFileUpdate {
 	if i != nil {
-		sabfu.SetSentinelAppBinaryID(*i)
+		sabfu.SetSentinelLibraryReportedID(*i)
+	}
+	return sabfu
+}
+
+// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.AddSentinelLibraryReportedID(i)
+	return sabfu
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.SetSentinelAppBinaryGeneratedID(s)
+	return sabfu
+}
+
+// SetNillableSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field if the given value is not nil.
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelAppBinaryGeneratedID(s *string) *SentinelAppBinaryFileUpdate {
+	if s != nil {
+		sabfu.SetSentinelAppBinaryGeneratedID(*s)
 	}
 	return sabfu
 }
@@ -159,20 +201,9 @@ func (sabfu *SentinelAppBinaryFileUpdate) AddAppBinaryReportSequence(i int64) *S
 	return sabfu
 }
 
-// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinary(s *SentinelAppBinary) *SentinelAppBinaryFileUpdate {
-	return sabfu.SetSentinelAppBinaryID(s.ID)
-}
-
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
 func (sabfu *SentinelAppBinaryFileUpdate) Mutation() *SentinelAppBinaryFileMutation {
 	return sabfu.mutation
-}
-
-// ClearSentinelAppBinary clears the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabfu *SentinelAppBinaryFileUpdate) ClearSentinelAppBinary() *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ClearSentinelAppBinary()
-	return sabfu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -211,18 +242,7 @@ func (sabfu *SentinelAppBinaryFileUpdate) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (sabfu *SentinelAppBinaryFileUpdate) check() error {
-	if sabfu.mutation.SentinelAppBinaryCleared() && len(sabfu.mutation.SentinelAppBinaryIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SentinelAppBinaryFile.sentinel_app_binary"`)
-	}
-	return nil
-}
-
 func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := sabfu.check(); err != nil {
-		return n, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
 	if ps := sabfu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -230,6 +250,21 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := sabfu.mutation.SentinelInfoID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	}
+	if value, ok := sabfu.mutation.AddedSentinelInfoID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	}
+	if value, ok := sabfu.mutation.SentinelLibraryReportedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
+	}
+	if value, ok := sabfu.mutation.AddedSentinelLibraryReportedID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
+	}
+	if value, ok := sabfu.mutation.SentinelAppBinaryGeneratedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
 	if value, ok := sabfu.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
@@ -264,35 +299,6 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 	if value, ok := sabfu.mutation.AddedAppBinaryReportSequence(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
-	if sabfu.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinelappbinaryfile.SentinelAppBinaryTable,
-			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sabfu.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinelappbinaryfile.SentinelAppBinaryTable,
-			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sabfu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinaryfile.Label}
@@ -313,16 +319,58 @@ type SentinelAppBinaryFileUpdateOne struct {
 	mutation *SentinelAppBinaryFileMutation
 }
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryID(i int) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.SetSentinelAppBinaryID(i)
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.ResetSentinelInfoID()
+	sabfuo.mutation.SetSentinelInfoID(mi)
 	return sabfuo
 }
 
-// SetNillableSentinelAppBinaryID sets the "sentinel_app_binary_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryID(i *int) *SentinelAppBinaryFileUpdateOne {
+// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	if mi != nil {
+		sabfuo.SetSentinelInfoID(*mi)
+	}
+	return sabfuo
+}
+
+// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.AddSentinelInfoID(mi)
+	return sabfuo
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.ResetSentinelLibraryReportedID()
+	sabfuo.mutation.SetSentinelLibraryReportedID(i)
+	return sabfuo
+}
+
+// SetNillableSentinelLibraryReportedID sets the "sentinel_library_reported_id" field if the given value is not nil.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelLibraryReportedID(i *int64) *SentinelAppBinaryFileUpdateOne {
 	if i != nil {
-		sabfuo.SetSentinelAppBinaryID(*i)
+		sabfuo.SetSentinelLibraryReportedID(*i)
+	}
+	return sabfuo
+}
+
+// AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.AddSentinelLibraryReportedID(i)
+	return sabfuo
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.SetSentinelAppBinaryGeneratedID(s)
+	return sabfuo
+}
+
+// SetNillableSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field if the given value is not nil.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelAppBinaryGeneratedID(s *string) *SentinelAppBinaryFileUpdateOne {
+	if s != nil {
+		sabfuo.SetSentinelAppBinaryGeneratedID(*s)
 	}
 	return sabfuo
 }
@@ -443,20 +491,9 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) AddAppBinaryReportSequence(i int64
 	return sabfuo
 }
 
-// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelAppBinary(s *SentinelAppBinary) *SentinelAppBinaryFileUpdateOne {
-	return sabfuo.SetSentinelAppBinaryID(s.ID)
-}
-
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
 func (sabfuo *SentinelAppBinaryFileUpdateOne) Mutation() *SentinelAppBinaryFileMutation {
 	return sabfuo.mutation
-}
-
-// ClearSentinelAppBinary clears the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) ClearSentinelAppBinary() *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ClearSentinelAppBinary()
-	return sabfuo
 }
 
 // Where appends a list predicates to the SentinelAppBinaryFileUpdate builder.
@@ -508,18 +545,7 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) check() error {
-	if sabfuo.mutation.SentinelAppBinaryCleared() && len(sabfuo.mutation.SentinelAppBinaryIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SentinelAppBinaryFile.sentinel_app_binary"`)
-	}
-	return nil
-}
-
 func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinaryFile, err error) {
-	if err := sabfuo.check(); err != nil {
-		return _node, err
-	}
 	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
 	id, ok := sabfuo.mutation.ID()
 	if !ok {
@@ -544,6 +570,21 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := sabfuo.mutation.SentinelInfoID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	}
+	if value, ok := sabfuo.mutation.AddedSentinelInfoID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	}
+	if value, ok := sabfuo.mutation.SentinelLibraryReportedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
+	}
+	if value, ok := sabfuo.mutation.AddedSentinelLibraryReportedID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
+	}
+	if value, ok := sabfuo.mutation.SentinelAppBinaryGeneratedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
 	if value, ok := sabfuo.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
@@ -577,35 +618,6 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 	}
 	if value, ok := sabfuo.mutation.AddedAppBinaryReportSequence(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if sabfuo.mutation.SentinelAppBinaryCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinelappbinaryfile.SentinelAppBinaryTable,
-			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := sabfuo.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinelappbinaryfile.SentinelAppBinaryTable,
-			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &SentinelAppBinaryFile{config: sabfuo.config}
 	_spec.Assign = _node.assignValues

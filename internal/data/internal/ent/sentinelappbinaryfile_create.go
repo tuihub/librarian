@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryFileCreate is the builder for creating a SentinelAppBinaryFile entity.
@@ -23,9 +23,21 @@ type SentinelAppBinaryFileCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (sabfc *SentinelAppBinaryFileCreate) SetSentinelAppBinaryID(i int) *SentinelAppBinaryFileCreate {
-	sabfc.mutation.SetSentinelAppBinaryID(i)
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (sabfc *SentinelAppBinaryFileCreate) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileCreate {
+	sabfc.mutation.SetSentinelInfoID(mi)
+	return sabfc
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (sabfc *SentinelAppBinaryFileCreate) SetSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileCreate {
+	sabfc.mutation.SetSentinelLibraryReportedID(i)
+	return sabfc
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (sabfc *SentinelAppBinaryFileCreate) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileCreate {
+	sabfc.mutation.SetSentinelAppBinaryGeneratedID(s)
 	return sabfc
 }
 
@@ -101,11 +113,6 @@ func (sabfc *SentinelAppBinaryFileCreate) SetAppBinaryReportSequence(i int64) *S
 	return sabfc
 }
 
-// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
-func (sabfc *SentinelAppBinaryFileCreate) SetSentinelAppBinary(s *SentinelAppBinary) *SentinelAppBinaryFileCreate {
-	return sabfc.SetSentinelAppBinaryID(s.ID)
-}
-
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
 func (sabfc *SentinelAppBinaryFileCreate) Mutation() *SentinelAppBinaryFileMutation {
 	return sabfc.mutation
@@ -153,8 +160,14 @@ func (sabfc *SentinelAppBinaryFileCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sabfc *SentinelAppBinaryFileCreate) check() error {
-	if _, ok := sabfc.mutation.SentinelAppBinaryID(); !ok {
-		return &ValidationError{Name: "sentinel_app_binary_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_app_binary_id"`)}
+	if _, ok := sabfc.mutation.SentinelInfoID(); !ok {
+		return &ValidationError{Name: "sentinel_info_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_info_id"`)}
+	}
+	if _, ok := sabfc.mutation.SentinelLibraryReportedID(); !ok {
+		return &ValidationError{Name: "sentinel_library_reported_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_library_reported_id"`)}
+	}
+	if _, ok := sabfc.mutation.SentinelAppBinaryGeneratedID(); !ok {
+		return &ValidationError{Name: "sentinel_app_binary_generated_id", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.sentinel_app_binary_generated_id"`)}
 	}
 	if _, ok := sabfc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.name"`)}
@@ -176,9 +189,6 @@ func (sabfc *SentinelAppBinaryFileCreate) check() error {
 	}
 	if _, ok := sabfc.mutation.AppBinaryReportSequence(); !ok {
 		return &ValidationError{Name: "app_binary_report_sequence", err: errors.New(`ent: missing required field "SentinelAppBinaryFile.app_binary_report_sequence"`)}
-	}
-	if len(sabfc.mutation.SentinelAppBinaryIDs()) == 0 {
-		return &ValidationError{Name: "sentinel_app_binary", err: errors.New(`ent: missing required edge "SentinelAppBinaryFile.sentinel_app_binary"`)}
 	}
 	return nil
 }
@@ -207,6 +217,18 @@ func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, 
 		_spec = sqlgraph.NewCreateSpec(sentinelappbinaryfile.Table, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = sabfc.conflict
+	if value, ok := sabfc.mutation.SentinelInfoID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+		_node.SentinelInfoID = value
+	}
+	if value, ok := sabfc.mutation.SentinelLibraryReportedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
+		_node.SentinelLibraryReportedID = value
+	}
+	if value, ok := sabfc.mutation.SentinelAppBinaryGeneratedID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
+		_node.SentinelAppBinaryGeneratedID = value
+	}
 	if value, ok := sabfc.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldName, field.TypeString, value)
 		_node.Name = value
@@ -239,23 +261,6 @@ func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, 
 		_spec.SetField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
 		_node.AppBinaryReportSequence = value
 	}
-	if nodes := sabfc.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinelappbinaryfile.SentinelAppBinaryTable,
-			Columns: []string{sentinelappbinaryfile.SentinelAppBinaryColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_node.SentinelAppBinaryID = nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	return _node, _spec
 }
 
@@ -263,7 +268,7 @@ func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, 
 // of the `INSERT` statement. For example:
 //
 //	client.SentinelAppBinaryFile.Create().
-//		SetSentinelAppBinaryID(v).
+//		SetSentinelInfoID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -272,7 +277,7 @@ func (sabfc *SentinelAppBinaryFileCreate) createSpec() (*SentinelAppBinaryFile, 
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryFileUpsert) {
-//			SetSentinelAppBinaryID(v+v).
+//			SetSentinelInfoID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabfc *SentinelAppBinaryFileCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertOne {
@@ -308,15 +313,51 @@ type (
 	}
 )
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (u *SentinelAppBinaryFileUpsert) SetSentinelAppBinaryID(v int) *SentinelAppBinaryFileUpsert {
-	u.Set(sentinelappbinaryfile.FieldSentinelAppBinaryID, v)
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsert) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsert {
+	u.Set(sentinelappbinaryfile.FieldSentinelInfoID, v)
 	return u
 }
 
-// UpdateSentinelAppBinaryID sets the "sentinel_app_binary_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryFileUpsert) UpdateSentinelAppBinaryID() *SentinelAppBinaryFileUpsert {
-	u.SetExcluded(sentinelappbinaryfile.FieldSentinelAppBinaryID)
+// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsert) UpdateSentinelInfoID() *SentinelAppBinaryFileUpsert {
+	u.SetExcluded(sentinelappbinaryfile.FieldSentinelInfoID)
+	return u
+}
+
+// AddSentinelInfoID adds v to the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsert) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsert {
+	u.Add(sentinelappbinaryfile.FieldSentinelInfoID, v)
+	return u
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsert) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsert {
+	u.Set(sentinelappbinaryfile.FieldSentinelLibraryReportedID, v)
+	return u
+}
+
+// UpdateSentinelLibraryReportedID sets the "sentinel_library_reported_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsert) UpdateSentinelLibraryReportedID() *SentinelAppBinaryFileUpsert {
+	u.SetExcluded(sentinelappbinaryfile.FieldSentinelLibraryReportedID)
+	return u
+}
+
+// AddSentinelLibraryReportedID adds v to the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsert) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsert {
+	u.Add(sentinelappbinaryfile.FieldSentinelLibraryReportedID, v)
+	return u
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (u *SentinelAppBinaryFileUpsert) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileUpsert {
+	u.Set(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, v)
+	return u
+}
+
+// UpdateSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsert) UpdateSentinelAppBinaryGeneratedID() *SentinelAppBinaryFileUpsert {
+	u.SetExcluded(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID)
 	return u
 }
 
@@ -474,17 +515,59 @@ func (u *SentinelAppBinaryFileUpsertOne) Update(set func(*SentinelAppBinaryFileU
 	return u
 }
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (u *SentinelAppBinaryFileUpsertOne) SetSentinelAppBinaryID(v int) *SentinelAppBinaryFileUpsertOne {
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsertOne) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
-		s.SetSentinelAppBinaryID(v)
+		s.SetSentinelInfoID(v)
 	})
 }
 
-// UpdateSentinelAppBinaryID sets the "sentinel_app_binary_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryFileUpsertOne) UpdateSentinelAppBinaryID() *SentinelAppBinaryFileUpsertOne {
+// AddSentinelInfoID adds v to the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsertOne) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
-		s.UpdateSentinelAppBinaryID()
+		s.AddSentinelInfoID(v)
+	})
+}
+
+// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertOne) UpdateSentinelInfoID() *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelInfoID()
+	})
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsertOne) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.SetSentinelLibraryReportedID(v)
+	})
+}
+
+// AddSentinelLibraryReportedID adds v to the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsertOne) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.AddSentinelLibraryReportedID(v)
+	})
+}
+
+// UpdateSentinelLibraryReportedID sets the "sentinel_library_reported_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertOne) UpdateSentinelLibraryReportedID() *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelLibraryReportedID()
+	})
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (u *SentinelAppBinaryFileUpsertOne) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.SetSentinelAppBinaryGeneratedID(v)
+	})
+}
+
+// UpdateSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertOne) UpdateSentinelAppBinaryGeneratedID() *SentinelAppBinaryFileUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelAppBinaryGeneratedID()
 	})
 }
 
@@ -756,7 +839,7 @@ func (sabfcb *SentinelAppBinaryFileCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryFileUpsert) {
-//			SetSentinelAppBinaryID(v+v).
+//			SetSentinelInfoID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabfcb *SentinelAppBinaryFileCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryFileUpsertBulk {
@@ -825,17 +908,59 @@ func (u *SentinelAppBinaryFileUpsertBulk) Update(set func(*SentinelAppBinaryFile
 	return u
 }
 
-// SetSentinelAppBinaryID sets the "sentinel_app_binary_id" field.
-func (u *SentinelAppBinaryFileUpsertBulk) SetSentinelAppBinaryID(v int) *SentinelAppBinaryFileUpsertBulk {
+// SetSentinelInfoID sets the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsertBulk) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
-		s.SetSentinelAppBinaryID(v)
+		s.SetSentinelInfoID(v)
 	})
 }
 
-// UpdateSentinelAppBinaryID sets the "sentinel_app_binary_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryFileUpsertBulk) UpdateSentinelAppBinaryID() *SentinelAppBinaryFileUpsertBulk {
+// AddSentinelInfoID adds v to the "sentinel_info_id" field.
+func (u *SentinelAppBinaryFileUpsertBulk) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryFileUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
-		s.UpdateSentinelAppBinaryID()
+		s.AddSentinelInfoID(v)
+	})
+}
+
+// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertBulk) UpdateSentinelInfoID() *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelInfoID()
+	})
+}
+
+// SetSentinelLibraryReportedID sets the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsertBulk) SetSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.SetSentinelLibraryReportedID(v)
+	})
+}
+
+// AddSentinelLibraryReportedID adds v to the "sentinel_library_reported_id" field.
+func (u *SentinelAppBinaryFileUpsertBulk) AddSentinelLibraryReportedID(v int64) *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.AddSentinelLibraryReportedID(v)
+	})
+}
+
+// UpdateSentinelLibraryReportedID sets the "sentinel_library_reported_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertBulk) UpdateSentinelLibraryReportedID() *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelLibraryReportedID()
+	})
+}
+
+// SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
+func (u *SentinelAppBinaryFileUpsertBulk) SetSentinelAppBinaryGeneratedID(v string) *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.SetSentinelAppBinaryGeneratedID(v)
+	})
+}
+
+// UpdateSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryFileUpsertBulk) UpdateSentinelAppBinaryGeneratedID() *SentinelAppBinaryFileUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryFileUpsert) {
+		s.UpdateSentinelAppBinaryGeneratedID()
 	})
 }
 

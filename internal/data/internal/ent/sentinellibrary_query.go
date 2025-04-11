@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -13,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
@@ -22,12 +20,11 @@ import (
 // SentinelLibraryQuery is the builder for querying SentinelLibrary entities.
 type SentinelLibraryQuery struct {
 	config
-	ctx                   *QueryContext
-	order                 []sentinellibrary.OrderOption
-	inters                []Interceptor
-	predicates            []predicate.SentinelLibrary
-	withSentinelInfo      *SentinelInfoQuery
-	withSentinelAppBinary *SentinelAppBinaryQuery
+	ctx              *QueryContext
+	order            []sentinellibrary.OrderOption
+	inters           []Interceptor
+	predicates       []predicate.SentinelLibrary
+	withSentinelInfo *SentinelInfoQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -79,28 +76,6 @@ func (slq *SentinelLibraryQuery) QuerySentinelInfo() *SentinelInfoQuery {
 			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, selector),
 			sqlgraph.To(sentinelinfo.Table, sentinelinfo.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, false, sentinellibrary.SentinelInfoTable, sentinellibrary.SentinelInfoColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(slq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QuerySentinelAppBinary chains the current query on the "sentinel_app_binary" edge.
-func (slq *SentinelLibraryQuery) QuerySentinelAppBinary() *SentinelAppBinaryQuery {
-	query := (&SentinelAppBinaryClient{config: slq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := slq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := slq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, selector),
-			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, true, sentinellibrary.SentinelAppBinaryTable, sentinellibrary.SentinelAppBinaryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(slq.driver.Dialect(), step)
 		return fromU, nil
@@ -295,13 +270,12 @@ func (slq *SentinelLibraryQuery) Clone() *SentinelLibraryQuery {
 		return nil
 	}
 	return &SentinelLibraryQuery{
-		config:                slq.config,
-		ctx:                   slq.ctx.Clone(),
-		order:                 append([]sentinellibrary.OrderOption{}, slq.order...),
-		inters:                append([]Interceptor{}, slq.inters...),
-		predicates:            append([]predicate.SentinelLibrary{}, slq.predicates...),
-		withSentinelInfo:      slq.withSentinelInfo.Clone(),
-		withSentinelAppBinary: slq.withSentinelAppBinary.Clone(),
+		config:           slq.config,
+		ctx:              slq.ctx.Clone(),
+		order:            append([]sentinellibrary.OrderOption{}, slq.order...),
+		inters:           append([]Interceptor{}, slq.inters...),
+		predicates:       append([]predicate.SentinelLibrary{}, slq.predicates...),
+		withSentinelInfo: slq.withSentinelInfo.Clone(),
 		// clone intermediate query.
 		sql:  slq.sql.Clone(),
 		path: slq.path,
@@ -316,17 +290,6 @@ func (slq *SentinelLibraryQuery) WithSentinelInfo(opts ...func(*SentinelInfoQuer
 		opt(query)
 	}
 	slq.withSentinelInfo = query
-	return slq
-}
-
-// WithSentinelAppBinary tells the query-builder to eager-load the nodes that are connected to
-// the "sentinel_app_binary" edge. The optional arguments are used to configure the query builder of the edge.
-func (slq *SentinelLibraryQuery) WithSentinelAppBinary(opts ...func(*SentinelAppBinaryQuery)) *SentinelLibraryQuery {
-	query := (&SentinelAppBinaryClient{config: slq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	slq.withSentinelAppBinary = query
 	return slq
 }
 
@@ -408,9 +371,8 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	var (
 		nodes       = []*SentinelLibrary{}
 		_spec       = slq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			slq.withSentinelInfo != nil,
-			slq.withSentinelAppBinary != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -434,15 +396,6 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if query := slq.withSentinelInfo; query != nil {
 		if err := slq.loadSentinelInfo(ctx, query, nodes, nil,
 			func(n *SentinelLibrary, e *SentinelInfo) { n.Edges.SentinelInfo = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := slq.withSentinelAppBinary; query != nil {
-		if err := slq.loadSentinelAppBinary(ctx, query, nodes,
-			func(n *SentinelLibrary) { n.Edges.SentinelAppBinary = []*SentinelAppBinary{} },
-			func(n *SentinelLibrary, e *SentinelAppBinary) {
-				n.Edges.SentinelAppBinary = append(n.Edges.SentinelAppBinary, e)
-			}); err != nil {
 			return nil, err
 		}
 	}
@@ -475,36 +428,6 @@ func (slq *SentinelLibraryQuery) loadSentinelInfo(ctx context.Context, query *Se
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
-	}
-	return nil
-}
-func (slq *SentinelLibraryQuery) loadSentinelAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *SentinelAppBinary)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*SentinelLibrary)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	if len(query.ctx.Fields) > 0 {
-		query.ctx.AppendFieldOnce(sentinelappbinary.FieldSentinelLibraryID)
-	}
-	query.Where(predicate.SentinelAppBinary(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(sentinellibrary.SentinelAppBinaryColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.SentinelLibraryID
-		node, ok := nodeids[fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "sentinel_library_id" returned %v for node %v`, fk, n.ID)
-		}
-		assign(node, n)
 	}
 	return nil
 }
