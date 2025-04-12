@@ -32,6 +32,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
+	"github.com/tuihub/librarian/internal/service/sentinel"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 )
@@ -181,7 +182,8 @@ func wireApp(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.L
 		return nil, nil, err
 	}
 	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
-	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, settings, builtInObserver)
+	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
+	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup3()
 		cleanup2()

@@ -38,6 +38,10 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
@@ -95,6 +99,14 @@ type Client struct {
 	PorterContext *PorterContextClient
 	// PorterInstance is the client for interacting with the PorterInstance builders.
 	PorterInstance *PorterInstanceClient
+	// SentinelAppBinary is the client for interacting with the SentinelAppBinary builders.
+	SentinelAppBinary *SentinelAppBinaryClient
+	// SentinelAppBinaryFile is the client for interacting with the SentinelAppBinaryFile builders.
+	SentinelAppBinaryFile *SentinelAppBinaryFileClient
+	// SentinelInfo is the client for interacting with the SentinelInfo builders.
+	SentinelInfo *SentinelInfoClient
+	// SentinelLibrary is the client for interacting with the SentinelLibrary builders.
+	SentinelLibrary *SentinelLibraryClient
 	// Session is the client for interacting with the Session builders.
 	Session *SessionClient
 	// StoreApp is the client for interacting with the StoreApp builders.
@@ -140,6 +152,10 @@ func (c *Client) init() {
 	c.NotifyTarget = NewNotifyTargetClient(c.config)
 	c.PorterContext = NewPorterContextClient(c.config)
 	c.PorterInstance = NewPorterInstanceClient(c.config)
+	c.SentinelAppBinary = NewSentinelAppBinaryClient(c.config)
+	c.SentinelAppBinaryFile = NewSentinelAppBinaryFileClient(c.config)
+	c.SentinelInfo = NewSentinelInfoClient(c.config)
+	c.SentinelLibrary = NewSentinelLibraryClient(c.config)
 	c.Session = NewSessionClient(c.config)
 	c.StoreApp = NewStoreAppClient(c.config)
 	c.StoreAppBinary = NewStoreAppBinaryClient(c.config)
@@ -236,36 +252,40 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Account:            NewAccountClient(cfg),
-		App:                NewAppClient(cfg),
-		AppAppCategory:     NewAppAppCategoryClient(cfg),
-		AppCategory:        NewAppCategoryClient(cfg),
-		AppInfo:            NewAppInfoClient(cfg),
-		AppRunTime:         NewAppRunTimeClient(cfg),
-		Device:             NewDeviceClient(cfg),
-		Feed:               NewFeedClient(cfg),
-		FeedActionSet:      NewFeedActionSetClient(cfg),
-		FeedConfig:         NewFeedConfigClient(cfg),
-		FeedConfigAction:   NewFeedConfigActionClient(cfg),
-		FeedItem:           NewFeedItemClient(cfg),
-		FeedItemCollection: NewFeedItemCollectionClient(cfg),
-		File:               NewFileClient(cfg),
-		Image:              NewImageClient(cfg),
-		NotifyFlow:         NewNotifyFlowClient(cfg),
-		NotifyFlowSource:   NewNotifyFlowSourceClient(cfg),
-		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
-		NotifySource:       NewNotifySourceClient(cfg),
-		NotifyTarget:       NewNotifyTargetClient(cfg),
-		PorterContext:      NewPorterContextClient(cfg),
-		PorterInstance:     NewPorterInstanceClient(cfg),
-		Session:            NewSessionClient(cfg),
-		StoreApp:           NewStoreAppClient(cfg),
-		StoreAppBinary:     NewStoreAppBinaryClient(cfg),
-		SystemNotification: NewSystemNotificationClient(cfg),
-		Tag:                NewTagClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Account:               NewAccountClient(cfg),
+		App:                   NewAppClient(cfg),
+		AppAppCategory:        NewAppAppCategoryClient(cfg),
+		AppCategory:           NewAppCategoryClient(cfg),
+		AppInfo:               NewAppInfoClient(cfg),
+		AppRunTime:            NewAppRunTimeClient(cfg),
+		Device:                NewDeviceClient(cfg),
+		Feed:                  NewFeedClient(cfg),
+		FeedActionSet:         NewFeedActionSetClient(cfg),
+		FeedConfig:            NewFeedConfigClient(cfg),
+		FeedConfigAction:      NewFeedConfigActionClient(cfg),
+		FeedItem:              NewFeedItemClient(cfg),
+		FeedItemCollection:    NewFeedItemCollectionClient(cfg),
+		File:                  NewFileClient(cfg),
+		Image:                 NewImageClient(cfg),
+		NotifyFlow:            NewNotifyFlowClient(cfg),
+		NotifyFlowSource:      NewNotifyFlowSourceClient(cfg),
+		NotifyFlowTarget:      NewNotifyFlowTargetClient(cfg),
+		NotifySource:          NewNotifySourceClient(cfg),
+		NotifyTarget:          NewNotifyTargetClient(cfg),
+		PorterContext:         NewPorterContextClient(cfg),
+		PorterInstance:        NewPorterInstanceClient(cfg),
+		SentinelAppBinary:     NewSentinelAppBinaryClient(cfg),
+		SentinelAppBinaryFile: NewSentinelAppBinaryFileClient(cfg),
+		SentinelInfo:          NewSentinelInfoClient(cfg),
+		SentinelLibrary:       NewSentinelLibraryClient(cfg),
+		Session:               NewSessionClient(cfg),
+		StoreApp:              NewStoreAppClient(cfg),
+		StoreAppBinary:        NewStoreAppBinaryClient(cfg),
+		SystemNotification:    NewSystemNotificationClient(cfg),
+		Tag:                   NewTagClient(cfg),
+		User:                  NewUserClient(cfg),
 	}, nil
 }
 
@@ -283,36 +303,40 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:                ctx,
-		config:             cfg,
-		Account:            NewAccountClient(cfg),
-		App:                NewAppClient(cfg),
-		AppAppCategory:     NewAppAppCategoryClient(cfg),
-		AppCategory:        NewAppCategoryClient(cfg),
-		AppInfo:            NewAppInfoClient(cfg),
-		AppRunTime:         NewAppRunTimeClient(cfg),
-		Device:             NewDeviceClient(cfg),
-		Feed:               NewFeedClient(cfg),
-		FeedActionSet:      NewFeedActionSetClient(cfg),
-		FeedConfig:         NewFeedConfigClient(cfg),
-		FeedConfigAction:   NewFeedConfigActionClient(cfg),
-		FeedItem:           NewFeedItemClient(cfg),
-		FeedItemCollection: NewFeedItemCollectionClient(cfg),
-		File:               NewFileClient(cfg),
-		Image:              NewImageClient(cfg),
-		NotifyFlow:         NewNotifyFlowClient(cfg),
-		NotifyFlowSource:   NewNotifyFlowSourceClient(cfg),
-		NotifyFlowTarget:   NewNotifyFlowTargetClient(cfg),
-		NotifySource:       NewNotifySourceClient(cfg),
-		NotifyTarget:       NewNotifyTargetClient(cfg),
-		PorterContext:      NewPorterContextClient(cfg),
-		PorterInstance:     NewPorterInstanceClient(cfg),
-		Session:            NewSessionClient(cfg),
-		StoreApp:           NewStoreAppClient(cfg),
-		StoreAppBinary:     NewStoreAppBinaryClient(cfg),
-		SystemNotification: NewSystemNotificationClient(cfg),
-		Tag:                NewTagClient(cfg),
-		User:               NewUserClient(cfg),
+		ctx:                   ctx,
+		config:                cfg,
+		Account:               NewAccountClient(cfg),
+		App:                   NewAppClient(cfg),
+		AppAppCategory:        NewAppAppCategoryClient(cfg),
+		AppCategory:           NewAppCategoryClient(cfg),
+		AppInfo:               NewAppInfoClient(cfg),
+		AppRunTime:            NewAppRunTimeClient(cfg),
+		Device:                NewDeviceClient(cfg),
+		Feed:                  NewFeedClient(cfg),
+		FeedActionSet:         NewFeedActionSetClient(cfg),
+		FeedConfig:            NewFeedConfigClient(cfg),
+		FeedConfigAction:      NewFeedConfigActionClient(cfg),
+		FeedItem:              NewFeedItemClient(cfg),
+		FeedItemCollection:    NewFeedItemCollectionClient(cfg),
+		File:                  NewFileClient(cfg),
+		Image:                 NewImageClient(cfg),
+		NotifyFlow:            NewNotifyFlowClient(cfg),
+		NotifyFlowSource:      NewNotifyFlowSourceClient(cfg),
+		NotifyFlowTarget:      NewNotifyFlowTargetClient(cfg),
+		NotifySource:          NewNotifySourceClient(cfg),
+		NotifyTarget:          NewNotifyTargetClient(cfg),
+		PorterContext:         NewPorterContextClient(cfg),
+		PorterInstance:        NewPorterInstanceClient(cfg),
+		SentinelAppBinary:     NewSentinelAppBinaryClient(cfg),
+		SentinelAppBinaryFile: NewSentinelAppBinaryFileClient(cfg),
+		SentinelInfo:          NewSentinelInfoClient(cfg),
+		SentinelLibrary:       NewSentinelLibraryClient(cfg),
+		Session:               NewSessionClient(cfg),
+		StoreApp:              NewStoreAppClient(cfg),
+		StoreAppBinary:        NewStoreAppBinaryClient(cfg),
+		SystemNotification:    NewSystemNotificationClient(cfg),
+		Tag:                   NewTagClient(cfg),
+		User:                  NewUserClient(cfg),
 	}, nil
 }
 
@@ -346,8 +370,9 @@ func (c *Client) Use(hooks ...Hook) {
 		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
 		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterContext, c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
-		c.SystemNotification, c.Tag, c.User,
+		c.PorterContext, c.PorterInstance, c.SentinelAppBinary,
+		c.SentinelAppBinaryFile, c.SentinelInfo, c.SentinelLibrary, c.Session,
+		c.StoreApp, c.StoreAppBinary, c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Use(hooks...)
 	}
@@ -361,8 +386,9 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
 		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
-		c.PorterContext, c.PorterInstance, c.Session, c.StoreApp, c.StoreAppBinary,
-		c.SystemNotification, c.Tag, c.User,
+		c.PorterContext, c.PorterInstance, c.SentinelAppBinary,
+		c.SentinelAppBinaryFile, c.SentinelInfo, c.SentinelLibrary, c.Session,
+		c.StoreApp, c.StoreAppBinary, c.SystemNotification, c.Tag, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -415,6 +441,14 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.PorterContext.mutate(ctx, m)
 	case *PorterInstanceMutation:
 		return c.PorterInstance.mutate(ctx, m)
+	case *SentinelAppBinaryMutation:
+		return c.SentinelAppBinary.mutate(ctx, m)
+	case *SentinelAppBinaryFileMutation:
+		return c.SentinelAppBinaryFile.mutate(ctx, m)
+	case *SentinelInfoMutation:
+		return c.SentinelInfo.mutate(ctx, m)
+	case *SentinelLibraryMutation:
+		return c.SentinelLibrary.mutate(ctx, m)
 	case *SessionMutation:
 		return c.Session.mutate(ctx, m)
 	case *StoreAppMutation:
@@ -4174,6 +4208,570 @@ func (c *PorterInstanceClient) mutate(ctx context.Context, m *PorterInstanceMuta
 	}
 }
 
+// SentinelAppBinaryClient is a client for the SentinelAppBinary schema.
+type SentinelAppBinaryClient struct {
+	config
+}
+
+// NewSentinelAppBinaryClient returns a client for the SentinelAppBinary from the given config.
+func NewSentinelAppBinaryClient(c config) *SentinelAppBinaryClient {
+	return &SentinelAppBinaryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sentinelappbinary.Hooks(f(g(h())))`.
+func (c *SentinelAppBinaryClient) Use(hooks ...Hook) {
+	c.hooks.SentinelAppBinary = append(c.hooks.SentinelAppBinary, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sentinelappbinary.Intercept(f(g(h())))`.
+func (c *SentinelAppBinaryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SentinelAppBinary = append(c.inters.SentinelAppBinary, interceptors...)
+}
+
+// Create returns a builder for creating a SentinelAppBinary entity.
+func (c *SentinelAppBinaryClient) Create() *SentinelAppBinaryCreate {
+	mutation := newSentinelAppBinaryMutation(c.config, OpCreate)
+	return &SentinelAppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SentinelAppBinary entities.
+func (c *SentinelAppBinaryClient) CreateBulk(builders ...*SentinelAppBinaryCreate) *SentinelAppBinaryCreateBulk {
+	return &SentinelAppBinaryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SentinelAppBinaryClient) MapCreateBulk(slice any, setFunc func(*SentinelAppBinaryCreate, int)) *SentinelAppBinaryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SentinelAppBinaryCreateBulk{err: fmt.Errorf("calling to SentinelAppBinaryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SentinelAppBinaryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SentinelAppBinaryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SentinelAppBinary.
+func (c *SentinelAppBinaryClient) Update() *SentinelAppBinaryUpdate {
+	mutation := newSentinelAppBinaryMutation(c.config, OpUpdate)
+	return &SentinelAppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SentinelAppBinaryClient) UpdateOne(sab *SentinelAppBinary) *SentinelAppBinaryUpdateOne {
+	mutation := newSentinelAppBinaryMutation(c.config, OpUpdateOne, withSentinelAppBinary(sab))
+	return &SentinelAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SentinelAppBinaryClient) UpdateOneID(id int) *SentinelAppBinaryUpdateOne {
+	mutation := newSentinelAppBinaryMutation(c.config, OpUpdateOne, withSentinelAppBinaryID(id))
+	return &SentinelAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SentinelAppBinary.
+func (c *SentinelAppBinaryClient) Delete() *SentinelAppBinaryDelete {
+	mutation := newSentinelAppBinaryMutation(c.config, OpDelete)
+	return &SentinelAppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SentinelAppBinaryClient) DeleteOne(sab *SentinelAppBinary) *SentinelAppBinaryDeleteOne {
+	return c.DeleteOneID(sab.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SentinelAppBinaryClient) DeleteOneID(id int) *SentinelAppBinaryDeleteOne {
+	builder := c.Delete().Where(sentinelappbinary.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SentinelAppBinaryDeleteOne{builder}
+}
+
+// Query returns a query builder for SentinelAppBinary.
+func (c *SentinelAppBinaryClient) Query() *SentinelAppBinaryQuery {
+	return &SentinelAppBinaryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSentinelAppBinary},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SentinelAppBinary entity by its id.
+func (c *SentinelAppBinaryClient) Get(ctx context.Context, id int) (*SentinelAppBinary, error) {
+	return c.Query().Where(sentinelappbinary.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SentinelAppBinaryClient) GetX(ctx context.Context, id int) *SentinelAppBinary {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SentinelAppBinaryClient) Hooks() []Hook {
+	return c.hooks.SentinelAppBinary
+}
+
+// Interceptors returns the client interceptors.
+func (c *SentinelAppBinaryClient) Interceptors() []Interceptor {
+	return c.inters.SentinelAppBinary
+}
+
+func (c *SentinelAppBinaryClient) mutate(ctx context.Context, m *SentinelAppBinaryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SentinelAppBinaryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SentinelAppBinaryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SentinelAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SentinelAppBinaryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SentinelAppBinary mutation op: %q", m.Op())
+	}
+}
+
+// SentinelAppBinaryFileClient is a client for the SentinelAppBinaryFile schema.
+type SentinelAppBinaryFileClient struct {
+	config
+}
+
+// NewSentinelAppBinaryFileClient returns a client for the SentinelAppBinaryFile from the given config.
+func NewSentinelAppBinaryFileClient(c config) *SentinelAppBinaryFileClient {
+	return &SentinelAppBinaryFileClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sentinelappbinaryfile.Hooks(f(g(h())))`.
+func (c *SentinelAppBinaryFileClient) Use(hooks ...Hook) {
+	c.hooks.SentinelAppBinaryFile = append(c.hooks.SentinelAppBinaryFile, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sentinelappbinaryfile.Intercept(f(g(h())))`.
+func (c *SentinelAppBinaryFileClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SentinelAppBinaryFile = append(c.inters.SentinelAppBinaryFile, interceptors...)
+}
+
+// Create returns a builder for creating a SentinelAppBinaryFile entity.
+func (c *SentinelAppBinaryFileClient) Create() *SentinelAppBinaryFileCreate {
+	mutation := newSentinelAppBinaryFileMutation(c.config, OpCreate)
+	return &SentinelAppBinaryFileCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SentinelAppBinaryFile entities.
+func (c *SentinelAppBinaryFileClient) CreateBulk(builders ...*SentinelAppBinaryFileCreate) *SentinelAppBinaryFileCreateBulk {
+	return &SentinelAppBinaryFileCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SentinelAppBinaryFileClient) MapCreateBulk(slice any, setFunc func(*SentinelAppBinaryFileCreate, int)) *SentinelAppBinaryFileCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SentinelAppBinaryFileCreateBulk{err: fmt.Errorf("calling to SentinelAppBinaryFileClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SentinelAppBinaryFileCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SentinelAppBinaryFileCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SentinelAppBinaryFile.
+func (c *SentinelAppBinaryFileClient) Update() *SentinelAppBinaryFileUpdate {
+	mutation := newSentinelAppBinaryFileMutation(c.config, OpUpdate)
+	return &SentinelAppBinaryFileUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SentinelAppBinaryFileClient) UpdateOne(sabf *SentinelAppBinaryFile) *SentinelAppBinaryFileUpdateOne {
+	mutation := newSentinelAppBinaryFileMutation(c.config, OpUpdateOne, withSentinelAppBinaryFile(sabf))
+	return &SentinelAppBinaryFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SentinelAppBinaryFileClient) UpdateOneID(id int) *SentinelAppBinaryFileUpdateOne {
+	mutation := newSentinelAppBinaryFileMutation(c.config, OpUpdateOne, withSentinelAppBinaryFileID(id))
+	return &SentinelAppBinaryFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SentinelAppBinaryFile.
+func (c *SentinelAppBinaryFileClient) Delete() *SentinelAppBinaryFileDelete {
+	mutation := newSentinelAppBinaryFileMutation(c.config, OpDelete)
+	return &SentinelAppBinaryFileDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SentinelAppBinaryFileClient) DeleteOne(sabf *SentinelAppBinaryFile) *SentinelAppBinaryFileDeleteOne {
+	return c.DeleteOneID(sabf.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SentinelAppBinaryFileClient) DeleteOneID(id int) *SentinelAppBinaryFileDeleteOne {
+	builder := c.Delete().Where(sentinelappbinaryfile.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SentinelAppBinaryFileDeleteOne{builder}
+}
+
+// Query returns a query builder for SentinelAppBinaryFile.
+func (c *SentinelAppBinaryFileClient) Query() *SentinelAppBinaryFileQuery {
+	return &SentinelAppBinaryFileQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSentinelAppBinaryFile},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SentinelAppBinaryFile entity by its id.
+func (c *SentinelAppBinaryFileClient) Get(ctx context.Context, id int) (*SentinelAppBinaryFile, error) {
+	return c.Query().Where(sentinelappbinaryfile.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SentinelAppBinaryFileClient) GetX(ctx context.Context, id int) *SentinelAppBinaryFile {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SentinelAppBinaryFileClient) Hooks() []Hook {
+	return c.hooks.SentinelAppBinaryFile
+}
+
+// Interceptors returns the client interceptors.
+func (c *SentinelAppBinaryFileClient) Interceptors() []Interceptor {
+	return c.inters.SentinelAppBinaryFile
+}
+
+func (c *SentinelAppBinaryFileClient) mutate(ctx context.Context, m *SentinelAppBinaryFileMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SentinelAppBinaryFileCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SentinelAppBinaryFileUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SentinelAppBinaryFileUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SentinelAppBinaryFileDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SentinelAppBinaryFile mutation op: %q", m.Op())
+	}
+}
+
+// SentinelInfoClient is a client for the SentinelInfo schema.
+type SentinelInfoClient struct {
+	config
+}
+
+// NewSentinelInfoClient returns a client for the SentinelInfo from the given config.
+func NewSentinelInfoClient(c config) *SentinelInfoClient {
+	return &SentinelInfoClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sentinelinfo.Hooks(f(g(h())))`.
+func (c *SentinelInfoClient) Use(hooks ...Hook) {
+	c.hooks.SentinelInfo = append(c.hooks.SentinelInfo, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sentinelinfo.Intercept(f(g(h())))`.
+func (c *SentinelInfoClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SentinelInfo = append(c.inters.SentinelInfo, interceptors...)
+}
+
+// Create returns a builder for creating a SentinelInfo entity.
+func (c *SentinelInfoClient) Create() *SentinelInfoCreate {
+	mutation := newSentinelInfoMutation(c.config, OpCreate)
+	return &SentinelInfoCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SentinelInfo entities.
+func (c *SentinelInfoClient) CreateBulk(builders ...*SentinelInfoCreate) *SentinelInfoCreateBulk {
+	return &SentinelInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SentinelInfoClient) MapCreateBulk(slice any, setFunc func(*SentinelInfoCreate, int)) *SentinelInfoCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SentinelInfoCreateBulk{err: fmt.Errorf("calling to SentinelInfoClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SentinelInfoCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SentinelInfoCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SentinelInfo.
+func (c *SentinelInfoClient) Update() *SentinelInfoUpdate {
+	mutation := newSentinelInfoMutation(c.config, OpUpdate)
+	return &SentinelInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SentinelInfoClient) UpdateOne(si *SentinelInfo) *SentinelInfoUpdateOne {
+	mutation := newSentinelInfoMutation(c.config, OpUpdateOne, withSentinelInfo(si))
+	return &SentinelInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SentinelInfoClient) UpdateOneID(id model.InternalID) *SentinelInfoUpdateOne {
+	mutation := newSentinelInfoMutation(c.config, OpUpdateOne, withSentinelInfoID(id))
+	return &SentinelInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SentinelInfo.
+func (c *SentinelInfoClient) Delete() *SentinelInfoDelete {
+	mutation := newSentinelInfoMutation(c.config, OpDelete)
+	return &SentinelInfoDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SentinelInfoClient) DeleteOne(si *SentinelInfo) *SentinelInfoDeleteOne {
+	return c.DeleteOneID(si.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SentinelInfoClient) DeleteOneID(id model.InternalID) *SentinelInfoDeleteOne {
+	builder := c.Delete().Where(sentinelinfo.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SentinelInfoDeleteOne{builder}
+}
+
+// Query returns a query builder for SentinelInfo.
+func (c *SentinelInfoClient) Query() *SentinelInfoQuery {
+	return &SentinelInfoQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSentinelInfo},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SentinelInfo entity by its id.
+func (c *SentinelInfoClient) Get(ctx context.Context, id model.InternalID) (*SentinelInfo, error) {
+	return c.Query().Where(sentinelinfo.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SentinelInfoClient) GetX(ctx context.Context, id model.InternalID) *SentinelInfo {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QuerySentinelLibrary queries the sentinel_library edge of a SentinelInfo.
+func (c *SentinelInfoClient) QuerySentinelLibrary(si *SentinelInfo) *SentinelLibraryQuery {
+	query := (&SentinelLibraryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := si.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sentinelinfo.Table, sentinelinfo.FieldID, id),
+			sqlgraph.To(sentinellibrary.Table, sentinellibrary.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, sentinelinfo.SentinelLibraryTable, sentinelinfo.SentinelLibraryColumn),
+		)
+		fromV = sqlgraph.Neighbors(si.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SentinelInfoClient) Hooks() []Hook {
+	return c.hooks.SentinelInfo
+}
+
+// Interceptors returns the client interceptors.
+func (c *SentinelInfoClient) Interceptors() []Interceptor {
+	return c.inters.SentinelInfo
+}
+
+func (c *SentinelInfoClient) mutate(ctx context.Context, m *SentinelInfoMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SentinelInfoCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SentinelInfoUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SentinelInfoUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SentinelInfoDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SentinelInfo mutation op: %q", m.Op())
+	}
+}
+
+// SentinelLibraryClient is a client for the SentinelLibrary schema.
+type SentinelLibraryClient struct {
+	config
+}
+
+// NewSentinelLibraryClient returns a client for the SentinelLibrary from the given config.
+func NewSentinelLibraryClient(c config) *SentinelLibraryClient {
+	return &SentinelLibraryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sentinellibrary.Hooks(f(g(h())))`.
+func (c *SentinelLibraryClient) Use(hooks ...Hook) {
+	c.hooks.SentinelLibrary = append(c.hooks.SentinelLibrary, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sentinellibrary.Intercept(f(g(h())))`.
+func (c *SentinelLibraryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SentinelLibrary = append(c.inters.SentinelLibrary, interceptors...)
+}
+
+// Create returns a builder for creating a SentinelLibrary entity.
+func (c *SentinelLibraryClient) Create() *SentinelLibraryCreate {
+	mutation := newSentinelLibraryMutation(c.config, OpCreate)
+	return &SentinelLibraryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SentinelLibrary entities.
+func (c *SentinelLibraryClient) CreateBulk(builders ...*SentinelLibraryCreate) *SentinelLibraryCreateBulk {
+	return &SentinelLibraryCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SentinelLibraryClient) MapCreateBulk(slice any, setFunc func(*SentinelLibraryCreate, int)) *SentinelLibraryCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SentinelLibraryCreateBulk{err: fmt.Errorf("calling to SentinelLibraryClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SentinelLibraryCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SentinelLibraryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SentinelLibrary.
+func (c *SentinelLibraryClient) Update() *SentinelLibraryUpdate {
+	mutation := newSentinelLibraryMutation(c.config, OpUpdate)
+	return &SentinelLibraryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SentinelLibraryClient) UpdateOne(sl *SentinelLibrary) *SentinelLibraryUpdateOne {
+	mutation := newSentinelLibraryMutation(c.config, OpUpdateOne, withSentinelLibrary(sl))
+	return &SentinelLibraryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SentinelLibraryClient) UpdateOneID(id int) *SentinelLibraryUpdateOne {
+	mutation := newSentinelLibraryMutation(c.config, OpUpdateOne, withSentinelLibraryID(id))
+	return &SentinelLibraryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SentinelLibrary.
+func (c *SentinelLibraryClient) Delete() *SentinelLibraryDelete {
+	mutation := newSentinelLibraryMutation(c.config, OpDelete)
+	return &SentinelLibraryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SentinelLibraryClient) DeleteOne(sl *SentinelLibrary) *SentinelLibraryDeleteOne {
+	return c.DeleteOneID(sl.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SentinelLibraryClient) DeleteOneID(id int) *SentinelLibraryDeleteOne {
+	builder := c.Delete().Where(sentinellibrary.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SentinelLibraryDeleteOne{builder}
+}
+
+// Query returns a query builder for SentinelLibrary.
+func (c *SentinelLibraryClient) Query() *SentinelLibraryQuery {
+	return &SentinelLibraryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSentinelLibrary},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SentinelLibrary entity by its id.
+func (c *SentinelLibraryClient) Get(ctx context.Context, id int) (*SentinelLibrary, error) {
+	return c.Query().Where(sentinellibrary.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SentinelLibraryClient) GetX(ctx context.Context, id int) *SentinelLibrary {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QuerySentinelInfo queries the sentinel_info edge of a SentinelLibrary.
+func (c *SentinelLibraryClient) QuerySentinelInfo(sl *SentinelLibrary) *SentinelInfoQuery {
+	query := (&SentinelInfoClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sl.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, id),
+			sqlgraph.To(sentinelinfo.Table, sentinelinfo.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, sentinellibrary.SentinelInfoTable, sentinellibrary.SentinelInfoColumn),
+		)
+		fromV = sqlgraph.Neighbors(sl.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SentinelLibraryClient) Hooks() []Hook {
+	return c.hooks.SentinelLibrary
+}
+
+// Interceptors returns the client interceptors.
+func (c *SentinelLibraryClient) Interceptors() []Interceptor {
+	return c.inters.SentinelLibrary
+}
+
+func (c *SentinelLibraryClient) mutate(ctx context.Context, m *SentinelLibraryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SentinelLibraryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SentinelLibraryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SentinelLibraryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SentinelLibraryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SentinelLibrary mutation op: %q", m.Op())
+	}
+}
+
 // SessionClient is a client for the Session schema.
 type SessionClient struct {
 	config
@@ -5266,14 +5864,16 @@ type (
 		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
 		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
-		SystemNotification, Tag, User []ent.Hook
+		NotifyTarget, PorterContext, PorterInstance, SentinelAppBinary,
+		SentinelAppBinaryFile, SentinelInfo, SentinelLibrary, Session, StoreApp,
+		StoreAppBinary, SystemNotification, Tag, User []ent.Hook
 	}
 	inters struct {
 		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
 		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
-		NotifyTarget, PorterContext, PorterInstance, Session, StoreApp, StoreAppBinary,
-		SystemNotification, Tag, User []ent.Interceptor
+		NotifyTarget, PorterContext, PorterInstance, SentinelAppBinary,
+		SentinelAppBinaryFile, SentinelInfo, SentinelLibrary, Session, StoreApp,
+		StoreAppBinary, SystemNotification, Tag, User []ent.Interceptor
 	}
 )
