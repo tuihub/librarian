@@ -669,8 +669,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		// update AppBinaryReportSequence
-		err := tx.SentinelInfo.Update().
-			Where(sentinelinfo.IDEQ(sentinelID)).
+		err := tx.SentinelInfo.UpdateOneID(sentinelID).
 			AddAppBinaryReportSequence(1).
 			Exec(ctx)
 		if err != nil {
