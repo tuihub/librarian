@@ -18,7 +18,7 @@ func (g *Gebura) UpsertSentinelInfo(
 		return bizutils.NoPermissionError()
 	}
 	info.ID = claims.UserID
-	err := g.repo.UpsertSentinelInfo(ctx, info)
+	err := g.repo.UpdateSentinelInfo(ctx, info)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

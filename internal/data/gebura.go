@@ -618,49 +618,28 @@ func (g *GeburaRepo) DeleteAppCategory(
 	})
 }
 
-func (g *GeburaRepo) UpsertSentinelInfo(
+func (g *GeburaRepo) UpdateSentinelInfo(
 	ctx context.Context,
 	info *modelgebura.SentinelInfo,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		sInfo, err := tx.SentinelInfo.Query().
-			Where(sentinelinfo.IDEQ(info.ID)).
-			Only(ctx)
-		var libReportSeq int64
-		var appBinaryReportSeq int64
-		if err != nil {
-			if !ent.IsNotFound(err) {
-				return err
-			}
-			libReportSeq = 0
-			appBinaryReportSeq = 0
-		} else {
-			libReportSeq = sInfo.LibraryReportSequence + 1
-			appBinaryReportSeq = sInfo.AppBinaryReportSequence
-		}
-		// upsert sentinel info
-		q := tx.SentinelInfo.Create().
-			SetID(info.ID).
+		// update sentinel info
+		err := tx.SentinelInfo.UpdateOneID(info.ID).
 			SetURL(info.Url).
 			SetAlternativeUrls(info.AlternativeUrls).
 			SetGetTokenPath(info.GetTokenPath).
 			SetDownloadFileBasePath(info.DownloadFileBasePath).
-			SetLibraryReportSequence(libReportSeq).
-			SetAppBinaryReportSequence(appBinaryReportSeq)
-		err = q.OnConflict(sql.ConflictColumns(sentinelinfo.FieldID)).
-			UpdateNewValues().
+			AddLibraryReportSequence(1).
 			Exec(ctx)
 		if err != nil {
 			return err
 		}
 		// upsert libraries
-		if libReportSeq == 0 {
-			sInfo, err = tx.SentinelInfo.Query().
-				Where(sentinelinfo.IDEQ(info.ID)).
-				Only(ctx)
-			if err != nil {
-				return err
-			}
+		sInfo, err := tx.SentinelInfo.Query().
+			Where(sentinelinfo.IDEQ(info.ID)).
+			Only(ctx)
+		if err != nil {
+			return err
 		}
 		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(info.Libraries))
 		for _, lib := range info.Libraries {
