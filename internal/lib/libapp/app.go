@@ -1,7 +1,6 @@
 package libapp
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -47,9 +46,15 @@ const (
 	EnvUserCapacity        Env = "USER_CAPACITY"
 )
 
-func NewAppSettings(id, name, version, protoVersion, date string) (*Settings, error) {
+func NewAppSettings(id, name, version, protoVersion, date, flagConfig, flagData string) (*Settings, error) {
 	var as Settings
-	flags := loadFlags()
+	flags := Flags{
+		ConfPath: flagConfig,
+		DataPath: flagData,
+	}
+	if flags.DataPath == "" {
+		flags.DataPath = "."
+	}
 	if err := checkDataPath(flags.DataPath); err != nil {
 		return nil, err
 	}
@@ -126,18 +131,6 @@ func checkDataPath(path string) error {
 		return fmt.Errorf("%s: Is not a directory", path)
 	}
 	return nil
-}
-
-func loadFlags() Flags {
-	var confPath string
-	var dataPath string
-	flag.StringVar(&confPath, "conf", "", "config path, eg: --conf config.toml")
-	flag.StringVar(&dataPath, "data", ".", "data path, eg: --data /opt/librarian/data")
-	flag.Parse()
-	return Flags{
-		ConfPath: confPath,
-		DataPath: dataPath,
-	}
 }
 
 func loadEnv() (config.Config, error) {

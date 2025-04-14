@@ -2,7 +2,7 @@
 
 // The build tag makes sure the stub is not built in the final build.
 
-package main
+package cmd
 
 import (
 	minerService "github.com/tuihub/librarian/app/miner/pkg/service"
@@ -31,8 +31,7 @@ import (
 	"github.com/google/wire"
 )
 
-// wireApp init kratos application.
-func wireApp(
+func wireServe(
 	[]*model.ConfigDigest,
 	*conf.Librarian_EnableServiceDiscovery,
 	*conf.SephirahServer,

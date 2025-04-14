@@ -3,6 +3,7 @@ package biztiphereth
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
@@ -14,6 +15,35 @@ import (
 
 	"github.com/dchest/captcha"
 )
+
+func (t *Tiphereth) CliCreateUser(ctx context.Context, username, password string, isAdmin bool) error {
+	user := &model.User{
+		ID:       0,
+		Username: username,
+		Password: password,
+		Type:     model.UserTypeNormal,
+		Status:   model.UserStatusActive,
+	}
+	if isAdmin {
+		user.Type = model.UserTypeAdmin
+	}
+	password, err := t.auth.GeneratePassword(user.Password)
+	if err != nil {
+		logger.Infof("generate password failed: %s", err.Error())
+		return fmt.Errorf("generate password failed: %s", err.Error())
+	}
+	user.Password = password
+	id, err := t.id.New()
+	if err != nil {
+		return fmt.Errorf("generate id failed: %s", err.Error())
+	}
+	user.ID = id
+	if err = t.repo.CreateUser(ctx, user, user.ID); err != nil {
+		logger.Infof("repo CreateUser failed: %s", err.Error())
+		return fmt.Errorf("repo CreateUser failed: %s", err.Error())
+	}
+	return nil
+}
 
 func (t *Tiphereth) CreateUser(ctx context.Context, user *model.User) (*model.User, error) {
 	claims := libauth.FromContextAssertUserType(ctx)

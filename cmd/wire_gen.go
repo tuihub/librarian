@@ -4,7 +4,7 @@
 //go:build !wireinject
 // +build !wireinject
 
-package main
+package cmd
 
 import (
 	"github.com/go-kratos/kratos/v2"
@@ -37,10 +37,100 @@ import (
 	"github.com/tuihub/librarian/internal/service/supervisor"
 )
 
-// Injectors from wire.go:
+// Injectors from admin_wire.go:
 
-// wireApp init kratos application.
-func wireApp(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireAdmin(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*biztiphereth.Tiphereth, func(), error) {
+	entClient, cleanup, err := data.NewSQLClient(database, settings)
+	if err != nil {
+		return nil, nil, err
+	}
+	dataData := data.NewData(entClient)
+	tipherethRepo := data.NewTipherethRepo(dataData)
+	libauthAuth, err := libauth.NewAuth(auth)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	builtInObserver, err := libobserve.NewBuiltInObserver()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	libmqMQ, cleanup2, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	netzachRepo := data.NewNetzachRepo(dataData)
+	idGenerator := libidgenerator.NewIDGenerator()
+	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
+	store, err := libcache.NewStore(cache)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
+	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
+	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	libsearchSearch, err := libsearch.NewSearch(search, settings)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	ketherRepo := data.NewKetherRepo(dataData)
+	geburaRepo := data.NewGeburaRepo(dataData)
+	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	map3 := bizkether.NewAppInfoCache(geburaRepo, store)
+	libmqTopic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
+	topic2 := bizkether.NewPullAppInfoTopic(ketherBase, map3, libmqTopic)
+	topic3 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, topic2)
+	topic4 := bizkether.NewPullAccountTopic(ketherBase, topic3)
+	cron, err := libcron.NewCron()
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, idGenerator, libsearchSearch, topic4, cron, key, libcacheMap)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	return tiphereth, func() {
+		cleanup2()
+		cleanup()
+	}, nil
+}
+
+// Injectors from serve_wire.go:
+
+func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*kratos.App, func(), error) {
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err

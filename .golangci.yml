@@ -467,3 +467,5 @@ issues:
         - wrapcheck
     - source: "ProviderSet"
       linters: [ gochecknoglobals ]
+    - path: "cmd"
+      linters: [ exhaustruct ]
