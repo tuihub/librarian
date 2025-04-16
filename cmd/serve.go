@@ -85,7 +85,15 @@ func runCmdServe(ctx *cli.Context) error {
 	stdLogger.Infof("=== Configuring ===")
 	stdLogger.Infof("[Service\t] Name: %s", name)
 	stdLogger.Infof("[Service\t] Version: %s", version)
-	appSettings, err := libapp.NewAppSettings(id, name, version, protoVersion, date, ctx.String(cmdServeFlagConfig), ctx.String(cmdServeFlagData))
+	appSettings, err := libapp.NewAppSettings(
+		id,
+		name,
+		version,
+		protoVersion,
+		date,
+		ctx.String(cmdServeFlagConfig),
+		ctx.String(cmdServeFlagData),
+	)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}

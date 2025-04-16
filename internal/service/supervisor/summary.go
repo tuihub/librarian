@@ -64,7 +64,11 @@ func summarize(
 		res.AccountPlatforms = do(ins.FeatureSummary.AccountPlatforms, resMap.AccountPlatforms, res.AccountPlatforms)
 		res.AppInfoSources = do(ins.FeatureSummary.AppInfoSources, resMap.AppInfoSources, res.AppInfoSources)
 		res.FeedSources = do(ins.FeatureSummary.FeedSources, resMap.FeedSources, res.FeedSources)
-		res.NotifyDestinations = do(ins.FeatureSummary.NotifyDestinations, resMap.NotifyDestinations, res.NotifyDestinations)
+		res.NotifyDestinations = do(
+			ins.FeatureSummary.NotifyDestinations,
+			resMap.NotifyDestinations,
+			res.NotifyDestinations,
+		)
 		res.FeedItemActions = do(ins.FeatureSummary.FeedItemActions, resMap.FeedItemActions, res.FeedItemActions)
 	}
 	return res, resMap

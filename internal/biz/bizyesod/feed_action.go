@@ -50,7 +50,10 @@ func (y *Yesod) UpdateFeedActionSet(ctx context.Context, set *modelyesod.FeedAct
 	return nil
 }
 
-func (y *Yesod) ListFeedActionSets(ctx context.Context, paging model.Paging) ([]*modelyesod.FeedActionSet, int, *errors.Error) {
+func (y *Yesod) ListFeedActionSets(
+	ctx context.Context,
+	paging model.Paging,
+) ([]*modelyesod.FeedActionSet, int, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()

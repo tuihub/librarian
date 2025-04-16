@@ -20,7 +20,7 @@ import (
 // goverter:matchIgnoreCase
 // goverter:ignoreUnexported
 // goverter:extend FromPBInternalID
-type Converter interface {
+type converter interface { //nolint:unused // used by generator
 	// goverter:map . Id
 	ToPBFeed(*Feed) *librarian.Feed
 	// goverter:map ID Id

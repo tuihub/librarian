@@ -81,7 +81,7 @@ const (
 
 func (t *Tiphereth) CreateConfiguredAdmin() {
 	ctx := context.Background()
-	if !(t.app.EnvExist(libapp.EnvDemoMode) || t.app.EnvExist(libapp.EnvCreateAdminUserName)) {
+	if !t.app.EnvExist(libapp.EnvDemoMode) && !t.app.EnvExist(libapp.EnvCreateAdminUserName) {
 		return
 	}
 	user := &model.User{

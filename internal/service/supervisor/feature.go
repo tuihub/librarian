@@ -84,7 +84,10 @@ func (s *Supervisor) HasNotifyDestination(destination *modelsupervisor.FeatureRe
 	return false
 }
 
-func (s *Supervisor) WithNotifyDestination(ctx context.Context, destination *modelsupervisor.FeatureRequest) context.Context {
+func (s *Supervisor) WithNotifyDestination(
+	ctx context.Context,
+	destination *modelsupervisor.FeatureRequest,
+) context.Context {
 	s.featureSummaryRWMu.RLock()
 	defer s.featureSummaryRWMu.RUnlock()
 	if destinations, ok := s.featureSummaryMap.NotifyDestinations.Load(destination.ID); ok {

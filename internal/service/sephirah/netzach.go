@@ -74,7 +74,11 @@ func (s *LibrarianSephirahService) ListNotifyFlows(ctx context.Context, req *sep
 		Flows:  converter.ToPBNotifyFlowList(res),
 	}, nil
 }
-func (s *LibrarianSephirahService) ListSystemNotifications(ctx context.Context, req *sephirah.ListSystemNotificationsRequest) (
+
+func (s *LibrarianSephirahService) ListSystemNotifications(
+	ctx context.Context,
+	req *sephirah.ListSystemNotificationsRequest,
+) (
 	*sephirah.ListSystemNotificationsResponse, error) {
 	res, total, err := s.n.ListSystemNotifications(ctx,
 		model.ToBizPaging(req.GetPaging()),

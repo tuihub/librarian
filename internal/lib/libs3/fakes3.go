@@ -229,19 +229,41 @@ func (m *fakeS3Adapter) GetObject(ctx context.Context, bucketName, objectName st
 	return m.client.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{}) //nolint:exhaustruct // no need
 }
 
-func (m *fakeS3Adapter) PutObject(ctx context.Context, bucketName, objectName string, reader io.Reader, objectSize int64) (minio.UploadInfo, error) {
-	return m.client.PutObject(ctx, bucketName, objectName, reader, objectSize, minio.PutObjectOptions{}) //nolint:exhaustruct // no need
+func (m *fakeS3Adapter) PutObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	reader io.Reader,
+	objectSize int64,
+) (minio.UploadInfo, error) {
+	return m.client.PutObject(
+		ctx,
+		bucketName,
+		objectName,
+		reader,
+		objectSize,
+		minio.PutObjectOptions{}, //nolint:exhaustruct // no need
+	)
 }
 
 func (m *fakeS3Adapter) RemoveObject(ctx context.Context, bucketName, objectName string) error {
-	return m.client.RemoveObject(ctx, bucketName, objectName, minio.RemoveObjectOptions{}) //nolint:exhaustruct // no need
+	return m.client.RemoveObject(
+		ctx,
+		bucketName,
+		objectName,
+		minio.RemoveObjectOptions{}, //nolint:exhaustruct // no need
+	)
 }
 
 func (m *fakeS3Adapter) ListObjects(ctx context.Context, bucketName string) <-chan minio.ObjectInfo {
 	return m.client.ListObjects(ctx, bucketName, minio.ListObjectsOptions{}) //nolint:exhaustruct // no need
 }
 
-func (m *fakeS3Adapter) PresignedGetObject(ctx context.Context, bucketName, objectName string, expires time.Duration, reqParams url.Values) (*url.URL, error) {
+func (m *fakeS3Adapter) PresignedGetObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	expires time.Duration,
+	reqParams url.Values,
+) (*url.URL, error) {
 	// Get the presigned URL from MinIO client
 	presignedURL, err := m.client.PresignedGetObject(ctx, bucketName, objectName, expires, reqParams)
 	if err != nil {
@@ -262,7 +284,11 @@ func (m *fakeS3Adapter) PresignedGetObject(ctx context.Context, bucketName, obje
 	return presignedURL, nil
 }
 
-func (m *fakeS3Adapter) PresignedPutObject(ctx context.Context, bucketName, objectName string, expires time.Duration) (*url.URL, error) {
+func (m *fakeS3Adapter) PresignedPutObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	expires time.Duration,
+) (*url.URL, error) {
 	// Get the presigned URL from MinIO client
 	presignedURL, err := m.client.PresignedPutObject(ctx, bucketName, objectName, expires)
 	if err != nil {

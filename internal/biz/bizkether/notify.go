@@ -209,9 +209,8 @@ func applyFilter( //nolint:gocognit // TODO
 		included := true
 		if len(includes) > 0 {
 			for _, include := range includes {
-				if !(strings.Contains(item.Title, include) ||
-					strings.Contains(item.Description, include) ||
-					strings.Contains(item.Content, include)) {
+				if !strings.Contains(item.Title, include) && !strings.Contains(item.Description, include) &&
+					!strings.Contains(item.Content, include) {
 					included = false
 					continue
 				}

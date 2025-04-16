@@ -151,12 +151,20 @@ func simpleKeywordFilterAction(
 	return item, nil
 }
 
-func keywordFilterAction(ctx context.Context, _ *modelsupervisor.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func keywordFilterAction(
+	ctx context.Context,
+	_ *modelsupervisor.FeatureRequest,
+	item *modelfeed.Item,
+) (*modelfeed.Item, error) {
 	// TODO: impl
 	return item, nil
 }
 
-func descriptionGeneratorAction(_ context.Context, _ *modelsupervisor.FeatureRequest, item *modelfeed.Item) (*modelfeed.Item, error) {
+func descriptionGeneratorAction(
+	_ context.Context,
+	_ *modelsupervisor.FeatureRequest,
+	item *modelfeed.Item,
+) (*modelfeed.Item, error) {
 	if len(item.Description) > 0 {
 		return item, nil
 	}

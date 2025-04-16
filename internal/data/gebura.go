@@ -531,7 +531,11 @@ func (g *GeburaRepo) DeleteAppRunTime(ctx context.Context, userID model.Internal
 	return g.data.db.AppRunTime.DeleteOneID(id).Exec(ctx)
 }
 
-func (g *GeburaRepo) CreateAppCategory(ctx context.Context, userID model.InternalID, ac *modelgebura.AppCategory) error {
+func (g *GeburaRepo) CreateAppCategory(
+	ctx context.Context,
+	userID model.InternalID,
+	ac *modelgebura.AppCategory,
+) error {
 	q := g.data.db.AppCategory.Create().
 		SetID(ac.ID).
 		SetUserID(userID).
@@ -542,7 +546,10 @@ func (g *GeburaRepo) CreateAppCategory(ctx context.Context, userID model.Interna
 	return q.Exec(ctx)
 }
 
-func (g *GeburaRepo) ListAppCategories(ctx context.Context, userID model.InternalID) ([]*modelgebura.AppCategory, error) {
+func (g *GeburaRepo) ListAppCategories(
+	ctx context.Context,
+	userID model.InternalID,
+) ([]*modelgebura.AppCategory, error) {
 	acs, err := g.data.db.AppCategory.Query().
 		WithAppAppCategory().
 		Where(appcategory.UserIDEQ(userID)).
@@ -625,7 +632,7 @@ func (g *GeburaRepo) UpdateSentinelInfo(
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		// update sentinel info
 		err := tx.SentinelInfo.UpdateOneID(info.ID).
-			SetURL(info.Url).
+			SetURL(info.URL).
 			SetAlternativeUrls(info.AlternativeUrls).
 			SetGetTokenPath(info.GetTokenPath).
 			SetDownloadFileBasePath(info.DownloadFileBasePath).

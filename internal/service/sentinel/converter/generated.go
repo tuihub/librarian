@@ -62,7 +62,7 @@ func ToBizSentinelInfo(source *sentinel.ReportSentinelInformationRequest) *model
 	var pModelgeburaSentinelInfo *modelgebura.SentinelInfo
 	if source != nil {
 		var modelgeburaSentinelInfo modelgebura.SentinelInfo
-		modelgeburaSentinelInfo.Url = (*source).Url
+		modelgeburaSentinelInfo.URL = (*source).Url
 		if (*source).UrlAlternatives != nil {
 			modelgeburaSentinelInfo.AlternativeUrls = make([]string, len((*source).UrlAlternatives))
 			for i := 0; i < len((*source).UrlAlternatives); i++ {

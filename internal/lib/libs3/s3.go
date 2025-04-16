@@ -21,10 +21,20 @@ type S3 interface {
 	BucketExists(ctx context.Context, bucketName string) (bool, error)
 	MakeBucket(ctx context.Context, bucketName string) error
 	GetObject(ctx context.Context, bucketName, objectName string) (*minio.Object, error)
-	PutObject(ctx context.Context, bucketName, objectName string, reader io.Reader, objectSize int64) (minio.UploadInfo, error)
+	PutObject(
+		ctx context.Context,
+		bucketName, objectName string,
+		reader io.Reader,
+		objectSize int64,
+	) (minio.UploadInfo, error)
 	RemoveObject(ctx context.Context, bucketName, objectName string) error
 	ListObjects(ctx context.Context, bucketName string) <-chan minio.ObjectInfo
-	PresignedGetObject(ctx context.Context, bucketName, objectName string, expires time.Duration, reqParams url.Values) (*url.URL, error)
+	PresignedGetObject(
+		ctx context.Context,
+		bucketName, objectName string,
+		expires time.Duration,
+		reqParams url.Values,
+	) (*url.URL, error)
 	PresignedPutObject(ctx context.Context, bucketName, objectName string, expires time.Duration) (*url.URL, error)
 }
 

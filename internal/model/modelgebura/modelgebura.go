@@ -108,10 +108,9 @@ type AppCategory struct {
 	AppIDs        []model.InternalID
 }
 
-//nolint:stylecheck // no check for Url
 type SentinelInfo struct {
 	ID                   model.InternalID
-	Url                  string
+	URL                  string
 	AlternativeUrls      []string
 	GetTokenPath         string
 	DownloadFileBasePath string

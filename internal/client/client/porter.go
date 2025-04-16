@@ -43,7 +43,11 @@ func (p *Porter) GetServiceAddresses(ctx context.Context) ([]string, error) {
 	return p.checker.GetAliveInstances()
 }
 
-func NewPorterClient(c *conf.Consul, p *conf.Porter, app *libapp.Settings) (porter.LibrarianPorterServiceClient, error) {
+func NewPorterClient(
+	c *conf.Consul,
+	p *conf.Porter,
+	app *libapp.Settings,
+) (porter.LibrarianPorterServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
 		return nil, err

@@ -149,7 +149,12 @@ func (c *Chesed) ScanImage(ctx context.Context) error {
 		return nil
 	}
 	for _, image := range images {
-		data, err := c.b.PresignedGetObject(ctx, data.BucketDefault, strconv.FormatInt(int64(image.ID), 10), libtime.Day)
+		data, err := c.b.PresignedGetObject(
+			ctx,
+			data.BucketDefault,
+			strconv.FormatInt(int64(image.ID), 10),
+			libtime.Day,
+		)
 		if err != nil {
 			return err
 		}

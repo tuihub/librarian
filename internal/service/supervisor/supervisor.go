@@ -300,10 +300,13 @@ func (s *Supervisor) enablePorterInstance(
 	if instance == nil {
 		return nil, errors.New("instance is nil")
 	}
-	resp, err := s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
-		SephirahId:   s.UUID,
-		RefreshToken: nil,
-	})
+	resp, err := s.porter.EnablePorter(
+		client.WithPorterAddress(ctx, []string{instance.Address}),
+		&porter.EnablePorterRequest{
+			SephirahId:   s.UUID,
+			RefreshToken: nil,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -320,10 +323,13 @@ func (s *Supervisor) enablePorterInstance(
 		if err != nil {
 			return resp, err
 		}
-		resp, err = s.porter.EnablePorter(client.WithPorterAddress(ctx, []string{instance.Address}), &porter.EnablePorterRequest{
-			SephirahId:   s.UUID,
-			RefreshToken: &refreshToken,
-		})
+		resp, err = s.porter.EnablePorter(
+			client.WithPorterAddress(ctx, []string{instance.Address}),
+			&porter.EnablePorterRequest{
+				SephirahId:   s.UUID,
+				RefreshToken: &refreshToken,
+			},
+		)
 	}
 	return resp, err
 }

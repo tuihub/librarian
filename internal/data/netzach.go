@@ -310,7 +310,14 @@ func (n *NetzachRepo) UpsertSystemNotification(
 	).Exec(ctx)
 }
 
-func (n *NetzachRepo) ListSystemNotifications(ctx context.Context, paging model.Paging, userID *model.InternalID, types []modelnetzach.SystemNotificationType, levels []modelnetzach.SystemNotificationLevel, statuses []modelnetzach.SystemNotificationStatus) ([]*modelnetzach.SystemNotification, int64, error) {
+func (n *NetzachRepo) ListSystemNotifications(
+	ctx context.Context,
+	paging model.Paging,
+	userID *model.InternalID,
+	types []modelnetzach.SystemNotificationType,
+	levels []modelnetzach.SystemNotificationLevel,
+	statuses []modelnetzach.SystemNotificationStatus,
+) ([]*modelnetzach.SystemNotification, int64, error) {
 	q := n.data.db.SystemNotification.Query().
 		Order(ent.Desc(systemnotification.FieldUpdatedAt))
 	if userID != nil {

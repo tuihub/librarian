@@ -94,7 +94,7 @@ func NewSQLClient(c *conf.Database, app *libapp.Settings) (*ent.Client, func(), 
 		return nil, func() {}, err
 	}
 	return client, func() {
-		client.Close()
+		_ = client.Close()
 	}, err
 }
 

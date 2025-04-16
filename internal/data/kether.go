@@ -198,7 +198,11 @@ func (k *KetherRepo) UpsertFeed(ctx context.Context, f *modelfeed.Feed) error {
 	})
 }
 
-func (k *KetherRepo) CheckNewFeedItems(ctx context.Context, items []*modelfeed.Item, feedID model.InternalID) ([]string, error) {
+func (k *KetherRepo) CheckNewFeedItems(
+	ctx context.Context,
+	items []*modelfeed.Item,
+	feedID model.InternalID,
+) ([]string, error) {
 	guids := make([]string, 0, len(items))
 	for _, item := range items {
 		guids = append(guids, item.GUID)
@@ -297,7 +301,11 @@ func (k *KetherRepo) GetFeedActions(ctx context.Context, id model.InternalID) ([
 	return converter.ToBizFeedActionSetList(actions), nil
 }
 
-func (k *KetherRepo) GetNotifyTargetItems(ctx context.Context, id model.InternalID, paging model.Paging) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
+func (k *KetherRepo) GetNotifyTargetItems(
+	ctx context.Context,
+	id model.InternalID,
+	paging model.Paging,
+) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
 	var fr *modelsupervisor.FeatureRequest
 	var it []*modelfeed.Item
 	err := k.data.WithTx(ctx, func(tx *ent.Tx) error {

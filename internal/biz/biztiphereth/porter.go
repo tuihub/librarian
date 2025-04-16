@@ -77,7 +77,10 @@ func (t *Tiphereth) UpdatePorterStatus(
 	return nil
 }
 
-func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modelsupervisor.PorterContext) (model.InternalID, error) {
+func (t *Tiphereth) CreatePorterContext(
+	ctx context.Context,
+	context *modelsupervisor.PorterContext,
+) (model.InternalID, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return 0, bizutils.NoPermissionError()
@@ -94,7 +97,10 @@ func (t *Tiphereth) CreatePorterContext(ctx context.Context, context *modelsuper
 	return id, nil
 }
 
-func (t *Tiphereth) ListPorterContexts(ctx context.Context, paging model.Paging) ([]*modelsupervisor.PorterContext, int64, error) {
+func (t *Tiphereth) ListPorterContexts(
+	ctx context.Context,
+	paging model.Paging,
+) ([]*modelsupervisor.PorterContext, int64, error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()

@@ -404,7 +404,10 @@ func (t *TipherethRepo) UpdatePorterStatus(
 	return converter.ToBizPorter(pi), nil
 }
 
-func (t *TipherethRepo) FetchPorterByAddress(ctx context.Context, address string) (*modelsupervisor.PorterInstance, error) {
+func (t *TipherethRepo) FetchPorterByAddress(
+	ctx context.Context,
+	address string,
+) (*modelsupervisor.PorterInstance, error) {
 	p, err := t.data.db.PorterInstance.Query().Where(
 		porterinstance.AddressEQ(address),
 	).Only(ctx)

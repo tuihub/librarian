@@ -54,7 +54,15 @@ func newCmdAdmin() *cli.Command {
 
 func runCmdAdminCreateUser(ctx *cli.Context) error {
 	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
-	appSettings, err := libapp.NewAppSettings(id, name, version, protoVersion, date, ctx.String(cmdServeFlagConfig), ctx.String(cmdServeFlagData))
+	appSettings, err := libapp.NewAppSettings(
+		id,
+		name,
+		version,
+		protoVersion,
+		date,
+		ctx.String(cmdServeFlagConfig),
+		ctx.String(cmdServeFlagData),
+	)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}

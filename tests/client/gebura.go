@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func (c *Client) TestGebura(ctx context.Context) { //nolint:funlen // no need
+func (c *Client) TestGebura(ctx context.Context) {
 	// var appID, appID2 *librarian.InternalID
 	// if resp, err := c.cli.CreateAppInfo(ctx, &pb.CreateAppInfoRequest{AppInfo: &librarian.AppInfo{
 	//	Id:                 nil,

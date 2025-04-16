@@ -562,7 +562,11 @@ func (y *YesodRepo) UpdateFeedActionSet(ctx context.Context, id model.InternalID
 		Exec(ctx)
 }
 
-func (y *YesodRepo) ListFeedActionSets(ctx context.Context, id model.InternalID, paging model.Paging) ([]*modelyesod.FeedActionSet, int, error) {
+func (y *YesodRepo) ListFeedActionSets(
+	ctx context.Context,
+	id model.InternalID,
+	paging model.Paging,
+) ([]*modelyesod.FeedActionSet, int, error) {
 	var res []*modelyesod.FeedActionSet
 	var total int
 	err := y.data.WithTx(ctx, func(tx *ent.Tx) error {

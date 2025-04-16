@@ -54,22 +54,48 @@ func (m *minioAdapter) GetObject(ctx context.Context, bucketName, objectName str
 	return m.client.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{}) //nolint:exhaustruct // no need
 }
 
-func (m *minioAdapter) PutObject(ctx context.Context, bucketName, objectName string, reader io.Reader, objectSize int64) (minio.UploadInfo, error) {
-	return m.client.PutObject(ctx, bucketName, objectName, reader, objectSize, minio.PutObjectOptions{}) //nolint:exhaustruct // no need
+func (m *minioAdapter) PutObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	reader io.Reader,
+	objectSize int64,
+) (minio.UploadInfo, error) {
+	return m.client.PutObject(
+		ctx,
+		bucketName,
+		objectName,
+		reader,
+		objectSize,
+		minio.PutObjectOptions{}, //nolint:exhaustruct // no need
+	)
 }
 
 func (m *minioAdapter) RemoveObject(ctx context.Context, bucketName, objectName string) error {
-	return m.client.RemoveObject(ctx, bucketName, objectName, minio.RemoveObjectOptions{}) //nolint:exhaustruct // no need
+	return m.client.RemoveObject(
+		ctx,
+		bucketName,
+		objectName,
+		minio.RemoveObjectOptions{}, //nolint:exhaustruct // no need
+	)
 }
 
 func (m *minioAdapter) ListObjects(ctx context.Context, bucketName string) <-chan minio.ObjectInfo {
 	return m.client.ListObjects(ctx, bucketName, minio.ListObjectsOptions{}) //nolint:exhaustruct // no need
 }
 
-func (m *minioAdapter) PresignedGetObject(ctx context.Context, bucketName, objectName string, expires time.Duration, reqParams url.Values) (*url.URL, error) {
+func (m *minioAdapter) PresignedGetObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	expires time.Duration,
+	reqParams url.Values,
+) (*url.URL, error) {
 	return m.client.PresignedGetObject(ctx, bucketName, objectName, expires, reqParams)
 }
 
-func (m *minioAdapter) PresignedPutObject(ctx context.Context, bucketName, objectName string, expires time.Duration) (*url.URL, error) {
+func (m *minioAdapter) PresignedPutObject(
+	ctx context.Context,
+	bucketName, objectName string,
+	expires time.Duration,
+) (*url.URL, error) {
 	return m.client.PresignedPutObject(ctx, bucketName, objectName, expires)
 }
