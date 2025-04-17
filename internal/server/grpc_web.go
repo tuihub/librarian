@@ -7,7 +7,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
-	"github.com/tuihub/librarian/internal/lib/libsentry"
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -39,7 +38,6 @@ func NewGrpcWebServer(
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
-	middlewares = append(middlewares, libsentry.Server())
 	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []http.ServerOption{

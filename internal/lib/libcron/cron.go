@@ -11,18 +11,13 @@ import (
 var ProviderSet = wire.NewSet(NewCron)
 
 type Cron struct {
-	scheduler      gocron.Scheduler
-	sentryListener *sentryListener
+	scheduler gocron.Scheduler
 }
 
 func NewCron() (*Cron, error) {
-	sl := newSentryListener()
 	s, err := gocron.NewScheduler(
 		gocron.WithLocation(time.UTC),
 		gocron.WithLogger(newCronLogger()),
-		gocron.WithGlobalJobOptions(
-			gocron.WithEventListeners(sl.EventListeners()...),
-		),
 	)
 
 	if err != nil {
@@ -31,7 +26,6 @@ func NewCron() (*Cron, error) {
 
 	return &Cron{
 		s,
-		sl,
 	}, nil
 }
 
@@ -48,7 +42,6 @@ func (c *Cron) BySeconds(name string, seconds int, jobFunc interface{}, params .
 }
 
 func (c *Cron) Duration(name string, duration time.Duration, jobFunc interface{}, params ...interface{}) error {
-	c.sentryListener.NewDurationJob(name, duration)
 	_, err := c.scheduler.NewJob(
 		gocron.DurationJob(duration),
 		gocron.NewTask(jobFunc, params...),

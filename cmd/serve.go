@@ -9,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
-	"github.com/tuihub/librarian/internal/lib/libsentry"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
@@ -117,11 +116,6 @@ func runCmdServe(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize OTLP client failed: %v", err)
 	}
 
-	err = libsentry.InitSentry(bc.GetSentry())
-	if err != nil {
-		stdLogger.Fatalf("Initialize Sentry client failed: %v", err)
-	}
-
 	app, cleanup, err := wireServe(
 		digests,
 		bc.GetEnableServiceDiscovery(),
@@ -215,12 +209,6 @@ func genConfigDigest(c *conf.Librarian) []*model.ConfigDigest {
 	digests = append(digests, &model.ConfigDigest{
 		Name:    "Consul",
 		Enabled: lo.ToPtr(c.GetConsul() != nil && len(c.GetConsul().GetAddr()) != 0),
-		Driver:  nil,
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "Sentry",
-		Enabled: lo.ToPtr(c.GetSentry() != nil && len(c.GetSentry().GetDsn()) != 0),
 		Driver:  nil,
 		Listen:  nil,
 	})

@@ -52,11 +52,6 @@ message Consul {
   string token = 2;
 }
 
-message Sentry {
-  string dsn = 1;
-  string environment = 2;
-}
-
 message OTLP {
   string protocol = 1;
   string endpoint = 2;

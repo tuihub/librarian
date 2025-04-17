@@ -5,7 +5,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
-	"github.com/tuihub/librarian/internal/lib/libsentry"
 	sentinelpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 
@@ -59,7 +58,6 @@ func NewGRPCServer(
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
-	middlewares = append(middlewares, libsentry.Server())
 	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []grpc.ServerOption{

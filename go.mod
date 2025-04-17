@@ -14,7 +14,6 @@ require (
 	github.com/dchest/captcha v1.1.0
 	github.com/dgraph-io/ristretto v0.2.0
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/getsentry/sentry-go v0.31.1
 	github.com/go-co-op/gocron/v2 v2.16.1
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250321075247-025c2dc2b0ff
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250321075247-025c2dc2b0ff
