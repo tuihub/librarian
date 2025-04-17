@@ -67,25 +67,15 @@ func runCmdAdminCreateUser(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
-	var bc conf.Librarian
+	var bc conf.Config
 	err = appSettings.LoadConfig(&bc)
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	digests := genConfigDigest(&bc)
+	digests := conf.GenConfigDigest(&bc)
 	app, cleanup, err := wireAdmin(
 		digests,
-		bc.GetEnableServiceDiscovery(),
-		bc.GetServer(),
-		bc.GetDatabase(),
-		bc.GetS3(),
-		bc.GetPorter(),
-		bc.GetMiner().GetData(),
-		bc.GetAuth(),
-		bc.GetMq(),
-		bc.GetCache(),
-		bc.GetConsul(),
-		bc.GetSearch(),
+		&bc,
 		appSettings,
 	)
 	if err != nil {

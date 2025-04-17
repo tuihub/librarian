@@ -19,27 +19,17 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 )
 
 func wireAdmin(
-	[]*model.ConfigDigest,
-	*conf.Librarian_EnableServiceDiscovery,
-	*conf.SephirahServer,
-	*conf.Database,
-	*conf.S3,
-	*conf.Porter,
-	*conf.Miner_Data,
-	*conf.Auth,
-	*conf.MQ,
-	*conf.Cache,
-	*conf.Consul,
-	*conf.Search,
+	[]*conf.ConfigDigest,
+	*conf.Config,
 	*libapp.Settings,
 ) (*biztiphereth.Tiphereth, func(), error) {
 	panic(
 		wire.Build(
+			conf.ProviderSet,
 			data.ProviderSet,
 			biz.ProviderSet,
 			client.ProviderSet,

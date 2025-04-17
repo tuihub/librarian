@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libzap"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
@@ -18,7 +17,6 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
-	"github.com/samber/lo"
 	"github.com/urfave/cli/v2"
 	"go.uber.org/zap"
 )
@@ -97,16 +95,16 @@ func runCmdServe(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
-	var bc conf.Librarian
+	var bc conf.Config
 	err = appSettings.LoadConfig(&bc)
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	digests := genConfigDigest(&bc)
+	digests := conf.GenConfigDigest(&bc)
 	logConfigDigest(digests, stdLogger)
 
 	if bc.GetEnableServiceDiscovery() == nil {
-		bc.EnableServiceDiscovery = new(conf.Librarian_EnableServiceDiscovery)
+		bc.EnableServiceDiscovery = new(conf.EnableServiceDiscovery)
 	}
 
 	stdLogger.Infof("=== Initializing ===")
@@ -118,17 +116,7 @@ func runCmdServe(ctx *cli.Context) error {
 
 	app, cleanup, err := wireServe(
 		digests,
-		bc.GetEnableServiceDiscovery(),
-		bc.GetServer(),
-		bc.GetDatabase(),
-		bc.GetS3(),
-		bc.GetPorter(),
-		bc.GetMiner().GetData(),
-		bc.GetAuth(),
-		bc.GetMq(),
-		bc.GetCache(),
-		bc.GetConsul(),
-		bc.GetSearch(),
+		&bc,
 		appSettings,
 	)
 	if err != nil {
@@ -156,7 +144,7 @@ func runCmdServe(ctx *cli.Context) error {
 //}
 
 func minerClientSelector(
-	conf *conf.Librarian_EnableServiceDiscovery,
+	conf *conf.EnableServiceDiscovery,
 	c *conf.Consul,
 	inproc *inprocgrpc.InprocClients,
 	app *libapp.Settings,
@@ -167,62 +155,7 @@ func minerClientSelector(
 	return inproc.Miner, nil
 }
 
-func genConfigDigest(c *conf.Librarian) []*model.ConfigDigest {
-	var digests []*model.ConfigDigest
-
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "Server gRPC",
-		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpc() != nil),
-		Driver:  nil,
-		Listen:  lo.ToPtr(c.GetServer().GetGrpc().GetAddr()),
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "Server gRPC-Web",
-		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpcWeb() != nil),
-		Driver:  nil,
-		Listen:  lo.ToPtr(c.GetServer().GetGrpcWeb().GetAddr()),
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "DB",
-		Enabled: lo.ToPtr(c.GetDatabase() != nil && len(c.GetDatabase().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetDatabase().GetDriver()),
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "MQ",
-		Enabled: lo.ToPtr(c.GetMq() != nil && len(c.GetMq().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetMq().GetDriver()),
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "Cache",
-		Enabled: lo.ToPtr(c.GetCache() != nil && len(c.GetCache().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetCache().GetDriver()),
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "S3",
-		Enabled: lo.ToPtr(c.GetS3() != nil && len(c.GetS3().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetS3().GetDriver()),
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "Consul",
-		Enabled: lo.ToPtr(c.GetConsul() != nil && len(c.GetConsul().GetAddr()) != 0),
-		Driver:  nil,
-		Listen:  nil,
-	})
-	digests = append(digests, &model.ConfigDigest{
-		Name:    "OTLP",
-		Enabled: lo.ToPtr(c.GetOtlp() != nil && len(c.GetOtlp().GetProtocol()) != 0),
-		Driver:  nil,
-		Listen:  nil,
-	})
-
-	return digests
-}
-
-func logConfigDigest(digests []*model.ConfigDigest, logger *zap.SugaredLogger) {
+func logConfigDigest(digests []*conf.ConfigDigest, logger *zap.SugaredLogger) {
 	for _, d := range digests {
 		logger.Info(d.String())
 	}

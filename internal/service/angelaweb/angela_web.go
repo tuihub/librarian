@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -50,7 +51,7 @@ var embedDirLocales embed.FS
 
 func NewAngelaWeb(
 	settings *libapp.Settings,
-	digests []*model.ConfigDigest,
+	digests []*conf.ConfigDigest,
 	auth *libauth.Auth,
 	t *biztiphereth.Tiphereth,
 	userCountCache *libcache.Key[model.UserCount],

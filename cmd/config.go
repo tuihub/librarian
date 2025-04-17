@@ -49,12 +49,12 @@ func runCmdConfigCheck(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
-	var bc conf.Librarian
+	var bc conf.Config
 	err = appSettings.LoadConfig(&bc)
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	digests := genConfigDigest(&bc)
+	digests := conf.GenConfigDigest(&bc)
 	logConfigDigest(digests, stdLogger)
 	stdLogger.Infof("=== Configuration Check Completed ===")
 	return nil

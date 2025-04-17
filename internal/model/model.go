@@ -1,7 +1,6 @@
 package model
 
 import (
-	"fmt"
 	"time"
 
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -55,26 +54,3 @@ const (
 	AccountAppRelationTypeUnspecified AccountAppRelationType = iota
 	AccountAppRelationTypeOwner
 )
-
-type ConfigDigest struct {
-	Name    string
-	Enabled *bool
-	Driver  *string
-	Listen  *string
-}
-
-func (d *ConfigDigest) Status() string {
-	if d.Driver != nil {
-		return fmt.Sprintf("Enable - Driver %s", *d.Driver)
-	} else if d.Listen != nil {
-		return fmt.Sprintf("Enable - Listen on %s", *d.Listen)
-	} else if d.Enabled != nil {
-		return "Enable"
-	} else {
-		return "Disable"
-	}
-}
-
-func (d *ConfigDigest) String() string {
-	return fmt.Sprintf("[%s\t] %s", d.Name, d.Status())
-}

@@ -5,6 +5,62 @@ option go_package = "Librarian/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
+message Config {
+  EnableServiceDiscovery enable_service_discovery = 10;
+
+  SephirahServer server = 1;
+  Database database = 2;
+  S3 s3 = 3;
+  Auth auth = 4;
+  MQ mq = 5;
+  Cache cache = 6;
+  Porter porter = 7;
+  Consul consul = 8;
+  Search search = 11;
+  OTLP otlp = 14;
+
+  Miner miner = 13;
+}
+
+message SephirahServer {
+  message Info {
+    string name = 1;
+    string description = 2;
+    string website_url = 3;
+    string logo_url = 4;
+    string background_url = 5;
+  }
+  GRPC grpc = 1;
+  GRPC grpc_web = 2;
+  Info info = 3;
+}
+
+message Miner {
+  message Server {
+    GRPC grpc = 1;
+  }
+
+  message Data {
+    message OCR {
+      string address = 1;
+    }
+    OCR ocr = 1;
+  }
+  Server server = 1;
+  Data data = 2;
+  Consul consul = 3;
+}
+
+message Porter {
+  repeated string address = 1;
+  repeated string trusted = 2;
+}
+
+message EnableServiceDiscovery {
+  bool porter = 1;
+  bool miner = 2;
+}
+
 message GRPC {
   string network = 1;
   string addr = 2;

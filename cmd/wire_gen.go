@@ -29,7 +29,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/sentinel"
@@ -39,18 +38,23 @@ import (
 
 // Injectors from admin_wire.go:
 
-func wireAdmin(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*biztiphereth.Tiphereth, func(), error) {
+func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.Settings) (*biztiphereth.Tiphereth, func(), error) {
+	database := conf.GetDatabase(config)
 	entClient, cleanup, err := data.NewSQLClient(database, settings)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
+	auth := conf.GetAuth(config)
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
+	porter := conf.GetPorter(config)
+	mq := conf.GetMQ(config)
+	cache := conf.GetCache(config)
 	builtInObserver, err := libobserve.NewBuiltInObserver()
 	if err != nil {
 		cleanup()
@@ -61,6 +65,7 @@ func wireAdmin(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		cleanup()
 		return nil, nil, err
 	}
+	consul := conf.GetConsul(config)
 	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
 	if err != nil {
 		cleanup2()
@@ -90,6 +95,7 @@ func wireAdmin(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		cleanup()
 		return nil, nil, err
 	}
+	search := conf.GetSearch(config)
 	libsearchSearch, err := libsearch.NewSearch(search, settings)
 	if err != nil {
 		cleanup2()
@@ -130,17 +136,23 @@ func wireAdmin(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 
 // Injectors from serve_wire.go:
 
-func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf.Librarian_EnableServiceDiscovery, sephirahServer *conf.SephirahServer, database *conf.Database, s3 *conf.S3, porter *conf.Porter, miner_Data *conf.Miner_Data, auth *conf.Auth, mq *conf.MQ, cache *conf.Cache, consul *conf.Consul, search *conf.Search, settings *libapp.Settings) (*kratos.App, func(), error) {
+func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.Settings) (*kratos.App, func(), error) {
+	sephirahServer := conf.GetServer(config)
+	auth := conf.GetAuth(config)
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
+	database := conf.GetDatabase(config)
 	entClient, cleanup, err := data.NewSQLClient(database, settings)
 	if err != nil {
 		return nil, nil, err
 	}
 	dataData := data.NewData(entClient)
 	ketherRepo := data.NewKetherRepo(dataData)
+	porter := conf.GetPorter(config)
+	mq := conf.GetMQ(config)
+	cache := conf.GetCache(config)
 	builtInObserver, err := libobserve.NewBuiltInObserver()
 	if err != nil {
 		cleanup()
@@ -151,6 +163,7 @@ func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		cleanup()
 		return nil, nil, err
 	}
+	consul := conf.GetConsul(config)
 	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
 	if err != nil {
 		cleanup2()
@@ -182,6 +195,7 @@ func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		return nil, nil, err
 	}
 	geburaRepo := data.NewGeburaRepo(dataData)
+	search := conf.GetSearch(config)
 	libsearchSearch, err := libsearch.NewSearch(search, settings)
 	if err != nil {
 		cleanup2()
@@ -226,6 +240,7 @@ func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map3)
+	s3 := conf.GetS3(config)
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()
@@ -249,6 +264,8 @@ func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		return nil, nil, err
 	}
 	chesedRepo := data.NewChesedRepo(dataData)
+	enableServiceDiscovery := conf.GetEnableServiceDiscovery(config)
+	miner_Data := conf.GetMinerData(config)
 	librarianMinerServiceServer, cleanup3, err := service.NewMinerService(miner_Data, settings)
 	if err != nil {
 		cleanup2()
@@ -256,7 +273,7 @@ func wireServe(arg []*model.ConfigDigest, librarian_EnableServiceDiscovery *conf
 		return nil, nil, err
 	}
 	inprocClients := inprocgrpc.NewInprocClients(librarianMinerServiceServer)
-	librarianMinerServiceClient, err := minerClientSelector(librarian_EnableServiceDiscovery, consul, inprocClients, settings)
+	librarianMinerServiceClient, err := minerClientSelector(enableServiceDiscovery, consul, inprocClients, settings)
 	if err != nil {
 		cleanup3()
 		cleanup2()

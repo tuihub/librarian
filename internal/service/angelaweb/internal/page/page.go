@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
+	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
@@ -16,13 +17,13 @@ import (
 
 type Builder struct {
 	t              *biztiphereth.Tiphereth
-	configDigests  []*model.ConfigDigest
+	configDigests  []*conf.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
 
 func NewBuilder(
 	t *biztiphereth.Tiphereth,
-	configDigests []*model.ConfigDigest,
+	configDigests []*conf.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
 	return &Builder{

@@ -20,7 +20,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
-	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 	"github.com/tuihub/librarian/internal/service/sentinel"
@@ -32,22 +31,13 @@ import (
 )
 
 func wireServe(
-	[]*model.ConfigDigest,
-	*conf.Librarian_EnableServiceDiscovery,
-	*conf.SephirahServer,
-	*conf.Database,
-	*conf.S3,
-	*conf.Porter,
-	*conf.Miner_Data,
-	*conf.Auth,
-	*conf.MQ,
-	*conf.Cache,
-	*conf.Consul,
-	*conf.Search,
+	[]*conf.ConfigDigest,
+	*conf.Config,
 	*libapp.Settings,
 ) (*kratos.App, func(), error) {
 	panic(
 		wire.Build(
+			conf.ProviderSet,
 			minerService.ProviderSet,
 			angelaweb.ProviderSet,
 			data.ProviderSet,
