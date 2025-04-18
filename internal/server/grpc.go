@@ -20,7 +20,7 @@ import (
 
 // NewGRPCServer new a gRPC server.
 func NewGRPCServer(
-	c *conf.SephirahServer,
+	c *conf.Server,
 	auth *libauth.Auth,
 	greeter pb.LibrarianSephirahServiceServer,
 	sentinelserver sentinelpb.LibrarianSentinelServiceServer,
@@ -62,9 +62,6 @@ func NewGRPCServer(
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(middlewares...),
-	}
-	if c.GetGrpc().GetNetwork() != "" {
-		opts = append(opts, grpc.Network(c.GetGrpc().GetNetwork()))
 	}
 	if c.GetGrpc().GetAddr() != "" {
 		opts = append(opts, grpc.Address(c.GetGrpc().GetAddr()))

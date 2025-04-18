@@ -8,16 +8,17 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"path"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/johannesboyne/gofakes3"
@@ -36,27 +37,24 @@ type fakeS3Adapter struct {
 	secretKey string
 }
 
-func newFakeS3Adapter(c *conf.S3) (*fakeS3Adapter, error) {
+func newFakeS3Adapter(c *conf.Storage, app *libapp.Settings) (*fakeS3Adapter, error) {
 	var backend gofakes3.Backend
-	switch c.GetDriver() {
-	case "memory":
+	switch c.Driver {
+	case conf.StorageDriverMemory:
 		backend = s3mem.New()
-	case "file":
-		dir, err := os.Getwd()
-		if err != nil {
-			return nil, err
-		}
+	case conf.StorageDriverFile:
+		var err error
 		backend, err = s3afero.MultiBucket(
 			afero.NewBasePathFs(
 				afero.NewOsFs(),
-				path.Join(dir, "data"),
+				path.Join(app.DataPath, "data"),
 			),
 		)
 		if err != nil {
 			return nil, err
 		}
 	default:
-		return nil, fmt.Errorf("unsupported driver: %s", c.GetDriver())
+		return nil, fmt.Errorf("unsupported driver: %s", c.Driver)
 	}
 	faker := gofakes3.New(backend)
 	handler := faker.Server()
@@ -64,10 +62,13 @@ func newFakeS3Adapter(c *conf.S3) (*fakeS3Adapter, error) {
 	transport := &fakeS3Transport{handler: handler}
 
 	// Create Minio client with our custom transport
-	minioClient, err := minio.New("localhost:9000", &minio.Options{ //nolint:exhaustruct // no need
-		Secure:    false,
-		Transport: transport,
-	})
+	minioClient, err := minio.New(
+		net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+		&minio.Options{ //nolint:exhaustruct // no need
+			Secure:    false,
+			Transport: transport,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -76,9 +77,9 @@ func newFakeS3Adapter(c *conf.S3) (*fakeS3Adapter, error) {
 		client:    minioClient,
 		faker:     faker,
 		ch:        make(chan struct{}),
-		endpoint:  c.GetEndPoint(),
-		accessKey: c.GetAccessKey(),
-		secretKey: c.GetSecretKey(),
+		endpoint:  net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+		accessKey: c.AccessKey,
+		secretKey: c.SecretKey,
 	}, nil
 }
 

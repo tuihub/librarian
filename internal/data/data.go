@@ -2,10 +2,14 @@ package data
 
 import (
 	"context"
+	stdsql "database/sql"
 	"errors"
 	"fmt"
+	"net"
 	"path"
 	"slices"
+	"strconv"
+	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data/internal/ent"
@@ -16,14 +20,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/wire"
 
-	_ "github.com/lib/pq"           // required by ent
-	_ "github.com/mattn/go-sqlite3" // required by ent
+	_ "github.com/jackc/pgx/v5/stdlib" // required by ent
+	_ "github.com/mattn/go-sqlite3"    // required by ent
 )
 
-// ProviderSet is data providers.
 var ProviderSet = wire.NewSet(
 	NewData,
-	NewSQLClient,
+	GetDB,
 	NewTipherethRepo,
 	NewGeburaRepo,
 	NewYesodRepo,
@@ -33,69 +36,65 @@ var ProviderSet = wire.NewSet(
 	NewBinahRepo,
 )
 
-const (
-	driverMemory   = "memory"
-	driverSQLite3  = "sqlite3"
-	driverPostgres = "postgres"
-)
-
-// Data .
 type Data struct {
-	db *ent.Client
+	stdDB *stdsql.DB
+	db    *ent.Client
 }
 
-// NewData .
-func NewData(db *ent.Client) *Data {
-	return &Data{
-		db: db,
-	}
-}
-
-func NewSQLClient(c *conf.Database, app *libapp.Settings) (*ent.Client, func(), error) {
-	var driverName, dataSourceName string
+func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
+	var dataSourceName string
 	if c == nil {
-		c = new(conf.Database)
+		return nil, func() {}, errors.New("database config is nil")
 	}
-	driverName = c.GetDriver()
-	if driverName == "" {
-		logger.Warnf("database driver is empty, using memory mode.")
-		driverName = driverMemory
-	}
+	driverName := c.Driver
 	switch driverName {
-	case driverMemory:
+	case conf.DatabaseDriverMemory:
+		driverName = conf.DatabaseDriverSqlite
 		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
-	case driverSQLite3:
-		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1", path.Join(app.DataPath, "librarian.db"))
-	case driverPostgres:
-		dataSourceName = fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s",
-			c.GetHost(),
-			c.GetPort(),
-			c.GetUser(),
-			c.GetDbname(),
-			c.GetPassword(),
+	case conf.DatabaseDriverSqlite:
+		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1&_journal=WAL", path.Join(app.DataPath, "librarian.db"))
+	case conf.DatabaseDriverPostgres:
+		driverName = "pgx"
+		dataSourceName = fmt.Sprintf("postgres://%s:%s@%s/%s",
+			c.Username,
+			c.Password,
+			net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+			c.DBName,
 		)
-		if c.GetNoSsl() {
-			dataSourceName += " sslmode=disable"
-		}
 	default:
-		return nil, func() {}, errors.New("unsupported sql database")
+		return nil, func() {}, fmt.Errorf("unsupported database driver %s", driverName)
 	}
-	if driverName == driverMemory {
-		driverName = driverSQLite3
-	}
-	client, err := ent.Open(driverName, dataSourceName)
+
+	drv, err := sql.Open(string(driverName), dataSourceName)
 	if err != nil {
 		logger.Errorf("failed opening connection to database: %v", err)
 		return nil, func() {}, err
 	}
+	db := drv.DB()
+
+	db.SetMaxIdleConns(10)  //nolint:mnd // no need
+	db.SetMaxOpenConns(100) //nolint:mnd // no need
+	db.SetConnMaxIdleTime(time.Hour)
+
+	client := ent.NewClient(ent.Driver(drv))
+
 	// Run the auto migration tool.
 	if err = client.Schema.Create(context.Background(), migrate.WithForeignKeys(false)); err != nil {
 		logger.Errorf("failed creating schema resources: %v", err)
 		return nil, func() {}, err
 	}
-	return client, func() {
-		_ = client.Close()
-	}, err
+
+	return &Data{
+			stdDB: db,
+			db:    client,
+		}, func() {
+			_ = client.Close()
+			_ = db.Close()
+		}, nil
+}
+
+func GetDB(data *Data) *stdsql.DB {
+	return data.stdDB
 }
 
 func (data *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {

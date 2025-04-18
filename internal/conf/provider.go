@@ -6,7 +6,7 @@ var ProviderSet = wire.NewSet(
 	GetEnableServiceDiscovery,
 	GetServer,
 	GetDatabase,
-	GetS3,
+	GetStorage,
 	GetPorter,
 	GetMinerData,
 	GetAuth,
@@ -17,35 +17,35 @@ var ProviderSet = wire.NewSet(
 )
 
 func GetEnableServiceDiscovery(c *Config) *EnableServiceDiscovery {
-	return c.GetEnableServiceDiscovery()
+	return c.EnableServiceDiscovery
 }
-func GetServer(c *Config) *SephirahServer {
-	return c.GetServer()
+func GetServer(c *Config) *Server {
+	return c.Server
 }
 func GetDatabase(c *Config) *Database {
-	return c.GetDatabase()
+	return c.Database
 }
-func GetS3(c *Config) *S3 {
-	return c.GetS3()
+func GetStorage(c *Config) *Storage {
+	return c.Storage
 }
 func GetPorter(c *Config) *Porter {
-	return c.GetPorter()
+	return c.Porter
 }
 func GetMinerData(c *Config) *Miner_Data {
-	return c.GetMiner().GetData()
+	return c.Miner.GetData()
 }
 func GetAuth(c *Config) *Auth {
-	return c.GetAuth()
+	return c.Auth
 }
 func GetMQ(c *Config) *MQ {
-	return c.GetMq()
+	return c.MQ
 }
 func GetCache(c *Config) *Cache {
-	return c.GetCache()
+	return c.Cache
 }
 func GetConsul(c *Config) *Consul {
-	return c.GetConsul()
+	return c.Consul
 }
 func GetSearch(c *Config) *Search {
-	return c.GetSearch()
+	return c.Search
 }

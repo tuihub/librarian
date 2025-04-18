@@ -3,7 +3,9 @@ package libs3
 import (
 	"context"
 	"io"
+	"net"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
@@ -17,11 +19,14 @@ type minioAdapter struct {
 	ch     chan struct{}
 }
 
-func newMinioAdapter(c *conf.S3) (*minioAdapter, error) {
-	minioClient, err := minio.New(c.GetEndPoint(), &minio.Options{ //nolint:exhaustruct // no need
-		Creds:  credentials.NewStaticV4(c.GetAccessKey(), c.GetSecretKey(), ""),
-		Secure: c.GetUseSsl(),
-	})
+func newMinioAdapter(c *conf.Storage) (*minioAdapter, error) {
+	minioClient, err := minio.New(
+		net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+		&minio.Options{ //nolint:exhaustruct // no need
+			Creds:  credentials.NewStaticV4(c.AccessKey, c.SecretKey, c.Token),
+			Region: c.Region,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}

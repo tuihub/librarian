@@ -95,28 +95,31 @@ func runCmdServe(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
-	var bc conf.Config
-	err = appSettings.LoadConfig(&bc)
+	bc, err := conf.Load(appSettings.ConfPath)
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	digests := conf.GenConfigDigest(&bc)
+	bc, err = conf.ApplyDeployMode(bc, stdLogger)
+	if err != nil {
+		stdLogger.Fatalf("Apply deploy mode failed: %v", err)
+	}
+	digests := conf.GenConfigDigest(bc)
 	logConfigDigest(digests, stdLogger)
 
-	if bc.GetEnableServiceDiscovery() == nil {
+	if bc.EnableServiceDiscovery == nil {
 		bc.EnableServiceDiscovery = new(conf.EnableServiceDiscovery)
 	}
 
 	stdLogger.Infof("=== Initializing ===")
 
-	err = libobserve.InitOTEL(bc.GetOtlp())
+	err = libobserve.InitOTEL(bc.Otlp)
 	if err != nil {
 		stdLogger.Fatalf("Initialize OTLP client failed: %v", err)
 	}
 
 	app, cleanup, err := wireServe(
 		digests,
-		&bc,
+		bc,
 		appSettings,
 	)
 	if err != nil {

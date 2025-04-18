@@ -22,9 +22,6 @@ func NewGRPCServer(c *conf.Miner_Server, service pb.LibrarianMinerServiceServer,
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(middlewares...),
 	}
-	if c.GetGrpc().GetNetwork() != "" {
-		opts = append(opts, grpc.Network(c.GetGrpc().GetNetwork()))
-	}
 	if c.GetGrpc().GetAddr() != "" {
 		opts = append(opts, grpc.Address(c.GetGrpc().GetAddr()))
 	}

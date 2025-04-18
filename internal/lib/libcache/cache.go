@@ -2,9 +2,10 @@ package libcache
 
 import (
 	"errors"
+	"net"
+	"strconv"
 
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/lib/logger"
 
 	"github.com/dgraph-io/ristretto"
 	"github.com/google/wire"
@@ -17,16 +18,12 @@ func NewStore(c *conf.Cache) (Store, error) {
 	var res Store
 	var err error
 	if c == nil {
-		c = new(conf.Cache)
+		return nil, errors.New("cache config is nil")
 	}
-	if c.GetDriver() == "" {
-		logger.Warnf("cache driver is not set, using memory as default")
-		c.Driver = "memory"
-	}
-	switch c.GetDriver() {
-	case "memory":
+	switch c.Driver {
+	case conf.CacheDriverMemory:
 		res, err = newRistrettoCache()
-	case "redis":
+	case conf.CacheDriverRedis:
 		res = newRedisCache(c)
 	default:
 		return nil, errors.New("unsupported cache driver")
@@ -52,9 +49,9 @@ func newRistrettoCache() (Store, error) {
 
 func newRedisCache(c *conf.Cache) Store {
 	return newRedis(redis.NewClient(&redis.Options{ //nolint:exhaustruct // no need
-		Addr:     c.GetAddr(),
-		DB:       int(c.GetDb()),
-		Username: c.GetUser(),
-		Password: c.GetPassword(),
+		Addr:     net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+		DB:       int(c.DB),
+		Username: c.Username,
+		Password: c.Password,
 	}))
 }

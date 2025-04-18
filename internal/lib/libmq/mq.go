@@ -2,6 +2,7 @@ package libmq
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"time"
@@ -33,7 +34,7 @@ type pubSub struct {
 
 func NewMQ(
 	c *conf.MQ,
-	dbc *conf.Database,
+	db *sql.DB,
 	cachec *conf.Cache,
 	app *libapp.Settings,
 	obs *libobserve.BuiltInObserver,
@@ -41,26 +42,19 @@ func NewMQ(
 	loggerAdapter := newMQLogger()
 	var ps *pubSub
 	if c == nil {
-		c = new(conf.MQ)
+		return nil, func() {}, errors.New("mq config is nil")
 	}
-	if c.GetDriver() == "" {
-		logger.Warnf("mq driver is not set, using memory as default")
-		c.Driver = "memory"
-	}
-	switch c.GetDriver() {
-	case "memory":
+	switch c.Driver {
+	case conf.MQDriverMemory:
 		ps = newGoChannelAdapter(loggerAdapter)
-	case "sql":
-		if dbc == nil || dbc.GetDriver() != "postgres" {
-			return nil, func() {}, errors.New("invalid postgres driver for mq")
-		}
+	case conf.MQDriverSQL:
 		var err error
-		ps, err = newSQLAdapter(dbc, loggerAdapter)
+		ps, err = newSQLAdapter(db, loggerAdapter)
 		if err != nil {
 			return nil, func() {}, err
 		}
-	case "redis":
-		if cachec == nil || cachec.GetDriver() != "redis" {
+	case conf.MQDriverRedis:
+		if cachec == nil || cachec.Driver != conf.CacheDriverRedis {
 			return nil, func() {}, errors.New("invalid redis driver for mq")
 		}
 		var err error
@@ -68,24 +62,26 @@ func NewMQ(
 		if err != nil {
 			return nil, func() {}, err
 		}
+	default:
+		return nil, func() {}, fmt.Errorf("unsupported mq driver: %s", c.Driver)
 	}
 	router, err := message.NewRouter(
 		message.RouterConfig{CloseTimeout: 0},
 		loggerAdapter,
 	)
+	if err != nil {
+		return nil, func() {}, err
+	}
 	router.AddMiddleware(middleware.CorrelationID)
 	if app.EnablePanicRecovery {
 		router.AddMiddleware(middleware.Recoverer)
-	}
-	cleanup := func() {
-		_ = router.Close()
 	}
 	return &MQ{
 		router:    router,
 		pubSub:    ps,
 		topicList: make(map[string]bool),
 		observer:  obs,
-	}, cleanup, err
+	}, func() {}, err
 }
 
 func (a *MQ) Start(ctx context.Context) error {

@@ -34,49 +34,49 @@ func GenConfigDigest(c *Config) []*ConfigDigest {
 
 	digests = append(digests, &ConfigDigest{
 		Name:    "Server gRPC",
-		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpc() != nil),
+		Enabled: lo.ToPtr(c.Server != nil && c.Server.GetGrpc() != nil),
 		Driver:  nil,
-		Listen:  lo.ToPtr(c.GetServer().GetGrpc().GetAddr()),
+		Listen:  lo.ToPtr(c.Server.GetGrpc().GetAddr()),
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "Server gRPC-Web",
-		Enabled: lo.ToPtr(c.GetServer() != nil && c.GetServer().GetGrpcWeb() != nil),
+		Enabled: lo.ToPtr(c.Server != nil && c.Server.GetGrpcWeb() != nil),
 		Driver:  nil,
-		Listen:  lo.ToPtr(c.GetServer().GetGrpcWeb().GetAddr()),
+		Listen:  lo.ToPtr(c.Server.GetGrpcWeb().GetAddr()),
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "DB",
-		Enabled: lo.ToPtr(c.GetDatabase() != nil && len(c.GetDatabase().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetDatabase().GetDriver()),
+		Enabled: lo.ToPtr(c.Database != nil && len(c.Database.Driver) != 0),
+		Driver:  lo.ToPtr(string(c.Database.Driver)),
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "MQ",
-		Enabled: lo.ToPtr(c.GetMq() != nil && len(c.GetMq().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetMq().GetDriver()),
+		Enabled: lo.ToPtr(c.MQ != nil && len(c.MQ.Driver) != 0),
+		Driver:  lo.ToPtr(string(c.MQ.Driver)),
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "Cache",
-		Enabled: lo.ToPtr(c.GetCache() != nil && len(c.GetCache().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetCache().GetDriver()),
+		Enabled: lo.ToPtr(c.Cache != nil && len(c.Cache.Driver) != 0),
+		Driver:  lo.ToPtr(string(c.Cache.Driver)),
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
-		Name:    "S3",
-		Enabled: lo.ToPtr(c.GetS3() != nil && len(c.GetS3().GetDriver()) != 0),
-		Driver:  lo.ToPtr(c.GetS3().GetDriver()),
+		Name:    "Storage",
+		Enabled: lo.ToPtr(c.Storage != nil && len(c.Storage.Driver) != 0),
+		Driver:  lo.ToPtr(string(c.Storage.Driver)),
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "Consul",
-		Enabled: lo.ToPtr(c.GetConsul() != nil && len(c.GetConsul().GetAddr()) != 0),
+		Enabled: lo.ToPtr(c.Consul != nil && len(c.Consul.GetAddr()) != 0),
 		Driver:  nil,
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "OTLP",
-		Enabled: lo.ToPtr(c.GetOtlp() != nil && len(c.GetOtlp().GetProtocol()) != 0),
+		Enabled: lo.ToPtr(c.Otlp != nil && len(c.Otlp.GetProtocol()) != 0),
 		Driver:  nil,
 		Listen:  nil,
 	})

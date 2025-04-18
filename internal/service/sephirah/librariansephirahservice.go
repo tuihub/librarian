@@ -51,14 +51,14 @@ func NewLibrarianSephirahService(
 	s *supervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
-	config *conf.SephirahServer,
+	config *conf.Server,
 ) pb.LibrarianSephirahServiceServer {
 	t.CreateConfiguredAdmin()
 	if config == nil {
-		config = new(conf.SephirahServer)
+		config = new(conf.Server)
 	}
 	if config.GetInfo() == nil {
-		config.Info = new(conf.SephirahServer_Info)
+		config.Info = new(conf.ServerInfo)
 	}
 	res := &LibrarianSephirahService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},

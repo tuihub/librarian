@@ -13,6 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/transport"
 	jwtv5 "github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 type Claims struct {
@@ -109,7 +110,7 @@ func FromContextAssertUserType(ctx context.Context, userTypes ...model.UserType)
 }
 
 func (a *Auth) generateSecret(t ClaimsType) interface{} {
-	return []byte(fmt.Sprintf("%s%d", a.config.GetJwtSecret(), t))
+	return []byte(fmt.Sprintf("%s%d", a.config.TokenSecret, t))
 }
 
 func (a *Auth) GenerateToken(
@@ -122,6 +123,10 @@ func (a *Auth) GenerateToken(
 ) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return "", err
+	}
 
 	claims := Claims{
 		UserID:           uid,
@@ -130,13 +135,13 @@ func (a *Auth) GenerateToken(
 		UserType:         userType,
 		TransferMetadata: transferMetadata,
 		RegisteredClaims: jwtv5.RegisteredClaims{
-			Issuer:    a.config.GetJwtIssuer(),
+			Issuer:    a.config.TokenIssuer,
 			Subject:   "",
 			Audience:  nil,
 			ExpiresAt: jwtv5.NewNumericDate(expireTime),
-			NotBefore: nil,
-			IssuedAt:  nil,
-			ID:        "",
+			NotBefore: jwtv5.NewNumericDate(nowTime),
+			IssuedAt:  jwtv5.NewNumericDate(nowTime),
+			ID:        id.String(),
 		},
 	}
 

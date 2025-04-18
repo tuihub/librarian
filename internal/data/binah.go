@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/logger"
 )
@@ -17,21 +16,13 @@ type BinahRepo struct {
 	buckets map[Bucket]string
 }
 
-func NewBinahRepo(c *conf.S3) (*BinahRepo, error) {
-	if c == nil || len(c.GetDriver()) == 0 {
-		return new(BinahRepo), nil
-	}
-	minioClient, err := libs3.NewS3(c)
-	if err != nil {
-		return nil, err
-	}
-
+func NewBinahRepo(minioClient libs3.S3) (*BinahRepo, error) {
 	bucketName := defaultBucketName()
 	for i, v := range bucketName {
 		if i == BucketUnspecified {
 			continue
 		}
-		if err = initBucket(minioClient, v); err != nil {
+		if err := initBucket(minioClient, v); err != nil {
 			return nil, err
 		}
 	}

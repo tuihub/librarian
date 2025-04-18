@@ -40,11 +40,10 @@ import (
 
 func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.Settings) (*biztiphereth.Tiphereth, func(), error) {
 	database := conf.GetDatabase(config)
-	entClient, cleanup, err := data.NewSQLClient(database, settings)
+	dataData, cleanup, err := data.NewData(database, settings)
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData := data.NewData(entClient)
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	auth := conf.GetAuth(config)
 	libauthAuth, err := libauth.NewAuth(auth)
@@ -54,13 +53,14 @@ func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	}
 	porter := conf.GetPorter(config)
 	mq := conf.GetMQ(config)
+	db := data.GetDB(dataData)
 	cache := conf.GetCache(config)
 	builtInObserver, err := libobserve.NewBuiltInObserver()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	libmqMQ, cleanup2, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
+	libmqMQ, cleanup2, err := libmq.NewMQ(mq, db, cache, settings, builtInObserver)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -137,28 +137,28 @@ func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 // Injectors from serve_wire.go:
 
 func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.Settings) (*kratos.App, func(), error) {
-	sephirahServer := conf.GetServer(config)
+	confServer := conf.GetServer(config)
 	auth := conf.GetAuth(config)
 	libauthAuth, err := libauth.NewAuth(auth)
 	if err != nil {
 		return nil, nil, err
 	}
 	database := conf.GetDatabase(config)
-	entClient, cleanup, err := data.NewSQLClient(database, settings)
+	dataData, cleanup, err := data.NewData(database, settings)
 	if err != nil {
 		return nil, nil, err
 	}
-	dataData := data.NewData(entClient)
 	ketherRepo := data.NewKetherRepo(dataData)
 	porter := conf.GetPorter(config)
 	mq := conf.GetMQ(config)
+	db := data.GetDB(dataData)
 	cache := conf.GetCache(config)
 	builtInObserver, err := libobserve.NewBuiltInObserver()
 	if err != nil {
 		cleanup()
 		return nil, nil, err
 	}
-	libmqMQ, cleanup2, err := libmq.NewMQ(mq, database, cache, settings, builtInObserver)
+	libmqMQ, cleanup2, err := libmq.NewMQ(mq, db, cache, settings, builtInObserver)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -240,7 +240,13 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map3)
-	s3 := conf.GetS3(config)
+	storage := conf.GetStorage(config)
+	s3, err := libs3.NewS3(storage, settings)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
 	binahRepo, err := data.NewBinahRepo(s3)
 	if err != nil {
 		cleanup2()
@@ -288,16 +294,16 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, sephirahServer)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, confServer)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
-	grpcServer, err := server.NewGRPCServer(sephirahServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, settings, builtInObserver)
+	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, settings, builtInObserver)
 	if err != nil {
 		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, sephirahServer, libauthAuth, settings, builtInObserver)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, confServer, libauthAuth, settings, builtInObserver)
 	if err != nil {
 		cleanup3()
 		cleanup2()
@@ -305,14 +311,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	angelaWeb := angelaweb.NewAngelaWeb(settings, arg, libauthAuth, tiphereth, key)
-	libs3S3, err := libs3.NewS3(s3)
-	if err != nil {
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, libs3S3)
+	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3)
 	if err != nil {
 		cleanup3()
 		cleanup2()

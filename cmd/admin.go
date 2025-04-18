@@ -67,15 +67,18 @@ func runCmdAdminCreateUser(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 
-	var bc conf.Config
-	err = appSettings.LoadConfig(&bc)
+	bc, err := conf.Load(appSettings.ConfPath)
 	if err != nil {
 		stdLogger.Fatalf("Load config failed: %v", err)
 	}
-	digests := conf.GenConfigDigest(&bc)
+	bc, err = conf.ApplyDeployMode(bc, stdLogger)
+	if err != nil {
+		stdLogger.Fatalf("Apply deploy mode failed: %v", err)
+	}
+	digests := conf.GenConfigDigest(bc)
 	app, cleanup, err := wireAdmin(
 		digests,
-		&bc,
+		bc,
 		appSettings,
 	)
 	if err != nil {

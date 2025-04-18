@@ -1,9 +1,12 @@
 package libauth
 
 import (
+	"errors"
+
 	"github.com/tuihub/librarian/internal/conf"
 
 	"github.com/google/wire"
+	"github.com/samber/lo"
 )
 
 var ProviderSet = wire.NewSet(NewAuth)
@@ -14,11 +17,7 @@ type Auth struct {
 
 func NewAuth(config *conf.Auth) (*Auth, error) {
 	if config == nil {
-		config = new(conf.Auth)
+		return nil, errors.New("auth config is required")
 	}
-	return &Auth{config: conf.Auth{
-		PasswordSalt: config.GetPasswordSalt(),
-		JwtIssuer:    config.GetJwtIssuer(),
-		JwtSecret:    config.GetJwtSecret(),
-	}}, nil
+	return &Auth{config: lo.FromPtr(config)}, nil
 }

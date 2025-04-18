@@ -1,6 +1,9 @@
 package libmq
 
 import (
+	"net"
+	"strconv"
+
 	"github.com/tuihub/librarian/internal/conf"
 
 	"github.com/ThreeDotsLabs/watermill-redisstream/pkg/redisstream"
@@ -9,10 +12,10 @@ import (
 
 func newRedisAdapter(c *conf.Cache, loggerAdapter *mqLogger) (*pubSub, error) {
 	client := redis.NewClient(&redis.Options{ //nolint:exhaustruct // no need
-		Addr:       c.GetAddr(),
-		DB:         int(c.GetDb()),
-		Username:   c.GetUser(),
-		Password:   c.GetPassword(),
+		Addr:       net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
+		DB:         int(c.DB),
+		Username:   c.Username,
+		Password:   c.Password,
 		MaxRetries: -1, // Use middleware to handle retry
 	})
 	subScriber, err := redisstream.NewSubscriber(

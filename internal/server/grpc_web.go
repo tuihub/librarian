@@ -20,7 +20,7 @@ import (
 
 func NewGrpcWebServer(
 	s *grpc.Server,
-	c *conf.SephirahServer,
+	c *conf.Server,
 	auth *libauth.Auth,
 	app *libapp.Settings,
 	observer *libobserve.BuiltInObserver,
@@ -42,9 +42,6 @@ func NewGrpcWebServer(
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),
-	}
-	if c.GetGrpcWeb().GetNetwork() != "" {
-		opts = append(opts, http.Network(c.GetGrpcWeb().GetNetwork()))
 	}
 	if c.GetGrpcWeb().GetAddr() != "" {
 		opts = append(opts, http.Address(c.GetGrpcWeb().GetAddr()))
