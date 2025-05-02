@@ -2,6 +2,8 @@ package conf
 
 import (
 	"fmt"
+	"net"
+	"strconv"
 
 	"github.com/samber/lo"
 )
@@ -33,16 +35,22 @@ func GenConfigDigest(c *Config) []*ConfigDigest {
 	var digests []*ConfigDigest
 
 	digests = append(digests, &ConfigDigest{
-		Name:    "Server gRPC",
-		Enabled: lo.ToPtr(c.Server != nil && c.Server.GetGrpc() != nil),
+		Name:    "Server Admin",
+		Enabled: lo.ToPtr(c.Server != nil && c.Server.Admin != nil),
 		Driver:  nil,
-		Listen:  lo.ToPtr(c.Server.GetGrpc().GetAddr()),
+		Listen:  lo.ToPtr(net.JoinHostPort(c.Server.Admin.Host, strconv.Itoa(int(c.Server.Admin.Port)))),
 	})
 	digests = append(digests, &ConfigDigest{
-		Name:    "Server gRPC-Web",
-		Enabled: lo.ToPtr(c.Server != nil && c.Server.GetGrpcWeb() != nil),
+		Name:    "Server Main",
+		Enabled: lo.ToPtr(c.Server != nil && c.Server.Main != nil),
 		Driver:  nil,
-		Listen:  lo.ToPtr(c.Server.GetGrpcWeb().GetAddr()),
+		Listen:  lo.ToPtr(net.JoinHostPort(c.Server.Main.Host, strconv.Itoa(int(c.Server.Main.Port)))),
+	})
+	digests = append(digests, &ConfigDigest{
+		Name:    "Server Main-Web",
+		Enabled: lo.ToPtr(c.Server != nil && c.Server.MainWeb != nil),
+		Driver:  nil,
+		Listen:  lo.ToPtr(net.JoinHostPort(c.Server.MainWeb.Host, strconv.Itoa(int(c.Server.MainWeb.Port)))),
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "DB",
@@ -70,13 +78,13 @@ func GenConfigDigest(c *Config) []*ConfigDigest {
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "Consul",
-		Enabled: lo.ToPtr(c.Consul != nil && len(c.Consul.GetAddr()) != 0),
+		Enabled: lo.ToPtr(c.Consul != nil && c.Consul.Port != 0),
 		Driver:  nil,
 		Listen:  nil,
 	})
 	digests = append(digests, &ConfigDigest{
-		Name:    "OTLP",
-		Enabled: lo.ToPtr(c.Otlp != nil && len(c.Otlp.GetProtocol()) != 0),
+		Name:    "OpenTelemetry",
+		Enabled: lo.ToPtr(c.OTLP != nil && len(c.OTLP.Protocol) != 0),
 		Driver:  nil,
 		Listen:  nil,
 	})

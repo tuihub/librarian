@@ -27,6 +27,8 @@ func (a *AngelaWeb) setupRoutes() {
 	api.Get("/porters", a.apiHandler.ListPorters)
 	api.Put("/porters/:id/status", a.apiHandler.UpdatePorterStatus)
 
+	api.Post("/server-info", a.apiHandler.UpdateServerInfo)
+
 	api.Get("/dashboard/stats", a.apiHandler.GetDashboardStats)
 
 	page := a.app.Group("/")
@@ -42,6 +44,7 @@ func (a *AngelaWeb) setupRoutes() {
 	page.Get("/porters", a.pageBuilder.PorterList)
 
 	page.Get("/config", a.pageBuilder.ConfigList)
+	page.Get("/server-info", a.pageBuilder.ServerInfoForm)
 	page.Get("/monitor", monitor.New())
 
 	a.app.Use(a.pageBuilder.NotFound)

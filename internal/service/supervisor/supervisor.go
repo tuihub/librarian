@@ -73,7 +73,7 @@ func NewSupervisor(
 		systemNotify: systemNotify,
 
 		refreshMu:                 sync.Mutex{},
-		trustedAddresses:          c.GetTrusted(),
+		trustedAddresses:          c.Addresses,
 		instanceController:        libtype.NewSyncMap[string, modelsupervisor.PorterInstanceController](),
 		instanceContextController: libtype.NewSyncMap[model.InternalID, modelsupervisor.PorterContextController](),
 		instanceCache:             instanceCache,

@@ -8,7 +8,7 @@ package cmd
 
 import (
 	"github.com/go-kratos/kratos/v2"
-	"github.com/tuihub/librarian/app/miner/pkg/service"
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
@@ -19,7 +19,6 @@ import (
 	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data"
-	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -148,8 +147,21 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	if err != nil {
 		return nil, nil, err
 	}
-	ketherRepo := data.NewKetherRepo(dataData)
+	angelaRepo := data.NewAngelaRepo(dataData)
+	idGenerator := libidgenerator.NewIDGenerator()
+	search := conf.GetSearch(config)
+	libsearchSearch, err := libsearch.NewSearch(search, settings)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	consul := conf.GetConsul(config)
 	porter := conf.GetPorter(config)
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	mq := conf.GetMQ(config)
 	db := data.GetDB(dataData)
 	cache := conf.GetCache(config)
@@ -163,13 +175,6 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	consul := conf.GetConsul(config)
-	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
 	if err != nil {
 		cleanup2()
@@ -177,7 +182,6 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	netzachRepo := data.NewNetzachRepo(dataData)
-	idGenerator := libidgenerator.NewIDGenerator()
 	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
 	tipherethRepo := data.NewTipherethRepo(dataData)
 	store, err := libcache.NewStore(cache)
@@ -194,14 +198,9 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
+	angela := bizangela.NewAngela(angelaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor)
+	ketherRepo := data.NewKetherRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	search := conf.GetSearch(config)
-	libsearchSearch, err := libsearch.NewSearch(search, settings)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
 	if err != nil {
 		cleanup2()
@@ -270,56 +269,35 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	chesedRepo := data.NewChesedRepo(dataData)
-	enableServiceDiscovery := conf.GetEnableServiceDiscovery(config)
-	miner_Data := conf.GetMinerData(config)
-	librarianMinerServiceServer, cleanup3, err := service.NewMinerService(miner_Data, settings)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	inprocClients := inprocgrpc.NewInprocClients(librarianMinerServiceServer)
-	librarianMinerServiceClient, err := minerClientSelector(enableServiceDiscovery, consul, inprocClients, settings)
-	if err != nil {
-		cleanup3()
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	map8 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, idGenerator, libsearchSearch, cron, librarianPorterServiceClient, librarianMinerServiceClient, controlBlock, map8)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, idGenerator, libsearchSearch, cron, librarianPorterServiceClient, controlBlock, map8)
 	if err != nil {
-		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth, confServer)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
 	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, settings, builtInObserver)
 	if err != nil {
-		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	httpServer, err := server.NewGrpcWebServer(grpcServer, confServer, libauthAuth, settings, builtInObserver)
 	if err != nil {
-		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(settings, arg, libauthAuth, tiphereth, key)
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, key)
 	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3)
 	if err != nil {
-		cleanup3()
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	return app, func() {
-		cleanup3()
 		cleanup2()
 		cleanup()
 	}, nil

@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
@@ -11,15 +12,18 @@ import (
 )
 
 type Handler struct {
+	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
 	userCountCache *libcache.Key[model.UserCount]
 }
 
 func NewHandler(
+	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Handler {
 	return &Handler{
+		a:              a,
 		t:              t,
 		userCountCache: userCountCache,
 	}

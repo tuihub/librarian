@@ -19,8 +19,8 @@ type bleveSearcherRepo struct {
 	search map[SearchIndex]bleve.Index
 }
 
-func newBleve(conf *conf.Search, app *libapp.Settings) (map[SearchIndex]bleve.Index, error) {
-	if conf.GetDriver() != "bleve" {
+func newBleve(c *conf.Search, app *libapp.Settings) (map[SearchIndex]bleve.Index, error) {
+	if c.Driver != conf.SearchDriverBleve {
 		return nil, nil //nolint:nilnil //TODO
 	}
 	res := make(map[SearchIndex]bleve.Index)

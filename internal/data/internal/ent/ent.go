@@ -27,6 +27,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
+	"github.com/tuihub/librarian/internal/data/internal/ent/kv"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowtarget"
@@ -119,6 +120,7 @@ func checkColumn(table, column string) error {
 			feeditemcollection.Table:    feeditemcollection.ValidColumn,
 			file.Table:                  file.ValidColumn,
 			image.Table:                 image.ValidColumn,
+			kv.Table:                    kv.ValidColumn,
 			notifyflow.Table:            notifyflow.ValidColumn,
 			notifyflowsource.Table:      notifyflowsource.ValidColumn,
 			notifyflowtarget.Table:      notifyflowtarget.ValidColumn,

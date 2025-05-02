@@ -1,6 +1,0 @@
-server:
-  grpc:
-    addr: 0.0.0.0:10004
-    timeout: 1s
-data:
-  ocr:

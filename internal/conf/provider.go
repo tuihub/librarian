@@ -8,7 +8,6 @@ var ProviderSet = wire.NewSet(
 	GetDatabase,
 	GetStorage,
 	GetPorter,
-	GetMinerData,
 	GetAuth,
 	GetMQ,
 	GetCache,
@@ -30,9 +29,6 @@ func GetStorage(c *Config) *Storage {
 }
 func GetPorter(c *Config) *Porter {
 	return c.Porter
-}
-func GetMinerData(c *Config) *Miner_Data {
-	return c.Miner.GetData()
 }
 func GetAuth(c *Config) *Auth {
 	return c.Auth

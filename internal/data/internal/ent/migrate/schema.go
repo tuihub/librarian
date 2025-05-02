@@ -509,6 +509,28 @@ var (
 			},
 		},
 	}
+	// KvsColumns holds the columns for the "kvs" table.
+	KvsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "bucket", Type: field.TypeString},
+		{Name: "key", Type: field.TypeString},
+		{Name: "value", Type: field.TypeString},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime},
+	}
+	// KvsTable holds the schema information for the "kvs" table.
+	KvsTable = &schema.Table{
+		Name:       "kvs",
+		Columns:    KvsColumns,
+		PrimaryKey: []*schema.Column{KvsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "kv_bucket_key",
+				Unique:  true,
+				Columns: []*schema.Column{KvsColumns[1], KvsColumns[2]},
+			},
+		},
+	}
 	// NotifyFlowsColumns holds the columns for the "notify_flows" table.
 	NotifyFlowsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
@@ -1050,6 +1072,7 @@ var (
 		FeedItemCollectionsTable,
 		FilesTable,
 		ImagesTable,
+		KvsTable,
 		NotifyFlowsTable,
 		NotifyFlowSourcesTable,
 		NotifyFlowTargetsTable,

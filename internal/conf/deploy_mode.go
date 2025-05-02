@@ -3,9 +3,38 @@ package conf
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"go.uber.org/zap"
 )
+
+const (
+	defaultServerHost  = "0.0.0.0"
+	defaultAdminPort   = 9999
+	defaultMainPort    = 10000
+	defaultMainWebPort = 10001
+	defaultTimeout     = 10 * time.Second
+)
+
+func getDefaultServer() *Server {
+	return &Server{
+		Admin: &HTTP{
+			Host:    defaultServerHost,
+			Port:    defaultAdminPort,
+			Timeout: defaultTimeout,
+		},
+		Main: &GRPC{
+			Host:    defaultServerHost,
+			Port:    defaultMainPort,
+			Timeout: defaultTimeout,
+		},
+		MainWeb: &GRPC{
+			Host:    defaultServerHost,
+			Port:    defaultMainWebPort,
+			Timeout: defaultTimeout,
+		},
+	}
+}
 
 func ApplyDeployMode(c *Config, l *zap.SugaredLogger) (*Config, error) {
 	if c == nil {
@@ -34,6 +63,24 @@ func applyDeployModeTemporary(c *Config, l *zap.SugaredLogger) (*Config, error) 
 	}
 	if deployMode := c.DeployMode; deployMode != DeployModeTemporary {
 		return nil, errors.New("deploy mode is not TEMPORARY")
+	}
+
+	// check Server
+	if c.Server == nil {
+		l.Warnf("[Server] not configured, using default server")
+		c.Server = getDefaultServer()
+	}
+	if c.Server.Admin == nil {
+		l.Warnf("[Server] admin server not configured, using default admin server")
+		c.Server.Admin = getDefaultServer().Admin
+	}
+	if c.Server.Main == nil {
+		l.Warnf("[Server] main server not configured, using default main server")
+		c.Server.Main = getDefaultServer().Main
+	}
+	if c.Server.MainWeb == nil {
+		l.Warnf("[Server] main web server not configured, using default main web server")
+		c.Server.MainWeb = getDefaultServer().MainWeb
 	}
 
 	// check Database
@@ -86,6 +133,24 @@ func applyDeployModeMinimize(c *Config, l *zap.SugaredLogger) (*Config, error) {
 	}
 	if deployMode := c.DeployMode; deployMode != DeployModeMinimize {
 		return nil, errors.New("deploy mode is not MINIMIZE")
+	}
+
+	// check Server
+	if c.Server == nil {
+		l.Warnf("[Server] not configured, using default server")
+		c.Server = getDefaultServer()
+	}
+	if c.Server.Admin == nil {
+		l.Warnf("[Server] admin server not configured, using default admin server")
+		c.Server.Admin = getDefaultServer().Admin
+	}
+	if c.Server.Main == nil {
+		l.Warnf("[Server] main server not configured, using default main server")
+		c.Server.Main = getDefaultServer().Main
+	}
+	if c.Server.MainWeb == nil {
+		l.Warnf("[Server] main web server not configured, using default main web server")
+		c.Server.MainWeb = getDefaultServer().MainWeb
 	}
 
 	// check Database
@@ -147,6 +212,24 @@ func applyDeployModeStandard(c *Config, l *zap.SugaredLogger) (*Config, error) {
 		return nil, errors.New("deploy mode is not STANDARD")
 	}
 
+	// check Server
+	if c.Server == nil {
+		l.Errorf("[Server] config required")
+		return nil, errors.New("[Server] config required")
+	}
+	if c.Server.Admin == nil {
+		l.Errorf("[Server] admin server config required")
+		return nil, errors.New("[Server] admin server config required")
+	}
+	if c.Server.Main == nil {
+		l.Errorf("[Server] main server config required")
+		return nil, errors.New("[Server] main server config required")
+	}
+	if c.Server.MainWeb == nil {
+		l.Errorf("[Server] main web server config required")
+		return nil, errors.New("[Server] main web server config required")
+	}
+
 	// check Database
 	if c.Database == nil {
 		l.Errorf("[Database] config required")
@@ -197,12 +280,30 @@ func applyDeployModeStandard(c *Config, l *zap.SugaredLogger) (*Config, error) {
 	return c, nil
 }
 
-func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) {
+func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) { //nolint:funlen // TODO
 	if c == nil {
 		return nil, errors.New("config is nil")
 	}
 	if deployMode := c.DeployMode; deployMode != DeployModeCluster {
 		return nil, errors.New("deploy mode is not CLUSTER")
+	}
+
+	// check Server
+	if c.Server == nil {
+		l.Errorf("[Server] config required")
+		return nil, errors.New("[Server] config required")
+	}
+	if c.Server.Admin == nil {
+		l.Errorf("[Server] admin server config required")
+		return nil, errors.New("[Server] admin server config required")
+	}
+	if c.Server.Main == nil {
+		l.Errorf("[Server] main server config required")
+		return nil, errors.New("[Server] main server config required")
+	}
+	if c.Server.MainWeb == nil {
+		l.Errorf("[Server] main web server config required")
+		return nil, errors.New("[Server] main web server config required")
 	}
 
 	// check Database

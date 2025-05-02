@@ -17,6 +17,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/logger"
 
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/wire"
 
@@ -27,6 +28,7 @@ import (
 var ProviderSet = wire.NewSet(
 	NewData,
 	GetDB,
+	NewAngelaRepo,
 	NewTipherethRepo,
 	NewGeburaRepo,
 	NewYesodRepo,
@@ -47,15 +49,19 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 		return nil, func() {}, errors.New("database config is nil")
 	}
 	driverName := c.Driver
+	var dialectName string
 	switch driverName {
 	case conf.DatabaseDriverMemory:
+		dialectName = dialect.SQLite
 		driverName = conf.DatabaseDriverSqlite
 		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
 	case conf.DatabaseDriverSqlite:
+		dialectName = dialect.SQLite
 		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1&_journal=WAL", path.Join(app.DataPath, "librarian.db"))
 	case conf.DatabaseDriverPostgres:
+		dialectName = dialect.Postgres
 		driverName = "pgx"
-		dataSourceName = fmt.Sprintf("postgres://%s:%s@%s/%s",
+		dataSourceName = fmt.Sprintf("postgresql://%s:%s@%s/%s",
 			c.Username,
 			c.Password,
 			net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port))),
@@ -65,12 +71,12 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 		return nil, func() {}, fmt.Errorf("unsupported database driver %s", driverName)
 	}
 
-	drv, err := sql.Open(string(driverName), dataSourceName)
+	db, err := stdsql.Open(string(driverName), dataSourceName)
 	if err != nil {
 		logger.Errorf("failed opening connection to database: %v", err)
 		return nil, func() {}, err
 	}
-	db := drv.DB()
+	drv := sql.OpenDB(dialectName, db)
 
 	db.SetMaxIdleConns(10)  //nolint:mnd // no need
 	db.SetMaxOpenConns(100) //nolint:mnd // no need
@@ -93,12 +99,12 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 		}, nil
 }
 
-func GetDB(data *Data) *stdsql.DB {
-	return data.stdDB
+func GetDB(d *Data) *stdsql.DB {
+	return d.stdDB
 }
 
-func (data *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {
-	tx, err := data.db.Tx(ctx)
+func (d *Data) WithTx(ctx context.Context, fn func(tx *ent.Tx) error) error {
+	tx, err := d.db.Tx(ctx)
 	if err != nil {
 		return err
 	}

@@ -19,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
+	"github.com/tuihub/librarian/internal/data/internal/ent/kv"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowtarget"
@@ -227,6 +228,18 @@ func init() {
 	imageDescCreatedAt := imageFields[5].Descriptor()
 	// image.DefaultCreatedAt holds the default value on creation for the created_at field.
 	image.DefaultCreatedAt = imageDescCreatedAt.Default.(func() time.Time)
+	kvFields := schema.KV{}.Fields()
+	_ = kvFields
+	// kvDescUpdatedAt is the schema descriptor for updated_at field.
+	kvDescUpdatedAt := kvFields[3].Descriptor()
+	// kv.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	kv.DefaultUpdatedAt = kvDescUpdatedAt.Default.(func() time.Time)
+	// kv.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	kv.UpdateDefaultUpdatedAt = kvDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// kvDescCreatedAt is the schema descriptor for created_at field.
+	kvDescCreatedAt := kvFields[4].Descriptor()
+	// kv.DefaultCreatedAt holds the default value on creation for the created_at field.
+	kv.DefaultCreatedAt = kvDescCreatedAt.Default.(func() time.Time)
 	notifyflowFields := schema.NotifyFlow{}.Fields()
 	_ = notifyflowFields
 	// notifyflowDescUpdatedAt is the schema descriptor for updated_at field.

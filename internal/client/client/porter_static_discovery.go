@@ -21,7 +21,7 @@ func newStaticDiscovery(c *conf.Porter) (*staticDiscovery, error) {
 		c = new(conf.Porter)
 	}
 	var serviceInstances []*registry.ServiceInstance
-	for i, addr := range c.GetAddress() {
+	for i, addr := range c.Addresses {
 		parsed, err := url.Parse(addr)
 		if err != nil {
 			return nil, fmt.Errorf("porter address %s invalid: %w", addr, err)

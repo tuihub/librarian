@@ -25,36 +25,31 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-const (
-	protocolGrpc = "grpc"
-	protocolHTTP = "http"
-)
-
-func InitOTEL(c *conf.OTLP) error {
+func InitOTEL(c *conf.OpenTelemetry) error {
 	if c == nil {
 		return nil
 	}
-	headers, err := parseHeaders(c.GetHeaders())
+	headers, err := parseHeaders(c.Headers)
 	if err != nil {
 		return err
 	}
 	ctx := context.Background()
 	var conn *grpc.ClientConn
-	switch c.GetProtocol() {
-	case protocolGrpc:
+	switch c.Protocol {
+	case conf.OpenTelemetryProtocolGRPC:
 		var grpcOpts []grpc.DialOption
-		if c.GetGrpcInsecure() {
+		if c.GRPCInsecure {
 			grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
 			grpcOpts = append(grpcOpts, grpc.WithPerRPCCredentials(globalHeaders{
 				headers: headers,
-				secure:  !c.GetGrpcInsecure(),
+				secure:  !c.GRPCInsecure,
 			}))
 		}
-		conn, err = grpc.NewClient(c.GetEndpoint(), grpcOpts...)
+		conn, err = grpc.NewClient(c.Endpoint, grpcOpts...)
 		if err != nil {
 			return err
 		}
-	case protocolHTTP:
+	case conf.OpenTelemetryProtocolHTTP:
 	default:
 		return errors.New("invalid protocol")
 	}
@@ -84,18 +79,23 @@ func newPropagator() propagation.TextMapPropagator {
 	return prop
 }
 
-func newTraceProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) (*trace.TracerProvider, error) {
+func newTraceProvider(
+	ctx context.Context,
+	c *conf.OpenTelemetry,
+	conn *grpc.ClientConn,
+) (*trace.TracerProvider, error) {
 	var exporter *otlptrace.Exporter
-	headers, err := parseHeaders(c.GetHeaders())
+	headers, err := parseHeaders(c.Headers)
 	if err != nil {
 		return nil, err
 	}
-	if c.GetProtocol() == protocolHTTP {
+	switch c.Protocol {
+	case conf.OpenTelemetryProtocolHTTP:
 		exporter, err = otlptracehttp.New(ctx,
-			otlptracehttp.WithEndpointURL(c.GetEndpoint()),
+			otlptracehttp.WithEndpointURL(c.Endpoint),
 			otlptracehttp.WithHeaders(headers),
 		)
-	} else if c.GetProtocol() == protocolGrpc {
+	case conf.OpenTelemetryProtocolGRPC:
 		exporter, err = otlptracegrpc.New(ctx,
 			otlptracegrpc.WithGRPCConn(conn),
 		)
@@ -112,18 +112,23 @@ func newTraceProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) 
 	return tp, nil
 }
 
-func newMeterProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) (*metric.MeterProvider, error) {
+func newMeterProvider(
+	ctx context.Context,
+	c *conf.OpenTelemetry,
+	conn *grpc.ClientConn,
+) (*metric.MeterProvider, error) {
 	var exporter metric.Exporter
-	headers, err := parseHeaders(c.GetHeaders())
+	headers, err := parseHeaders(c.Headers)
 	if err != nil {
 		return nil, err
 	}
-	if c.GetProtocol() == protocolHTTP {
+	switch c.Protocol {
+	case conf.OpenTelemetryProtocolHTTP:
 		exporter, err = otlpmetrichttp.New(ctx,
-			otlpmetrichttp.WithEndpointURL(c.GetEndpoint()),
+			otlpmetrichttp.WithEndpointURL(c.Endpoint),
 			otlpmetrichttp.WithHeaders(headers),
 		)
-	} else if c.GetProtocol() == protocolGrpc {
+	case conf.OpenTelemetryProtocolGRPC:
 		exporter, err = otlpmetricgrpc.New(ctx,
 			otlpmetricgrpc.WithGRPCConn(conn),
 		)
@@ -142,18 +147,19 @@ func newMeterProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) 
 	return mp, nil
 }
 
-func newLoggerProvider(ctx context.Context, c *conf.OTLP, conn *grpc.ClientConn) (*log.LoggerProvider, error) {
+func newLoggerProvider(ctx context.Context, c *conf.OpenTelemetry, conn *grpc.ClientConn) (*log.LoggerProvider, error) {
 	var exporter log.Exporter
-	headers, err := parseHeaders(c.GetHeaders())
+	headers, err := parseHeaders(c.Headers)
 	if err != nil {
 		return nil, err
 	}
-	if c.GetProtocol() == protocolHTTP {
+	switch c.Protocol {
+	case conf.OpenTelemetryProtocolHTTP:
 		exporter, err = otlploghttp.New(ctx,
-			otlploghttp.WithEndpointURL(c.GetEndpoint()),
+			otlploghttp.WithEndpointURL(c.Endpoint),
 			otlploghttp.WithHeaders(headers),
 		)
-	} else if c.GetProtocol() == protocolGrpc {
+	case conf.OpenTelemetryProtocolGRPC:
 		exporter, err = otlploggrpc.New(ctx,
 			otlploggrpc.WithGRPCConn(conn),
 		)

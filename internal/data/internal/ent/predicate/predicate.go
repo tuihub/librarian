@@ -51,6 +51,9 @@ type File func(*sql.Selector)
 // Image is the predicate function for image builders.
 type Image func(*sql.Selector)
 
+// KV is the predicate function for kv builders.
+type KV func(*sql.Selector)
+
 // NotifyFlow is the predicate function for notifyflow builders.
 type NotifyFlow func(*sql.Selector)
 

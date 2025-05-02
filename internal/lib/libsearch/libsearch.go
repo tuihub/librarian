@@ -43,16 +43,16 @@ func SearchIndexNameMap() map[SearchIndex]string {
 }
 
 func NewSearch(
-	conf *conf.Search, app *libapp.Settings,
+	c *conf.Search, app *libapp.Settings,
 ) (Search, error) {
-	switch conf.GetDriver() {
-	case "meili":
-		m := newMeili(conf)
+	switch c.Driver {
+	case conf.SearchDriverMeili:
+		m := newMeili(c)
 		return &meiliSearcherRepo{
 			search: m,
 		}, nil
-	case "bleve":
-		b, err := newBleve(conf, app)
+	case conf.SearchDriverBleve:
+		b, err := newBleve(c, app)
 		if err != nil {
 			return nil, err
 		}

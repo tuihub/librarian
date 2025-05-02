@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
@@ -11,9 +12,9 @@ import (
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
+	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	"github.com/tuihub/librarian/internal/service/supervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
@@ -27,7 +28,8 @@ var ProviderSet = wire.NewSet(NewLibrarianSephirahService)
 type LibrarianSephirahService struct {
 	pb.UnimplementedLibrarianSephirahServiceServer
 
-	a    *bizkether.Kether
+	a    *bizangela.Angela
+	k    *bizkether.Kether
 	t    *biztiphereth.Tiphereth
 	g    *bizgebura.Gebura
 	b    *bizbinah.Binah
@@ -37,11 +39,11 @@ type LibrarianSephirahService struct {
 	s    *supervisor.Supervisor
 	app  *libapp.Settings
 	auth *libauth.Auth
-	info *pb.ServerInstanceSummary
 }
 
 func NewLibrarianSephirahService(
-	a *bizkether.Kether,
+	a *bizangela.Angela,
+	k *bizkether.Kether,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	b *bizbinah.Binah,
@@ -51,18 +53,12 @@ func NewLibrarianSephirahService(
 	s *supervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
-	config *conf.Server,
 ) pb.LibrarianSephirahServiceServer {
 	t.CreateConfiguredAdmin()
-	if config == nil {
-		config = new(conf.Server)
-	}
-	if config.GetInfo() == nil {
-		config.Info = new(conf.ServerInfo)
-	}
 	res := &LibrarianSephirahService{
 		UnimplementedLibrarianSephirahServiceServer: pb.UnimplementedLibrarianSephirahServiceServer{},
 		a:    a,
+		k:    k,
 		t:    t,
 		g:    g,
 		b:    b,
@@ -72,14 +68,6 @@ func NewLibrarianSephirahService(
 		s:    s,
 		app:  app,
 		auth: auth,
-		info: nil,
-	}
-	res.info = &pb.ServerInstanceSummary{
-		Name:          config.GetInfo().GetName(),
-		Description:   config.GetInfo().GetDescription(),
-		WebsiteUrl:    config.GetInfo().GetWebsiteUrl(),
-		LogoUrl:       config.GetInfo().GetLogoUrl(),
-		BackgroundUrl: config.GetInfo().GetBackgroundUrl(),
 	}
 	return res
 }
@@ -90,6 +78,10 @@ func (s *LibrarianSephirahService) GetServerInformation(ctx context.Context,
 	featureSummary.FeedItemActions = append(featureSummary.FeedItemActions,
 		converter.ToPBFeatureFlagList(s.y.GetBuiltInFeedActions())...,
 	)
+	info, err := s.a.GetServerInstanceSummary(ctx)
+	if err != nil {
+		info = new(modelangela.ServerInstanceSummary)
+	}
 	return &pb.GetServerInformationResponse{
 		ServerInformation: &pb.ServerInformation{
 			ServerBinarySummary: &pb.ServerBinarySummary{
@@ -102,7 +94,7 @@ func (s *LibrarianSephirahService) GetServerInformation(ctx context.Context,
 			},
 			CurrentTime:           timestamppb.New(time.Now()),
 			FeatureSummary:        featureSummary,
-			ServerInstanceSummary: s.info,
+			ServerInstanceSummary: converter.ToPBServerInstanceSummary(info),
 			StatusReport:          nil,
 		},
 	}, nil

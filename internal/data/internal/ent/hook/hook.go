@@ -189,6 +189,18 @@ func (f ImageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ImageMutation", m)
 }
 
+// The KVFunc type is an adapter to allow the use of ordinary
+// function as KV mutator.
+type KVFunc func(context.Context, *ent.KVMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f KVFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.KVMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.KVMutation", m)
+}
+
 // The NotifyFlowFunc type is an adapter to allow the use of ordinary
 // function as NotifyFlow mutator.
 type NotifyFlowFunc func(context.Context, *ent.NotifyFlowMutation) (ent.Value, error)

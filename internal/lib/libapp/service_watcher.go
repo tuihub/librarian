@@ -2,6 +2,8 @@ package libapp
 
 import (
 	"fmt"
+	"net"
+	"strconv"
 
 	"github.com/tuihub/librarian/internal/conf"
 
@@ -20,8 +22,8 @@ type healthChecker struct {
 func NewHealthChecker(serviceName string, c *conf.Consul) (HealthChecker, error) {
 	config := api.DefaultConfig()
 	if c != nil {
-		config.Address = c.GetAddr()
-		config.Token = c.GetToken()
+		config.Address = net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port)))
+		config.Token = c.Token
 	}
 	client, err := api.NewClient(config)
 	if err != nil {

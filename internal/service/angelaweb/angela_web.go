@@ -5,8 +5,11 @@ import (
 	"embed"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
+	"strconv"
 
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -32,6 +35,7 @@ type AngelaWeb struct {
 	pageBuilder *page.Builder
 	auth        *libauth.Auth
 	app         *fiber.App
+	addr        string
 }
 
 // Embed view
@@ -50,9 +54,11 @@ var embedDirStatic embed.FS
 var embedDirLocales embed.FS
 
 func NewAngelaWeb(
+	c *conf.Server,
 	settings *libapp.Settings,
 	digests []*conf.ConfigDigest,
 	auth *libauth.Auth,
+	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	userCountCache *libcache.Key[model.UserCount],
 ) *AngelaWeb {
@@ -94,15 +100,17 @@ func NewAngelaWeb(
 	fiberlog.SetOutput(io.Discard)
 
 	app := fiber.New(fiber.Config{ //nolint:exhaustruct // no need
-		Views:       viewsEngine,
-		ViewsLayout: "layout/default",
+		Views:                 viewsEngine,
+		ViewsLayout:           "layout/default",
+		DisableStartupMessage: true,
 	})
 
 	res := &AngelaWeb{
-		apiHandler:  api.NewHandler(t, userCountCache),
-		pageBuilder: page.NewBuilder(t, digests, userCountCache),
+		apiHandler:  api.NewHandler(a, t, userCountCache),
+		pageBuilder: page.NewBuilder(a, t, digests, userCountCache),
 		auth:        auth,
 		app:         app,
+		addr:        net.JoinHostPort(c.Admin.Host, strconv.Itoa(int(c.Admin.Port))),
 	}
 	res.setupMiddlewares(settings)
 	res.setupRoutes()
@@ -110,7 +118,7 @@ func NewAngelaWeb(
 }
 
 func (a *AngelaWeb) Start(ctx context.Context) error {
-	return a.app.Listen(":3000")
+	return a.app.Listen(a.addr)
 }
 
 func (a *AngelaWeb) Stop(ctx context.Context) error {

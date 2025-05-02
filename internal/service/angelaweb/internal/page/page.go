@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
 
 	"github.com/gofiber/contrib/fiberi18n/v2"
@@ -16,17 +18,20 @@ import (
 )
 
 type Builder struct {
+	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
 	configDigests  []*conf.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
 
 func NewBuilder(
+	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	configDigests []*conf.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
 	return &Builder{
+		a:              a,
 		t:              t,
 		configDigests:  configDigests,
 		userCountCache: userCountCache,
@@ -163,9 +168,26 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 	}))
 }
 
-// ConfigList renders the configuration digests page.
 func (b *Builder) ConfigList(c *fiber.Ctx) error {
+	// Get server instance summary
+	serverInfo, err := b.a.GetServerInstanceSummary(c.UserContext())
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingServerInfo"))
+	}
+
 	return c.Render("config", addCommonData(c, fiber.Map{
-		"Configs": b.configDigests,
+		"Configs":    b.configDigests,
+		"ServerInfo": serverInfo,
+	}))
+}
+
+func (b *Builder) ServerInfoForm(c *fiber.Ctx) error {
+	serverInfo, err := b.a.GetServerInstanceSummary(c.UserContext())
+	if err != nil {
+		serverInfo = new(modelangela.ServerInstanceSummary)
+	}
+
+	return c.Render("server_info_form", addCommonData(c, fiber.Map{
+		"ServerInfo": serverInfo,
 	}))
 }

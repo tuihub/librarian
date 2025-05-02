@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
-	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -11,7 +9,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
-	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
@@ -50,7 +47,6 @@ func newCmdServe() *cli.Command {
 
 var ProviderSet = wire.NewSet(
 	newApp,
-	minerClientSelector,
 )
 
 func newApp(
@@ -112,7 +108,7 @@ func runCmdServe(ctx *cli.Context) error {
 
 	stdLogger.Infof("=== Initializing ===")
 
-	err = libobserve.InitOTEL(bc.Otlp)
+	err = libobserve.InitOTEL(bc.OTLP)
 	if err != nil {
 		stdLogger.Fatalf("Initialize OTLP client failed: %v", err)
 	}
@@ -146,17 +142,17 @@ func runCmdServe(ctx *cli.Context) error {
 //	return inproc.Mapper, nil
 //}
 
-func minerClientSelector(
-	conf *conf.EnableServiceDiscovery,
-	c *conf.Consul,
-	inproc *inprocgrpc.InprocClients,
-	app *libapp.Settings,
-) (miner.LibrarianMinerServiceClient, error) {
-	if conf.GetMiner() {
-		return client.NewMinerClient(c, app)
-	}
-	return inproc.Miner, nil
-}
+// func minerClientSelector(
+//	conf *conf.EnableServiceDiscovery,
+//	c *conf.Consul,
+//	inproc *inprocgrpc.InprocClients,
+//	app *libapp.Settings,
+// ) (miner.LibrarianMinerServiceClient, error) {
+//	if conf.GetMiner() {
+//		return client.NewMinerClient(c, app)
+//	}
+//	return inproc.Miner, nil
+//}
 
 func logConfigDigest(digests []*conf.ConfigDigest, logger *zap.SugaredLogger) {
 	for _, d := range digests {

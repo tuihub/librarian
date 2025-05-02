@@ -1,0 +1,144 @@
+<div class="max-w-3xl mx-auto p-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            {{localize .Ctx "ServerInfoTitle"}}
+        </h2>
+    </div>
+
+    <form id="serverInfoForm" class="bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 p-6 space-y-6">
+        <div class="grid grid-cols-1 gap-6">
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {{localize .Ctx "ServerName"}}
+                </label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{.ServerInfo.Name}}"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
+                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
+                    transition-colors duration-200"
+                    required
+                >
+            </div>
+
+            <div class="space-y-2">
+                <label for="description" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {{localize .Ctx "ServerDescription"}}
+                </label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="3"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
+                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
+                    transition-colors duration-200"
+                >{{.ServerInfo.Description}}</textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label for="website_url" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {{localize .Ctx "WebsiteURL"}}
+                </label>
+                <input
+                    type="url"
+                    id="website_url"
+                    name="website_url"
+                    value="{{.ServerInfo.WebsiteURL}}"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
+                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
+                    transition-colors duration-200"
+                >
+            </div>
+
+            <div class="space-y-2">
+                <label for="logo_image_url" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {{localize .Ctx "LogoImageURL"}}
+                </label>
+                <input
+                    type="url"
+                    id="logo_image_url"
+                    name="logo_image_url"
+                    value="{{.ServerInfo.LogoImageURL}}"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
+                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
+                    transition-colors duration-200"
+                >
+            </div>
+
+            <div class="space-y-2">
+                <label for="background_image_url" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    {{localize .Ctx "BackgroundImageURL"}}
+                </label>
+                <input
+                    type="url"
+                    id="background_image_url"
+                    name="background_image_url"
+                    value="{{.ServerInfo.BackgroundImageURL}}"
+                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
+                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
+                    transition-colors duration-200"
+                >
+            </div>
+        </div>
+
+        <div class="flex justify-between pt-6 border-t border-slate-200 dark:border-slate-700">
+            <a href="/config" 
+                class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 
+                text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 
+                bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600
+                transition-colors duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                {{localize .Ctx "BackToConfig"}}
+            </a>
+            <button type="submit" 
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg 
+                text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 
+                focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800
+                transition-colors duration-200">
+                {{localize .Ctx "Save"}}
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('serverInfoForm');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('/api/server-info', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            throw new Error(data.message || '{{localize .Ctx "OperationFailed"}}');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Operation successful, redirect to config page
+                    window.location.href = '/config';
+                })
+                .catch(error => {
+                    alert(error.message || '{{localize .Ctx "OperationFailedRetry"}}');
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>

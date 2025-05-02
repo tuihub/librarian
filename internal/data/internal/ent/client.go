@@ -31,6 +31,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/feeditemcollection"
 	"github.com/tuihub/librarian/internal/data/internal/ent/file"
 	"github.com/tuihub/librarian/internal/data/internal/ent/image"
+	"github.com/tuihub/librarian/internal/data/internal/ent/kv"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflow"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowsource"
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifyflowtarget"
@@ -85,6 +86,8 @@ type Client struct {
 	File *FileClient
 	// Image is the client for interacting with the Image builders.
 	Image *ImageClient
+	// KV is the client for interacting with the KV builders.
+	KV *KVClient
 	// NotifyFlow is the client for interacting with the NotifyFlow builders.
 	NotifyFlow *NotifyFlowClient
 	// NotifyFlowSource is the client for interacting with the NotifyFlowSource builders.
@@ -145,6 +148,7 @@ func (c *Client) init() {
 	c.FeedItemCollection = NewFeedItemCollectionClient(c.config)
 	c.File = NewFileClient(c.config)
 	c.Image = NewImageClient(c.config)
+	c.KV = NewKVClient(c.config)
 	c.NotifyFlow = NewNotifyFlowClient(c.config)
 	c.NotifyFlowSource = NewNotifyFlowSourceClient(c.config)
 	c.NotifyFlowTarget = NewNotifyFlowTargetClient(c.config)
@@ -269,6 +273,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		FeedItemCollection:    NewFeedItemCollectionClient(cfg),
 		File:                  NewFileClient(cfg),
 		Image:                 NewImageClient(cfg),
+		KV:                    NewKVClient(cfg),
 		NotifyFlow:            NewNotifyFlowClient(cfg),
 		NotifyFlowSource:      NewNotifyFlowSourceClient(cfg),
 		NotifyFlowTarget:      NewNotifyFlowTargetClient(cfg),
@@ -320,6 +325,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		FeedItemCollection:    NewFeedItemCollectionClient(cfg),
 		File:                  NewFileClient(cfg),
 		Image:                 NewImageClient(cfg),
+		KV:                    NewKVClient(cfg),
 		NotifyFlow:            NewNotifyFlowClient(cfg),
 		NotifyFlowSource:      NewNotifyFlowSourceClient(cfg),
 		NotifyFlowTarget:      NewNotifyFlowTargetClient(cfg),
@@ -368,7 +374,7 @@ func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
 		c.Account, c.App, c.AppAppCategory, c.AppCategory, c.AppInfo, c.AppRunTime,
 		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
-		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.KV, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
 		c.PorterContext, c.PorterInstance, c.SentinelAppBinary,
 		c.SentinelAppBinaryFile, c.SentinelInfo, c.SentinelLibrary, c.Session,
@@ -384,7 +390,7 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
 		c.Account, c.App, c.AppAppCategory, c.AppCategory, c.AppInfo, c.AppRunTime,
 		c.Device, c.Feed, c.FeedActionSet, c.FeedConfig, c.FeedConfigAction,
-		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.NotifyFlow,
+		c.FeedItem, c.FeedItemCollection, c.File, c.Image, c.KV, c.NotifyFlow,
 		c.NotifyFlowSource, c.NotifyFlowTarget, c.NotifySource, c.NotifyTarget,
 		c.PorterContext, c.PorterInstance, c.SentinelAppBinary,
 		c.SentinelAppBinaryFile, c.SentinelInfo, c.SentinelLibrary, c.Session,
@@ -427,6 +433,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.File.mutate(ctx, m)
 	case *ImageMutation:
 		return c.Image.mutate(ctx, m)
+	case *KVMutation:
+		return c.KV.mutate(ctx, m)
 	case *NotifyFlowMutation:
 		return c.NotifyFlow.mutate(ctx, m)
 	case *NotifyFlowSourceMutation:
@@ -2986,6 +2994,139 @@ func (c *ImageClient) mutate(ctx context.Context, m *ImageMutation) (Value, erro
 		return (&ImageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Image mutation op: %q", m.Op())
+	}
+}
+
+// KVClient is a client for the KV schema.
+type KVClient struct {
+	config
+}
+
+// NewKVClient returns a client for the KV from the given config.
+func NewKVClient(c config) *KVClient {
+	return &KVClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `kv.Hooks(f(g(h())))`.
+func (c *KVClient) Use(hooks ...Hook) {
+	c.hooks.KV = append(c.hooks.KV, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `kv.Intercept(f(g(h())))`.
+func (c *KVClient) Intercept(interceptors ...Interceptor) {
+	c.inters.KV = append(c.inters.KV, interceptors...)
+}
+
+// Create returns a builder for creating a KV entity.
+func (c *KVClient) Create() *KVCreate {
+	mutation := newKVMutation(c.config, OpCreate)
+	return &KVCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of KV entities.
+func (c *KVClient) CreateBulk(builders ...*KVCreate) *KVCreateBulk {
+	return &KVCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *KVClient) MapCreateBulk(slice any, setFunc func(*KVCreate, int)) *KVCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &KVCreateBulk{err: fmt.Errorf("calling to KVClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*KVCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &KVCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for KV.
+func (c *KVClient) Update() *KVUpdate {
+	mutation := newKVMutation(c.config, OpUpdate)
+	return &KVUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *KVClient) UpdateOne(k *KV) *KVUpdateOne {
+	mutation := newKVMutation(c.config, OpUpdateOne, withKV(k))
+	return &KVUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *KVClient) UpdateOneID(id int) *KVUpdateOne {
+	mutation := newKVMutation(c.config, OpUpdateOne, withKVID(id))
+	return &KVUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for KV.
+func (c *KVClient) Delete() *KVDelete {
+	mutation := newKVMutation(c.config, OpDelete)
+	return &KVDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *KVClient) DeleteOne(k *KV) *KVDeleteOne {
+	return c.DeleteOneID(k.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *KVClient) DeleteOneID(id int) *KVDeleteOne {
+	builder := c.Delete().Where(kv.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &KVDeleteOne{builder}
+}
+
+// Query returns a query builder for KV.
+func (c *KVClient) Query() *KVQuery {
+	return &KVQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeKV},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a KV entity by its id.
+func (c *KVClient) Get(ctx context.Context, id int) (*KV, error) {
+	return c.Query().Where(kv.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *KVClient) GetX(ctx context.Context, id int) *KV {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *KVClient) Hooks() []Hook {
+	return c.hooks.KV
+}
+
+// Interceptors returns the client interceptors.
+func (c *KVClient) Interceptors() []Interceptor {
+	return c.inters.KV
+}
+
+func (c *KVClient) mutate(ctx context.Context, m *KVMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&KVCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&KVUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&KVUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&KVDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown KV mutation op: %q", m.Op())
 	}
 }
 
@@ -5863,7 +6004,7 @@ type (
 	hooks struct {
 		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
-		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		File, Image, KV, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
 		NotifyTarget, PorterContext, PorterInstance, SentinelAppBinary,
 		SentinelAppBinaryFile, SentinelInfo, SentinelLibrary, Session, StoreApp,
 		StoreAppBinary, SystemNotification, Tag, User []ent.Hook
@@ -5871,7 +6012,7 @@ type (
 	inters struct {
 		Account, App, AppAppCategory, AppCategory, AppInfo, AppRunTime, Device, Feed,
 		FeedActionSet, FeedConfig, FeedConfigAction, FeedItem, FeedItemCollection,
-		File, Image, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
+		File, Image, KV, NotifyFlow, NotifyFlowSource, NotifyFlowTarget, NotifySource,
 		NotifyTarget, PorterContext, PorterInstance, SentinelAppBinary,
 		SentinelAppBinaryFile, SentinelInfo, SentinelLibrary, Session, StoreApp,
 		StoreAppBinary, SystemNotification, Tag, User []ent.Interceptor

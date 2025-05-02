@@ -5,6 +5,7 @@ package converter
 
 import (
 	model "github.com/tuihub/librarian/internal/model"
+	modelangela "github.com/tuihub/librarian/internal/model/modelangela"
 	modelbinah "github.com/tuihub/librarian/internal/model/modelbinah"
 	modelfeed "github.com/tuihub/librarian/internal/model/modelfeed"
 	modelgebura "github.com/tuihub/librarian/internal/model/modelgebura"
@@ -1540,6 +1541,19 @@ func ToPBServerFeatureSummary(source *modelsupervisor.ServerFeatureSummary) *v1.
 		pV1FeatureSummary = &v1FeatureSummary
 	}
 	return pV1FeatureSummary
+}
+func ToPBServerInstanceSummary(source *modelangela.ServerInstanceSummary) *sephirah.ServerInstanceSummary {
+	var pV1ServerInstanceSummary *sephirah.ServerInstanceSummary
+	if source != nil {
+		var v1ServerInstanceSummary sephirah.ServerInstanceSummary
+		v1ServerInstanceSummary.Name = (*source).Name
+		v1ServerInstanceSummary.Description = (*source).Description
+		v1ServerInstanceSummary.WebsiteUrl = (*source).WebsiteURL
+		v1ServerInstanceSummary.LogoUrl = (*source).LogoImageURL
+		v1ServerInstanceSummary.BackgroundUrl = (*source).BackgroundImageURL
+		pV1ServerInstanceSummary = &v1ServerInstanceSummary
+	}
+	return pV1ServerInstanceSummary
 }
 func ToPBSystemNotification(source *modelnetzach.SystemNotification) *sephirah.SystemNotification {
 	var pV1SystemNotification *sephirah.SystemNotification

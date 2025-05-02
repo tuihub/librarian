@@ -42,6 +42,8 @@ type Tx struct {
 	File *FileClient
 	// Image is the client for interacting with the Image builders.
 	Image *ImageClient
+	// KV is the client for interacting with the KV builders.
+	KV *KVClient
 	// NotifyFlow is the client for interacting with the NotifyFlow builders.
 	NotifyFlow *NotifyFlowClient
 	// NotifyFlowSource is the client for interacting with the NotifyFlowSource builders.
@@ -222,6 +224,7 @@ func (tx *Tx) init() {
 	tx.FeedItemCollection = NewFeedItemCollectionClient(tx.config)
 	tx.File = NewFileClient(tx.config)
 	tx.Image = NewImageClient(tx.config)
+	tx.KV = NewKVClient(tx.config)
 	tx.NotifyFlow = NewNotifyFlowClient(tx.config)
 	tx.NotifyFlowSource = NewNotifyFlowSourceClient(tx.config)
 	tx.NotifyFlowTarget = NewNotifyFlowTargetClient(tx.config)

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/model"
+	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
@@ -34,6 +35,10 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBFeatureFlag(*modelsupervisor.FeatureFlag) *librarian.FeatureFlag
 	ToPBFeatureFlagList([]*modelsupervisor.FeatureFlag) []*librarian.FeatureFlag
 	ToPBFeatureRequest(*modelsupervisor.FeatureRequest) *librarian.FeatureRequest
+
+	// goverter:map LogoImageURL LogoUrl
+	// goverter:map BackgroundImageURL BackgroundUrl
+	ToPBServerInstanceSummary(*modelangela.ServerInstanceSummary) *sephirah.ServerInstanceSummary
 
 	// goverter:map ID DeviceId
 	ToPBDeviceInfo(*model.Device) *sephirah.Device

@@ -5,12 +5,10 @@
 package cmd
 
 import (
-	minerService "github.com/tuihub/librarian/app/miner/pkg/service"
 	"github.com/tuihub/librarian/internal/biz"
 	"github.com/tuihub/librarian/internal/client/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data"
-	"github.com/tuihub/librarian/internal/inprocgrpc"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -38,7 +36,6 @@ func wireServe(
 	panic(
 		wire.Build(
 			conf.ProviderSet,
-			minerService.ProviderSet,
 			angelaweb.ProviderSet,
 			data.ProviderSet,
 			biz.ProviderSet,
@@ -47,7 +44,6 @@ func wireServe(
 			sentinel.ProviderSet,
 			sephirah.ProviderSet,
 			server.ProviderSet,
-			inprocgrpc.ProviderSet,
 			libauth.ProviderSet,
 			libmq.ProviderSet,
 			libcron.ProviderSet,

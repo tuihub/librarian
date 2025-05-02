@@ -2,6 +2,8 @@ package libsearch
 
 import (
 	"context"
+	"net"
+	"strconv"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libcodec"
@@ -14,13 +16,13 @@ type meiliSearcherRepo struct {
 	search meilisearch.ServiceManager
 }
 
-func newMeili(conf *conf.Search) meilisearch.ServiceManager {
-	if conf.GetDriver() != "meili" {
+func newMeili(c *conf.Search) meilisearch.ServiceManager {
+	if c.Driver != conf.SearchDriverMeili {
 		return nil
 	}
 	client := meilisearch.New(
-		conf.GetMeili().GetAddr(),
-		meilisearch.WithAPIKey(conf.GetMeili().GetApiKey()),
+		net.JoinHostPort(c.MeiliHost, strconv.Itoa(int(c.MeiliPort))),
+		meilisearch.WithAPIKey(c.MeiliKey),
 	)
 	return client
 }

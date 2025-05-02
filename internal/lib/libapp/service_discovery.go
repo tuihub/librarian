@@ -2,6 +2,8 @@ package libapp
 
 import (
 	"context"
+	"net"
+	"strconv"
 
 	"github.com/tuihub/librarian/internal/conf"
 
@@ -16,8 +18,8 @@ type requiredFeatureKey struct{}
 func NewDiscovery(c *conf.Consul) (registry.Discovery, error) {
 	config := capi.DefaultConfig()
 	if c != nil {
-		config.Address = c.GetAddr()
-		config.Token = c.GetToken()
+		config.Address = net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port)))
+		config.Token = c.Token
 	}
 	client, err := capi.NewClient(config)
 	if err != nil {
@@ -37,8 +39,8 @@ func NewDiscovery(c *conf.Consul) (registry.Discovery, error) {
 func NewRegistrar(c *conf.Consul) (registry.Registrar, error) {
 	config := capi.DefaultConfig()
 	if c != nil {
-		config.Address = c.GetAddr()
-		config.Token = c.GetToken()
+		config.Address = net.JoinHostPort(c.Host, strconv.Itoa(int(c.Port)))
+		config.Token = c.Token
 	}
 	client, err := capi.NewClient(config)
 	if err != nil {

@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"github.com/tuihub/librarian/internal/biz/bizangela"
 	"github.com/tuihub/librarian/internal/biz/bizbinah"
 	"github.com/tuihub/librarian/internal/biz/bizchesed"
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
@@ -14,6 +15,7 @@ import (
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
+	bizangela.NewAngela,
 	bizkether.ProviderSet,
 	biztiphereth.ProviderSet,
 	bizgebura.NewGebura,

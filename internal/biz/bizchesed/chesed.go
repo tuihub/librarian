@@ -49,7 +49,7 @@ func NewChesed(
 	search libsearch.Search,
 	cron *libcron.Cron,
 	pClient porter.LibrarianPorterServiceClient,
-	miClient miner.LibrarianMinerServiceClient,
+	// miClient miner.LibrarianMinerServiceClient,
 	block *modelbinah.ControlBlock,
 	imageCache *libcache.Map[model.InternalID, modelchesed.Image],
 ) (*Chesed, error) {
@@ -59,7 +59,7 @@ func NewChesed(
 		id:          id,
 		search:      search,
 		porter:      pClient,
-		miner:       miClient,
+		miner:       nil,
 		upload:      nil,
 		download:    nil,
 		imageCache:  imageCache,

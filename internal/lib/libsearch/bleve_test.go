@@ -62,9 +62,8 @@ func Test_bleveSearcherRepo_SearchID(t *testing.T) {
 	indexMap := make(map[libsearch.SearchIndex]bleve.Index)
 	indexMap[libsearch.SearchIndexGeneral] = index
 	r, err := libsearch.NewSearch(
-		&conf.Search{
+		&conf.Search{ //nolint:exhaustruct // no need
 			Driver: "bleve",
-			Meili:  nil,
 		},
 		&libapp.Settings{}, //nolint:exhaustruct // no need
 	)

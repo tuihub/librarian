@@ -1,7 +1,9 @@
 package server
 
 import (
+	"net"
 	http2 "net/http"
+	"strconv"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -43,11 +45,9 @@ func NewGrpcWebServer(
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),
 	}
-	if c.GetGrpcWeb().GetAddr() != "" {
-		opts = append(opts, http.Address(c.GetGrpcWeb().GetAddr()))
-	}
-	if c.GetGrpcWeb().GetTimeout() != nil {
-		opts = append(opts, http.Timeout(c.GetGrpcWeb().GetTimeout().AsDuration()))
+	opts = append(opts, http.Address(net.JoinHostPort(c.MainWeb.Host, strconv.Itoa(int(c.MainWeb.Port)))))
+	if c.MainWeb.Timeout > 0 {
+		opts = append(opts, http.Timeout(c.MainWeb.Timeout))
 	}
 	srv := http.NewServer(opts...)
 	wrappedGrpc := grpcweb.WrapServer(s.Server)

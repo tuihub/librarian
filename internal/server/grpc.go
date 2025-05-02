@@ -1,6 +1,9 @@
 package server
 
 import (
+	"net"
+	"strconv"
+
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
@@ -63,11 +66,9 @@ func NewGRPCServer(
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(middlewares...),
 	}
-	if c.GetGrpc().GetAddr() != "" {
-		opts = append(opts, grpc.Address(c.GetGrpc().GetAddr()))
-	}
-	if c.GetGrpc().GetTimeout() != nil {
-		opts = append(opts, grpc.Timeout(c.GetGrpc().GetTimeout().AsDuration()))
+	opts = append(opts, grpc.Address(net.JoinHostPort(c.Main.Host, strconv.Itoa(int(c.Main.Port)))))
+	if c.Main.Timeout > 0 {
+		opts = append(opts, grpc.Timeout(c.Main.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
 	pb.RegisterLibrarianSephirahServiceServer(srv, greeter)
