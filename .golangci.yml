@@ -221,6 +221,17 @@ linters:
           deny:
             - pkg: log$
               desc: Use log/slog instead, see https://go.dev/blog/slog
+        "porter-plugins":
+          files:
+            - "**/pkg/tuihub-go/**/*.go"
+            - "**/pkg/tuihub-rss/**/*.go"
+            - "**/pkg/tuihub-steam/**/*.go"
+            - "**/pkg/tuihub-telegram/**/*.go"
+          deny:
+            - pkg: github.com/tuihub/librarian/internal
+              desc: Do not use internal package in plugins
+            - pkg: github.com/tuihub/tuihub-go
+              desc: Use github.com/tuihub/librarian/internal instead
 
     errcheck:
       # Report about not checking of errors in type assertions: `a := b.(MyStruct)`.

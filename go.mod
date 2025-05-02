@@ -9,6 +9,7 @@ require (
 	github.com/ThreeDotsLabs/watermill v1.4.6
 	github.com/ThreeDotsLabs/watermill-redisstream v1.4.2
 	github.com/ThreeDotsLabs/watermill-sql/v3 v3.1.0
+	github.com/Xuanwo/go-locale v1.1.3
 	github.com/blevesearch/bleve/v2 v2.5.0
 	github.com/bufbuild/protovalidate-go v0.10.0
 	github.com/dchest/captcha v1.1.0
@@ -17,12 +18,15 @@ require (
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250321075247-025c2dc2b0ff
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250321075247-025c2dc2b0ff
 	github.com/go-kratos/kratos/v2 v2.8.4
+	github.com/gocolly/colly/v2 v2.2.0
 	github.com/gofiber/contrib/fiberi18n/v2 v2.0.6
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/golang-jwt/jwt/v5 v5.2.2
+	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
+	github.com/gorilla/feeds v1.2.0
 	github.com/hashicorp/consul/api v1.32.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/invopop/jsonschema v0.13.0
@@ -31,11 +35,15 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/meilisearch/meilisearch-go v0.31.0
 	github.com/minio/minio-go/v7 v7.0.91
+	github.com/mmcdole/gofeed v1.3.0
+	github.com/muzhou233/go-favicon v0.1.1
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
+	github.com/nikoksr/notify v1.3.0
 	github.com/redis/go-redis/v9 v9.7.3
 	github.com/samber/lo v1.50.0
 	github.com/sony/sonyflake v1.2.0
 	github.com/spf13/afero v1.14.0
+	github.com/stretchr/testify v1.10.0
 	github.com/tuihub/protos v0.5.4
 	github.com/urfave/cli/v2 v2.27.6
 	go.opentelemetry.io/otel v1.35.0
@@ -69,6 +77,9 @@ require (
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
+	github.com/antchfx/htmlquery v1.3.4 // indirect
+	github.com/antchfx/xmlquery v1.4.4 // indirect
+	github.com/antchfx/xpath v1.3.3 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
@@ -101,10 +112,11 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20250326154945-ae57f3c0d45f // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
+	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
-	github.com/fatih/color v1.16.0 // indirect
+	github.com/fatih/color v1.17.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
@@ -112,12 +124,15 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
-	github.com/go-playground/form/v4 v4.2.0 // indirect
+	github.com/go-playground/form/v4 v4.2.1 // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible // indirect
+	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/geo v0.0.0-20210211234256-740aa86cb551 // indirect
+	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.25.0 // indirect
@@ -126,11 +141,11 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-hclog v1.5.0 // indirect
+	github.com/hashicorp/go-hclog v1.6.3 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.2 // indirect
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.1 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -139,6 +154,7 @@ require (
 	github.com/jonboulle/clockwork v0.5.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
 	github.com/lib/pq v1.10.9 // indirect
@@ -153,12 +169,16 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/mmcdole/goxpp v1.1.1-0.20240225020742-a0c311522b23 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mschoch/smat v0.2.0 // indirect
+	github.com/nlnwa/whatwg-url v0.6.1 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/philhofer/fwd v1.1.3-0.20240916144458-20a13a1f6b7c // indirect
+	github.com/pingcap/errors v0.11.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/power-devops/perfstat v0.0.0-20221212215047-62379fc7944b // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
@@ -166,11 +186,13 @@ require (
 	github.com/rs/xid v1.6.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
+	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sony/gobreaker v1.0.0 // indirect
 	github.com/stoewer/go-strcase v1.3.0 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
+	github.com/temoto/robotstxt v1.1.2 // indirect
 	github.com/tinylib/msgp v1.2.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect

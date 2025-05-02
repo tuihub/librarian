@@ -31,12 +31,7 @@ init-test:
 
 .PHONY: generate
 # generate code
-generate: generate-config generate-code
-
-generate-config:
-	protoc --proto_path=./internal \
- 	       --go_out=paths=source_relative:./internal \
-	       $(INTERNAL_PROTO_FILES)
+generate: generate-code
 
 generate-code:
 	go get github.com/google/wire/cmd/wire@latest
