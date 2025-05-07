@@ -1,3 +1,4 @@
+//nolint:funlen, gocognit // TODO
 package conf
 
 import (
@@ -13,6 +14,7 @@ const (
 	defaultAdminPort   = 9999
 	defaultMainPort    = 10000
 	defaultMainWebPort = 10001
+	defaultS3Port      = 10002
 	defaultTimeout     = 10 * time.Second
 )
 
@@ -99,6 +101,8 @@ func applyDeployModeTemporary(c *Config, l *zap.SugaredLogger) (*Config, error) 
 		l.Warnf("[Storage] not configured, using memory storage")
 		c.Storage = new(Storage)
 		c.Storage.Driver = StorageDriverMemory
+		c.Storage.Host = defaultServerHost
+		c.Storage.Port = defaultS3Port
 	}
 	if c.Storage.Driver != StorageDriverMemory {
 		l.Warnf("[Storage] force to use memory storage for temporary deploy mode")
@@ -123,6 +127,13 @@ func applyDeployModeTemporary(c *Config, l *zap.SugaredLogger) (*Config, error) 
 		l.Warnf("[Cache] not configured, using memory cache")
 		c.Cache = new(Cache)
 		c.Cache.Driver = CacheDriverMemory
+	}
+
+	// check Search
+	if c.Search == nil {
+		l.Warnf("[Search] not configured, disable search")
+		c.Search = new(Search)
+		c.Search.Driver = SearchDriverDisable
 	}
 	return c, nil
 }
@@ -201,6 +212,13 @@ func applyDeployModeMinimize(c *Config, l *zap.SugaredLogger) (*Config, error) {
 		c.Cache = new(Cache)
 		c.Cache.Driver = CacheDriverMemory
 	}
+
+	// check Search
+	if c.Search == nil {
+		l.Warnf("[Search] not configured, disable search")
+		c.Search = new(Search)
+		c.Search.Driver = SearchDriverDisable
+	}
 	return c, nil
 }
 
@@ -277,10 +295,17 @@ func applyDeployModeStandard(c *Config, l *zap.SugaredLogger) (*Config, error) {
 		c.Cache = new(Cache)
 		c.Cache.Driver = CacheDriverMemory
 	}
+
+	// check Search
+	if c.Search == nil {
+		l.Warnf("[Search] not configured, disable search")
+		c.Search = new(Search)
+		c.Search.Driver = SearchDriverDisable
+	}
 	return c, nil
 }
 
-func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) { //nolint:funlen // TODO
+func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) {
 	if c == nil {
 		return nil, errors.New("config is nil")
 	}
@@ -366,6 +391,16 @@ func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) { 
 	if c.Cache.Driver == CacheDriverMemory {
 		l.Errorf("[Cache] memory driver is not allowed in cluster mode")
 		return nil, errors.New("[Cache] memory driver is not allowed in cluster mode")
+	}
+
+	// check Search
+	if c.Search == nil {
+		l.Errorf("[Search] config required")
+		return nil, errors.New("[Search] config required")
+	}
+	if c.Search.Driver == SearchDriverDisable {
+		l.Errorf("[Search] disable search is not allowed in cluster mode")
+		return nil, errors.New("[Search] disable search is not allowed in cluster mode")
 	}
 	return c, nil
 }

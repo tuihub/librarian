@@ -51,7 +51,7 @@ func NewMQ(
 		var err error
 		ps, err = newSQLAdapter(db, loggerAdapter)
 		if err != nil {
-			return nil, func() {}, err
+			return nil, func() {}, fmt.Errorf("failed creating sql adapter: %w", err)
 		}
 	case conf.MQDriverRedis:
 		if cachec == nil || cachec.Driver != conf.CacheDriverRedis {
@@ -60,7 +60,7 @@ func NewMQ(
 		var err error
 		ps, err = newRedisAdapter(cachec, loggerAdapter)
 		if err != nil {
-			return nil, func() {}, err
+			return nil, func() {}, fmt.Errorf("failed creating redis adapter: %w", err)
 		}
 	default:
 		return nil, func() {}, fmt.Errorf("unsupported mq driver: %s", c.Driver)
@@ -70,7 +70,7 @@ func NewMQ(
 		loggerAdapter,
 	)
 	if err != nil {
-		return nil, func() {}, err
+		return nil, func() {}, fmt.Errorf("failed creating router: %w", err)
 	}
 	router.AddMiddleware(middleware.CorrelationID)
 	if app.EnablePanicRecovery {
@@ -81,7 +81,7 @@ func NewMQ(
 		pubSub:    ps,
 		topicList: make(map[string]bool),
 		observer:  obs,
-	}, func() {}, err
+	}, func() {}, nil
 }
 
 func (a *MQ) Start(ctx context.Context) error {

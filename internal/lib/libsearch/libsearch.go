@@ -2,6 +2,7 @@ package libsearch
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -54,7 +55,7 @@ func NewSearch(
 	case conf.SearchDriverBleve:
 		b, err := newBleve(c, app)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed creating bleve searcher: %w", err)
 		}
 		return &bleveSearcherRepo{
 			search: b,

@@ -74,7 +74,7 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 	db, err := stdsql.Open(string(driverName), dataSourceName)
 	if err != nil {
 		logger.Errorf("failed opening connection to database: %v", err)
-		return nil, func() {}, err
+		return nil, func() {}, fmt.Errorf("failed opening connection to database: %w", err)
 	}
 	drv := sql.OpenDB(dialectName, db)
 
@@ -87,7 +87,7 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 	// Run the auto migration tool.
 	if err = client.Schema.Create(context.Background(), migrate.WithForeignKeys(false)); err != nil {
 		logger.Errorf("failed creating schema resources: %v", err)
-		return nil, func() {}, err
+		return nil, func() {}, fmt.Errorf("failed creating schema resources: %w", err)
 	}
 
 	return &Data{

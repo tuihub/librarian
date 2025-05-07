@@ -2,6 +2,7 @@ package libcron
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/go-co-op/gocron/v2"
@@ -21,7 +22,7 @@ func NewCron() (*Cron, error) {
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create gocron scheduler: %w", err)
 	}
 
 	return &Cron{

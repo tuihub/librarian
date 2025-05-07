@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -25,12 +26,12 @@ func NewPorter(
 ) (*Porter, error) {
 	checker, err := libapp.NewHealthChecker("porter", consul)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create health checker: %w", err)
 	}
 	if libapp.IsEmptyHealthChecker(checker) {
 		checker, err = newStaticDiscovery(porter)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to create static discovery: %w", err)
 		}
 	}
 	return &Porter{
@@ -50,12 +51,12 @@ func NewPorterClient(
 ) (porter.LibrarianPorterServiceClient, error) {
 	r, err := libapp.NewDiscovery(c)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create discovery: %w", err)
 	}
 	if libapp.IsEmptyDiscovery(r) {
 		r, err = newStaticDiscovery(p)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to create static discovery: %w", err)
 		}
 	}
 	middlewares := []grpc.ClientOption{
@@ -75,7 +76,10 @@ func NewPorterClient(
 		middlewares...,
 	)
 	cli := porter.NewLibrarianPorterServiceClient(conn)
-	return cli, err
+	if err != nil {
+		return nil, fmt.Errorf("failed to create grpc client: %w", err)
+	}
+	return cli, nil
 }
 
 type requestPorterAddress struct{}

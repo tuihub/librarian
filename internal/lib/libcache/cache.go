@@ -2,6 +2,7 @@ package libcache
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"strconv"
 
@@ -29,7 +30,7 @@ func NewStore(c *conf.Cache) (Store, error) {
 		return nil, errors.New("unsupported cache driver")
 	}
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed creating cache: %w", err)
 	}
 	initCaptchaStore(res)
 	return res, nil

@@ -2,6 +2,7 @@ package biztiphereth
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/data"
@@ -69,7 +70,7 @@ func NewTiphereth(
 		t.updatePorters, context.Background(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to register cron: %w", err)
 	}
 	return t, nil
 }

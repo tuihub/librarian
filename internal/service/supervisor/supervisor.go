@@ -87,7 +87,7 @@ func NewSupervisor(
 	res.enableContextTopic = newEnablePorterContextTopic(&res)
 	err := mq.RegisterTopic(res.enableContextTopic)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to register topic: %w", err)
 	}
 	return &res, nil
 }
