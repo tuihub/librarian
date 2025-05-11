@@ -285,6 +285,18 @@ func (f PorterInstanceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Val
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.PorterInstanceMutation", m)
 }
 
+// The SentinelFunc type is an adapter to allow the use of ordinary
+// function as Sentinel mutator.
+type SentinelFunc func(context.Context, *ent.SentinelMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SentinelFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SentinelMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SentinelMutation", m)
+}
+
 // The SentinelAppBinaryFunc type is an adapter to allow the use of ordinary
 // function as SentinelAppBinary mutator.
 type SentinelAppBinaryFunc func(context.Context, *ent.SentinelAppBinaryMutation) (ent.Value, error)
@@ -309,18 +321,6 @@ func (f SentinelAppBinaryFileFunc) Mutate(ctx context.Context, m ent.Mutation) (
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SentinelAppBinaryFileMutation", m)
 }
 
-// The SentinelInfoFunc type is an adapter to allow the use of ordinary
-// function as SentinelInfo mutator.
-type SentinelInfoFunc func(context.Context, *ent.SentinelInfoMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f SentinelInfoFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.SentinelInfoMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SentinelInfoMutation", m)
-}
-
 // The SentinelLibraryFunc type is an adapter to allow the use of ordinary
 // function as SentinelLibrary mutator.
 type SentinelLibraryFunc func(context.Context, *ent.SentinelLibraryMutation) (ent.Value, error)
@@ -331,6 +331,18 @@ func (f SentinelLibraryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SentinelLibraryMutation", m)
+}
+
+// The SentinelSessionFunc type is an adapter to allow the use of ordinary
+// function as SentinelSession mutator.
+type SentinelSessionFunc func(context.Context, *ent.SentinelSessionMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SentinelSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SentinelSessionMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SentinelSessionMutation", m)
 }
 
 // The SessionFunc type is an adapter to allow the use of ordinary

@@ -10,7 +10,7 @@ import (
 func (s *LibrarianSentinelService) ReportSentinelInformation(
 	ctx context.Context, req *pb.ReportSentinelInformationRequest,
 ) (*pb.ReportSentinelInformationResponse, error) {
-	err := s.g.UpsertSentinelInfo(ctx, converter.ToBizSentinelInfo(req))
+	err := s.g.UpsertSentinelInfo(ctx, converter.ToBizSentinel(req))
 	if err != nil {
 		return nil, err
 	}

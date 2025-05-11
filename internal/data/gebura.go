@@ -11,9 +11,9 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/appcategory"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/appruntime"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -625,33 +625,115 @@ func (g *GeburaRepo) DeleteAppCategory(
 	})
 }
 
+func (g *GeburaRepo) CreateSentinel(ctx context.Context, userID model.InternalID, s *modelgebura.Sentinel) error {
+	return g.data.db.Sentinel.Create().
+		SetID(s.ID).
+		SetCreatorID(userID).
+		SetName(s.Name).
+		SetDescription(s.Description).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) GetSentinel(ctx context.Context, id model.InternalID) (*modelgebura.Sentinel, error) {
+	s, err := g.data.db.Sentinel.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizSentinel(s), nil
+}
+
+func (g *GeburaRepo) ListSentinels(ctx context.Context, page *model.Paging) ([]*modelgebura.Sentinel, int, error) {
+	sentinels, err := g.data.db.Sentinel.Query().
+		Limit(page.ToLimit()).
+		Offset(page.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := g.data.db.Sentinel.Query().Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizSentinelList(sentinels), total, nil
+}
+
+func (g *GeburaRepo) UpdateSentinel(ctx context.Context, s *modelgebura.Sentinel) error {
+	return g.data.db.Sentinel.UpdateOneID(s.ID).
+		SetName(s.Name).
+		SetDescription(s.Description).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) CreateSentinelSession(ctx context.Context, ss *modelgebura.SentinelSession) error {
+	return g.data.db.SentinelSession.Create().
+		SetID(ss.ID).
+		SetSentinelID(ss.SentinelID).
+		SetRefreshToken(ss.RefreshToken).
+		SetStatus(converter.ToEntSentinelSessionStatus(ss.Status)).
+		SetCreatorID(ss.CreatorID).
+		SetExpireAt(ss.ExpireAt).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) ListSentinelSessions(
+	ctx context.Context,
+	page *model.Paging,
+) ([]*modelgebura.SentinelSession, int, error) {
+	sessions, err := g.data.db.SentinelSession.Query().
+		Limit(page.ToLimit()).
+		Offset(page.ToOffset()).
+		All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	total, err := g.data.db.SentinelSession.Query().Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizSentinelSessionList(sessions), total, nil
+}
+
+func (g *GeburaRepo) UpdateSentinelSession(
+	ctx context.Context,
+	id model.InternalID,
+	status modelgebura.SentinelSessionStatus,
+) error {
+	return g.data.db.SentinelSession.UpdateOneID(id).
+		SetStatus(converter.ToEntSentinelSessionStatus(status)).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) DeleteSentinelSession(ctx context.Context, id model.InternalID) error {
+	return g.data.db.SentinelSession.DeleteOneID(id).Exec(ctx)
+}
+
 func (g *GeburaRepo) UpdateSentinelInfo(
 	ctx context.Context,
-	info *modelgebura.SentinelInfo,
+	s *modelgebura.Sentinel,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		// update sentinel info
-		err := tx.SentinelInfo.UpdateOneID(info.ID).
-			SetURL(info.URL).
-			SetAlternativeUrls(info.AlternativeUrls).
-			SetGetTokenPath(info.GetTokenPath).
-			SetDownloadFileBasePath(info.DownloadFileBasePath).
+		err := tx.Sentinel.UpdateOneID(s.ID).
+			SetURL(s.URL).
+			SetAlternativeUrls(s.AlternativeUrls).
+			SetGetTokenPath(s.GetTokenPath).
+			SetDownloadFileBasePath(s.DownloadFileBasePath).
 			AddLibraryReportSequence(1).
 			Exec(ctx)
 		if err != nil {
 			return err
 		}
 		// upsert libraries
-		sInfo, err := tx.SentinelInfo.Query().
-			Where(sentinelinfo.IDEQ(info.ID)).
+		sInfo, err := tx.Sentinel.Query().
+			Where(sentinel.IDEQ(s.ID)).
 			Only(ctx)
 		if err != nil {
 			return err
 		}
-		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(info.Libraries))
-		for _, lib := range info.Libraries {
+		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(s.Libraries))
+		for _, lib := range s.Libraries {
 			newLibs = append(newLibs, tx.SentinelLibrary.Create().
-				SetSentinelInfoID(sInfo.ID).
+				SetSentinelID(sInfo.ID).
 				SetReportedID(lib.ReportedID).
 				SetDownloadBasePath(lib.DownloadBasePath).
 				SetLibraryReportSequence(sInfo.LibraryReportSequence),
@@ -660,7 +742,7 @@ func (g *GeburaRepo) UpdateSentinelInfo(
 		return tx.SentinelLibrary.CreateBulk(newLibs...).
 			OnConflict(
 				sql.ConflictColumns(
-					sentinellibrary.FieldSentinelInfoID,
+					sentinellibrary.FieldSentinelID,
 					sentinellibrary.FieldReportedID,
 				),
 			).
@@ -676,14 +758,14 @@ func (g *GeburaRepo) UpsertAppBinaries(
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
 		// update AppBinaryReportSequence
-		err := tx.SentinelInfo.UpdateOneID(sentinelID).
+		err := tx.Sentinel.UpdateOneID(sentinelID).
 			AddAppBinaryReportSequence(1).
 			Exec(ctx)
 		if err != nil {
 			return err
 		}
-		sInfo, err := tx.SentinelInfo.Query().
-			Where(sentinelinfo.IDEQ(sentinelID)).
+		sInfo, err := tx.Sentinel.Query().
+			Where(sentinel.IDEQ(sentinelID)).
 			WithSentinelLibrary().
 			Only(ctx)
 		if err != nil {
@@ -693,7 +775,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
 		for _, ab := range abs {
 			newAbs = append(newAbs, tx.SentinelAppBinary.Create().
-				SetSentinelInfoID(sentinelID).
+				SetSentinelID(sentinelID).
 				SetSentinelLibraryReportedID(ab.SentinelLibraryID).
 				SetGeneratedID(ab.GeneratedID).
 				SetSizeBytes(ab.SizeBytes).
@@ -707,7 +789,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		err = tx.SentinelAppBinary.CreateBulk(newAbs...).
 			OnConflict(
 				sql.ConflictColumns(
-					sentinelappbinary.FieldSentinelInfoID,
+					sentinelappbinary.FieldSentinelID,
 					sentinelappbinary.FieldSentinelLibraryReportedID,
 					sentinelappbinary.FieldGeneratedID,
 				),
@@ -728,7 +810,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		for _, ab := range abs {
 			for _, f := range ab.Files {
 				newAbfs = append(newAbfs, tx.SentinelAppBinaryFile.Create().
-					SetSentinelInfoID(sentinelID).
+					SetSentinelID(sentinelID).
 					SetSentinelLibraryReportedID(ab.SentinelLibraryID).
 					SetSentinelAppBinaryGeneratedID(ab.GeneratedID).
 					SetName(f.Name).
@@ -742,7 +824,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		err = tx.SentinelAppBinaryFile.CreateBulk(newAbfs...).
 			OnConflict(
 				sql.ConflictColumns(
-					sentinelappbinaryfile.FieldSentinelInfoID,
+					sentinelappbinaryfile.FieldSentinelID,
 					sentinelappbinaryfile.FieldSentinelLibraryReportedID,
 					sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID,
 					sentinelappbinaryfile.FieldServerFilePath,

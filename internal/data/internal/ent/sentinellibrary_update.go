@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -30,16 +30,16 @@ func (slu *SentinelLibraryUpdate) Where(ps ...predicate.SentinelLibrary) *Sentin
 	return slu
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (slu *SentinelLibraryUpdate) SetSentinelInfoID(mi model.InternalID) *SentinelLibraryUpdate {
-	slu.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (slu *SentinelLibraryUpdate) SetSentinelID(mi model.InternalID) *SentinelLibraryUpdate {
+	slu.mutation.SetSentinelID(mi)
 	return slu
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (slu *SentinelLibraryUpdate) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelLibraryUpdate {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (slu *SentinelLibraryUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelLibraryUpdate {
 	if mi != nil {
-		slu.SetSentinelInfoID(*mi)
+		slu.SetSentinelID(*mi)
 	}
 	return slu
 }
@@ -120,9 +120,9 @@ func (slu *SentinelLibraryUpdate) AddLibraryReportSequence(i int64) *SentinelLib
 	return slu
 }
 
-// SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
-func (slu *SentinelLibraryUpdate) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryUpdate {
-	return slu.SetSentinelInfoID(s.ID)
+// SetSentinel sets the "sentinel" edge to the Sentinel entity.
+func (slu *SentinelLibraryUpdate) SetSentinel(s *Sentinel) *SentinelLibraryUpdate {
+	return slu.SetSentinelID(s.ID)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
@@ -130,9 +130,9 @@ func (slu *SentinelLibraryUpdate) Mutation() *SentinelLibraryMutation {
 	return slu.mutation
 }
 
-// ClearSentinelInfo clears the "sentinel_info" edge to the SentinelInfo entity.
-func (slu *SentinelLibraryUpdate) ClearSentinelInfo() *SentinelLibraryUpdate {
-	slu.mutation.ClearSentinelInfo()
+// ClearSentinel clears the "sentinel" edge to the Sentinel entity.
+func (slu *SentinelLibraryUpdate) ClearSentinel() *SentinelLibraryUpdate {
+	slu.mutation.ClearSentinel()
 	return slu
 }
 
@@ -174,8 +174,8 @@ func (slu *SentinelLibraryUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (slu *SentinelLibraryUpdate) check() error {
-	if slu.mutation.SentinelInfoCleared() && len(slu.mutation.SentinelInfoIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel_info"`)
+	if slu.mutation.SentinelCleared() && len(slu.mutation.SentinelIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel"`)
 	}
 	return nil
 }
@@ -184,7 +184,7 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 	if err := slu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	if ps := slu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -213,28 +213,28 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := slu.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if slu.mutation.SentinelInfoCleared() {
+	if slu.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinellibrary.SentinelInfoTable,
-			Columns: []string{sentinellibrary.SentinelInfoColumn},
+			Inverse: true,
+			Table:   sentinellibrary.SentinelTable,
+			Columns: []string{sentinellibrary.SentinelColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := slu.mutation.SentinelInfoIDs(); len(nodes) > 0 {
+	if nodes := slu.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinellibrary.SentinelInfoTable,
-			Columns: []string{sentinellibrary.SentinelInfoColumn},
+			Inverse: true,
+			Table:   sentinellibrary.SentinelTable,
+			Columns: []string{sentinellibrary.SentinelColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -262,16 +262,16 @@ type SentinelLibraryUpdateOne struct {
 	mutation *SentinelLibraryMutation
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sluo *SentinelLibraryUpdateOne) SetSentinelInfoID(mi model.InternalID) *SentinelLibraryUpdateOne {
-	sluo.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sluo *SentinelLibraryUpdateOne) SetSentinelID(mi model.InternalID) *SentinelLibraryUpdateOne {
+	sluo.mutation.SetSentinelID(mi)
 	return sluo
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sluo *SentinelLibraryUpdateOne) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelLibraryUpdateOne {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (sluo *SentinelLibraryUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelLibraryUpdateOne {
 	if mi != nil {
-		sluo.SetSentinelInfoID(*mi)
+		sluo.SetSentinelID(*mi)
 	}
 	return sluo
 }
@@ -352,9 +352,9 @@ func (sluo *SentinelLibraryUpdateOne) AddLibraryReportSequence(i int64) *Sentine
 	return sluo
 }
 
-// SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
-func (sluo *SentinelLibraryUpdateOne) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryUpdateOne {
-	return sluo.SetSentinelInfoID(s.ID)
+// SetSentinel sets the "sentinel" edge to the Sentinel entity.
+func (sluo *SentinelLibraryUpdateOne) SetSentinel(s *Sentinel) *SentinelLibraryUpdateOne {
+	return sluo.SetSentinelID(s.ID)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
@@ -362,9 +362,9 @@ func (sluo *SentinelLibraryUpdateOne) Mutation() *SentinelLibraryMutation {
 	return sluo.mutation
 }
 
-// ClearSentinelInfo clears the "sentinel_info" edge to the SentinelInfo entity.
-func (sluo *SentinelLibraryUpdateOne) ClearSentinelInfo() *SentinelLibraryUpdateOne {
-	sluo.mutation.ClearSentinelInfo()
+// ClearSentinel clears the "sentinel" edge to the Sentinel entity.
+func (sluo *SentinelLibraryUpdateOne) ClearSentinel() *SentinelLibraryUpdateOne {
+	sluo.mutation.ClearSentinel()
 	return sluo
 }
 
@@ -419,8 +419,8 @@ func (sluo *SentinelLibraryUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sluo *SentinelLibraryUpdateOne) check() error {
-	if sluo.mutation.SentinelInfoCleared() && len(sluo.mutation.SentinelInfoIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel_info"`)
+	if sluo.mutation.SentinelCleared() && len(sluo.mutation.SentinelIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SentinelLibrary.sentinel"`)
 	}
 	return nil
 }
@@ -429,7 +429,7 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 	if err := sluo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	id, ok := sluo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelLibrary.id" for update`)}
@@ -475,28 +475,28 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 	if value, ok := sluo.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 	}
-	if sluo.mutation.SentinelInfoCleared() {
+	if sluo.mutation.SentinelCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinellibrary.SentinelInfoTable,
-			Columns: []string{sentinellibrary.SentinelInfoColumn},
+			Inverse: true,
+			Table:   sentinellibrary.SentinelTable,
+			Columns: []string{sentinellibrary.SentinelColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := sluo.mutation.SentinelInfoIDs(); len(nodes) > 0 {
+	if nodes := sluo.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinellibrary.SentinelInfoTable,
-			Columns: []string{sentinellibrary.SentinelInfoColumn},
+			Inverse: true,
+			Table:   sentinellibrary.SentinelTable,
+			Columns: []string{sentinellibrary.SentinelColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

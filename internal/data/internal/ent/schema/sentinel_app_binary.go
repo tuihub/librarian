@@ -16,8 +16,8 @@ type SentinelAppBinary struct {
 
 func (SentinelAppBinary) Fields() []ent.Field {
 	return []ent.Field{
-		// field.Int("sentinel_library_id"),
-		field.Int64("sentinel_info_id").GoType(model.InternalID(0)),
+		defaultPrimaryKey(),
+		field.Int64("sentinel_id").GoType(model.InternalID(0)),
 		field.Int64("sentinel_library_reported_id"),
 		field.String("generated_id"),
 		field.Int64("size_bytes"),
@@ -36,22 +36,9 @@ func (SentinelAppBinary) Fields() []ent.Field {
 
 func (SentinelAppBinary) Indexes() []ent.Index {
 	return []ent.Index{
-		// index.Fields("sentinel_library_id", "generated_id").
-		//	Unique(),
-		index.Fields("sentinel_info_id", "sentinel_library_reported_id", "generated_id").
+		index.Fields("sentinel_id", "sentinel_library_reported_id", "generated_id").
 			Unique(),
 		index.Fields("generated_id"),
 		index.Fields("app_binary_report_sequence"),
-	}
-}
-
-func (SentinelAppBinary) Edges() []ent.Edge {
-	return []ent.Edge{
-		// edge.To("sentinel_library", SentinelLibrary.Type).
-		//	Required().
-		//	Unique().
-		//	Field("sentinel_library_id"),
-		// edge.From("sentinel_app_binary_file", SentinelAppBinaryFile.Type).
-		//	Ref("sentinel_app_binary"),
 	}
 }

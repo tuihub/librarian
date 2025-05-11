@@ -13,8 +13,8 @@ const (
 	Label = "sentinel_app_binary_file"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldSentinelInfoID holds the string denoting the sentinel_info_id field in the database.
-	FieldSentinelInfoID = "sentinel_info_id"
+	// FieldSentinelID holds the string denoting the sentinel_id field in the database.
+	FieldSentinelID = "sentinel_id"
 	// FieldSentinelLibraryReportedID holds the string denoting the sentinel_library_reported_id field in the database.
 	FieldSentinelLibraryReportedID = "sentinel_library_reported_id"
 	// FieldSentinelAppBinaryGeneratedID holds the string denoting the sentinel_app_binary_generated_id field in the database.
@@ -42,7 +42,7 @@ const (
 // Columns holds all SQL columns for sentinelappbinaryfile fields.
 var Columns = []string{
 	FieldID,
-	FieldSentinelInfoID,
+	FieldSentinelID,
 	FieldSentinelLibraryReportedID,
 	FieldSentinelAppBinaryGeneratedID,
 	FieldName,
@@ -82,9 +82,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// BySentinelInfoID orders the results by the sentinel_info_id field.
-func BySentinelInfoID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSentinelInfoID, opts...).ToFunc()
+// BySentinelID orders the results by the sentinel_id field.
+func BySentinelID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelID, opts...).ToFunc()
 }
 
 // BySentinelLibraryReportedID orders the results by the sentinel_library_reported_id field.

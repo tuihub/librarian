@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -18,9 +18,9 @@ import (
 type SentinelLibrary struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// SentinelInfoID holds the value of the "sentinel_info_id" field.
-	SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
+	// SentinelID holds the value of the "sentinel_id" field.
+	SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 	// ReportedID holds the value of the "reported_id" field.
 	ReportedID int64 `json:"reported_id,omitempty"`
 	// DownloadBasePath holds the value of the "download_base_path" field.
@@ -39,22 +39,22 @@ type SentinelLibrary struct {
 
 // SentinelLibraryEdges holds the relations/edges for other nodes in the graph.
 type SentinelLibraryEdges struct {
-	// SentinelInfo holds the value of the sentinel_info edge.
-	SentinelInfo *SentinelInfo `json:"sentinel_info,omitempty"`
+	// Sentinel holds the value of the sentinel edge.
+	Sentinel *Sentinel `json:"sentinel,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// SentinelInfoOrErr returns the SentinelInfo value or an error if the edge
+// SentinelOrErr returns the Sentinel value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e SentinelLibraryEdges) SentinelInfoOrErr() (*SentinelInfo, error) {
-	if e.SentinelInfo != nil {
-		return e.SentinelInfo, nil
+func (e SentinelLibraryEdges) SentinelOrErr() (*Sentinel, error) {
+	if e.Sentinel != nil {
+		return e.Sentinel, nil
 	} else if e.loadedTypes[0] {
-		return nil, &NotFoundError{label: sentinelinfo.Label}
+		return nil, &NotFoundError{label: sentinel.Label}
 	}
-	return nil, &NotLoadedError{edge: "sentinel_info"}
+	return nil, &NotLoadedError{edge: "sentinel"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -62,7 +62,7 @@ func (*SentinelLibrary) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sentinellibrary.FieldID, sentinellibrary.FieldSentinelInfoID, sentinellibrary.FieldReportedID, sentinellibrary.FieldLibraryReportSequence:
+		case sentinellibrary.FieldID, sentinellibrary.FieldSentinelID, sentinellibrary.FieldReportedID, sentinellibrary.FieldLibraryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinellibrary.FieldDownloadBasePath:
 			values[i] = new(sql.NullString)
@@ -84,16 +84,16 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case sentinellibrary.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			sl.ID = int(value.Int64)
-		case sentinellibrary.FieldSentinelInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field sentinel_info_id", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sl.SentinelInfoID = model.InternalID(value.Int64)
+				sl.ID = model.InternalID(value.Int64)
+			}
+		case sentinellibrary.FieldSentinelID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
+			} else if value.Valid {
+				sl.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinellibrary.FieldReportedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -138,9 +138,9 @@ func (sl *SentinelLibrary) Value(name string) (ent.Value, error) {
 	return sl.selectValues.Get(name)
 }
 
-// QuerySentinelInfo queries the "sentinel_info" edge of the SentinelLibrary entity.
-func (sl *SentinelLibrary) QuerySentinelInfo() *SentinelInfoQuery {
-	return NewSentinelLibraryClient(sl.config).QuerySentinelInfo(sl)
+// QuerySentinel queries the "sentinel" edge of the SentinelLibrary entity.
+func (sl *SentinelLibrary) QuerySentinel() *SentinelQuery {
+	return NewSentinelLibraryClient(sl.config).QuerySentinel(sl)
 }
 
 // Update returns a builder for updating this SentinelLibrary.
@@ -166,8 +166,8 @@ func (sl *SentinelLibrary) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelLibrary(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sl.ID))
-	builder.WriteString("sentinel_info_id=")
-	builder.WriteString(fmt.Sprintf("%v", sl.SentinelInfoID))
+	builder.WriteString("sentinel_id=")
+	builder.WriteString(fmt.Sprintf("%v", sl.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("reported_id=")
 	builder.WriteString(fmt.Sprintf("%v", sl.ReportedID))

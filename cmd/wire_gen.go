@@ -290,7 +290,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, key)
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key)
 	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3)
 	if err != nil {
 		cleanup2()

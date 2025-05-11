@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -20,11 +20,11 @@ import (
 // SentinelLibraryQuery is the builder for querying SentinelLibrary entities.
 type SentinelLibraryQuery struct {
 	config
-	ctx              *QueryContext
-	order            []sentinellibrary.OrderOption
-	inters           []Interceptor
-	predicates       []predicate.SentinelLibrary
-	withSentinelInfo *SentinelInfoQuery
+	ctx          *QueryContext
+	order        []sentinellibrary.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.SentinelLibrary
+	withSentinel *SentinelQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,9 +61,9 @@ func (slq *SentinelLibraryQuery) Order(o ...sentinellibrary.OrderOption) *Sentin
 	return slq
 }
 
-// QuerySentinelInfo chains the current query on the "sentinel_info" edge.
-func (slq *SentinelLibraryQuery) QuerySentinelInfo() *SentinelInfoQuery {
-	query := (&SentinelInfoClient{config: slq.config}).Query()
+// QuerySentinel chains the current query on the "sentinel" edge.
+func (slq *SentinelLibraryQuery) QuerySentinel() *SentinelQuery {
+	query := (&SentinelClient{config: slq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := slq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,8 +74,8 @@ func (slq *SentinelLibraryQuery) QuerySentinelInfo() *SentinelInfoQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sentinellibrary.Table, sentinellibrary.FieldID, selector),
-			sqlgraph.To(sentinelinfo.Table, sentinelinfo.FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, sentinellibrary.SentinelInfoTable, sentinellibrary.SentinelInfoColumn),
+			sqlgraph.To(sentinel.Table, sentinel.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sentinellibrary.SentinelTable, sentinellibrary.SentinelColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(slq.driver.Dialect(), step)
 		return fromU, nil
@@ -107,8 +107,8 @@ func (slq *SentinelLibraryQuery) FirstX(ctx context.Context) *SentinelLibrary {
 
 // FirstID returns the first SentinelLibrary ID from the query.
 // Returns a *NotFoundError when no SentinelLibrary ID was found.
-func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = slq.Limit(1).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -120,7 +120,7 @@ func (slq *SentinelLibraryQuery) FirstID(ctx context.Context) (id int, err error
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) int {
+func (slq *SentinelLibraryQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := slq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -158,8 +158,8 @@ func (slq *SentinelLibraryQuery) OnlyX(ctx context.Context) *SentinelLibrary {
 // OnlyID is like Only, but returns the only SentinelLibrary ID in the query.
 // Returns a *NotSingularError when more than one SentinelLibrary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = slq.Limit(2).IDs(setContextOp(ctx, slq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -175,7 +175,7 @@ func (slq *SentinelLibraryQuery) OnlyID(ctx context.Context) (id int, err error)
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) int {
+func (slq *SentinelLibraryQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := slq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -203,7 +203,7 @@ func (slq *SentinelLibraryQuery) AllX(ctx context.Context) []*SentinelLibrary {
 }
 
 // IDs executes the query and returns a list of SentinelLibrary IDs.
-func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if slq.ctx.Unique == nil && slq.path != nil {
 		slq.Unique(true)
 	}
@@ -215,7 +215,7 @@ func (slq *SentinelLibraryQuery) IDs(ctx context.Context) (ids []int, err error)
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []int {
+func (slq *SentinelLibraryQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := slq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -270,26 +270,26 @@ func (slq *SentinelLibraryQuery) Clone() *SentinelLibraryQuery {
 		return nil
 	}
 	return &SentinelLibraryQuery{
-		config:           slq.config,
-		ctx:              slq.ctx.Clone(),
-		order:            append([]sentinellibrary.OrderOption{}, slq.order...),
-		inters:           append([]Interceptor{}, slq.inters...),
-		predicates:       append([]predicate.SentinelLibrary{}, slq.predicates...),
-		withSentinelInfo: slq.withSentinelInfo.Clone(),
+		config:       slq.config,
+		ctx:          slq.ctx.Clone(),
+		order:        append([]sentinellibrary.OrderOption{}, slq.order...),
+		inters:       append([]Interceptor{}, slq.inters...),
+		predicates:   append([]predicate.SentinelLibrary{}, slq.predicates...),
+		withSentinel: slq.withSentinel.Clone(),
 		// clone intermediate query.
 		sql:  slq.sql.Clone(),
 		path: slq.path,
 	}
 }
 
-// WithSentinelInfo tells the query-builder to eager-load the nodes that are connected to
-// the "sentinel_info" edge. The optional arguments are used to configure the query builder of the edge.
-func (slq *SentinelLibraryQuery) WithSentinelInfo(opts ...func(*SentinelInfoQuery)) *SentinelLibraryQuery {
-	query := (&SentinelInfoClient{config: slq.config}).Query()
+// WithSentinel tells the query-builder to eager-load the nodes that are connected to
+// the "sentinel" edge. The optional arguments are used to configure the query builder of the edge.
+func (slq *SentinelLibraryQuery) WithSentinel(opts ...func(*SentinelQuery)) *SentinelLibraryQuery {
+	query := (&SentinelClient{config: slq.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	slq.withSentinelInfo = query
+	slq.withSentinel = query
 	return slq
 }
 
@@ -299,12 +299,12 @@ func (slq *SentinelLibraryQuery) WithSentinelInfo(opts ...func(*SentinelInfoQuer
 // Example:
 //
 //	var v []struct {
-//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+//		SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SentinelLibrary.Query().
-//		GroupBy(sentinellibrary.FieldSentinelInfoID).
+//		GroupBy(sentinellibrary.FieldSentinelID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (slq *SentinelLibraryQuery) GroupBy(field string, fields ...string) *SentinelLibraryGroupBy {
@@ -322,11 +322,11 @@ func (slq *SentinelLibraryQuery) GroupBy(field string, fields ...string) *Sentin
 // Example:
 //
 //	var v []struct {
-//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+//		SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 //	}
 //
 //	client.SentinelLibrary.Query().
-//		Select(sentinellibrary.FieldSentinelInfoID).
+//		Select(sentinellibrary.FieldSentinelID).
 //		Scan(ctx, &v)
 func (slq *SentinelLibraryQuery) Select(fields ...string) *SentinelLibrarySelect {
 	slq.ctx.Fields = append(slq.ctx.Fields, fields...)
@@ -372,7 +372,7 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 		nodes       = []*SentinelLibrary{}
 		_spec       = slq.querySpec()
 		loadedTypes = [1]bool{
-			slq.withSentinelInfo != nil,
+			slq.withSentinel != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -393,20 +393,20 @@ func (slq *SentinelLibraryQuery) sqlAll(ctx context.Context, hooks ...queryHook)
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := slq.withSentinelInfo; query != nil {
-		if err := slq.loadSentinelInfo(ctx, query, nodes, nil,
-			func(n *SentinelLibrary, e *SentinelInfo) { n.Edges.SentinelInfo = e }); err != nil {
+	if query := slq.withSentinel; query != nil {
+		if err := slq.loadSentinel(ctx, query, nodes, nil,
+			func(n *SentinelLibrary, e *Sentinel) { n.Edges.Sentinel = e }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (slq *SentinelLibraryQuery) loadSentinelInfo(ctx context.Context, query *SentinelInfoQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *SentinelInfo)) error {
+func (slq *SentinelLibraryQuery) loadSentinel(ctx context.Context, query *SentinelQuery, nodes []*SentinelLibrary, init func(*SentinelLibrary), assign func(*SentinelLibrary, *Sentinel)) error {
 	ids := make([]model.InternalID, 0, len(nodes))
 	nodeids := make(map[model.InternalID][]*SentinelLibrary)
 	for i := range nodes {
-		fk := nodes[i].SentinelInfoID
+		fk := nodes[i].SentinelID
 		if _, ok := nodeids[fk]; !ok {
 			ids = append(ids, fk)
 		}
@@ -415,7 +415,7 @@ func (slq *SentinelLibraryQuery) loadSentinelInfo(ctx context.Context, query *Se
 	if len(ids) == 0 {
 		return nil
 	}
-	query.Where(sentinelinfo.IDIn(ids...))
+	query.Where(sentinel.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err
@@ -423,7 +423,7 @@ func (slq *SentinelLibraryQuery) loadSentinelInfo(ctx context.Context, query *Se
 	for _, n := range neighbors {
 		nodes, ok := nodeids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected foreign-key "sentinel_info_id" returned %v`, n.ID)
+			return fmt.Errorf(`unexpected foreign-key "sentinel_id" returned %v`, n.ID)
 		}
 		for i := range nodes {
 			assign(nodes[i], n)
@@ -442,7 +442,7 @@ func (slq *SentinelLibraryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(sentinellibrary.Table, sentinellibrary.Columns, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	_spec.From = slq.sql
 	if unique := slq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -457,8 +457,8 @@ func (slq *SentinelLibraryQuery) querySpec() *sqlgraph.QuerySpec {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
-		if slq.withSentinelInfo != nil {
-			_spec.Node.AddColumnOnce(sentinellibrary.FieldSentinelInfoID)
+		if slq.withSentinel != nil {
+			_spec.Node.AddColumnOnce(sentinellibrary.FieldSentinelID)
 		}
 	}
 	if ps := slq.predicates; len(ps) > 0 {

@@ -35,10 +35,11 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
 	"github.com/tuihub/librarian/internal/data/internal/ent/session"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
@@ -128,10 +129,11 @@ func checkColumn(table, column string) error {
 			notifytarget.Table:          notifytarget.ValidColumn,
 			portercontext.Table:         portercontext.ValidColumn,
 			porterinstance.Table:        porterinstance.ValidColumn,
+			sentinel.Table:              sentinel.ValidColumn,
 			sentinelappbinary.Table:     sentinelappbinary.ValidColumn,
 			sentinelappbinaryfile.Table: sentinelappbinaryfile.ValidColumn,
-			sentinelinfo.Table:          sentinelinfo.ValidColumn,
 			sentinellibrary.Table:       sentinellibrary.ValidColumn,
+			sentinelsession.Table:       sentinelsession.ValidColumn,
 			session.Table:               session.ValidColumn,
 			storeapp.Table:              storeapp.ValidColumn,
 			storeappbinary.Table:        storeappbinary.ValidColumn,

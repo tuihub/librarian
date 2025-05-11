@@ -13,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
 	"github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -81,6 +82,18 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusActive PorterContextStatusActive
 	// goverter:enum:map StatusDisabled PorterContextStatusDisabled
 	ToBizPorterContextStatus(portercontext.Status) modelsupervisor.PorterContextStatus
+
+	// goverter:ignore Libraries
+	ToBizSentinel(*ent.Sentinel) *modelgebura.Sentinel
+	ToBizSentinelList([]*ent.Sentinel) []*modelgebura.Sentinel
+
+	ToBizSentinelSession(*ent.SentinelSession) *modelgebura.SentinelSession
+	ToBizSentinelSessionList([]*ent.SentinelSession) []*modelgebura.SentinelSession
+
+	// goverter:enum:unknown SentinelSessionStatusUnspecified
+	// goverter:enum:map StatusActive SentinelSessionStatusActive
+	// goverter:enum:map StatusSuspend SentinelSessionStatusSuspend
+	ToBizSentinelSessionStatus(sentinelsession.Status) modelgebura.SentinelSessionStatus
 
 	ToBizAppInfo(*ent.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*ent.AppInfo) []*modelgebura.AppInfo

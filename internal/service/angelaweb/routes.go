@@ -31,6 +31,11 @@ func (a *AngelaWeb) setupRoutes() {
 
 	api.Get("/dashboard/stats", a.apiHandler.GetDashboardStats)
 
+	api.Get("/sentinels", a.apiHandler.ListSentinels)
+	api.Post("/sentinels", a.apiHandler.CreateSentinel)
+	api.Get("/sentinels/:id", a.apiHandler.GetSentinel)
+	api.Put("/sentinels/:id", a.apiHandler.UpdateSentinel)
+
 	page := a.app.Group("/")
 	page.Get("/login", a.pageBuilder.Login)
 
@@ -46,6 +51,10 @@ func (a *AngelaWeb) setupRoutes() {
 	page.Get("/config", a.pageBuilder.ConfigList)
 	page.Get("/server-info", a.pageBuilder.ServerInfoForm)
 	page.Get("/monitor", monitor.New())
+
+	page.Get("/sentinels", a.pageBuilder.SentinelList)
+	page.Get("/sentinels/new", a.pageBuilder.SentinelForm)
+	page.Get("/sentinels/edit/:id", a.pageBuilder.SentinelForm)
 
 	a.app.Use(a.pageBuilder.NotFound)
 }

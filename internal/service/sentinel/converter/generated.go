@@ -8,6 +8,29 @@ import (
 	sentinel "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 )
 
+func ToBizSentinel(source *sentinel.ReportSentinelInformationRequest) *modelgebura.Sentinel {
+	var pModelgeburaSentinel *modelgebura.Sentinel
+	if source != nil {
+		var modelgeburaSentinel modelgebura.Sentinel
+		modelgeburaSentinel.URL = (*source).Url
+		if (*source).UrlAlternatives != nil {
+			modelgeburaSentinel.AlternativeUrls = make([]string, len((*source).UrlAlternatives))
+			for i := 0; i < len((*source).UrlAlternatives); i++ {
+				modelgeburaSentinel.AlternativeUrls[i] = (*source).UrlAlternatives[i]
+			}
+		}
+		modelgeburaSentinel.GetTokenPath = (*source).GetTokenPath
+		modelgeburaSentinel.DownloadFileBasePath = (*source).DownloadFileBasePath
+		if (*source).Libraries != nil {
+			modelgeburaSentinel.Libraries = make([]*modelgebura.SentinelLibrary, len((*source).Libraries))
+			for j := 0; j < len((*source).Libraries); j++ {
+				modelgeburaSentinel.Libraries[j] = ToBizSentinelLibrary((*source).Libraries[j])
+			}
+		}
+		pModelgeburaSentinel = &modelgeburaSentinel
+	}
+	return pModelgeburaSentinel
+}
 func ToBizSentinelAppBinary(source *sentinel.SentinelLibraryAppBinary) *modelgebura.SentinelAppBinary {
 	var pModelgeburaSentinelAppBinary *modelgebura.SentinelAppBinary
 	if source != nil {
@@ -57,29 +80,6 @@ func ToBizSentinelAppBinaryList(source []*sentinel.SentinelLibraryAppBinary) []*
 		}
 	}
 	return pModelgeburaSentinelAppBinaryList
-}
-func ToBizSentinelInfo(source *sentinel.ReportSentinelInformationRequest) *modelgebura.SentinelInfo {
-	var pModelgeburaSentinelInfo *modelgebura.SentinelInfo
-	if source != nil {
-		var modelgeburaSentinelInfo modelgebura.SentinelInfo
-		modelgeburaSentinelInfo.URL = (*source).Url
-		if (*source).UrlAlternatives != nil {
-			modelgeburaSentinelInfo.AlternativeUrls = make([]string, len((*source).UrlAlternatives))
-			for i := 0; i < len((*source).UrlAlternatives); i++ {
-				modelgeburaSentinelInfo.AlternativeUrls[i] = (*source).UrlAlternatives[i]
-			}
-		}
-		modelgeburaSentinelInfo.GetTokenPath = (*source).GetTokenPath
-		modelgeburaSentinelInfo.DownloadFileBasePath = (*source).DownloadFileBasePath
-		if (*source).Libraries != nil {
-			modelgeburaSentinelInfo.Libraries = make([]*modelgebura.SentinelLibrary, len((*source).Libraries))
-			for j := 0; j < len((*source).Libraries); j++ {
-				modelgeburaSentinelInfo.Libraries[j] = ToBizSentinelLibrary((*source).Libraries[j])
-			}
-		}
-		pModelgeburaSentinelInfo = &modelgeburaSentinelInfo
-	}
-	return pModelgeburaSentinelInfo
 }
 func ToBizSentinelLibrary(source *sentinel.SentinelLibrary) *modelgebura.SentinelLibrary {
 	var pModelgeburaSentinelLibrary *modelgebura.SentinelLibrary

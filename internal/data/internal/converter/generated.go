@@ -14,6 +14,7 @@ import (
 	notifytarget "github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	portercontext "github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	porterinstance "github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	sentinelsession "github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
 	systemnotification "github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
 	user "github.com/tuihub/librarian/internal/data/internal/ent/user"
 	model "github.com/tuihub/librarian/internal/model"
@@ -595,6 +596,75 @@ func ToBizPorterStatus(source porterinstance.Status) model.UserStatus {
 	}
 	return modelUserStatus
 }
+func ToBizSentinel(source *ent.Sentinel) *modelgebura.Sentinel {
+	var pModelgeburaSentinel *modelgebura.Sentinel
+	if source != nil {
+		var modelgeburaSentinel modelgebura.Sentinel
+		modelgeburaSentinel.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaSentinel.Name = (*source).Name
+		modelgeburaSentinel.Description = (*source).Description
+		modelgeburaSentinel.URL = (*source).URL
+		if (*source).AlternativeUrls != nil {
+			modelgeburaSentinel.AlternativeUrls = make([]string, len((*source).AlternativeUrls))
+			for i := 0; i < len((*source).AlternativeUrls); i++ {
+				modelgeburaSentinel.AlternativeUrls[i] = (*source).AlternativeUrls[i]
+			}
+		}
+		modelgeburaSentinel.GetTokenPath = (*source).GetTokenPath
+		modelgeburaSentinel.DownloadFileBasePath = (*source).DownloadFileBasePath
+		pModelgeburaSentinel = &modelgeburaSentinel
+	}
+	return pModelgeburaSentinel
+}
+func ToBizSentinelList(source []*ent.Sentinel) []*modelgebura.Sentinel {
+	var pModelgeburaSentinelList []*modelgebura.Sentinel
+	if source != nil {
+		pModelgeburaSentinelList = make([]*modelgebura.Sentinel, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaSentinelList[i] = ToBizSentinel(source[i])
+		}
+	}
+	return pModelgeburaSentinelList
+}
+func ToBizSentinelSession(source *ent.SentinelSession) *modelgebura.SentinelSession {
+	var pModelgeburaSentinelSession *modelgebura.SentinelSession
+	if source != nil {
+		var modelgeburaSentinelSession modelgebura.SentinelSession
+		modelgeburaSentinelSession.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaSentinelSession.SentinelID = modelInternalIDToModelInternalID((*source).SentinelID)
+		modelgeburaSentinelSession.RefreshToken = (*source).RefreshToken
+		modelgeburaSentinelSession.Status = ToBizSentinelSessionStatus((*source).Status)
+		modelgeburaSentinelSession.CreatorID = modelInternalIDToModelInternalID((*source).CreatorID)
+		modelgeburaSentinelSession.ExpireAt = TimeToTime((*source).ExpireAt)
+		modelgeburaSentinelSession.LastUsedAt = timeTimeToPTimeTime((*source).LastUsedAt)
+		modelgeburaSentinelSession.LastRefreshedAt = timeTimeToPTimeTime((*source).LastRefreshedAt)
+		modelgeburaSentinelSession.RefreshCount = (*source).RefreshCount
+		pModelgeburaSentinelSession = &modelgeburaSentinelSession
+	}
+	return pModelgeburaSentinelSession
+}
+func ToBizSentinelSessionList(source []*ent.SentinelSession) []*modelgebura.SentinelSession {
+	var pModelgeburaSentinelSessionList []*modelgebura.SentinelSession
+	if source != nil {
+		pModelgeburaSentinelSessionList = make([]*modelgebura.SentinelSession, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaSentinelSessionList[i] = ToBizSentinelSession(source[i])
+		}
+	}
+	return pModelgeburaSentinelSessionList
+}
+func ToBizSentinelSessionStatus(source sentinelsession.Status) modelgebura.SentinelSessionStatus {
+	var modelgeburaSentinelSessionStatus modelgebura.SentinelSessionStatus
+	switch source {
+	case sentinelsession.StatusActive:
+		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusActive
+	case sentinelsession.StatusSuspend:
+		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusSuspend
+	default:
+		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusUnspecified
+	}
+	return modelgeburaSentinelSessionStatus
+}
 func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotification *modelnetzach.SystemNotification
 	if source != nil {
@@ -1062,6 +1132,18 @@ func ToEntPorterInstanceStatusList(source []model.UserStatus) []porterinstance.S
 		}
 	}
 	return porterinstanceStatusList
+}
+func ToEntSentinelSessionStatus(source modelgebura.SentinelSessionStatus) sentinelsession.Status {
+	var sentinelsessionStatus sentinelsession.Status
+	switch source {
+	case modelgebura.SentinelSessionStatusActive:
+		sentinelsessionStatus = sentinelsession.StatusActive
+	case modelgebura.SentinelSessionStatusSuspend:
+		sentinelsessionStatus = sentinelsession.StatusSuspend
+	case modelgebura.SentinelSessionStatusUnspecified: // ignored
+	default: // ignored
+	}
+	return sentinelsessionStatus
 }
 func ToEntSystemNotificationLevel(source modelnetzach.SystemNotificationLevel) systemnotification.Level {
 	var systemnotificationLevel systemnotification.Level

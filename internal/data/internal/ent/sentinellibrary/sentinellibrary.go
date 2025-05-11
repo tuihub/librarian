@@ -14,8 +14,8 @@ const (
 	Label = "sentinel_library"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldSentinelInfoID holds the string denoting the sentinel_info_id field in the database.
-	FieldSentinelInfoID = "sentinel_info_id"
+	// FieldSentinelID holds the string denoting the sentinel_id field in the database.
+	FieldSentinelID = "sentinel_id"
 	// FieldReportedID holds the string denoting the reported_id field in the database.
 	FieldReportedID = "reported_id"
 	// FieldDownloadBasePath holds the string denoting the download_base_path field in the database.
@@ -26,23 +26,23 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldLibraryReportSequence holds the string denoting the library_report_sequence field in the database.
 	FieldLibraryReportSequence = "library_report_sequence"
-	// EdgeSentinelInfo holds the string denoting the sentinel_info edge name in mutations.
-	EdgeSentinelInfo = "sentinel_info"
+	// EdgeSentinel holds the string denoting the sentinel edge name in mutations.
+	EdgeSentinel = "sentinel"
 	// Table holds the table name of the sentinellibrary in the database.
 	Table = "sentinel_libraries"
-	// SentinelInfoTable is the table that holds the sentinel_info relation/edge.
-	SentinelInfoTable = "sentinel_libraries"
-	// SentinelInfoInverseTable is the table name for the SentinelInfo entity.
-	// It exists in this package in order to avoid circular dependency with the "sentinelinfo" package.
-	SentinelInfoInverseTable = "sentinel_infos"
-	// SentinelInfoColumn is the table column denoting the sentinel_info relation/edge.
-	SentinelInfoColumn = "sentinel_info_id"
+	// SentinelTable is the table that holds the sentinel relation/edge.
+	SentinelTable = "sentinel_libraries"
+	// SentinelInverseTable is the table name for the Sentinel entity.
+	// It exists in this package in order to avoid circular dependency with the "sentinel" package.
+	SentinelInverseTable = "sentinels"
+	// SentinelColumn is the table column denoting the sentinel relation/edge.
+	SentinelColumn = "sentinel_id"
 )
 
 // Columns holds all SQL columns for sentinellibrary fields.
 var Columns = []string{
 	FieldID,
-	FieldSentinelInfoID,
+	FieldSentinelID,
 	FieldReportedID,
 	FieldDownloadBasePath,
 	FieldUpdatedAt,
@@ -77,9 +77,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// BySentinelInfoID orders the results by the sentinel_info_id field.
-func BySentinelInfoID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSentinelInfoID, opts...).ToFunc()
+// BySentinelID orders the results by the sentinel_id field.
+func BySentinelID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelID, opts...).ToFunc()
 }
 
 // ByReportedID orders the results by the reported_id field.
@@ -107,16 +107,16 @@ func ByLibraryReportSequence(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldLibraryReportSequence, opts...).ToFunc()
 }
 
-// BySentinelInfoField orders the results by sentinel_info field.
-func BySentinelInfoField(field string, opts ...sql.OrderTermOption) OrderOption {
+// BySentinelField orders the results by sentinel field.
+func BySentinelField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSentinelInfoStep(), sql.OrderByField(field, opts...))
+		sqlgraph.OrderByNeighborTerms(s, newSentinelStep(), sql.OrderByField(field, opts...))
 	}
 }
-func newSentinelInfoStep() *sqlgraph.Step {
+func newSentinelStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SentinelInfoInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2O, false, SentinelInfoTable, SentinelInfoColumn),
+		sqlgraph.To(SentinelInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SentinelTable, SentinelColumn),
 	)
 }

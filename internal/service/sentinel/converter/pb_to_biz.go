@@ -15,7 +15,9 @@ import (
 type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:ignore ID
 	// goverter:map UrlAlternatives AlternativeUrls
-	ToBizSentinelInfo(*sentinel.ReportSentinelInformationRequest) *modelgebura.SentinelInfo
+	// goverter:ignore Name
+	// goverter:ignore Description
+	ToBizSentinel(*sentinel.ReportSentinelInformationRequest) *modelgebura.Sentinel
 	// goverter:map Id ReportedID
 	// goverter:ignore AppBinaries
 	ToBizSentinelLibrary(*sentinel.SentinelLibrary) *modelgebura.SentinelLibrary

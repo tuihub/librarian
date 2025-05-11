@@ -29,24 +29,24 @@ func (sabfu *SentinelAppBinaryFileUpdate) Where(ps ...predicate.SentinelAppBinar
 	return sabfu
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ResetSentinelInfoID()
-	sabfu.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.ResetSentinelID()
+	sabfu.mutation.SetSentinelID(mi)
 	return sabfu
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryFileUpdate {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryFileUpdate {
 	if mi != nil {
-		sabfu.SetSentinelInfoID(*mi)
+		sabfu.SetSentinelID(*mi)
 	}
 	return sabfu
 }
 
-// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
-func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.AddSentinelInfoID(mi)
+// AddSentinelID adds mi to the "sentinel_id" field.
+func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.AddSentinelID(mi)
 	return sabfu
 }
 
@@ -243,7 +243,7 @@ func (sabfu *SentinelAppBinaryFileUpdate) defaults() {
 }
 
 func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
 	if ps := sabfu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -251,11 +251,11 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 			}
 		}
 	}
-	if value, ok := sabfu.mutation.SentinelInfoID(); ok {
-		_spec.SetField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabfu.mutation.SentinelID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfu.mutation.AddedSentinelInfoID(); ok {
-		_spec.AddField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabfu.mutation.AddedSentinelID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
 	if value, ok := sabfu.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
@@ -319,24 +319,24 @@ type SentinelAppBinaryFileUpdateOne struct {
 	mutation *SentinelAppBinaryFileMutation
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ResetSentinelInfoID()
-	sabfuo.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.ResetSentinelID()
+	sabfuo.mutation.SetSentinelID(mi)
 	return sabfuo
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryFileUpdateOne {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryFileUpdateOne {
 	if mi != nil {
-		sabfuo.SetSentinelInfoID(*mi)
+		sabfuo.SetSentinelID(*mi)
 	}
 	return sabfuo
 }
 
-// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.AddSentinelInfoID(mi)
+// AddSentinelID adds mi to the "sentinel_id" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelID(mi model.InternalID) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.AddSentinelID(mi)
 	return sabfuo
 }
 
@@ -546,7 +546,7 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) defaults() {
 }
 
 func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinaryFile, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinaryfile.Table, sentinelappbinaryfile.Columns, sqlgraph.NewFieldSpec(sentinelappbinaryfile.FieldID, field.TypeInt64))
 	id, ok := sabfuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelAppBinaryFile.id" for update`)}
@@ -571,11 +571,11 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 			}
 		}
 	}
-	if value, ok := sabfuo.mutation.SentinelInfoID(); ok {
-		_spec.SetField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabfuo.mutation.SentinelID(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabfuo.mutation.AddedSentinelInfoID(); ok {
-		_spec.AddField(sentinelappbinaryfile.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabfuo.mutation.AddedSentinelID(); ok {
+		_spec.AddField(sentinelappbinaryfile.FieldSentinelID, field.TypeInt64, value)
 	}
 	if value, ok := sabfuo.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)

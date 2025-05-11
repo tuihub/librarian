@@ -40,7 +40,7 @@ func (sld *SentinelLibraryDelete) ExecX(ctx context.Context) int {
 }
 
 func (sld *SentinelLibraryDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewDeleteSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	if ps := sld.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {

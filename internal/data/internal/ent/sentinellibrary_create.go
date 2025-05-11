@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelinfo"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinel"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -24,9 +24,9 @@ type SentinelLibraryCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (slc *SentinelLibraryCreate) SetSentinelInfoID(mi model.InternalID) *SentinelLibraryCreate {
-	slc.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (slc *SentinelLibraryCreate) SetSentinelID(mi model.InternalID) *SentinelLibraryCreate {
+	slc.mutation.SetSentinelID(mi)
 	return slc
 }
 
@@ -76,9 +76,15 @@ func (slc *SentinelLibraryCreate) SetLibraryReportSequence(i int64) *SentinelLib
 	return slc
 }
 
-// SetSentinelInfo sets the "sentinel_info" edge to the SentinelInfo entity.
-func (slc *SentinelLibraryCreate) SetSentinelInfo(s *SentinelInfo) *SentinelLibraryCreate {
-	return slc.SetSentinelInfoID(s.ID)
+// SetID sets the "id" field.
+func (slc *SentinelLibraryCreate) SetID(mi model.InternalID) *SentinelLibraryCreate {
+	slc.mutation.SetID(mi)
+	return slc
+}
+
+// SetSentinel sets the "sentinel" edge to the Sentinel entity.
+func (slc *SentinelLibraryCreate) SetSentinel(s *Sentinel) *SentinelLibraryCreate {
+	return slc.SetSentinelID(s.ID)
 }
 
 // Mutation returns the SentinelLibraryMutation object of the builder.
@@ -128,8 +134,8 @@ func (slc *SentinelLibraryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (slc *SentinelLibraryCreate) check() error {
-	if _, ok := slc.mutation.SentinelInfoID(); !ok {
-		return &ValidationError{Name: "sentinel_info_id", err: errors.New(`ent: missing required field "SentinelLibrary.sentinel_info_id"`)}
+	if _, ok := slc.mutation.SentinelID(); !ok {
+		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelLibrary.sentinel_id"`)}
 	}
 	if _, ok := slc.mutation.ReportedID(); !ok {
 		return &ValidationError{Name: "reported_id", err: errors.New(`ent: missing required field "SentinelLibrary.reported_id"`)}
@@ -146,8 +152,8 @@ func (slc *SentinelLibraryCreate) check() error {
 	if _, ok := slc.mutation.LibraryReportSequence(); !ok {
 		return &ValidationError{Name: "library_report_sequence", err: errors.New(`ent: missing required field "SentinelLibrary.library_report_sequence"`)}
 	}
-	if len(slc.mutation.SentinelInfoIDs()) == 0 {
-		return &ValidationError{Name: "sentinel_info", err: errors.New(`ent: missing required edge "SentinelLibrary.sentinel_info"`)}
+	if len(slc.mutation.SentinelIDs()) == 0 {
+		return &ValidationError{Name: "sentinel", err: errors.New(`ent: missing required edge "SentinelLibrary.sentinel"`)}
 	}
 	return nil
 }
@@ -163,8 +169,10 @@ func (slc *SentinelLibraryCreate) sqlSave(ctx context.Context) (*SentinelLibrary
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = model.InternalID(id)
+	}
 	slc.mutation.id = &_node.ID
 	slc.mutation.done = true
 	return _node, nil
@@ -173,9 +181,13 @@ func (slc *SentinelLibraryCreate) sqlSave(ctx context.Context) (*SentinelLibrary
 func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SentinelLibrary{config: slc.config}
-		_spec = sqlgraph.NewCreateSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(sentinellibrary.Table, sqlgraph.NewFieldSpec(sentinellibrary.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = slc.conflict
+	if id, ok := slc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
 	if value, ok := slc.mutation.ReportedID(); ok {
 		_spec.SetField(sentinellibrary.FieldReportedID, field.TypeInt64, value)
 		_node.ReportedID = value
@@ -196,21 +208,21 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 		_spec.SetField(sentinellibrary.FieldLibraryReportSequence, field.TypeInt64, value)
 		_node.LibraryReportSequence = value
 	}
-	if nodes := slc.mutation.SentinelInfoIDs(); len(nodes) > 0 {
+	if nodes := slc.mutation.SentinelIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
-			Inverse: false,
-			Table:   sentinellibrary.SentinelInfoTable,
-			Columns: []string{sentinellibrary.SentinelInfoColumn},
+			Inverse: true,
+			Table:   sentinellibrary.SentinelTable,
+			Columns: []string{sentinellibrary.SentinelColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sentinelinfo.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sentinel.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
-		_node.SentinelInfoID = nodes[0]
+		_node.SentinelID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -220,7 +232,7 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 // of the `INSERT` statement. For example:
 //
 //	client.SentinelLibrary.Create().
-//		SetSentinelInfoID(v).
+//		SetSentinelID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -229,7 +241,7 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelLibraryUpsert) {
-//			SetSentinelInfoID(v+v).
+//			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
 func (slc *SentinelLibraryCreate) OnConflict(opts ...sql.ConflictOption) *SentinelLibraryUpsertOne {
@@ -265,15 +277,15 @@ type (
 	}
 )
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelLibraryUpsert) SetSentinelInfoID(v model.InternalID) *SentinelLibraryUpsert {
-	u.Set(sentinellibrary.FieldSentinelInfoID, v)
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelLibraryUpsert) SetSentinelID(v model.InternalID) *SentinelLibraryUpsert {
+	u.Set(sentinellibrary.FieldSentinelID, v)
 	return u
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelLibraryUpsert) UpdateSentinelInfoID() *SentinelLibraryUpsert {
-	u.SetExcluded(sentinellibrary.FieldSentinelInfoID)
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelLibraryUpsert) UpdateSentinelID() *SentinelLibraryUpsert {
+	u.SetExcluded(sentinellibrary.FieldSentinelID)
 	return u
 }
 
@@ -349,16 +361,24 @@ func (u *SentinelLibraryUpsert) AddLibraryReportSequence(v int64) *SentinelLibra
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.SentinelLibrary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinellibrary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelLibraryUpsertOne) UpdateNewValues() *SentinelLibraryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(sentinellibrary.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -389,17 +409,17 @@ func (u *SentinelLibraryUpsertOne) Update(set func(*SentinelLibraryUpsert)) *Sen
 	return u
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelLibraryUpsertOne) SetSentinelInfoID(v model.InternalID) *SentinelLibraryUpsertOne {
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelLibraryUpsertOne) SetSentinelID(v model.InternalID) *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.SetSentinelInfoID(v)
+		s.SetSentinelID(v)
 	})
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelLibraryUpsertOne) UpdateSentinelInfoID() *SentinelLibraryUpsertOne {
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertOne) UpdateSentinelID() *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.UpdateSentinelInfoID()
+		s.UpdateSentinelID()
 	})
 }
 
@@ -503,7 +523,7 @@ func (u *SentinelLibraryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -512,7 +532,7 @@ func (u *SentinelLibraryUpsertOne) ID(ctx context.Context) (id int, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SentinelLibraryUpsertOne) IDX(ctx context.Context) int {
+func (u *SentinelLibraryUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -567,9 +587,9 @@ func (slcb *SentinelLibraryCreateBulk) Save(ctx context.Context) ([]*SentinelLib
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -622,7 +642,7 @@ func (slcb *SentinelLibraryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelLibraryUpsert) {
-//			SetSentinelInfoID(v+v).
+//			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
 func (slcb *SentinelLibraryCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelLibraryUpsertBulk {
@@ -657,10 +677,20 @@ type SentinelLibraryUpsertBulk struct {
 //	client.SentinelLibrary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinellibrary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelLibraryUpsertBulk) UpdateNewValues() *SentinelLibraryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(sentinellibrary.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -691,17 +721,17 @@ func (u *SentinelLibraryUpsertBulk) Update(set func(*SentinelLibraryUpsert)) *Se
 	return u
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelLibraryUpsertBulk) SetSentinelInfoID(v model.InternalID) *SentinelLibraryUpsertBulk {
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelLibraryUpsertBulk) SetSentinelID(v model.InternalID) *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.SetSentinelInfoID(v)
+		s.SetSentinelID(v)
 	})
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelLibraryUpsertBulk) UpdateSentinelInfoID() *SentinelLibraryUpsertBulk {
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertBulk) UpdateSentinelID() *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
-		s.UpdateSentinelInfoID()
+		s.UpdateSentinelID()
 	})
 }
 

@@ -23,9 +23,9 @@ type SentinelAppBinaryCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sabc *SentinelAppBinaryCreate) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryCreate {
-	sabc.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sabc *SentinelAppBinaryCreate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryCreate {
+	sabc.mutation.SetSentinelID(mi)
 	return sabc
 }
 
@@ -143,6 +143,12 @@ func (sabc *SentinelAppBinaryCreate) SetAppBinaryReportSequence(i int64) *Sentin
 	return sabc
 }
 
+// SetID sets the "id" field.
+func (sabc *SentinelAppBinaryCreate) SetID(mi model.InternalID) *SentinelAppBinaryCreate {
+	sabc.mutation.SetID(mi)
+	return sabc
+}
+
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
 func (sabc *SentinelAppBinaryCreate) Mutation() *SentinelAppBinaryMutation {
 	return sabc.mutation
@@ -190,8 +196,8 @@ func (sabc *SentinelAppBinaryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sabc *SentinelAppBinaryCreate) check() error {
-	if _, ok := sabc.mutation.SentinelInfoID(); !ok {
-		return &ValidationError{Name: "sentinel_info_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_info_id"`)}
+	if _, ok := sabc.mutation.SentinelID(); !ok {
+		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_id"`)}
 	}
 	if _, ok := sabc.mutation.SentinelLibraryReportedID(); !ok {
 		return &ValidationError{Name: "sentinel_library_reported_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_library_reported_id"`)}
@@ -228,8 +234,10 @@ func (sabc *SentinelAppBinaryCreate) sqlSave(ctx context.Context) (*SentinelAppB
 		}
 		return nil, err
 	}
-	id := _spec.ID.Value.(int64)
-	_node.ID = int(id)
+	if _spec.ID.Value != _node.ID {
+		id := _spec.ID.Value.(int64)
+		_node.ID = model.InternalID(id)
+	}
 	sabc.mutation.id = &_node.ID
 	sabc.mutation.done = true
 	return _node, nil
@@ -238,12 +246,16 @@ func (sabc *SentinelAppBinaryCreate) sqlSave(ctx context.Context) (*SentinelAppB
 func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &SentinelAppBinary{config: sabc.config}
-		_spec = sqlgraph.NewCreateSpec(sentinelappbinary.Table, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt))
+		_spec = sqlgraph.NewCreateSpec(sentinelappbinary.Table, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
 	)
 	_spec.OnConflict = sabc.conflict
-	if value, ok := sabc.mutation.SentinelInfoID(); ok {
-		_spec.SetField(sentinelappbinary.FieldSentinelInfoID, field.TypeInt64, value)
-		_node.SentinelInfoID = value
+	if id, ok := sabc.mutation.ID(); ok {
+		_node.ID = id
+		_spec.ID.Value = id
+	}
+	if value, ok := sabc.mutation.SentinelID(); ok {
+		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
+		_node.SentinelID = value
 	}
 	if value, ok := sabc.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
@@ -296,7 +308,7 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 // of the `INSERT` statement. For example:
 //
 //	client.SentinelAppBinary.Create().
-//		SetSentinelInfoID(v).
+//		SetSentinelID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -305,7 +317,7 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryUpsert) {
-//			SetSentinelInfoID(v+v).
+//			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabc *SentinelAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertOne {
@@ -341,21 +353,21 @@ type (
 	}
 )
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsert) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsert {
-	u.Set(sentinelappbinary.FieldSentinelInfoID, v)
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsert) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpsert {
+	u.Set(sentinelappbinary.FieldSentinelID, v)
 	return u
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryUpsert) UpdateSentinelInfoID() *SentinelAppBinaryUpsert {
-	u.SetExcluded(sentinelappbinary.FieldSentinelInfoID)
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsert) UpdateSentinelID() *SentinelAppBinaryUpsert {
+	u.SetExcluded(sentinelappbinary.FieldSentinelID)
 	return u
 }
 
-// AddSentinelInfoID adds v to the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsert) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsert {
-	u.Add(sentinelappbinary.FieldSentinelInfoID, v)
+// AddSentinelID adds v to the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsert) AddSentinelID(v model.InternalID) *SentinelAppBinaryUpsert {
+	u.Add(sentinelappbinary.FieldSentinelID, v)
 	return u
 }
 
@@ -533,16 +545,24 @@ func (u *SentinelAppBinaryUpsert) AddAppBinaryReportSequence(v int64) *SentinelA
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
 //	client.SentinelAppBinary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinelappbinary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelAppBinaryUpsertOne) UpdateNewValues() *SentinelAppBinaryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(sentinelappbinary.FieldID)
+		}
+	}))
 	return u
 }
 
@@ -573,24 +593,24 @@ func (u *SentinelAppBinaryUpsertOne) Update(set func(*SentinelAppBinaryUpsert)) 
 	return u
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsertOne) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsertOne {
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsertOne) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.SetSentinelInfoID(v)
+		s.SetSentinelID(v)
 	})
 }
 
-// AddSentinelInfoID adds v to the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsertOne) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsertOne {
+// AddSentinelID adds v to the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsertOne) AddSentinelID(v model.InternalID) *SentinelAppBinaryUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.AddSentinelInfoID(v)
+		s.AddSentinelID(v)
 	})
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryUpsertOne) UpdateSentinelInfoID() *SentinelAppBinaryUpsertOne {
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsertOne) UpdateSentinelID() *SentinelAppBinaryUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.UpdateSentinelInfoID()
+		s.UpdateSentinelID()
 	})
 }
 
@@ -813,7 +833,7 @@ func (u *SentinelAppBinaryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *SentinelAppBinaryUpsertOne) ID(ctx context.Context) (id int, err error) {
+func (u *SentinelAppBinaryUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -822,7 +842,7 @@ func (u *SentinelAppBinaryUpsertOne) ID(ctx context.Context) (id int, err error)
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *SentinelAppBinaryUpsertOne) IDX(ctx context.Context) int {
+func (u *SentinelAppBinaryUpsertOne) IDX(ctx context.Context) model.InternalID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -877,9 +897,9 @@ func (sabcb *SentinelAppBinaryCreateBulk) Save(ctx context.Context) ([]*Sentinel
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil {
+				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int(id)
+					nodes[i].ID = model.InternalID(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -932,7 +952,7 @@ func (sabcb *SentinelAppBinaryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryUpsert) {
-//			SetSentinelInfoID(v+v).
+//			SetSentinelID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabcb *SentinelAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertBulk {
@@ -967,10 +987,20 @@ type SentinelAppBinaryUpsertBulk struct {
 //	client.SentinelAppBinary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(sentinelappbinary.FieldID)
+//			}),
 //		).
 //		Exec(ctx)
 func (u *SentinelAppBinaryUpsertBulk) UpdateNewValues() *SentinelAppBinaryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(sentinelappbinary.FieldID)
+			}
+		}
+	}))
 	return u
 }
 
@@ -1001,24 +1031,24 @@ func (u *SentinelAppBinaryUpsertBulk) Update(set func(*SentinelAppBinaryUpsert))
 	return u
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsertBulk) SetSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsertBulk {
+// SetSentinelID sets the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsertBulk) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.SetSentinelInfoID(v)
+		s.SetSentinelID(v)
 	})
 }
 
-// AddSentinelInfoID adds v to the "sentinel_info_id" field.
-func (u *SentinelAppBinaryUpsertBulk) AddSentinelInfoID(v model.InternalID) *SentinelAppBinaryUpsertBulk {
+// AddSentinelID adds v to the "sentinel_id" field.
+func (u *SentinelAppBinaryUpsertBulk) AddSentinelID(v model.InternalID) *SentinelAppBinaryUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.AddSentinelInfoID(v)
+		s.AddSentinelID(v)
 	})
 }
 
-// UpdateSentinelInfoID sets the "sentinel_info_id" field to the value that was provided on create.
-func (u *SentinelAppBinaryUpsertBulk) UpdateSentinelInfoID() *SentinelAppBinaryUpsertBulk {
+// UpdateSentinelID sets the "sentinel_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsertBulk) UpdateSentinelID() *SentinelAppBinaryUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.UpdateSentinelInfoID()
+		s.UpdateSentinelID()
 	})
 }
 

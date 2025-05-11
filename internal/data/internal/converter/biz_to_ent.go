@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/portercontext"
 	"github.com/tuihub/librarian/internal/data/internal/ent/porterinstance"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
 	"github.com/tuihub/librarian/internal/data/internal/ent/systemnotification"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
@@ -65,6 +66,12 @@ type toEntConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterContextStatusActive StatusActive
 	// goverter:enum:map PorterContextStatusDisabled StatusDisabled
 	ToEntPorterContextStatus(modelsupervisor.PorterContextStatus) portercontext.Status
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map SentinelSessionStatusUnspecified @ignore
+	// goverter:enum:map SentinelSessionStatusActive StatusActive
+	// goverter:enum:map SentinelSessionStatusSuspend StatusSuspend
+	ToEntSentinelSessionStatus(modelgebura.SentinelSessionStatus) sentinelsession.Status
 
 	// goverter:ignore CreatedAt
 	// goverter:ignore UpdatedAt

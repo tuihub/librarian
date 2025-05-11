@@ -12,54 +12,54 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int) predicate.SentinelLibrary {
+func ID(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int) predicate.SentinelLibrary {
+func IDEQ(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int) predicate.SentinelLibrary {
+func IDNEQ(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int) predicate.SentinelLibrary {
+func IDIn(ids ...model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int) predicate.SentinelLibrary {
+func IDNotIn(ids ...model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int) predicate.SentinelLibrary {
+func IDGT(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int) predicate.SentinelLibrary {
+func IDGTE(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int) predicate.SentinelLibrary {
+func IDLT(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int) predicate.SentinelLibrary {
+func IDLTE(id model.InternalID) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLTE(FieldID, id))
 }
 
-// SentinelInfoID applies equality check predicate on the "sentinel_info_id" field. It's identical to SentinelInfoIDEQ.
-func SentinelInfoID(v model.InternalID) predicate.SentinelLibrary {
+// SentinelID applies equality check predicate on the "sentinel_id" field. It's identical to SentinelIDEQ.
+func SentinelID(v model.InternalID) predicate.SentinelLibrary {
 	vc := int64(v)
-	return predicate.SentinelLibrary(sql.FieldEQ(FieldSentinelInfoID, vc))
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldSentinelID, vc))
 }
 
 // ReportedID applies equality check predicate on the "reported_id" field. It's identical to ReportedIDEQ.
@@ -87,34 +87,34 @@ func LibraryReportSequence(v int64) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldLibraryReportSequence, v))
 }
 
-// SentinelInfoIDEQ applies the EQ predicate on the "sentinel_info_id" field.
-func SentinelInfoIDEQ(v model.InternalID) predicate.SentinelLibrary {
+// SentinelIDEQ applies the EQ predicate on the "sentinel_id" field.
+func SentinelIDEQ(v model.InternalID) predicate.SentinelLibrary {
 	vc := int64(v)
-	return predicate.SentinelLibrary(sql.FieldEQ(FieldSentinelInfoID, vc))
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldSentinelID, vc))
 }
 
-// SentinelInfoIDNEQ applies the NEQ predicate on the "sentinel_info_id" field.
-func SentinelInfoIDNEQ(v model.InternalID) predicate.SentinelLibrary {
+// SentinelIDNEQ applies the NEQ predicate on the "sentinel_id" field.
+func SentinelIDNEQ(v model.InternalID) predicate.SentinelLibrary {
 	vc := int64(v)
-	return predicate.SentinelLibrary(sql.FieldNEQ(FieldSentinelInfoID, vc))
+	return predicate.SentinelLibrary(sql.FieldNEQ(FieldSentinelID, vc))
 }
 
-// SentinelInfoIDIn applies the In predicate on the "sentinel_info_id" field.
-func SentinelInfoIDIn(vs ...model.InternalID) predicate.SentinelLibrary {
+// SentinelIDIn applies the In predicate on the "sentinel_id" field.
+func SentinelIDIn(vs ...model.InternalID) predicate.SentinelLibrary {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.SentinelLibrary(sql.FieldIn(FieldSentinelInfoID, v...))
+	return predicate.SentinelLibrary(sql.FieldIn(FieldSentinelID, v...))
 }
 
-// SentinelInfoIDNotIn applies the NotIn predicate on the "sentinel_info_id" field.
-func SentinelInfoIDNotIn(vs ...model.InternalID) predicate.SentinelLibrary {
+// SentinelIDNotIn applies the NotIn predicate on the "sentinel_id" field.
+func SentinelIDNotIn(vs ...model.InternalID) predicate.SentinelLibrary {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = int64(vs[i])
 	}
-	return predicate.SentinelLibrary(sql.FieldNotIn(FieldSentinelInfoID, v...))
+	return predicate.SentinelLibrary(sql.FieldNotIn(FieldSentinelID, v...))
 }
 
 // ReportedIDEQ applies the EQ predicate on the "reported_id" field.
@@ -342,21 +342,21 @@ func LibraryReportSequenceLTE(v int64) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldLTE(FieldLibraryReportSequence, v))
 }
 
-// HasSentinelInfo applies the HasEdge predicate on the "sentinel_info" edge.
-func HasSentinelInfo() predicate.SentinelLibrary {
+// HasSentinel applies the HasEdge predicate on the "sentinel" edge.
+func HasSentinel() predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2O, false, SentinelInfoTable, SentinelInfoColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, SentinelTable, SentinelColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasSentinelInfoWith applies the HasEdge predicate on the "sentinel_info" edge with a given conditions (other predicates).
-func HasSentinelInfoWith(preds ...predicate.SentinelInfo) predicate.SentinelLibrary {
+// HasSentinelWith applies the HasEdge predicate on the "sentinel" edge with a given conditions (other predicates).
+func HasSentinelWith(preds ...predicate.Sentinel) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(func(s *sql.Selector) {
-		step := newSentinelInfoStep()
+		step := newSentinelStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

@@ -29,24 +29,24 @@ func (sabu *SentinelAppBinaryUpdate) Where(ps ...predicate.SentinelAppBinary) *S
 	return sabu
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sabu *SentinelAppBinaryUpdate) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.ResetSentinelInfoID()
-	sabu.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sabu *SentinelAppBinaryUpdate) SetSentinelID(mi model.InternalID) *SentinelAppBinaryUpdate {
+	sabu.mutation.ResetSentinelID()
+	sabu.mutation.SetSentinelID(mi)
 	return sabu
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryUpdate {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (sabu *SentinelAppBinaryUpdate) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryUpdate {
 	if mi != nil {
-		sabu.SetSentinelInfoID(*mi)
+		sabu.SetSentinelID(*mi)
 	}
 	return sabu
 }
 
-// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
-func (sabu *SentinelAppBinaryUpdate) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddSentinelInfoID(mi)
+// AddSentinelID adds mi to the "sentinel_id" field.
+func (sabu *SentinelAppBinaryUpdate) AddSentinelID(mi model.InternalID) *SentinelAppBinaryUpdate {
+	sabu.mutation.AddSentinelID(mi)
 	return sabu
 }
 
@@ -283,7 +283,7 @@ func (sabu *SentinelAppBinaryUpdate) defaults() {
 }
 
 func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
 	if ps := sabu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -291,11 +291,11 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 			}
 		}
 	}
-	if value, ok := sabu.mutation.SentinelInfoID(); ok {
-		_spec.SetField(sentinelappbinary.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabu.mutation.SentinelID(); ok {
+		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabu.mutation.AddedSentinelInfoID(); ok {
-		_spec.AddField(sentinelappbinary.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabu.mutation.AddedSentinelID(); ok {
+		_spec.AddField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
 	if value, ok := sabu.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
@@ -371,24 +371,24 @@ type SentinelAppBinaryUpdateOne struct {
 	mutation *SentinelAppBinaryMutation
 }
 
-// SetSentinelInfoID sets the "sentinel_info_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetSentinelInfoID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ResetSentinelInfoID()
-	sabuo.mutation.SetSentinelInfoID(mi)
+// SetSentinelID sets the "sentinel_id" field.
+func (sabuo *SentinelAppBinaryUpdateOne) SetSentinelID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.ResetSentinelID()
+	sabuo.mutation.SetSentinelID(mi)
 	return sabuo
 }
 
-// SetNillableSentinelInfoID sets the "sentinel_info_id" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableSentinelInfoID(mi *model.InternalID) *SentinelAppBinaryUpdateOne {
+// SetNillableSentinelID sets the "sentinel_id" field if the given value is not nil.
+func (sabuo *SentinelAppBinaryUpdateOne) SetNillableSentinelID(mi *model.InternalID) *SentinelAppBinaryUpdateOne {
 	if mi != nil {
-		sabuo.SetSentinelInfoID(*mi)
+		sabuo.SetSentinelID(*mi)
 	}
 	return sabuo
 }
 
-// AddSentinelInfoID adds mi to the "sentinel_info_id" field.
-func (sabuo *SentinelAppBinaryUpdateOne) AddSentinelInfoID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddSentinelInfoID(mi)
+// AddSentinelID adds mi to the "sentinel_id" field.
+func (sabuo *SentinelAppBinaryUpdateOne) AddSentinelID(mi model.InternalID) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.AddSentinelID(mi)
 	return sabuo
 }
 
@@ -638,7 +638,7 @@ func (sabuo *SentinelAppBinaryUpdateOne) defaults() {
 }
 
 func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *SentinelAppBinary, err error) {
-	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
 	id, ok := sabuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "SentinelAppBinary.id" for update`)}
@@ -663,11 +663,11 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 			}
 		}
 	}
-	if value, ok := sabuo.mutation.SentinelInfoID(); ok {
-		_spec.SetField(sentinelappbinary.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabuo.mutation.SentinelID(); ok {
+		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
-	if value, ok := sabuo.mutation.AddedSentinelInfoID(); ok {
-		_spec.AddField(sentinelappbinary.FieldSentinelInfoID, field.TypeInt64, value)
+	if value, ok := sabuo.mutation.AddedSentinelID(); ok {
+		_spec.AddField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
 	if value, ok := sabuo.mutation.SentinelLibraryReportedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)

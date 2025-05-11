@@ -108,13 +108,35 @@ type AppCategory struct {
 	AppIDs        []model.InternalID
 }
 
-type SentinelInfo struct {
+type Sentinel struct {
 	ID                   model.InternalID
+	Name                 string
+	Description          string
 	URL                  string
 	AlternativeUrls      []string
 	GetTokenPath         string
 	DownloadFileBasePath string
 	Libraries            []*SentinelLibrary
+}
+
+type SentinelSessionStatus int
+
+const (
+	SentinelSessionStatusUnspecified SentinelSessionStatus = iota
+	SentinelSessionStatusActive
+	SentinelSessionStatusSuspend
+)
+
+type SentinelSession struct {
+	ID              model.InternalID
+	SentinelID      model.InternalID
+	RefreshToken    string
+	Status          SentinelSessionStatus
+	CreatorID       model.InternalID
+	ExpireAt        time.Time
+	LastUsedAt      *time.Time
+	LastRefreshedAt *time.Time
+	RefreshCount    int64
 }
 
 type SentinelLibrary struct {

@@ -5,11 +5,13 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/biz/bizangela"
+	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelangela"
+	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
 
 	"github.com/gofiber/contrib/fiberi18n/v2"
@@ -20,6 +22,7 @@ import (
 type Builder struct {
 	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
+	g              *bizgebura.Gebura
 	configDigests  []*conf.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
@@ -27,12 +30,14 @@ type Builder struct {
 func NewBuilder(
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
+	g *bizgebura.Gebura,
 	configDigests []*conf.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
 	return &Builder{
 		a:              a,
 		t:              t,
+		g:              g,
 		configDigests:  configDigests,
 		userCountCache: userCountCache,
 	}
@@ -189,5 +194,64 @@ func (b *Builder) ServerInfoForm(c *fiber.Ctx) error {
 
 	return c.Render("server_info_form", addCommonData(c, fiber.Map{
 		"ServerInfo": serverInfo,
+	}))
+}
+
+func (b *Builder) SentinelList(c *fiber.Ctx) error {
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+	pageSize := 10 // Sentinels per page
+	sentinels, total, err := b.g.ListSentinels(c.UserContext(), &model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+	})
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingSentinels"))
+	}
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	return c.Render("sentinel", addCommonData(c, fiber.Map{
+		"Sentinels": sentinels,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
+	}))
+}
+
+func (b *Builder) SentinelForm(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	var sentinel *modelgebura.Sentinel
+	var action, method string
+
+	if idStr != "" {
+		id, err := strconv.ParseInt(idStr, 10, 64)
+		if err != nil {
+			return c.Status(http.StatusBadRequest).SendString("Invalid ID")
+		}
+		sentinel, err = b.g.GetSentinel(c.UserContext(), model.InternalID(id))
+		if err != nil {
+			return c.Status(http.StatusNotFound).SendString("Sentinel not found")
+		}
+		action = "/api/sentinels/" + idStr
+		method = "PUT"
+	} else {
+		action = "/api/sentinels"
+		method = "POST"
+		sentinel = new(modelgebura.Sentinel)
+	}
+	return c.Render("sentinel_form", addCommonData(c, fiber.Map{
+		"Sentinel": sentinel,
+		"Action":   action,
+		"Method":   method,
 	}))
 }

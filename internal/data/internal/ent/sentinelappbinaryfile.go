@@ -17,9 +17,9 @@ import (
 type SentinelAppBinaryFile struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
-	// SentinelInfoID holds the value of the "sentinel_info_id" field.
-	SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+	ID model.InternalID `json:"id,omitempty"`
+	// SentinelID holds the value of the "sentinel_id" field.
+	SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 	// SentinelLibraryReportedID holds the value of the "sentinel_library_reported_id" field.
 	SentinelLibraryReportedID int64 `json:"sentinel_library_reported_id,omitempty"`
 	// SentinelAppBinaryGeneratedID holds the value of the "sentinel_app_binary_generated_id" field.
@@ -50,7 +50,7 @@ func (*SentinelAppBinaryFile) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldSha256:
 			values[i] = new([]byte)
-		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelInfoID, sentinelappbinaryfile.FieldSentinelLibraryReportedID, sentinelappbinaryfile.FieldSizeBytes, sentinelappbinaryfile.FieldAppBinaryReportSequence:
+		case sentinelappbinaryfile.FieldID, sentinelappbinaryfile.FieldSentinelID, sentinelappbinaryfile.FieldSentinelLibraryReportedID, sentinelappbinaryfile.FieldSizeBytes, sentinelappbinaryfile.FieldAppBinaryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, sentinelappbinaryfile.FieldName, sentinelappbinaryfile.FieldServerFilePath, sentinelappbinaryfile.FieldChunksInfo:
 			values[i] = new(sql.NullString)
@@ -72,16 +72,16 @@ func (sabf *SentinelAppBinaryFile) assignValues(columns []string, values []any) 
 	for i := range columns {
 		switch columns[i] {
 		case sentinelappbinaryfile.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
-			}
-			sabf.ID = int(value.Int64)
-		case sentinelappbinaryfile.FieldSentinelInfoID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field sentinel_info_id", values[i])
+				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
-				sabf.SentinelInfoID = model.InternalID(value.Int64)
+				sabf.ID = model.InternalID(value.Int64)
+			}
+		case sentinelappbinaryfile.FieldSentinelID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sentinel_id", values[i])
+			} else if value.Valid {
+				sabf.SentinelID = model.InternalID(value.Int64)
 			}
 		case sentinelappbinaryfile.FieldSentinelLibraryReportedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -179,8 +179,8 @@ func (sabf *SentinelAppBinaryFile) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelAppBinaryFile(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sabf.ID))
-	builder.WriteString("sentinel_info_id=")
-	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelInfoID))
+	builder.WriteString("sentinel_id=")
+	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelID))
 	builder.WriteString(", ")
 	builder.WriteString("sentinel_library_reported_id=")
 	builder.WriteString(fmt.Sprintf("%v", sabf.SentinelLibraryReportedID))

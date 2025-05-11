@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // SentinelAppBinaryQuery is the builder for querying SentinelAppBinary entities.
@@ -82,8 +83,8 @@ func (sabq *SentinelAppBinaryQuery) FirstX(ctx context.Context) *SentinelAppBina
 
 // FirstID returns the first SentinelAppBinary ID from the query.
 // Returns a *NotFoundError when no SentinelAppBinary ID was found.
-func (sabq *SentinelAppBinaryQuery) FirstID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (sabq *SentinelAppBinaryQuery) FirstID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = sabq.Limit(1).IDs(setContextOp(ctx, sabq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -95,7 +96,7 @@ func (sabq *SentinelAppBinaryQuery) FirstID(ctx context.Context) (id int, err er
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (sabq *SentinelAppBinaryQuery) FirstIDX(ctx context.Context) int {
+func (sabq *SentinelAppBinaryQuery) FirstIDX(ctx context.Context) model.InternalID {
 	id, err := sabq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -133,8 +134,8 @@ func (sabq *SentinelAppBinaryQuery) OnlyX(ctx context.Context) *SentinelAppBinar
 // OnlyID is like Only, but returns the only SentinelAppBinary ID in the query.
 // Returns a *NotSingularError when more than one SentinelAppBinary ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (sabq *SentinelAppBinaryQuery) OnlyID(ctx context.Context) (id int, err error) {
-	var ids []int
+func (sabq *SentinelAppBinaryQuery) OnlyID(ctx context.Context) (id model.InternalID, err error) {
+	var ids []model.InternalID
 	if ids, err = sabq.Limit(2).IDs(setContextOp(ctx, sabq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -150,7 +151,7 @@ func (sabq *SentinelAppBinaryQuery) OnlyID(ctx context.Context) (id int, err err
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (sabq *SentinelAppBinaryQuery) OnlyIDX(ctx context.Context) int {
+func (sabq *SentinelAppBinaryQuery) OnlyIDX(ctx context.Context) model.InternalID {
 	id, err := sabq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,7 +179,7 @@ func (sabq *SentinelAppBinaryQuery) AllX(ctx context.Context) []*SentinelAppBina
 }
 
 // IDs executes the query and returns a list of SentinelAppBinary IDs.
-func (sabq *SentinelAppBinaryQuery) IDs(ctx context.Context) (ids []int, err error) {
+func (sabq *SentinelAppBinaryQuery) IDs(ctx context.Context) (ids []model.InternalID, err error) {
 	if sabq.ctx.Unique == nil && sabq.path != nil {
 		sabq.Unique(true)
 	}
@@ -190,7 +191,7 @@ func (sabq *SentinelAppBinaryQuery) IDs(ctx context.Context) (ids []int, err err
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (sabq *SentinelAppBinaryQuery) IDsX(ctx context.Context) []int {
+func (sabq *SentinelAppBinaryQuery) IDsX(ctx context.Context) []model.InternalID {
 	ids, err := sabq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -262,12 +263,12 @@ func (sabq *SentinelAppBinaryQuery) Clone() *SentinelAppBinaryQuery {
 // Example:
 //
 //	var v []struct {
-//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+//		SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SentinelAppBinary.Query().
-//		GroupBy(sentinelappbinary.FieldSentinelInfoID).
+//		GroupBy(sentinelappbinary.FieldSentinelID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (sabq *SentinelAppBinaryQuery) GroupBy(field string, fields ...string) *SentinelAppBinaryGroupBy {
@@ -285,11 +286,11 @@ func (sabq *SentinelAppBinaryQuery) GroupBy(field string, fields ...string) *Sen
 // Example:
 //
 //	var v []struct {
-//		SentinelInfoID model.InternalID `json:"sentinel_info_id,omitempty"`
+//		SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 //	}
 //
 //	client.SentinelAppBinary.Query().
-//		Select(sentinelappbinary.FieldSentinelInfoID).
+//		Select(sentinelappbinary.FieldSentinelID).
 //		Scan(ctx, &v)
 func (sabq *SentinelAppBinaryQuery) Select(fields ...string) *SentinelAppBinarySelect {
 	sabq.ctx.Fields = append(sabq.ctx.Fields, fields...)
@@ -365,7 +366,7 @@ func (sabq *SentinelAppBinaryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (sabq *SentinelAppBinaryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt))
+	_spec := sqlgraph.NewQuerySpec(sentinelappbinary.Table, sentinelappbinary.Columns, sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64))
 	_spec.From = sabq.sql
 	if unique := sabq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

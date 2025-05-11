@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/tuihub/librarian/internal/biz/bizangela"
+	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -60,6 +61,7 @@ func NewAngelaWeb(
 	auth *libauth.Auth,
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
+	g *bizgebura.Gebura,
 	userCountCache *libcache.Key[model.UserCount],
 ) *AngelaWeb {
 	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".html")
@@ -106,8 +108,8 @@ func NewAngelaWeb(
 	})
 
 	res := &AngelaWeb{
-		apiHandler:  api.NewHandler(a, t, userCountCache),
-		pageBuilder: page.NewBuilder(a, t, digests, userCountCache),
+		apiHandler:  api.NewHandler(a, t, g, userCountCache),
+		pageBuilder: page.NewBuilder(a, t, g, digests, userCountCache),
 		auth:        auth,
 		app:         app,
 		addr:        net.JoinHostPort(c.Admin.Host, strconv.Itoa(int(c.Admin.Port))),

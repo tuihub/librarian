@@ -17,7 +17,8 @@ type SentinelLibrary struct {
 
 func (SentinelLibrary) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("sentinel_info_id").GoType(model.InternalID(0)),
+		defaultPrimaryKey(),
+		field.Int64("sentinel_id").GoType(model.InternalID(0)),
 		field.Int64("reported_id"),
 		field.String("download_base_path"),
 		field.Time("updated_at").
@@ -30,7 +31,7 @@ func (SentinelLibrary) Fields() []ent.Field {
 
 func (SentinelLibrary) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("sentinel_info_id", "reported_id").
+		index.Fields("sentinel_id", "reported_id").
 			Unique(),
 		index.Fields("library_report_sequence"),
 	}
@@ -38,11 +39,10 @@ func (SentinelLibrary) Indexes() []ent.Index {
 
 func (SentinelLibrary) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("sentinel_info", SentinelInfo.Type).
+		edge.From("sentinel", Sentinel.Type).
+			Ref("sentinel_library").
 			Required().
 			Unique().
-			Field("sentinel_info_id"),
-		// edge.From("sentinel_app_binary", SentinelAppBinary.Type).
-		//	Ref("sentinel_library"),
+			Field("sentinel_id"),
 	}
 }
