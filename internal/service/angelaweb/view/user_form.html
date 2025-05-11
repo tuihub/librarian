@@ -1,14 +1,14 @@
-<div class="max-w-3xl mx-auto p-6">
-    <div class="mb-6">
-        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">
+<div class="container">
+    <div class="header">
+        <h1 class="title">
             {{if .User.ID}}{{localize .Ctx "EditUserTitle"}}{{else}}{{localize .Ctx "CreateUserTitle"}}{{end}}
-        </h2>
+        </h1>
     </div>
 
-    <form id="userForm" class="bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700 p-6 space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="space-y-2">
-                <label for="username" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+    <form id="userForm" class="form">
+        <div class="grid">
+            <div class="group">
+                <label for="username" class="label">
                     {{localize .Ctx "Username"}}
                 </label>
                 <input
@@ -16,16 +16,13 @@
                     id="username"
                     name="username"
                     value="{{.User.Username}}"
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
-                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
-                    transition-colors duration-200"
+                    class="input"
                     required
                 >
             </div>
 
-            <div class="space-y-2">
-                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div class="group">
+                <label for="password" class="label">
                     {{localize .Ctx "Password"}}
                 </label>
                 <input
@@ -33,25 +30,19 @@
                     id="password"
                     name="password"
                     {{if not .User.ID}}required{{end}}
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
-                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
-                    transition-colors duration-200"
+                    class="input"
                     placeholder="{{if .User.ID}}{{localize .Ctx "EmptyPasswordHint"}}{{end}}"
                 >
             </div>
 
-            <div class="space-y-2">
-                <label for="role" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div class="group">
+                <label for="role" class="label">
                     {{localize .Ctx "Role"}}
                 </label>
                 <select
                     id="role"
                     name="role"
-                    class="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg 
-                    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-                    bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100
-                    transition-colors duration-200"
+                    class="input"
                 >
                     <option value="user" {{if eq .User.Type 2}}selected{{end}}>{{localize .Ctx "RegularUser"}}</option>
                     <option value="admin" {{if eq .User.Type 1}}selected{{end}}>{{localize .Ctx "Administrator"}}</option>
@@ -59,22 +50,12 @@
             </div>
         </div>
 
-        <div class="flex justify-between pt-6 border-t border-slate-200 dark:border-slate-700">
-            <a href="/users" 
-                class="inline-flex items-center px-4 py-2 border border-slate-300 dark:border-slate-600 
-                text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 
-                bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600
-                transition-colors duration-200">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
+        <div class="actions">
+            <a href="/users" class="btn-secondary">
+                {{template "icon-back" .}}
                 {{localize .Ctx "BackToList"}}
             </a>
-            <button type="submit" 
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg 
-                text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 
-                focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800
-                transition-colors duration-200">
+            <button type="submit" class="btn-primary">
                 {{if .User.ID}}{{localize .Ctx "UpdateUser"}}{{else}}{{localize .Ctx "CreateNewUser"}}{{end}}
             </button>
         </div>
@@ -91,14 +72,15 @@
             e.preventDefault();
 
             const formData = new FormData(form);
-            const userData = {};
+            const userData = {
+                username: formData.get('username'),
+                password: formData.get('password'),
+                type: formData.get('role') === 'admin' ? 1 : 2
+            };
 
-            for (const [key, value] of formData.entries()) {
-                // If editing a user and password is empty, don't send the password field
-                if (key === 'password' && value === '' && method === 'PUT') {
-                    continue;
-                }
-                userData[key] = value;
+            // If editing a user and password is empty, remove the password field
+            if (method === 'PUT' && !userData.password) {
+                delete userData.password;
             }
 
             fetch(action, {

@@ -1,37 +1,34 @@
-<div class="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 class="mt-10 text-center text-2xl font-bold text-slate-900 dark:text-slate-100">{{localize .Ctx "LoginTitle"}}</h2>
-    </div>
+<div class="container">
+    <div class="login">
+        <div class="login-header">
+            <h1 class="login-title">{{localize .Ctx "LoginTitle"}}</h1>
+        </div>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form id="loginForm" class="space-y-6 bg-white dark:bg-slate-800 p-8 rounded-lg shadow-lg border border-slate-200 dark:border-slate-700">
-            <div>
-                <label for="username" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{localize .Ctx "Username"}}</label>
-                <div class="mt-2">
-                    <input id="username" name="username" type="text" required 
-                        class="block w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 
-                        text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700
-                        focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm
-                        transition-colors duration-200">
-                </div>
+        <form id="loginForm" class="form">
+            <div class="group">
+                <label for="username" class="label">
+                    {{localize .Ctx "Username"}}
+                </label>
+                <input type="text" 
+                    id="username" 
+                    name="username" 
+                    required
+                    class="input">
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{localize .Ctx "Password"}}</label>
-                <div class="mt-2">
-                    <input id="password" name="password" type="password" required 
-                        class="block w-full rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-2 
-                        text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-700
-                        focus:border-blue-500 focus:ring-1 focus:ring-blue-500 sm:text-sm
-                        transition-colors duration-200">
-                </div>
+            <div class="group">
+                <label for="password" class="label">
+                    {{localize .Ctx "Password"}}
+                </label>
+                <input type="password" 
+                    id="password" 
+                    name="password"
+                    required
+                    class="input">
             </div>
 
-            <div>
-                <button type="submit" 
-                    class="w-full rounded-lg bg-blue-500 hover:bg-blue-600 px-3 py-2 text-sm font-semibold text-white 
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800
-                    transition-colors duration-200">
+            <div class="actions">
+                <button type="submit" class="btn-primary w-full">
                     {{localize .Ctx "LoginButton"}}
                 </button>
             </div>

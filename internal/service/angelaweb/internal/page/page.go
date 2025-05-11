@@ -87,7 +87,7 @@ func (b *Builder) UserList(c *fiber.Ctx) error {
 		pageNum = 10
 	}
 
-	pageSize := 1 // Users per page
+	pageSize := 10 // Users per page
 
 	users, total, err := b.t.ListUsers(c.UserContext(), model.Paging{
 		PageNum:  int64(pageNum),

@@ -1,3 +1,498 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  /* 基础样式 */
+  body {
+    @apply bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100;
+  }
+
+  /* 基础表单元素样式 */
+  input, select, textarea {
+    @apply bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg 
+    focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+    text-slate-900 dark:text-slate-100
+    transition-colors duration-200;
+  }
+
+  textarea {
+    @apply min-h-[100px] resize-y;
+  }
+}
+
+@layer components {
+  /* 页面容器 */
+  .container {
+    @apply px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl;
+  }
+
+  /* 页面标题区域 */
+  .header {
+    @apply mb-4 sm:mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4;
+  }
+
+  /* 页面标题 */
+  .title {
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-slate-100;
+  }
+
+  /* 页面描述 */
+  .description {
+    @apply text-sm sm:text-base text-slate-600 dark:text-slate-300 mb-4;
+  }
+
+  /* 表单容器 */
+  .form {
+    @apply w-full sm:w-3/4 lg:w-2/3 mx-auto space-y-4 sm:space-y-6;
+  }
+
+  /* 表单网格 */
+  .grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+  }
+
+  /* 表单组 */
+  .group {
+    @apply space-y-2;
+  }
+
+  /* 表单标签 */
+  .label {
+    @apply block text-sm font-medium text-slate-700 dark:text-slate-300;
+  }
+
+  /* 表单输入框 */
+  .input {
+    @apply w-full px-3 py-2;
+  }
+
+  /* 表单操作区域 */
+  .actions {
+    @apply flex flex-col sm:flex-row justify-end gap-4 pt-4 sm:pt-6 border-t border-slate-200 dark:border-slate-700;
+  }
+
+  /* 主要按钮 */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg 
+    text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 
+    focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-800
+    transition-colors duration-200 shadow-sm w-full sm:w-auto;
+  }
+
+  /* 次要按钮 */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-slate-300 dark:border-slate-600 
+    text-sm font-medium rounded-lg text-slate-700 dark:text-slate-300 
+    bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600
+    transition-colors duration-200 shadow-sm w-full sm:w-auto;
+  }
+
+  /* 禁用按钮 */
+  .btn-disabled {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg 
+    text-slate-400 bg-slate-100 dark:bg-slate-700 cursor-not-allowed shadow-sm;
+  }
+
+  /* 危险按钮 */
+  .btn-danger {
+    @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg 
+    text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 
+    focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-800
+    transition-colors duration-200 shadow-sm;
+  }
+
+  /* 卡片容器 */
+  .card {
+    @apply bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden;
+  }
+
+  /* 卡片内容 */
+  .content {
+    @apply p-4 sm:p-6;
+  }
+
+  /* 表格容器 */
+  .table-wrapper {
+    @apply overflow-x-auto rounded-lg border border-slate-200 dark:border-slate-700;
+  }
+
+  /* 表格 */
+  .table {
+    @apply min-w-full divide-y divide-slate-200 dark:divide-slate-700;
+  }
+
+  /* 表格头部 */
+  .thead {
+    @apply bg-slate-50 dark:bg-slate-700;
+  }
+
+  /* 表格单元格 */
+  .th {
+    @apply px-4 sm:px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider;
+  }
+
+  /* 表格行 */
+  .tr {
+    @apply hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-200;
+  }
+
+  /* 表格数据单元格 */
+  .td {
+    @apply px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-sm text-slate-900 dark:text-slate-100;
+  }
+
+  /* 标签 */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  /* 管理员标签 */
+  .badge-admin {
+    @apply bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200;
+  }
+
+  /* 普通用户标签 */
+  .badge-user {
+    @apply bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200;
+  }
+
+  /* 运行状态标签 */
+  .badge-running {
+    @apply bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200;
+  }
+
+  /* 停止状态标签 */
+  .badge-stopped {
+    @apply bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200;
+  }
+
+  /* 其他状态标签 */
+  .badge-other {
+    @apply bg-yellow-100 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200;
+  }
+
+  /* 信息标签 */
+  .badge-info {
+    @apply bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200;
+  }
+
+  /* 操作链接 */
+  .action-link {
+    @apply text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300
+    transition-colors duration-200 font-medium;
+  }
+
+  /* 删除链接 */
+  .delete-link {
+    @apply text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300
+    transition-colors duration-200 font-medium cursor-pointer;
+  }
+
+  /* 模态框背景 */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-slate-500/75 flex items-center justify-center hidden z-50;
+  }
+
+  /* 模态框内容 */
+  .modal-content {
+    @apply bg-white dark:bg-slate-800 rounded-lg p-6 max-w-md w-full mx-4 shadow-xl border border-slate-200 dark:border-slate-700;
+  }
+
+  /* 模态框标题 */
+  .modal-title {
+    @apply text-xl font-bold text-slate-900 dark:text-slate-100 mb-4;
+  }
+
+  /* 模态框文本 */
+  .modal-text {
+    @apply text-slate-600 dark:text-slate-300 mb-6;
+  }
+
+  /* 模态框按钮容器 */
+  .modal-actions {
+    @apply flex justify-end space-x-4;
+  }
+
+  /* 登录页面样式 */
+  .login {
+    @apply max-w-md mx-auto mt-8 p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700;
+  }
+
+  .login-header {
+    @apply mb-6 text-center;
+  }
+
+  .login-title {
+    @apply text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2;
+  }
+
+  .login-description {
+    @apply text-slate-600 dark:text-slate-300;
+  }
+
+  /* 错误页面样式 */
+  .error {
+    @apply max-w-md mx-auto mt-8 p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 text-center;
+  }
+
+  .error-title {
+    @apply text-4xl font-bold text-red-600 dark:text-red-400 mb-4;
+  }
+
+  .error-message {
+    @apply text-slate-600 dark:text-slate-300 mb-6;
+  }
+
+  /* 复选框组样式 */
+  .checkbox-group {
+    @apply flex items-center space-x-2;
+  }
+
+  .checkbox {
+    @apply h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 dark:border-slate-600 rounded;
+  }
+
+  .checkbox-label {
+    @apply text-sm text-slate-700 dark:text-slate-300;
+  }
+
+  /* 移动端顶部导航栏 */
+  .mobile-header {
+    @apply fixed top-0 left-0 right-0 h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 
+    flex items-center px-4 z-40;
+  }
+
+  .mobile-menu-btn {
+    @apply p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white 
+    focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg;
+  }
+
+  .mobile-title {
+    @apply ml-4 text-lg font-semibold text-slate-900 dark:text-slate-100;
+  }
+
+  /* 侧边栏遮罩 */
+  .sidebar-overlay {
+    @apply fixed inset-0 bg-slate-900/50 z-40 transition-opacity duration-300;
+  }
+
+  /* 侧边栏组件 */
+  .sidebar {
+    @apply fixed inset-y-0 left-0 w-64 bg-slate-800 dark:bg-slate-900 text-white h-screen 
+    transform translate-x-[-100%] sm:translate-x-0 transition-transform duration-300 ease-in-out z-50;
+  }
+
+  .sidebar.show {
+    @apply translate-x-0;
+  }
+
+  .sidebar-content {
+    @apply p-4 flex flex-col h-full;
+  }
+
+  .sidebar-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .sidebar-title {
+    @apply text-xl font-bold text-slate-100;
+  }
+
+  .sidebar-close-btn {
+    @apply p-2 text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg;
+  }
+
+  .sidebar-nav {
+    @apply flex-grow space-y-1;
+  }
+
+  .sidebar-nav-item {
+    @apply flex items-center px-4 py-2.5 text-slate-300 hover:bg-slate-700/50 rounded-lg transition duration-200;
+  }
+
+  .sidebar-nav-icon {
+    @apply h-5 w-5 mr-3 text-slate-400;
+  }
+
+  .sidebar-nav-text {
+    @apply text-sm font-medium;
+  }
+
+  .sidebar-footer {
+    @apply mt-auto pt-4 border-t border-slate-700;
+  }
+
+  /* 主题切换组件 */
+  .theme-toggle {
+    @apply flex rounded-lg overflow-hidden;
+  }
+
+  .theme-toggle-btn {
+    @apply flex-1 py-2 px-3 text-sm bg-slate-700 hover:bg-slate-600 transition duration-200 
+    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-slate-500 
+    border-r border-slate-600;
+  }
+
+  .theme-toggle-btn:last-child {
+    @apply border-r-0;
+  }
+
+  .theme-toggle-icon {
+    @apply w-4 h-4 mx-auto;
+  }
+
+  /* 主内容区域 */
+  .main-content {
+    @apply min-h-screen pt-14 sm:pt-6 sm:ml-64 transition-all duration-300;
+  }
+
+  /* 仪表盘容器 */
+  .dashboard-container {
+    @apply p-6 max-w-7xl mx-auto;
+  }
+
+  /* 仪表盘网格 */
+  .dashboard {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6;
+  }
+
+  /* 统计卡片 */
+  .stat {
+    @apply bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 p-4 sm:p-6;
+  }
+
+  .stat-label {
+    @apply text-sm font-medium text-slate-500 dark:text-slate-400 mb-2;
+  }
+
+  .stat-value {
+    @apply text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100;
+  }
+
+  /* 快速操作区域 */
+  .quick-actions {
+    @apply mt-6;
+  }
+
+  .quick-actions .title {
+    @apply text-lg font-semibold mb-4;
+  }
+
+  .quick-actions .grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
+  }
+
+  .quick-actions .card {
+    @apply flex items-center p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-200;
+  }
+
+  .quick-actions .card .content {
+    @apply flex items-center gap-3;
+  }
+
+  .quick-actions .card svg {
+    @apply w-5 h-5 text-slate-500 dark:text-slate-400;
+  }
+
+  .quick-actions .card span {
+    @apply text-slate-700 dark:text-slate-300 font-medium;
+  }
+
+  /* 仪表盘操作区域 */
+  .dashboard-actions {
+    @apply bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 p-6;
+  }
+
+  /* 仪表盘操作标题 */
+  .dashboard-actions-title {
+    @apply text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4;
+  }
+
+  /* 仪表盘操作按钮组 */
+  .dashboard-actions-group {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+  }
+
+  /* 仪表盘操作按钮 */
+  .dashboard-action-button {
+    @apply flex items-center justify-center px-4 py-2 border border-slate-300 dark:border-slate-600 
+    rounded-lg text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 
+    hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors duration-200;
+  }
+
+  /* 仪表盘操作按钮图标 */
+  .dashboard-action-icon {
+    @apply w-5 h-5 mr-2;
+  }
+
+  /* 配置页面容器 */
+  .config-container {
+    @apply p-6 max-w-7xl mx-auto;
+  }
+
+  /* 配置页面标题区域 */
+  .config-header {
+    @apply mb-6;
+  }
+
+  /* 配置页面标题 */
+  .config-title {
+    @apply text-2xl font-bold text-slate-900 dark:text-slate-100 mb-4;
+  }
+
+  /* 配置页面描述 */
+  .config-description {
+    @apply text-slate-600 dark:text-slate-300 mb-4;
+  }
+
+  /* 配置卡片 */
+  .config-card {
+    @apply bg-white dark:bg-slate-800 rounded-lg shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden mb-6;
+  }
+
+  /* 配置卡片标题栏 */
+  .config-card-header {
+    @apply px-6 py-4 bg-slate-50 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600 flex justify-between items-center;
+  }
+
+  /* 配置卡片标题 */
+  .config-card-title {
+    @apply text-lg font-semibold text-slate-900 dark:text-slate-100;
+  }
+
+  /* 配置卡片内容 */
+  .config-card-content {
+    @apply p-6;
+  }
+
+  /* 配置表格 */
+  .config-table {
+    @apply min-w-full;
+  }
+
+  /* 配置表格行 */
+  .config-table-row {
+    @apply border-b border-slate-200 dark:border-slate-700;
+  }
+
+  /* 配置表格标签单元格 */
+  .config-table-label {
+    @apply py-2 px-4 font-medium text-slate-700 dark:text-slate-300;
+  }
+
+  /* 配置表格值单元格 */
+  .config-table-value {
+    @apply py-2 px-4 text-slate-900 dark:text-slate-100;
+  }
+
+  /* 卡片标题栏 */
+  .card-header {
+    @apply px-6 py-4 bg-slate-50 dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600 
+    flex justify-between items-center;
+  }
+
+  .card-title {
+    @apply text-lg font-semibold text-slate-900 dark:text-slate-100;
+  }
+}

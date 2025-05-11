@@ -62,18 +62,19 @@ func (h *Handler) GetUser(c *fiber.Ctx) error {
 }
 
 func (h *Handler) CreateUser(c *fiber.Ctx) error {
-	var user *model.User
-	if err := c.BodyParser(user); err != nil {
+	var user model.User
+	if err := c.BodyParser(&user); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "Invalid request"})
 	}
+	user.Status = model.UserStatusActive
 
 	var err error
-	user, err = h.t.CreateUser(c.UserContext(), user)
+	res, err := h.t.CreateUser(c.UserContext(), &user)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": err.Error()})
 	}
 
-	return c.JSON(user)
+	return c.JSON(res)
 }
 
 func (h *Handler) UpdateUser(c *fiber.Ctx) error {
