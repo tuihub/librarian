@@ -255,3 +255,53 @@ func (b *Builder) SentinelForm(c *fiber.Ctx) error {
 		"Method":   method,
 	}))
 }
+
+func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	if idStr == "" {
+		return c.Status(http.StatusBadRequest).SendString("Invalid ID")
+	}
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).SendString("Invalid ID")
+	}
+
+	sentinel, err := b.g.GetSentinel(c.UserContext(), model.InternalID(id))
+	if err != nil {
+		return c.Status(http.StatusNotFound).SendString("Sentinel not found")
+	}
+
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+	pageSize := 10 // Sessions per page
+
+	sessions, total, err := b.g.ListSentinelSessions(c.UserContext(), &model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+	}, sentinel.ID)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingData"))
+	}
+
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+
+	return c.Render("sentinel_detail", addCommonData(c, fiber.Map{
+		"Sentinel": sentinel,
+		"Sessions": sessions,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
+	}))
+}

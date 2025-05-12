@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "tailwindcss -i ./src/main.css -o ./static/css/style.css --minify",
+    "build": "tailwindcss -i ./src/main.css -o ./static/css/style.css",
     "dev": "tailwindcss -i ./src/main.css -o ./static/css/style.css --watch"
   },
   "dependencies": {

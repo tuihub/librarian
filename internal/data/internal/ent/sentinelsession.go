@@ -30,9 +30,9 @@ type SentinelSession struct {
 	// CreatorID holds the value of the "creator_id" field.
 	CreatorID model.InternalID `json:"creator_id,omitempty"`
 	// LastUsedAt holds the value of the "last_used_at" field.
-	LastUsedAt time.Time `json:"last_used_at,omitempty"`
+	LastUsedAt *time.Time `json:"last_used_at,omitempty"`
 	// LastRefreshedAt holds the value of the "last_refreshed_at" field.
-	LastRefreshedAt time.Time `json:"last_refreshed_at,omitempty"`
+	LastRefreshedAt *time.Time `json:"last_refreshed_at,omitempty"`
 	// RefreshCount holds the value of the "refresh_count" field.
 	RefreshCount int64 `json:"refresh_count,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
@@ -131,13 +131,15 @@ func (ss *SentinelSession) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_used_at", values[i])
 			} else if value.Valid {
-				ss.LastUsedAt = value.Time
+				ss.LastUsedAt = new(time.Time)
+				*ss.LastUsedAt = value.Time
 			}
 		case sentinelsession.FieldLastRefreshedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_refreshed_at", values[i])
 			} else if value.Valid {
-				ss.LastRefreshedAt = value.Time
+				ss.LastRefreshedAt = new(time.Time)
+				*ss.LastRefreshedAt = value.Time
 			}
 		case sentinelsession.FieldRefreshCount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -213,11 +215,15 @@ func (ss *SentinelSession) String() string {
 	builder.WriteString("creator_id=")
 	builder.WriteString(fmt.Sprintf("%v", ss.CreatorID))
 	builder.WriteString(", ")
-	builder.WriteString("last_used_at=")
-	builder.WriteString(ss.LastUsedAt.Format(time.ANSIC))
+	if v := ss.LastUsedAt; v != nil {
+		builder.WriteString("last_used_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
-	builder.WriteString("last_refreshed_at=")
-	builder.WriteString(ss.LastRefreshedAt.Format(time.ANSIC))
+	if v := ss.LastRefreshedAt; v != nil {
+		builder.WriteString("last_refreshed_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("refresh_count=")
 	builder.WriteString(fmt.Sprintf("%v", ss.RefreshCount))

@@ -1,0 +1,386 @@
+<div class="container">
+    <div class="header">
+        <h1 class="title">{{localize .Ctx "SentinelDetailTitle"}}</h1>
+        <div class="flex space-x-3">
+            <a href="/sentinels/edit/{{.Sentinel.ID}}" class="btn-secondary">
+                {{template "icon-edit" .}}
+                {{localize .Ctx "Edit"}}
+            </a>
+            <a href="/sentinels" class="btn-secondary">
+                {{template "icon-back" .}}
+                {{localize .Ctx "BackToList"}}
+            </a>
+        </div>
+    </div>
+
+    <!-- Sentinel Details Card -->
+    <div class="card mb-6">
+        <div class="card-header">
+            <h2 class="card-title">{{localize .Ctx "SentinelInformation"}}</h2>
+        </div>
+        <div class="content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="group">
+                    <div class="label">{{localize .Ctx "ID_"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.ID}}</div>
+                </div>
+                <div class="group">
+                    <div class="label">{{localize .Ctx "SentinelName"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.Name}}</div>
+                </div>
+                <div class="group">
+                    <div class="label">{{localize .Ctx "SentinelDescription"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.Description}}</div>
+                </div>
+                <div class="group">
+                    <div class="label">{{localize .Ctx "SentinelURL"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.URL}}</div>
+                </div>
+                <div class="group">
+                    <div class="label">{{localize .Ctx "SentinelGetTokenPath"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.GetTokenPath}}</div>
+                </div>
+                <div class="group">
+                    <div class="label">{{localize .Ctx "SentinelDownloadFileBasePath"}}</div>
+                    <div class="text-slate-900 dark:text-slate-100">{{.Sentinel.DownloadFileBasePath}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sessions Section -->
+    <div class="card mb-6">
+        <div class="card-header">
+            <h2 class="card-title">{{localize .Ctx "SentinelSessions"}}</h2>
+            <a href="#" class="btn-primary create-session" data-sentinel-id="{{.Sentinel.ID}}">
+                {{template "icon-add" .}}
+                {{localize .Ctx "CreateSession"}}
+            </a>
+        </div>
+        <div class="table-wrapper">
+            <table class="table">
+                <thead class="thead">
+                    <tr>
+                        <th class="th">{{localize .Ctx "ID_"}}</th>
+                        <th class="th">{{localize .Ctx "Status"}}</th>
+                        <th class="th">{{localize .Ctx "ExpireAt"}}</th>
+                        <th class="th">{{localize .Ctx "LastUsedAt"}}</th>
+                        <th class="th">{{localize .Ctx "LastRefreshedAt"}}</th>
+                        <th class="th">{{localize .Ctx "RefreshCount"}}</th>
+                        <th class="th">{{localize .Ctx "Actions"}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{range .Sessions}}
+                    <tr class="tr">
+                        <td class="td">{{.ID}}</td>
+                        <td class="td">
+                            {{if eq .Status 1}}
+                            <span class="badge badge-running">
+                                {{localize $.Ctx "Active"}}
+                            </span>
+                            {{else if eq .Status 2}}
+                            <span class="badge badge-stopped">
+                                {{localize $.Ctx "Suspended"}}
+                            </span>
+                            {{else}}
+                            <span class="badge badge-other">
+                                {{localize $.Ctx "Unknown"}}
+                            </span>
+                            {{end}}
+                        </td>
+                        <td class="td">{{.ExpireAt.Format "2006-01-02 15:04:05"}}</td>
+                        <td class="td">
+                            {{if .LastUsedAt}}
+                                {{.LastUsedAt.Format "2006-01-02 15:04:05"}}
+                            {{else}}
+                                -
+                            {{end}}
+                        </td>
+                        <td class="td">
+                            {{if .LastRefreshedAt}}
+                                {{.LastRefreshedAt.Format "2006-01-02 15:04:05"}}
+                            {{else}}
+                                -
+                            {{end}}
+                        </td>
+                        <td class="td">{{.RefreshCount}}</td>
+                        <td class="td">
+                            <div class="flex space-x-3">
+                                {{if eq .Status 1}}
+                                <button class="action-link suspend-session" data-id="{{.ID}}">
+                                    {{localize $.Ctx "Suspend"}}
+                                </button>
+                                {{else if eq .Status 2}}
+                                <button class="action-link activate-session" data-id="{{.ID}}">
+                                    {{localize $.Ctx "Activate"}}
+                                </button>
+                                {{end}}
+                                <button class="action-link show-token" data-id="{{.ID}}" data-refresh-token="{{.RefreshToken}}">
+                                    {{localize $.Ctx "ShowToken"}}
+                                </button>
+                                <button class="delete-link delete-session" data-id="{{.ID}}">
+                                    {{localize $.Ctx "Delete"}}
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="td text-center">
+                            {{localize .Ctx "NoSessionData"}}
+                        </td>
+                    </tr>
+                    {{end}}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Control -->
+        {{if .Pagination}}
+        <div class="content flex justify-between items-center">
+            <div class="text-sm text-slate-700 dark:text-slate-300">
+                {{localize .Ctx "PaginationText" "CurrentPage" .Pagination.CurrentPage "TotalPages" .Pagination.TotalPages}}
+            </div>
+            <div class="flex space-x-2">
+                {{if .Pagination.HasPrev}}
+                <a href="/sentinels/{{.Sentinel.ID}}?page={{.Pagination.PrevPage}}" class="btn-secondary">
+                    {{localize .Ctx "Previous"}}
+                </a>
+                {{else}}
+                <button disabled class="btn-disabled">
+                    {{localize .Ctx "Previous"}}
+                </button>
+                {{end}}
+
+                {{if .Pagination.HasNext}}
+                <a href="/sentinels/{{.Sentinel.ID}}?page={{.Pagination.NextPage}}" class="btn-secondary">
+                    {{localize .Ctx "Next"}}
+                </a>
+                {{else}}
+                <button disabled class="btn-disabled">
+                    {{localize .Ctx "Next"}}
+                </button>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<!-- Create Session Confirmation Dialog -->
+<div id="createSessionModal" class="modal-backdrop">
+    <div class="card max-w-md w-full mx-4">
+        <div class="content">
+            <h3 class="modal-title">{{localize .Ctx "ConfirmAction"}}</h3>
+            <p class="modal-text">
+                {{localize .Ctx "CreateSessionConfirmText"}}
+            </p>
+            <div class="modal-actions">
+                <button id="cancelCreateSession" class="btn-secondary">
+                    {{localize .Ctx "Cancel"}}
+                </button>
+                <button id="confirmCreateSession" class="btn-primary">
+                    {{localize .Ctx "Create"}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Session Confirmation Dialog -->
+<div id="deleteSessionModal" class="modal-backdrop">
+    <div class="card max-w-md w-full mx-4">
+        <div class="content">
+            <h3 class="modal-title">{{localize .Ctx "ConfirmDeletion"}}</h3>
+            <p class="modal-text">
+                {{localize .Ctx "DeleteSessionConfirmText"}}
+            </p>
+            <div class="modal-actions">
+                <button id="cancelDeleteSession" class="btn-secondary">
+                    {{localize .Ctx "Cancel"}}
+                </button>
+                <button id="confirmDeleteSession" class="btn-danger">
+                    {{localize .Ctx "Delete"}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Show Token Dialog -->
+<div id="showTokenModal" class="modal-backdrop">
+    <div class="card max-w-md w-full mx-4">
+        <div class="content">
+            <h3 class="modal-title">{{localize .Ctx "RefreshToken"}}</h3>
+            <div class="mt-4 p-3 bg-slate-100 dark:bg-slate-800 rounded-md">
+                <p id="refreshTokenText" class="break-all font-mono text-sm"></p>
+            </div>
+            <div class="modal-actions mt-4">
+                <button id="closeTokenModal" class="btn-secondary">
+                    {{localize .Ctx "Close"}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status Change Confirmation Dialog -->
+<div id="statusChangeModal" class="modal-backdrop">
+    <div class="card max-w-md w-full mx-4">
+        <div class="content">
+            <h3 class="modal-title">{{localize .Ctx "ConfirmAction"}}</h3>
+            <p id="statusChangeText" class="modal-text"></p>
+            <div class="modal-actions">
+                <button id="cancelStatusChange" class="btn-secondary">
+                    {{localize .Ctx "Cancel"}}
+                </button>
+                <button id="confirmStatusChange" class="btn-primary">
+                    {{localize .Ctx "Confirm"}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Create Session
+document.querySelector('.create-session')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    const sentinelId = this.getAttribute('data-sentinel-id');
+    document.getElementById('createSessionModal').style.display = 'flex';
+    
+    document.getElementById('confirmCreateSession').onclick = function() {
+        fetch(`/api/sentinels/${sentinelId}/sessions`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('{{localize .Ctx "ErrorCreatingSession"}}');
+            }
+        });
+        document.getElementById('createSessionModal').style.display = 'none';
+    };
+    
+    document.getElementById('cancelCreateSession').onclick = function() {
+        document.getElementById('createSessionModal').style.display = 'none';
+    };
+});
+
+// Delete Session
+const deleteButtons = document.querySelectorAll('.delete-session');
+let sessionIdToDelete;
+
+deleteButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        sessionIdToDelete = this.getAttribute('data-id');
+        document.getElementById('deleteSessionModal').style.display = 'flex';
+    });
+});
+
+document.getElementById('confirmDeleteSession')?.addEventListener('click', function() {
+    if (sessionIdToDelete) {
+        fetch(`/api/sentinels/sessions/${sessionIdToDelete}`, {
+            method: 'DELETE',
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('{{localize .Ctx "ErrorDeletingSession"}}');
+            }
+        });
+    }
+    document.getElementById('deleteSessionModal').style.display = 'none';
+});
+
+document.getElementById('cancelDeleteSession')?.addEventListener('click', function() {
+    document.getElementById('deleteSessionModal').style.display = 'none';
+});
+
+// Suspend Session
+const suspendButtons = document.querySelectorAll('.suspend-session');
+let sessionIdToSuspend;
+
+suspendButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        sessionIdToSuspend = this.getAttribute('data-id');
+        document.getElementById('statusChangeText').textContent = '{{localize .Ctx "SuspendSessionConfirmText"}}';
+        document.getElementById('statusChangeModal').style.display = 'flex';
+        document.getElementById('confirmStatusChange').onclick = suspendSession;
+    });
+});
+
+function suspendSession() {
+    if (sessionIdToSuspend) {
+        fetch(`/api/sentinels/sessions/${sessionIdToSuspend}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 2 }), // Suspend status
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('{{localize .Ctx "ErrorUpdatingSessionStatus"}}');
+            }
+        });
+    }
+    document.getElementById('statusChangeModal').style.display = 'none';
+}
+
+// Activate Session
+const activateButtons = document.querySelectorAll('.activate-session');
+let sessionIdToActivate;
+
+activateButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        sessionIdToActivate = this.getAttribute('data-id');
+        document.getElementById('statusChangeText').textContent = '{{localize .Ctx "ActivateSessionConfirmText"}}';
+        document.getElementById('statusChangeModal').style.display = 'flex';
+        document.getElementById('confirmStatusChange').onclick = activateSession;
+    });
+});
+
+function activateSession() {
+    if (sessionIdToActivate) {
+        fetch(`/api/sentinels/sessions/${sessionIdToActivate}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status: 1 }), // Active status
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('{{localize .Ctx "ErrorUpdatingSessionStatus"}}');
+            }
+        });
+    }
+    document.getElementById('statusChangeModal').style.display = 'none';
+}
+
+document.getElementById('cancelStatusChange')?.addEventListener('click', function() {
+    document.getElementById('statusChangeModal').style.display = 'none';
+});
+
+// Show Token
+const showTokenButtons = document.querySelectorAll('.show-token');
+
+showTokenButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const refreshToken = this.getAttribute('data-refresh-token');
+        document.getElementById('refreshTokenText').textContent = refreshToken;
+        document.getElementById('showTokenModal').style.display = 'flex';
+    });
+});
+
+document.getElementById('closeTokenModal')?.addEventListener('click', function() {
+    document.getElementById('showTokenModal').style.display = 'none';
+});
+</script>

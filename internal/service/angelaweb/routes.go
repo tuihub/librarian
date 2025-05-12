@@ -35,6 +35,9 @@ func (a *AngelaWeb) setupRoutes() {
 	api.Post("/sentinels", a.apiHandler.CreateSentinel)
 	api.Get("/sentinels/:id", a.apiHandler.GetSentinel)
 	api.Put("/sentinels/:id", a.apiHandler.UpdateSentinel)
+	api.Post("/sentinels/:id/sessions", a.apiHandler.CreateSentinelSession)
+	api.Put("/sentinels/sessions/:id/status", a.apiHandler.UpdateSentinelSessionStatus)
+	api.Delete("/sentinels/sessions/:id", a.apiHandler.DeleteSentinelSession)
 
 	page := a.app.Group("/")
 	page.Get("/login", a.pageBuilder.Login)
@@ -55,6 +58,7 @@ func (a *AngelaWeb) setupRoutes() {
 	page.Get("/sentinels", a.pageBuilder.SentinelList)
 	page.Get("/sentinels/new", a.pageBuilder.SentinelForm)
 	page.Get("/sentinels/edit/:id", a.pageBuilder.SentinelForm)
+	page.Get("/sentinels/:id", a.pageBuilder.SentinelDetail)
 
 	a.app.Use(a.pageBuilder.NotFound)
 }

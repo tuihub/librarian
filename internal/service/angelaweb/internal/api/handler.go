@@ -119,3 +119,71 @@ func (h *Handler) UpdateSentinel(c *fiber.Ctx) error {
 	}
 	return c.JSON(sentinel)
 }
+
+func (h *Handler) CreateSentinelSession(c *fiber.Ctx) error {
+	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid ID",
+		})
+	}
+
+	err = h.g.CreateSentinelSession(c.UserContext(), model.InternalID(id))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": fiberi18n.MustLocalize(c, "ErrorCreatingSession"),
+		})
+	}
+
+	return c.SendStatus(http.StatusCreated)
+}
+
+func (h *Handler) UpdateSentinelSessionStatus(c *fiber.Ctx) error {
+	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid ID",
+		})
+	}
+
+	var data struct {
+		Status int `json:"status"`
+	}
+
+	if err = c.BodyParser(&data); err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid request body",
+		})
+	}
+
+	err = h.g.UpdateSentinelSessionStatus(
+		c.UserContext(),
+		model.InternalID(id),
+		modelgebura.SentinelSessionStatus(data.Status),
+	)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": fiberi18n.MustLocalize(c, "ErrorUpdatingSessionStatus"),
+		})
+	}
+
+	return c.SendStatus(http.StatusOK)
+}
+
+func (h *Handler) DeleteSentinelSession(c *fiber.Ctx) error {
+	id, err := strconv.ParseInt(c.Params("id"), 10, 64)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid ID",
+		})
+	}
+
+	err = h.g.DeleteSentinelSession(c.UserContext(), model.InternalID(id))
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": fiberi18n.MustLocalize(c, "ErrorDeletingSession"),
+		})
+	}
+
+	return c.SendStatus(http.StatusOK)
+}

@@ -12,7 +12,6 @@ import (
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
 
-const sentinelAccessTokenExpire = libtime.ThreeDays
 const sentinelRefreshTokenExpire = libtime.ThirtyDays
 
 func (g *Gebura) CreateSentinel(
@@ -83,8 +82,8 @@ func (g *Gebura) CreateSentinelSession(
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	refreshToken, err := g.auth.GenerateToken(
-		claims.UserID,
-		claims.PorterID,
+		sentinelID,
+		0,
 		libauth.ClaimsTypeRefreshToken,
 		model.UserTypeSentinel,
 		nil,
@@ -99,7 +98,7 @@ func (g *Gebura) CreateSentinelSession(
 		RefreshToken:    refreshToken,
 		Status:          modelgebura.SentinelSessionStatusActive,
 		CreatorID:       claims.UserID,
-		ExpireAt:        time.Now().Add(sentinelAccessTokenExpire),
+		ExpireAt:        time.Now().Add(sentinelRefreshTokenExpire),
 		LastUsedAt:      nil,
 		LastRefreshedAt: nil,
 		RefreshCount:    0,
@@ -112,12 +111,12 @@ func (g *Gebura) CreateSentinelSession(
 }
 
 func (g *Gebura) ListSentinelSessions(
-	ctx context.Context, page *model.Paging,
+	ctx context.Context, page *model.Paging, sentinelID model.InternalID,
 ) ([]*modelgebura.SentinelSession, int64, error) {
 	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
-	sessions, total, err := g.repo.ListSentinelSessions(ctx, page)
+	sessions, total, err := g.repo.ListSentinelSessions(ctx, page, sentinelID)
 	if err != nil {
 		return nil, 0, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

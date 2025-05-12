@@ -23,6 +23,9 @@
                     <td class="td">{{.Description}}</td>
                     <td class="td">
                         <div class="flex space-x-3">
+                            <a href="/sentinels/{{.ID}}" class="action-link">
+                                {{localize $.Ctx "View"}}
+                            </a>
                             <a href="/sentinels/edit/{{.ID}}" class="action-link">
                                 {{localize $.Ctx "Edit"}}
                             </a>

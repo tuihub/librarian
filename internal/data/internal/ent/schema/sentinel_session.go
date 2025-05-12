@@ -23,8 +23,8 @@ func (SentinelSession) Fields() []ent.Field {
 		field.Time("expire_at"),
 		field.Enum("status").Values("active", "suspend"),
 		field.Int64("creator_id").Immutable().GoType(model.InternalID(0)),
-		field.Time("last_used_at").Optional(),
-		field.Time("last_refreshed_at").Optional(),
+		field.Time("last_used_at").Optional().Nillable(),
+		field.Time("last_refreshed_at").Optional().Nillable(),
 		field.Int64("refresh_count").Default(0),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),

@@ -15,6 +15,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
@@ -678,15 +679,23 @@ func (g *GeburaRepo) CreateSentinelSession(ctx context.Context, ss *modelgebura.
 func (g *GeburaRepo) ListSentinelSessions(
 	ctx context.Context,
 	page *model.Paging,
+	sentinelID model.InternalID,
 ) ([]*modelgebura.SentinelSession, int, error) {
 	sessions, err := g.data.db.SentinelSession.Query().
+		Where(
+			sentinelsession.SentinelIDEQ(sentinelID),
+		).
 		Limit(page.ToLimit()).
 		Offset(page.ToOffset()).
 		All(ctx)
 	if err != nil {
 		return nil, 0, err
 	}
-	total, err := g.data.db.SentinelSession.Query().Count(ctx)
+	total, err := g.data.db.SentinelSession.Query().
+		Where(
+			sentinelsession.SentinelIDEQ(sentinelID),
+		).
+		Count(ctx)
 	if err != nil {
 		return nil, 0, err
 	}

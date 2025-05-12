@@ -636,8 +636,8 @@ func ToBizSentinelSession(source *ent.SentinelSession) *modelgebura.SentinelSess
 		modelgeburaSentinelSession.Status = ToBizSentinelSessionStatus((*source).Status)
 		modelgeburaSentinelSession.CreatorID = modelInternalIDToModelInternalID((*source).CreatorID)
 		modelgeburaSentinelSession.ExpireAt = TimeToTime((*source).ExpireAt)
-		modelgeburaSentinelSession.LastUsedAt = timeTimeToPTimeTime((*source).LastUsedAt)
-		modelgeburaSentinelSession.LastRefreshedAt = timeTimeToPTimeTime((*source).LastRefreshedAt)
+		modelgeburaSentinelSession.LastUsedAt = TimeToTimePtr((*source).LastUsedAt)
+		modelgeburaSentinelSession.LastRefreshedAt = TimeToTimePtr((*source).LastRefreshedAt)
 		modelgeburaSentinelSession.RefreshCount = (*source).RefreshCount
 		pModelgeburaSentinelSession = &modelgeburaSentinelSession
 	}

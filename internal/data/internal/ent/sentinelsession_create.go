@@ -269,11 +269,11 @@ func (ssc *SentinelSessionCreate) createSpec() (*SentinelSession, *sqlgraph.Crea
 	}
 	if value, ok := ssc.mutation.LastUsedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastUsedAt, field.TypeTime, value)
-		_node.LastUsedAt = value
+		_node.LastUsedAt = &value
 	}
 	if value, ok := ssc.mutation.LastRefreshedAt(); ok {
 		_spec.SetField(sentinelsession.FieldLastRefreshedAt, field.TypeTime, value)
-		_node.LastRefreshedAt = value
+		_node.LastRefreshedAt = &value
 	}
 	if value, ok := ssc.mutation.RefreshCount(); ok {
 		_spec.SetField(sentinelsession.FieldRefreshCount, field.TypeInt64, value)

@@ -26847,7 +26847,7 @@ func (m *SentinelSessionMutation) LastUsedAt() (r time.Time, exists bool) {
 // OldLastUsedAt returns the old "last_used_at" field's value of the SentinelSession entity.
 // If the SentinelSession object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SentinelSessionMutation) OldLastUsedAt(ctx context.Context) (v time.Time, err error) {
+func (m *SentinelSessionMutation) OldLastUsedAt(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLastUsedAt is only allowed on UpdateOne operations")
 	}
@@ -26896,7 +26896,7 @@ func (m *SentinelSessionMutation) LastRefreshedAt() (r time.Time, exists bool) {
 // OldLastRefreshedAt returns the old "last_refreshed_at" field's value of the SentinelSession entity.
 // If the SentinelSession object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SentinelSessionMutation) OldLastRefreshedAt(ctx context.Context) (v time.Time, err error) {
+func (m *SentinelSessionMutation) OldLastRefreshedAt(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldLastRefreshedAt is only allowed on UpdateOne operations")
 	}
