@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -13,6 +14,8 @@ const (
 	Label = "sentinel_app_binary"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUnionID holds the string denoting the union_id field in the database.
+	FieldUnionID = "union_id"
 	// FieldSentinelID holds the string denoting the sentinel_id field in the database.
 	FieldSentinelID = "sentinel_id"
 	// FieldSentinelLibraryReportedID holds the string denoting the sentinel_library_reported_id field in the database.
@@ -37,13 +40,30 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldAppBinaryReportSequence holds the string denoting the app_binary_report_sequence field in the database.
 	FieldAppBinaryReportSequence = "app_binary_report_sequence"
+	// EdgeStoreApp holds the string denoting the store_app edge name in mutations.
+	EdgeStoreApp = "store_app"
+	// EdgeStoreAppBinary holds the string denoting the store_app_binary edge name in mutations.
+	EdgeStoreAppBinary = "store_app_binary"
 	// Table holds the table name of the sentinelappbinary in the database.
 	Table = "sentinel_app_binaries"
+	// StoreAppTable is the table that holds the store_app relation/edge. The primary key declared below.
+	StoreAppTable = "store_app_binaries"
+	// StoreAppInverseTable is the table name for the StoreApp entity.
+	// It exists in this package in order to avoid circular dependency with the "storeapp" package.
+	StoreAppInverseTable = "store_apps"
+	// StoreAppBinaryTable is the table that holds the store_app_binary relation/edge.
+	StoreAppBinaryTable = "store_app_binaries"
+	// StoreAppBinaryInverseTable is the table name for the StoreAppBinary entity.
+	// It exists in this package in order to avoid circular dependency with the "storeappbinary" package.
+	StoreAppBinaryInverseTable = "store_app_binaries"
+	// StoreAppBinaryColumn is the table column denoting the store_app_binary relation/edge.
+	StoreAppBinaryColumn = "sentinel_app_binary_union_id"
 )
 
 // Columns holds all SQL columns for sentinelappbinary fields.
 var Columns = []string{
 	FieldID,
+	FieldUnionID,
 	FieldSentinelID,
 	FieldSentinelLibraryReportedID,
 	FieldGeneratedID,
@@ -57,6 +77,12 @@ var Columns = []string{
 	FieldCreatedAt,
 	FieldAppBinaryReportSequence,
 }
+
+var (
+	// StoreAppPrimaryKey and StoreAppColumn2 are the table columns denoting the
+	// primary key for the store_app relation (M2M).
+	StoreAppPrimaryKey = []string{"store_app_id", "sentinel_app_binary_union_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -83,6 +109,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByUnionID orders the results by the union_id field.
+func ByUnionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUnionID, opts...).ToFunc()
 }
 
 // BySentinelID orders the results by the sentinel_id field.
@@ -143,4 +174,46 @@ func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByAppBinaryReportSequence orders the results by the app_binary_report_sequence field.
 func ByAppBinaryReportSequence(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAppBinaryReportSequence, opts...).ToFunc()
+}
+
+// ByStoreAppCount orders the results by store_app count.
+func ByStoreAppCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newStoreAppStep(), opts...)
+	}
+}
+
+// ByStoreApp orders the results by store_app terms.
+func ByStoreApp(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStoreAppStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByStoreAppBinaryCount orders the results by store_app_binary count.
+func ByStoreAppBinaryCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newStoreAppBinaryStep(), opts...)
+	}
+}
+
+// ByStoreAppBinary orders the results by store_app_binary terms.
+func ByStoreAppBinary(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStoreAppBinaryStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newStoreAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StoreAppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, StoreAppTable, StoreAppPrimaryKey...),
+	)
+}
+func newStoreAppBinaryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StoreAppBinaryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, true, StoreAppBinaryTable, StoreAppBinaryColumn),
+	)
 }

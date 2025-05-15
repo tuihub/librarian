@@ -12,6 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -21,6 +23,12 @@ type SentinelAppBinaryCreate struct {
 	mutation *SentinelAppBinaryMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
+}
+
+// SetUnionID sets the "union_id" field.
+func (sabc *SentinelAppBinaryCreate) SetUnionID(s string) *SentinelAppBinaryCreate {
+	sabc.mutation.SetUnionID(s)
+	return sabc
 }
 
 // SetSentinelID sets the "sentinel_id" field.
@@ -56,14 +64,6 @@ func (sabc *SentinelAppBinaryCreate) SetNeedToken(b bool) *SentinelAppBinaryCrea
 // SetName sets the "name" field.
 func (sabc *SentinelAppBinaryCreate) SetName(s string) *SentinelAppBinaryCreate {
 	sabc.mutation.SetName(s)
-	return sabc
-}
-
-// SetNillableName sets the "name" field if the given value is not nil.
-func (sabc *SentinelAppBinaryCreate) SetNillableName(s *string) *SentinelAppBinaryCreate {
-	if s != nil {
-		sabc.SetName(*s)
-	}
 	return sabc
 }
 
@@ -149,6 +149,36 @@ func (sabc *SentinelAppBinaryCreate) SetID(mi model.InternalID) *SentinelAppBina
 	return sabc
 }
 
+// AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
+func (sabc *SentinelAppBinaryCreate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryCreate {
+	sabc.mutation.AddStoreAppIDs(ids...)
+	return sabc
+}
+
+// AddStoreApp adds the "store_app" edges to the StoreApp entity.
+func (sabc *SentinelAppBinaryCreate) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryCreate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabc.AddStoreAppIDs(ids...)
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (sabc *SentinelAppBinaryCreate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryCreate {
+	sabc.mutation.AddStoreAppBinaryIDs(ids...)
+	return sabc
+}
+
+// AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
+func (sabc *SentinelAppBinaryCreate) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabc.AddStoreAppBinaryIDs(ids...)
+}
+
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
 func (sabc *SentinelAppBinaryCreate) Mutation() *SentinelAppBinaryMutation {
 	return sabc.mutation
@@ -196,6 +226,9 @@ func (sabc *SentinelAppBinaryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sabc *SentinelAppBinaryCreate) check() error {
+	if _, ok := sabc.mutation.UnionID(); !ok {
+		return &ValidationError{Name: "union_id", err: errors.New(`ent: missing required field "SentinelAppBinary.union_id"`)}
+	}
 	if _, ok := sabc.mutation.SentinelID(); !ok {
 		return &ValidationError{Name: "sentinel_id", err: errors.New(`ent: missing required field "SentinelAppBinary.sentinel_id"`)}
 	}
@@ -210,6 +243,9 @@ func (sabc *SentinelAppBinaryCreate) check() error {
 	}
 	if _, ok := sabc.mutation.NeedToken(); !ok {
 		return &ValidationError{Name: "need_token", err: errors.New(`ent: missing required field "SentinelAppBinary.need_token"`)}
+	}
+	if _, ok := sabc.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "SentinelAppBinary.name"`)}
 	}
 	if _, ok := sabc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SentinelAppBinary.updated_at"`)}
@@ -252,6 +288,10 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 	if id, ok := sabc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := sabc.mutation.UnionID(); ok {
+		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
+		_node.UnionID = value
 	}
 	if value, ok := sabc.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
@@ -301,6 +341,42 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 		_spec.SetField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
 		_node.AppBinaryReportSequence = value
 	}
+	if nodes := sabc.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sabc.config, mutation: newStoreAppBinaryMutation(sabc.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sabc.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -308,7 +384,7 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 // of the `INSERT` statement. For example:
 //
 //	client.SentinelAppBinary.Create().
-//		SetSentinelID(v).
+//		SetUnionID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -317,7 +393,7 @@ func (sabc *SentinelAppBinaryCreate) createSpec() (*SentinelAppBinary, *sqlgraph
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryUpsert) {
-//			SetSentinelID(v+v).
+//			SetUnionID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabc *SentinelAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertOne {
@@ -352,6 +428,18 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUnionID sets the "union_id" field.
+func (u *SentinelAppBinaryUpsert) SetUnionID(v string) *SentinelAppBinaryUpsert {
+	u.Set(sentinelappbinary.FieldUnionID, v)
+	return u
+}
+
+// UpdateUnionID sets the "union_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsert) UpdateUnionID() *SentinelAppBinaryUpsert {
+	u.SetExcluded(sentinelappbinary.FieldUnionID)
+	return u
+}
 
 // SetSentinelID sets the "sentinel_id" field.
 func (u *SentinelAppBinaryUpsert) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpsert {
@@ -440,12 +528,6 @@ func (u *SentinelAppBinaryUpsert) SetName(v string) *SentinelAppBinaryUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *SentinelAppBinaryUpsert) UpdateName() *SentinelAppBinaryUpsert {
 	u.SetExcluded(sentinelappbinary.FieldName)
-	return u
-}
-
-// ClearName clears the value of the "name" field.
-func (u *SentinelAppBinaryUpsert) ClearName() *SentinelAppBinaryUpsert {
-	u.SetNull(sentinelappbinary.FieldName)
 	return u
 }
 
@@ -593,6 +675,20 @@ func (u *SentinelAppBinaryUpsertOne) Update(set func(*SentinelAppBinaryUpsert)) 
 	return u
 }
 
+// SetUnionID sets the "union_id" field.
+func (u *SentinelAppBinaryUpsertOne) SetUnionID(v string) *SentinelAppBinaryUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryUpsert) {
+		s.SetUnionID(v)
+	})
+}
+
+// UpdateUnionID sets the "union_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsertOne) UpdateUnionID() *SentinelAppBinaryUpsertOne {
+	return u.Update(func(s *SentinelAppBinaryUpsert) {
+		s.UpdateUnionID()
+	})
+}
+
 // SetSentinelID sets the "sentinel_id" field.
 func (u *SentinelAppBinaryUpsertOne) SetSentinelID(v model.InternalID) *SentinelAppBinaryUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
@@ -695,13 +791,6 @@ func (u *SentinelAppBinaryUpsertOne) SetName(v string) *SentinelAppBinaryUpsertO
 func (u *SentinelAppBinaryUpsertOne) UpdateName() *SentinelAppBinaryUpsertOne {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
 		s.UpdateName()
-	})
-}
-
-// ClearName clears the value of the "name" field.
-func (u *SentinelAppBinaryUpsertOne) ClearName() *SentinelAppBinaryUpsertOne {
-	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.ClearName()
 	})
 }
 
@@ -952,7 +1041,7 @@ func (sabcb *SentinelAppBinaryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.SentinelAppBinaryUpsert) {
-//			SetSentinelID(v+v).
+//			SetUnionID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabcb *SentinelAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *SentinelAppBinaryUpsertBulk {
@@ -1029,6 +1118,20 @@ func (u *SentinelAppBinaryUpsertBulk) Update(set func(*SentinelAppBinaryUpsert))
 		set(&SentinelAppBinaryUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUnionID sets the "union_id" field.
+func (u *SentinelAppBinaryUpsertBulk) SetUnionID(v string) *SentinelAppBinaryUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryUpsert) {
+		s.SetUnionID(v)
+	})
+}
+
+// UpdateUnionID sets the "union_id" field to the value that was provided on create.
+func (u *SentinelAppBinaryUpsertBulk) UpdateUnionID() *SentinelAppBinaryUpsertBulk {
+	return u.Update(func(s *SentinelAppBinaryUpsert) {
+		s.UpdateUnionID()
+	})
 }
 
 // SetSentinelID sets the "sentinel_id" field.
@@ -1133,13 +1236,6 @@ func (u *SentinelAppBinaryUpsertBulk) SetName(v string) *SentinelAppBinaryUpsert
 func (u *SentinelAppBinaryUpsertBulk) UpdateName() *SentinelAppBinaryUpsertBulk {
 	return u.Update(func(s *SentinelAppBinaryUpsert) {
 		s.UpdateName()
-	})
-}
-
-// ClearName clears the value of the "name" field.
-func (u *SentinelAppBinaryUpsertBulk) ClearName() *SentinelAppBinaryUpsertBulk {
-	return u.Update(func(s *SentinelAppBinaryUpsert) {
-		s.ClearName()
 	})
 }
 

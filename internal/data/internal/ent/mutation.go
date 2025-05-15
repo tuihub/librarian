@@ -23613,6 +23613,7 @@ type SentinelAppBinaryMutation struct {
 	op                              Op
 	typ                             string
 	id                              *model.InternalID
+	union_id                        *string
 	sentinel_id                     *model.InternalID
 	addsentinel_id                  *model.InternalID
 	sentinel_library_reported_id    *int64
@@ -23630,6 +23631,12 @@ type SentinelAppBinaryMutation struct {
 	app_binary_report_sequence      *int64
 	addapp_binary_report_sequence   *int64
 	clearedFields                   map[string]struct{}
+	store_app                       map[model.InternalID]struct{}
+	removedstore_app                map[model.InternalID]struct{}
+	clearedstore_app                bool
+	store_app_binary                map[int]struct{}
+	removedstore_app_binary         map[int]struct{}
+	clearedstore_app_binary         bool
 	done                            bool
 	oldValue                        func(context.Context) (*SentinelAppBinary, error)
 	predicates                      []predicate.SentinelAppBinary
@@ -23737,6 +23744,42 @@ func (m *SentinelAppBinaryMutation) IDs(ctx context.Context) ([]model.InternalID
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetUnionID sets the "union_id" field.
+func (m *SentinelAppBinaryMutation) SetUnionID(s string) {
+	m.union_id = &s
+}
+
+// UnionID returns the value of the "union_id" field in the mutation.
+func (m *SentinelAppBinaryMutation) UnionID() (r string, exists bool) {
+	v := m.union_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUnionID returns the old "union_id" field's value of the SentinelAppBinary entity.
+// If the SentinelAppBinary object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SentinelAppBinaryMutation) OldUnionID(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUnionID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUnionID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUnionID: %w", err)
+	}
+	return oldValue.UnionID, nil
+}
+
+// ResetUnionID resets all changes to the "union_id" field.
+func (m *SentinelAppBinaryMutation) ResetUnionID() {
+	m.union_id = nil
 }
 
 // SetSentinelID sets the "sentinel_id" field.
@@ -24010,22 +24053,9 @@ func (m *SentinelAppBinaryMutation) OldName(ctx context.Context) (v string, err 
 	return oldValue.Name, nil
 }
 
-// ClearName clears the value of the "name" field.
-func (m *SentinelAppBinaryMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[sentinelappbinary.FieldName] = struct{}{}
-}
-
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *SentinelAppBinaryMutation) NameCleared() bool {
-	_, ok := m.clearedFields[sentinelappbinary.FieldName]
-	return ok
-}
-
 // ResetName resets all changes to the "name" field.
 func (m *SentinelAppBinaryMutation) ResetName() {
 	m.name = nil
-	delete(m.clearedFields, sentinelappbinary.FieldName)
 }
 
 // SetVersion sets the "version" field.
@@ -24303,6 +24333,114 @@ func (m *SentinelAppBinaryMutation) ResetAppBinaryReportSequence() {
 	m.addapp_binary_report_sequence = nil
 }
 
+// AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by ids.
+func (m *SentinelAppBinaryMutation) AddStoreAppIDs(ids ...model.InternalID) {
+	if m.store_app == nil {
+		m.store_app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.store_app[ids[i]] = struct{}{}
+	}
+}
+
+// ClearStoreApp clears the "store_app" edge to the StoreApp entity.
+func (m *SentinelAppBinaryMutation) ClearStoreApp() {
+	m.clearedstore_app = true
+}
+
+// StoreAppCleared reports if the "store_app" edge to the StoreApp entity was cleared.
+func (m *SentinelAppBinaryMutation) StoreAppCleared() bool {
+	return m.clearedstore_app
+}
+
+// RemoveStoreAppIDs removes the "store_app" edge to the StoreApp entity by IDs.
+func (m *SentinelAppBinaryMutation) RemoveStoreAppIDs(ids ...model.InternalID) {
+	if m.removedstore_app == nil {
+		m.removedstore_app = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.store_app, ids[i])
+		m.removedstore_app[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedStoreApp returns the removed IDs of the "store_app" edge to the StoreApp entity.
+func (m *SentinelAppBinaryMutation) RemovedStoreAppIDs() (ids []model.InternalID) {
+	for id := range m.removedstore_app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// StoreAppIDs returns the "store_app" edge IDs in the mutation.
+func (m *SentinelAppBinaryMutation) StoreAppIDs() (ids []model.InternalID) {
+	for id := range m.store_app {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetStoreApp resets all changes to the "store_app" edge.
+func (m *SentinelAppBinaryMutation) ResetStoreApp() {
+	m.store_app = nil
+	m.clearedstore_app = false
+	m.removedstore_app = nil
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by ids.
+func (m *SentinelAppBinaryMutation) AddStoreAppBinaryIDs(ids ...int) {
+	if m.store_app_binary == nil {
+		m.store_app_binary = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.store_app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// ClearStoreAppBinary clears the "store_app_binary" edge to the StoreAppBinary entity.
+func (m *SentinelAppBinaryMutation) ClearStoreAppBinary() {
+	m.clearedstore_app_binary = true
+}
+
+// StoreAppBinaryCleared reports if the "store_app_binary" edge to the StoreAppBinary entity was cleared.
+func (m *SentinelAppBinaryMutation) StoreAppBinaryCleared() bool {
+	return m.clearedstore_app_binary
+}
+
+// RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (m *SentinelAppBinaryMutation) RemoveStoreAppBinaryIDs(ids ...int) {
+	if m.removedstore_app_binary == nil {
+		m.removedstore_app_binary = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.store_app_binary, ids[i])
+		m.removedstore_app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedStoreAppBinary returns the removed IDs of the "store_app_binary" edge to the StoreAppBinary entity.
+func (m *SentinelAppBinaryMutation) RemovedStoreAppBinaryIDs() (ids []int) {
+	for id := range m.removedstore_app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// StoreAppBinaryIDs returns the "store_app_binary" edge IDs in the mutation.
+func (m *SentinelAppBinaryMutation) StoreAppBinaryIDs() (ids []int) {
+	for id := range m.store_app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetStoreAppBinary resets all changes to the "store_app_binary" edge.
+func (m *SentinelAppBinaryMutation) ResetStoreAppBinary() {
+	m.store_app_binary = nil
+	m.clearedstore_app_binary = false
+	m.removedstore_app_binary = nil
+}
+
 // Where appends a list predicates to the SentinelAppBinaryMutation builder.
 func (m *SentinelAppBinaryMutation) Where(ps ...predicate.SentinelAppBinary) {
 	m.predicates = append(m.predicates, ps...)
@@ -24337,7 +24475,10 @@ func (m *SentinelAppBinaryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SentinelAppBinaryMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
+	if m.union_id != nil {
+		fields = append(fields, sentinelappbinary.FieldUnionID)
+	}
 	if m.sentinel_id != nil {
 		fields = append(fields, sentinelappbinary.FieldSentinelID)
 	}
@@ -24382,6 +24523,8 @@ func (m *SentinelAppBinaryMutation) Fields() []string {
 // schema.
 func (m *SentinelAppBinaryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case sentinelappbinary.FieldUnionID:
+		return m.UnionID()
 	case sentinelappbinary.FieldSentinelID:
 		return m.SentinelID()
 	case sentinelappbinary.FieldSentinelLibraryReportedID:
@@ -24415,6 +24558,8 @@ func (m *SentinelAppBinaryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *SentinelAppBinaryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case sentinelappbinary.FieldUnionID:
+		return m.OldUnionID(ctx)
 	case sentinelappbinary.FieldSentinelID:
 		return m.OldSentinelID(ctx)
 	case sentinelappbinary.FieldSentinelLibraryReportedID:
@@ -24448,6 +24593,13 @@ func (m *SentinelAppBinaryMutation) OldField(ctx context.Context, name string) (
 // type.
 func (m *SentinelAppBinaryMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case sentinelappbinary.FieldUnionID:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUnionID(v)
+		return nil
 	case sentinelappbinary.FieldSentinelID:
 		v, ok := value.(model.InternalID)
 		if !ok {
@@ -24613,9 +24765,6 @@ func (m *SentinelAppBinaryMutation) AddField(name string, value ent.Value) error
 // mutation.
 func (m *SentinelAppBinaryMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(sentinelappbinary.FieldName) {
-		fields = append(fields, sentinelappbinary.FieldName)
-	}
 	if m.FieldCleared(sentinelappbinary.FieldVersion) {
 		fields = append(fields, sentinelappbinary.FieldVersion)
 	}
@@ -24639,9 +24788,6 @@ func (m *SentinelAppBinaryMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SentinelAppBinaryMutation) ClearField(name string) error {
 	switch name {
-	case sentinelappbinary.FieldName:
-		m.ClearName()
-		return nil
 	case sentinelappbinary.FieldVersion:
 		m.ClearVersion()
 		return nil
@@ -24659,6 +24805,9 @@ func (m *SentinelAppBinaryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *SentinelAppBinaryMutation) ResetField(name string) error {
 	switch name {
+	case sentinelappbinary.FieldUnionID:
+		m.ResetUnionID()
+		return nil
 	case sentinelappbinary.FieldSentinelID:
 		m.ResetSentinelID()
 		return nil
@@ -24701,49 +24850,111 @@ func (m *SentinelAppBinaryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SentinelAppBinaryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.store_app != nil {
+		edges = append(edges, sentinelappbinary.EdgeStoreApp)
+	}
+	if m.store_app_binary != nil {
+		edges = append(edges, sentinelappbinary.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *SentinelAppBinaryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case sentinelappbinary.EdgeStoreApp:
+		ids := make([]ent.Value, 0, len(m.store_app))
+		for id := range m.store_app {
+			ids = append(ids, id)
+		}
+		return ids
+	case sentinelappbinary.EdgeStoreAppBinary:
+		ids := make([]ent.Value, 0, len(m.store_app_binary))
+		for id := range m.store_app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SentinelAppBinaryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.removedstore_app != nil {
+		edges = append(edges, sentinelappbinary.EdgeStoreApp)
+	}
+	if m.removedstore_app_binary != nil {
+		edges = append(edges, sentinelappbinary.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *SentinelAppBinaryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case sentinelappbinary.EdgeStoreApp:
+		ids := make([]ent.Value, 0, len(m.removedstore_app))
+		for id := range m.removedstore_app {
+			ids = append(ids, id)
+		}
+		return ids
+	case sentinelappbinary.EdgeStoreAppBinary:
+		ids := make([]ent.Value, 0, len(m.removedstore_app_binary))
+		for id := range m.removedstore_app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SentinelAppBinaryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedstore_app {
+		edges = append(edges, sentinelappbinary.EdgeStoreApp)
+	}
+	if m.clearedstore_app_binary {
+		edges = append(edges, sentinelappbinary.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *SentinelAppBinaryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case sentinelappbinary.EdgeStoreApp:
+		return m.clearedstore_app
+	case sentinelappbinary.EdgeStoreAppBinary:
+		return m.clearedstore_app_binary
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *SentinelAppBinaryMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown SentinelAppBinary unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *SentinelAppBinaryMutation) ResetEdge(name string) error {
+	switch name {
+	case sentinelappbinary.EdgeStoreApp:
+		m.ResetStoreApp()
+		return nil
+	case sentinelappbinary.EdgeStoreAppBinary:
+		m.ResetStoreAppBinary()
+		return nil
+	}
 	return fmt.Errorf("unknown SentinelAppBinary edge %s", name)
 }
 
@@ -28213,16 +28424,23 @@ func (m *SessionMutation) ResetEdge(name string) error {
 // StoreAppMutation represents an operation that mutates the StoreApp nodes in the graph.
 type StoreAppMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *model.InternalID
-	name          *string
-	updated_at    *time.Time
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*StoreApp, error)
-	predicates    []predicate.StoreApp
+	op                      Op
+	typ                     string
+	id                      *model.InternalID
+	name                    *string
+	description             *string
+	updated_at              *time.Time
+	created_at              *time.Time
+	clearedFields           map[string]struct{}
+	app_binary              map[model.InternalID]struct{}
+	removedapp_binary       map[model.InternalID]struct{}
+	clearedapp_binary       bool
+	store_app_binary        map[int]struct{}
+	removedstore_app_binary map[int]struct{}
+	clearedstore_app_binary bool
+	done                    bool
+	oldValue                func(context.Context) (*StoreApp, error)
+	predicates              []predicate.StoreApp
 }
 
 var _ ent.Mutation = (*StoreAppMutation)(nil)
@@ -28365,6 +28583,42 @@ func (m *StoreAppMutation) ResetName() {
 	m.name = nil
 }
 
+// SetDescription sets the "description" field.
+func (m *StoreAppMutation) SetDescription(s string) {
+	m.description = &s
+}
+
+// Description returns the value of the "description" field in the mutation.
+func (m *StoreAppMutation) Description() (r string, exists bool) {
+	v := m.description
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDescription returns the old "description" field's value of the StoreApp entity.
+// If the StoreApp object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *StoreAppMutation) OldDescription(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDescription is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDescription requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDescription: %w", err)
+	}
+	return oldValue.Description, nil
+}
+
+// ResetDescription resets all changes to the "description" field.
+func (m *StoreAppMutation) ResetDescription() {
+	m.description = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *StoreAppMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -28437,6 +28691,114 @@ func (m *StoreAppMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// AddAppBinaryIDs adds the "app_binary" edge to the SentinelAppBinary entity by ids.
+func (m *StoreAppMutation) AddAppBinaryIDs(ids ...model.InternalID) {
+	if m.app_binary == nil {
+		m.app_binary = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		m.app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// ClearAppBinary clears the "app_binary" edge to the SentinelAppBinary entity.
+func (m *StoreAppMutation) ClearAppBinary() {
+	m.clearedapp_binary = true
+}
+
+// AppBinaryCleared reports if the "app_binary" edge to the SentinelAppBinary entity was cleared.
+func (m *StoreAppMutation) AppBinaryCleared() bool {
+	return m.clearedapp_binary
+}
+
+// RemoveAppBinaryIDs removes the "app_binary" edge to the SentinelAppBinary entity by IDs.
+func (m *StoreAppMutation) RemoveAppBinaryIDs(ids ...model.InternalID) {
+	if m.removedapp_binary == nil {
+		m.removedapp_binary = make(map[model.InternalID]struct{})
+	}
+	for i := range ids {
+		delete(m.app_binary, ids[i])
+		m.removedapp_binary[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedAppBinary returns the removed IDs of the "app_binary" edge to the SentinelAppBinary entity.
+func (m *StoreAppMutation) RemovedAppBinaryIDs() (ids []model.InternalID) {
+	for id := range m.removedapp_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// AppBinaryIDs returns the "app_binary" edge IDs in the mutation.
+func (m *StoreAppMutation) AppBinaryIDs() (ids []model.InternalID) {
+	for id := range m.app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetAppBinary resets all changes to the "app_binary" edge.
+func (m *StoreAppMutation) ResetAppBinary() {
+	m.app_binary = nil
+	m.clearedapp_binary = false
+	m.removedapp_binary = nil
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by ids.
+func (m *StoreAppMutation) AddStoreAppBinaryIDs(ids ...int) {
+	if m.store_app_binary == nil {
+		m.store_app_binary = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.store_app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// ClearStoreAppBinary clears the "store_app_binary" edge to the StoreAppBinary entity.
+func (m *StoreAppMutation) ClearStoreAppBinary() {
+	m.clearedstore_app_binary = true
+}
+
+// StoreAppBinaryCleared reports if the "store_app_binary" edge to the StoreAppBinary entity was cleared.
+func (m *StoreAppMutation) StoreAppBinaryCleared() bool {
+	return m.clearedstore_app_binary
+}
+
+// RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (m *StoreAppMutation) RemoveStoreAppBinaryIDs(ids ...int) {
+	if m.removedstore_app_binary == nil {
+		m.removedstore_app_binary = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.store_app_binary, ids[i])
+		m.removedstore_app_binary[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedStoreAppBinary returns the removed IDs of the "store_app_binary" edge to the StoreAppBinary entity.
+func (m *StoreAppMutation) RemovedStoreAppBinaryIDs() (ids []int) {
+	for id := range m.removedstore_app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// StoreAppBinaryIDs returns the "store_app_binary" edge IDs in the mutation.
+func (m *StoreAppMutation) StoreAppBinaryIDs() (ids []int) {
+	for id := range m.store_app_binary {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetStoreAppBinary resets all changes to the "store_app_binary" edge.
+func (m *StoreAppMutation) ResetStoreAppBinary() {
+	m.store_app_binary = nil
+	m.clearedstore_app_binary = false
+	m.removedstore_app_binary = nil
+}
+
 // Where appends a list predicates to the StoreAppMutation builder.
 func (m *StoreAppMutation) Where(ps ...predicate.StoreApp) {
 	m.predicates = append(m.predicates, ps...)
@@ -28471,9 +28833,12 @@ func (m *StoreAppMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StoreAppMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, storeapp.FieldName)
+	}
+	if m.description != nil {
+		fields = append(fields, storeapp.FieldDescription)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, storeapp.FieldUpdatedAt)
@@ -28491,6 +28856,8 @@ func (m *StoreAppMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case storeapp.FieldName:
 		return m.Name()
+	case storeapp.FieldDescription:
+		return m.Description()
 	case storeapp.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case storeapp.FieldCreatedAt:
@@ -28506,6 +28873,8 @@ func (m *StoreAppMutation) OldField(ctx context.Context, name string) (ent.Value
 	switch name {
 	case storeapp.FieldName:
 		return m.OldName(ctx)
+	case storeapp.FieldDescription:
+		return m.OldDescription(ctx)
 	case storeapp.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case storeapp.FieldCreatedAt:
@@ -28525,6 +28894,13 @@ func (m *StoreAppMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case storeapp.FieldDescription:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDescription(v)
 		return nil
 	case storeapp.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -28592,6 +28968,9 @@ func (m *StoreAppMutation) ResetField(name string) error {
 	case storeapp.FieldName:
 		m.ResetName()
 		return nil
+	case storeapp.FieldDescription:
+		m.ResetDescription()
+		return nil
 	case storeapp.FieldUpdatedAt:
 		m.ResetUpdatedAt()
 		return nil
@@ -28604,69 +28983,130 @@ func (m *StoreAppMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *StoreAppMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.app_binary != nil {
+		edges = append(edges, storeapp.EdgeAppBinary)
+	}
+	if m.store_app_binary != nil {
+		edges = append(edges, storeapp.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *StoreAppMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case storeapp.EdgeAppBinary:
+		ids := make([]ent.Value, 0, len(m.app_binary))
+		for id := range m.app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	case storeapp.EdgeStoreAppBinary:
+		ids := make([]ent.Value, 0, len(m.store_app_binary))
+		for id := range m.store_app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *StoreAppMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.removedapp_binary != nil {
+		edges = append(edges, storeapp.EdgeAppBinary)
+	}
+	if m.removedstore_app_binary != nil {
+		edges = append(edges, storeapp.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *StoreAppMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case storeapp.EdgeAppBinary:
+		ids := make([]ent.Value, 0, len(m.removedapp_binary))
+		for id := range m.removedapp_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	case storeapp.EdgeStoreAppBinary:
+		ids := make([]ent.Value, 0, len(m.removedstore_app_binary))
+		for id := range m.removedstore_app_binary {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *StoreAppMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedapp_binary {
+		edges = append(edges, storeapp.EdgeAppBinary)
+	}
+	if m.clearedstore_app_binary {
+		edges = append(edges, storeapp.EdgeStoreAppBinary)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *StoreAppMutation) EdgeCleared(name string) bool {
+	switch name {
+	case storeapp.EdgeAppBinary:
+		return m.clearedapp_binary
+	case storeapp.EdgeStoreAppBinary:
+		return m.clearedstore_app_binary
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *StoreAppMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown StoreApp unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *StoreAppMutation) ResetEdge(name string) error {
+	switch name {
+	case storeapp.EdgeAppBinary:
+		m.ResetAppBinary()
+		return nil
+	case storeapp.EdgeStoreAppBinary:
+		m.ResetStoreAppBinary()
+		return nil
+	}
 	return fmt.Errorf("unknown StoreApp edge %s", name)
 }
 
 // StoreAppBinaryMutation represents an operation that mutates the StoreAppBinary nodes in the graph.
 type StoreAppBinaryMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *model.InternalID
-	name          *string
-	size_bytes    *int64
-	addsize_bytes *int64
-	public_url    *string
-	sha256        *[]byte
-	updated_at    *time.Time
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*StoreAppBinary, error)
-	predicates    []predicate.StoreAppBinary
+	op                         Op
+	typ                        string
+	id                         *int
+	updated_at                 *time.Time
+	created_at                 *time.Time
+	clearedFields              map[string]struct{}
+	store_app                  *model.InternalID
+	clearedstore_app           bool
+	sentinel_app_binary        *model.InternalID
+	clearedsentinel_app_binary bool
+	done                       bool
+	oldValue                   func(context.Context) (*StoreAppBinary, error)
+	predicates                 []predicate.StoreAppBinary
 }
 
 var _ ent.Mutation = (*StoreAppBinaryMutation)(nil)
@@ -28689,7 +29129,7 @@ func newStoreAppBinaryMutation(c config, op Op, opts ...storeappbinaryOption) *S
 }
 
 // withStoreAppBinaryID sets the ID field of the mutation.
-func withStoreAppBinaryID(id model.InternalID) storeappbinaryOption {
+func withStoreAppBinaryID(id int) storeappbinaryOption {
 	return func(m *StoreAppBinaryMutation) {
 		var (
 			err   error
@@ -28739,15 +29179,9 @@ func (m StoreAppBinaryMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of StoreAppBinary entities.
-func (m *StoreAppBinaryMutation) SetID(id model.InternalID) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *StoreAppBinaryMutation) ID() (id model.InternalID, exists bool) {
+func (m *StoreAppBinaryMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -28758,12 +29192,12 @@ func (m *StoreAppBinaryMutation) ID() (id model.InternalID, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *StoreAppBinaryMutation) IDs(ctx context.Context) ([]model.InternalID, error) {
+func (m *StoreAppBinaryMutation) IDs(ctx context.Context) ([]int, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []model.InternalID{id}, nil
+			return []int{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -28773,221 +29207,76 @@ func (m *StoreAppBinaryMutation) IDs(ctx context.Context) ([]model.InternalID, e
 	}
 }
 
-// SetName sets the "name" field.
-func (m *StoreAppBinaryMutation) SetName(s string) {
-	m.name = &s
+// SetStoreAppID sets the "store_app_id" field.
+func (m *StoreAppBinaryMutation) SetStoreAppID(mi model.InternalID) {
+	m.store_app = &mi
 }
 
-// Name returns the value of the "name" field in the mutation.
-func (m *StoreAppBinaryMutation) Name() (r string, exists bool) {
-	v := m.name
+// StoreAppID returns the value of the "store_app_id" field in the mutation.
+func (m *StoreAppBinaryMutation) StoreAppID() (r model.InternalID, exists bool) {
+	v := m.store_app
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldName returns the old "name" field's value of the StoreAppBinary entity.
+// OldStoreAppID returns the old "store_app_id" field's value of the StoreAppBinary entity.
 // If the StoreAppBinary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StoreAppBinaryMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *StoreAppBinaryMutation) OldStoreAppID(ctx context.Context) (v model.InternalID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldName is only allowed on UpdateOne operations")
+		return v, errors.New("OldStoreAppID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldName requires an ID field in the mutation")
+		return v, errors.New("OldStoreAppID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldName: %w", err)
+		return v, fmt.Errorf("querying old value for OldStoreAppID: %w", err)
 	}
-	return oldValue.Name, nil
+	return oldValue.StoreAppID, nil
 }
 
-// ClearName clears the value of the "name" field.
-func (m *StoreAppBinaryMutation) ClearName() {
-	m.name = nil
-	m.clearedFields[storeappbinary.FieldName] = struct{}{}
+// ResetStoreAppID resets all changes to the "store_app_id" field.
+func (m *StoreAppBinaryMutation) ResetStoreAppID() {
+	m.store_app = nil
 }
 
-// NameCleared returns if the "name" field was cleared in this mutation.
-func (m *StoreAppBinaryMutation) NameCleared() bool {
-	_, ok := m.clearedFields[storeappbinary.FieldName]
-	return ok
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (m *StoreAppBinaryMutation) SetSentinelAppBinaryUnionID(mi model.InternalID) {
+	m.sentinel_app_binary = &mi
 }
 
-// ResetName resets all changes to the "name" field.
-func (m *StoreAppBinaryMutation) ResetName() {
-	m.name = nil
-	delete(m.clearedFields, storeappbinary.FieldName)
-}
-
-// SetSizeBytes sets the "size_bytes" field.
-func (m *StoreAppBinaryMutation) SetSizeBytes(i int64) {
-	m.size_bytes = &i
-	m.addsize_bytes = nil
-}
-
-// SizeBytes returns the value of the "size_bytes" field in the mutation.
-func (m *StoreAppBinaryMutation) SizeBytes() (r int64, exists bool) {
-	v := m.size_bytes
+// SentinelAppBinaryUnionID returns the value of the "sentinel_app_binary_union_id" field in the mutation.
+func (m *StoreAppBinaryMutation) SentinelAppBinaryUnionID() (r model.InternalID, exists bool) {
+	v := m.sentinel_app_binary
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldSizeBytes returns the old "size_bytes" field's value of the StoreAppBinary entity.
+// OldSentinelAppBinaryUnionID returns the old "sentinel_app_binary_union_id" field's value of the StoreAppBinary entity.
 // If the StoreAppBinary object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StoreAppBinaryMutation) OldSizeBytes(ctx context.Context) (v int64, err error) {
+func (m *StoreAppBinaryMutation) OldSentinelAppBinaryUnionID(ctx context.Context) (v model.InternalID, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSizeBytes is only allowed on UpdateOne operations")
+		return v, errors.New("OldSentinelAppBinaryUnionID is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSizeBytes requires an ID field in the mutation")
+		return v, errors.New("OldSentinelAppBinaryUnionID requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSizeBytes: %w", err)
+		return v, fmt.Errorf("querying old value for OldSentinelAppBinaryUnionID: %w", err)
 	}
-	return oldValue.SizeBytes, nil
+	return oldValue.SentinelAppBinaryUnionID, nil
 }
 
-// AddSizeBytes adds i to the "size_bytes" field.
-func (m *StoreAppBinaryMutation) AddSizeBytes(i int64) {
-	if m.addsize_bytes != nil {
-		*m.addsize_bytes += i
-	} else {
-		m.addsize_bytes = &i
-	}
-}
-
-// AddedSizeBytes returns the value that was added to the "size_bytes" field in this mutation.
-func (m *StoreAppBinaryMutation) AddedSizeBytes() (r int64, exists bool) {
-	v := m.addsize_bytes
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (m *StoreAppBinaryMutation) ClearSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	m.clearedFields[storeappbinary.FieldSizeBytes] = struct{}{}
-}
-
-// SizeBytesCleared returns if the "size_bytes" field was cleared in this mutation.
-func (m *StoreAppBinaryMutation) SizeBytesCleared() bool {
-	_, ok := m.clearedFields[storeappbinary.FieldSizeBytes]
-	return ok
-}
-
-// ResetSizeBytes resets all changes to the "size_bytes" field.
-func (m *StoreAppBinaryMutation) ResetSizeBytes() {
-	m.size_bytes = nil
-	m.addsize_bytes = nil
-	delete(m.clearedFields, storeappbinary.FieldSizeBytes)
-}
-
-// SetPublicURL sets the "public_url" field.
-func (m *StoreAppBinaryMutation) SetPublicURL(s string) {
-	m.public_url = &s
-}
-
-// PublicURL returns the value of the "public_url" field in the mutation.
-func (m *StoreAppBinaryMutation) PublicURL() (r string, exists bool) {
-	v := m.public_url
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPublicURL returns the old "public_url" field's value of the StoreAppBinary entity.
-// If the StoreAppBinary object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StoreAppBinaryMutation) OldPublicURL(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPublicURL is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublicURL requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPublicURL: %w", err)
-	}
-	return oldValue.PublicURL, nil
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (m *StoreAppBinaryMutation) ClearPublicURL() {
-	m.public_url = nil
-	m.clearedFields[storeappbinary.FieldPublicURL] = struct{}{}
-}
-
-// PublicURLCleared returns if the "public_url" field was cleared in this mutation.
-func (m *StoreAppBinaryMutation) PublicURLCleared() bool {
-	_, ok := m.clearedFields[storeappbinary.FieldPublicURL]
-	return ok
-}
-
-// ResetPublicURL resets all changes to the "public_url" field.
-func (m *StoreAppBinaryMutation) ResetPublicURL() {
-	m.public_url = nil
-	delete(m.clearedFields, storeappbinary.FieldPublicURL)
-}
-
-// SetSha256 sets the "sha256" field.
-func (m *StoreAppBinaryMutation) SetSha256(b []byte) {
-	m.sha256 = &b
-}
-
-// Sha256 returns the value of the "sha256" field in the mutation.
-func (m *StoreAppBinaryMutation) Sha256() (r []byte, exists bool) {
-	v := m.sha256
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSha256 returns the old "sha256" field's value of the StoreAppBinary entity.
-// If the StoreAppBinary object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *StoreAppBinaryMutation) OldSha256(ctx context.Context) (v []byte, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSha256 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSha256 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSha256: %w", err)
-	}
-	return oldValue.Sha256, nil
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (m *StoreAppBinaryMutation) ClearSha256() {
-	m.sha256 = nil
-	m.clearedFields[storeappbinary.FieldSha256] = struct{}{}
-}
-
-// Sha256Cleared returns if the "sha256" field was cleared in this mutation.
-func (m *StoreAppBinaryMutation) Sha256Cleared() bool {
-	_, ok := m.clearedFields[storeappbinary.FieldSha256]
-	return ok
-}
-
-// ResetSha256 resets all changes to the "sha256" field.
-func (m *StoreAppBinaryMutation) ResetSha256() {
-	m.sha256 = nil
-	delete(m.clearedFields, storeappbinary.FieldSha256)
+// ResetSentinelAppBinaryUnionID resets all changes to the "sentinel_app_binary_union_id" field.
+func (m *StoreAppBinaryMutation) ResetSentinelAppBinaryUnionID() {
+	m.sentinel_app_binary = nil
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -29062,6 +29351,73 @@ func (m *StoreAppBinaryMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
+// ClearStoreApp clears the "store_app" edge to the StoreApp entity.
+func (m *StoreAppBinaryMutation) ClearStoreApp() {
+	m.clearedstore_app = true
+	m.clearedFields[storeappbinary.FieldStoreAppID] = struct{}{}
+}
+
+// StoreAppCleared reports if the "store_app" edge to the StoreApp entity was cleared.
+func (m *StoreAppBinaryMutation) StoreAppCleared() bool {
+	return m.clearedstore_app
+}
+
+// StoreAppIDs returns the "store_app" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// StoreAppID instead. It exists only for internal usage by the builders.
+func (m *StoreAppBinaryMutation) StoreAppIDs() (ids []model.InternalID) {
+	if id := m.store_app; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetStoreApp resets all changes to the "store_app" edge.
+func (m *StoreAppBinaryMutation) ResetStoreApp() {
+	m.store_app = nil
+	m.clearedstore_app = false
+}
+
+// SetSentinelAppBinaryID sets the "sentinel_app_binary" edge to the SentinelAppBinary entity by id.
+func (m *StoreAppBinaryMutation) SetSentinelAppBinaryID(id model.InternalID) {
+	m.sentinel_app_binary = &id
+}
+
+// ClearSentinelAppBinary clears the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (m *StoreAppBinaryMutation) ClearSentinelAppBinary() {
+	m.clearedsentinel_app_binary = true
+	m.clearedFields[storeappbinary.FieldSentinelAppBinaryUnionID] = struct{}{}
+}
+
+// SentinelAppBinaryCleared reports if the "sentinel_app_binary" edge to the SentinelAppBinary entity was cleared.
+func (m *StoreAppBinaryMutation) SentinelAppBinaryCleared() bool {
+	return m.clearedsentinel_app_binary
+}
+
+// SentinelAppBinaryID returns the "sentinel_app_binary" edge ID in the mutation.
+func (m *StoreAppBinaryMutation) SentinelAppBinaryID() (id model.InternalID, exists bool) {
+	if m.sentinel_app_binary != nil {
+		return *m.sentinel_app_binary, true
+	}
+	return
+}
+
+// SentinelAppBinaryIDs returns the "sentinel_app_binary" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// SentinelAppBinaryID instead. It exists only for internal usage by the builders.
+func (m *StoreAppBinaryMutation) SentinelAppBinaryIDs() (ids []model.InternalID) {
+	if id := m.sentinel_app_binary; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetSentinelAppBinary resets all changes to the "sentinel_app_binary" edge.
+func (m *StoreAppBinaryMutation) ResetSentinelAppBinary() {
+	m.sentinel_app_binary = nil
+	m.clearedsentinel_app_binary = false
+}
+
 // Where appends a list predicates to the StoreAppBinaryMutation builder.
 func (m *StoreAppBinaryMutation) Where(ps ...predicate.StoreAppBinary) {
 	m.predicates = append(m.predicates, ps...)
@@ -29096,18 +29452,12 @@ func (m *StoreAppBinaryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *StoreAppBinaryMutation) Fields() []string {
-	fields := make([]string, 0, 6)
-	if m.name != nil {
-		fields = append(fields, storeappbinary.FieldName)
+	fields := make([]string, 0, 4)
+	if m.store_app != nil {
+		fields = append(fields, storeappbinary.FieldStoreAppID)
 	}
-	if m.size_bytes != nil {
-		fields = append(fields, storeappbinary.FieldSizeBytes)
-	}
-	if m.public_url != nil {
-		fields = append(fields, storeappbinary.FieldPublicURL)
-	}
-	if m.sha256 != nil {
-		fields = append(fields, storeappbinary.FieldSha256)
+	if m.sentinel_app_binary != nil {
+		fields = append(fields, storeappbinary.FieldSentinelAppBinaryUnionID)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, storeappbinary.FieldUpdatedAt)
@@ -29123,14 +29473,10 @@ func (m *StoreAppBinaryMutation) Fields() []string {
 // schema.
 func (m *StoreAppBinaryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case storeappbinary.FieldName:
-		return m.Name()
-	case storeappbinary.FieldSizeBytes:
-		return m.SizeBytes()
-	case storeappbinary.FieldPublicURL:
-		return m.PublicURL()
-	case storeappbinary.FieldSha256:
-		return m.Sha256()
+	case storeappbinary.FieldStoreAppID:
+		return m.StoreAppID()
+	case storeappbinary.FieldSentinelAppBinaryUnionID:
+		return m.SentinelAppBinaryUnionID()
 	case storeappbinary.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case storeappbinary.FieldCreatedAt:
@@ -29144,14 +29490,10 @@ func (m *StoreAppBinaryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *StoreAppBinaryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case storeappbinary.FieldName:
-		return m.OldName(ctx)
-	case storeappbinary.FieldSizeBytes:
-		return m.OldSizeBytes(ctx)
-	case storeappbinary.FieldPublicURL:
-		return m.OldPublicURL(ctx)
-	case storeappbinary.FieldSha256:
-		return m.OldSha256(ctx)
+	case storeappbinary.FieldStoreAppID:
+		return m.OldStoreAppID(ctx)
+	case storeappbinary.FieldSentinelAppBinaryUnionID:
+		return m.OldSentinelAppBinaryUnionID(ctx)
 	case storeappbinary.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case storeappbinary.FieldCreatedAt:
@@ -29165,33 +29507,19 @@ func (m *StoreAppBinaryMutation) OldField(ctx context.Context, name string) (ent
 // type.
 func (m *StoreAppBinaryMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case storeappbinary.FieldName:
-		v, ok := value.(string)
+	case storeappbinary.FieldStoreAppID:
+		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetName(v)
+		m.SetStoreAppID(v)
 		return nil
-	case storeappbinary.FieldSizeBytes:
-		v, ok := value.(int64)
+	case storeappbinary.FieldSentinelAppBinaryUnionID:
+		v, ok := value.(model.InternalID)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetSizeBytes(v)
-		return nil
-	case storeappbinary.FieldPublicURL:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPublicURL(v)
-		return nil
-	case storeappbinary.FieldSha256:
-		v, ok := value.([]byte)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSha256(v)
+		m.SetSentinelAppBinaryUnionID(v)
 		return nil
 	case storeappbinary.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -29215,9 +29543,6 @@ func (m *StoreAppBinaryMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *StoreAppBinaryMutation) AddedFields() []string {
 	var fields []string
-	if m.addsize_bytes != nil {
-		fields = append(fields, storeappbinary.FieldSizeBytes)
-	}
 	return fields
 }
 
@@ -29226,8 +29551,6 @@ func (m *StoreAppBinaryMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *StoreAppBinaryMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case storeappbinary.FieldSizeBytes:
-		return m.AddedSizeBytes()
 	}
 	return nil, false
 }
@@ -29237,13 +29560,6 @@ func (m *StoreAppBinaryMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *StoreAppBinaryMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case storeappbinary.FieldSizeBytes:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddSizeBytes(v)
-		return nil
 	}
 	return fmt.Errorf("unknown StoreAppBinary numeric field %s", name)
 }
@@ -29251,20 +29567,7 @@ func (m *StoreAppBinaryMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *StoreAppBinaryMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(storeappbinary.FieldName) {
-		fields = append(fields, storeappbinary.FieldName)
-	}
-	if m.FieldCleared(storeappbinary.FieldSizeBytes) {
-		fields = append(fields, storeappbinary.FieldSizeBytes)
-	}
-	if m.FieldCleared(storeappbinary.FieldPublicURL) {
-		fields = append(fields, storeappbinary.FieldPublicURL)
-	}
-	if m.FieldCleared(storeappbinary.FieldSha256) {
-		fields = append(fields, storeappbinary.FieldSha256)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -29277,20 +29580,6 @@ func (m *StoreAppBinaryMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *StoreAppBinaryMutation) ClearField(name string) error {
-	switch name {
-	case storeappbinary.FieldName:
-		m.ClearName()
-		return nil
-	case storeappbinary.FieldSizeBytes:
-		m.ClearSizeBytes()
-		return nil
-	case storeappbinary.FieldPublicURL:
-		m.ClearPublicURL()
-		return nil
-	case storeappbinary.FieldSha256:
-		m.ClearSha256()
-		return nil
-	}
 	return fmt.Errorf("unknown StoreAppBinary nullable field %s", name)
 }
 
@@ -29298,17 +29587,11 @@ func (m *StoreAppBinaryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *StoreAppBinaryMutation) ResetField(name string) error {
 	switch name {
-	case storeappbinary.FieldName:
-		m.ResetName()
+	case storeappbinary.FieldStoreAppID:
+		m.ResetStoreAppID()
 		return nil
-	case storeappbinary.FieldSizeBytes:
-		m.ResetSizeBytes()
-		return nil
-	case storeappbinary.FieldPublicURL:
-		m.ResetPublicURL()
-		return nil
-	case storeappbinary.FieldSha256:
-		m.ResetSha256()
+	case storeappbinary.FieldSentinelAppBinaryUnionID:
+		m.ResetSentinelAppBinaryUnionID()
 		return nil
 	case storeappbinary.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -29322,19 +29605,35 @@ func (m *StoreAppBinaryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *StoreAppBinaryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.store_app != nil {
+		edges = append(edges, storeappbinary.EdgeStoreApp)
+	}
+	if m.sentinel_app_binary != nil {
+		edges = append(edges, storeappbinary.EdgeSentinelAppBinary)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *StoreAppBinaryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case storeappbinary.EdgeStoreApp:
+		if id := m.store_app; id != nil {
+			return []ent.Value{*id}
+		}
+	case storeappbinary.EdgeSentinelAppBinary:
+		if id := m.sentinel_app_binary; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *StoreAppBinaryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
@@ -29346,25 +29645,53 @@ func (m *StoreAppBinaryMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *StoreAppBinaryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedstore_app {
+		edges = append(edges, storeappbinary.EdgeStoreApp)
+	}
+	if m.clearedsentinel_app_binary {
+		edges = append(edges, storeappbinary.EdgeSentinelAppBinary)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *StoreAppBinaryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case storeappbinary.EdgeStoreApp:
+		return m.clearedstore_app
+	case storeappbinary.EdgeSentinelAppBinary:
+		return m.clearedsentinel_app_binary
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *StoreAppBinaryMutation) ClearEdge(name string) error {
+	switch name {
+	case storeappbinary.EdgeStoreApp:
+		m.ClearStoreApp()
+		return nil
+	case storeappbinary.EdgeSentinelAppBinary:
+		m.ClearSentinelAppBinary()
+		return nil
+	}
 	return fmt.Errorf("unknown StoreAppBinary unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *StoreAppBinaryMutation) ResetEdge(name string) error {
+	switch name {
+	case storeappbinary.EdgeStoreApp:
+		m.ResetStoreApp()
+		return nil
+	case storeappbinary.EdgeSentinelAppBinary:
+		m.ResetSentinelAppBinary()
+		return nil
+	}
 	return fmt.Errorf("unknown StoreAppBinary edge %s", name)
 }
 

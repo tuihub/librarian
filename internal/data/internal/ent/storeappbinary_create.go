@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -23,51 +25,15 @@ type StoreAppBinaryCreate struct {
 	conflict []sql.ConflictOption
 }
 
-// SetName sets the "name" field.
-func (sabc *StoreAppBinaryCreate) SetName(s string) *StoreAppBinaryCreate {
-	sabc.mutation.SetName(s)
+// SetStoreAppID sets the "store_app_id" field.
+func (sabc *StoreAppBinaryCreate) SetStoreAppID(mi model.InternalID) *StoreAppBinaryCreate {
+	sabc.mutation.SetStoreAppID(mi)
 	return sabc
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (sabc *StoreAppBinaryCreate) SetNillableName(s *string) *StoreAppBinaryCreate {
-	if s != nil {
-		sabc.SetName(*s)
-	}
-	return sabc
-}
-
-// SetSizeBytes sets the "size_bytes" field.
-func (sabc *StoreAppBinaryCreate) SetSizeBytes(i int64) *StoreAppBinaryCreate {
-	sabc.mutation.SetSizeBytes(i)
-	return sabc
-}
-
-// SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabc *StoreAppBinaryCreate) SetNillableSizeBytes(i *int64) *StoreAppBinaryCreate {
-	if i != nil {
-		sabc.SetSizeBytes(*i)
-	}
-	return sabc
-}
-
-// SetPublicURL sets the "public_url" field.
-func (sabc *StoreAppBinaryCreate) SetPublicURL(s string) *StoreAppBinaryCreate {
-	sabc.mutation.SetPublicURL(s)
-	return sabc
-}
-
-// SetNillablePublicURL sets the "public_url" field if the given value is not nil.
-func (sabc *StoreAppBinaryCreate) SetNillablePublicURL(s *string) *StoreAppBinaryCreate {
-	if s != nil {
-		sabc.SetPublicURL(*s)
-	}
-	return sabc
-}
-
-// SetSha256 sets the "sha256" field.
-func (sabc *StoreAppBinaryCreate) SetSha256(b []byte) *StoreAppBinaryCreate {
-	sabc.mutation.SetSha256(b)
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (sabc *StoreAppBinaryCreate) SetSentinelAppBinaryUnionID(mi model.InternalID) *StoreAppBinaryCreate {
+	sabc.mutation.SetSentinelAppBinaryUnionID(mi)
 	return sabc
 }
 
@@ -99,10 +65,20 @@ func (sabc *StoreAppBinaryCreate) SetNillableCreatedAt(t *time.Time) *StoreAppBi
 	return sabc
 }
 
-// SetID sets the "id" field.
-func (sabc *StoreAppBinaryCreate) SetID(mi model.InternalID) *StoreAppBinaryCreate {
-	sabc.mutation.SetID(mi)
+// SetStoreApp sets the "store_app" edge to the StoreApp entity.
+func (sabc *StoreAppBinaryCreate) SetStoreApp(s *StoreApp) *StoreAppBinaryCreate {
+	return sabc.SetStoreAppID(s.ID)
+}
+
+// SetSentinelAppBinaryID sets the "sentinel_app_binary" edge to the SentinelAppBinary entity by ID.
+func (sabc *StoreAppBinaryCreate) SetSentinelAppBinaryID(id model.InternalID) *StoreAppBinaryCreate {
+	sabc.mutation.SetSentinelAppBinaryID(id)
 	return sabc
+}
+
+// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (sabc *StoreAppBinaryCreate) SetSentinelAppBinary(s *SentinelAppBinary) *StoreAppBinaryCreate {
+	return sabc.SetSentinelAppBinaryID(s.ID)
 }
 
 // Mutation returns the StoreAppBinaryMutation object of the builder.
@@ -152,11 +128,23 @@ func (sabc *StoreAppBinaryCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (sabc *StoreAppBinaryCreate) check() error {
+	if _, ok := sabc.mutation.StoreAppID(); !ok {
+		return &ValidationError{Name: "store_app_id", err: errors.New(`ent: missing required field "StoreAppBinary.store_app_id"`)}
+	}
+	if _, ok := sabc.mutation.SentinelAppBinaryUnionID(); !ok {
+		return &ValidationError{Name: "sentinel_app_binary_union_id", err: errors.New(`ent: missing required field "StoreAppBinary.sentinel_app_binary_union_id"`)}
+	}
 	if _, ok := sabc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StoreAppBinary.updated_at"`)}
 	}
 	if _, ok := sabc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "StoreAppBinary.created_at"`)}
+	}
+	if len(sabc.mutation.StoreAppIDs()) == 0 {
+		return &ValidationError{Name: "store_app", err: errors.New(`ent: missing required edge "StoreAppBinary.store_app"`)}
+	}
+	if len(sabc.mutation.SentinelAppBinaryIDs()) == 0 {
+		return &ValidationError{Name: "sentinel_app_binary", err: errors.New(`ent: missing required edge "StoreAppBinary.sentinel_app_binary"`)}
 	}
 	return nil
 }
@@ -172,10 +160,8 @@ func (sabc *StoreAppBinaryCreate) sqlSave(ctx context.Context) (*StoreAppBinary,
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = model.InternalID(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	sabc.mutation.id = &_node.ID
 	sabc.mutation.done = true
 	return _node, nil
@@ -184,29 +170,9 @@ func (sabc *StoreAppBinaryCreate) sqlSave(ctx context.Context) (*StoreAppBinary,
 func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.CreateSpec) {
 	var (
 		_node = &StoreAppBinary{config: sabc.config}
-		_spec = sqlgraph.NewCreateSpec(storeappbinary.Table, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt64))
+		_spec = sqlgraph.NewCreateSpec(storeappbinary.Table, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt))
 	)
 	_spec.OnConflict = sabc.conflict
-	if id, ok := sabc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
-	if value, ok := sabc.mutation.Name(); ok {
-		_spec.SetField(storeappbinary.FieldName, field.TypeString, value)
-		_node.Name = value
-	}
-	if value, ok := sabc.mutation.SizeBytes(); ok {
-		_spec.SetField(storeappbinary.FieldSizeBytes, field.TypeInt64, value)
-		_node.SizeBytes = value
-	}
-	if value, ok := sabc.mutation.PublicURL(); ok {
-		_spec.SetField(storeappbinary.FieldPublicURL, field.TypeString, value)
-		_node.PublicURL = value
-	}
-	if value, ok := sabc.mutation.Sha256(); ok {
-		_spec.SetField(storeappbinary.FieldSha256, field.TypeBytes, value)
-		_node.Sha256 = value
-	}
 	if value, ok := sabc.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
@@ -215,6 +181,40 @@ func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.Creat
 		_spec.SetField(storeappbinary.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
+	if nodes := sabc.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.StoreAppTable,
+			Columns: []string{storeappbinary.StoreAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.StoreAppID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sabc.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.SentinelAppBinaryTable,
+			Columns: []string{storeappbinary.SentinelAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.SentinelAppBinaryUnionID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
 	return _node, _spec
 }
 
@@ -222,7 +222,7 @@ func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.Creat
 // of the `INSERT` statement. For example:
 //
 //	client.StoreAppBinary.Create().
-//		SetName(v).
+//		SetStoreAppID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -231,7 +231,7 @@ func (sabc *StoreAppBinaryCreate) createSpec() (*StoreAppBinary, *sqlgraph.Creat
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StoreAppBinaryUpsert) {
-//			SetName(v+v).
+//			SetStoreAppID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabc *StoreAppBinaryCreate) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertOne {
@@ -267,81 +267,27 @@ type (
 	}
 )
 
-// SetName sets the "name" field.
-func (u *StoreAppBinaryUpsert) SetName(v string) *StoreAppBinaryUpsert {
-	u.Set(storeappbinary.FieldName, v)
+// SetStoreAppID sets the "store_app_id" field.
+func (u *StoreAppBinaryUpsert) SetStoreAppID(v model.InternalID) *StoreAppBinaryUpsert {
+	u.Set(storeappbinary.FieldStoreAppID, v)
 	return u
 }
 
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsert) UpdateName() *StoreAppBinaryUpsert {
-	u.SetExcluded(storeappbinary.FieldName)
+// UpdateStoreAppID sets the "store_app_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsert) UpdateStoreAppID() *StoreAppBinaryUpsert {
+	u.SetExcluded(storeappbinary.FieldStoreAppID)
 	return u
 }
 
-// ClearName clears the value of the "name" field.
-func (u *StoreAppBinaryUpsert) ClearName() *StoreAppBinaryUpsert {
-	u.SetNull(storeappbinary.FieldName)
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (u *StoreAppBinaryUpsert) SetSentinelAppBinaryUnionID(v model.InternalID) *StoreAppBinaryUpsert {
+	u.Set(storeappbinary.FieldSentinelAppBinaryUnionID, v)
 	return u
 }
 
-// SetSizeBytes sets the "size_bytes" field.
-func (u *StoreAppBinaryUpsert) SetSizeBytes(v int64) *StoreAppBinaryUpsert {
-	u.Set(storeappbinary.FieldSizeBytes, v)
-	return u
-}
-
-// UpdateSizeBytes sets the "size_bytes" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsert) UpdateSizeBytes() *StoreAppBinaryUpsert {
-	u.SetExcluded(storeappbinary.FieldSizeBytes)
-	return u
-}
-
-// AddSizeBytes adds v to the "size_bytes" field.
-func (u *StoreAppBinaryUpsert) AddSizeBytes(v int64) *StoreAppBinaryUpsert {
-	u.Add(storeappbinary.FieldSizeBytes, v)
-	return u
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (u *StoreAppBinaryUpsert) ClearSizeBytes() *StoreAppBinaryUpsert {
-	u.SetNull(storeappbinary.FieldSizeBytes)
-	return u
-}
-
-// SetPublicURL sets the "public_url" field.
-func (u *StoreAppBinaryUpsert) SetPublicURL(v string) *StoreAppBinaryUpsert {
-	u.Set(storeappbinary.FieldPublicURL, v)
-	return u
-}
-
-// UpdatePublicURL sets the "public_url" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsert) UpdatePublicURL() *StoreAppBinaryUpsert {
-	u.SetExcluded(storeappbinary.FieldPublicURL)
-	return u
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (u *StoreAppBinaryUpsert) ClearPublicURL() *StoreAppBinaryUpsert {
-	u.SetNull(storeappbinary.FieldPublicURL)
-	return u
-}
-
-// SetSha256 sets the "sha256" field.
-func (u *StoreAppBinaryUpsert) SetSha256(v []byte) *StoreAppBinaryUpsert {
-	u.Set(storeappbinary.FieldSha256, v)
-	return u
-}
-
-// UpdateSha256 sets the "sha256" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsert) UpdateSha256() *StoreAppBinaryUpsert {
-	u.SetExcluded(storeappbinary.FieldSha256)
-	return u
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (u *StoreAppBinaryUpsert) ClearSha256() *StoreAppBinaryUpsert {
-	u.SetNull(storeappbinary.FieldSha256)
+// UpdateSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsert) UpdateSentinelAppBinaryUnionID() *StoreAppBinaryUpsert {
+	u.SetExcluded(storeappbinary.FieldSentinelAppBinaryUnionID)
 	return u
 }
 
@@ -369,24 +315,16 @@ func (u *StoreAppBinaryUpsert) UpdateCreatedAt() *StoreAppBinaryUpsert {
 	return u
 }
 
-// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
 //	client.StoreAppBinary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(storeappbinary.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *StoreAppBinaryUpsertOne) UpdateNewValues() *StoreAppBinaryUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(storeappbinary.FieldID)
-		}
-	}))
 	return u
 }
 
@@ -417,94 +355,31 @@ func (u *StoreAppBinaryUpsertOne) Update(set func(*StoreAppBinaryUpsert)) *Store
 	return u
 }
 
-// SetName sets the "name" field.
-func (u *StoreAppBinaryUpsertOne) SetName(v string) *StoreAppBinaryUpsertOne {
+// SetStoreAppID sets the "store_app_id" field.
+func (u *StoreAppBinaryUpsertOne) SetStoreAppID(v model.InternalID) *StoreAppBinaryUpsertOne {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetName(v)
+		s.SetStoreAppID(v)
 	})
 }
 
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertOne) UpdateName() *StoreAppBinaryUpsertOne {
+// UpdateStoreAppID sets the "store_app_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsertOne) UpdateStoreAppID() *StoreAppBinaryUpsertOne {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateName()
+		s.UpdateStoreAppID()
 	})
 }
 
-// ClearName clears the value of the "name" field.
-func (u *StoreAppBinaryUpsertOne) ClearName() *StoreAppBinaryUpsertOne {
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (u *StoreAppBinaryUpsertOne) SetSentinelAppBinaryUnionID(v model.InternalID) *StoreAppBinaryUpsertOne {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearName()
+		s.SetSentinelAppBinaryUnionID(v)
 	})
 }
 
-// SetSizeBytes sets the "size_bytes" field.
-func (u *StoreAppBinaryUpsertOne) SetSizeBytes(v int64) *StoreAppBinaryUpsertOne {
+// UpdateSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsertOne) UpdateSentinelAppBinaryUnionID() *StoreAppBinaryUpsertOne {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetSizeBytes(v)
-	})
-}
-
-// AddSizeBytes adds v to the "size_bytes" field.
-func (u *StoreAppBinaryUpsertOne) AddSizeBytes(v int64) *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.AddSizeBytes(v)
-	})
-}
-
-// UpdateSizeBytes sets the "size_bytes" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertOne) UpdateSizeBytes() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateSizeBytes()
-	})
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (u *StoreAppBinaryUpsertOne) ClearSizeBytes() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearSizeBytes()
-	})
-}
-
-// SetPublicURL sets the "public_url" field.
-func (u *StoreAppBinaryUpsertOne) SetPublicURL(v string) *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetPublicURL(v)
-	})
-}
-
-// UpdatePublicURL sets the "public_url" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertOne) UpdatePublicURL() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdatePublicURL()
-	})
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (u *StoreAppBinaryUpsertOne) ClearPublicURL() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearPublicURL()
-	})
-}
-
-// SetSha256 sets the "sha256" field.
-func (u *StoreAppBinaryUpsertOne) SetSha256(v []byte) *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetSha256(v)
-	})
-}
-
-// UpdateSha256 sets the "sha256" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertOne) UpdateSha256() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateSha256()
-	})
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (u *StoreAppBinaryUpsertOne) ClearSha256() *StoreAppBinaryUpsertOne {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearSha256()
+		s.UpdateSentinelAppBinaryUnionID()
 	})
 }
 
@@ -552,7 +427,7 @@ func (u *StoreAppBinaryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *StoreAppBinaryUpsertOne) ID(ctx context.Context) (id model.InternalID, err error) {
+func (u *StoreAppBinaryUpsertOne) ID(ctx context.Context) (id int, err error) {
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -561,7 +436,7 @@ func (u *StoreAppBinaryUpsertOne) ID(ctx context.Context) (id model.InternalID, 
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *StoreAppBinaryUpsertOne) IDX(ctx context.Context) model.InternalID {
+func (u *StoreAppBinaryUpsertOne) IDX(ctx context.Context) int {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -616,9 +491,9 @@ func (sabcb *StoreAppBinaryCreateBulk) Save(ctx context.Context) ([]*StoreAppBin
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = model.InternalID(id)
+					nodes[i].ID = int(id)
 				}
 				mutation.done = true
 				return nodes[i], nil
@@ -671,7 +546,7 @@ func (sabcb *StoreAppBinaryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.StoreAppBinaryUpsert) {
-//			SetName(v+v).
+//			SetStoreAppID(v+v).
 //		}).
 //		Exec(ctx)
 func (sabcb *StoreAppBinaryCreateBulk) OnConflict(opts ...sql.ConflictOption) *StoreAppBinaryUpsertBulk {
@@ -706,20 +581,10 @@ type StoreAppBinaryUpsertBulk struct {
 //	client.StoreAppBinary.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
-//			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(storeappbinary.FieldID)
-//			}),
 //		).
 //		Exec(ctx)
 func (u *StoreAppBinaryUpsertBulk) UpdateNewValues() *StoreAppBinaryUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
-	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
-		for _, b := range u.create.builders {
-			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(storeappbinary.FieldID)
-			}
-		}
-	}))
 	return u
 }
 
@@ -750,94 +615,31 @@ func (u *StoreAppBinaryUpsertBulk) Update(set func(*StoreAppBinaryUpsert)) *Stor
 	return u
 }
 
-// SetName sets the "name" field.
-func (u *StoreAppBinaryUpsertBulk) SetName(v string) *StoreAppBinaryUpsertBulk {
+// SetStoreAppID sets the "store_app_id" field.
+func (u *StoreAppBinaryUpsertBulk) SetStoreAppID(v model.InternalID) *StoreAppBinaryUpsertBulk {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetName(v)
+		s.SetStoreAppID(v)
 	})
 }
 
-// UpdateName sets the "name" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertBulk) UpdateName() *StoreAppBinaryUpsertBulk {
+// UpdateStoreAppID sets the "store_app_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsertBulk) UpdateStoreAppID() *StoreAppBinaryUpsertBulk {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateName()
+		s.UpdateStoreAppID()
 	})
 }
 
-// ClearName clears the value of the "name" field.
-func (u *StoreAppBinaryUpsertBulk) ClearName() *StoreAppBinaryUpsertBulk {
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (u *StoreAppBinaryUpsertBulk) SetSentinelAppBinaryUnionID(v model.InternalID) *StoreAppBinaryUpsertBulk {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearName()
+		s.SetSentinelAppBinaryUnionID(v)
 	})
 }
 
-// SetSizeBytes sets the "size_bytes" field.
-func (u *StoreAppBinaryUpsertBulk) SetSizeBytes(v int64) *StoreAppBinaryUpsertBulk {
+// UpdateSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field to the value that was provided on create.
+func (u *StoreAppBinaryUpsertBulk) UpdateSentinelAppBinaryUnionID() *StoreAppBinaryUpsertBulk {
 	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetSizeBytes(v)
-	})
-}
-
-// AddSizeBytes adds v to the "size_bytes" field.
-func (u *StoreAppBinaryUpsertBulk) AddSizeBytes(v int64) *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.AddSizeBytes(v)
-	})
-}
-
-// UpdateSizeBytes sets the "size_bytes" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertBulk) UpdateSizeBytes() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateSizeBytes()
-	})
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (u *StoreAppBinaryUpsertBulk) ClearSizeBytes() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearSizeBytes()
-	})
-}
-
-// SetPublicURL sets the "public_url" field.
-func (u *StoreAppBinaryUpsertBulk) SetPublicURL(v string) *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetPublicURL(v)
-	})
-}
-
-// UpdatePublicURL sets the "public_url" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertBulk) UpdatePublicURL() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdatePublicURL()
-	})
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (u *StoreAppBinaryUpsertBulk) ClearPublicURL() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearPublicURL()
-	})
-}
-
-// SetSha256 sets the "sha256" field.
-func (u *StoreAppBinaryUpsertBulk) SetSha256(v []byte) *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.SetSha256(v)
-	})
-}
-
-// UpdateSha256 sets the "sha256" field to the value that was provided on create.
-func (u *StoreAppBinaryUpsertBulk) UpdateSha256() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.UpdateSha256()
-	})
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (u *StoreAppBinaryUpsertBulk) ClearSha256() *StoreAppBinaryUpsertBulk {
-	return u.Update(func(s *StoreAppBinaryUpsert) {
-		s.ClearSha256()
+		s.UpdateSentinelAppBinaryUnionID()
 	})
 }
 

@@ -164,3 +164,21 @@ type SentinelAppBinaryFile struct {
 	ServerFilePath string
 	ChunksInfo     string
 }
+
+type StoreApp struct {
+	ID          model.InternalID
+	Name        string
+	Description string
+}
+
+type StoreAppBinary struct {
+	ID        model.InternalID
+	AppID     *model.InternalID
+	UnionID   string
+	SizeBytes int64
+	NeedToken bool
+	Name      string
+	Version   string
+	Developer string
+	Publisher string
+}

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,17 +13,21 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/model"
 )
 
 // StoreAppQuery is the builder for querying StoreApp entities.
 type StoreAppQuery struct {
 	config
-	ctx        *QueryContext
-	order      []storeapp.OrderOption
-	inters     []Interceptor
-	predicates []predicate.StoreApp
+	ctx                *QueryContext
+	order              []storeapp.OrderOption
+	inters             []Interceptor
+	predicates         []predicate.StoreApp
+	withAppBinary      *SentinelAppBinaryQuery
+	withStoreAppBinary *StoreAppBinaryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -57,6 +62,50 @@ func (saq *StoreAppQuery) Unique(unique bool) *StoreAppQuery {
 func (saq *StoreAppQuery) Order(o ...storeapp.OrderOption) *StoreAppQuery {
 	saq.order = append(saq.order, o...)
 	return saq
+}
+
+// QueryAppBinary chains the current query on the "app_binary" edge.
+func (saq *StoreAppQuery) QueryAppBinary() *SentinelAppBinaryQuery {
+	query := (&SentinelAppBinaryClient{config: saq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := saq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := saq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeapp.Table, storeapp.FieldID, selector),
+			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, storeapp.AppBinaryTable, storeapp.AppBinaryPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(saq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryStoreAppBinary chains the current query on the "store_app_binary" edge.
+func (saq *StoreAppQuery) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	query := (&StoreAppBinaryClient{config: saq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := saq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := saq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeapp.Table, storeapp.FieldID, selector),
+			sqlgraph.To(storeappbinary.Table, storeappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, storeapp.StoreAppBinaryTable, storeapp.StoreAppBinaryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(saq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first StoreApp entity from the query.
@@ -246,15 +295,39 @@ func (saq *StoreAppQuery) Clone() *StoreAppQuery {
 		return nil
 	}
 	return &StoreAppQuery{
-		config:     saq.config,
-		ctx:        saq.ctx.Clone(),
-		order:      append([]storeapp.OrderOption{}, saq.order...),
-		inters:     append([]Interceptor{}, saq.inters...),
-		predicates: append([]predicate.StoreApp{}, saq.predicates...),
+		config:             saq.config,
+		ctx:                saq.ctx.Clone(),
+		order:              append([]storeapp.OrderOption{}, saq.order...),
+		inters:             append([]Interceptor{}, saq.inters...),
+		predicates:         append([]predicate.StoreApp{}, saq.predicates...),
+		withAppBinary:      saq.withAppBinary.Clone(),
+		withStoreAppBinary: saq.withStoreAppBinary.Clone(),
 		// clone intermediate query.
 		sql:  saq.sql.Clone(),
 		path: saq.path,
 	}
+}
+
+// WithAppBinary tells the query-builder to eager-load the nodes that are connected to
+// the "app_binary" edge. The optional arguments are used to configure the query builder of the edge.
+func (saq *StoreAppQuery) WithAppBinary(opts ...func(*SentinelAppBinaryQuery)) *StoreAppQuery {
+	query := (&SentinelAppBinaryClient{config: saq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	saq.withAppBinary = query
+	return saq
+}
+
+// WithStoreAppBinary tells the query-builder to eager-load the nodes that are connected to
+// the "store_app_binary" edge. The optional arguments are used to configure the query builder of the edge.
+func (saq *StoreAppQuery) WithStoreAppBinary(opts ...func(*StoreAppBinaryQuery)) *StoreAppQuery {
+	query := (&StoreAppBinaryClient{config: saq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	saq.withStoreAppBinary = query
+	return saq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -333,8 +406,12 @@ func (saq *StoreAppQuery) prepareQuery(ctx context.Context) error {
 
 func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*StoreApp, error) {
 	var (
-		nodes = []*StoreApp{}
-		_spec = saq.querySpec()
+		nodes       = []*StoreApp{}
+		_spec       = saq.querySpec()
+		loadedTypes = [2]bool{
+			saq.withAppBinary != nil,
+			saq.withStoreAppBinary != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*StoreApp).scanValues(nil, columns)
@@ -342,6 +419,7 @@ func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &StoreApp{config: saq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -353,7 +431,113 @@ func (saq *StoreAppQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*St
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := saq.withAppBinary; query != nil {
+		if err := saq.loadAppBinary(ctx, query, nodes,
+			func(n *StoreApp) { n.Edges.AppBinary = []*SentinelAppBinary{} },
+			func(n *StoreApp, e *SentinelAppBinary) { n.Edges.AppBinary = append(n.Edges.AppBinary, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := saq.withStoreAppBinary; query != nil {
+		if err := saq.loadStoreAppBinary(ctx, query, nodes,
+			func(n *StoreApp) { n.Edges.StoreAppBinary = []*StoreAppBinary{} },
+			func(n *StoreApp, e *StoreAppBinary) { n.Edges.StoreAppBinary = append(n.Edges.StoreAppBinary, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (saq *StoreAppQuery) loadAppBinary(ctx context.Context, query *SentinelAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *SentinelAppBinary)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[model.InternalID]*StoreApp)
+	nids := make(map[model.InternalID]map[*StoreApp]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(storeapp.AppBinaryTable)
+		s.Join(joinT).On(s.C(sentinelappbinary.FieldID), joinT.C(storeapp.AppBinaryPrimaryKey[1]))
+		s.Where(sql.InValues(joinT.C(storeapp.AppBinaryPrimaryKey[0]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(storeapp.AppBinaryPrimaryKey[0]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := model.InternalID(values[0].(*sql.NullInt64).Int64)
+				inValue := model.InternalID(values[1].(*sql.NullInt64).Int64)
+				if nids[inValue] == nil {
+					nids[inValue] = map[*StoreApp]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*SentinelAppBinary](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "app_binary" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (saq *StoreAppQuery) loadStoreAppBinary(ctx context.Context, query *StoreAppBinaryQuery, nodes []*StoreApp, init func(*StoreApp), assign func(*StoreApp, *StoreAppBinary)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[model.InternalID]*StoreApp)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(storeappbinary.FieldStoreAppID)
+	}
+	query.Where(predicate.StoreAppBinary(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(storeapp.StoreAppBinaryColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.StoreAppID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "store_app_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (saq *StoreAppQuery) sqlCount(ctx context.Context) (int, error) {

@@ -51,6 +51,8 @@ func addCommonData(c *fiber.Ctx, data fiber.Map) fiber.Map {
 	// Add context for localization
 	data["Ctx"] = c
 	data["Lang"] = locales.LangHandler(c, locales.DefaultLanguage().String())
+	// Add current path
+	data["Path"] = c.Path()
 	return data
 }
 
@@ -295,6 +297,68 @@ func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
 	return c.Render("sentinel_detail", addCommonData(c, fiber.Map{
 		"Sentinel": sentinel,
 		"Sessions": sessions,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
+	}))
+}
+
+func (b *Builder) StoreAppList(c *fiber.Ctx) error {
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+	pageSize := 10 // StoreApps per page
+	storeApps, total, err := b.g.ListStoreApps(c.UserContext(), &model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+	})
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingStoreApps"))
+	}
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	return c.Render("store_app", addCommonData(c, fiber.Map{
+		"StoreApps": storeApps,
+		"Pagination": fiber.Map{
+			"CurrentPage": pageNum,
+			"TotalPages":  totalPages,
+			"HasPrev":     pageNum > 1,
+			"HasNext":     pageNum < totalPages,
+			"PrevPage":    pageNum - 1,
+			"NextPage":    pageNum + 1,
+		},
+	}))
+}
+
+func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
+	pageNum, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || pageNum < 1 {
+		pageNum = 1
+	}
+	pageSize := 10 // StoreAppBinaries per page
+	storeAppBinaries, total, err := b.g.ListStoreAppBinaries(c.UserContext(), &model.Paging{
+		PageNum:  int64(pageNum),
+		PageSize: int64(pageSize),
+	}, nil)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingStoreAppBinaries"))
+	}
+	// Calculate pagination information
+	totalPages := (int(total) + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	return c.Render("store_app_binary", addCommonData(c, fiber.Map{
+		"StoreAppBinaries": storeAppBinaries,
 		"Pagination": fiber.Map{
 			"CurrentPage": pageNum,
 			"TotalPages":  totalPages,

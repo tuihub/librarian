@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -58,6 +59,11 @@ func IDLTE(id model.InternalID) predicate.StoreApp {
 // Name applies equality check predicate on the "name" field. It's identical to NameEQ.
 func Name(v string) predicate.StoreApp {
 	return predicate.StoreApp(sql.FieldEQ(FieldName, v))
+}
+
+// Description applies equality check predicate on the "description" field. It's identical to DescriptionEQ.
+func Description(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldEQ(FieldDescription, v))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -133,6 +139,71 @@ func NameEqualFold(v string) predicate.StoreApp {
 // NameContainsFold applies the ContainsFold predicate on the "name" field.
 func NameContainsFold(v string) predicate.StoreApp {
 	return predicate.StoreApp(sql.FieldContainsFold(FieldName, v))
+}
+
+// DescriptionEQ applies the EQ predicate on the "description" field.
+func DescriptionEQ(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldEQ(FieldDescription, v))
+}
+
+// DescriptionNEQ applies the NEQ predicate on the "description" field.
+func DescriptionNEQ(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldNEQ(FieldDescription, v))
+}
+
+// DescriptionIn applies the In predicate on the "description" field.
+func DescriptionIn(vs ...string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldIn(FieldDescription, vs...))
+}
+
+// DescriptionNotIn applies the NotIn predicate on the "description" field.
+func DescriptionNotIn(vs ...string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldNotIn(FieldDescription, vs...))
+}
+
+// DescriptionGT applies the GT predicate on the "description" field.
+func DescriptionGT(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldGT(FieldDescription, v))
+}
+
+// DescriptionGTE applies the GTE predicate on the "description" field.
+func DescriptionGTE(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldGTE(FieldDescription, v))
+}
+
+// DescriptionLT applies the LT predicate on the "description" field.
+func DescriptionLT(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldLT(FieldDescription, v))
+}
+
+// DescriptionLTE applies the LTE predicate on the "description" field.
+func DescriptionLTE(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldLTE(FieldDescription, v))
+}
+
+// DescriptionContains applies the Contains predicate on the "description" field.
+func DescriptionContains(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldContains(FieldDescription, v))
+}
+
+// DescriptionHasPrefix applies the HasPrefix predicate on the "description" field.
+func DescriptionHasPrefix(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldHasPrefix(FieldDescription, v))
+}
+
+// DescriptionHasSuffix applies the HasSuffix predicate on the "description" field.
+func DescriptionHasSuffix(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldHasSuffix(FieldDescription, v))
+}
+
+// DescriptionEqualFold applies the EqualFold predicate on the "description" field.
+func DescriptionEqualFold(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldEqualFold(FieldDescription, v))
+}
+
+// DescriptionContainsFold applies the ContainsFold predicate on the "description" field.
+func DescriptionContainsFold(v string) predicate.StoreApp {
+	return predicate.StoreApp(sql.FieldContainsFold(FieldDescription, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -213,6 +284,52 @@ func CreatedAtLT(v time.Time) predicate.StoreApp {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.StoreApp {
 	return predicate.StoreApp(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasAppBinary applies the HasEdge predicate on the "app_binary" edge.
+func HasAppBinary() predicate.StoreApp {
+	return predicate.StoreApp(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, AppBinaryTable, AppBinaryPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasAppBinaryWith applies the HasEdge predicate on the "app_binary" edge with a given conditions (other predicates).
+func HasAppBinaryWith(preds ...predicate.SentinelAppBinary) predicate.StoreApp {
+	return predicate.StoreApp(func(s *sql.Selector) {
+		step := newAppBinaryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStoreAppBinary applies the HasEdge predicate on the "store_app_binary" edge.
+func HasStoreAppBinary() predicate.StoreApp {
+	return predicate.StoreApp(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, StoreAppBinaryTable, StoreAppBinaryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStoreAppBinaryWith applies the HasEdge predicate on the "store_app_binary" edge with a given conditions (other predicates).
+func HasStoreAppBinaryWith(preds ...predicate.StoreAppBinary) predicate.StoreApp {
+	return predicate.StoreApp(func(s *sql.Selector) {
+		step := newStoreAppBinaryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

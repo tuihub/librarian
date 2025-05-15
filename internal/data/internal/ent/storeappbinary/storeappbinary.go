@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -13,29 +14,41 @@ const (
 	Label = "store_app_binary"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
-	// FieldSizeBytes holds the string denoting the size_bytes field in the database.
-	FieldSizeBytes = "size_bytes"
-	// FieldPublicURL holds the string denoting the public_url field in the database.
-	FieldPublicURL = "public_url"
-	// FieldSha256 holds the string denoting the sha256 field in the database.
-	FieldSha256 = "sha256"
+	// FieldStoreAppID holds the string denoting the store_app_id field in the database.
+	FieldStoreAppID = "store_app_id"
+	// FieldSentinelAppBinaryUnionID holds the string denoting the sentinel_app_binary_union_id field in the database.
+	FieldSentinelAppBinaryUnionID = "sentinel_app_binary_union_id"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
+	// EdgeStoreApp holds the string denoting the store_app edge name in mutations.
+	EdgeStoreApp = "store_app"
+	// EdgeSentinelAppBinary holds the string denoting the sentinel_app_binary edge name in mutations.
+	EdgeSentinelAppBinary = "sentinel_app_binary"
 	// Table holds the table name of the storeappbinary in the database.
 	Table = "store_app_binaries"
+	// StoreAppTable is the table that holds the store_app relation/edge.
+	StoreAppTable = "store_app_binaries"
+	// StoreAppInverseTable is the table name for the StoreApp entity.
+	// It exists in this package in order to avoid circular dependency with the "storeapp" package.
+	StoreAppInverseTable = "store_apps"
+	// StoreAppColumn is the table column denoting the store_app relation/edge.
+	StoreAppColumn = "store_app_id"
+	// SentinelAppBinaryTable is the table that holds the sentinel_app_binary relation/edge.
+	SentinelAppBinaryTable = "store_app_binaries"
+	// SentinelAppBinaryInverseTable is the table name for the SentinelAppBinary entity.
+	// It exists in this package in order to avoid circular dependency with the "sentinelappbinary" package.
+	SentinelAppBinaryInverseTable = "sentinel_app_binaries"
+	// SentinelAppBinaryColumn is the table column denoting the sentinel_app_binary relation/edge.
+	SentinelAppBinaryColumn = "sentinel_app_binary_union_id"
 )
 
 // Columns holds all SQL columns for storeappbinary fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
-	FieldSizeBytes,
-	FieldPublicURL,
-	FieldSha256,
+	FieldStoreAppID,
+	FieldSentinelAppBinaryUnionID,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -67,19 +80,14 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
 }
 
-// ByName orders the results by the name field.
-func ByName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldName, opts...).ToFunc()
+// ByStoreAppID orders the results by the store_app_id field.
+func ByStoreAppID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStoreAppID, opts...).ToFunc()
 }
 
-// BySizeBytes orders the results by the size_bytes field.
-func BySizeBytes(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSizeBytes, opts...).ToFunc()
-}
-
-// ByPublicURL orders the results by the public_url field.
-func ByPublicURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPublicURL, opts...).ToFunc()
+// BySentinelAppBinaryUnionID orders the results by the sentinel_app_binary_union_id field.
+func BySentinelAppBinaryUnionID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSentinelAppBinaryUnionID, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.
@@ -90,4 +98,32 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByStoreAppField orders the results by store_app field.
+func ByStoreAppField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newStoreAppStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// BySentinelAppBinaryField orders the results by sentinel_app_binary field.
+func BySentinelAppBinaryField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSentinelAppBinaryStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newStoreAppStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(StoreAppInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, StoreAppTable, StoreAppColumn),
+	)
+}
+func newSentinelAppBinaryStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SentinelAppBinaryInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, false, SentinelAppBinaryTable, SentinelAppBinaryColumn),
+	)
 }

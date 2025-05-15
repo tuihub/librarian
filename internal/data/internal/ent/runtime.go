@@ -356,13 +356,13 @@ func init() {
 	sentinelappbinaryFields := schema.SentinelAppBinary{}.Fields()
 	_ = sentinelappbinaryFields
 	// sentinelappbinaryDescUpdatedAt is the schema descriptor for updated_at field.
-	sentinelappbinaryDescUpdatedAt := sentinelappbinaryFields[10].Descriptor()
+	sentinelappbinaryDescUpdatedAt := sentinelappbinaryFields[11].Descriptor()
 	// sentinelappbinary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sentinelappbinary.DefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.Default.(func() time.Time)
 	// sentinelappbinary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	sentinelappbinary.UpdateDefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// sentinelappbinaryDescCreatedAt is the schema descriptor for created_at field.
-	sentinelappbinaryDescCreatedAt := sentinelappbinaryFields[11].Descriptor()
+	sentinelappbinaryDescCreatedAt := sentinelappbinaryFields[12].Descriptor()
 	// sentinelappbinary.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sentinelappbinary.DefaultCreatedAt = sentinelappbinaryDescCreatedAt.Default.(func() time.Time)
 	sentinelappbinaryfileFields := schema.SentinelAppBinaryFile{}.Fields()
@@ -420,25 +420,25 @@ func init() {
 	storeappFields := schema.StoreApp{}.Fields()
 	_ = storeappFields
 	// storeappDescUpdatedAt is the schema descriptor for updated_at field.
-	storeappDescUpdatedAt := storeappFields[2].Descriptor()
+	storeappDescUpdatedAt := storeappFields[3].Descriptor()
 	// storeapp.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	storeapp.DefaultUpdatedAt = storeappDescUpdatedAt.Default.(func() time.Time)
 	// storeapp.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	storeapp.UpdateDefaultUpdatedAt = storeappDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// storeappDescCreatedAt is the schema descriptor for created_at field.
-	storeappDescCreatedAt := storeappFields[3].Descriptor()
+	storeappDescCreatedAt := storeappFields[4].Descriptor()
 	// storeapp.DefaultCreatedAt holds the default value on creation for the created_at field.
 	storeapp.DefaultCreatedAt = storeappDescCreatedAt.Default.(func() time.Time)
 	storeappbinaryFields := schema.StoreAppBinary{}.Fields()
 	_ = storeappbinaryFields
 	// storeappbinaryDescUpdatedAt is the schema descriptor for updated_at field.
-	storeappbinaryDescUpdatedAt := storeappbinaryFields[5].Descriptor()
+	storeappbinaryDescUpdatedAt := storeappbinaryFields[2].Descriptor()
 	// storeappbinary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	storeappbinary.DefaultUpdatedAt = storeappbinaryDescUpdatedAt.Default.(func() time.Time)
 	// storeappbinary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	storeappbinary.UpdateDefaultUpdatedAt = storeappbinaryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// storeappbinaryDescCreatedAt is the schema descriptor for created_at field.
-	storeappbinaryDescCreatedAt := storeappbinaryFields[6].Descriptor()
+	storeappbinaryDescCreatedAt := storeappbinaryFields[3].Descriptor()
 	// storeappbinary.DefaultCreatedAt holds the default value on creation for the created_at field.
 	storeappbinary.DefaultCreatedAt = storeappbinaryDescCreatedAt.Default.(func() time.Time)
 	systemnotificationFields := schema.SystemNotification{}.Fields()

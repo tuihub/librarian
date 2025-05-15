@@ -20,11 +20,45 @@ type StoreApp struct {
 	ID model.InternalID `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Description holds the value of the "description" field.
+	Description string `json:"description,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt    time.Time `json:"created_at,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the StoreAppQuery when eager-loading is set.
+	Edges        StoreAppEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// StoreAppEdges holds the relations/edges for other nodes in the graph.
+type StoreAppEdges struct {
+	// AppBinary holds the value of the app_binary edge.
+	AppBinary []*SentinelAppBinary `json:"app_binary,omitempty"`
+	// StoreAppBinary holds the value of the store_app_binary edge.
+	StoreAppBinary []*StoreAppBinary `json:"store_app_binary,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// AppBinaryOrErr returns the AppBinary value or an error if the edge
+// was not loaded in eager-loading.
+func (e StoreAppEdges) AppBinaryOrErr() ([]*SentinelAppBinary, error) {
+	if e.loadedTypes[0] {
+		return e.AppBinary, nil
+	}
+	return nil, &NotLoadedError{edge: "app_binary"}
+}
+
+// StoreAppBinaryOrErr returns the StoreAppBinary value or an error if the edge
+// was not loaded in eager-loading.
+func (e StoreAppEdges) StoreAppBinaryOrErr() ([]*StoreAppBinary, error) {
+	if e.loadedTypes[1] {
+		return e.StoreAppBinary, nil
+	}
+	return nil, &NotLoadedError{edge: "store_app_binary"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -34,7 +68,7 @@ func (*StoreApp) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case storeapp.FieldID:
 			values[i] = new(sql.NullInt64)
-		case storeapp.FieldName:
+		case storeapp.FieldName, storeapp.FieldDescription:
 			values[i] = new(sql.NullString)
 		case storeapp.FieldUpdatedAt, storeapp.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -65,6 +99,12 @@ func (sa *StoreApp) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				sa.Name = value.String
 			}
+		case storeapp.FieldDescription:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field description", values[i])
+			} else if value.Valid {
+				sa.Description = value.String
+			}
 		case storeapp.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -88,6 +128,16 @@ func (sa *StoreApp) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (sa *StoreApp) Value(name string) (ent.Value, error) {
 	return sa.selectValues.Get(name)
+}
+
+// QueryAppBinary queries the "app_binary" edge of the StoreApp entity.
+func (sa *StoreApp) QueryAppBinary() *SentinelAppBinaryQuery {
+	return NewStoreAppClient(sa.config).QueryAppBinary(sa)
+}
+
+// QueryStoreAppBinary queries the "store_app_binary" edge of the StoreApp entity.
+func (sa *StoreApp) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	return NewStoreAppClient(sa.config).QueryStoreAppBinary(sa)
 }
 
 // Update returns a builder for updating this StoreApp.
@@ -115,6 +165,9 @@ func (sa *StoreApp) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", sa.ID))
 	builder.WriteString("name=")
 	builder.WriteString(sa.Name)
+	builder.WriteString(", ")
+	builder.WriteString("description=")
+	builder.WriteString(sa.Description)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(sa.UpdatedAt.Format(time.ANSIC))

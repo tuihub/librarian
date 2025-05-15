@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinaryfile"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinellibrary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelsession"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
@@ -849,4 +850,53 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		}
 		return nil
 	})
+}
+
+func (g *GeburaRepo) GetStoreApp(ctx context.Context, id model.InternalID) (*modelgebura.StoreApp, error) {
+	a, err := g.data.db.StoreApp.Get(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizStoreApp(a), nil
+}
+
+func (g *GeburaRepo) ListStoreApps(ctx context.Context, page *model.Paging) ([]*modelgebura.StoreApp, int, error) {
+	q := g.data.db.StoreApp.Query()
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	q.
+		Limit(page.ToLimit()).
+		Offset(page.ToOffset())
+	storeApps, err := q.All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizStoreAppList(storeApps), total, nil
+}
+
+func (g *GeburaRepo) ListStoreAppBinaries(
+	ctx context.Context,
+	page *model.Paging,
+	appIDs []model.InternalID,
+) ([]*modelgebura.StoreAppBinary, int, error) {
+	q := g.data.db.SentinelAppBinary.Query()
+	if len(appIDs) > 0 {
+		q.Where(sentinelappbinary.HasStoreAppWith(
+			storeapp.IDIn(appIDs...),
+		))
+	}
+	total, err := q.Count(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	q.
+		Limit(page.ToLimit()).
+		Offset(page.ToOffset())
+	storeAppBinaries, err := q.All(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+	return converter.ToBizStoreAppBinaryList(storeAppBinaries), total, nil
 }

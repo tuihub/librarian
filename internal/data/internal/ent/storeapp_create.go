@@ -11,7 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -26,6 +28,12 @@ type StoreAppCreate struct {
 // SetName sets the "name" field.
 func (sac *StoreAppCreate) SetName(s string) *StoreAppCreate {
 	sac.mutation.SetName(s)
+	return sac
+}
+
+// SetDescription sets the "description" field.
+func (sac *StoreAppCreate) SetDescription(s string) *StoreAppCreate {
+	sac.mutation.SetDescription(s)
 	return sac
 }
 
@@ -61,6 +69,36 @@ func (sac *StoreAppCreate) SetNillableCreatedAt(t *time.Time) *StoreAppCreate {
 func (sac *StoreAppCreate) SetID(mi model.InternalID) *StoreAppCreate {
 	sac.mutation.SetID(mi)
 	return sac
+}
+
+// AddAppBinaryIDs adds the "app_binary" edge to the SentinelAppBinary entity by IDs.
+func (sac *StoreAppCreate) AddAppBinaryIDs(ids ...model.InternalID) *StoreAppCreate {
+	sac.mutation.AddAppBinaryIDs(ids...)
+	return sac
+}
+
+// AddAppBinary adds the "app_binary" edges to the SentinelAppBinary entity.
+func (sac *StoreAppCreate) AddAppBinary(s ...*SentinelAppBinary) *StoreAppCreate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sac.AddAppBinaryIDs(ids...)
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (sac *StoreAppCreate) AddStoreAppBinaryIDs(ids ...int) *StoreAppCreate {
+	sac.mutation.AddStoreAppBinaryIDs(ids...)
+	return sac
+}
+
+// AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
+func (sac *StoreAppCreate) AddStoreAppBinary(s ...*StoreAppBinary) *StoreAppCreate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sac.AddStoreAppBinaryIDs(ids...)
 }
 
 // Mutation returns the StoreAppMutation object of the builder.
@@ -113,6 +151,9 @@ func (sac *StoreAppCreate) check() error {
 	if _, ok := sac.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "StoreApp.name"`)}
 	}
+	if _, ok := sac.mutation.Description(); !ok {
+		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "StoreApp.description"`)}
+	}
 	if _, ok := sac.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "StoreApp.updated_at"`)}
 	}
@@ -156,6 +197,10 @@ func (sac *StoreAppCreate) createSpec() (*StoreApp, *sqlgraph.CreateSpec) {
 		_spec.SetField(storeapp.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
+	if value, ok := sac.mutation.Description(); ok {
+		_spec.SetField(storeapp.FieldDescription, field.TypeString, value)
+		_node.Description = value
+	}
 	if value, ok := sac.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeapp.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
@@ -163,6 +208,42 @@ func (sac *StoreAppCreate) createSpec() (*StoreApp, *sqlgraph.CreateSpec) {
 	if value, ok := sac.mutation.CreatedAt(); ok {
 		_spec.SetField(storeapp.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
+	}
+	if nodes := sac.mutation.AppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   storeapp.AppBinaryTable,
+			Columns: storeapp.AppBinaryPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sac.config, mutation: newStoreAppBinaryMutation(sac.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := sac.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   storeapp.StoreAppBinaryTable,
+			Columns: []string{storeapp.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }
@@ -225,6 +306,18 @@ func (u *StoreAppUpsert) SetName(v string) *StoreAppUpsert {
 // UpdateName sets the "name" field to the value that was provided on create.
 func (u *StoreAppUpsert) UpdateName() *StoreAppUpsert {
 	u.SetExcluded(storeapp.FieldName)
+	return u
+}
+
+// SetDescription sets the "description" field.
+func (u *StoreAppUpsert) SetDescription(v string) *StoreAppUpsert {
+	u.Set(storeapp.FieldDescription, v)
+	return u
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *StoreAppUpsert) UpdateDescription() *StoreAppUpsert {
+	u.SetExcluded(storeapp.FieldDescription)
 	return u
 }
 
@@ -311,6 +404,20 @@ func (u *StoreAppUpsertOne) SetName(v string) *StoreAppUpsertOne {
 func (u *StoreAppUpsertOne) UpdateName() *StoreAppUpsertOne {
 	return u.Update(func(s *StoreAppUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *StoreAppUpsertOne) SetDescription(v string) *StoreAppUpsertOne {
+	return u.Update(func(s *StoreAppUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *StoreAppUpsertOne) UpdateDescription() *StoreAppUpsertOne {
+	return u.Update(func(s *StoreAppUpsert) {
+		s.UpdateDescription()
 	})
 }
 
@@ -567,6 +674,20 @@ func (u *StoreAppUpsertBulk) SetName(v string) *StoreAppUpsertBulk {
 func (u *StoreAppUpsertBulk) UpdateName() *StoreAppUpsertBulk {
 	return u.Update(func(s *StoreAppUpsert) {
 		s.UpdateName()
+	})
+}
+
+// SetDescription sets the "description" field.
+func (u *StoreAppUpsertBulk) SetDescription(v string) *StoreAppUpsertBulk {
+	return u.Update(func(s *StoreAppUpsert) {
+		s.SetDescription(v)
+	})
+}
+
+// UpdateDescription sets the "description" field to the value that was provided on create.
+func (u *StoreAppUpsertBulk) UpdateDescription() *StoreAppUpsertBulk {
+	return u.Update(func(s *StoreAppUpsert) {
+		s.UpdateDescription()
 	})
 }
 

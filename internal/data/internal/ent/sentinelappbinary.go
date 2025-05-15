@@ -18,6 +18,8 @@ type SentinelAppBinary struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID model.InternalID `json:"id,omitempty"`
+	// UnionID holds the value of the "union_id" field.
+	UnionID string `json:"union_id,omitempty"`
 	// SentinelID holds the value of the "sentinel_id" field.
 	SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 	// SentinelLibraryReportedID holds the value of the "sentinel_library_reported_id" field.
@@ -42,7 +44,39 @@ type SentinelAppBinary struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
 	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
-	selectValues            sql.SelectValues
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SentinelAppBinaryQuery when eager-loading is set.
+	Edges        SentinelAppBinaryEdges `json:"edges"`
+	selectValues sql.SelectValues
+}
+
+// SentinelAppBinaryEdges holds the relations/edges for other nodes in the graph.
+type SentinelAppBinaryEdges struct {
+	// StoreApp holds the value of the store_app edge.
+	StoreApp []*StoreApp `json:"store_app,omitempty"`
+	// StoreAppBinary holds the value of the store_app_binary edge.
+	StoreAppBinary []*StoreAppBinary `json:"store_app_binary,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// StoreAppOrErr returns the StoreApp value or an error if the edge
+// was not loaded in eager-loading.
+func (e SentinelAppBinaryEdges) StoreAppOrErr() ([]*StoreApp, error) {
+	if e.loadedTypes[0] {
+		return e.StoreApp, nil
+	}
+	return nil, &NotLoadedError{edge: "store_app"}
+}
+
+// StoreAppBinaryOrErr returns the StoreAppBinary value or an error if the edge
+// was not loaded in eager-loading.
+func (e SentinelAppBinaryEdges) StoreAppBinaryOrErr() ([]*StoreAppBinary, error) {
+	if e.loadedTypes[1] {
+		return e.StoreAppBinary, nil
+	}
+	return nil, &NotLoadedError{edge: "store_app_binary"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -54,7 +88,7 @@ func (*SentinelAppBinary) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case sentinelappbinary.FieldID, sentinelappbinary.FieldSentinelID, sentinelappbinary.FieldSentinelLibraryReportedID, sentinelappbinary.FieldSizeBytes, sentinelappbinary.FieldAppBinaryReportSequence:
 			values[i] = new(sql.NullInt64)
-		case sentinelappbinary.FieldGeneratedID, sentinelappbinary.FieldName, sentinelappbinary.FieldVersion, sentinelappbinary.FieldDeveloper, sentinelappbinary.FieldPublisher:
+		case sentinelappbinary.FieldUnionID, sentinelappbinary.FieldGeneratedID, sentinelappbinary.FieldName, sentinelappbinary.FieldVersion, sentinelappbinary.FieldDeveloper, sentinelappbinary.FieldPublisher:
 			values[i] = new(sql.NullString)
 		case sentinelappbinary.FieldUpdatedAt, sentinelappbinary.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -78,6 +112,12 @@ func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				sab.ID = model.InternalID(value.Int64)
+			}
+		case sentinelappbinary.FieldUnionID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field union_id", values[i])
+			} else if value.Valid {
+				sab.UnionID = value.String
 			}
 		case sentinelappbinary.FieldSentinelID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -164,6 +204,16 @@ func (sab *SentinelAppBinary) Value(name string) (ent.Value, error) {
 	return sab.selectValues.Get(name)
 }
 
+// QueryStoreApp queries the "store_app" edge of the SentinelAppBinary entity.
+func (sab *SentinelAppBinary) QueryStoreApp() *StoreAppQuery {
+	return NewSentinelAppBinaryClient(sab.config).QueryStoreApp(sab)
+}
+
+// QueryStoreAppBinary queries the "store_app_binary" edge of the SentinelAppBinary entity.
+func (sab *SentinelAppBinary) QueryStoreAppBinary() *StoreAppBinaryQuery {
+	return NewSentinelAppBinaryClient(sab.config).QueryStoreAppBinary(sab)
+}
+
 // Update returns a builder for updating this SentinelAppBinary.
 // Note that you need to call SentinelAppBinary.Unwrap() before calling this method if this SentinelAppBinary
 // was returned from a transaction, and the transaction was committed or rolled back.
@@ -187,6 +237,9 @@ func (sab *SentinelAppBinary) String() string {
 	var builder strings.Builder
 	builder.WriteString("SentinelAppBinary(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", sab.ID))
+	builder.WriteString("union_id=")
+	builder.WriteString(sab.UnionID)
+	builder.WriteString(", ")
 	builder.WriteString("sentinel_id=")
 	builder.WriteString(fmt.Sprintf("%v", sab.SentinelID))
 	builder.WriteString(", ")

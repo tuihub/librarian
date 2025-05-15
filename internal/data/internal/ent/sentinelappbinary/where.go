@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
@@ -53,6 +54,11 @@ func IDLT(id model.InternalID) predicate.SentinelAppBinary {
 // IDLTE applies the LTE predicate on the ID field.
 func IDLTE(id model.InternalID) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldLTE(FieldID, id))
+}
+
+// UnionID applies equality check predicate on the "union_id" field. It's identical to UnionIDEQ.
+func UnionID(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldUnionID, v))
 }
 
 // SentinelID applies equality check predicate on the "sentinel_id" field. It's identical to SentinelIDEQ.
@@ -114,6 +120,71 @@ func CreatedAt(v time.Time) predicate.SentinelAppBinary {
 // AppBinaryReportSequence applies equality check predicate on the "app_binary_report_sequence" field. It's identical to AppBinaryReportSequenceEQ.
 func AppBinaryReportSequence(v int64) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldEQ(FieldAppBinaryReportSequence, v))
+}
+
+// UnionIDEQ applies the EQ predicate on the "union_id" field.
+func UnionIDEQ(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldEQ(FieldUnionID, v))
+}
+
+// UnionIDNEQ applies the NEQ predicate on the "union_id" field.
+func UnionIDNEQ(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldNEQ(FieldUnionID, v))
+}
+
+// UnionIDIn applies the In predicate on the "union_id" field.
+func UnionIDIn(vs ...string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldIn(FieldUnionID, vs...))
+}
+
+// UnionIDNotIn applies the NotIn predicate on the "union_id" field.
+func UnionIDNotIn(vs ...string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldNotIn(FieldUnionID, vs...))
+}
+
+// UnionIDGT applies the GT predicate on the "union_id" field.
+func UnionIDGT(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldGT(FieldUnionID, v))
+}
+
+// UnionIDGTE applies the GTE predicate on the "union_id" field.
+func UnionIDGTE(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldGTE(FieldUnionID, v))
+}
+
+// UnionIDLT applies the LT predicate on the "union_id" field.
+func UnionIDLT(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldLT(FieldUnionID, v))
+}
+
+// UnionIDLTE applies the LTE predicate on the "union_id" field.
+func UnionIDLTE(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldLTE(FieldUnionID, v))
+}
+
+// UnionIDContains applies the Contains predicate on the "union_id" field.
+func UnionIDContains(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldContains(FieldUnionID, v))
+}
+
+// UnionIDHasPrefix applies the HasPrefix predicate on the "union_id" field.
+func UnionIDHasPrefix(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldHasPrefix(FieldUnionID, v))
+}
+
+// UnionIDHasSuffix applies the HasSuffix predicate on the "union_id" field.
+func UnionIDHasSuffix(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldHasSuffix(FieldUnionID, v))
+}
+
+// UnionIDEqualFold applies the EqualFold predicate on the "union_id" field.
+func UnionIDEqualFold(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldEqualFold(FieldUnionID, v))
+}
+
+// UnionIDContainsFold applies the ContainsFold predicate on the "union_id" field.
+func UnionIDContainsFold(v string) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(sql.FieldContainsFold(FieldUnionID, v))
 }
 
 // SentinelIDEQ applies the EQ predicate on the "sentinel_id" field.
@@ -378,16 +449,6 @@ func NameHasPrefix(v string) predicate.SentinelAppBinary {
 // NameHasSuffix applies the HasSuffix predicate on the "name" field.
 func NameHasSuffix(v string) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldHasSuffix(FieldName, v))
-}
-
-// NameIsNil applies the IsNil predicate on the "name" field.
-func NameIsNil() predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldIsNull(FieldName))
-}
-
-// NameNotNil applies the NotNil predicate on the "name" field.
-func NameNotNil() predicate.SentinelAppBinary {
-	return predicate.SentinelAppBinary(sql.FieldNotNull(FieldName))
 }
 
 // NameEqualFold applies the EqualFold predicate on the "name" field.
@@ -743,6 +804,52 @@ func AppBinaryReportSequenceLT(v int64) predicate.SentinelAppBinary {
 // AppBinaryReportSequenceLTE applies the LTE predicate on the "app_binary_report_sequence" field.
 func AppBinaryReportSequenceLTE(v int64) predicate.SentinelAppBinary {
 	return predicate.SentinelAppBinary(sql.FieldLTE(FieldAppBinaryReportSequence, v))
+}
+
+// HasStoreApp applies the HasEdge predicate on the "store_app" edge.
+func HasStoreApp() predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, StoreAppTable, StoreAppPrimaryKey...),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStoreAppWith applies the HasEdge predicate on the "store_app" edge with a given conditions (other predicates).
+func HasStoreAppWith(preds ...predicate.StoreApp) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(func(s *sql.Selector) {
+		step := newStoreAppStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasStoreAppBinary applies the HasEdge predicate on the "store_app_binary" edge.
+func HasStoreAppBinary() predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, StoreAppBinaryTable, StoreAppBinaryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStoreAppBinaryWith applies the HasEdge predicate on the "store_app_binary" edge with a given conditions (other predicates).
+func HasStoreAppBinaryWith(preds ...predicate.StoreAppBinary) predicate.SentinelAppBinary {
+	return predicate.SentinelAppBinary(func(s *sql.Selector) {
+		step := newStoreAppBinaryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

@@ -13,6 +13,8 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
 	"github.com/tuihub/librarian/internal/model"
 )
 
@@ -26,6 +28,20 @@ type SentinelAppBinaryUpdate struct {
 // Where appends a list predicates to the SentinelAppBinaryUpdate builder.
 func (sabu *SentinelAppBinaryUpdate) Where(ps ...predicate.SentinelAppBinary) *SentinelAppBinaryUpdate {
 	sabu.mutation.Where(ps...)
+	return sabu
+}
+
+// SetUnionID sets the "union_id" field.
+func (sabu *SentinelAppBinaryUpdate) SetUnionID(s string) *SentinelAppBinaryUpdate {
+	sabu.mutation.SetUnionID(s)
+	return sabu
+}
+
+// SetNillableUnionID sets the "union_id" field if the given value is not nil.
+func (sabu *SentinelAppBinaryUpdate) SetNillableUnionID(s *string) *SentinelAppBinaryUpdate {
+	if s != nil {
+		sabu.SetUnionID(*s)
+	}
 	return sabu
 }
 
@@ -134,12 +150,6 @@ func (sabu *SentinelAppBinaryUpdate) SetNillableName(s *string) *SentinelAppBina
 	return sabu
 }
 
-// ClearName clears the value of the "name" field.
-func (sabu *SentinelAppBinaryUpdate) ClearName() *SentinelAppBinaryUpdate {
-	sabu.mutation.ClearName()
-	return sabu
-}
-
 // SetVersion sets the "version" field.
 func (sabu *SentinelAppBinaryUpdate) SetVersion(s string) *SentinelAppBinaryUpdate {
 	sabu.mutation.SetVersion(s)
@@ -241,9 +251,81 @@ func (sabu *SentinelAppBinaryUpdate) AddAppBinaryReportSequence(i int64) *Sentin
 	return sabu
 }
 
+// AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
+func (sabu *SentinelAppBinaryUpdate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
+	sabu.mutation.AddStoreAppIDs(ids...)
+	return sabu
+}
+
+// AddStoreApp adds the "store_app" edges to the StoreApp entity.
+func (sabu *SentinelAppBinaryUpdate) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabu.AddStoreAppIDs(ids...)
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (sabu *SentinelAppBinaryUpdate) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
+	sabu.mutation.AddStoreAppBinaryIDs(ids...)
+	return sabu
+}
+
+// AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
+func (sabu *SentinelAppBinaryUpdate) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabu.AddStoreAppBinaryIDs(ids...)
+}
+
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
 func (sabu *SentinelAppBinaryUpdate) Mutation() *SentinelAppBinaryMutation {
 	return sabu.mutation
+}
+
+// ClearStoreApp clears all "store_app" edges to the StoreApp entity.
+func (sabu *SentinelAppBinaryUpdate) ClearStoreApp() *SentinelAppBinaryUpdate {
+	sabu.mutation.ClearStoreApp()
+	return sabu
+}
+
+// RemoveStoreAppIDs removes the "store_app" edge to StoreApp entities by IDs.
+func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
+	sabu.mutation.RemoveStoreAppIDs(ids...)
+	return sabu
+}
+
+// RemoveStoreApp removes "store_app" edges to StoreApp entities.
+func (sabu *SentinelAppBinaryUpdate) RemoveStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdate {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabu.RemoveStoreAppIDs(ids...)
+}
+
+// ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
+func (sabu *SentinelAppBinaryUpdate) ClearStoreAppBinary() *SentinelAppBinaryUpdate {
+	sabu.mutation.ClearStoreAppBinary()
+	return sabu
+}
+
+// RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
+func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdate {
+	sabu.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return sabu
+}
+
+// RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
+func (sabu *SentinelAppBinaryUpdate) RemoveStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdate {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabu.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -291,6 +373,9 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 			}
 		}
 	}
+	if value, ok := sabu.mutation.UnionID(); ok {
+		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
+	}
 	if value, ok := sabu.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
@@ -317,9 +402,6 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if value, ok := sabu.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinary.FieldName, field.TypeString, value)
-	}
-	if sabu.mutation.NameCleared() {
-		_spec.ClearField(sentinelappbinary.FieldName, field.TypeString)
 	}
 	if value, ok := sabu.mutation.Version(); ok {
 		_spec.SetField(sentinelappbinary.FieldVersion, field.TypeString, value)
@@ -351,6 +433,108 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 	if value, ok := sabu.mutation.AddedAppBinaryReportSequence(); ok {
 		_spec.AddField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
+	if sabu.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !sabu.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sabu.config, mutation: newStoreAppBinaryMutation(sabu.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if sabu.mutation.StoreAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sabu.mutation.StoreAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sabu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sentinelappbinary.Label}
@@ -369,6 +553,20 @@ type SentinelAppBinaryUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SentinelAppBinaryMutation
+}
+
+// SetUnionID sets the "union_id" field.
+func (sabuo *SentinelAppBinaryUpdateOne) SetUnionID(s string) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.SetUnionID(s)
+	return sabuo
+}
+
+// SetNillableUnionID sets the "union_id" field if the given value is not nil.
+func (sabuo *SentinelAppBinaryUpdateOne) SetNillableUnionID(s *string) *SentinelAppBinaryUpdateOne {
+	if s != nil {
+		sabuo.SetUnionID(*s)
+	}
+	return sabuo
 }
 
 // SetSentinelID sets the "sentinel_id" field.
@@ -476,12 +674,6 @@ func (sabuo *SentinelAppBinaryUpdateOne) SetNillableName(s *string) *SentinelApp
 	return sabuo
 }
 
-// ClearName clears the value of the "name" field.
-func (sabuo *SentinelAppBinaryUpdateOne) ClearName() *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ClearName()
-	return sabuo
-}
-
 // SetVersion sets the "version" field.
 func (sabuo *SentinelAppBinaryUpdateOne) SetVersion(s string) *SentinelAppBinaryUpdateOne {
 	sabuo.mutation.SetVersion(s)
@@ -583,9 +775,81 @@ func (sabuo *SentinelAppBinaryUpdateOne) AddAppBinaryReportSequence(i int64) *Se
 	return sabuo
 }
 
+// AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
+func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.AddStoreAppIDs(ids...)
+	return sabuo
+}
+
+// AddStoreApp adds the "store_app" edges to the StoreApp entity.
+func (sabuo *SentinelAppBinaryUpdateOne) AddStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdateOne {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabuo.AddStoreAppIDs(ids...)
+}
+
+// AddStoreAppBinaryIDs adds the "store_app_binary" edge to the StoreAppBinary entity by IDs.
+func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.AddStoreAppBinaryIDs(ids...)
+	return sabuo
+}
+
+// AddStoreAppBinary adds the "store_app_binary" edges to the StoreAppBinary entity.
+func (sabuo *SentinelAppBinaryUpdateOne) AddStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabuo.AddStoreAppBinaryIDs(ids...)
+}
+
 // Mutation returns the SentinelAppBinaryMutation object of the builder.
 func (sabuo *SentinelAppBinaryUpdateOne) Mutation() *SentinelAppBinaryMutation {
 	return sabuo.mutation
+}
+
+// ClearStoreApp clears all "store_app" edges to the StoreApp entity.
+func (sabuo *SentinelAppBinaryUpdateOne) ClearStoreApp() *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.ClearStoreApp()
+	return sabuo
+}
+
+// RemoveStoreAppIDs removes the "store_app" edge to StoreApp entities by IDs.
+func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.RemoveStoreAppIDs(ids...)
+	return sabuo
+}
+
+// RemoveStoreApp removes "store_app" edges to StoreApp entities.
+func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreApp(s ...*StoreApp) *SentinelAppBinaryUpdateOne {
+	ids := make([]model.InternalID, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabuo.RemoveStoreAppIDs(ids...)
+}
+
+// ClearStoreAppBinary clears all "store_app_binary" edges to the StoreAppBinary entity.
+func (sabuo *SentinelAppBinaryUpdateOne) ClearStoreAppBinary() *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.ClearStoreAppBinary()
+	return sabuo
+}
+
+// RemoveStoreAppBinaryIDs removes the "store_app_binary" edge to StoreAppBinary entities by IDs.
+func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppBinaryIDs(ids ...int) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.RemoveStoreAppBinaryIDs(ids...)
+	return sabuo
+}
+
+// RemoveStoreAppBinary removes "store_app_binary" edges to StoreAppBinary entities.
+func (sabuo *SentinelAppBinaryUpdateOne) RemoveStoreAppBinary(s ...*StoreAppBinary) *SentinelAppBinaryUpdateOne {
+	ids := make([]int, len(s))
+	for i := range s {
+		ids[i] = s[i].ID
+	}
+	return sabuo.RemoveStoreAppBinaryIDs(ids...)
 }
 
 // Where appends a list predicates to the SentinelAppBinaryUpdate builder.
@@ -663,6 +927,9 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 			}
 		}
 	}
+	if value, ok := sabuo.mutation.UnionID(); ok {
+		_spec.SetField(sentinelappbinary.FieldUnionID, field.TypeString, value)
+	}
 	if value, ok := sabuo.mutation.SentinelID(); ok {
 		_spec.SetField(sentinelappbinary.FieldSentinelID, field.TypeInt64, value)
 	}
@@ -689,9 +956,6 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 	}
 	if value, ok := sabuo.mutation.Name(); ok {
 		_spec.SetField(sentinelappbinary.FieldName, field.TypeString, value)
-	}
-	if sabuo.mutation.NameCleared() {
-		_spec.ClearField(sentinelappbinary.FieldName, field.TypeString)
 	}
 	if value, ok := sabuo.mutation.Version(); ok {
 		_spec.SetField(sentinelappbinary.FieldVersion, field.TypeString, value)
@@ -722,6 +986,108 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 	}
 	if value, ok := sabuo.mutation.AddedAppBinaryReportSequence(); ok {
 		_spec.AddField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
+	}
+	if sabuo.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.RemovedStoreAppIDs(); len(nodes) > 0 && !sabuo.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppTable,
+			Columns: sentinelappbinary.StoreAppPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		createE := &StoreAppBinaryCreate{config: sabuo.config, mutation: newStoreAppBinaryMutation(sabuo.config, OpCreate)}
+		createE.defaults()
+		_, specE := createE.createSpec()
+		edge.Target.Fields = specE.Fields
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if sabuo.mutation.StoreAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.RemovedStoreAppBinaryIDs(); len(nodes) > 0 && !sabuo.mutation.StoreAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.StoreAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: true,
+			Table:   sentinelappbinary.StoreAppBinaryTable,
+			Columns: []string{sentinelappbinary.StoreAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &SentinelAppBinary{config: sabuo.config}
 	_spec.Assign = _node.assignValues

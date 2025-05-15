@@ -6,73 +6,66 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/model"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id model.InternalID) predicate.StoreAppBinary {
+func ID(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id model.InternalID) predicate.StoreAppBinary {
+func IDEQ(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id model.InternalID) predicate.StoreAppBinary {
+func IDNEQ(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...model.InternalID) predicate.StoreAppBinary {
+func IDIn(ids ...int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...model.InternalID) predicate.StoreAppBinary {
+func IDNotIn(ids ...int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id model.InternalID) predicate.StoreAppBinary {
+func IDGT(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id model.InternalID) predicate.StoreAppBinary {
+func IDGTE(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id model.InternalID) predicate.StoreAppBinary {
+func IDLT(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id model.InternalID) predicate.StoreAppBinary {
+func IDLTE(id int) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldLTE(FieldID, id))
 }
 
-// Name applies equality check predicate on the "name" field. It's identical to NameEQ.
-func Name(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldName, v))
+// StoreAppID applies equality check predicate on the "store_app_id" field. It's identical to StoreAppIDEQ.
+func StoreAppID(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldEQ(FieldStoreAppID, vc))
 }
 
-// SizeBytes applies equality check predicate on the "size_bytes" field. It's identical to SizeBytesEQ.
-func SizeBytes(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldSizeBytes, v))
-}
-
-// PublicURL applies equality check predicate on the "public_url" field. It's identical to PublicURLEQ.
-func PublicURL(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldPublicURL, v))
-}
-
-// Sha256 applies equality check predicate on the "sha256" field. It's identical to Sha256EQ.
-func Sha256(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldSha256, v))
+// SentinelAppBinaryUnionID applies equality check predicate on the "sentinel_app_binary_union_id" field. It's identical to SentinelAppBinaryUnionIDEQ.
+func SentinelAppBinaryUnionID(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldEQ(FieldSentinelAppBinaryUnionID, vc))
 }
 
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
@@ -85,254 +78,64 @@ func CreatedAt(v time.Time) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// NameEQ applies the EQ predicate on the "name" field.
-func NameEQ(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldName, v))
+// StoreAppIDEQ applies the EQ predicate on the "store_app_id" field.
+func StoreAppIDEQ(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldEQ(FieldStoreAppID, vc))
 }
 
-// NameNEQ applies the NEQ predicate on the "name" field.
-func NameNEQ(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNEQ(FieldName, v))
+// StoreAppIDNEQ applies the NEQ predicate on the "store_app_id" field.
+func StoreAppIDNEQ(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldNEQ(FieldStoreAppID, vc))
 }
 
-// NameIn applies the In predicate on the "name" field.
-func NameIn(vs ...string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIn(FieldName, vs...))
+// StoreAppIDIn applies the In predicate on the "store_app_id" field.
+func StoreAppIDIn(vs ...model.InternalID) predicate.StoreAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.StoreAppBinary(sql.FieldIn(FieldStoreAppID, v...))
 }
 
-// NameNotIn applies the NotIn predicate on the "name" field.
-func NameNotIn(vs ...string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotIn(FieldName, vs...))
+// StoreAppIDNotIn applies the NotIn predicate on the "store_app_id" field.
+func StoreAppIDNotIn(vs ...model.InternalID) predicate.StoreAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.StoreAppBinary(sql.FieldNotIn(FieldStoreAppID, v...))
 }
 
-// NameGT applies the GT predicate on the "name" field.
-func NameGT(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGT(FieldName, v))
+// SentinelAppBinaryUnionIDEQ applies the EQ predicate on the "sentinel_app_binary_union_id" field.
+func SentinelAppBinaryUnionIDEQ(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldEQ(FieldSentinelAppBinaryUnionID, vc))
 }
 
-// NameGTE applies the GTE predicate on the "name" field.
-func NameGTE(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGTE(FieldName, v))
+// SentinelAppBinaryUnionIDNEQ applies the NEQ predicate on the "sentinel_app_binary_union_id" field.
+func SentinelAppBinaryUnionIDNEQ(v model.InternalID) predicate.StoreAppBinary {
+	vc := int64(v)
+	return predicate.StoreAppBinary(sql.FieldNEQ(FieldSentinelAppBinaryUnionID, vc))
 }
 
-// NameLT applies the LT predicate on the "name" field.
-func NameLT(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLT(FieldName, v))
+// SentinelAppBinaryUnionIDIn applies the In predicate on the "sentinel_app_binary_union_id" field.
+func SentinelAppBinaryUnionIDIn(vs ...model.InternalID) predicate.StoreAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.StoreAppBinary(sql.FieldIn(FieldSentinelAppBinaryUnionID, v...))
 }
 
-// NameLTE applies the LTE predicate on the "name" field.
-func NameLTE(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLTE(FieldName, v))
-}
-
-// NameContains applies the Contains predicate on the "name" field.
-func NameContains(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldContains(FieldName, v))
-}
-
-// NameHasPrefix applies the HasPrefix predicate on the "name" field.
-func NameHasPrefix(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldHasPrefix(FieldName, v))
-}
-
-// NameHasSuffix applies the HasSuffix predicate on the "name" field.
-func NameHasSuffix(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldHasSuffix(FieldName, v))
-}
-
-// NameIsNil applies the IsNil predicate on the "name" field.
-func NameIsNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIsNull(FieldName))
-}
-
-// NameNotNil applies the NotNil predicate on the "name" field.
-func NameNotNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotNull(FieldName))
-}
-
-// NameEqualFold applies the EqualFold predicate on the "name" field.
-func NameEqualFold(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEqualFold(FieldName, v))
-}
-
-// NameContainsFold applies the ContainsFold predicate on the "name" field.
-func NameContainsFold(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldContainsFold(FieldName, v))
-}
-
-// SizeBytesEQ applies the EQ predicate on the "size_bytes" field.
-func SizeBytesEQ(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldSizeBytes, v))
-}
-
-// SizeBytesNEQ applies the NEQ predicate on the "size_bytes" field.
-func SizeBytesNEQ(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNEQ(FieldSizeBytes, v))
-}
-
-// SizeBytesIn applies the In predicate on the "size_bytes" field.
-func SizeBytesIn(vs ...int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIn(FieldSizeBytes, vs...))
-}
-
-// SizeBytesNotIn applies the NotIn predicate on the "size_bytes" field.
-func SizeBytesNotIn(vs ...int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotIn(FieldSizeBytes, vs...))
-}
-
-// SizeBytesGT applies the GT predicate on the "size_bytes" field.
-func SizeBytesGT(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGT(FieldSizeBytes, v))
-}
-
-// SizeBytesGTE applies the GTE predicate on the "size_bytes" field.
-func SizeBytesGTE(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGTE(FieldSizeBytes, v))
-}
-
-// SizeBytesLT applies the LT predicate on the "size_bytes" field.
-func SizeBytesLT(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLT(FieldSizeBytes, v))
-}
-
-// SizeBytesLTE applies the LTE predicate on the "size_bytes" field.
-func SizeBytesLTE(v int64) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLTE(FieldSizeBytes, v))
-}
-
-// SizeBytesIsNil applies the IsNil predicate on the "size_bytes" field.
-func SizeBytesIsNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIsNull(FieldSizeBytes))
-}
-
-// SizeBytesNotNil applies the NotNil predicate on the "size_bytes" field.
-func SizeBytesNotNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotNull(FieldSizeBytes))
-}
-
-// PublicURLEQ applies the EQ predicate on the "public_url" field.
-func PublicURLEQ(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldPublicURL, v))
-}
-
-// PublicURLNEQ applies the NEQ predicate on the "public_url" field.
-func PublicURLNEQ(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNEQ(FieldPublicURL, v))
-}
-
-// PublicURLIn applies the In predicate on the "public_url" field.
-func PublicURLIn(vs ...string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIn(FieldPublicURL, vs...))
-}
-
-// PublicURLNotIn applies the NotIn predicate on the "public_url" field.
-func PublicURLNotIn(vs ...string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotIn(FieldPublicURL, vs...))
-}
-
-// PublicURLGT applies the GT predicate on the "public_url" field.
-func PublicURLGT(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGT(FieldPublicURL, v))
-}
-
-// PublicURLGTE applies the GTE predicate on the "public_url" field.
-func PublicURLGTE(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGTE(FieldPublicURL, v))
-}
-
-// PublicURLLT applies the LT predicate on the "public_url" field.
-func PublicURLLT(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLT(FieldPublicURL, v))
-}
-
-// PublicURLLTE applies the LTE predicate on the "public_url" field.
-func PublicURLLTE(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLTE(FieldPublicURL, v))
-}
-
-// PublicURLContains applies the Contains predicate on the "public_url" field.
-func PublicURLContains(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldContains(FieldPublicURL, v))
-}
-
-// PublicURLHasPrefix applies the HasPrefix predicate on the "public_url" field.
-func PublicURLHasPrefix(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldHasPrefix(FieldPublicURL, v))
-}
-
-// PublicURLHasSuffix applies the HasSuffix predicate on the "public_url" field.
-func PublicURLHasSuffix(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldHasSuffix(FieldPublicURL, v))
-}
-
-// PublicURLIsNil applies the IsNil predicate on the "public_url" field.
-func PublicURLIsNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIsNull(FieldPublicURL))
-}
-
-// PublicURLNotNil applies the NotNil predicate on the "public_url" field.
-func PublicURLNotNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotNull(FieldPublicURL))
-}
-
-// PublicURLEqualFold applies the EqualFold predicate on the "public_url" field.
-func PublicURLEqualFold(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEqualFold(FieldPublicURL, v))
-}
-
-// PublicURLContainsFold applies the ContainsFold predicate on the "public_url" field.
-func PublicURLContainsFold(v string) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldContainsFold(FieldPublicURL, v))
-}
-
-// Sha256EQ applies the EQ predicate on the "sha256" field.
-func Sha256EQ(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldEQ(FieldSha256, v))
-}
-
-// Sha256NEQ applies the NEQ predicate on the "sha256" field.
-func Sha256NEQ(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNEQ(FieldSha256, v))
-}
-
-// Sha256In applies the In predicate on the "sha256" field.
-func Sha256In(vs ...[]byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIn(FieldSha256, vs...))
-}
-
-// Sha256NotIn applies the NotIn predicate on the "sha256" field.
-func Sha256NotIn(vs ...[]byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotIn(FieldSha256, vs...))
-}
-
-// Sha256GT applies the GT predicate on the "sha256" field.
-func Sha256GT(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGT(FieldSha256, v))
-}
-
-// Sha256GTE applies the GTE predicate on the "sha256" field.
-func Sha256GTE(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldGTE(FieldSha256, v))
-}
-
-// Sha256LT applies the LT predicate on the "sha256" field.
-func Sha256LT(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLT(FieldSha256, v))
-}
-
-// Sha256LTE applies the LTE predicate on the "sha256" field.
-func Sha256LTE(v []byte) predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldLTE(FieldSha256, v))
-}
-
-// Sha256IsNil applies the IsNil predicate on the "sha256" field.
-func Sha256IsNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldIsNull(FieldSha256))
-}
-
-// Sha256NotNil applies the NotNil predicate on the "sha256" field.
-func Sha256NotNil() predicate.StoreAppBinary {
-	return predicate.StoreAppBinary(sql.FieldNotNull(FieldSha256))
+// SentinelAppBinaryUnionIDNotIn applies the NotIn predicate on the "sentinel_app_binary_union_id" field.
+func SentinelAppBinaryUnionIDNotIn(vs ...model.InternalID) predicate.StoreAppBinary {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = int64(vs[i])
+	}
+	return predicate.StoreAppBinary(sql.FieldNotIn(FieldSentinelAppBinaryUnionID, v...))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.
@@ -413,6 +216,52 @@ func CreatedAtLT(v time.Time) predicate.StoreAppBinary {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.StoreAppBinary {
 	return predicate.StoreAppBinary(sql.FieldLTE(FieldCreatedAt, v))
+}
+
+// HasStoreApp applies the HasEdge predicate on the "store_app" edge.
+func HasStoreApp() predicate.StoreAppBinary {
+	return predicate.StoreAppBinary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, StoreAppTable, StoreAppColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasStoreAppWith applies the HasEdge predicate on the "store_app" edge with a given conditions (other predicates).
+func HasStoreAppWith(preds ...predicate.StoreApp) predicate.StoreAppBinary {
+	return predicate.StoreAppBinary(func(s *sql.Selector) {
+		step := newStoreAppStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSentinelAppBinary applies the HasEdge predicate on the "sentinel_app_binary" edge.
+func HasSentinelAppBinary() predicate.StoreAppBinary {
+	return predicate.StoreAppBinary(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, SentinelAppBinaryTable, SentinelAppBinaryColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSentinelAppBinaryWith applies the HasEdge predicate on the "sentinel_app_binary" edge with a given conditions (other predicates).
+func HasSentinelAppBinaryWith(preds ...predicate.SentinelAppBinary) predicate.StoreAppBinary {
+	return predicate.StoreAppBinary(func(s *sql.Selector) {
+		step := newSentinelAppBinaryStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

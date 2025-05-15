@@ -783,12 +783,13 @@ var (
 	// SentinelAppBinariesColumns holds the columns for the "sentinel_app_binaries" table.
 	SentinelAppBinariesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
+		{Name: "union_id", Type: field.TypeString},
 		{Name: "sentinel_id", Type: field.TypeInt64},
 		{Name: "sentinel_library_reported_id", Type: field.TypeInt64},
 		{Name: "generated_id", Type: field.TypeString},
 		{Name: "size_bytes", Type: field.TypeInt64},
 		{Name: "need_token", Type: field.TypeBool},
-		{Name: "name", Type: field.TypeString, Nullable: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "version", Type: field.TypeString, Nullable: true},
 		{Name: "developer", Type: field.TypeString, Nullable: true},
 		{Name: "publisher", Type: field.TypeString, Nullable: true},
@@ -803,19 +804,19 @@ var (
 		PrimaryKey: []*schema.Column{SentinelAppBinariesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "sentinelappbinary_sentinel_id_sentinel_library_reported_id_generated_id",
-				Unique:  true,
-				Columns: []*schema.Column{SentinelAppBinariesColumns[1], SentinelAppBinariesColumns[2], SentinelAppBinariesColumns[3]},
+				Name:    "sentinelappbinary_union_id",
+				Unique:  false,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[1]},
 			},
 			{
-				Name:    "sentinelappbinary_generated_id",
-				Unique:  false,
-				Columns: []*schema.Column{SentinelAppBinariesColumns[3]},
+				Name:    "sentinelappbinary_sentinel_id_sentinel_library_reported_id_generated_id",
+				Unique:  true,
+				Columns: []*schema.Column{SentinelAppBinariesColumns[2], SentinelAppBinariesColumns[3], SentinelAppBinariesColumns[4]},
 			},
 			{
 				Name:    "sentinelappbinary_app_binary_report_sequence",
 				Unique:  false,
-				Columns: []*schema.Column{SentinelAppBinariesColumns[12]},
+				Columns: []*schema.Column{SentinelAppBinariesColumns[13]},
 			},
 		},
 	}
@@ -969,6 +970,7 @@ var (
 	StoreAppsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "name", Type: field.TypeString},
+		{Name: "description", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}
@@ -980,22 +982,39 @@ var (
 	}
 	// StoreAppBinariesColumns holds the columns for the "store_app_binaries" table.
 	StoreAppBinariesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64},
-		{Name: "name", Type: field.TypeString, Nullable: true},
-		{Name: "size_bytes", Type: field.TypeInt64, Nullable: true},
-		{Name: "public_url", Type: field.TypeString, Nullable: true},
-		{Name: "sha256", Type: field.TypeBytes, Nullable: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
+		{Name: "store_app_id", Type: field.TypeInt64},
+		{Name: "sentinel_app_binary_union_id", Type: field.TypeInt64},
 	}
 	// StoreAppBinariesTable holds the schema information for the "store_app_binaries" table.
 	StoreAppBinariesTable = &schema.Table{
 		Name:       "store_app_binaries",
 		Columns:    StoreAppBinariesColumns,
 		PrimaryKey: []*schema.Column{StoreAppBinariesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "store_app_binaries_store_apps_store_app",
+				Columns:    []*schema.Column{StoreAppBinariesColumns[3]},
+				RefColumns: []*schema.Column{StoreAppsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+			{
+				Symbol:     "store_app_binaries_sentinel_app_binaries_sentinel_app_binary",
+				Columns:    []*schema.Column{StoreAppBinariesColumns[4]},
+				RefColumns: []*schema.Column{SentinelAppBinariesColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
-				Name:    "storeappbinary_sha256",
+				Name:    "storeappbinary_store_app_id_sentinel_app_binary_union_id",
+				Unique:  true,
+				Columns: []*schema.Column{StoreAppBinariesColumns[3], StoreAppBinariesColumns[4]},
+			},
+			{
+				Name:    "storeappbinary_sentinel_app_binary_union_id",
 				Unique:  true,
 				Columns: []*schema.Column{StoreAppBinariesColumns[4]},
 			},
@@ -1164,6 +1183,8 @@ func init() {
 	SentinelSessionsTable.ForeignKeys[0].RefTable = SentinelsTable
 	SessionsTable.ForeignKeys[0].RefTable = DevicesTable
 	SessionsTable.ForeignKeys[1].RefTable = UsersTable
+	StoreAppBinariesTable.ForeignKeys[0].RefTable = StoreAppsTable
+	StoreAppBinariesTable.ForeignKeys[1].RefTable = SentinelAppBinariesTable
 	TagsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = UsersTable
 	FeedItemFeedItemCollectionTable.ForeignKeys[0].RefTable = FeedItemsTable

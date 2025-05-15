@@ -60,5 +60,8 @@ func (a *AngelaWeb) setupRoutes() {
 	page.Get("/sentinels/edit/:id", a.pageBuilder.SentinelForm)
 	page.Get("/sentinels/:id", a.pageBuilder.SentinelDetail)
 
+	page.Get("/store-apps", a.pageBuilder.StoreAppList)
+	page.Get("/store-app-binaries", a.pageBuilder.StoreAppBinaryList)
+
 	a.app.Use(a.pageBuilder.NotFound)
 }

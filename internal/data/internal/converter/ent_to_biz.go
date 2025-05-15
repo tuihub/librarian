@@ -95,6 +95,13 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusSuspend SentinelSessionStatusSuspend
 	ToBizSentinelSessionStatus(sentinelsession.Status) modelgebura.SentinelSessionStatus
 
+	ToBizStoreApp(*ent.StoreApp) *modelgebura.StoreApp
+	ToBizStoreAppList([]*ent.StoreApp) []*modelgebura.StoreApp
+
+	// goverter:ignore AppID
+	ToBizStoreAppBinary(*ent.SentinelAppBinary) *modelgebura.StoreAppBinary
+	ToBizStoreAppBinaryList([]*ent.SentinelAppBinary) []*modelgebura.StoreAppBinary
+
 	ToBizAppInfo(*ent.AppInfo) *modelgebura.AppInfo
 	ToBizAppInfoList([]*ent.AppInfo) []*modelgebura.AppInfo
 	// goverter:enum:unknown AppTypeUnspecified
@@ -111,7 +118,6 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:map . RunTime
 	ToBizAppRunTime(*ent.AppRunTime) *modelgebura.AppRunTime
 	ToBizAppRunTimeList([]*ent.AppRunTime) []*modelgebura.AppRunTime
-	ToBizAppBinary(ent.StoreAppBinary) modelgebura.AppBinary
 	// goverter:ignore AppIDs
 	ToBizAppCategory(*ent.AppCategory) *modelgebura.AppCategory
 

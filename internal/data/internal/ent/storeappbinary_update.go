@@ -12,7 +12,10 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
+	"github.com/tuihub/librarian/internal/data/internal/ent/sentinelappbinary"
+	"github.com/tuihub/librarian/internal/data/internal/ent/storeapp"
 	"github.com/tuihub/librarian/internal/data/internal/ent/storeappbinary"
+	"github.com/tuihub/librarian/internal/model"
 )
 
 // StoreAppBinaryUpdate is the builder for updating StoreAppBinary entities.
@@ -28,82 +31,31 @@ func (sabu *StoreAppBinaryUpdate) Where(ps ...predicate.StoreAppBinary) *StoreAp
 	return sabu
 }
 
-// SetName sets the "name" field.
-func (sabu *StoreAppBinaryUpdate) SetName(s string) *StoreAppBinaryUpdate {
-	sabu.mutation.SetName(s)
+// SetStoreAppID sets the "store_app_id" field.
+func (sabu *StoreAppBinaryUpdate) SetStoreAppID(mi model.InternalID) *StoreAppBinaryUpdate {
+	sabu.mutation.SetStoreAppID(mi)
 	return sabu
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (sabu *StoreAppBinaryUpdate) SetNillableName(s *string) *StoreAppBinaryUpdate {
-	if s != nil {
-		sabu.SetName(*s)
+// SetNillableStoreAppID sets the "store_app_id" field if the given value is not nil.
+func (sabu *StoreAppBinaryUpdate) SetNillableStoreAppID(mi *model.InternalID) *StoreAppBinaryUpdate {
+	if mi != nil {
+		sabu.SetStoreAppID(*mi)
 	}
 	return sabu
 }
 
-// ClearName clears the value of the "name" field.
-func (sabu *StoreAppBinaryUpdate) ClearName() *StoreAppBinaryUpdate {
-	sabu.mutation.ClearName()
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (sabu *StoreAppBinaryUpdate) SetSentinelAppBinaryUnionID(mi model.InternalID) *StoreAppBinaryUpdate {
+	sabu.mutation.SetSentinelAppBinaryUnionID(mi)
 	return sabu
 }
 
-// SetSizeBytes sets the "size_bytes" field.
-func (sabu *StoreAppBinaryUpdate) SetSizeBytes(i int64) *StoreAppBinaryUpdate {
-	sabu.mutation.ResetSizeBytes()
-	sabu.mutation.SetSizeBytes(i)
-	return sabu
-}
-
-// SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabu *StoreAppBinaryUpdate) SetNillableSizeBytes(i *int64) *StoreAppBinaryUpdate {
-	if i != nil {
-		sabu.SetSizeBytes(*i)
+// SetNillableSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field if the given value is not nil.
+func (sabu *StoreAppBinaryUpdate) SetNillableSentinelAppBinaryUnionID(mi *model.InternalID) *StoreAppBinaryUpdate {
+	if mi != nil {
+		sabu.SetSentinelAppBinaryUnionID(*mi)
 	}
-	return sabu
-}
-
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabu *StoreAppBinaryUpdate) AddSizeBytes(i int64) *StoreAppBinaryUpdate {
-	sabu.mutation.AddSizeBytes(i)
-	return sabu
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (sabu *StoreAppBinaryUpdate) ClearSizeBytes() *StoreAppBinaryUpdate {
-	sabu.mutation.ClearSizeBytes()
-	return sabu
-}
-
-// SetPublicURL sets the "public_url" field.
-func (sabu *StoreAppBinaryUpdate) SetPublicURL(s string) *StoreAppBinaryUpdate {
-	sabu.mutation.SetPublicURL(s)
-	return sabu
-}
-
-// SetNillablePublicURL sets the "public_url" field if the given value is not nil.
-func (sabu *StoreAppBinaryUpdate) SetNillablePublicURL(s *string) *StoreAppBinaryUpdate {
-	if s != nil {
-		sabu.SetPublicURL(*s)
-	}
-	return sabu
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (sabu *StoreAppBinaryUpdate) ClearPublicURL() *StoreAppBinaryUpdate {
-	sabu.mutation.ClearPublicURL()
-	return sabu
-}
-
-// SetSha256 sets the "sha256" field.
-func (sabu *StoreAppBinaryUpdate) SetSha256(b []byte) *StoreAppBinaryUpdate {
-	sabu.mutation.SetSha256(b)
-	return sabu
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (sabu *StoreAppBinaryUpdate) ClearSha256() *StoreAppBinaryUpdate {
-	sabu.mutation.ClearSha256()
 	return sabu
 }
 
@@ -127,9 +79,37 @@ func (sabu *StoreAppBinaryUpdate) SetNillableCreatedAt(t *time.Time) *StoreAppBi
 	return sabu
 }
 
+// SetStoreApp sets the "store_app" edge to the StoreApp entity.
+func (sabu *StoreAppBinaryUpdate) SetStoreApp(s *StoreApp) *StoreAppBinaryUpdate {
+	return sabu.SetStoreAppID(s.ID)
+}
+
+// SetSentinelAppBinaryID sets the "sentinel_app_binary" edge to the SentinelAppBinary entity by ID.
+func (sabu *StoreAppBinaryUpdate) SetSentinelAppBinaryID(id model.InternalID) *StoreAppBinaryUpdate {
+	sabu.mutation.SetSentinelAppBinaryID(id)
+	return sabu
+}
+
+// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (sabu *StoreAppBinaryUpdate) SetSentinelAppBinary(s *SentinelAppBinary) *StoreAppBinaryUpdate {
+	return sabu.SetSentinelAppBinaryID(s.ID)
+}
+
 // Mutation returns the StoreAppBinaryMutation object of the builder.
 func (sabu *StoreAppBinaryUpdate) Mutation() *StoreAppBinaryMutation {
 	return sabu.mutation
+}
+
+// ClearStoreApp clears the "store_app" edge to the StoreApp entity.
+func (sabu *StoreAppBinaryUpdate) ClearStoreApp() *StoreAppBinaryUpdate {
+	sabu.mutation.ClearStoreApp()
+	return sabu
+}
+
+// ClearSentinelAppBinary clears the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (sabu *StoreAppBinaryUpdate) ClearSentinelAppBinary() *StoreAppBinaryUpdate {
+	sabu.mutation.ClearSentinelAppBinary()
+	return sabu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -168,8 +148,22 @@ func (sabu *StoreAppBinaryUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (sabu *StoreAppBinaryUpdate) check() error {
+	if sabu.mutation.StoreAppCleared() && len(sabu.mutation.StoreAppIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "StoreAppBinary.store_app"`)
+	}
+	if sabu.mutation.SentinelAppBinaryCleared() && len(sabu.mutation.SentinelAppBinaryIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "StoreAppBinary.sentinel_app_binary"`)
+	}
+	return nil
+}
+
 func (sabu *StoreAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(storeappbinary.Table, storeappbinary.Columns, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt64))
+	if err := sabu.check(); err != nil {
+		return n, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(storeappbinary.Table, storeappbinary.Columns, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt))
 	if ps := sabu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -177,38 +171,69 @@ func (sabu *StoreAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err error
 			}
 		}
 	}
-	if value, ok := sabu.mutation.Name(); ok {
-		_spec.SetField(storeappbinary.FieldName, field.TypeString, value)
-	}
-	if sabu.mutation.NameCleared() {
-		_spec.ClearField(storeappbinary.FieldName, field.TypeString)
-	}
-	if value, ok := sabu.mutation.SizeBytes(); ok {
-		_spec.SetField(storeappbinary.FieldSizeBytes, field.TypeInt64, value)
-	}
-	if value, ok := sabu.mutation.AddedSizeBytes(); ok {
-		_spec.AddField(storeappbinary.FieldSizeBytes, field.TypeInt64, value)
-	}
-	if sabu.mutation.SizeBytesCleared() {
-		_spec.ClearField(storeappbinary.FieldSizeBytes, field.TypeInt64)
-	}
-	if value, ok := sabu.mutation.PublicURL(); ok {
-		_spec.SetField(storeappbinary.FieldPublicURL, field.TypeString, value)
-	}
-	if sabu.mutation.PublicURLCleared() {
-		_spec.ClearField(storeappbinary.FieldPublicURL, field.TypeString)
-	}
-	if value, ok := sabu.mutation.Sha256(); ok {
-		_spec.SetField(storeappbinary.FieldSha256, field.TypeBytes, value)
-	}
-	if sabu.mutation.Sha256Cleared() {
-		_spec.ClearField(storeappbinary.FieldSha256, field.TypeBytes)
-	}
 	if value, ok := sabu.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := sabu.mutation.CreatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldCreatedAt, field.TypeTime, value)
+	}
+	if sabu.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.StoreAppTable,
+			Columns: []string{storeappbinary.StoreAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.StoreAppTable,
+			Columns: []string{storeappbinary.StoreAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if sabu.mutation.SentinelAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.SentinelAppBinaryTable,
+			Columns: []string{storeappbinary.SentinelAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabu.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.SentinelAppBinaryTable,
+			Columns: []string{storeappbinary.SentinelAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sabu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -230,82 +255,31 @@ type StoreAppBinaryUpdateOne struct {
 	mutation *StoreAppBinaryMutation
 }
 
-// SetName sets the "name" field.
-func (sabuo *StoreAppBinaryUpdateOne) SetName(s string) *StoreAppBinaryUpdateOne {
-	sabuo.mutation.SetName(s)
+// SetStoreAppID sets the "store_app_id" field.
+func (sabuo *StoreAppBinaryUpdateOne) SetStoreAppID(mi model.InternalID) *StoreAppBinaryUpdateOne {
+	sabuo.mutation.SetStoreAppID(mi)
 	return sabuo
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (sabuo *StoreAppBinaryUpdateOne) SetNillableName(s *string) *StoreAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetName(*s)
+// SetNillableStoreAppID sets the "store_app_id" field if the given value is not nil.
+func (sabuo *StoreAppBinaryUpdateOne) SetNillableStoreAppID(mi *model.InternalID) *StoreAppBinaryUpdateOne {
+	if mi != nil {
+		sabuo.SetStoreAppID(*mi)
 	}
 	return sabuo
 }
 
-// ClearName clears the value of the "name" field.
-func (sabuo *StoreAppBinaryUpdateOne) ClearName() *StoreAppBinaryUpdateOne {
-	sabuo.mutation.ClearName()
+// SetSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field.
+func (sabuo *StoreAppBinaryUpdateOne) SetSentinelAppBinaryUnionID(mi model.InternalID) *StoreAppBinaryUpdateOne {
+	sabuo.mutation.SetSentinelAppBinaryUnionID(mi)
 	return sabuo
 }
 
-// SetSizeBytes sets the "size_bytes" field.
-func (sabuo *StoreAppBinaryUpdateOne) SetSizeBytes(i int64) *StoreAppBinaryUpdateOne {
-	sabuo.mutation.ResetSizeBytes()
-	sabuo.mutation.SetSizeBytes(i)
-	return sabuo
-}
-
-// SetNillableSizeBytes sets the "size_bytes" field if the given value is not nil.
-func (sabuo *StoreAppBinaryUpdateOne) SetNillableSizeBytes(i *int64) *StoreAppBinaryUpdateOne {
-	if i != nil {
-		sabuo.SetSizeBytes(*i)
+// SetNillableSentinelAppBinaryUnionID sets the "sentinel_app_binary_union_id" field if the given value is not nil.
+func (sabuo *StoreAppBinaryUpdateOne) SetNillableSentinelAppBinaryUnionID(mi *model.InternalID) *StoreAppBinaryUpdateOne {
+	if mi != nil {
+		sabuo.SetSentinelAppBinaryUnionID(*mi)
 	}
-	return sabuo
-}
-
-// AddSizeBytes adds i to the "size_bytes" field.
-func (sabuo *StoreAppBinaryUpdateOne) AddSizeBytes(i int64) *StoreAppBinaryUpdateOne {
-	sabuo.mutation.AddSizeBytes(i)
-	return sabuo
-}
-
-// ClearSizeBytes clears the value of the "size_bytes" field.
-func (sabuo *StoreAppBinaryUpdateOne) ClearSizeBytes() *StoreAppBinaryUpdateOne {
-	sabuo.mutation.ClearSizeBytes()
-	return sabuo
-}
-
-// SetPublicURL sets the "public_url" field.
-func (sabuo *StoreAppBinaryUpdateOne) SetPublicURL(s string) *StoreAppBinaryUpdateOne {
-	sabuo.mutation.SetPublicURL(s)
-	return sabuo
-}
-
-// SetNillablePublicURL sets the "public_url" field if the given value is not nil.
-func (sabuo *StoreAppBinaryUpdateOne) SetNillablePublicURL(s *string) *StoreAppBinaryUpdateOne {
-	if s != nil {
-		sabuo.SetPublicURL(*s)
-	}
-	return sabuo
-}
-
-// ClearPublicURL clears the value of the "public_url" field.
-func (sabuo *StoreAppBinaryUpdateOne) ClearPublicURL() *StoreAppBinaryUpdateOne {
-	sabuo.mutation.ClearPublicURL()
-	return sabuo
-}
-
-// SetSha256 sets the "sha256" field.
-func (sabuo *StoreAppBinaryUpdateOne) SetSha256(b []byte) *StoreAppBinaryUpdateOne {
-	sabuo.mutation.SetSha256(b)
-	return sabuo
-}
-
-// ClearSha256 clears the value of the "sha256" field.
-func (sabuo *StoreAppBinaryUpdateOne) ClearSha256() *StoreAppBinaryUpdateOne {
-	sabuo.mutation.ClearSha256()
 	return sabuo
 }
 
@@ -329,9 +303,37 @@ func (sabuo *StoreAppBinaryUpdateOne) SetNillableCreatedAt(t *time.Time) *StoreA
 	return sabuo
 }
 
+// SetStoreApp sets the "store_app" edge to the StoreApp entity.
+func (sabuo *StoreAppBinaryUpdateOne) SetStoreApp(s *StoreApp) *StoreAppBinaryUpdateOne {
+	return sabuo.SetStoreAppID(s.ID)
+}
+
+// SetSentinelAppBinaryID sets the "sentinel_app_binary" edge to the SentinelAppBinary entity by ID.
+func (sabuo *StoreAppBinaryUpdateOne) SetSentinelAppBinaryID(id model.InternalID) *StoreAppBinaryUpdateOne {
+	sabuo.mutation.SetSentinelAppBinaryID(id)
+	return sabuo
+}
+
+// SetSentinelAppBinary sets the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (sabuo *StoreAppBinaryUpdateOne) SetSentinelAppBinary(s *SentinelAppBinary) *StoreAppBinaryUpdateOne {
+	return sabuo.SetSentinelAppBinaryID(s.ID)
+}
+
 // Mutation returns the StoreAppBinaryMutation object of the builder.
 func (sabuo *StoreAppBinaryUpdateOne) Mutation() *StoreAppBinaryMutation {
 	return sabuo.mutation
+}
+
+// ClearStoreApp clears the "store_app" edge to the StoreApp entity.
+func (sabuo *StoreAppBinaryUpdateOne) ClearStoreApp() *StoreAppBinaryUpdateOne {
+	sabuo.mutation.ClearStoreApp()
+	return sabuo
+}
+
+// ClearSentinelAppBinary clears the "sentinel_app_binary" edge to the SentinelAppBinary entity.
+func (sabuo *StoreAppBinaryUpdateOne) ClearSentinelAppBinary() *StoreAppBinaryUpdateOne {
+	sabuo.mutation.ClearSentinelAppBinary()
+	return sabuo
 }
 
 // Where appends a list predicates to the StoreAppBinaryUpdate builder.
@@ -383,8 +385,22 @@ func (sabuo *StoreAppBinaryUpdateOne) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (sabuo *StoreAppBinaryUpdateOne) check() error {
+	if sabuo.mutation.StoreAppCleared() && len(sabuo.mutation.StoreAppIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "StoreAppBinary.store_app"`)
+	}
+	if sabuo.mutation.SentinelAppBinaryCleared() && len(sabuo.mutation.SentinelAppBinaryIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "StoreAppBinary.sentinel_app_binary"`)
+	}
+	return nil
+}
+
 func (sabuo *StoreAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *StoreAppBinary, err error) {
-	_spec := sqlgraph.NewUpdateSpec(storeappbinary.Table, storeappbinary.Columns, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt64))
+	if err := sabuo.check(); err != nil {
+		return _node, err
+	}
+	_spec := sqlgraph.NewUpdateSpec(storeappbinary.Table, storeappbinary.Columns, sqlgraph.NewFieldSpec(storeappbinary.FieldID, field.TypeInt))
 	id, ok := sabuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "StoreAppBinary.id" for update`)}
@@ -409,38 +425,69 @@ func (sabuo *StoreAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Store
 			}
 		}
 	}
-	if value, ok := sabuo.mutation.Name(); ok {
-		_spec.SetField(storeappbinary.FieldName, field.TypeString, value)
-	}
-	if sabuo.mutation.NameCleared() {
-		_spec.ClearField(storeappbinary.FieldName, field.TypeString)
-	}
-	if value, ok := sabuo.mutation.SizeBytes(); ok {
-		_spec.SetField(storeappbinary.FieldSizeBytes, field.TypeInt64, value)
-	}
-	if value, ok := sabuo.mutation.AddedSizeBytes(); ok {
-		_spec.AddField(storeappbinary.FieldSizeBytes, field.TypeInt64, value)
-	}
-	if sabuo.mutation.SizeBytesCleared() {
-		_spec.ClearField(storeappbinary.FieldSizeBytes, field.TypeInt64)
-	}
-	if value, ok := sabuo.mutation.PublicURL(); ok {
-		_spec.SetField(storeappbinary.FieldPublicURL, field.TypeString, value)
-	}
-	if sabuo.mutation.PublicURLCleared() {
-		_spec.ClearField(storeappbinary.FieldPublicURL, field.TypeString)
-	}
-	if value, ok := sabuo.mutation.Sha256(); ok {
-		_spec.SetField(storeappbinary.FieldSha256, field.TypeBytes, value)
-	}
-	if sabuo.mutation.Sha256Cleared() {
-		_spec.ClearField(storeappbinary.FieldSha256, field.TypeBytes)
-	}
 	if value, ok := sabuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := sabuo.mutation.CreatedAt(); ok {
 		_spec.SetField(storeappbinary.FieldCreatedAt, field.TypeTime, value)
+	}
+	if sabuo.mutation.StoreAppCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.StoreAppTable,
+			Columns: []string{storeappbinary.StoreAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.StoreAppIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.StoreAppTable,
+			Columns: []string{storeappbinary.StoreAppColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(storeapp.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if sabuo.mutation.SentinelAppBinaryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.SentinelAppBinaryTable,
+			Columns: []string{storeappbinary.SentinelAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := sabuo.mutation.SentinelAppBinaryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: false,
+			Table:   storeappbinary.SentinelAppBinaryTable,
+			Columns: []string{storeappbinary.SentinelAppBinaryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sentinelappbinary.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &StoreAppBinary{config: sabuo.config}
 	_spec.Assign = _node.assignValues

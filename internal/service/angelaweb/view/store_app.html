@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="header">
+        <h1 class="title">{{localize .Ctx "StoreAppTitle"}}</h1>
+    </div>
+
+    <div class="table-wrapper">
+        <table class="table">
+            <thead class="thead">
+                <tr>
+                    <th class="th">{{localize .Ctx "ID_"}}</th>
+                    <th class="th">{{localize .Ctx "StoreAppName"}}</th>
+                    <th class="th">{{localize .Ctx "StoreAppDescription"}}</th>
+                    <th class="th">{{localize .Ctx "Actions"}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .StoreApps}}
+                <tr class="tr">
+                    <td class="td">{{.ID}}</td>
+                    <td class="td">{{.Name}}</td>
+                    <td class="td">{{.Description}}</td>
+                    <td class="td">
+                        <div class="flex space-x-3">
+                            <a href="/store-apps/{{.ID}}" class="action-link">
+                                {{localize $.Ctx "View"}}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="4" class="td text-center">
+                        {{localize .Ctx "NoStoreAppData"}}
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Control -->
+    {{if .Pagination}}
+    <div class="card mt-6">
+        <div class="content flex justify-between items-center">
+            <div class="text-sm text-slate-700 dark:text-slate-300">
+                {{localize .Ctx "PaginationText" "CurrentPage" .Pagination.CurrentPage "TotalPages" .Pagination.TotalPages}}
+            </div>
+            <div class="flex space-x-2">
+                {{if .Pagination.HasPrev}}
+                <a href="/store-apps?page={{.Pagination.PrevPage}}" class="btn-secondary">
+                    {{localize .Ctx "Previous"}}
+                </a>
+                {{else}}
+                <button disabled class="btn-disabled">
+                    {{localize .Ctx "Previous"}}
+                </button>
+                {{end}}
+
+                {{if .Pagination.HasNext}}
+                <a href="/store-apps?page={{.Pagination.NextPage}}" class="btn-secondary">
+                    {{localize .Ctx "Next"}}
+                </a>
+                {{else}}
+                <button disabled class="btn-disabled">
+                    {{localize .Ctx "Next"}}
+                </button>
+                {{end}}
+            </div>
+        </div>
+    </div>
+    {{end}}
+</div>

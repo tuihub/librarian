@@ -318,6 +318,55 @@
   .sidebar-nav-text {
     @apply text-sm font-medium;
   }
+  
+  /* 二级菜单容器 */
+  .sidebar-submenu {
+    @apply mt-1 ml-7 space-y-1 overflow-hidden transition-all duration-300 ease-in-out;
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  /* 二级菜单展开状态 */
+  .sidebar-submenu.expanded {
+    height: auto;
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* 二级菜单项 */
+  .sidebar-submenu-item {
+    @apply flex items-center px-4 py-2 text-slate-400 hover:text-slate-300 hover:bg-slate-700/30 rounded-lg transition duration-200;
+  }
+  
+  /* 二级菜单图标 */
+  .sidebar-submenu-icon {
+    @apply h-5 w-5 mr-3 text-slate-500;
+  }
+  
+  /* 二级菜单文本 */
+  .sidebar-submenu-text {
+    @apply text-sm font-medium;
+  }
+  
+  /* 菜单展开/收起图标容器 */
+  .sidebar-nav-toggle {
+    @apply ml-auto transition-transform duration-300;
+  }
+  
+  /* 菜单展开状态 */
+  .sidebar-nav-item.expanded .sidebar-nav-toggle {
+    @apply rotate-180;
+  }
+  
+  /* 菜单项激活状态 */
+  .sidebar-nav-item.active {
+    @apply bg-slate-700/50 text-white;
+  }
+  
+  .sidebar-submenu-item.active {
+    @apply bg-slate-700/30 text-white;
+  }
 
   .sidebar-footer {
     @apply mt-auto pt-4 border-t border-slate-700;

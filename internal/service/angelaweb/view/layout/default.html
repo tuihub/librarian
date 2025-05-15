@@ -49,6 +49,15 @@
                 overlay.classList.toggle('hidden');
             }
         }
+        
+        function toggleSubmenu(element) {
+            const submenu = element.nextElementSibling;
+            if (!submenu || !submenu.classList.contains('sidebar-submenu')) return;
+            
+            // 切换当前菜单状态
+            element.classList.toggle('expanded');
+            submenu.classList.toggle('expanded');
+        }
     </script>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 min-h-screen transition-colors duration-200">
@@ -82,10 +91,29 @@
                     {{template "icon-plugins" .}}
                     <span class="sidebar-nav-text">{{localize .Ctx "PluginManagement"}}</span>
                 </a>
-                <a href="/sentinels" class="sidebar-nav-item">
-                    {{template "icon-sentinel" .}}
-                    <span class="sidebar-nav-text">{{localize .Ctx "SentinelManagement"}}</span>
-                </a>
+                <div class="sidebar-nav-item {{if or (eq .Path "/sentinels") (eq .Path "/store-apps") (eq .Path "/store-app-binaries")}}expanded{{end}}" onclick="toggleSubmenu(this)" title="{{localize .Ctx "ExpandMenu"}}">
+                    <!-- Debug output -->
+                    <span style="display: none;">Current path: {{.Path}}</span>
+                    {{template "icon-store" .}}
+                    <span class="sidebar-nav-text">{{localize .Ctx "StoreManagement"}}</span>
+                    <span class="sidebar-nav-toggle">
+                        {{template "icon-chevron-down" .}}
+                    </span>
+                </div>
+                <div class="sidebar-submenu {{if or (eq .Path "/sentinels") (eq .Path "/store-apps") (eq .Path "/store-app-binaries")}}expanded{{end}}">
+                    <a href="/sentinels" class="sidebar-submenu-item {{if eq .Path "/sentinels"}}active{{end}}">
+                        {{template "icon-sentinel" .}}
+                        <span class="sidebar-submenu-text">{{localize .Ctx "SentinelManagement"}}</span>
+                    </a>
+                    <a href="/store-apps" class="sidebar-submenu-item {{if eq .Path "/store-apps"}}active{{end}}">
+                        {{template "icon-store" .}}
+                        <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppManagement"}}</span>
+                    </a>
+                    <a href="/store-app-binaries" class="sidebar-submenu-item {{if eq .Path "/store-app-binaries"}}active{{end}}">
+                        {{template "icon-store" .}}
+                        <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppBinaryManagement"}}</span>
+                    </a>
+                </div>
                 <a href="/config" class="sidebar-nav-item">
                     {{template "icon-settings" .}}
                     <span class="sidebar-nav-text">{{localize .Ctx "SystemConfiguration"}}</span>

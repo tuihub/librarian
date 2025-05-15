@@ -99,19 +99,6 @@ func ToBizApp(source *ent.App) *modelgebura.App {
 	}
 	return pModelgeburaApp
 }
-func ToBizAppBinary(source ent.StoreAppBinary) modelgebura.AppBinary {
-	var modelgeburaAppBinary modelgebura.AppBinary
-	modelgeburaAppBinary.Name = source.Name
-	modelgeburaAppBinary.SizeBytes = source.SizeBytes
-	modelgeburaAppBinary.PublicURL = source.PublicURL
-	if source.Sha256 != nil {
-		modelgeburaAppBinary.Sha256 = make([]uint8, len(source.Sha256))
-		for i := 0; i < len(source.Sha256); i++ {
-			modelgeburaAppBinary.Sha256[i] = source.Sha256[i]
-		}
-	}
-	return modelgeburaAppBinary
-}
 func ToBizAppCategory(source *ent.AppCategory) *modelgebura.AppCategory {
 	var pModelgeburaAppCategory *modelgebura.AppCategory
 	if source != nil {
@@ -664,6 +651,53 @@ func ToBizSentinelSessionStatus(source sentinelsession.Status) modelgebura.Senti
 		modelgeburaSentinelSessionStatus = modelgebura.SentinelSessionStatusUnspecified
 	}
 	return modelgeburaSentinelSessionStatus
+}
+func ToBizStoreApp(source *ent.StoreApp) *modelgebura.StoreApp {
+	var pModelgeburaStoreApp *modelgebura.StoreApp
+	if source != nil {
+		var modelgeburaStoreApp modelgebura.StoreApp
+		modelgeburaStoreApp.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaStoreApp.Name = (*source).Name
+		modelgeburaStoreApp.Description = (*source).Description
+		pModelgeburaStoreApp = &modelgeburaStoreApp
+	}
+	return pModelgeburaStoreApp
+}
+func ToBizStoreAppBinary(source *ent.SentinelAppBinary) *modelgebura.StoreAppBinary {
+	var pModelgeburaStoreAppBinary *modelgebura.StoreAppBinary
+	if source != nil {
+		var modelgeburaStoreAppBinary modelgebura.StoreAppBinary
+		modelgeburaStoreAppBinary.ID = modelInternalIDToModelInternalID((*source).ID)
+		modelgeburaStoreAppBinary.UnionID = (*source).UnionID
+		modelgeburaStoreAppBinary.SizeBytes = (*source).SizeBytes
+		modelgeburaStoreAppBinary.NeedToken = (*source).NeedToken
+		modelgeburaStoreAppBinary.Name = (*source).Name
+		modelgeburaStoreAppBinary.Version = (*source).Version
+		modelgeburaStoreAppBinary.Developer = (*source).Developer
+		modelgeburaStoreAppBinary.Publisher = (*source).Publisher
+		pModelgeburaStoreAppBinary = &modelgeburaStoreAppBinary
+	}
+	return pModelgeburaStoreAppBinary
+}
+func ToBizStoreAppBinaryList(source []*ent.SentinelAppBinary) []*modelgebura.StoreAppBinary {
+	var pModelgeburaStoreAppBinaryList []*modelgebura.StoreAppBinary
+	if source != nil {
+		pModelgeburaStoreAppBinaryList = make([]*modelgebura.StoreAppBinary, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaStoreAppBinaryList[i] = ToBizStoreAppBinary(source[i])
+		}
+	}
+	return pModelgeburaStoreAppBinaryList
+}
+func ToBizStoreAppList(source []*ent.StoreApp) []*modelgebura.StoreApp {
+	var pModelgeburaStoreAppList []*modelgebura.StoreApp
+	if source != nil {
+		pModelgeburaStoreAppList = make([]*modelgebura.StoreApp, len(source))
+		for i := 0; i < len(source); i++ {
+			pModelgeburaStoreAppList[i] = ToBizStoreApp(source[i])
+		}
+	}
+	return pModelgeburaStoreAppList
 }
 func ToBizSystemNotification(source *ent.SystemNotification) *modelnetzach.SystemNotification {
 	var pModelnetzachSystemNotification *modelnetzach.SystemNotification

@@ -4630,6 +4630,38 @@ func (c *SentinelAppBinaryClient) GetX(ctx context.Context, id model.InternalID)
 	return obj
 }
 
+// QueryStoreApp queries the store_app edge of a SentinelAppBinary.
+func (c *SentinelAppBinaryClient) QueryStoreApp(sab *SentinelAppBinary) *StoreAppQuery {
+	query := (&StoreAppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sab.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sentinelappbinary.Table, sentinelappbinary.FieldID, id),
+			sqlgraph.To(storeapp.Table, storeapp.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sentinelappbinary.StoreAppTable, sentinelappbinary.StoreAppPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStoreAppBinary queries the store_app_binary edge of a SentinelAppBinary.
+func (c *SentinelAppBinaryClient) QueryStoreAppBinary(sab *SentinelAppBinary) *StoreAppBinaryQuery {
+	query := (&StoreAppBinaryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sab.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sentinelappbinary.Table, sentinelappbinary.FieldID, id),
+			sqlgraph.To(storeappbinary.Table, storeappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, sentinelappbinary.StoreAppBinaryTable, sentinelappbinary.StoreAppBinaryColumn),
+		)
+		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SentinelAppBinaryClient) Hooks() []Hook {
 	return c.hooks.SentinelAppBinary
@@ -5359,6 +5391,38 @@ func (c *StoreAppClient) GetX(ctx context.Context, id model.InternalID) *StoreAp
 	return obj
 }
 
+// QueryAppBinary queries the app_binary edge of a StoreApp.
+func (c *StoreAppClient) QueryAppBinary(sa *StoreApp) *SentinelAppBinaryQuery {
+	query := (&SentinelAppBinaryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeapp.Table, storeapp.FieldID, id),
+			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, storeapp.AppBinaryTable, storeapp.AppBinaryPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(sa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryStoreAppBinary queries the store_app_binary edge of a StoreApp.
+func (c *StoreAppClient) QueryStoreAppBinary(sa *StoreApp) *StoreAppBinaryQuery {
+	query := (&StoreAppBinaryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sa.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeapp.Table, storeapp.FieldID, id),
+			sqlgraph.To(storeappbinary.Table, storeappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, true, storeapp.StoreAppBinaryTable, storeapp.StoreAppBinaryColumn),
+		)
+		fromV = sqlgraph.Neighbors(sa.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *StoreAppClient) Hooks() []Hook {
 	return c.hooks.StoreApp
@@ -5445,7 +5509,7 @@ func (c *StoreAppBinaryClient) UpdateOne(sab *StoreAppBinary) *StoreAppBinaryUpd
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *StoreAppBinaryClient) UpdateOneID(id model.InternalID) *StoreAppBinaryUpdateOne {
+func (c *StoreAppBinaryClient) UpdateOneID(id int) *StoreAppBinaryUpdateOne {
 	mutation := newStoreAppBinaryMutation(c.config, OpUpdateOne, withStoreAppBinaryID(id))
 	return &StoreAppBinaryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -5462,7 +5526,7 @@ func (c *StoreAppBinaryClient) DeleteOne(sab *StoreAppBinary) *StoreAppBinaryDel
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *StoreAppBinaryClient) DeleteOneID(id model.InternalID) *StoreAppBinaryDeleteOne {
+func (c *StoreAppBinaryClient) DeleteOneID(id int) *StoreAppBinaryDeleteOne {
 	builder := c.Delete().Where(storeappbinary.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -5479,17 +5543,49 @@ func (c *StoreAppBinaryClient) Query() *StoreAppBinaryQuery {
 }
 
 // Get returns a StoreAppBinary entity by its id.
-func (c *StoreAppBinaryClient) Get(ctx context.Context, id model.InternalID) (*StoreAppBinary, error) {
+func (c *StoreAppBinaryClient) Get(ctx context.Context, id int) (*StoreAppBinary, error) {
 	return c.Query().Where(storeappbinary.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *StoreAppBinaryClient) GetX(ctx context.Context, id model.InternalID) *StoreAppBinary {
+func (c *StoreAppBinaryClient) GetX(ctx context.Context, id int) *StoreAppBinary {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryStoreApp queries the store_app edge of a StoreAppBinary.
+func (c *StoreAppBinaryClient) QueryStoreApp(sab *StoreAppBinary) *StoreAppQuery {
+	query := (&StoreAppClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sab.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeappbinary.Table, storeappbinary.FieldID, id),
+			sqlgraph.To(storeapp.Table, storeapp.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, storeappbinary.StoreAppTable, storeappbinary.StoreAppColumn),
+		)
+		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySentinelAppBinary queries the sentinel_app_binary edge of a StoreAppBinary.
+func (c *StoreAppBinaryClient) QuerySentinelAppBinary(sab *StoreAppBinary) *SentinelAppBinaryQuery {
+	query := (&SentinelAppBinaryClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := sab.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(storeappbinary.Table, storeappbinary.FieldID, id),
+			sqlgraph.To(sentinelappbinary.Table, sentinelappbinary.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, false, storeappbinary.SentinelAppBinaryTable, storeappbinary.SentinelAppBinaryColumn),
+		)
+		fromV = sqlgraph.Neighbors(sab.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
