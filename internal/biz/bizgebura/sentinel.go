@@ -2,6 +2,7 @@ package bizgebura
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
@@ -157,6 +158,15 @@ func (g *Gebura) UpsertSentinelInfo(
 		return bizutils.NoPermissionError()
 	}
 	s.ID = claims.UserID
+	if len(s.Libraries) > 0 {
+		ids, err := g.id.BatchNew(len(s.Libraries))
+		if err != nil {
+			return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		}
+		for i := range s.Libraries {
+			s.Libraries[i].ID = ids[i]
+		}
+	}
 	err := g.repo.UpdateSentinelInfo(ctx, s)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
@@ -172,7 +182,24 @@ func (g *Gebura) UpsertAppBinaries(
 		return bizutils.NoPermissionError()
 	}
 	sentinelID := claims.UserID
-	err := g.repo.UpsertAppBinaries(ctx, sentinelID, abs)
+	ids, err := g.id.BatchNew(len(abs))
+	if err != nil {
+		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+	}
+	for i := range abs {
+		abs[i].ID = ids[i]
+		abs[i].UnionID = fmt.Sprintf("%d-%d-%s", sentinelID, abs[i].SentinelLibraryID, abs[i].GeneratedID)
+		if len(abs[i].Files) > 0 {
+			fileIDs, err2 := g.id.BatchNew(len(abs[i].Files))
+			if err2 != nil {
+				return pb.ErrorErrorReasonUnspecified("%s", err2.Error())
+			}
+			for j := range abs[i].Files {
+				abs[i].Files[j].ID = fileIDs[j]
+			}
+		}
+	}
+	err = g.repo.UpsertAppBinaries(ctx, sentinelID, abs)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}

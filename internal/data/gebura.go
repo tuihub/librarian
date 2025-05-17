@@ -743,6 +743,7 @@ func (g *GeburaRepo) UpdateSentinelInfo(
 		newLibs := make([]*ent.SentinelLibraryCreate, 0, len(s.Libraries))
 		for _, lib := range s.Libraries {
 			newLibs = append(newLibs, tx.SentinelLibrary.Create().
+				SetID(lib.ID).
 				SetSentinelID(sInfo.ID).
 				SetReportedID(lib.ReportedID).
 				SetDownloadBasePath(lib.DownloadBasePath).
@@ -785,6 +786,8 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
 		for _, ab := range abs {
 			newAbs = append(newAbs, tx.SentinelAppBinary.Create().
+				SetID(ab.ID).
+				SetUnionID(ab.UnionID).
 				SetSentinelID(sentinelID).
 				SetSentinelLibraryReportedID(ab.SentinelLibraryID).
 				SetGeneratedID(ab.GeneratedID).
@@ -820,6 +823,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 		for _, ab := range abs {
 			for _, f := range ab.Files {
 				newAbfs = append(newAbfs, tx.SentinelAppBinaryFile.Create().
+					SetID(f.ID).
 					SetSentinelID(sentinelID).
 					SetSentinelLibraryReportedID(ab.SentinelLibraryID).
 					SetSentinelAppBinaryGeneratedID(ab.GeneratedID).

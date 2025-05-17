@@ -140,12 +140,15 @@ type SentinelSession struct {
 }
 
 type SentinelLibrary struct {
+	ID               model.InternalID
 	ReportedID       int64
 	DownloadBasePath string
 	AppBinaries      []*SentinelAppBinary
 }
 
 type SentinelAppBinary struct {
+	ID                model.InternalID
+	UnionID           string
 	SentinelLibraryID int64
 	GeneratedID       string
 	SizeBytes         int64
@@ -158,6 +161,7 @@ type SentinelAppBinary struct {
 }
 
 type SentinelAppBinaryFile struct {
+	ID             model.InternalID
 	Name           string
 	SizeBytes      int64
 	Sha256         []byte
