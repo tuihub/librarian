@@ -43,6 +43,34 @@ func NewBuilder(
 	}
 }
 
+const (
+	DefaultPageSize = 10
+	DefaultPageNum  = 1
+)
+
+func getPaginationParams(c *fiber.Ctx) (int, int) {
+	pageNum, err := strconv.Atoi(c.Query("page", strconv.Itoa(DefaultPageNum)))
+	if err != nil || pageNum < 1 {
+		pageNum = DefaultPageNum
+	}
+	return pageNum, DefaultPageSize
+}
+
+func parsePaginationData(pageNum, pageSize, total int) fiber.Map {
+	totalPages := (total + pageSize - 1) / pageSize
+	if totalPages == 0 {
+		totalPages = 1
+	}
+	return fiber.Map{
+		"CurrentPage": pageNum,
+		"TotalPages":  totalPages,
+		"HasPrev":     pageNum > 1,
+		"HasNext":     pageNum < totalPages,
+		"PrevPage":    pageNum - 1,
+		"NextPage":    pageNum + 1,
+	}
+}
+
 // addCommonData adds common data used across templates.
 func addCommonData(c *fiber.Ctx, data fiber.Map) fiber.Map {
 	if data == nil {
@@ -84,12 +112,7 @@ func (b *Builder) Dashboard(c *fiber.Ctx) error {
 }
 
 func (b *Builder) UserList(c *fiber.Ctx) error {
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 10
-	}
-
-	pageSize := 10 // Users per page
+	pageNum, pageSize := getPaginationParams(c)
 
 	users, total, err := b.t.ListUsers(c.UserContext(), model.Paging{
 		PageNum:  int64(pageNum),
@@ -98,21 +121,10 @@ func (b *Builder) UserList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString("Error fetching users")
 	}
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
+
 	return c.Render("user", addCommonData(c, fiber.Map{
-		"Users": users,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"Users":      users,
+		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
 
@@ -145,11 +157,8 @@ func (b *Builder) UserForm(c *fiber.Ctx) error {
 }
 
 func (b *Builder) PorterList(c *fiber.Ctx) error {
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 1
-	}
-	pageSize := 10 // Porters per page
+	pageNum, pageSize := getPaginationParams(c)
+
 	porters, total, err := b.t.ListPorters(c.UserContext(), model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
@@ -157,21 +166,10 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingPorters"))
 	}
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
+
 	return c.Render("porter", addCommonData(c, fiber.Map{
-		"Porters": porters,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"Porters":    porters,
+		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
 
@@ -200,11 +198,8 @@ func (b *Builder) ServerInfoForm(c *fiber.Ctx) error {
 }
 
 func (b *Builder) SentinelList(c *fiber.Ctx) error {
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 1
-	}
-	pageSize := 10 // Sentinels per page
+	pageNum, pageSize := getPaginationParams(c)
+
 	sentinels, total, err := b.g.ListSentinels(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
@@ -212,21 +207,10 @@ func (b *Builder) SentinelList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingSentinels"))
 	}
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
+
 	return c.Render("sentinel", addCommonData(c, fiber.Map{
-		"Sentinels": sentinels,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"Sentinels":  sentinels,
+		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
 
@@ -274,11 +258,7 @@ func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).SendString("Sentinel not found")
 	}
 
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 1
-	}
-	pageSize := 10 // Sessions per page
+	pageNum, pageSize := getPaginationParams(c)
 
 	sessions, total, err := b.g.ListSentinelSessions(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
@@ -288,32 +268,16 @@ func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingData"))
 	}
 
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
-
 	return c.Render("sentinel_detail", addCommonData(c, fiber.Map{
-		"Sentinel": sentinel,
-		"Sessions": sessions,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"Sentinel":   sentinel,
+		"Sessions":   sessions,
+		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
 
 func (b *Builder) StoreAppList(c *fiber.Ctx) error {
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 1
-	}
-	pageSize := 10 // StoreApps per page
+	pageNum, pageSize := getPaginationParams(c)
+
 	storeApps, total, err := b.g.ListStoreApps(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
@@ -321,51 +285,27 @@ func (b *Builder) StoreAppList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingStoreApps"))
 	}
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
+
 	return c.Render("store_app", addCommonData(c, fiber.Map{
-		"StoreApps": storeApps,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"StoreApps":  storeApps,
+		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
 
 func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
-	pageNum, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || pageNum < 1 {
-		pageNum = 1
-	}
-	pageSize := 10 // StoreAppBinaries per page
+	pageNum, pageSize := getPaginationParams(c)
+
 	storeAppBinaries, total, err := b.g.ListStoreAppBinaries(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
 	}, nil)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingStoreAppBinaries"))
+		return c.Status(http.StatusInternalServerError).
+			SendString(fiberi18n.MustLocalize(c, "ErrorFetchingStoreAppBinaries"))
 	}
-	// Calculate pagination information
-	totalPages := (int(total) + pageSize - 1) / pageSize
-	if totalPages == 0 {
-		totalPages = 1
-	}
+
 	return c.Render("store_app_binary", addCommonData(c, fiber.Map{
 		"StoreAppBinaries": storeAppBinaries,
-		"Pagination": fiber.Map{
-			"CurrentPage": pageNum,
-			"TotalPages":  totalPages,
-			"HasPrev":     pageNum > 1,
-			"HasNext":     pageNum < totalPages,
-			"PrevPage":    pageNum - 1,
-			"NextPage":    pageNum + 1,
-		},
+		"Pagination":       parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }

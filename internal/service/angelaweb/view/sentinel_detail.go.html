@@ -138,32 +138,7 @@
 
         <!-- Pagination Control -->
         {{if .Pagination}}
-        <div class="content flex justify-between items-center">
-            <div class="text-sm text-slate-700 dark:text-slate-300">
-                {{localize .Ctx "PaginationText" "CurrentPage" .Pagination.CurrentPage "TotalPages" .Pagination.TotalPages}}
-            </div>
-            <div class="flex space-x-2">
-                {{if .Pagination.HasPrev}}
-                <a href="/sentinels/{{.Sentinel.ID}}?page={{.Pagination.PrevPage}}" class="btn-secondary">
-                    {{localize .Ctx "Previous"}}
-                </a>
-                {{else}}
-                <button disabled class="btn-disabled">
-                    {{localize .Ctx "Previous"}}
-                </button>
-                {{end}}
-
-                {{if .Pagination.HasNext}}
-                <a href="/sentinels/{{.Sentinel.ID}}?page={{.Pagination.NextPage}}" class="btn-secondary">
-                    {{localize .Ctx "Next"}}
-                </a>
-                {{else}}
-                <button disabled class="btn-disabled">
-                    {{localize .Ctx "Next"}}
-                </button>
-                {{end}}
-            </div>
-        </div>
+            {{template "pagination" .}}
         {{end}}
     </div>
 </div>
