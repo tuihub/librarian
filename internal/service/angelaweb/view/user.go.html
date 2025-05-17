@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header">
         <h1 class="title">{{localize .Ctx "UserManagementTitle"}}</h1>
-        <a href="/users/new" class="btn-primary">
+        <a href="/users/new" class="btn btn-soft btn-primary">
             {{template "icon-add" .}}
             {{localize .Ctx "CreateNewUser"}}
         </a>
@@ -9,31 +9,31 @@
 
     <div class="table-wrapper">
         <table class="table">
-            <thead class="thead">
+            <thead>
                 <tr>
-                    <th class="th">{{localize .Ctx "ID_"}}</th>
-                    <th class="th">{{localize .Ctx "Username"}}</th>
-                    <th class="th">{{localize .Ctx "Role"}}</th>
-                    <th class="th">{{localize .Ctx "Actions"}}</th>
+                    <th>{{localize .Ctx "ID_"}}</th>
+                    <th>{{localize .Ctx "Username"}}</th>
+                    <th>{{localize .Ctx "Role"}}</th>
+                    <th>{{localize .Ctx "Actions"}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .Users}}
-                <tr class="tr">
-                    <td class="td">{{.ID}}</td>
-                    <td class="td">{{.Username}}</td>
-                    <td class="td">
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>{{.Username}}</td>
+                    <td>
                         {{if eq .Type 1}}
-                        <span class="badge badge-admin">
+                        <span class="badge badge-soft badge-primary">
                             {{localize $.Ctx "Administrator"}}
                         </span>
                         {{else}}
-                        <span class="badge badge-user">
+                        <span class="badge badge-soft badge-secondary">
                             {{localize $.Ctx "RegularUser"}}
                         </span>
                         {{end}}
                     </td>
-                    <td class="td">
+                    <td>
                         <div class="flex space-x-3">
                             <a href="/users/edit/{{.ID}}" class="action-link">
                                 {{localize $.Ctx "Edit"}}
@@ -48,7 +48,7 @@
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="4" class="td text-center">
+                    <td colspan="4" class="text-center">
                         {{localize .Ctx "NoUserData"}}
                     </td>
                 </tr>
@@ -64,26 +64,26 @@
 </div>
 
 <!-- Delete Confirmation Dialog -->
-<div id="deleteModal" class="modal-backdrop">
-    <div class="card max-w-md w-full mx-4">
-        <div class="content">
-            <h3 class="modal-title">{{localize .Ctx "ConfirmDeletion"}}</h3>
-            <p class="modal-text">
-                {{localize .Ctx "DeleteUserConfirmPrefix"}} 
-                <span id="deleteUsername" class="font-semibold text-slate-900 dark:text-slate-100"></span> 
-                {{localize .Ctx "DeleteUserConfirmSuffix"}}
-            </p>
-            <div class="modal-actions">
-                <button id="cancelDelete" class="btn-secondary">
+<dialog id="deleteModal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmDeletion"}}</h3>
+        <p class="py-4">
+            {{localize .Ctx "DeleteUserConfirmPrefix"}}
+            <span id="deleteUsername" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            {{localize .Ctx "DeleteUserConfirmSuffix"}}
+        </p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button id="cancelDelete" class="btn btn-secondary">
                     {{localize .Ctx "Cancel"}}
                 </button>
-                <button id="confirmDelete" class="btn-danger">
-                    {{localize .Ctx "Delete"}}
-                </button>
-            </div>
+            </form>
+            <button id="confirmDelete" class="btn btn-warning">
+                {{localize .Ctx "Delete"}}
+            </button>
         </div>
     </div>
-</div>
+</dialog>
 
 <script>
     // User deletion interaction logic
@@ -99,13 +99,13 @@
             button.addEventListener('click', function() {
                 userId = this.dataset.id;
                 deleteUsername.textContent = this.dataset.username;
-                deleteModal.classList.remove('hidden');
+                deleteModal.showModal();
             });
         });
 
         // Cancel deletion
         cancelDelete.addEventListener('click', function() {
-            deleteModal.classList.add('hidden');
+            deleteModal.close();
             userId = null;
         });
 
@@ -117,7 +117,7 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        deleteModal.classList.add('hidden');
+                        deleteModal.close();
                         // Refresh page to show updated user list
                         window.location.reload();
                     })

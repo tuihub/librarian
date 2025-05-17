@@ -6,27 +6,38 @@
     <title>{{if .Title}}{{.Title}}{{else}}{{localize .Ctx "SystemName"}}{{end}}</title>
     <link href="/static/css/style.css" rel="stylesheet">
     <script>
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark')
+                document.documentElement.setAttribute('data-theme', 'dark')
+            } else {
+                document.documentElement.classList.remove('dark')
+                document.documentElement.removeAttribute('data-theme')
+            }
+            localStorage.theme = theme
+        }
+
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark')
+            setTheme('dark')
         } else {
-            document.documentElement.classList.remove('dark')
+            setTheme('light')
         }
 
         function setAutoTheme() {
             localStorage.removeItem('theme')
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.documentElement.classList.add('dark')
+                setTheme('dark')
             } else {
-                document.documentElement.classList.remove('dark')
+                setTheme('light')
             }
         }
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
             if (!('theme' in localStorage)) {
                 if (e.matches) {
-                    document.documentElement.classList.add('dark')
+                    setTheme('dark')
                 } else {
-                    document.documentElement.classList.remove('dark')
+                    setTheme('light')
                 }
             }
         })
@@ -64,7 +75,7 @@
         <div class="sidebar-content">
             <div class="sidebar-header">
                 <h1 class="sidebar-title">{{localize .Ctx "SystemName"}}</h1>
-                <button onclick="toggleSidebar()" class="sidebar-close-btn sm:hidden">
+                <button onclick="toggleSidebar()" class="sidebar-close-btn btn-soft sm:hidden">
                     {{template "icon-close" .}}
                 </button>
             </div>
@@ -115,11 +126,11 @@
                     <button onclick="setAutoTheme()" class="theme-toggle-btn" title="{{localize .Ctx "AutoTheme"}}">
                         {{template "icon-auto" .}}
                     </button>
-                    <button onclick="document.documentElement.classList.remove('dark'); localStorage.theme = 'light'; showToast('{{localize .Ctx "LightMode"}}')" 
+                    <button onclick="setTheme('light'); localStorage.theme = 'light'; showToast('{{localize .Ctx "LightMode"}}')"
                         class="theme-toggle-btn" title="{{localize .Ctx "LightTheme"}}">
                         {{template "icon-sun" .}}
                     </button>
-                    <button onclick="document.documentElement.classList.add('dark'); localStorage.theme = 'dark'; showToast('{{localize .Ctx "DarkMode"}}')" 
+                    <button onclick="setTheme('dark'); localStorage.theme = 'dark'; showToast('{{localize .Ctx "DarkMode"}}')"
                         class="theme-toggle-btn" title="{{localize .Ctx "DarkTheme"}}">
                         {{template "icon-moon" .}}
                     </button>

@@ -3,8 +3,9 @@
     "build": "tailwindcss -i ./src/main.css -o ./static/css/style.css",
     "dev": "tailwindcss -i ./src/main.css -o ./static/css/style.css --watch"
   },
-  "dependencies": {
+  "devDependencies": {
     "@tailwindcss/cli": "^4.1.3",
-    "tailwindcss": "^4.1.3"
+    "tailwindcss": "^4.1.3",
+    "daisyui": "^5.0.35"
   }
 }

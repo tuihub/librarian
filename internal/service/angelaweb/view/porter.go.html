@@ -5,33 +5,33 @@
 
     <div class="table-wrapper">
         <table class="table">
-            <thead class="thead">
+            <thead>
                 <tr>
-                    <th class="th">{{localize .Ctx "ID_"}}</th>
-                    <th class="th">{{localize .Ctx "Address"}}</th>
-                    <th class="th">{{localize .Ctx "Info"}}</th>
-                    <th class="th">{{localize .Ctx "Status"}}</th>
-                    <th class="th">{{localize .Ctx "Actions"}}</th>
+                    <th>{{localize .Ctx "ID_"}}</th>
+                    <th>{{localize .Ctx "Address"}}</th>
+                    <th>{{localize .Ctx "Info"}}</th>
+                    <th>{{localize .Ctx "Status"}}</th>
+                    <th>{{localize .Ctx "Actions"}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .Porters}}
-                <tr class="tr">
-                    <td class="td">{{.ID_}}</td>
-                    <td class="td">{{.Address}}</td>
-                    <td class="td">{{.GlobalName}}</td>
-                    <td class="td">
+                <tr>
+                    <td>{{.ID_}}</td>
+                    <td>{{.Address}}</td>
+                    <td>{{.GlobalName}}</td>
+                    <td>
                         {{if eq .Status 1}}
-                        <span class="badge badge-running">
+                        <span class="badge badge-soft badge-primary">
                             {{localize $.Ctx "Enabled"}}
                         </span>
                         {{else}}
-                        <span class="badge badge-stopped">
+                        <span class="badge badge-soft badge-warning">
                             {{localize $.Ctx "Disabled"}}
                         </span>
                         {{end}}
                     </td>
-                    <td class="td">
+                    <td>
                         <div class="flex space-x-3">
                             {{if eq .Status 1}}
                             <button
@@ -57,7 +57,7 @@
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="5" class="td text-center">
+                    <td colspan="5" class="text-center">
                         {{localize .Ctx "NoPluginData"}}
                     </td>
                 </tr>
@@ -73,26 +73,26 @@
 </div>
 
 <!-- Confirmation Dialog -->
-<div id="toggleModal" class="modal-backdrop">
-    <div class="card max-w-md w-full mx-4">
-        <div class="content">
-            <h3 class="modal-title">{{localize .Ctx "ConfirmAction"}}</h3>
-            <p class="modal-text">
-                {{localize .Ctx "ConfirmActionText"}} 
-                <span id="actionText" class="font-semibold text-slate-900 dark:text-slate-100"></span> 
-                {{localize .Ctx "Plugin"}}
-            </p>
-            <div class="modal-actions">
-                <button id="cancelToggle" class="btn-secondary">
+<dialog id="toggleModal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmAction"}}</h3>
+        <p class="py-4">
+            {{localize .Ctx "ConfirmActionText"}}
+            <span id="actionText" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            {{localize .Ctx "Plugin"}}
+        </p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button id="cancelToggle" class="btn btn-secondary">
                     {{localize .Ctx "Cancel"}}
                 </button>
-                <button id="confirmToggle" class="btn-primary">
-                    {{localize .Ctx "Confirm"}}
-                </button>
-            </div>
+            </form>
+            <button id="confirmToggle" class="btn btn-primary">
+                {{localize .Ctx "Confirm"}}
+            </button>
         </div>
     </div>
-</div>
+</dialog>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -115,13 +115,13 @@
                     actionText.textContent = 'disable';
                 }
                 
-                toggleModal.classList.remove('hidden');
+                toggleModal.showModal();
             });
         });
 
         // Cancel operation
         cancelToggle.addEventListener('click', function() {
-            toggleModal.classList.add('hidden');
+            toggleModal.close();
             porterId = null;
             action = null;
         });
@@ -145,7 +145,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    toggleModal.classList.add('hidden');
+                    toggleModal.close();
                     // Refresh page to show updated plugin list
                     window.location.reload();
                 })

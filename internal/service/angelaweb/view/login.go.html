@@ -5,7 +5,7 @@
         </div>
 
         <form id="loginForm" class="form">
-            <div class="group">
+            <fieldset class="fieldset">
                 <label for="username" class="label">
                     {{localize .Ctx "Username"}}
                 </label>
@@ -14,9 +14,9 @@
                     name="username" 
                     required
                     class="input">
-            </div>
+            </fieldset>
 
-            <div class="group">
+            <fieldset class="fieldset">
                 <label for="password" class="label">
                     {{localize .Ctx "Password"}}
                 </label>
@@ -25,10 +25,10 @@
                     name="password"
                     required
                     class="input">
-            </div>
+            </fieldset>
 
             <div class="actions">
-                <button type="submit" class="btn-primary w-full">
+                <button type="submit" class="btn btn-soft btn-primary w-full">
                     {{localize .Ctx "LoginButton"}}
                 </button>
             </div>

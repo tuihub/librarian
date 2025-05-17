@@ -11,7 +11,7 @@
 
     <form action="{{.Action}}" method="POST" class="form">
         <input type="hidden" name="_method" value="{{.Method}}">
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="name" class="label">
                 {{localize .Ctx "SentinelName"}}
             </label>
@@ -21,9 +21,9 @@
                 value="{{.Sentinel.Name}}"
                 required
                 class="input">
-        </div>
+        </fieldset>
 
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="description" class="label">
                 {{localize .Ctx "SentinelDescription"}}
             </label>
@@ -31,15 +31,15 @@
                 id="description" 
                 name="description" 
                 rows="4"
-                class="input">{{.Sentinel.Description}}</textarea>
-        </div>
+                class="textarea">{{.Sentinel.Description}}</textarea>
+        </fieldset>
 
         <div class="actions">
-            <a href="/sentinels" class="btn-secondary">
+            <a href="/sentinels" class="btn btn-soft btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "Cancel"}}
             </a>
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="btn btn-soft btn-primary">
                 {{if .Sentinel.ID}}
                     {{localize .Ctx "Save"}}
                 {{else}}

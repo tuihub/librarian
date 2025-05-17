@@ -1,7 +1,7 @@
 <div class="container">
     <div class="header">
         <h1 class="title">{{localize .Ctx "SentinelTitle"}}</h1>
-        <a href="/sentinels/new" class="btn-primary">
+        <a href="/sentinels/new" class="btn btn-soft btn-primary">
             {{template "icon-add" .}}
             {{localize .Ctx "SentinelCreateNew"}}
         </a>
@@ -9,19 +9,19 @@
 
     <div class="table-wrapper">
         <table class="table">
-            <thead class="thead">
+            <thead>
                 <tr>
-                    <th class="th">{{localize .Ctx "SentinelName"}}</th>
-                    <th class="th">{{localize .Ctx "SentinelDescription"}}</th>
-                    <th class="th">{{localize .Ctx "Actions"}}</th>
+                    <th>{{localize .Ctx "SentinelName"}}</th>
+                    <th>{{localize .Ctx "SentinelDescription"}}</th>
+                    <th>{{localize .Ctx "Actions"}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .Sentinels}}
-                <tr class="tr">
-                    <td class="td">{{.Name}}</td>
-                    <td class="td">{{.Description}}</td>
-                    <td class="td">
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>{{.Description}}</td>
+                    <td>
                         <div class="flex space-x-3">
                             <a href="/sentinels/{{.ID}}" class="action-link">
                                 {{localize $.Ctx "View"}}
@@ -39,7 +39,7 @@
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="3" class="td text-center">
+                    <td colspan="3" class="text-center">
                         {{localize .Ctx "NoSentinelData"}}
                     </td>
                 </tr>
@@ -55,26 +55,26 @@
 </div>
 
 <!-- Delete Confirmation Dialog -->
-<div id="deleteModal" class="modal-backdrop">
-    <div class="card max-w-md w-full mx-4">
-        <div class="card-content">
-            <h3 class="modal-title">{{localize .Ctx "ConfirmDeletion"}}</h3>
-            <p class="modal-text">
-                {{localize .Ctx "DeleteSentinelConfirmPrefix"}} 
-                <span id="deleteName" class="font-semibold text-slate-900 dark:text-slate-100"></span> 
-                {{localize .Ctx "DeleteSentinelConfirmSuffix"}}
-            </p>
-            <div class="modal-actions">
-                <button id="cancelDelete" class="btn-secondary">
+<dialog id="deleteModal" class="modal">
+    <div class="modal-box">
+        <h3 class="text-lg font-bold">{{localize .Ctx "ConfirmDeletion"}}</h3>
+        <p class="py-4">
+            {{localize .Ctx "DeleteSentinelConfirmPrefix"}}
+            <span id="deleteName" class="font-semibold text-slate-900 dark:text-slate-100"></span>
+            {{localize .Ctx "DeleteSentinelConfirmSuffix"}}
+        </p>
+        <div class="modal-action">
+            <form method="dialog">
+                <button id="cancelDelete" class="btn btn-secondary">
                     {{localize .Ctx "Cancel"}}
                 </button>
-                <button id="confirmDelete" class="btn-danger">
-                    {{localize .Ctx "Delete"}}
-                </button>
-            </div>
+            </form>
+            <button id="confirmDelete" class="btn btn-soft btn-warning">
+                {{localize .Ctx "Delete"}}
+            </button>
         </div>
     </div>
-</div>
+</dialog>
 
 <script>
     // Sentinel deletion interaction logic
@@ -90,13 +90,13 @@
             button.addEventListener('click', function() {
                 sentinelId = this.dataset.id;
                 deleteName.textContent = this.dataset.name;
-                deleteModal.classList.remove('hidden');
+                deleteModal.showModal();
             });
         });
 
         // Cancel deletion
         cancelDelete.addEventListener('click', function() {
-            deleteModal.classList.add('hidden');
+            deleteModal.close();
             sentinelId = null;
         });
 
@@ -108,7 +108,7 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        deleteModal.classList.add('hidden');
+                        deleteModal.close();
                         // Refresh page to show updated sentinel list
                         window.location.reload();
                     })

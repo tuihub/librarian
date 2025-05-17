@@ -5,34 +5,34 @@
     </div>
 
     <div class="card">
-        <div class="card-header">
+        <div class="card-body">
             <h2 class="card-title">{{localize .Ctx "ServerInformation"}}</h2>
-            <a href="/server-info" class="btn-secondary">
-                {{localize .Ctx "EditServerInfo"}}
-            </a>
-        </div>
-        <div class="content">
-            <table class="table">
+            <div class="card-actions justify-end">
+                <a href="/server-info" class="btn btn-secondary">
+                    {{localize .Ctx "EditServerInfo"}}
+                </a>
+            </div>
+            <table class="table mt-4">
                 <tbody>
-                <tr class="tr">
-                    <td class="td font-medium">{{localize .Ctx "ServerName"}}</td>
-                    <td class="td">{{.ServerInfo.Name}}</td>
+                <tr>
+                    <td class="font-medium">{{localize .Ctx "ServerName"}}</td>
+                    <td>{{.ServerInfo.Name}}</td>
                 </tr>
-                <tr class="tr">
-                    <td class="td font-medium">{{localize .Ctx "ServerDescription"}}</td>
-                    <td class="td">{{.ServerInfo.Description}}</td>
+                <tr>
+                    <td class="font-medium">{{localize .Ctx "ServerDescription"}}</td>
+                    <td>{{.ServerInfo.Description}}</td>
                 </tr>
-                <tr class="tr">
-                    <td class="td font-medium">{{localize .Ctx "WebsiteURL"}}</td>
-                    <td class="td">{{.ServerInfo.WebsiteURL}}</td>
+                <tr>
+                    <td class="font-medium">{{localize .Ctx "WebsiteURL"}}</td>
+                    <td>{{.ServerInfo.WebsiteURL}}</td>
                 </tr>
-                <tr class="tr">
-                    <td class="td font-medium">{{localize .Ctx "LogoImageURL"}}</td>
-                    <td class="td">{{.ServerInfo.LogoImageURL}}</td>
+                <tr>
+                    <td class="font-medium">{{localize .Ctx "LogoImageURL"}}</td>
+                    <td>{{.ServerInfo.LogoImageURL}}</td>
                 </tr>
-                <tr class="tr">
-                    <td class="td font-medium">{{localize .Ctx "BackgroundImageURL"}}</td>
-                    <td class="td">{{.ServerInfo.BackgroundImageURL}}</td>
+                <tr>
+                    <td class="font-medium">{{localize .Ctx "BackgroundImageURL"}}</td>
+                    <td>{{.ServerInfo.BackgroundImageURL}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -42,25 +42,25 @@
     <div class="card mt-6">
         <div class="table-wrapper">
             <table class="table">
-                <thead class="thead">
+                <thead>
                     <tr>
-                        <th class="th">{{localize .Ctx "Service"}}</th>
-                        <th class="th">{{localize .Ctx "Status"}}</th>
+                        <th>{{localize .Ctx "Service"}}</th>
+                        <th>{{localize .Ctx "Status"}}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{range .Configs}}
-                    <tr class="tr">
-                        <td class="td">{{.Name}}</td>
-                        <td class="td">
-                            <span class="badge {{if eq .Status "Running"}}badge-running{{else if eq .Status "Stopped"}}badge-stopped{{else}}badge-other{{end}}">
+                    <tr>
+                        <td>{{.Name}}</td>
+                        <td>
+                            <span class="badge badge-soft {{if eq .Status "Running"}}badge-primary{{else if eq .Status "Stopped"}}badge-warning{{else}}badge-error{{end}}">
                                 {{.Status}}
                             </span>
                         </td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="2" class="td text-center">
+                        <td colspan="2" class="text-center">
                             {{localize .Ctx "NoConfigData"}}
                         </td>
                     </tr>

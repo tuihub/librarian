@@ -6,56 +6,54 @@
     </div>
 
     <form id="userForm" class="form">
-        <div class="grid">
-            <div class="group">
-                <label for="username" class="label">
-                    {{localize .Ctx "Username"}}
-                </label>
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value="{{.User.Username}}"
-                    class="input"
-                    required
-                >
-            </div>
+        <fieldset class="fieldset">
+            <label for="username" class="label">
+                {{localize .Ctx "Username"}}
+            </label>
+            <input
+                type="text"
+                id="username"
+                name="username"
+                value="{{.User.Username}}"
+                class="input"
+                required
+            >
+        </fieldset>
 
-            <div class="group">
-                <label for="password" class="label">
-                    {{localize .Ctx "Password"}}
-                </label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    {{if not .User.ID}}required{{end}}
-                    class="input"
-                    placeholder="{{if .User.ID}}{{localize .Ctx "EmptyPasswordHint"}}{{end}}"
-                >
-            </div>
+        <fieldset class="fieldset">
+            <label for="password" class="label">
+                {{localize .Ctx "Password"}}
+            </label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                {{if not .User.ID}}required{{end}}
+                class="input"
+                placeholder="{{if .User.ID}}{{localize .Ctx "EmptyPasswordHint"}}{{end}}"
+            >
+        </fieldset>
 
-            <div class="group">
-                <label for="role" class="label">
-                    {{localize .Ctx "Role"}}
-                </label>
-                <select
-                    id="role"
-                    name="role"
-                    class="input"
-                >
-                    <option value="user" {{if eq .User.Type 2}}selected{{end}}>{{localize .Ctx "RegularUser"}}</option>
-                    <option value="admin" {{if eq .User.Type 1}}selected{{end}}>{{localize .Ctx "Administrator"}}</option>
-                </select>
-            </div>
-        </div>
+        <fieldset class="fieldset">
+            <label for="role" class="label">
+                {{localize .Ctx "Role"}}
+            </label>
+            <select
+                id="role"
+                name="role"
+                class="select"
+            >
+                <option value="user" {{if eq .User.Type 2}}selected{{end}}>{{localize .Ctx "RegularUser"}}</option>
+                <option value="admin" {{if eq .User.Type 1}}selected{{end}}>{{localize .Ctx "Administrator"}}</option>
+            </select>
+        </fieldset>
 
         <div class="actions">
-            <a href="/users" class="btn-secondary">
+            <a href="/users" class="btn btn-soft btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "BackToList"}}
             </a>
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="btn btn-soft btn-primary">
                 {{if .User.ID}}{{localize .Ctx "UpdateUser"}}{{else}}{{localize .Ctx "CreateNewUser"}}{{end}}
             </button>
         </div>

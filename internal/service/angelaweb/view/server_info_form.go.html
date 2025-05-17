@@ -4,7 +4,7 @@
     </div>
 
     <form id="serverInfoForm" class="form">
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="name" class="label">
                 {{localize .Ctx "ServerName"}}
             </label>
@@ -14,9 +14,9 @@
                 value="{{.ServerInfo.Name}}"
                 required
                 class="input">
-        </div>
+        </fieldset>
 
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="description" class="label">
                 {{localize .Ctx "ServerDescription"}}
             </label>
@@ -24,10 +24,10 @@
                 id="description" 
                 name="description" 
                 rows="4"
-                class="input">{{.ServerInfo.Description}}</textarea>
-        </div>
+                class="textarea">{{.ServerInfo.Description}}</textarea>
+        </fieldset>
 
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="website_url" class="label">
                 {{localize .Ctx "WebsiteURL"}}
             </label>
@@ -36,9 +36,9 @@
                 name="website_url" 
                 value="{{.ServerInfo.WebsiteURL}}"
                 class="input">
-        </div>
+        </fieldset>
 
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="logo_image_url" class="label">
                 {{localize .Ctx "LogoImageURL"}}
             </label>
@@ -47,9 +47,9 @@
                 name="logo_image_url" 
                 value="{{.ServerInfo.LogoImageURL}}"
                 class="input">
-        </div>
+        </fieldset>
 
-        <div class="group">
+        <fieldset class="fieldset">
             <label for="background_image_url" class="label">
                 {{localize .Ctx "BackgroundImageURL"}}
             </label>
@@ -58,14 +58,14 @@
                 name="background_image_url" 
                 value="{{.ServerInfo.BackgroundImageURL}}"
                 class="input">
-        </div>
+        </fieldset>
 
         <div class="actions">
-            <a href="/config" class="btn-secondary">
+            <a href="/config" class="btn btn-soft btn-secondary">
                 {{template "icon-back" .}}
                 {{localize .Ctx "BackToConfig"}}
             </a>
-            <button type="submit" class="btn-primary">
+            <button type="submit" class="btn btn-soft btn-primary">
                 {{localize .Ctx "Save"}}
             </button>
         </div>

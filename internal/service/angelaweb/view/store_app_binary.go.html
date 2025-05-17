@@ -5,29 +5,29 @@
 
     <div class="table-wrapper">
         <table class="table">
-            <thead class="thead">
+            <thead>
                 <tr>
-                    <th class="th">{{localize .Ctx "ID_"}}</th>
-                    <th class="th">{{localize .Ctx "StoreAppBinaryName"}}</th>
-                    <th class="th">{{localize .Ctx "StoreAppBinaryVersion"}}</th>
-                    <th class="th">{{localize .Ctx "StoreAppBinaryDeveloper"}}</th>
-                    <th class="th">{{localize .Ctx "StoreAppBinaryPublisher"}}</th>
-                    <th class="th">{{localize .Ctx "StoreAppBinarySize"}}</th>
+                    <th>{{localize .Ctx "ID_"}}</th>
+                    <th>{{localize .Ctx "StoreAppBinaryName"}}</th>
+                    <th>{{localize .Ctx "StoreAppBinaryVersion"}}</th>
+                    <th>{{localize .Ctx "StoreAppBinaryDeveloper"}}</th>
+                    <th>{{localize .Ctx "StoreAppBinaryPublisher"}}</th>
+                    <th>{{localize .Ctx "StoreAppBinarySize"}}</th>
                 </tr>
             </thead>
             <tbody>
                 {{range .StoreAppBinaries}}
-                <tr class="tr">
-                    <td class="td">{{.ID}}</td>
-                    <td class="td">{{.Name}}</td>
-                    <td class="td">{{.Version}}</td>
-                    <td class="td">{{.Developer}}</td>
-                    <td class="td">{{.Publisher}}</td>
-                    <td class="td">{{.SizeBytes}}</td>
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>{{.Name}}</td>
+                    <td>{{.Version}}</td>
+                    <td>{{.Developer}}</td>
+                    <td>{{.Publisher}}</td>
+                    <td>{{.SizeBytes}}</td>
                 </tr>
                 {{else}}
                 <tr>
-                    <td colspan="6" class="td text-center">
+                    <td colspan="6" class="text-center">
                         {{localize .Ctx "NoStoreAppBinaryData"}}
                     </td>
                 </tr>
