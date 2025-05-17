@@ -12,16 +12,6 @@
             document.documentElement.classList.remove('dark')
         }
 
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark')
-                localStorage.theme = 'light'
-            } else {
-                document.documentElement.classList.add('dark')
-                localStorage.theme = 'dark'
-            }
-        }
-
         function setAutoTheme() {
             localStorage.removeItem('theme')
             if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -102,15 +92,12 @@
                 </div>
                 <div class="sidebar-submenu {{if or (eq .Path "/sentinels") (eq .Path "/store-apps") (eq .Path "/store-app-binaries")}}expanded{{end}}">
                     <a href="/sentinels" class="sidebar-submenu-item {{if eq .Path "/sentinels"}}active{{end}}">
-                        {{template "icon-sentinel" .}}
                         <span class="sidebar-submenu-text">{{localize .Ctx "SentinelManagement"}}</span>
                     </a>
                     <a href="/store-apps" class="sidebar-submenu-item {{if eq .Path "/store-apps"}}active{{end}}">
-                        {{template "icon-store" .}}
                         <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppManagement"}}</span>
                     </a>
                     <a href="/store-app-binaries" class="sidebar-submenu-item {{if eq .Path "/store-app-binaries"}}active{{end}}">
-                        {{template "icon-store" .}}
                         <span class="sidebar-submenu-text">{{localize .Ctx "StoreAppBinaryManagement"}}</span>
                     </a>
                 </div>

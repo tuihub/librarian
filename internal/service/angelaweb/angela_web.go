@@ -64,7 +64,7 @@ func NewAngelaWeb(
 	g *bizgebura.Gebura,
 	userCountCache *libcache.Key[model.UserCount],
 ) *AngelaWeb {
-	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".html")
+	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".go.html")
 	viewsEngine.Directory = "view"
 
 	viewsEngine.AddFunc("localize", func(c *fiber.Ctx, args ...any) string {
