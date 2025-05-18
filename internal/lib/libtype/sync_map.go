@@ -76,6 +76,6 @@ func (m *SyncMap[K, V]) Delete(key K) {
 	m.m.Delete(key)
 }
 
-func (m *SyncMap[K, V]) CompareAndDelete(key string, value V) bool {
+func (m *SyncMap[K, V]) CompareAndDelete(key K, value V) bool {
 	return m.m.CompareAndDelete(key, value)
 }

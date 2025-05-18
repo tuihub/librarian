@@ -2,7 +2,6 @@ package libcache
 
 import (
 	"context"
-	"errors"
 
 	"github.com/tuihub/librarian/internal/lib/libcodec"
 )
@@ -42,14 +41,7 @@ func (m *Map[K, V]) get(ctx context.Context, key K) (*V, error) {
 	if err != nil {
 		return nil, err
 	}
-	switch v := value.(type) {
-	case []byte:
-		err = libcodec.Unmarshal(libcodec.JSON, v, res)
-	case string:
-		err = libcodec.Unmarshal(libcodec.JSON, []byte(v), res)
-	default:
-		return nil, errors.New("unexpected value type")
-	}
+	err = libcodec.Unmarshal(libcodec.JSON, []byte(value), res)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +113,7 @@ func (m *Map[K, V]) Set(ctx context.Context, key K, value *V, options ...Option)
 	if err != nil {
 		return err
 	}
-	return m.store.Set(ctx, m.combineKeyName(key), b, append(m.defaultOptions, options...)...)
+	return m.store.Set(ctx, m.combineKeyName(key), string(b), append(m.defaultOptions, options...)...)
 }
 
 func (m *Map[K, V]) Delete(ctx context.Context, key K) error {

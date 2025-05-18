@@ -21,12 +21,8 @@ func (c *captchaStoreImpl) Set(id string, digits []byte) {
 }
 
 func (c *captchaStoreImpl) Get(id string, del bool) []byte {
-	get, err := c.store.Get(context.Background(), c.key(id))
+	digits, err := c.store.Get(context.Background(), c.key(id))
 	if err != nil {
-		return nil
-	}
-	digits, ok := get.(string)
-	if !ok {
 		return nil
 	}
 	if del {

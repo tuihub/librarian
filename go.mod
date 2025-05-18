@@ -13,7 +13,6 @@ require (
 	github.com/blevesearch/bleve/v2 v2.5.0
 	github.com/bufbuild/protovalidate-go v0.10.0
 	github.com/dchest/captcha v1.1.0
-	github.com/dgraph-io/ristretto v0.2.0
 	github.com/go-co-op/gocron/v2 v2.16.1
 	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250321075247-025c2dc2b0ff
 	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250321075247-025c2dc2b0ff
@@ -33,6 +32,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/johannesboyne/gofakes3 v0.0.0-20250402064820-d479899d8cbe
 	github.com/mattn/go-sqlite3 v1.14.28
+	github.com/maypok86/otter v1.2.4
 	github.com/meilisearch/meilisearch-go v0.31.0
 	github.com/minio/minio-go/v7 v7.0.91
 	github.com/mmcdole/gofeed v1.3.0
@@ -115,9 +115,11 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/dolthub/maphash v0.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fatih/color v1.17.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/gammazero/deque v0.2.1 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect

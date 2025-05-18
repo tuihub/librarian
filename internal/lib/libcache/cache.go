@@ -8,7 +8,6 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 
-	"github.com/dgraph-io/ristretto"
 	"github.com/google/wire"
 	"github.com/redis/go-redis/v9"
 )
@@ -23,7 +22,7 @@ func NewStore(c *conf.Cache) (Store, error) {
 	}
 	switch c.Driver {
 	case conf.CacheDriverMemory:
-		res, err = newRistrettoCache()
+		res, err = newMemoryCache()
 	case conf.CacheDriverRedis:
 		res = newRedisCache(c)
 	default:
@@ -36,16 +35,8 @@ func NewStore(c *conf.Cache) (Store, error) {
 	return res, nil
 }
 
-func newRistrettoCache() (Store, error) {
-	ristrettoCache, err := ristretto.NewCache(&ristretto.Config{ //nolint:exhaustruct // no need
-		NumCounters: 1000, //nolint:mnd //TODO
-		MaxCost:     100,  //nolint:mnd //TODO
-		BufferItems: 64,   //nolint:mnd //TODO
-	})
-	if err != nil {
-		return nil, err
-	}
-	return newRistretto(ristrettoCache), nil
+func newMemoryCache() (Store, error) {
+	return newOtter(1024) //nolint:mnd // no need
 }
 
 func newRedisCache(c *conf.Cache) Store {
