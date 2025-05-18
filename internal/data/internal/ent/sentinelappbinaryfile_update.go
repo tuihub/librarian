@@ -71,6 +71,20 @@ func (sabfu *SentinelAppBinaryFileUpdate) AddSentinelLibraryReportedID(i int64) 
 	return sabfu
 }
 
+// SetLibrarySnapshot sets the "library_snapshot" field.
+func (sabfu *SentinelAppBinaryFileUpdate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryFileUpdate {
+	sabfu.mutation.SetLibrarySnapshot(t)
+	return sabfu
+}
+
+// SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
+func (sabfu *SentinelAppBinaryFileUpdate) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryFileUpdate {
+	if t != nil {
+		sabfu.SetLibrarySnapshot(*t)
+	}
+	return sabfu
+}
+
 // SetSentinelAppBinaryGeneratedID sets the "sentinel_app_binary_generated_id" field.
 func (sabfu *SentinelAppBinaryFileUpdate) SetSentinelAppBinaryGeneratedID(s string) *SentinelAppBinaryFileUpdate {
 	sabfu.mutation.SetSentinelAppBinaryGeneratedID(s)
@@ -180,27 +194,6 @@ func (sabfu *SentinelAppBinaryFileUpdate) SetNillableCreatedAt(t *time.Time) *Se
 	return sabfu
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (sabfu *SentinelAppBinaryFileUpdate) SetAppBinaryReportSequence(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.ResetAppBinaryReportSequence()
-	sabfu.mutation.SetAppBinaryReportSequence(i)
-	return sabfu
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (sabfu *SentinelAppBinaryFileUpdate) SetNillableAppBinaryReportSequence(i *int64) *SentinelAppBinaryFileUpdate {
-	if i != nil {
-		sabfu.SetAppBinaryReportSequence(*i)
-	}
-	return sabfu
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (sabfu *SentinelAppBinaryFileUpdate) AddAppBinaryReportSequence(i int64) *SentinelAppBinaryFileUpdate {
-	sabfu.mutation.AddAppBinaryReportSequence(i)
-	return sabfu
-}
-
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
 func (sabfu *SentinelAppBinaryFileUpdate) Mutation() *SentinelAppBinaryFileMutation {
 	return sabfu.mutation
@@ -263,6 +256,9 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 	if value, ok := sabfu.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
+	if value, ok := sabfu.mutation.LibrarySnapshot(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldLibrarySnapshot, field.TypeTime, value)
+	}
 	if value, ok := sabfu.mutation.SentinelAppBinaryGeneratedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
@@ -292,12 +288,6 @@ func (sabfu *SentinelAppBinaryFileUpdate) sqlSave(ctx context.Context) (n int, e
 	}
 	if value, ok := sabfu.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := sabfu.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := sabfu.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, sabfu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -358,6 +348,20 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableSentinelLibraryReported
 // AddSentinelLibraryReportedID adds i to the "sentinel_library_reported_id" field.
 func (sabfuo *SentinelAppBinaryFileUpdateOne) AddSentinelLibraryReportedID(i int64) *SentinelAppBinaryFileUpdateOne {
 	sabfuo.mutation.AddSentinelLibraryReportedID(i)
+	return sabfuo
+}
+
+// SetLibrarySnapshot sets the "library_snapshot" field.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryFileUpdateOne {
+	sabfuo.mutation.SetLibrarySnapshot(t)
+	return sabfuo
+}
+
+// SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
+func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryFileUpdateOne {
+	if t != nil {
+		sabfuo.SetLibrarySnapshot(*t)
+	}
 	return sabfuo
 }
 
@@ -470,27 +474,6 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableCreatedAt(t *time.Time)
 	return sabfuo
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetAppBinaryReportSequence(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.ResetAppBinaryReportSequence()
-	sabfuo.mutation.SetAppBinaryReportSequence(i)
-	return sabfuo
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) SetNillableAppBinaryReportSequence(i *int64) *SentinelAppBinaryFileUpdateOne {
-	if i != nil {
-		sabfuo.SetAppBinaryReportSequence(*i)
-	}
-	return sabfuo
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (sabfuo *SentinelAppBinaryFileUpdateOne) AddAppBinaryReportSequence(i int64) *SentinelAppBinaryFileUpdateOne {
-	sabfuo.mutation.AddAppBinaryReportSequence(i)
-	return sabfuo
-}
-
 // Mutation returns the SentinelAppBinaryFileMutation object of the builder.
 func (sabfuo *SentinelAppBinaryFileUpdateOne) Mutation() *SentinelAppBinaryFileMutation {
 	return sabfuo.mutation
@@ -583,6 +566,9 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 	if value, ok := sabfuo.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinaryfile.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
+	if value, ok := sabfuo.mutation.LibrarySnapshot(); ok {
+		_spec.SetField(sentinelappbinaryfile.FieldLibrarySnapshot, field.TypeTime, value)
+	}
 	if value, ok := sabfuo.mutation.SentinelAppBinaryGeneratedID(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID, field.TypeString, value)
 	}
@@ -612,12 +598,6 @@ func (sabfuo *SentinelAppBinaryFileUpdateOne) sqlSave(ctx context.Context) (_nod
 	}
 	if value, ok := sabfuo.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinaryfile.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := sabfuo.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := sabfuo.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinelappbinaryfile.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	_node = &SentinelAppBinaryFile{config: sabfuo.config}
 	_spec.Assign = _node.assignValues

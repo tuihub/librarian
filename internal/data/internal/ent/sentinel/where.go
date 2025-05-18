@@ -102,11 +102,6 @@ func LibraryReportSequence(v int64) predicate.Sentinel {
 	return predicate.Sentinel(sql.FieldEQ(FieldLibraryReportSequence, v))
 }
 
-// AppBinaryReportSequence applies equality check predicate on the "app_binary_report_sequence" field. It's identical to AppBinaryReportSequenceEQ.
-func AppBinaryReportSequence(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldEQ(FieldAppBinaryReportSequence, v))
-}
-
 // NameEQ applies the EQ predicate on the "name" field.
 func NameEQ(v string) predicate.Sentinel {
 	return predicate.Sentinel(sql.FieldEQ(FieldName, v))
@@ -624,46 +619,6 @@ func LibraryReportSequenceLT(v int64) predicate.Sentinel {
 // LibraryReportSequenceLTE applies the LTE predicate on the "library_report_sequence" field.
 func LibraryReportSequenceLTE(v int64) predicate.Sentinel {
 	return predicate.Sentinel(sql.FieldLTE(FieldLibraryReportSequence, v))
-}
-
-// AppBinaryReportSequenceEQ applies the EQ predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceEQ(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldEQ(FieldAppBinaryReportSequence, v))
-}
-
-// AppBinaryReportSequenceNEQ applies the NEQ predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceNEQ(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldNEQ(FieldAppBinaryReportSequence, v))
-}
-
-// AppBinaryReportSequenceIn applies the In predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceIn(vs ...int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldIn(FieldAppBinaryReportSequence, vs...))
-}
-
-// AppBinaryReportSequenceNotIn applies the NotIn predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceNotIn(vs ...int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldNotIn(FieldAppBinaryReportSequence, vs...))
-}
-
-// AppBinaryReportSequenceGT applies the GT predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceGT(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldGT(FieldAppBinaryReportSequence, v))
-}
-
-// AppBinaryReportSequenceGTE applies the GTE predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceGTE(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldGTE(FieldAppBinaryReportSequence, v))
-}
-
-// AppBinaryReportSequenceLT applies the LT predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceLT(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldLT(FieldAppBinaryReportSequence, v))
-}
-
-// AppBinaryReportSequenceLTE applies the LTE predicate on the "app_binary_report_sequence" field.
-func AppBinaryReportSequenceLTE(v int64) predicate.Sentinel {
-	return predicate.Sentinel(sql.FieldLTE(FieldAppBinaryReportSequence, v))
 }
 
 // HasSentinelSession applies the HasEdge predicate on the "sentinel_session" edge.

@@ -20,6 +20,8 @@ const (
 	FieldSentinelID = "sentinel_id"
 	// FieldSentinelLibraryReportedID holds the string denoting the sentinel_library_reported_id field in the database.
 	FieldSentinelLibraryReportedID = "sentinel_library_reported_id"
+	// FieldLibrarySnapshot holds the string denoting the library_snapshot field in the database.
+	FieldLibrarySnapshot = "library_snapshot"
 	// FieldGeneratedID holds the string denoting the generated_id field in the database.
 	FieldGeneratedID = "generated_id"
 	// FieldSizeBytes holds the string denoting the size_bytes field in the database.
@@ -38,8 +40,6 @@ const (
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// FieldAppBinaryReportSequence holds the string denoting the app_binary_report_sequence field in the database.
-	FieldAppBinaryReportSequence = "app_binary_report_sequence"
 	// EdgeStoreApp holds the string denoting the store_app edge name in mutations.
 	EdgeStoreApp = "store_app"
 	// EdgeStoreAppBinary holds the string denoting the store_app_binary edge name in mutations.
@@ -66,6 +66,7 @@ var Columns = []string{
 	FieldUnionID,
 	FieldSentinelID,
 	FieldSentinelLibraryReportedID,
+	FieldLibrarySnapshot,
 	FieldGeneratedID,
 	FieldSizeBytes,
 	FieldNeedToken,
@@ -75,7 +76,6 @@ var Columns = []string{
 	FieldPublisher,
 	FieldUpdatedAt,
 	FieldCreatedAt,
-	FieldAppBinaryReportSequence,
 }
 
 var (
@@ -126,6 +126,11 @@ func BySentinelLibraryReportedID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSentinelLibraryReportedID, opts...).ToFunc()
 }
 
+// ByLibrarySnapshot orders the results by the library_snapshot field.
+func ByLibrarySnapshot(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLibrarySnapshot, opts...).ToFunc()
+}
+
 // ByGeneratedID orders the results by the generated_id field.
 func ByGeneratedID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGeneratedID, opts...).ToFunc()
@@ -169,11 +174,6 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByAppBinaryReportSequence orders the results by the app_binary_report_sequence field.
-func ByAppBinaryReportSequence(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAppBinaryReportSequence, opts...).ToFunc()
 }
 
 // ByStoreAppCount orders the results by store_app count.

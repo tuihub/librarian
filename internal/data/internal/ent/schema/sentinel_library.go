@@ -21,6 +21,7 @@ func (SentinelLibrary) Fields() []ent.Field {
 		field.Int64("sentinel_id").GoType(model.InternalID(0)),
 		field.Int64("reported_id"),
 		field.String("download_base_path"),
+		field.Time("active_snapshot").Optional(),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

@@ -2,9 +2,12 @@ package sentinel
 
 import (
 	"context"
+	"time"
 
 	"github.com/tuihub/librarian/internal/service/sentinel/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
+
+	"github.com/samber/lo"
 )
 
 func (s *LibrarianSentinelService) ReportSentinelInformation(
@@ -20,9 +23,20 @@ func (s *LibrarianSentinelService) ReportSentinelInformation(
 func (s *LibrarianSentinelService) ReportAppBinaries(
 	ctx context.Context, req *pb.ReportAppBinariesRequest,
 ) (*pb.ReportAppBinariesResponse, error) {
-	err := s.g.UpsertAppBinaries(ctx, converter.ToBizSentinelAppBinaryList(req.GetAppBinaries()))
+	var snapshot *time.Time
+	if req.GetSnapshotTime() != nil {
+		snapshot = lo.ToPtr(req.GetSnapshotTime().AsTime())
+	}
+	success, err := s.g.UpsertAppBinaries(
+		ctx,
+		converter.ToBizSentinelAppBinaryList(req.GetAppBinaries()),
+		snapshot,
+		req.GetCommitSnapshot(),
+	)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.ReportAppBinariesResponse{}, nil
+	return &pb.ReportAppBinariesResponse{
+		CommitSnapshotSuccess: lo.ToPtr(success),
+	}, nil
 }

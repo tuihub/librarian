@@ -1,6 +1,8 @@
 package sentinel
 
 import (
+	"context"
+
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
@@ -26,4 +28,11 @@ func NewLibrarianSentinelService(
 		t: t,
 		g: g,
 	}
+}
+
+func (s *LibrarianSentinelService) Heartbeat(
+	ctx context.Context,
+	req *pb.HeartbeatRequest,
+) (*pb.HeartbeatResponse, error) {
+	return &pb.HeartbeatResponse{}, nil
 }

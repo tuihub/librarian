@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/tuihub/librarian/internal/data/internal/converter"
@@ -762,25 +763,29 @@ func (g *GeburaRepo) UpdateSentinelInfo(
 	})
 }
 
-func (g *GeburaRepo) UpsertAppBinaries(
+func (g *GeburaRepo) UpsertAppBinaries( //nolint:gocognit,funlen // TODO
 	ctx context.Context,
 	sentinelID model.InternalID,
 	abs []*modelgebura.SentinelAppBinary,
+	snapshot *time.Time,
+	commit bool,
 ) error {
 	return g.data.WithTx(ctx, func(tx *ent.Tx) error {
-		// update AppBinaryReportSequence
-		err := tx.Sentinel.UpdateOneID(sentinelID).
-			AddAppBinaryReportSequence(1).
-			Exec(ctx)
-		if err != nil {
-			return err
-		}
 		sInfo, err := tx.Sentinel.Query().
 			Where(sentinel.IDEQ(sentinelID)).
 			WithSentinelLibrary().
 			Only(ctx)
 		if err != nil {
 			return err
+		}
+		libraryMap := make(map[int64]*ent.SentinelLibrary)
+		for _, lib := range sInfo.Edges.SentinelLibrary {
+			libraryMap[lib.ReportedID] = lib
+		}
+		for _, ab := range abs {
+			if _, ok := libraryMap[ab.SentinelLibraryID]; !ok {
+				return errors.New("library not found")
+			}
 		}
 		// upsert binaries
 		newAbs := make([]*ent.SentinelAppBinaryCreate, 0, len(abs))
@@ -790,20 +795,21 @@ func (g *GeburaRepo) UpsertAppBinaries(
 				SetUnionID(ab.UnionID).
 				SetSentinelID(sentinelID).
 				SetSentinelLibraryReportedID(ab.SentinelLibraryID).
+				SetLibrarySnapshot(lo.FromPtrOr(snapshot, libraryMap[ab.SentinelLibraryID].ActiveSnapshot)).
 				SetGeneratedID(ab.GeneratedID).
 				SetSizeBytes(ab.SizeBytes).
 				SetNeedToken(ab.NeedToken).
 				SetName(ab.Name).
 				SetVersion(ab.Version).
 				SetDeveloper(ab.Developer).
-				SetPublisher(ab.Publisher).
-				SetAppBinaryReportSequence(sInfo.AppBinaryReportSequence))
+				SetPublisher(ab.Publisher))
 		}
 		err = tx.SentinelAppBinary.CreateBulk(newAbs...).
 			OnConflict(
 				sql.ConflictColumns(
 					sentinelappbinary.FieldSentinelID,
 					sentinelappbinary.FieldSentinelLibraryReportedID,
+					sentinelappbinary.FieldLibrarySnapshot,
 					sentinelappbinary.FieldGeneratedID,
 				),
 				resolveWithIgnores([]string{
@@ -826,13 +832,13 @@ func (g *GeburaRepo) UpsertAppBinaries(
 					SetID(f.ID).
 					SetSentinelID(sentinelID).
 					SetSentinelLibraryReportedID(ab.SentinelLibraryID).
+					SetLibrarySnapshot(lo.FromPtrOr(snapshot, libraryMap[ab.SentinelLibraryID].ActiveSnapshot)).
 					SetSentinelAppBinaryGeneratedID(ab.GeneratedID).
 					SetName(f.Name).
 					SetSizeBytes(f.SizeBytes).
 					SetSha256(f.Sha256).
 					SetServerFilePath(f.ServerFilePath).
-					SetChunksInfo(f.ChunksInfo).
-					SetAppBinaryReportSequence(sInfo.AppBinaryReportSequence))
+					SetChunksInfo(f.ChunksInfo))
 			}
 		}
 		err = tx.SentinelAppBinaryFile.CreateBulk(newAbfs...).
@@ -840,6 +846,7 @@ func (g *GeburaRepo) UpsertAppBinaries(
 				sql.ConflictColumns(
 					sentinelappbinaryfile.FieldSentinelID,
 					sentinelappbinaryfile.FieldSentinelLibraryReportedID,
+					sentinelappbinaryfile.FieldLibrarySnapshot,
 					sentinelappbinaryfile.FieldSentinelAppBinaryGeneratedID,
 					sentinelappbinaryfile.FieldServerFilePath,
 				),
@@ -851,6 +858,21 @@ func (g *GeburaRepo) UpsertAppBinaries(
 			Exec(ctx)
 		if err != nil {
 			return err
+		}
+		if snapshot != nil && commit {
+			ids := make([]model.InternalID, 0, len(libraryMap))
+			for _, lib := range libraryMap {
+				ids = append(ids, lib.ID)
+			}
+			err = tx.SentinelLibrary.Update().
+				Where(
+					sentinellibrary.IDIn(ids...),
+				).
+				SetActiveSnapshot(lo.FromPtr(snapshot)).
+				Exec(ctx)
+			if err != nil {
+				return err
+			}
 		}
 		return nil
 	})
@@ -885,7 +907,24 @@ func (g *GeburaRepo) ListStoreAppBinaries(
 	page *model.Paging,
 	appIDs []model.InternalID,
 ) ([]*modelgebura.StoreAppBinary, int, error) {
-	q := g.data.db.SentinelAppBinary.Query()
+	q := g.data.db.SentinelAppBinary.Query().
+		Where(func(s *sql.Selector) {
+			s.Join(
+				sql.Select().From(sql.Table(sentinellibrary.Table)).
+					Select(
+						sentinellibrary.FieldReportedID,
+						sentinellibrary.FieldActiveSnapshot,
+					).As(sentinellibrary.Table),
+			).
+				On(
+					s.C(sentinelappbinary.FieldSentinelLibraryReportedID),
+					sql.Table(sentinellibrary.Table).C(sentinellibrary.FieldReportedID),
+				).
+				On(
+					s.C(sentinelappbinary.FieldLibrarySnapshot),
+					sql.Table(sentinellibrary.Table).C(sentinellibrary.FieldActiveSnapshot),
+				)
+		})
 	if len(appIDs) > 0 {
 		q.Where(sentinelappbinary.HasStoreAppWith(
 			storeapp.IDIn(appIDs...),

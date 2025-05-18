@@ -349,44 +349,40 @@ func init() {
 	sentinelDescLibraryReportSequence := sentinelFields[10].Descriptor()
 	// sentinel.DefaultLibraryReportSequence holds the default value on creation for the library_report_sequence field.
 	sentinel.DefaultLibraryReportSequence = sentinelDescLibraryReportSequence.Default.(int64)
-	// sentinelDescAppBinaryReportSequence is the schema descriptor for app_binary_report_sequence field.
-	sentinelDescAppBinaryReportSequence := sentinelFields[11].Descriptor()
-	// sentinel.DefaultAppBinaryReportSequence holds the default value on creation for the app_binary_report_sequence field.
-	sentinel.DefaultAppBinaryReportSequence = sentinelDescAppBinaryReportSequence.Default.(int64)
 	sentinelappbinaryFields := schema.SentinelAppBinary{}.Fields()
 	_ = sentinelappbinaryFields
 	// sentinelappbinaryDescUpdatedAt is the schema descriptor for updated_at field.
-	sentinelappbinaryDescUpdatedAt := sentinelappbinaryFields[11].Descriptor()
+	sentinelappbinaryDescUpdatedAt := sentinelappbinaryFields[12].Descriptor()
 	// sentinelappbinary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sentinelappbinary.DefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.Default.(func() time.Time)
 	// sentinelappbinary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	sentinelappbinary.UpdateDefaultUpdatedAt = sentinelappbinaryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// sentinelappbinaryDescCreatedAt is the schema descriptor for created_at field.
-	sentinelappbinaryDescCreatedAt := sentinelappbinaryFields[12].Descriptor()
+	sentinelappbinaryDescCreatedAt := sentinelappbinaryFields[13].Descriptor()
 	// sentinelappbinary.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sentinelappbinary.DefaultCreatedAt = sentinelappbinaryDescCreatedAt.Default.(func() time.Time)
 	sentinelappbinaryfileFields := schema.SentinelAppBinaryFile{}.Fields()
 	_ = sentinelappbinaryfileFields
 	// sentinelappbinaryfileDescUpdatedAt is the schema descriptor for updated_at field.
-	sentinelappbinaryfileDescUpdatedAt := sentinelappbinaryfileFields[9].Descriptor()
+	sentinelappbinaryfileDescUpdatedAt := sentinelappbinaryfileFields[10].Descriptor()
 	// sentinelappbinaryfile.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sentinelappbinaryfile.DefaultUpdatedAt = sentinelappbinaryfileDescUpdatedAt.Default.(func() time.Time)
 	// sentinelappbinaryfile.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	sentinelappbinaryfile.UpdateDefaultUpdatedAt = sentinelappbinaryfileDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// sentinelappbinaryfileDescCreatedAt is the schema descriptor for created_at field.
-	sentinelappbinaryfileDescCreatedAt := sentinelappbinaryfileFields[10].Descriptor()
+	sentinelappbinaryfileDescCreatedAt := sentinelappbinaryfileFields[11].Descriptor()
 	// sentinelappbinaryfile.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sentinelappbinaryfile.DefaultCreatedAt = sentinelappbinaryfileDescCreatedAt.Default.(func() time.Time)
 	sentinellibraryFields := schema.SentinelLibrary{}.Fields()
 	_ = sentinellibraryFields
 	// sentinellibraryDescUpdatedAt is the schema descriptor for updated_at field.
-	sentinellibraryDescUpdatedAt := sentinellibraryFields[4].Descriptor()
+	sentinellibraryDescUpdatedAt := sentinellibraryFields[5].Descriptor()
 	// sentinellibrary.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sentinellibrary.DefaultUpdatedAt = sentinellibraryDescUpdatedAt.Default.(func() time.Time)
 	// sentinellibrary.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	sentinellibrary.UpdateDefaultUpdatedAt = sentinellibraryDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// sentinellibraryDescCreatedAt is the schema descriptor for created_at field.
-	sentinellibraryDescCreatedAt := sentinellibraryFields[5].Descriptor()
+	sentinellibraryDescCreatedAt := sentinellibraryFields[6].Descriptor()
 	// sentinellibrary.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sentinellibrary.DefaultCreatedAt = sentinellibraryDescCreatedAt.Default.(func() time.Time)
 	sentinelsessionFields := schema.SentinelSession{}.Fields()

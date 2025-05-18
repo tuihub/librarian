@@ -79,6 +79,26 @@ func (slu *SentinelLibraryUpdate) SetNillableDownloadBasePath(s *string) *Sentin
 	return slu
 }
 
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (slu *SentinelLibraryUpdate) SetActiveSnapshot(t time.Time) *SentinelLibraryUpdate {
+	slu.mutation.SetActiveSnapshot(t)
+	return slu
+}
+
+// SetNillableActiveSnapshot sets the "active_snapshot" field if the given value is not nil.
+func (slu *SentinelLibraryUpdate) SetNillableActiveSnapshot(t *time.Time) *SentinelLibraryUpdate {
+	if t != nil {
+		slu.SetActiveSnapshot(*t)
+	}
+	return slu
+}
+
+// ClearActiveSnapshot clears the value of the "active_snapshot" field.
+func (slu *SentinelLibraryUpdate) ClearActiveSnapshot() *SentinelLibraryUpdate {
+	slu.mutation.ClearActiveSnapshot()
+	return slu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (slu *SentinelLibraryUpdate) SetUpdatedAt(t time.Time) *SentinelLibraryUpdate {
 	slu.mutation.SetUpdatedAt(t)
@@ -201,6 +221,12 @@ func (slu *SentinelLibraryUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := slu.mutation.DownloadBasePath(); ok {
 		_spec.SetField(sentinellibrary.FieldDownloadBasePath, field.TypeString, value)
 	}
+	if value, ok := slu.mutation.ActiveSnapshot(); ok {
+		_spec.SetField(sentinellibrary.FieldActiveSnapshot, field.TypeTime, value)
+	}
+	if slu.mutation.ActiveSnapshotCleared() {
+		_spec.ClearField(sentinellibrary.FieldActiveSnapshot, field.TypeTime)
+	}
 	if value, ok := slu.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldUpdatedAt, field.TypeTime, value)
 	}
@@ -308,6 +334,26 @@ func (sluo *SentinelLibraryUpdateOne) SetNillableDownloadBasePath(s *string) *Se
 	if s != nil {
 		sluo.SetDownloadBasePath(*s)
 	}
+	return sluo
+}
+
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (sluo *SentinelLibraryUpdateOne) SetActiveSnapshot(t time.Time) *SentinelLibraryUpdateOne {
+	sluo.mutation.SetActiveSnapshot(t)
+	return sluo
+}
+
+// SetNillableActiveSnapshot sets the "active_snapshot" field if the given value is not nil.
+func (sluo *SentinelLibraryUpdateOne) SetNillableActiveSnapshot(t *time.Time) *SentinelLibraryUpdateOne {
+	if t != nil {
+		sluo.SetActiveSnapshot(*t)
+	}
+	return sluo
+}
+
+// ClearActiveSnapshot clears the value of the "active_snapshot" field.
+func (sluo *SentinelLibraryUpdateOne) ClearActiveSnapshot() *SentinelLibraryUpdateOne {
+	sluo.mutation.ClearActiveSnapshot()
 	return sluo
 }
 
@@ -462,6 +508,12 @@ func (sluo *SentinelLibraryUpdateOne) sqlSave(ctx context.Context) (_node *Senti
 	}
 	if value, ok := sluo.mutation.DownloadBasePath(); ok {
 		_spec.SetField(sentinellibrary.FieldDownloadBasePath, field.TypeString, value)
+	}
+	if value, ok := sluo.mutation.ActiveSnapshot(); ok {
+		_spec.SetField(sentinellibrary.FieldActiveSnapshot, field.TypeTime, value)
+	}
+	if sluo.mutation.ActiveSnapshotCleared() {
+		_spec.ClearField(sentinellibrary.FieldActiveSnapshot, field.TypeTime)
 	}
 	if value, ok := sluo.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldUpdatedAt, field.TypeTime, value)

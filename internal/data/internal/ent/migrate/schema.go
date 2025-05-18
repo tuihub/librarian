@@ -772,7 +772,6 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "library_report_sequence", Type: field.TypeInt64, Default: 0},
-		{Name: "app_binary_report_sequence", Type: field.TypeInt64, Default: 0},
 	}
 	// SentinelsTable holds the schema information for the "sentinels" table.
 	SentinelsTable = &schema.Table{
@@ -786,6 +785,7 @@ var (
 		{Name: "union_id", Type: field.TypeString},
 		{Name: "sentinel_id", Type: field.TypeInt64},
 		{Name: "sentinel_library_reported_id", Type: field.TypeInt64},
+		{Name: "library_snapshot", Type: field.TypeTime},
 		{Name: "generated_id", Type: field.TypeString},
 		{Name: "size_bytes", Type: field.TypeInt64},
 		{Name: "need_token", Type: field.TypeBool},
@@ -795,7 +795,6 @@ var (
 		{Name: "publisher", Type: field.TypeString, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "app_binary_report_sequence", Type: field.TypeInt64},
 	}
 	// SentinelAppBinariesTable holds the schema information for the "sentinel_app_binaries" table.
 	SentinelAppBinariesTable = &schema.Table{
@@ -809,14 +808,9 @@ var (
 				Columns: []*schema.Column{SentinelAppBinariesColumns[1]},
 			},
 			{
-				Name:    "sentinelappbinary_sentinel_id_sentinel_library_reported_id_generated_id",
+				Name:    "sentinelappbinary_sentinel_id_sentinel_library_reported_id_library_snapshot_generated_id",
 				Unique:  true,
-				Columns: []*schema.Column{SentinelAppBinariesColumns[2], SentinelAppBinariesColumns[3], SentinelAppBinariesColumns[4]},
-			},
-			{
-				Name:    "sentinelappbinary_app_binary_report_sequence",
-				Unique:  false,
-				Columns: []*schema.Column{SentinelAppBinariesColumns[13]},
+				Columns: []*schema.Column{SentinelAppBinariesColumns[2], SentinelAppBinariesColumns[3], SentinelAppBinariesColumns[4], SentinelAppBinariesColumns[5]},
 			},
 		},
 	}
@@ -825,6 +819,7 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "sentinel_id", Type: field.TypeInt64},
 		{Name: "sentinel_library_reported_id", Type: field.TypeInt64},
+		{Name: "library_snapshot", Type: field.TypeTime},
 		{Name: "sentinel_app_binary_generated_id", Type: field.TypeString},
 		{Name: "name", Type: field.TypeString},
 		{Name: "size_bytes", Type: field.TypeInt64},
@@ -833,7 +828,6 @@ var (
 		{Name: "chunks_info", Type: field.TypeString, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "app_binary_report_sequence", Type: field.TypeInt64},
 	}
 	// SentinelAppBinaryFilesTable holds the schema information for the "sentinel_app_binary_files" table.
 	SentinelAppBinaryFilesTable = &schema.Table{
@@ -842,14 +836,9 @@ var (
 		PrimaryKey: []*schema.Column{SentinelAppBinaryFilesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "sentinelappbinaryfile_sentinel_id_sentinel_library_reported_id_sentinel_app_binary_generated_id_server_file_path",
+				Name:    "sentinelappbinaryfile_sentinel_id_sentinel_library_reported_id_library_snapshot_sentinel_app_binary_generated_id_server_file_path",
 				Unique:  true,
-				Columns: []*schema.Column{SentinelAppBinaryFilesColumns[1], SentinelAppBinaryFilesColumns[2], SentinelAppBinaryFilesColumns[3], SentinelAppBinaryFilesColumns[7]},
-			},
-			{
-				Name:    "sentinelappbinaryfile_app_binary_report_sequence",
-				Unique:  false,
-				Columns: []*schema.Column{SentinelAppBinaryFilesColumns[11]},
+				Columns: []*schema.Column{SentinelAppBinaryFilesColumns[1], SentinelAppBinaryFilesColumns[2], SentinelAppBinaryFilesColumns[3], SentinelAppBinaryFilesColumns[4], SentinelAppBinaryFilesColumns[8]},
 			},
 		},
 	}
@@ -858,6 +847,7 @@ var (
 		{Name: "id", Type: field.TypeInt64},
 		{Name: "reported_id", Type: field.TypeInt64},
 		{Name: "download_base_path", Type: field.TypeString},
+		{Name: "active_snapshot", Type: field.TypeTime, Nullable: true},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "library_report_sequence", Type: field.TypeInt64},
@@ -871,7 +861,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "sentinel_libraries_sentinels_sentinel_library",
-				Columns:    []*schema.Column{SentinelLibrariesColumns[6]},
+				Columns:    []*schema.Column{SentinelLibrariesColumns[7]},
 				RefColumns: []*schema.Column{SentinelsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -880,12 +870,12 @@ var (
 			{
 				Name:    "sentinellibrary_sentinel_id_reported_id",
 				Unique:  true,
-				Columns: []*schema.Column{SentinelLibrariesColumns[6], SentinelLibrariesColumns[1]},
+				Columns: []*schema.Column{SentinelLibrariesColumns[7], SentinelLibrariesColumns[1]},
 			},
 			{
 				Name:    "sentinellibrary_library_report_sequence",
 				Unique:  false,
-				Columns: []*schema.Column{SentinelLibrariesColumns[5]},
+				Columns: []*schema.Column{SentinelLibrariesColumns[6]},
 			},
 		},
 	}

@@ -167,27 +167,6 @@ func (su *SentinelUpdate) AddLibraryReportSequence(i int64) *SentinelUpdate {
 	return su
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (su *SentinelUpdate) SetAppBinaryReportSequence(i int64) *SentinelUpdate {
-	su.mutation.ResetAppBinaryReportSequence()
-	su.mutation.SetAppBinaryReportSequence(i)
-	return su
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (su *SentinelUpdate) SetNillableAppBinaryReportSequence(i *int64) *SentinelUpdate {
-	if i != nil {
-		su.SetAppBinaryReportSequence(*i)
-	}
-	return su
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (su *SentinelUpdate) AddAppBinaryReportSequence(i int64) *SentinelUpdate {
-	su.mutation.AddAppBinaryReportSequence(i)
-	return su
-}
-
 // AddSentinelSessionIDs adds the "sentinel_session" edge to the SentinelSession entity by IDs.
 func (su *SentinelUpdate) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdate {
 	su.mutation.AddSentinelSessionIDs(ids...)
@@ -350,12 +329,6 @@ func (su *SentinelUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := su.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := su.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinel.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := su.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinel.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	if su.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -602,27 +575,6 @@ func (suo *SentinelUpdateOne) AddLibraryReportSequence(i int64) *SentinelUpdateO
 	return suo
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (suo *SentinelUpdateOne) SetAppBinaryReportSequence(i int64) *SentinelUpdateOne {
-	suo.mutation.ResetAppBinaryReportSequence()
-	suo.mutation.SetAppBinaryReportSequence(i)
-	return suo
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (suo *SentinelUpdateOne) SetNillableAppBinaryReportSequence(i *int64) *SentinelUpdateOne {
-	if i != nil {
-		suo.SetAppBinaryReportSequence(*i)
-	}
-	return suo
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (suo *SentinelUpdateOne) AddAppBinaryReportSequence(i int64) *SentinelUpdateOne {
-	suo.mutation.AddAppBinaryReportSequence(i)
-	return suo
-}
-
 // AddSentinelSessionIDs adds the "sentinel_session" edge to the SentinelSession entity by IDs.
 func (suo *SentinelUpdateOne) AddSentinelSessionIDs(ids ...model.InternalID) *SentinelUpdateOne {
 	suo.mutation.AddSentinelSessionIDs(ids...)
@@ -815,12 +767,6 @@ func (suo *SentinelUpdateOne) sqlSave(ctx context.Context) (_node *Sentinel, err
 	}
 	if value, ok := suo.mutation.AddedLibraryReportSequence(); ok {
 		_spec.AddField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := suo.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinel.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := suo.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinel.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	if suo.mutation.SentinelSessionCleared() {
 		edge := &sqlgraph.EdgeSpec{

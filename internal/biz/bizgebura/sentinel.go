@@ -175,16 +175,16 @@ func (g *Gebura) UpsertSentinelInfo(
 }
 
 func (g *Gebura) UpsertAppBinaries(
-	ctx context.Context, abs []*modelgebura.SentinelAppBinary,
-) error {
+	ctx context.Context, abs []*modelgebura.SentinelAppBinary, snapshot *time.Time, commit bool,
+) (bool, error) {
 	claims := libauth.FromContextAssertUserType(ctx, model.UserTypeSentinel)
 	if claims == nil {
-		return bizutils.NoPermissionError()
+		return false, bizutils.NoPermissionError()
 	}
 	sentinelID := claims.UserID
 	ids, err := g.id.BatchNew(len(abs))
 	if err != nil {
-		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return false, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
 	for i := range abs {
 		abs[i].ID = ids[i]
@@ -192,16 +192,16 @@ func (g *Gebura) UpsertAppBinaries(
 		if len(abs[i].Files) > 0 {
 			fileIDs, err2 := g.id.BatchNew(len(abs[i].Files))
 			if err2 != nil {
-				return pb.ErrorErrorReasonUnspecified("%s", err2.Error())
+				return false, pb.ErrorErrorReasonUnspecified("%s", err2.Error())
 			}
 			for j := range abs[i].Files {
 				abs[i].Files[j].ID = fileIDs[j]
 			}
 		}
 	}
-	err = g.repo.UpsertAppBinaries(ctx, sentinelID, abs)
+	err = g.repo.UpsertAppBinaries(ctx, sentinelID, abs, snapshot, commit)
 	if err != nil {
-		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
+		return false, pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	return nil
+	return commit, nil
 }

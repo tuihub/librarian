@@ -25,6 +25,8 @@ type SentinelLibrary struct {
 	ReportedID int64 `json:"reported_id,omitempty"`
 	// DownloadBasePath holds the value of the "download_base_path" field.
 	DownloadBasePath string `json:"download_base_path,omitempty"`
+	// ActiveSnapshot holds the value of the "active_snapshot" field.
+	ActiveSnapshot time.Time `json:"active_snapshot,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -66,7 +68,7 @@ func (*SentinelLibrary) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case sentinellibrary.FieldDownloadBasePath:
 			values[i] = new(sql.NullString)
-		case sentinellibrary.FieldUpdatedAt, sentinellibrary.FieldCreatedAt:
+		case sentinellibrary.FieldActiveSnapshot, sentinellibrary.FieldUpdatedAt, sentinellibrary.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -106,6 +108,12 @@ func (sl *SentinelLibrary) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field download_base_path", values[i])
 			} else if value.Valid {
 				sl.DownloadBasePath = value.String
+			}
+		case sentinellibrary.FieldActiveSnapshot:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field active_snapshot", values[i])
+			} else if value.Valid {
+				sl.ActiveSnapshot = value.Time
 			}
 		case sentinellibrary.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -174,6 +182,9 @@ func (sl *SentinelLibrary) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("download_base_path=")
 	builder.WriteString(sl.DownloadBasePath)
+	builder.WriteString(", ")
+	builder.WriteString("active_snapshot=")
+	builder.WriteString(sl.ActiveSnapshot.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(sl.UpdatedAt.Format(time.ANSIC))

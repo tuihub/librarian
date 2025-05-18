@@ -24,6 +24,8 @@ type SentinelAppBinary struct {
 	SentinelID model.InternalID `json:"sentinel_id,omitempty"`
 	// SentinelLibraryReportedID holds the value of the "sentinel_library_reported_id" field.
 	SentinelLibraryReportedID int64 `json:"sentinel_library_reported_id,omitempty"`
+	// LibrarySnapshot holds the value of the "library_snapshot" field.
+	LibrarySnapshot time.Time `json:"library_snapshot,omitempty"`
 	// GeneratedID holds the value of the "generated_id" field.
 	GeneratedID string `json:"generated_id,omitempty"`
 	// SizeBytes holds the value of the "size_bytes" field.
@@ -42,8 +44,6 @@ type SentinelAppBinary struct {
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
-	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
-	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SentinelAppBinaryQuery when eager-loading is set.
 	Edges        SentinelAppBinaryEdges `json:"edges"`
@@ -86,11 +86,11 @@ func (*SentinelAppBinary) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinelappbinary.FieldNeedToken:
 			values[i] = new(sql.NullBool)
-		case sentinelappbinary.FieldID, sentinelappbinary.FieldSentinelID, sentinelappbinary.FieldSentinelLibraryReportedID, sentinelappbinary.FieldSizeBytes, sentinelappbinary.FieldAppBinaryReportSequence:
+		case sentinelappbinary.FieldID, sentinelappbinary.FieldSentinelID, sentinelappbinary.FieldSentinelLibraryReportedID, sentinelappbinary.FieldSizeBytes:
 			values[i] = new(sql.NullInt64)
 		case sentinelappbinary.FieldUnionID, sentinelappbinary.FieldGeneratedID, sentinelappbinary.FieldName, sentinelappbinary.FieldVersion, sentinelappbinary.FieldDeveloper, sentinelappbinary.FieldPublisher:
 			values[i] = new(sql.NullString)
-		case sentinelappbinary.FieldUpdatedAt, sentinelappbinary.FieldCreatedAt:
+		case sentinelappbinary.FieldLibrarySnapshot, sentinelappbinary.FieldUpdatedAt, sentinelappbinary.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -130,6 +130,12 @@ func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field sentinel_library_reported_id", values[i])
 			} else if value.Valid {
 				sab.SentinelLibraryReportedID = value.Int64
+			}
+		case sentinelappbinary.FieldLibrarySnapshot:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field library_snapshot", values[i])
+			} else if value.Valid {
+				sab.LibrarySnapshot = value.Time
 			}
 		case sentinelappbinary.FieldGeneratedID:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -184,12 +190,6 @@ func (sab *SentinelAppBinary) assignValues(columns []string, values []any) error
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				sab.CreatedAt = value.Time
-			}
-		case sentinelappbinary.FieldAppBinaryReportSequence:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_binary_report_sequence", values[i])
-			} else if value.Valid {
-				sab.AppBinaryReportSequence = value.Int64
 			}
 		default:
 			sab.selectValues.Set(columns[i], values[i])
@@ -246,6 +246,9 @@ func (sab *SentinelAppBinary) String() string {
 	builder.WriteString("sentinel_library_reported_id=")
 	builder.WriteString(fmt.Sprintf("%v", sab.SentinelLibraryReportedID))
 	builder.WriteString(", ")
+	builder.WriteString("library_snapshot=")
+	builder.WriteString(sab.LibrarySnapshot.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("generated_id=")
 	builder.WriteString(sab.GeneratedID)
 	builder.WriteString(", ")
@@ -272,9 +275,6 @@ func (sab *SentinelAppBinary) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(sab.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("app_binary_report_sequence=")
-	builder.WriteString(fmt.Sprintf("%v", sab.AppBinaryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

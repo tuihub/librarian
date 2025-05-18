@@ -21,6 +21,7 @@ func (SentinelAppBinary) Fields() []ent.Field {
 		field.String("union_id"),
 		field.Int64("sentinel_id").GoType(model.InternalID(0)),
 		field.Int64("sentinel_library_reported_id"),
+		field.Time("library_snapshot"),
 		field.String("generated_id"),
 		field.Int64("size_bytes"),
 		field.Bool("need_token"),
@@ -32,16 +33,14 @@ func (SentinelAppBinary) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int64("app_binary_report_sequence"),
 	}
 }
 
 func (SentinelAppBinary) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("union_id"),
-		index.Fields("sentinel_id", "sentinel_library_reported_id", "generated_id").
+		index.Fields("sentinel_id", "sentinel_library_reported_id", "library_snapshot", "generated_id").
 			Unique(),
-		index.Fields("app_binary_report_sequence"),
 	}
 }
 

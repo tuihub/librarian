@@ -72,6 +72,11 @@ func DownloadBasePath(v string) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldDownloadBasePath, v))
 }
 
+// ActiveSnapshot applies equality check predicate on the "active_snapshot" field. It's identical to ActiveSnapshotEQ.
+func ActiveSnapshot(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldActiveSnapshot, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldEQ(FieldUpdatedAt, v))
@@ -220,6 +225,56 @@ func DownloadBasePathEqualFold(v string) predicate.SentinelLibrary {
 // DownloadBasePathContainsFold applies the ContainsFold predicate on the "download_base_path" field.
 func DownloadBasePathContainsFold(v string) predicate.SentinelLibrary {
 	return predicate.SentinelLibrary(sql.FieldContainsFold(FieldDownloadBasePath, v))
+}
+
+// ActiveSnapshotEQ applies the EQ predicate on the "active_snapshot" field.
+func ActiveSnapshotEQ(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldEQ(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotNEQ applies the NEQ predicate on the "active_snapshot" field.
+func ActiveSnapshotNEQ(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldNEQ(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotIn applies the In predicate on the "active_snapshot" field.
+func ActiveSnapshotIn(vs ...time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldIn(FieldActiveSnapshot, vs...))
+}
+
+// ActiveSnapshotNotIn applies the NotIn predicate on the "active_snapshot" field.
+func ActiveSnapshotNotIn(vs ...time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldNotIn(FieldActiveSnapshot, vs...))
+}
+
+// ActiveSnapshotGT applies the GT predicate on the "active_snapshot" field.
+func ActiveSnapshotGT(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldGT(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotGTE applies the GTE predicate on the "active_snapshot" field.
+func ActiveSnapshotGTE(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldGTE(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotLT applies the LT predicate on the "active_snapshot" field.
+func ActiveSnapshotLT(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldLT(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotLTE applies the LTE predicate on the "active_snapshot" field.
+func ActiveSnapshotLTE(v time.Time) predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldLTE(FieldActiveSnapshot, v))
+}
+
+// ActiveSnapshotIsNil applies the IsNil predicate on the "active_snapshot" field.
+func ActiveSnapshotIsNil() predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldIsNull(FieldActiveSnapshot))
+}
+
+// ActiveSnapshotNotNil applies the NotNil predicate on the "active_snapshot" field.
+func ActiveSnapshotNotNil() predicate.SentinelLibrary {
+	return predicate.SentinelLibrary(sql.FieldNotNull(FieldActiveSnapshot))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

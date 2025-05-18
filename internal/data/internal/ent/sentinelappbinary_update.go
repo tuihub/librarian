@@ -87,6 +87,20 @@ func (sabu *SentinelAppBinaryUpdate) AddSentinelLibraryReportedID(i int64) *Sent
 	return sabu
 }
 
+// SetLibrarySnapshot sets the "library_snapshot" field.
+func (sabu *SentinelAppBinaryUpdate) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryUpdate {
+	sabu.mutation.SetLibrarySnapshot(t)
+	return sabu
+}
+
+// SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
+func (sabu *SentinelAppBinaryUpdate) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryUpdate {
+	if t != nil {
+		sabu.SetLibrarySnapshot(*t)
+	}
+	return sabu
+}
+
 // SetGeneratedID sets the "generated_id" field.
 func (sabu *SentinelAppBinaryUpdate) SetGeneratedID(s string) *SentinelAppBinaryUpdate {
 	sabu.mutation.SetGeneratedID(s)
@@ -230,27 +244,6 @@ func (sabu *SentinelAppBinaryUpdate) SetNillableCreatedAt(t *time.Time) *Sentine
 	return sabu
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (sabu *SentinelAppBinaryUpdate) SetAppBinaryReportSequence(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.ResetAppBinaryReportSequence()
-	sabu.mutation.SetAppBinaryReportSequence(i)
-	return sabu
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (sabu *SentinelAppBinaryUpdate) SetNillableAppBinaryReportSequence(i *int64) *SentinelAppBinaryUpdate {
-	if i != nil {
-		sabu.SetAppBinaryReportSequence(*i)
-	}
-	return sabu
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (sabu *SentinelAppBinaryUpdate) AddAppBinaryReportSequence(i int64) *SentinelAppBinaryUpdate {
-	sabu.mutation.AddAppBinaryReportSequence(i)
-	return sabu
-}
-
 // AddStoreAppIDs adds the "store_app" edge to the StoreApp entity by IDs.
 func (sabu *SentinelAppBinaryUpdate) AddStoreAppIDs(ids ...model.InternalID) *SentinelAppBinaryUpdate {
 	sabu.mutation.AddStoreAppIDs(ids...)
@@ -388,6 +381,9 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 	if value, ok := sabu.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
+	if value, ok := sabu.mutation.LibrarySnapshot(); ok {
+		_spec.SetField(sentinelappbinary.FieldLibrarySnapshot, field.TypeTime, value)
+	}
 	if value, ok := sabu.mutation.GeneratedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldGeneratedID, field.TypeString, value)
 	}
@@ -426,12 +422,6 @@ func (sabu *SentinelAppBinaryUpdate) sqlSave(ctx context.Context) (n int, err er
 	}
 	if value, ok := sabu.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := sabu.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := sabu.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	if sabu.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -611,6 +601,20 @@ func (sabuo *SentinelAppBinaryUpdateOne) AddSentinelLibraryReportedID(i int64) *
 	return sabuo
 }
 
+// SetLibrarySnapshot sets the "library_snapshot" field.
+func (sabuo *SentinelAppBinaryUpdateOne) SetLibrarySnapshot(t time.Time) *SentinelAppBinaryUpdateOne {
+	sabuo.mutation.SetLibrarySnapshot(t)
+	return sabuo
+}
+
+// SetNillableLibrarySnapshot sets the "library_snapshot" field if the given value is not nil.
+func (sabuo *SentinelAppBinaryUpdateOne) SetNillableLibrarySnapshot(t *time.Time) *SentinelAppBinaryUpdateOne {
+	if t != nil {
+		sabuo.SetLibrarySnapshot(*t)
+	}
+	return sabuo
+}
+
 // SetGeneratedID sets the "generated_id" field.
 func (sabuo *SentinelAppBinaryUpdateOne) SetGeneratedID(s string) *SentinelAppBinaryUpdateOne {
 	sabuo.mutation.SetGeneratedID(s)
@@ -751,27 +755,6 @@ func (sabuo *SentinelAppBinaryUpdateOne) SetNillableCreatedAt(t *time.Time) *Sen
 	if t != nil {
 		sabuo.SetCreatedAt(*t)
 	}
-	return sabuo
-}
-
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (sabuo *SentinelAppBinaryUpdateOne) SetAppBinaryReportSequence(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.ResetAppBinaryReportSequence()
-	sabuo.mutation.SetAppBinaryReportSequence(i)
-	return sabuo
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (sabuo *SentinelAppBinaryUpdateOne) SetNillableAppBinaryReportSequence(i *int64) *SentinelAppBinaryUpdateOne {
-	if i != nil {
-		sabuo.SetAppBinaryReportSequence(*i)
-	}
-	return sabuo
-}
-
-// AddAppBinaryReportSequence adds i to the "app_binary_report_sequence" field.
-func (sabuo *SentinelAppBinaryUpdateOne) AddAppBinaryReportSequence(i int64) *SentinelAppBinaryUpdateOne {
-	sabuo.mutation.AddAppBinaryReportSequence(i)
 	return sabuo
 }
 
@@ -942,6 +925,9 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 	if value, ok := sabuo.mutation.AddedSentinelLibraryReportedID(); ok {
 		_spec.AddField(sentinelappbinary.FieldSentinelLibraryReportedID, field.TypeInt64, value)
 	}
+	if value, ok := sabuo.mutation.LibrarySnapshot(); ok {
+		_spec.SetField(sentinelappbinary.FieldLibrarySnapshot, field.TypeTime, value)
+	}
 	if value, ok := sabuo.mutation.GeneratedID(); ok {
 		_spec.SetField(sentinelappbinary.FieldGeneratedID, field.TypeString, value)
 	}
@@ -980,12 +966,6 @@ func (sabuo *SentinelAppBinaryUpdateOne) sqlSave(ctx context.Context) (_node *Se
 	}
 	if value, ok := sabuo.mutation.CreatedAt(); ok {
 		_spec.SetField(sentinelappbinary.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := sabuo.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
-	}
-	if value, ok := sabuo.mutation.AddedAppBinaryReportSequence(); ok {
-		_spec.AddField(sentinelappbinary.FieldAppBinaryReportSequence, field.TypeInt64, value)
 	}
 	if sabuo.mutation.StoreAppCleared() {
 		edge := &sqlgraph.EdgeSpec{

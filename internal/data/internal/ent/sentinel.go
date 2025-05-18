@@ -39,8 +39,6 @@ type Sentinel struct {
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// LibraryReportSequence holds the value of the "library_report_sequence" field.
 	LibraryReportSequence int64 `json:"library_report_sequence,omitempty"`
-	// AppBinaryReportSequence holds the value of the "app_binary_report_sequence" field.
-	AppBinaryReportSequence int64 `json:"app_binary_report_sequence,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SentinelQuery when eager-loading is set.
 	Edges        SentinelEdges `json:"edges"`
@@ -83,7 +81,7 @@ func (*Sentinel) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sentinel.FieldAlternativeUrls:
 			values[i] = new([]byte)
-		case sentinel.FieldID, sentinel.FieldCreatorID, sentinel.FieldLibraryReportSequence, sentinel.FieldAppBinaryReportSequence:
+		case sentinel.FieldID, sentinel.FieldCreatorID, sentinel.FieldLibraryReportSequence:
 			values[i] = new(sql.NullInt64)
 		case sentinel.FieldName, sentinel.FieldDescription, sentinel.FieldURL, sentinel.FieldGetTokenPath, sentinel.FieldDownloadFileBasePath:
 			values[i] = new(sql.NullString)
@@ -172,12 +170,6 @@ func (s *Sentinel) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				s.LibraryReportSequence = value.Int64
 			}
-		case sentinel.FieldAppBinaryReportSequence:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field app_binary_report_sequence", values[i])
-			} else if value.Valid {
-				s.AppBinaryReportSequence = value.Int64
-			}
 		default:
 			s.selectValues.Set(columns[i], values[i])
 		}
@@ -253,9 +245,6 @@ func (s *Sentinel) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("library_report_sequence=")
 	builder.WriteString(fmt.Sprintf("%v", s.LibraryReportSequence))
-	builder.WriteString(", ")
-	builder.WriteString("app_binary_report_sequence=")
-	builder.WriteString(fmt.Sprintf("%v", s.AppBinaryReportSequence))
 	builder.WriteByte(')')
 	return builder.String()
 }

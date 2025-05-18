@@ -133,20 +133,6 @@ func (sc *SentinelCreate) SetNillableLibraryReportSequence(i *int64) *SentinelCr
 	return sc
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (sc *SentinelCreate) SetAppBinaryReportSequence(i int64) *SentinelCreate {
-	sc.mutation.SetAppBinaryReportSequence(i)
-	return sc
-}
-
-// SetNillableAppBinaryReportSequence sets the "app_binary_report_sequence" field if the given value is not nil.
-func (sc *SentinelCreate) SetNillableAppBinaryReportSequence(i *int64) *SentinelCreate {
-	if i != nil {
-		sc.SetAppBinaryReportSequence(*i)
-	}
-	return sc
-}
-
 // SetID sets the "id" field.
 func (sc *SentinelCreate) SetID(mi model.InternalID) *SentinelCreate {
 	sc.mutation.SetID(mi)
@@ -238,10 +224,6 @@ func (sc *SentinelCreate) defaults() {
 		v := sentinel.DefaultLibraryReportSequence
 		sc.mutation.SetLibraryReportSequence(v)
 	}
-	if _, ok := sc.mutation.AppBinaryReportSequence(); !ok {
-		v := sentinel.DefaultAppBinaryReportSequence
-		sc.mutation.SetAppBinaryReportSequence(v)
-	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -269,9 +251,6 @@ func (sc *SentinelCreate) check() error {
 	}
 	if _, ok := sc.mutation.LibraryReportSequence(); !ok {
 		return &ValidationError{Name: "library_report_sequence", err: errors.New(`ent: missing required field "Sentinel.library_report_sequence"`)}
-	}
-	if _, ok := sc.mutation.AppBinaryReportSequence(); !ok {
-		return &ValidationError{Name: "app_binary_report_sequence", err: errors.New(`ent: missing required field "Sentinel.app_binary_report_sequence"`)}
 	}
 	return nil
 }
@@ -345,10 +324,6 @@ func (sc *SentinelCreate) createSpec() (*Sentinel, *sqlgraph.CreateSpec) {
 	if value, ok := sc.mutation.LibraryReportSequence(); ok {
 		_spec.SetField(sentinel.FieldLibraryReportSequence, field.TypeInt64, value)
 		_node.LibraryReportSequence = value
-	}
-	if value, ok := sc.mutation.AppBinaryReportSequence(); ok {
-		_spec.SetField(sentinel.FieldAppBinaryReportSequence, field.TypeInt64, value)
-		_node.AppBinaryReportSequence = value
 	}
 	if nodes := sc.mutation.SentinelSessionIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -560,24 +535,6 @@ func (u *SentinelUpsert) AddLibraryReportSequence(v int64) *SentinelUpsert {
 	return u
 }
 
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (u *SentinelUpsert) SetAppBinaryReportSequence(v int64) *SentinelUpsert {
-	u.Set(sentinel.FieldAppBinaryReportSequence, v)
-	return u
-}
-
-// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
-func (u *SentinelUpsert) UpdateAppBinaryReportSequence() *SentinelUpsert {
-	u.SetExcluded(sentinel.FieldAppBinaryReportSequence)
-	return u
-}
-
-// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
-func (u *SentinelUpsert) AddAppBinaryReportSequence(v int64) *SentinelUpsert {
-	u.Add(sentinel.FieldAppBinaryReportSequence, v)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -773,27 +730,6 @@ func (u *SentinelUpsertOne) AddLibraryReportSequence(v int64) *SentinelUpsertOne
 func (u *SentinelUpsertOne) UpdateLibraryReportSequence() *SentinelUpsertOne {
 	return u.Update(func(s *SentinelUpsert) {
 		s.UpdateLibraryReportSequence()
-	})
-}
-
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (u *SentinelUpsertOne) SetAppBinaryReportSequence(v int64) *SentinelUpsertOne {
-	return u.Update(func(s *SentinelUpsert) {
-		s.SetAppBinaryReportSequence(v)
-	})
-}
-
-// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
-func (u *SentinelUpsertOne) AddAppBinaryReportSequence(v int64) *SentinelUpsertOne {
-	return u.Update(func(s *SentinelUpsert) {
-		s.AddAppBinaryReportSequence(v)
-	})
-}
-
-// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
-func (u *SentinelUpsertOne) UpdateAppBinaryReportSequence() *SentinelUpsertOne {
-	return u.Update(func(s *SentinelUpsert) {
-		s.UpdateAppBinaryReportSequence()
 	})
 }
 
@@ -1158,27 +1094,6 @@ func (u *SentinelUpsertBulk) AddLibraryReportSequence(v int64) *SentinelUpsertBu
 func (u *SentinelUpsertBulk) UpdateLibraryReportSequence() *SentinelUpsertBulk {
 	return u.Update(func(s *SentinelUpsert) {
 		s.UpdateLibraryReportSequence()
-	})
-}
-
-// SetAppBinaryReportSequence sets the "app_binary_report_sequence" field.
-func (u *SentinelUpsertBulk) SetAppBinaryReportSequence(v int64) *SentinelUpsertBulk {
-	return u.Update(func(s *SentinelUpsert) {
-		s.SetAppBinaryReportSequence(v)
-	})
-}
-
-// AddAppBinaryReportSequence adds v to the "app_binary_report_sequence" field.
-func (u *SentinelUpsertBulk) AddAppBinaryReportSequence(v int64) *SentinelUpsertBulk {
-	return u.Update(func(s *SentinelUpsert) {
-		s.AddAppBinaryReportSequence(v)
-	})
-}
-
-// UpdateAppBinaryReportSequence sets the "app_binary_report_sequence" field to the value that was provided on create.
-func (u *SentinelUpsertBulk) UpdateAppBinaryReportSequence() *SentinelUpsertBulk {
-	return u.Update(func(s *SentinelUpsert) {
-		s.UpdateAppBinaryReportSequence()
 	})
 }
 

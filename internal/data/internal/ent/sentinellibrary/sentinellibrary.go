@@ -20,6 +20,8 @@ const (
 	FieldReportedID = "reported_id"
 	// FieldDownloadBasePath holds the string denoting the download_base_path field in the database.
 	FieldDownloadBasePath = "download_base_path"
+	// FieldActiveSnapshot holds the string denoting the active_snapshot field in the database.
+	FieldActiveSnapshot = "active_snapshot"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -45,6 +47,7 @@ var Columns = []string{
 	FieldSentinelID,
 	FieldReportedID,
 	FieldDownloadBasePath,
+	FieldActiveSnapshot,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 	FieldLibraryReportSequence,
@@ -90,6 +93,11 @@ func ByReportedID(opts ...sql.OrderTermOption) OrderOption {
 // ByDownloadBasePath orders the results by the download_base_path field.
 func ByDownloadBasePath(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDownloadBasePath, opts...).ToFunc()
+}
+
+// ByActiveSnapshot orders the results by the active_snapshot field.
+func ByActiveSnapshot(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActiveSnapshot, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

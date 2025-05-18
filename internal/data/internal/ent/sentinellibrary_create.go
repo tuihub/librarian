@@ -42,6 +42,20 @@ func (slc *SentinelLibraryCreate) SetDownloadBasePath(s string) *SentinelLibrary
 	return slc
 }
 
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (slc *SentinelLibraryCreate) SetActiveSnapshot(t time.Time) *SentinelLibraryCreate {
+	slc.mutation.SetActiveSnapshot(t)
+	return slc
+}
+
+// SetNillableActiveSnapshot sets the "active_snapshot" field if the given value is not nil.
+func (slc *SentinelLibraryCreate) SetNillableActiveSnapshot(t *time.Time) *SentinelLibraryCreate {
+	if t != nil {
+		slc.SetActiveSnapshot(*t)
+	}
+	return slc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (slc *SentinelLibraryCreate) SetUpdatedAt(t time.Time) *SentinelLibraryCreate {
 	slc.mutation.SetUpdatedAt(t)
@@ -196,6 +210,10 @@ func (slc *SentinelLibraryCreate) createSpec() (*SentinelLibrary, *sqlgraph.Crea
 		_spec.SetField(sentinellibrary.FieldDownloadBasePath, field.TypeString, value)
 		_node.DownloadBasePath = value
 	}
+	if value, ok := slc.mutation.ActiveSnapshot(); ok {
+		_spec.SetField(sentinellibrary.FieldActiveSnapshot, field.TypeTime, value)
+		_node.ActiveSnapshot = value
+	}
 	if value, ok := slc.mutation.UpdatedAt(); ok {
 		_spec.SetField(sentinellibrary.FieldUpdatedAt, field.TypeTime, value)
 		_node.UpdatedAt = value
@@ -316,6 +334,24 @@ func (u *SentinelLibraryUpsert) SetDownloadBasePath(v string) *SentinelLibraryUp
 // UpdateDownloadBasePath sets the "download_base_path" field to the value that was provided on create.
 func (u *SentinelLibraryUpsert) UpdateDownloadBasePath() *SentinelLibraryUpsert {
 	u.SetExcluded(sentinellibrary.FieldDownloadBasePath)
+	return u
+}
+
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (u *SentinelLibraryUpsert) SetActiveSnapshot(v time.Time) *SentinelLibraryUpsert {
+	u.Set(sentinellibrary.FieldActiveSnapshot, v)
+	return u
+}
+
+// UpdateActiveSnapshot sets the "active_snapshot" field to the value that was provided on create.
+func (u *SentinelLibraryUpsert) UpdateActiveSnapshot() *SentinelLibraryUpsert {
+	u.SetExcluded(sentinellibrary.FieldActiveSnapshot)
+	return u
+}
+
+// ClearActiveSnapshot clears the value of the "active_snapshot" field.
+func (u *SentinelLibraryUpsert) ClearActiveSnapshot() *SentinelLibraryUpsert {
+	u.SetNull(sentinellibrary.FieldActiveSnapshot)
 	return u
 }
 
@@ -455,6 +491,27 @@ func (u *SentinelLibraryUpsertOne) SetDownloadBasePath(v string) *SentinelLibrar
 func (u *SentinelLibraryUpsertOne) UpdateDownloadBasePath() *SentinelLibraryUpsertOne {
 	return u.Update(func(s *SentinelLibraryUpsert) {
 		s.UpdateDownloadBasePath()
+	})
+}
+
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (u *SentinelLibraryUpsertOne) SetActiveSnapshot(v time.Time) *SentinelLibraryUpsertOne {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.SetActiveSnapshot(v)
+	})
+}
+
+// UpdateActiveSnapshot sets the "active_snapshot" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertOne) UpdateActiveSnapshot() *SentinelLibraryUpsertOne {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.UpdateActiveSnapshot()
+	})
+}
+
+// ClearActiveSnapshot clears the value of the "active_snapshot" field.
+func (u *SentinelLibraryUpsertOne) ClearActiveSnapshot() *SentinelLibraryUpsertOne {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.ClearActiveSnapshot()
 	})
 }
 
@@ -767,6 +824,27 @@ func (u *SentinelLibraryUpsertBulk) SetDownloadBasePath(v string) *SentinelLibra
 func (u *SentinelLibraryUpsertBulk) UpdateDownloadBasePath() *SentinelLibraryUpsertBulk {
 	return u.Update(func(s *SentinelLibraryUpsert) {
 		s.UpdateDownloadBasePath()
+	})
+}
+
+// SetActiveSnapshot sets the "active_snapshot" field.
+func (u *SentinelLibraryUpsertBulk) SetActiveSnapshot(v time.Time) *SentinelLibraryUpsertBulk {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.SetActiveSnapshot(v)
+	})
+}
+
+// UpdateActiveSnapshot sets the "active_snapshot" field to the value that was provided on create.
+func (u *SentinelLibraryUpsertBulk) UpdateActiveSnapshot() *SentinelLibraryUpsertBulk {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.UpdateActiveSnapshot()
+	})
+}
+
+// ClearActiveSnapshot clears the value of the "active_snapshot" field.
+func (u *SentinelLibraryUpsertBulk) ClearActiveSnapshot() *SentinelLibraryUpsertBulk {
+	return u.Update(func(s *SentinelLibraryUpsert) {
+		s.ClearActiveSnapshot()
 	})
 }
 
