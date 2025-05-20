@@ -317,7 +317,6 @@ func (s *Supervisor) enablePorterInstance(
 			0,
 			libauth.ClaimsTypeRefreshToken,
 			model.UserTypePorter,
-			nil,
 			libtime.Hour,
 		)
 		if err != nil {

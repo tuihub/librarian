@@ -17,9 +17,6 @@ import (
 const accessTokenExpire = time.Hour
 const refreshTokenExpire = libtime.SevenDays
 const refreshTokenNeedRefresh = libtime.FiveDays
-const sentinelAccessTokenExpire = libtime.ThreeDays
-const sentinelRefreshTokenExpire = libtime.ThirtyDays
-const sentinelRefreshTokenNeedRefresh = libtime.TwentyTwoDays
 
 func (t *Tiphereth) GetToken(
 	ctx context.Context,
@@ -67,7 +64,6 @@ func (t *Tiphereth) GetToken(
 		0,
 		libauth.ClaimsTypeAccessToken,
 		user.Type,
-		nil,
 		accessTokenExpire,
 	)
 	if err != nil {
@@ -79,7 +75,6 @@ func (t *Tiphereth) GetToken(
 		0,
 		libauth.ClaimsTypeRefreshToken,
 		user.Type,
-		nil,
 		refreshTokenExpire,
 	)
 	if err != nil {
@@ -134,7 +129,6 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 		claims.PorterID,
 		libauth.ClaimsTypeAccessToken,
 		claims.UserType,
-		nil,
 		libtime.Hour,
 	)
 	if err != nil {
@@ -149,7 +143,6 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 			claims.PorterID,
 			libauth.ClaimsTypeRefreshToken,
 			claims.UserType,
-			nil,
 			refreshTokenExpire,
 		)
 		if err != nil {
@@ -171,50 +164,6 @@ func (t *Tiphereth) RefreshToken( //nolint:gocognit // TODO
 	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
 }
 
-func (t *Tiphereth) SentinelRefreshToken(
-	ctx context.Context,
-) (model.AccessToken, model.RefreshToken, *errors.Error) {
-	claims := libauth.FromContextAssertUserType(ctx, model.UserTypeSentinel)
-	if claims == nil {
-		return "", "", bizutils.NoPermissionError()
-	}
-	oldRefreshToken := libauth.RawFromContext(ctx)
-	if oldRefreshToken == "" {
-		return "", "", bizutils.NoPermissionError()
-	}
-	var err error
-	var accessToken, refreshToken string
-	accessToken, err = t.auth.GenerateToken(
-		claims.UserID,
-		claims.PorterID,
-		libauth.ClaimsTypeAccessToken,
-		claims.UserType,
-		nil,
-		sentinelAccessTokenExpire,
-	)
-	if err != nil {
-		logger.Infof("generate access token failed: %s", err.Error())
-		return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
-	}
-	if claims.ExpiresAt.After(time.Now().Add(sentinelRefreshTokenNeedRefresh)) {
-		refreshToken = oldRefreshToken
-	} else {
-		refreshToken, err = t.auth.GenerateToken(
-			claims.UserID,
-			claims.PorterID,
-			libauth.ClaimsTypeRefreshToken,
-			claims.UserType,
-			nil,
-			sentinelRefreshTokenExpire,
-		)
-		if err != nil {
-			logger.Infof("generate refresh token failed: %s", err.Error())
-			return "", "", pb.ErrorErrorReasonUnspecified("%s", err.Error())
-		}
-	}
-	return model.AccessToken(accessToken), model.RefreshToken(refreshToken), nil
-}
-
 func (t *Tiphereth) AcquireUserToken(
 	ctx context.Context,
 	userID model.InternalID,
@@ -229,7 +178,6 @@ func (t *Tiphereth) AcquireUserToken(
 		claims.UserID,
 		libauth.ClaimsTypeAccessToken,
 		model.UserTypeNormal,
-		nil,
 		libtime.Day,
 	)
 	if err != nil {

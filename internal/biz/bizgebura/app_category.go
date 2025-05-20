@@ -9,9 +9,14 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
-func (g *Gebura) CreateAppCategory(ctx context.Context, ac *modelgebura.AppCategory) (*modelgebura.AppCategory, error) {
+func (g *Gebura) CreateAppCategory(
+	ctx context.Context,
+	ac *modelgebura.AppCategory,
+) (*modelgebura.AppCategory, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -29,7 +34,7 @@ func (g *Gebura) CreateAppCategory(ctx context.Context, ac *modelgebura.AppCateg
 	return ac, nil
 }
 
-func (g *Gebura) ListAppCategories(ctx context.Context) ([]*modelgebura.AppCategory, error) {
+func (g *Gebura) ListAppCategories(ctx context.Context) ([]*modelgebura.AppCategory, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -41,7 +46,7 @@ func (g *Gebura) ListAppCategories(ctx context.Context) ([]*modelgebura.AppCateg
 	return acList, nil
 }
 
-func (g *Gebura) UpdateAppCategory(ctx context.Context, ac *modelgebura.AppCategory) error {
+func (g *Gebura) UpdateAppCategory(ctx context.Context, ac *modelgebura.AppCategory) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
@@ -53,7 +58,7 @@ func (g *Gebura) UpdateAppCategory(ctx context.Context, ac *modelgebura.AppCateg
 	return nil
 }
 
-func (g *Gebura) DeleteAppCategory(ctx context.Context, id model.InternalID) error {
+func (g *Gebura) DeleteAppCategory(ctx context.Context, id model.InternalID) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()

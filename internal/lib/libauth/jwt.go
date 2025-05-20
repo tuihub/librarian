@@ -14,15 +14,44 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	jwtv5 "github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/samber/lo"
 )
 
 type Claims struct {
-	UserID           model.InternalID `json:"uid,string"`
-	PorterID         model.InternalID `json:"pid,string,omitempty"`
-	Type             ClaimsType       `json:"ct"`
-	UserType         model.UserType   `json:"ut"`
-	TransferMetadata any              `json:"tm,omitempty"`
+	UserID   model.InternalID `json:"uid,string"`
+	PorterID model.InternalID `json:"pid,string,omitempty"`
+	Type     ClaimsType       `json:"ct"`
+	UserType model.UserType   `json:"ut"`
+	ClaimsTransferExtra
+	ClaimsSentinelExtra
 	jwtv5.RegisteredClaims
+}
+
+type ClaimsExtra func(*ClaimsExtras)
+
+type ClaimsExtras struct {
+	ClaimsTransferExtra *ClaimsTransferExtra
+	ClaimsSentinelExtra *ClaimsSentinelExtra
+}
+
+type ClaimsTransferExtra struct {
+	TransferMetadata any `json:"tm,omitempty"`
+}
+
+func WithClaimsTransferExtra(extra *ClaimsTransferExtra) ClaimsExtra {
+	return func(claims *ClaimsExtras) {
+		claims.ClaimsTransferExtra = extra
+	}
+}
+
+type ClaimsSentinelExtra struct {
+	SentinelSessionID model.InternalID `json:"ssid,string"`
+}
+
+func WithClaimsSentinelExtra(extra *ClaimsSentinelExtra) ClaimsExtra {
+	return func(claims *ClaimsExtras) {
+		claims.ClaimsSentinelExtra = extra
+	}
 }
 
 type ClaimsType int
@@ -118,8 +147,8 @@ func (a *Auth) GenerateToken(
 	pid model.InternalID,
 	claimsType ClaimsType,
 	userType model.UserType,
-	transferMetadata any,
 	expire time.Duration,
+	extras ...ClaimsExtra,
 ) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(expire)
@@ -127,13 +156,18 @@ func (a *Auth) GenerateToken(
 	if err != nil {
 		return "", err
 	}
+	extra := new(ClaimsExtras)
+	for _, e := range extras {
+		e(extra)
+	}
 
 	claims := Claims{
-		UserID:           uid,
-		PorterID:         pid,
-		Type:             claimsType,
-		UserType:         userType,
-		TransferMetadata: transferMetadata,
+		UserID:              uid,
+		PorterID:            pid,
+		Type:                claimsType,
+		UserType:            userType,
+		ClaimsTransferExtra: lo.FromPtr(extra.ClaimsTransferExtra),
+		ClaimsSentinelExtra: lo.FromPtr(extra.ClaimsSentinelExtra),
 		RegisteredClaims: jwtv5.RegisteredClaims{
 			Issuer:    a.config.TokenIssuer,
 			Subject:   "",

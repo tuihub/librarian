@@ -678,6 +678,23 @@ func (g *GeburaRepo) CreateSentinelSession(ctx context.Context, ss *modelgebura.
 		Exec(ctx)
 }
 
+func (g *GeburaRepo) GetSentinelSession(
+	ctx context.Context,
+	sentinelID model.InternalID,
+	refreshToken string,
+) (*modelgebura.SentinelSession, error) {
+	s, err := g.data.db.SentinelSession.Query().
+		Where(
+			sentinelsession.SentinelIDEQ(sentinelID),
+			sentinelsession.RefreshTokenEQ(refreshToken),
+		).
+		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return converter.ToBizSentinelSession(s), nil
+}
+
 func (g *GeburaRepo) ListSentinelSessions(
 	ctx context.Context,
 	page *model.Paging,
@@ -704,13 +721,38 @@ func (g *GeburaRepo) ListSentinelSessions(
 	return converter.ToBizSentinelSessionList(sessions), total, nil
 }
 
-func (g *GeburaRepo) UpdateSentinelSession(
+func (g *GeburaRepo) UpdateSentinelSessionStatus(
 	ctx context.Context,
 	id model.InternalID,
 	status modelgebura.SentinelSessionStatus,
 ) error {
 	return g.data.db.SentinelSession.UpdateOneID(id).
 		SetStatus(converter.ToEntSentinelSessionStatus(status)).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) UpdateSentinelSessionToken(
+	ctx context.Context,
+	id model.InternalID,
+	refreshToken string,
+	expireAt time.Time,
+	refreshedAt time.Time,
+) error {
+	return g.data.db.SentinelSession.UpdateOneID(id).
+		SetRefreshToken(refreshToken).
+		SetExpireAt(expireAt).
+		SetLastRefreshedAt(refreshedAt).
+		AddRefreshCount(1).
+		Exec(ctx)
+}
+
+func (g *GeburaRepo) UpdateSentinelSessionLastUsed(
+	ctx context.Context,
+	id model.InternalID,
+	usedAt time.Time,
+) error {
+	return g.data.db.SentinelSession.UpdateOneID(id).
+		SetLastUsedAt(usedAt).
 		Exec(ctx)
 }
 

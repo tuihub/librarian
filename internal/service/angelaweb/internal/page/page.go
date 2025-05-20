@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
 
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/samber/lo"
@@ -224,8 +225,9 @@ func (b *Builder) SentinelForm(c *fiber.Ctx) error {
 		if err != nil {
 			return c.Status(http.StatusBadRequest).SendString("Invalid ID")
 		}
-		sentinel, err = b.g.GetSentinel(c.UserContext(), model.InternalID(id))
-		if err != nil {
+		var bizErr *errors.Error
+		sentinel, bizErr = b.g.GetSentinel(c.UserContext(), model.InternalID(id))
+		if bizErr != nil {
 			return c.Status(http.StatusNotFound).SendString("Sentinel not found")
 		}
 		action = "/api/sentinels/" + idStr
@@ -253,18 +255,19 @@ func (b *Builder) SentinelDetail(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).SendString("Invalid ID")
 	}
 
-	sentinel, err := b.g.GetSentinel(c.UserContext(), model.InternalID(id))
-	if err != nil {
+	var bizErr *errors.Error
+	sentinel, bizErr := b.g.GetSentinel(c.UserContext(), model.InternalID(id))
+	if bizErr != nil {
 		return c.Status(http.StatusNotFound).SendString("Sentinel not found")
 	}
 
 	pageNum, pageSize := getPaginationParams(c)
 
-	sessions, total, err := b.g.ListSentinelSessions(c.UserContext(), &model.Paging{
+	sessions, total, bizErr := b.g.ListSentinelSessions(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
 	}, sentinel.ID)
-	if err != nil {
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingData"))
 	}
 

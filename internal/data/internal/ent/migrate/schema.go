@@ -906,13 +906,6 @@ var (
 				OnDelete:   schema.NoAction,
 			},
 		},
-		Indexes: []*schema.Index{
-			{
-				Name:    "sentinelsession_sentinel_id",
-				Unique:  true,
-				Columns: []*schema.Column{SentinelSessionsColumns[10]},
-			},
-		},
 	}
 	// SessionsColumns holds the columns for the "sessions" table.
 	SessionsColumns = []*schema.Column{

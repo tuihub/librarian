@@ -10,13 +10,14 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
+	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/samber/lo"
 )
 
 func (g *Gebura) CreateApp(
 	ctx context.Context,
 	a *modelgebura.App,
-) (*modelgebura.App, error) {
+) (*modelgebura.App, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -34,7 +35,7 @@ func (g *Gebura) CreateApp(
 	return a, nil
 }
 
-func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) error {
+func (g *Gebura) UpdateApp(ctx context.Context, a *modelgebura.App) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
@@ -58,7 +59,7 @@ func (g *Gebura) ListApps(
 	paging model.Paging,
 	ownerIDs []model.InternalID,
 	ids []model.InternalID,
-) ([]*modelgebura.App, int, error) {
+) ([]*modelgebura.App, int, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()

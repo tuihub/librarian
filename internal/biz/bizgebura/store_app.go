@@ -8,11 +8,13 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
+
+	"github.com/go-kratos/kratos/v2/errors"
 )
 
 func (g *Gebura) GetStoreApp(
 	ctx context.Context, appID model.InternalID,
-) (*modelgebura.StoreApp, error) {
+) (*modelgebura.StoreApp, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, bizutils.NoPermissionError()
 	}
@@ -25,7 +27,7 @@ func (g *Gebura) GetStoreApp(
 
 func (g *Gebura) ListStoreApps(
 	ctx context.Context, page *model.Paging,
-) ([]*modelgebura.StoreApp, int64, error) {
+) ([]*modelgebura.StoreApp, int64, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}
@@ -38,7 +40,7 @@ func (g *Gebura) ListStoreApps(
 
 func (g *Gebura) ListStoreAppBinaries(
 	ctx context.Context, page *model.Paging, appIDs []model.InternalID,
-) ([]*modelgebura.StoreAppBinary, int64, error) {
+) ([]*modelgebura.StoreAppBinary, int64, *errors.Error) {
 	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return nil, 0, bizutils.NoPermissionError()
 	}

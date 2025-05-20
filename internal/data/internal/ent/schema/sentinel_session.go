@@ -8,7 +8,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"entgo.io/ent/schema/index"
 )
 
 type SentinelSession struct {
@@ -30,13 +29,6 @@ func (SentinelSession) Fields() []ent.Field {
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").
 			Default(time.Now),
-	}
-}
-
-func (SentinelSession) Indexes() []ent.Index {
-	return []ent.Index{
-		index.Fields("sentinel_id").
-			Unique(),
 	}
 }
 

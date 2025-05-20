@@ -29,11 +29,13 @@ func (u *UploadCallBack) GenerateUploadToken(ctx context.Context, meta FileMetad
 		claims.PorterID,
 		libauth.ClaimsTypeUploadToken,
 		claims.UserType,
-		&uploadTokenPayload{
-			meta,
-			u.id,
-		},
 		expire,
+		libauth.WithClaimsTransferExtra(&libauth.ClaimsTransferExtra{
+			TransferMetadata: &uploadTokenPayload{
+				meta,
+				u.id,
+			},
+		}),
 	)
 }
 
@@ -48,10 +50,12 @@ func (u *DownloadCallBack) GenerateDownloadToken(ctx context.Context, meta FileM
 		claims.PorterID,
 		libauth.ClaimsTypeDownloadToken,
 		claims.UserType,
-		&downloadTokenPayload{
-			meta,
-			u.id,
-		},
 		expire,
+		libauth.WithClaimsTransferExtra(&libauth.ClaimsTransferExtra{
+			TransferMetadata: &downloadTokenPayload{
+				meta,
+				u.id,
+			},
+		}),
 	)
 }

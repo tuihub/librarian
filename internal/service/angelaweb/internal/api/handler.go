@@ -50,11 +50,11 @@ func (h *Handler) ListSentinels(c *fiber.Ctx) error {
 		pageNum = 1
 	}
 	pageSize := 10
-	sentinels, total, err := h.g.ListSentinels(c.UserContext(), &model.Paging{
+	sentinels, total, bizErr := h.g.ListSentinels(c.UserContext(), &model.Paging{
 		PageNum:  int64(pageNum),
 		PageSize: int64(pageSize),
 	})
-	if err != nil {
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiberi18n.MustLocalize(c, "ErrorFetchingSentinels"),
 		})
@@ -88,8 +88,8 @@ func (h *Handler) GetSentinel(c *fiber.Ctx) error {
 			"error": "Invalid ID",
 		})
 	}
-	sentinel, err := h.g.GetSentinel(c.UserContext(), model.InternalID(id))
-	if err != nil {
+	sentinel, bizErr := h.g.GetSentinel(c.UserContext(), model.InternalID(id))
+	if bizErr != nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
 			"error": "Sentinel not found",
 		})
@@ -111,8 +111,8 @@ func (h *Handler) UpdateSentinel(c *fiber.Ctx) error {
 		})
 	}
 	sentinel.ID = model.InternalID(id)
-	err = h.g.UpdateSentinel(c.UserContext(), &sentinel)
-	if err != nil {
+	bizErr := h.g.UpdateSentinel(c.UserContext(), &sentinel)
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiberi18n.MustLocalize(c, "SentinelErrorUpdating"),
 		})
@@ -128,8 +128,8 @@ func (h *Handler) CreateSentinelSession(c *fiber.Ctx) error {
 		})
 	}
 
-	err = h.g.CreateSentinelSession(c.UserContext(), model.InternalID(id))
-	if err != nil {
+	bizErr := h.g.CreateSentinelSession(c.UserContext(), model.InternalID(id))
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiberi18n.MustLocalize(c, "ErrorCreatingSession"),
 		})
@@ -156,12 +156,12 @@ func (h *Handler) UpdateSentinelSessionStatus(c *fiber.Ctx) error {
 		})
 	}
 
-	err = h.g.UpdateSentinelSessionStatus(
+	bizErr := h.g.UpdateSentinelSessionStatus(
 		c.UserContext(),
 		model.InternalID(id),
 		modelgebura.SentinelSessionStatus(data.Status),
 	)
-	if err != nil {
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiberi18n.MustLocalize(c, "ErrorUpdatingSessionStatus"),
 		})
@@ -178,8 +178,8 @@ func (h *Handler) DeleteSentinelSession(c *fiber.Ctx) error {
 		})
 	}
 
-	err = h.g.DeleteSentinelSession(c.UserContext(), model.InternalID(id))
-	if err != nil {
+	bizErr := h.g.DeleteSentinelSession(c.UserContext(), model.InternalID(id))
+	if bizErr != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"error": fiberi18n.MustLocalize(c, "ErrorDeletingSession"),
 		})

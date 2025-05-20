@@ -10,7 +10,7 @@ import (
 func (s *LibrarianSentinelService) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (
 	*pb.RefreshTokenResponse, error,
 ) {
-	accessToken, refreshToken, err := s.t.SentinelRefreshToken(ctx)
+	accessToken, refreshToken, err := s.g.SentinelRefreshToken(ctx)
 	if err != nil {
 		logger.Infof("GetToken failed: %s", err.Error())
 		return nil, err

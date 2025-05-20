@@ -48,7 +48,7 @@ func (g *Gebura) SumAppRunTime(
 	appIDs []model.InternalID,
 	deviceIDs []model.InternalID,
 	timeRange *model.TimeRange,
-) (*time.Duration, error) {
+) (*time.Duration, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, bizutils.NoPermissionError()
@@ -72,7 +72,7 @@ func (g *Gebura) ListAppRunTimes(
 	appIDs []model.InternalID,
 	deviceIDs []model.InternalID,
 	timeRange *model.TimeRange,
-) ([]*modelgebura.AppRunTime, int, error) {
+) ([]*modelgebura.AppRunTime, int, *errors.Error) {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return nil, 0, bizutils.NoPermissionError()
@@ -90,7 +90,7 @@ func (g *Gebura) ListAppRunTimes(
 	return res, total, nil
 }
 
-func (g *Gebura) DeleteAppRunTime(ctx context.Context, id model.InternalID) error {
+func (g *Gebura) DeleteAppRunTime(ctx context.Context, id model.InternalID) *errors.Error {
 	claims := libauth.FromContextAssertUserType(ctx)
 	if claims == nil {
 		return bizutils.NoPermissionError()
