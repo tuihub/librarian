@@ -1,5 +1,55 @@
 # Changelog
 
+## [0.3.0](https://github.com/tuihub/librarian/compare/v0.2.11...v0.3.0) (2025-05-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* refactor project struct ([#119](https://github.com/tuihub/librarian/issues/119))
+
+### Features
+
+* add cli commands ([05c34d1](https://github.com/tuihub/librarian/commit/05c34d129dd0dc2a7f4bddbaf36754af24ee0057))
+* **angelaweb:** add config page ([33324b8](https://github.com/tuihub/librarian/commit/33324b87b4f062f791ff8abdbf73b55e72860230))
+* **angelaweb:** add dark mode ([b9616c5](https://github.com/tuihub/librarian/commit/b9616c5c3fefed5a9734ebe0db5d004ce2597ffd))
+* **angelaweb:** add error page ([77adf6a](https://github.com/tuihub/librarian/commit/77adf6ac1a7ddd1e51d39c4fda528c6fe6e73ae2))
+* **angelaweb:** add i18n ([55cad2e](https://github.com/tuihub/librarian/commit/55cad2eed833c7fb7c44c4450932f88c40d2eb7e))
+* **angelaweb:** add middlewares ([5bc4a16](https://github.com/tuihub/librarian/commit/5bc4a16fa5189cda77274866b9c93a31308bbe9b))
+* **angelaweb:** add tailwindcss cli ([3341ed5](https://github.com/tuihub/librarian/commit/3341ed583af22df74b7b46d1420c20b99cf189a3))
+* **angelaweb:** responsive layout ([382235e](https://github.com/tuihub/librarian/commit/382235edcc9022a40b5ae7fce920cf4e66d4003f))
+* **gebura:** impl AppCategory ([#122](https://github.com/tuihub/librarian/issues/122)) ([545ba62](https://github.com/tuihub/librarian/commit/545ba62495e7372a8195c5b4c53b436c67913258))
+* impl app run time ([add77f7](https://github.com/tuihub/librarian/commit/add77f74236670b199a62a43eb07c71c8c11aa5a))
+* impl sentinel manage ([ec5600a](https://github.com/tuihub/librarian/commit/ec5600a086b73c3d484af3bdfe0b51c838f2c327))
+* impl sentinel session manage ([13c44c4](https://github.com/tuihub/librarian/commit/13c44c46da148972ae5c373e577b61ae0d62ae7c))
+* impl store app manage ([2a04d05](https://github.com/tuihub/librarian/commit/2a04d051851907f40b437fecb649e0026c1f6b8c))
+* move plugins to pkg ([da36e0c](https://github.com/tuihub/librarian/commit/da36e0ca6485c6ba5d58af5ff0723dc1bc24cb96))
+* refactor project struct ([#119](https://github.com/tuihub/librarian/issues/119)) ([ff85334](https://github.com/tuihub/librarian/commit/ff853342df56755a7446d65fe90338f6cee5e3d3))
+* remove sentry support ([464abcc](https://github.com/tuihub/librarian/commit/464abcc1bc5f8e666a5171bdab7b19a94079f561))
+* **sentinel:** impl sentinel ([#123](https://github.com/tuihub/librarian/issues/123)) ([45a713f](https://github.com/tuihub/librarian/commit/45a713f865e0f70fde6025b77271d904dac340de))
+* support fakes3 serve ([32b7bf5](https://github.com/tuihub/librarian/commit/32b7bf5d96125ec12581c7369aea2faf78f7753c))
+* support file storage ([fdfad3f](https://github.com/tuihub/librarian/commit/fdfad3f1133ca73a73687d1cfbb14a53f36634cc))
+* update config ([6bbc3c7](https://github.com/tuihub/librarian/commit/6bbc3c7e97c6dbd9008d5317558d50884d3cff00))
+* update config ([5c4ac28](https://github.com/tuihub/librarian/commit/5c4ac285182eafc9f6339c8871eef88e33d25bf9))
+* update config ([5d0edfc](https://github.com/tuihub/librarian/commit/5d0edfc7bd61790b9375aba045d10e9ad6fdc81e))
+* update libcache ([6817687](https://github.com/tuihub/librarian/commit/6817687e93ca48e5e243303c68be9c0fb87254bb))
+* update proto to v0.4.25 ([5128c7a](https://github.com/tuihub/librarian/commit/5128c7ab915a63c628063911e221c5b1b56e8334))
+* upgrade golangci-lint to v2 ([f1a0453](https://github.com/tuihub/librarian/commit/f1a045332e321ba91134d3dcd8516e1c3bff4ab0))
+* upgrade protos to v0.5.0 ([36d0cf8](https://github.com/tuihub/librarian/commit/36d0cf8d04aec6a55cfaa34d23b62812645b5daf))
+* upgrade protos to v0.5.5 ([3d63031](https://github.com/tuihub/librarian/commit/3d63031cfa979265c2ee49795ba3cf1ed9326965))
+* use daisyui ([f39368a](https://github.com/tuihub/librarian/commit/f39368a4c7a470f828d7318f421c5d348330b8f2))
+
+
+### Bug Fixes
+
+* refactor pagination ([a002723](https://github.com/tuihub/librarian/commit/a002723e62baaa0708388934a614bb04d9a9a600))
+* refactor template files ([3a898af](https://github.com/tuihub/librarian/commit/3a898afafad35d6534fdd3a66fdc612ae29ab54c))
+* support client local device id ([c7040d3](https://github.com/tuihub/librarian/commit/c7040d355f9e97c2ffeaa18b3d94e964173c9279))
+* test sentinel report ([e776366](https://github.com/tuihub/librarian/commit/e7763665368b9b3917d661cb3a6cace383943686))
+* test sentinel session ([a6475fa](https://github.com/tuihub/librarian/commit/a6475fa483fcaa630cf7a45c834b40511e61d827))
+* update golangci-lint to v1.62.2 ([47ef35b](https://github.com/tuihub/librarian/commit/47ef35b32c2e0f4a8e85b89f64bb7804aafbda8c))
+* update initialize ([fe143cb](https://github.com/tuihub/librarian/commit/fe143cbe56fc967b3bbde4c713bc6d9a6c188d6a))
+* upgrade golangci-lint ([82da9b0](https://github.com/tuihub/librarian/commit/82da9b006157527b7bc760340b2fdfdedbef89ec))
+
 ## [0.2.11](https://github.com/tuihub/librarian/compare/v0.2.10...v0.2.11) (2024-09-25)
 
 
