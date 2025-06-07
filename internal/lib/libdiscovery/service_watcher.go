@@ -1,4 +1,4 @@
-package libapp
+package libdiscovery
 
 import (
 	"fmt"

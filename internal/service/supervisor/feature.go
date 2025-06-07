@@ -3,7 +3,7 @@ package supervisor
 import (
 	"context"
 
-	"github.com/tuihub/librarian/internal/client/client"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 

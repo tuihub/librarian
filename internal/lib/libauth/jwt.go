@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
+	"github.com/tuihub/librarian/internal/lib/libkratos"
 	"github.com/tuihub/librarian/internal/model"
 
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
@@ -95,11 +95,14 @@ func RawFromContext(ctx context.Context) string {
 }
 
 func RawToContext(ctx context.Context, token string) context.Context {
-	return transport.NewServerContext(ctx, &Transport{
-		kind:      "",
-		endpoint:  "",
-		operation: "",
-		reqHeader: newTokenHeader("Authorization", fmt.Sprintf("Bearer %s", token)),
+	header := &libkratos.HTTPHeaderCarrier{}
+	header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	return transport.NewServerContext(ctx, &libkratos.Transport{
+		K:   "",
+		E:   "",
+		O:   "",
+		Req: header,
+		Res: nil,
 	})
 }
 
@@ -183,59 +186,4 @@ func (a *Auth) GenerateToken(
 
 	token, err := tokenClaims.SignedString(a.generateSecret(claimsType))
 	return token, err
-}
-
-type headerCarrier http.Header
-
-func (hc headerCarrier) Get(key string) string { return http.Header(hc).Get(key) }
-
-func (hc headerCarrier) Set(key string, value string) { http.Header(hc).Set(key, value) }
-
-func (hc headerCarrier) Add(key string, value string) { http.Header(hc).Add(key, value) }
-
-// Keys lists the keys stored in this carrier.
-func (hc headerCarrier) Keys() []string {
-	keys := make([]string, 0, len(hc))
-	for k := range http.Header(hc) {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-// Values returns a slice value associated with the passed key.
-func (hc headerCarrier) Values(key string) []string {
-	return http.Header(hc).Values(key)
-}
-
-func newTokenHeader(headerKey string, token string) *headerCarrier {
-	header := &headerCarrier{}
-	header.Set(headerKey, token)
-	return header
-}
-
-type Transport struct {
-	kind      transport.Kind
-	endpoint  string
-	operation string
-	reqHeader transport.Header
-}
-
-func (tr *Transport) Kind() transport.Kind {
-	return tr.kind
-}
-
-func (tr *Transport) Endpoint() string {
-	return tr.endpoint
-}
-
-func (tr *Transport) Operation() string {
-	return tr.operation
-}
-
-func (tr *Transport) RequestHeader() transport.Header {
-	return tr.reqHeader
-}
-
-func (tr *Transport) ReplyHeader() transport.Header {
-	return nil
 }

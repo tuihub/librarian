@@ -1,20 +1,15 @@
-package main
+//nolint:exhaustruct // no need
+package tuihubrss
 
 import (
 	"context"
+	"net"
 	"os"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
-	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-rss/internal"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
-)
-
-// go build -ldflags "-X main.version=x.y.z".
-var (
-	// version is the version of the compiled software.
-	version string
 )
 
 const (
@@ -23,10 +18,10 @@ const (
 	rssServerPort      = "RSS_SERVER_PORT"
 )
 
-func main() {
+func NewPorter(version string) (*tuihub.Porter, error) {
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{
-			SourceCodeAddress: "https://github.com/tuihub/librarian/pkg/tuihub-rss",
+			SourceCodeAddress: "https://github.com/tuihub/librarian",
 			BuildVersion:      version,
 			BuildDate:         "",
 			Name:              "tuihub-rss",
@@ -62,30 +57,21 @@ func main() {
 		},
 		ContextJsonSchema: nil,
 	}
+	rssServer, err := internal.NewServer(nil, net.JoinHostPort(os.Getenv(rssServerHost), os.Getenv(rssServerPort)))
+	if err != nil {
+		return nil, err
+	}
 	porterServer, err := tuihub.NewPorter(
 		context.Background(),
 		config,
 		internal.NewHandler(),
 		tuihub.WithAsUser(),
+		tuihub.WithBackgroundServer(rssServer),
 	)
 	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
+		return nil, err
 	}
-	rssServer, err := internal.NewServer(porterServer)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
-	go func() {
-		err = rssServer.Run(os.Getenv(rssServerHost) + ":" + os.Getenv(rssServerPort))
-		if err != nil {
-			logger.Error(err)
-			os.Exit(1)
-		}
-	}()
-	if err = porterServer.Run(); err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
+	rssServer.SetPorter(porterServer)
+
+	return porterServer, nil
 }

@@ -10,6 +10,7 @@
                     <th>{{localize .Ctx "ID_"}}</th>
                     <th>{{localize .Ctx "Address"}}</th>
                     <th>{{localize .Ctx "Info"}}</th>
+                    <th>{{localize .Ctx "ConnectionStatus"}}</th>
                     <th>{{localize .Ctx "Status"}}</th>
                     <th>{{localize .Ctx "Actions"}}</th>
                 </tr>
@@ -17,9 +18,36 @@
             <tbody>
                 {{range .Porters}}
                 <tr>
-                    <td>{{.ID_}}</td>
+                    <td>{{.ID}}</td>
                     <td>{{.Address}}</td>
                     <td>{{.GlobalName}}</td>
+                    <td>
+                        {{if eq .ConnectionStatus 1}}
+                        <span class="badge badge-soft badge-primary">
+                            {{localize $.Ctx "Connected"}}
+                        </span>
+                        {{else if eq .ConnectionStatus 2}}
+                        <span class="badge badge-soft badge-danger">
+                            {{localize $.Ctx "Disconnected"}}
+                        </span>
+                        {{else if eq .ConnectionStatus 3}}
+                        <span class="badge badge-soft badge-warning">
+                            {{localize $.Ctx "Active"}}
+                        </span>
+                        {{else if eq .ConnectionStatus 4}}
+                        <span class="badge badge-soft badge-info">
+                            {{localize $.Ctx "ActivationFailed"}}
+                        </span>
+                        {{else if eq .ConnectionStatus 5}}
+                        <span class="badge badge-soft badge-secondary">
+                            {{localize $.Ctx "Downgraded"}}
+                        </span>
+                        {{else}}
+                        <span class="badge badge-soft badge-light">
+                            {{localize $.Ctx "Unknown"}}
+                        </span>
+                        {{end}}
+                    </td>
                     <td>
                         {{if eq .Status 1}}
                         <span class="badge badge-soft badge-primary">

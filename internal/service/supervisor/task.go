@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/tuihub/librarian/internal/client/client"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"

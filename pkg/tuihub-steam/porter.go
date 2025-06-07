@@ -1,30 +1,25 @@
-package main
+//nolint:exhaustruct // no need
+package tuihubsteam
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
-	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-steam/internal"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-// go build -ldflags "-X main.version=x.y.z".
-var (
-	// version is the version of the compiled software.
-	version string
-)
-
-func main() {
+func NewPorter(version string) (*tuihub.Porter, error) {
 	apiKey, exist := os.LookupEnv("STEAM_API_KEY")
 	if !exist || apiKey == "" {
-		panic("STEAM_API_KEY is required")
+		return nil, errors.New("STEAM_API_KEY environment variable not set")
 	}
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{
-			SourceCodeAddress: "github.com/tuihub/librarian/pkg/tuihub-steam",
+			SourceCodeAddress: "https://github.com/tuihub/librarian",
 			BuildVersion:      version,
 			BuildDate:         "",
 			Name:              "tuihub-steam",
@@ -58,17 +53,9 @@ func main() {
 			},
 		},
 	}
-	server, err := tuihub.NewPorter(
+	return tuihub.NewPorter(
 		context.Background(),
 		config,
 		internal.NewHandler(apiKey),
 	)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
-	if err = server.Run(); err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
 }

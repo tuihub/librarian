@@ -16,7 +16,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
-	"github.com/tuihub/librarian/internal/client/client"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -30,6 +30,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
+	"github.com/tuihub/librarian/internal/service/porter"
 	"github.com/tuihub/librarian/internal/service/sentinel"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
@@ -65,13 +66,19 @@ func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	consul := conf.GetConsul(config)
-	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
+	inprocPorter, err := client.NewInprocPorter()
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings, inprocPorter)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -156,8 +163,13 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	consul := conf.GetConsul(config)
-	porter := conf.GetPorter(config)
-	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings)
+	confPorter := conf.GetPorter(config)
+	inprocPorter, err := client.NewInprocPorter()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, confPorter, settings, inprocPorter)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -175,7 +187,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -192,7 +204,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	}
 	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
 	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
-	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
+	supervisorSupervisor, err := supervisor.NewSupervisor(confPorter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -278,7 +290,8 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	}
 	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
-	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, settings, builtInObserver)
+	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth)
+	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, builtInObserver, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()
@@ -290,8 +303,8 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key)
-	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3)
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, supervisorSupervisor, key)
+	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()

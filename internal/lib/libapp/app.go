@@ -13,10 +13,7 @@ import (
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
-	"github.com/google/wire"
 )
-
-var ProviderSet = wire.NewSet(NewDiscovery, NewRegistrar, NewNodeFilter)
 
 type Settings struct {
 	Name string

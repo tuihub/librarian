@@ -15,6 +15,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	capi "github.com/hashicorp/consul/api"
 	"google.golang.org/grpc/metadata"
@@ -33,13 +34,14 @@ const (
 )
 
 type Porter struct {
-	server        *grpc.Server
-	requireAsUser bool
-	wrapper       *serviceWrapper
-	logger        log.Logger
-	app           *kratos.App
-	consulConfig  *capi.Config
-	serverConfig  *ServerConfig
+	server            *grpc.Server
+	requireAsUser     bool
+	wrapper           *serviceWrapper
+	logger            log.Logger
+	app               *kratos.App
+	consulConfig      *capi.Config
+	serverConfig      *ServerConfig
+	backgroundServers []transport.Server
 }
 
 type ServerConfig struct {
@@ -65,6 +67,15 @@ func WithPorterConsulConfig(config *capi.Config) PorterOption {
 func WithAsUser() PorterOption {
 	return func(p *Porter) {
 		p.requireAsUser = true
+	}
+}
+
+func WithBackgroundServer(server transport.Server) PorterOption {
+	return func(p *Porter) {
+		if server == nil {
+			return
+		}
+		p.backgroundServers = append(p.backgroundServers, server)
 	}
 }
 
@@ -97,7 +108,7 @@ func NewPorter(
 	if p.consulConfig == nil {
 		p.consulConfig = defaultConsulConfig()
 	}
-	client, err := internal.NewSephirahClient(ctx, p.consulConfig, os.Getenv(sephirahServiceName))
+	client, err := internal.NewPorterClient(ctx, p.consulConfig, os.Getenv(sephirahServiceName))
 	if err != nil {
 		return nil, err
 	}
@@ -135,11 +146,18 @@ func NewPorter(
 		kratos.Metadata(map[string]string{
 			"PorterName": p.wrapper.Info.GetGlobalName(),
 		}),
-		kratos.Server(p.server),
+		kratos.Server(append([]transport.Server{p.server}, p.backgroundServers...)...),
 		kratos.Registrar(r),
 	)
 	p.app = app
 	return p, nil
+}
+
+func (p *Porter) SetSephirahPorterClient(client sephirahporter.LibrarianSephirahPorterServiceClient) {
+	if p.wrapper == nil {
+		p.wrapper = new(serviceWrapper)
+	}
+	p.wrapper.Client = client
 }
 
 func (p *Porter) Run() error {
@@ -203,6 +221,14 @@ type PorterClient struct {
 
 func (c *PorterClient) WithToken(ctx context.Context) context.Context {
 	return metadata.AppendToOutgoingContext(ctx, "authorization", "Bearer "+c.accessToken)
+}
+
+func (p *Porter) GetPorterService() porter.LibrarianPorterServiceServer {
+	return p.wrapper
+}
+
+func (p *Porter) GetBackgroundServices() []transport.Server {
+	return p.backgroundServers
 }
 
 func (p *Porter) ReverseCall(ctx context.Context) (*PorterClient, error) {

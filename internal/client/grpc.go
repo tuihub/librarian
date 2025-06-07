@@ -5,6 +5,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
+	"github.com/tuihub/librarian/internal/lib/libdiscovery"
 	miner "github.com/tuihub/protos/pkg/librarian/miner/v1"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -12,14 +13,14 @@ import (
 )
 
 func NewMinerClient(c *conf.Consul, app *libapp.Settings) (miner.LibrarianMinerServiceClient, error) {
-	r, err := libapp.NewDiscovery(c)
+	r, err := libdiscovery.NewDiscovery(c)
 	if err != nil {
 		return nil, err
 	}
 	middlewares := []grpc.ClientOption{
 		grpc.WithEndpoint("discovery:///miner"),
 		grpc.WithDiscovery(r),
-		grpc.WithNodeFilter(libapp.NewNodeFilter()),
+		grpc.WithNodeFilter(libdiscovery.NewNodeFilter()),
 	}
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, grpc.WithMiddleware(recovery.Recovery()))

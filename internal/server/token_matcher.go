@@ -78,8 +78,9 @@ func login() map[string]bool {
 
 func refreshTokenProtected() map[string]bool {
 	return map[string]bool{
-		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/RefreshToken": true,
-		"/librarian.sephirah.v1.sentinel.LibrarianSentinelService/RefreshToken": true,
+		"/librarian.sephirah.v1.sephirah.LibrarianSephirahService/RefreshToken":     true,
+		"/librarian.sephirah.v1.porter.LibrarianSephirahPorterService/RefreshToken": true,
+		"/librarian.sephirah.v1.sentinel.LibrarianSentinelService/RefreshToken":     true,
 	}
 }
 

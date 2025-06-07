@@ -3,10 +3,25 @@ package porter
 import (
 	"context"
 
+	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	porter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
 )
+
+func (s *LibrarianSephirahPorterService) RefreshToken(ctx context.Context, req *porter.RefreshTokenRequest) (
+	*porter.RefreshTokenResponse, error,
+) {
+	accessToken, refreshToken, err := s.t.RefreshToken(ctx, nil)
+	if err != nil {
+		logger.Infof("GetToken failed: %s", err.Error())
+		return nil, err
+	}
+	return &porter.RefreshTokenResponse{
+		AccessToken:  string(accessToken),
+		RefreshToken: string(refreshToken),
+	}, nil
+}
 
 func (s *LibrarianSephirahPorterService) AcquireUserToken(ctx context.Context, req *porter.AcquireUserTokenRequest) (
 	*porter.AcquireUserTokenResponse, error,

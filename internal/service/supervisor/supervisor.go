@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tuihub/librarian/internal/client/client"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
@@ -250,6 +250,10 @@ func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
 	if hasError {
 		notification.Notification.Level = modelnetzach.SystemNotificationLevelError
 		_ = s.systemNotify.PublishFallsLocalCall(ctx, notification)
+	}
+
+	for _, inst := range newInstances {
+		_ = s.instanceCache.Delete(ctx, inst.Address)
 	}
 
 	if updateFeatureSummary {

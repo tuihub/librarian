@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcron"
+	"github.com/tuihub/librarian/internal/lib/libdiscovery"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/lib/libs3"
@@ -11,6 +13,7 @@ import (
 	"github.com/tuihub/librarian/internal/service/angelaweb"
 
 	"github.com/go-kratos/kratos/v2"
+	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
@@ -58,15 +61,18 @@ func newApp(
 	obs *libobserve.BuiltInObserver,
 	consul *conf.Consul,
 	s3 libs3.S3,
+	inprocPorter *client.InprocPorter,
 ) (*kratos.App, error) {
 	options := []kratos.Option{
 		kratos.ID(id + name),
 		kratos.Name(name),
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
-		kratos.Server(gs, hs, aw, mq, cron, obs, s3),
+		kratos.Server(append([]transport.Server{
+			gs, hs, aw, mq, cron, obs, s3,
+		}, inprocPorter.Servers...)...),
 	}
-	r, err := libapp.NewRegistrar(consul)
+	r, err := libdiscovery.NewRegistrar(consul)
 	if err == nil {
 		options = append(options, kratos.Registrar(r))
 	}

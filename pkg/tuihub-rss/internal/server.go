@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -20,16 +21,24 @@ const defaultServerTimeout = 5 * time.Second
 type Server struct {
 	mux    *http.ServeMux
 	porter *tuihub.Porter
+	addr   string
+	server *http.Server
 }
 
-func NewServer(porter *tuihub.Porter) (*Server, error) {
+func NewServer(porter *tuihub.Porter, addr string) (*Server, error) {
 	mux := http.NewServeMux()
 	server := &Server{
 		mux:    mux,
 		porter: porter,
+		addr:   addr,
+		server: nil,
 	}
 	server.routes()
 	return server, nil
+}
+
+func (s *Server) SetPorter(porter *tuihub.Porter) {
+	s.porter = porter
 }
 
 func (s *Server) routes() {
@@ -94,11 +103,23 @@ func (s *Server) handleRSS() http.HandlerFunc {
 	}
 }
 
-func (s *Server) Run(addr string) error {
+func (s *Server) Start(ctx context.Context) error {
 	server := new(http.Server)
-	server.Addr = addr
+	server.Addr = s.addr
 	server.ReadHeaderTimeout = defaultServerTimeout
 	server.Handler = s.mux
+	server.IdleTimeout = defaultServerTimeout
+	server.ReadTimeout = defaultServerTimeout
+	server.WriteTimeout = defaultServerTimeout
+
+	s.server = server
 
 	return server.ListenAndServe()
+}
+
+func (s *Server) Stop(ctx context.Context) error {
+	if s.server == nil {
+		return nil
+	}
+	return s.server.Shutdown(ctx)
 }

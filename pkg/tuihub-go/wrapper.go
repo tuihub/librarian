@@ -7,7 +7,7 @@ import (
 	"time"
 
 	pb "github.com/tuihub/protos/pkg/librarian/porter/v1"
-	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
+	porter "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
@@ -27,7 +27,7 @@ type serviceWrapper struct {
 	pb.LibrarianPorterServiceServer
 	Info         *pb.GetPorterInformationResponse
 	Logger       log.Logger
-	Client       sephirah.LibrarianSephirahServiceClient
+	Client       porter.LibrarianSephirahPorterServiceClient
 	RequireToken bool
 	Token        *tokenInfo
 	tokenMu      sync.Mutex
@@ -57,7 +57,7 @@ func (s *serviceWrapper) EnablePorter(ctx context.Context, req *pb.EnablePorterR
 				if req.GetRefreshToken() != "" {
 					resp, err := s.Client.RefreshToken(
 						WithToken(ctx, req.GetRefreshToken()),
-						new(sephirah.RefreshTokenRequest),
+						&porter.RefreshTokenRequest{},
 					)
 					if err != nil {
 						return err
@@ -85,7 +85,7 @@ func (s *serviceWrapper) EnablePorter(ctx context.Context, req *pb.EnablePorterR
 			}
 			resp, err := s.Client.RefreshToken(
 				WithToken(ctx, req.GetRefreshToken()),
-				new(sephirah.RefreshTokenRequest),
+				&porter.RefreshTokenRequest{},
 			)
 			if err != nil {
 				return err

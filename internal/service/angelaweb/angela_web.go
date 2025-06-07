@@ -19,6 +19,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
+	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/gofiber/contrib/fiberi18n/v2"
 	"github.com/gofiber/fiber/v2"
@@ -62,6 +63,7 @@ func NewAngelaWeb(
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
+	s *supervisor.Supervisor,
 	userCountCache *libcache.Key[model.UserCount],
 ) *AngelaWeb {
 	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".go.html")
@@ -109,7 +111,7 @@ func NewAngelaWeb(
 
 	res := &AngelaWeb{
 		apiHandler:  api.NewHandler(a, t, g, userCountCache),
-		pageBuilder: page.NewBuilder(a, t, g, digests, userCountCache),
+		pageBuilder: page.NewBuilder(a, t, g, s, digests, userCountCache),
 		auth:        auth,
 		app:         app,
 		addr:        net.JoinHostPort(c.Admin.Host, strconv.Itoa(int(c.Admin.Port))),

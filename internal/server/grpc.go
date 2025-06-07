@@ -4,10 +4,12 @@ import (
 	"net"
 	"strconv"
 
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libobserve"
+	porterpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
 	sentinelpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
 
@@ -25,10 +27,12 @@ import (
 func NewGRPCServer(
 	c *conf.Server,
 	auth *libauth.Auth,
-	greeter pb.LibrarianSephirahServiceServer,
+	sephirahserver pb.LibrarianSephirahServiceServer,
 	sentinelserver sentinelpb.LibrarianSentinelServiceServer,
+	porterserver porterpb.LibrarianSephirahPorterServiceServer,
 	app *libapp.Settings,
 	observer *libobserve.BuiltInObserver,
+	inprocPorter *client.InprocPorter,
 ) (*grpc.Server, error) {
 	validator, err := libapp.NewValidator()
 	if err != nil {
@@ -71,7 +75,10 @@ func NewGRPCServer(
 		opts = append(opts, grpc.Timeout(c.Main.Timeout))
 	}
 	srv := grpc.NewServer(opts...)
-	pb.RegisterLibrarianSephirahServiceServer(srv, greeter)
+	pb.RegisterLibrarianSephirahServiceServer(srv, sephirahserver)
 	sentinelpb.RegisterLibrarianSentinelServiceServer(srv, sentinelserver)
+	porterpb.RegisterLibrarianSephirahPorterServiceServer(srv, porterserver)
+
+	inprocPorter.SetSephirahServer(porterserver, middlewares)
 	return srv, nil
 }

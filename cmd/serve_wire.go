@@ -6,7 +6,7 @@ package cmd
 
 import (
 	"github.com/tuihub/librarian/internal/biz"
-	"github.com/tuihub/librarian/internal/client/client"
+	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -20,6 +20,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/server"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
+	"github.com/tuihub/librarian/internal/service/porter"
 	"github.com/tuihub/librarian/internal/service/sentinel"
 	"github.com/tuihub/librarian/internal/service/sephirah"
 	"github.com/tuihub/librarian/internal/service/supervisor"
@@ -42,6 +43,7 @@ func wireServe(
 			client.ProviderSet,
 			supervisor.ProviderSet,
 			sentinel.ProviderSet,
+			porter.ProviderSet,
 			sephirah.ProviderSet,
 			server.ProviderSet,
 			libauth.ProviderSet,

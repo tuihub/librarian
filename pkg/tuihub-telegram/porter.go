@@ -1,27 +1,20 @@
-package main
+//nolint:exhaustruct // no need
+package tuihubtelegram
 
 import (
 	"context"
-	"os"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
-	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-telegram/internal"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
-// go build -ldflags "-X main.version=x.y.z".
-var (
-	// version is the version of the compiled software.
-	version string
-)
-
-func main() {
+func NewPorter(version string) (*tuihub.Porter, error) {
 	contextSchema := tuihub.MustReflectJSONSchema(new(internal.PorterContext))
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{
-			SourceCodeAddress: "https://github.com/tuihub/librarian/pkg/tuihub-telegram",
+			SourceCodeAddress: "https://github.com/tuihub/librarian",
 			BuildVersion:      version,
 			BuildDate:         "",
 			Name:              "tuihub-telegram",
@@ -45,17 +38,9 @@ func main() {
 		},
 		ContextJsonSchema: &contextSchema,
 	}
-	server, err := tuihub.NewPorter(
+	return tuihub.NewPorter(
 		context.Background(),
 		config,
 		internal.NewHandler(),
 	)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
-	if err = server.Run(); err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
 }
