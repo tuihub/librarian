@@ -8,61 +8,61 @@ require (
 	github.com/BurntSushi/toml v1.5.0
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/ThreeDotsLabs/watermill v1.4.6
-	github.com/ThreeDotsLabs/watermill-redisstream v1.4.2
+	github.com/ThreeDotsLabs/watermill-redisstream v1.4.3
 	github.com/ThreeDotsLabs/watermill-sql/v3 v3.1.0
 	github.com/Xuanwo/go-locale v1.1.3
-	github.com/blevesearch/bleve/v2 v2.5.0
+	github.com/blevesearch/bleve/v2 v2.5.2
 	github.com/dchest/captcha v1.1.0
 	github.com/fullstorydev/grpchan v1.1.1
-	github.com/go-co-op/gocron/v2 v2.16.1
-	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250321075247-025c2dc2b0ff
-	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250321075247-025c2dc2b0ff
+	github.com/go-co-op/gocron/v2 v2.16.2
+	github.com/go-kratos/kratos/contrib/log/zap/v2 v2.0.0-20250527152916-d6f5f00cf562
+	github.com/go-kratos/kratos/contrib/registry/consul/v2 v2.0.0-20250527152916-d6f5f00cf562
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/gocolly/colly/v2 v2.2.0
 	github.com/gofiber/contrib/fiberi18n/v2 v2.0.6
-	github.com/gofiber/fiber/v2 v2.52.7
+	github.com/gofiber/fiber/v2 v2.52.8
 	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.6.0
 	github.com/google/wire v0.6.0
 	github.com/gorilla/feeds v1.2.0
-	github.com/hashicorp/consul/api v1.32.0
+	github.com/hashicorp/consul/api v1.32.1
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/invopop/jsonschema v0.13.0
-	github.com/jackc/pgx/v5 v5.7.4
-	github.com/johannesboyne/gofakes3 v0.0.0-20250402064820-d479899d8cbe
+	github.com/jackc/pgx/v5 v5.7.5
+	github.com/johannesboyne/gofakes3 ed9094be7668
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/maypok86/otter v1.2.4
-	github.com/meilisearch/meilisearch-go v0.31.0
-	github.com/minio/minio-go/v7 v7.0.91
+	github.com/meilisearch/meilisearch-go v0.32.0
+	github.com/minio/minio-go/v7 v7.0.94
 	github.com/mmcdole/gofeed v1.3.0
 	github.com/muzhou233/go-favicon v0.1.1
 	github.com/nicksnyder/go-i18n/v2 v2.6.0
 	github.com/nikoksr/notify v1.3.0
-	github.com/redis/go-redis/v9 v9.7.3
-	github.com/samber/lo v1.50.0
-	github.com/sony/sonyflake v1.2.0
+	github.com/redis/go-redis/v9 v9.11.0
+	github.com/samber/lo v1.51.0
+	github.com/sony/sonyflake v1.2.1
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
 	github.com/tuihub/protos v0.5.6
-	github.com/urfave/cli/v2 v2.27.6
-	go.opentelemetry.io/otel v1.35.0
-	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.11.0
-	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.11.0
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.35.0
-	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.35.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.35.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.35.0
-	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.35.0
-	go.opentelemetry.io/otel/log v0.11.0
-	go.opentelemetry.io/otel/sdk v1.35.0
-	go.opentelemetry.io/otel/sdk/log v0.11.0
-	go.opentelemetry.io/otel/sdk/metric v1.35.0
+	github.com/urfave/cli/v2 v2.27.7
+	go.opentelemetry.io/otel v1.37.0
+	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.13.0
+	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.13.0
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc v1.37.0
+	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.37.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.37.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.37.0
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.37.0
+	go.opentelemetry.io/otel/log v0.13.0
+	go.opentelemetry.io/otel/sdk v1.37.0
+	go.opentelemetry.io/otel/sdk/log v0.13.0
+	go.opentelemetry.io/otel/sdk/metric v1.37.0
 	go.uber.org/ratelimit v0.3.1
 	go.uber.org/zap v1.27.0
-	golang.org/x/crypto v0.37.0
-	golang.org/x/text v0.24.0
+	golang.org/x/crypto v0.39.0
+	golang.org/x/text v0.26.0
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
