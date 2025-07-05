@@ -37,7 +37,8 @@
         "digest"
       ],
       "matchManagers": [
-        "gomod"
+        "gomod",
+        "npm"
       ],
       "minimumReleaseAge": "3 days",
       "groupName": "all non-major dependencies",
