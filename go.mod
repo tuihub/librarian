@@ -3,6 +3,7 @@ module github.com/tuihub/librarian
 go 1.23.0
 
 require (
+	buf.build/go/protovalidate v0.13.1
 	entgo.io/ent v0.14.4
 	github.com/BurntSushi/toml v1.5.0
 	github.com/PuerkitoBio/goquery v1.10.3
@@ -11,7 +12,6 @@ require (
 	github.com/ThreeDotsLabs/watermill-sql/v3 v3.1.0
 	github.com/Xuanwo/go-locale v1.1.3
 	github.com/blevesearch/bleve/v2 v2.5.0
-	github.com/bufbuild/protovalidate-go v0.10.0
 	github.com/dchest/captcha v1.1.0
 	github.com/fullstorydev/grpchan v1.1.1
 	github.com/go-co-op/gocron/v2 v2.16.1
@@ -70,7 +70,7 @@ require (
 
 require (
 	ariga.io/atlas v0.31.1-0.20250212144724-069be8033e83 // indirect
-	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250423154025-7712fb530c57.1 // indirect
+	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250613105001-9f2d3c737feb.1 // indirect
 	cel.dev/expr v0.23.1 // indirect
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/Rican7/retry v0.3.1 // indirect
