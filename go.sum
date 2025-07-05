@@ -541,6 +541,7 @@ github.com/mattn/go-sqlite3 v1.14.28/go.mod h1:Uh1q+B4BYcTPb+yiD3kU8Ct7aC0hY9fxU
 github.com/matttproud/golang_protobuf_extensions v1.0.1/go.mod h1:D8He9yQNgCq6Z5Ld7szi9bcBfOoFv/3dc6xSMkL2PC0=
 github.com/maypok86/otter v1.2.4 h1:HhW1Pq6VdJkmWwcZZq19BlEQkHtI8xgsQzBVXJU0nfc=
 github.com/maypok86/otter v1.2.4/go.mod h1:mKLfoI7v1HOmQMwFgX4QkRk23mX6ge3RDvjdHOWG4R4=
+github.com/maypok86/otter/v2 v2.1.0/go.mod h1:jX2xEKz9PrNVbDqnk8JUuOt5kURK8h7jd1kDYI5QsZk=
 github.com/meilisearch/meilisearch-go v0.32.0 h1:cWcycpONSH3VLTZ5npUl1O5aXPkNM0vUx6bywnYqGbE=
 github.com/meilisearch/meilisearch-go v0.32.0/go.mod h1:aNtyuwurDg/ggxQIcKqWH6G9g2ptc8GyY7PLY4zMn/g=
 github.com/miekg/dns v1.0.14/go.mod h1:W1PPwlIAgtquWBMBEV9nkV9Cazfe8ScdGz/Lj7v3Nrg=
