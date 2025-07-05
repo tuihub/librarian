@@ -1,6 +1,8 @@
 module github.com/tuihub/librarian
 
-go 1.23.0
+go 1.23.8
+
+toolchain go1.24.2
 
 require (
 	buf.build/go/protovalidate v0.13.1
@@ -31,7 +33,7 @@ require (
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/jackc/pgx/v5 v5.7.5
-	github.com/johannesboyne/gofakes3 ed9094be7668
+	github.com/johannesboyne/gofakes3 v0.0.0-20250603205740-ed9094be7668
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/maypok86/otter v1.2.4
 	github.com/meilisearch/meilisearch-go v0.32.0
@@ -89,29 +91,30 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/bits-and-blooms/bitset v1.22.0 // indirect
-	github.com/blevesearch/bleve_index_api v1.2.7 // indirect
-	github.com/blevesearch/geo v0.1.20 // indirect
+	github.com/blevesearch/bleve_index_api v1.2.8 // indirect
+	github.com/blevesearch/geo v0.2.3 // indirect
 	github.com/blevesearch/go-faiss v1.0.25 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect
 	github.com/blevesearch/gtreap v0.1.1 // indirect
 	github.com/blevesearch/mmap-go v1.0.4 // indirect
-	github.com/blevesearch/scorch_segment_api/v2 v2.3.9 // indirect
+	github.com/blevesearch/scorch_segment_api/v2 v2.3.10 // indirect
 	github.com/blevesearch/segment v0.9.1 // indirect
 	github.com/blevesearch/snowballstem v0.9.0 // indirect
 	github.com/blevesearch/upsidedown_store_api v1.0.2 // indirect
 	github.com/blevesearch/vellum v1.1.0 // indirect
-	github.com/blevesearch/zapx/v11 v11.4.1 // indirect
-	github.com/blevesearch/zapx/v12 v12.4.1 // indirect
-	github.com/blevesearch/zapx/v13 v13.4.1 // indirect
-	github.com/blevesearch/zapx/v14 v14.4.1 // indirect
-	github.com/blevesearch/zapx/v15 v15.4.1 // indirect
-	github.com/blevesearch/zapx/v16 v16.2.2 // indirect
+	github.com/blevesearch/zapx/v11 v11.4.2 // indirect
+	github.com/blevesearch/zapx/v12 v12.4.2 // indirect
+	github.com/blevesearch/zapx/v13 v13.4.2 // indirect
+	github.com/blevesearch/zapx/v14 v14.4.2 // indirect
+	github.com/blevesearch/zapx/v15 v15.4.2 // indirect
+	github.com/blevesearch/zapx/v16 v16.2.4 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
+	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -122,7 +125,7 @@ require (
 	github.com/gammazero/deque v0.2.1 // indirect
 	github.com/go-ini/ini v1.67.0 // indirect
 	github.com/go-kratos/aegis v0.2.0 // indirect
-	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
@@ -133,14 +136,13 @@ require (
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
-	github.com/golang/geo v0.0.0-20210211234256-740aa86cb551 // indirect
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/cel-go v0.25.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.1 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.6.3 // indirect
@@ -196,7 +198,7 @@ require (
 	github.com/stoewer/go-strcase v1.3.0 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/temoto/robotstxt v1.1.2 // indirect
-	github.com/tinylib/msgp v1.2.5 // indirect
+	github.com/tinylib/msgp v1.3.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
@@ -210,21 +212,21 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.etcd.io/bbolt v1.4.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
-	go.opentelemetry.io/otel/metric v1.35.0 // indirect
-	go.opentelemetry.io/otel/trace v1.35.0 // indirect
-	go.opentelemetry.io/proto/otlp v1.5.0 // indirect
+	go.opentelemetry.io/otel/metric v1.37.0 // indirect
+	go.opentelemetry.io/otel/trace v1.37.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.7.0 // indirect
 	go.shabbyrobe.org/gocovmerge v0.0.0-20230507111327-fa4f82cfbf4d // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20250228200357-dead58393ab7 // indirect
-	golang.org/x/mod v0.23.0 // indirect
-	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/sync v0.13.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/tools v0.30.0 // indirect
+	golang.org/x/exp v0.0.0-20250305212735-054e65f0b394 // indirect
+	golang.org/x/mod v0.25.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sync v0.15.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/tools v0.33.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250324211829-b45e905df463 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250603155806-513f23925822 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250603155806-513f23925822 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
