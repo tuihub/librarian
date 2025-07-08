@@ -28,8 +28,6 @@ const (
 	serverNetwork       = "SERVER_NETWORK"
 	serverAddr          = "SERVER_ADDRESS"
 	serverTimeout       = "SERVER_TIMEOUT"
-	consulAddr          = "CONSUL_ADDRESS"
-	consulToken         = "CONSUL_TOKEN"
 	sephirahServiceName = "SEPHIRAH_SERVICE_NAME"
 )
 
@@ -85,17 +83,24 @@ func NewPorter(
 	service porter.LibrarianPorterServiceServer,
 	options ...PorterOption,
 ) (*Porter, error) {
+	porterName := "unknown"
+	if info == nil {
+		return nil, fmt.Errorf("[tuihub-go][%s] info is nil", porterName)
+	}
+	if info.GetBinarySummary() != nil && len(info.GetBinarySummary().GetName()) > 0 {
+		porterName = info.GetBinarySummary().GetName()
+	}
 	if service == nil {
-		return nil, errors.New("serviceServer is nil")
+		return nil, fmt.Errorf("[tuihub-go][%s]serviceServer is nil", porterName)
 	}
 	if info.GetBinarySummary() == nil {
-		return nil, errors.New("binary summary is nil")
+		return nil, fmt.Errorf("[tuihub-go][%s]binary summary is nil", porterName)
 	}
 	if info.GetGlobalName() == "" {
-		return nil, errors.New("global name is empty")
+		return nil, fmt.Errorf("[tuihub-go][%s]global name is empty", porterName)
 	}
 	if info.GetFeatureSummary() == nil {
-		return nil, errors.New("feature summary is nil")
+		return nil, fmt.Errorf("[tuihub-go][%s]feature summary is nil", porterName)
 	}
 	p := new(Porter)
 	p.logger = log.DefaultLogger
@@ -105,16 +110,13 @@ func NewPorter(
 	if p.serverConfig == nil {
 		p.serverConfig = defaultServerConfig()
 	}
-	if p.consulConfig == nil {
-		p.consulConfig = defaultConsulConfig()
-	}
 	client, err := internal.NewPorterClient(ctx, p.consulConfig, os.Getenv(sephirahServiceName))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[tuihub-go][%s]failed to create consul client: %w", porterName, err)
 	}
-	r, err := internal.NewRegistry(p.consulConfig)
+	r, err := internal.NewRegistrar(p.consulConfig)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[tuihub-go][%s]failed to create registrar: %w", porterName, err)
 	}
 	c := &serviceWrapper{
 		LibrarianPorterServiceServer: service,
@@ -187,17 +189,6 @@ func defaultServerConfig() *ServerConfig {
 		}
 	}
 	return &config
-}
-
-func defaultConsulConfig() *capi.Config {
-	config := capi.DefaultConfig()
-	if addr, exist := os.LookupEnv(consulAddr); exist {
-		config.Address = addr
-	}
-	if token, exist := os.LookupEnv(consulToken); exist {
-		config.Token = token
-	}
-	return config
 }
 
 func WellKnownToString(e protoreflect.Enum) string {

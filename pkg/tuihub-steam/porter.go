@@ -3,10 +3,10 @@ package tuihubsteam
 
 import (
 	"context"
-	"errors"
 	"os"
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
+	"github.com/tuihub/librarian/pkg/tuihub-go/logger"
 	"github.com/tuihub/librarian/pkg/tuihub-steam/internal"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
@@ -15,7 +15,7 @@ import (
 func NewPorter(version string) (*tuihub.Porter, error) {
 	apiKey, exist := os.LookupEnv("STEAM_API_KEY")
 	if !exist || apiKey == "" {
-		return nil, errors.New("STEAM_API_KEY environment variable not set")
+		logger.Errorf("STEAM_API_KEY environment variable not set")
 	}
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{

@@ -20,7 +20,7 @@ func (d *ConfigDigest) Status() string {
 		return fmt.Sprintf("Enable - Driver %s", *d.Driver)
 	} else if d.Listen != nil {
 		return fmt.Sprintf("Enable - Listen on %s", *d.Listen)
-	} else if d.Enabled != nil {
+	} else if lo.FromPtrOr(d.Enabled, false) {
 		return "Enable"
 	} else {
 		return "Disable"
@@ -38,7 +38,7 @@ func GenConfigDigest(c *Config) []*ConfigDigest {
 		Name:    "Server Admin",
 		Enabled: lo.ToPtr(c.Server != nil && c.Server.Admin != nil),
 		Driver:  nil,
-		Listen:  lo.ToPtr(net.JoinHostPort(c.Server.Admin.Host, strconv.Itoa(int(c.Server.Admin.Port)))),
+		Listen:  lo.ToPtr("http://" + net.JoinHostPort(c.Server.Admin.Host, strconv.Itoa(int(c.Server.Admin.Port)))),
 	})
 	digests = append(digests, &ConfigDigest{
 		Name:    "Server Main",
