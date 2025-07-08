@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	capi "github.com/hashicorp/consul/api"
 )
@@ -18,7 +19,7 @@ func NewSephirahClient(
 	config *capi.Config,
 	serviceName string,
 ) (sephirah.LibrarianSephirahServiceClient, error) {
-	r, err := NewRegistry(config)
+	r, err := NewDiscovery(config)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +44,7 @@ func NewPorterClient(
 	config *capi.Config,
 	serviceName string,
 ) (porter.LibrarianSephirahPorterServiceClient, error) {
-	r, err := NewRegistry(config)
+	r, err := NewDiscovery(config)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,8 @@ func NewPorterClient(
 	return porter.NewLibrarianSephirahPorterServiceClient(conn), nil
 }
 
-func NewRegistry(config *capi.Config) (*consul.Registry, error) {
+func NewDiscovery(c *capi.Config) (registry.Discovery, error) {
+	config := c
 	if config == nil {
 		config = capi.DefaultConfig()
 	}
@@ -72,5 +74,61 @@ func NewRegistry(config *capi.Config) (*consul.Registry, error) {
 	if err != nil {
 		return nil, err
 	}
+	_, err = client.Status().Leader()
+	if err != nil {
+		if c == nil {
+			return emptyDiscovery{}, nil
+		}
+		return nil, err
+	}
 	return consul.New(client), nil
+}
+
+func NewRegistrar(c *capi.Config) (registry.Registrar, error) {
+	config := c
+	if config == nil {
+		config = capi.DefaultConfig()
+	}
+	client, err := capi.NewClient(config)
+	if err != nil {
+		return nil, err
+	}
+	_, err = client.Status().Leader()
+	if err != nil {
+		if c == nil {
+			return emptyRegistrar{}, nil
+		}
+		return nil, err
+	}
+	return consul.New(client), nil
+}
+
+type emptyDiscovery struct{}
+
+func (e emptyDiscovery) GetService(ctx context.Context, serviceName string) ([]*registry.ServiceInstance, error) {
+	return []*registry.ServiceInstance{}, nil
+}
+
+func (e emptyDiscovery) Watch(ctx context.Context, serviceName string) (registry.Watcher, error) {
+	return emptyWatcher{}, nil
+}
+
+type emptyRegistrar struct{}
+
+func (e emptyRegistrar) Register(ctx context.Context, service *registry.ServiceInstance) error {
+	return nil
+}
+
+func (e emptyRegistrar) Deregister(ctx context.Context, service *registry.ServiceInstance) error {
+	return nil
+}
+
+type emptyWatcher struct{}
+
+func (e emptyWatcher) Next() ([]*registry.ServiceInstance, error) {
+	return []*registry.ServiceInstance{}, nil
+}
+
+func (e emptyWatcher) Stop() error {
+	return nil
 }

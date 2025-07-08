@@ -35,7 +35,7 @@ func NewPorter(
 	if err != nil {
 		return nil, fmt.Errorf("failed to create health checker: %w", err)
 	}
-	if libdiscovery.IsEmptyHealthChecker(checker) {
+	if libdiscovery.IsEmptyHealthChecker(checker) && porter != nil && len(porter.Addresses) > 0 {
 		checker, err = libdiscovery.NewStaticDiscovery(porter.Addresses, "porter", "")
 		if err != nil {
 			return nil, fmt.Errorf("failed to create static discovery: %w", err)
@@ -75,7 +75,7 @@ func NewPorterClient(
 	if err != nil {
 		return nil, fmt.Errorf("failed to create discovery: %w", err)
 	}
-	if libdiscovery.IsEmptyDiscovery(r) {
+	if libdiscovery.IsEmptyDiscovery(r) && p != nil && len(p.Addresses) > 0 {
 		r, err = libdiscovery.NewStaticDiscovery(p.Addresses, "porter", "")
 		if err != nil {
 			return nil, fmt.Errorf("failed to create static discovery: %w", err)
