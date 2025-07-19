@@ -36,7 +36,6 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20250603205740-ed9094be7668
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/maypok86/otter v1.2.4
-	github.com/maypok86/otter/v2 v2.1.0
 	github.com/meilisearch/meilisearch-go v0.32.0
 	github.com/minio/minio-go/v7 v7.0.94
 	github.com/mmcdole/gofeed v1.3.0
@@ -46,10 +45,9 @@ require (
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/samber/lo v1.51.0
 	github.com/sony/sonyflake v1.2.1
-	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
-	github.com/tuihub/protos v0.5.6
+	github.com/tuihub/protos v0.5.7
 	github.com/urfave/cli/v2 v2.27.7
 	go.opentelemetry.io/otel v1.37.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.13.0
