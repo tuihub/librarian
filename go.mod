@@ -22,7 +22,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/gocolly/colly/v2 v2.2.0
 	github.com/gofiber/contrib/fiberi18n/v2 v2.0.6
-	github.com/gofiber/fiber/v2 v2.52.8
+	github.com/gofiber/fiber/v2 v2.52.9
 	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-querystring v1.1.0
@@ -36,7 +36,6 @@ require (
 	github.com/johannesboyne/gofakes3 v0.0.0-20250603205740-ed9094be7668
 	github.com/mattn/go-sqlite3 v1.14.28
 	github.com/maypok86/otter v1.2.4
-	github.com/maypok86/otter/v2 v2.1.0
 	github.com/meilisearch/meilisearch-go v0.32.0
 	github.com/minio/minio-go/v7 v7.0.94
 	github.com/mmcdole/gofeed v1.3.0
@@ -46,7 +45,6 @@ require (
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/samber/lo v1.51.0
 	github.com/sony/sonyflake v1.2.1
-	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
 	github.com/tuihub/protos v0.5.6
