@@ -45,6 +45,7 @@ type Account struct {
 
 type PullAccountInfo struct {
 	ID                InternalID
+	Config            *FeatureRequest
 	Platform          string
 	PlatformAccountID string
 }

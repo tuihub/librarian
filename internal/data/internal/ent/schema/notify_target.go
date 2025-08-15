@@ -1,9 +1,8 @@
 package schema
 
 import (
+	"github.com/tuihub/librarian/internal/model"
 	"time"
-
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -21,7 +20,7 @@ func (NotifyTarget) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("description"),
-		field.JSON("destination", new(modelsupervisor.FeatureRequest)),
+		field.JSON("destination", new(model.FeatureRequest)),
 		field.Enum("status").
 			Values("active", "suspend"),
 		field.Time("updated_at").

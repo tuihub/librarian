@@ -181,36 +181,36 @@ func ToBizDeviceInfo(source *sephirah.Device) *model.Device {
 	}
 	return pModelDevice
 }
-func ToBizFeatureFlag(source *v1.FeatureFlag) *modelsupervisor.FeatureFlag {
-	var pModelsupervisorFeatureFlag *modelsupervisor.FeatureFlag
+func ToBizFeatureFlag(source *v1.FeatureFlag) *model.FeatureFlag {
+	var pModelFeatureFlag *model.FeatureFlag
 	if source != nil {
-		var modelsupervisorFeatureFlag modelsupervisor.FeatureFlag
-		modelsupervisorFeatureFlag.ID = (*source).Id
-		modelsupervisorFeatureFlag.Name = (*source).Name
-		modelsupervisorFeatureFlag.Description = (*source).Description
-		modelsupervisorFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
-		modelsupervisorFeatureFlag.RequireContext = (*source).RequireContext
+		var modelFeatureFlag model.FeatureFlag
+		modelFeatureFlag.ID = (*source).Id
+		modelFeatureFlag.Name = (*source).Name
+		modelFeatureFlag.Description = (*source).Description
+		modelFeatureFlag.ConfigJSONSchema = (*source).ConfigJsonSchema
+		modelFeatureFlag.RequireContext = (*source).RequireContext
 		if (*source).Extra != nil {
-			modelsupervisorFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
+			modelFeatureFlag.Extra = make(map[string]string, len((*source).Extra))
 			for key, value := range (*source).Extra {
-				modelsupervisorFeatureFlag.Extra[key] = value
+				modelFeatureFlag.Extra[key] = value
 			}
 		}
-		pModelsupervisorFeatureFlag = &modelsupervisorFeatureFlag
+		pModelFeatureFlag = &modelFeatureFlag
 	}
-	return pModelsupervisorFeatureFlag
+	return pModelFeatureFlag
 }
-func ToBizFeatureRequest(source *v1.FeatureRequest) *modelsupervisor.FeatureRequest {
-	var pModelsupervisorFeatureRequest *modelsupervisor.FeatureRequest
+func ToBizFeatureRequest(source *v1.FeatureRequest) *model.FeatureRequest {
+	var pModelFeatureRequest *model.FeatureRequest
 	if source != nil {
-		var modelsupervisorFeatureRequest modelsupervisor.FeatureRequest
-		modelsupervisorFeatureRequest.ID = (*source).Id
-		modelsupervisorFeatureRequest.Region = (*source).Region
-		modelsupervisorFeatureRequest.ConfigJSON = (*source).ConfigJson
-		modelsupervisorFeatureRequest.ContextID = ToBizInternalID((*source).ContextId)
-		pModelsupervisorFeatureRequest = &modelsupervisorFeatureRequest
+		var modelFeatureRequest model.FeatureRequest
+		modelFeatureRequest.ID = (*source).Id
+		modelFeatureRequest.Region = (*source).Region
+		modelFeatureRequest.ConfigJSON = (*source).ConfigJson
+		modelFeatureRequest.ContextID = ToBizInternalID((*source).ContextId)
+		pModelFeatureRequest = &modelFeatureRequest
 	}
-	return pModelsupervisorFeatureRequest
+	return pModelFeatureRequest
 }
 func ToBizFeedActionSet(source *sephirah.FeedActionSet) *modelyesod.FeedActionSet {
 	var pModelyesodFeedActionSet *modelyesod.FeedActionSet
@@ -220,7 +220,7 @@ func ToBizFeedActionSet(source *sephirah.FeedActionSet) *modelyesod.FeedActionSe
 		modelyesodFeedActionSet.Name = (*source).Name
 		modelyesodFeedActionSet.Description = (*source).Description
 		if (*source).Actions != nil {
-			modelyesodFeedActionSet.Actions = make([]*modelsupervisor.FeatureRequest, len((*source).Actions))
+			modelyesodFeedActionSet.Actions = make([]*model.FeatureRequest, len((*source).Actions))
 			for i := 0; i < len((*source).Actions); i++ {
 				modelyesodFeedActionSet.Actions[i] = ToBizFeatureRequest((*source).Actions[i])
 			}
@@ -562,43 +562,43 @@ func ToBizPorterFeatureSummary(source *v1.FeatureSummary) *modelsupervisor.Porte
 	if source != nil {
 		var modelsupervisorPorterFeatureSummary modelsupervisor.PorterFeatureSummary
 		if (*source).AccountPlatforms != nil {
-			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*modelsupervisor.FeatureFlag, len((*source).AccountPlatforms))
+			modelsupervisorPorterFeatureSummary.AccountPlatforms = make([]*model.FeatureFlag, len((*source).AccountPlatforms))
 			for i := 0; i < len((*source).AccountPlatforms); i++ {
 				modelsupervisorPorterFeatureSummary.AccountPlatforms[i] = ToBizFeatureFlag((*source).AccountPlatforms[i])
 			}
 		}
 		if (*source).AppInfoSources != nil {
-			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*modelsupervisor.FeatureFlag, len((*source).AppInfoSources))
+			modelsupervisorPorterFeatureSummary.AppInfoSources = make([]*model.FeatureFlag, len((*source).AppInfoSources))
 			for j := 0; j < len((*source).AppInfoSources); j++ {
 				modelsupervisorPorterFeatureSummary.AppInfoSources[j] = ToBizFeatureFlag((*source).AppInfoSources[j])
 			}
 		}
 		if (*source).FeedSources != nil {
-			modelsupervisorPorterFeatureSummary.FeedSources = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSources))
+			modelsupervisorPorterFeatureSummary.FeedSources = make([]*model.FeatureFlag, len((*source).FeedSources))
 			for k := 0; k < len((*source).FeedSources); k++ {
 				modelsupervisorPorterFeatureSummary.FeedSources[k] = ToBizFeatureFlag((*source).FeedSources[k])
 			}
 		}
 		if (*source).NotifyDestinations != nil {
-			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*modelsupervisor.FeatureFlag, len((*source).NotifyDestinations))
+			modelsupervisorPorterFeatureSummary.NotifyDestinations = make([]*model.FeatureFlag, len((*source).NotifyDestinations))
 			for l := 0; l < len((*source).NotifyDestinations); l++ {
 				modelsupervisorPorterFeatureSummary.NotifyDestinations[l] = ToBizFeatureFlag((*source).NotifyDestinations[l])
 			}
 		}
 		if (*source).FeedItemActions != nil {
-			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*modelsupervisor.FeatureFlag, len((*source).FeedItemActions))
+			modelsupervisorPorterFeatureSummary.FeedItemActions = make([]*model.FeatureFlag, len((*source).FeedItemActions))
 			for m := 0; m < len((*source).FeedItemActions); m++ {
 				modelsupervisorPorterFeatureSummary.FeedItemActions[m] = ToBizFeatureFlag((*source).FeedItemActions[m])
 			}
 		}
 		if (*source).FeedGetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedGetters))
+			modelsupervisorPorterFeatureSummary.FeedGetters = make([]*model.FeatureFlag, len((*source).FeedGetters))
 			for n := 0; n < len((*source).FeedGetters); n++ {
 				modelsupervisorPorterFeatureSummary.FeedGetters[n] = ToBizFeatureFlag((*source).FeedGetters[n])
 			}
 		}
 		if (*source).FeedSetters != nil {
-			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*modelsupervisor.FeatureFlag, len((*source).FeedSetters))
+			modelsupervisorPorterFeatureSummary.FeedSetters = make([]*model.FeatureFlag, len((*source).FeedSetters))
 			for o := 0; o < len((*source).FeedSetters); o++ {
 				modelsupervisorPorterFeatureSummary.FeedSetters[o] = ToBizFeatureFlag((*source).FeedSetters[o])
 			}
@@ -1024,7 +1024,7 @@ func ToPBEnclosure(source *modelfeed.Enclosure) *v1.FeedEnclosure {
 	}
 	return pV1FeedEnclosure
 }
-func ToPBFeatureFlag(source *modelsupervisor.FeatureFlag) *v1.FeatureFlag {
+func ToPBFeatureFlag(source *model.FeatureFlag) *v1.FeatureFlag {
 	var pV1FeatureFlag *v1.FeatureFlag
 	if source != nil {
 		var v1FeatureFlag v1.FeatureFlag
@@ -1043,7 +1043,7 @@ func ToPBFeatureFlag(source *modelsupervisor.FeatureFlag) *v1.FeatureFlag {
 	}
 	return pV1FeatureFlag
 }
-func ToPBFeatureFlagList(source []*modelsupervisor.FeatureFlag) []*v1.FeatureFlag {
+func ToPBFeatureFlagList(source []*model.FeatureFlag) []*v1.FeatureFlag {
 	var pV1FeatureFlagList []*v1.FeatureFlag
 	if source != nil {
 		pV1FeatureFlagList = make([]*v1.FeatureFlag, len(source))
@@ -1053,7 +1053,7 @@ func ToPBFeatureFlagList(source []*modelsupervisor.FeatureFlag) []*v1.FeatureFla
 	}
 	return pV1FeatureFlagList
 }
-func ToPBFeatureRequest(source *modelsupervisor.FeatureRequest) *v1.FeatureRequest {
+func ToPBFeatureRequest(source *model.FeatureRequest) *v1.FeatureRequest {
 	var pV1FeatureRequest *v1.FeatureRequest
 	if source != nil {
 		var v1FeatureRequest v1.FeatureRequest

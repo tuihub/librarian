@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 type NotifyFlow struct {
@@ -38,7 +37,7 @@ type NotifyTarget struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Destination *modelsupervisor.FeatureRequest
+	Destination *model.FeatureRequest
 	Status      NotifyTargetStatus
 }
 

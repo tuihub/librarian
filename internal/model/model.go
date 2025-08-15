@@ -54,3 +54,23 @@ const (
 	AccountAppRelationTypeUnspecified AccountAppRelationType = iota
 	AccountAppRelationTypeOwner
 )
+
+type FeatureFlag struct {
+	ID               string            `json:"id"`
+	Name             string            `json:"name"`
+	Description      string            `json:"description"`
+	ConfigJSONSchema string            `json:"config_json_schema"`
+	RequireContext   bool              `json:"require_context"`
+	Extra            map[string]string `json:"extra"`
+}
+
+func (f *FeatureFlag) Match(request *FeatureRequest) bool {
+	return f.ID == request.ID
+}
+
+type FeatureRequest struct {
+	ID         string     `json:"id"`
+	Region     string     `json:"region"`
+	ConfigJSON string     `json:"config_json"`
+	ContextID  InternalID `json:"context_id"`
+}

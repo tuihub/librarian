@@ -1,9 +1,8 @@
 package schema
 
 import (
+	"github.com/tuihub/librarian/internal/model"
 	"time"
-
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
@@ -19,7 +18,7 @@ func (FeedActionSet) Fields() []ent.Field {
 		defaultPrimaryKey(),
 		field.String("name"),
 		field.String("description"),
-		field.JSON("actions", []*modelsupervisor.FeatureRequest{}),
+		field.JSON("actions", []*model.FeatureRequest{}),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

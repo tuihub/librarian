@@ -13,7 +13,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/feedactionset"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // FeedActionSet is the model entity for the FeedActionSet schema.
@@ -26,7 +25,7 @@ type FeedActionSet struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Actions holds the value of the "actions" field.
-	Actions []*modelsupervisor.FeatureRequest `json:"actions,omitempty"`
+	Actions []*model.FeatureRequest `json:"actions,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.

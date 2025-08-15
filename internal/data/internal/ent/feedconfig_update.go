@@ -19,7 +19,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/predicate"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // FeedConfigUpdate is the builder for updating FeedConfig entities.
@@ -78,7 +77,7 @@ func (fcu *FeedConfigUpdate) SetNillableDescription(s *string) *FeedConfigUpdate
 }
 
 // SetSource sets the "source" field.
-func (fcu *FeedConfigUpdate) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigUpdate {
+func (fcu *FeedConfigUpdate) SetSource(mr *model.FeatureRequest) *FeedConfigUpdate {
 	fcu.mutation.SetSource(mr)
 	return fcu
 }
@@ -753,7 +752,7 @@ func (fcuo *FeedConfigUpdateOne) SetNillableDescription(s *string) *FeedConfigUp
 }
 
 // SetSource sets the "source" field.
-func (fcuo *FeedConfigUpdateOne) SetSource(mr *modelsupervisor.FeatureRequest) *FeedConfigUpdateOne {
+func (fcuo *FeedConfigUpdateOne) SetSource(mr *model.FeatureRequest) *FeedConfigUpdateOne {
 	fcuo.mutation.SetSource(mr)
 	return fcuo
 }

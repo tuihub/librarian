@@ -6,7 +6,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 type FeedItemDigest struct {
@@ -33,7 +32,7 @@ type FeedConfig struct {
 	ID                model.InternalID
 	Name              string
 	Description       string
-	Source            *modelsupervisor.FeatureRequest
+	Source            *model.FeatureRequest
 	ActionSets        []model.InternalID
 	Category          string
 	Status            FeedConfigStatus
@@ -70,7 +69,7 @@ const (
 
 type PullFeed struct {
 	InternalID   model.InternalID
-	Source       *modelsupervisor.FeatureRequest
+	Source       *model.FeatureRequest
 	SystemNotify *modelnetzach.SystemNotify
 }
 
@@ -95,5 +94,5 @@ type FeedActionSet struct {
 	ID          model.InternalID
 	Name        string
 	Description string
-	Actions     []*modelsupervisor.FeatureRequest
+	Actions     []*model.FeatureRequest
 }

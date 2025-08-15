@@ -16,7 +16,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"github.com/google/wire"
@@ -35,7 +34,7 @@ type Yesod struct {
 	pullFeed           *libmq.Topic[modelyesod.PullFeed]
 	systemNotify       *libmq.Topic[modelnetzach.SystemNotify]
 	feedOwner          *libcache.Map[modelyesod.FeedConfig, model.User]
-	builtinFeedActions []*modelsupervisor.FeatureFlag
+	builtinFeedActions []*model.FeatureFlag
 }
 
 func NewYesod(
@@ -74,7 +73,7 @@ func NewYesod(
 	return y, nil
 }
 
-func (y *Yesod) GetBuiltInFeedActions() []*modelsupervisor.FeatureFlag {
+func (y *Yesod) GetBuiltInFeedActions() []*model.FeatureFlag {
 	return y.builtinFeedActions
 }
 

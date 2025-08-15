@@ -13,7 +13,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/notifytarget"
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
 // NotifyTarget is the model entity for the NotifyTarget schema.
@@ -26,7 +25,7 @@ type NotifyTarget struct {
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Destination holds the value of the "destination" field.
-	Destination *modelsupervisor.FeatureRequest `json:"destination,omitempty"`
+	Destination *model.FeatureRequest `json:"destination,omitempty"`
 	// Status holds the value of the "status" field.
 	Status notifytarget.Status `json:"status,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.

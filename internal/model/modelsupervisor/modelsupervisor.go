@@ -36,43 +36,23 @@ type PorterBinarySummary struct {
 }
 
 type PorterFeatureSummary struct {
-	AccountPlatforms   []*FeatureFlag `json:"account_platforms"`
-	AppInfoSources     []*FeatureFlag `json:"app_info_sources"`
-	FeedSources        []*FeatureFlag `json:"feed_sources"`
-	NotifyDestinations []*FeatureFlag `json:"notify_destinations"`
-	FeedItemActions    []*FeatureFlag `json:"feed_item_actions"`
-	FeedGetters        []*FeatureFlag `json:"feed_getters"`
-	FeedSetters        []*FeatureFlag `json:"feed_setters"`
-}
-
-type FeatureFlag struct {
-	ID               string            `json:"id"`
-	Name             string            `json:"name"`
-	Description      string            `json:"description"`
-	ConfigJSONSchema string            `json:"config_json_schema"`
-	RequireContext   bool              `json:"require_context"`
-	Extra            map[string]string `json:"extra"`
-}
-
-func (f *FeatureFlag) Match(request *FeatureRequest) bool {
-	return f.ID == request.ID
-}
-
-type FeatureRequest struct {
-	ID         string           `json:"id"`
-	Region     string           `json:"region"`
-	ConfigJSON string           `json:"config_json"`
-	ContextID  model.InternalID `json:"context_id"`
+	AccountPlatforms   []*model.FeatureFlag `json:"account_platforms"`
+	AppInfoSources     []*model.FeatureFlag `json:"app_info_sources"`
+	FeedSources        []*model.FeatureFlag `json:"feed_sources"`
+	NotifyDestinations []*model.FeatureFlag `json:"notify_destinations"`
+	FeedItemActions    []*model.FeatureFlag `json:"feed_item_actions"`
+	FeedGetters        []*model.FeatureFlag `json:"feed_getters"`
+	FeedSetters        []*model.FeatureFlag `json:"feed_setters"`
 }
 
 type ServerFeatureSummary struct {
-	AccountPlatforms   []*FeatureFlag
-	AppInfoSources     []*FeatureFlag
-	FeedSources        []*FeatureFlag
-	NotifyDestinations []*FeatureFlag
-	FeedItemActions    []*FeatureFlag
-	FeedSetters        []*FeatureFlag
-	FeedGetters        []*FeatureFlag
+	AccountPlatforms   []*model.FeatureFlag
+	AppInfoSources     []*model.FeatureFlag
+	FeedSources        []*model.FeatureFlag
+	NotifyDestinations []*model.FeatureFlag
+	FeedItemActions    []*model.FeatureFlag
+	FeedSetters        []*model.FeatureFlag
+	FeedGetters        []*model.FeatureFlag
 }
 
 type PorterConnectionStatus int

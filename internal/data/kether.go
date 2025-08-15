@@ -16,7 +16,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 
 	"entgo.io/ent/dialect/sql"
@@ -305,8 +304,8 @@ func (k *KetherRepo) GetNotifyTargetItems(
 	ctx context.Context,
 	id model.InternalID,
 	paging model.Paging,
-) (*modelsupervisor.FeatureRequest, []*modelfeed.Item, error) {
-	var fr *modelsupervisor.FeatureRequest
+) (*model.FeatureRequest, []*modelfeed.Item, error) {
+	var fr *model.FeatureRequest
 	var it []*modelfeed.Item
 	err := k.data.WithTx(ctx, func(tx *ent.Tx) error {
 		target, err := tx.NotifyTarget.Get(ctx, id)
