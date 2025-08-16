@@ -5,47 +5,10 @@ import (
 
 	"github.com/tuihub/librarian/internal/biz/bizutils"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 )
-
-func (t *Tiphereth) updatePorters(ctx context.Context) error {
-	if contexts, err := t.repo.GetEnabledPorterContexts(ctx); err != nil {
-		logger.Errorf("get enabled porter contexts failed: %s", err.Error())
-	} else {
-		for _, c := range contexts {
-			err = t.supv.QueuePorterContext(ctx, *c)
-			if err != nil {
-				logger.Errorf("queue porter context failed: %s", err.Error())
-			}
-		}
-	}
-	newPorters, err := t.supv.RefreshAliveInstances(ctx)
-	if err != nil {
-		logger.Errorf("refresh alive instances failed: %s", err.Error())
-		return err
-	}
-	if len(newPorters) == 0 {
-		return nil
-	}
-	ids, err := t.id.BatchNew(len(newPorters))
-	if err != nil {
-		logger.Errorf("new batch ids failed: %s", err.Error())
-		return err
-	}
-	for i, porter := range newPorters {
-		porter.ID = ids[i]
-		porter.Status = model.UserStatusBlocked
-	}
-	err = t.repo.UpsertPorters(ctx, newPorters)
-	if err != nil {
-		logger.Errorf("upsert porters failed: %s", err.Error())
-		return err
-	}
-	return nil
-}
 
 func (t *Tiphereth) ListPorters(
 	ctx context.Context,
@@ -69,11 +32,10 @@ func (t *Tiphereth) UpdatePorterStatus(
 	if libauth.FromContextAssertUserType(ctx, model.UserTypeAdmin) == nil {
 		return bizutils.NoPermissionError()
 	}
-	pi, err := t.repo.UpdatePorterStatus(ctx, id, status)
+	_, err := t.repo.UpdatePorterStatus(ctx, id, status)
 	if err != nil {
 		return pb.ErrorErrorReasonUnspecified("%s", err.Error())
 	}
-	_ = t.porterInstanceCache.Delete(ctx, pi.Address)
 	return nil
 }
 

@@ -189,6 +189,34 @@ func (piu *PorterInstanceUpdate) SetNillableStatus(po *porterinstance.Status) *P
 	return piu
 }
 
+// SetConnectionStatus sets the "connection_status" field.
+func (piu *PorterInstanceUpdate) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceUpdate {
+	piu.mutation.SetConnectionStatus(ps)
+	return piu
+}
+
+// SetNillableConnectionStatus sets the "connection_status" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableConnectionStatus(ps *porterinstance.ConnectionStatus) *PorterInstanceUpdate {
+	if ps != nil {
+		piu.SetConnectionStatus(*ps)
+	}
+	return piu
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (piu *PorterInstanceUpdate) SetConnectionStatusMessage(s string) *PorterInstanceUpdate {
+	piu.mutation.SetConnectionStatusMessage(s)
+	return piu
+}
+
+// SetNillableConnectionStatusMessage sets the "connection_status_message" field if the given value is not nil.
+func (piu *PorterInstanceUpdate) SetNillableConnectionStatusMessage(s *string) *PorterInstanceUpdate {
+	if s != nil {
+		piu.SetConnectionStatusMessage(*s)
+	}
+	return piu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (piu *PorterInstanceUpdate) SetUpdatedAt(t time.Time) *PorterInstanceUpdate {
 	piu.mutation.SetUpdatedAt(t)
@@ -257,6 +285,11 @@ func (piu *PorterInstanceUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
+	if v, ok := piu.mutation.ConnectionStatus(); ok {
+		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
+			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -307,6 +340,12 @@ func (piu *PorterInstanceUpdate) sqlSave(ctx context.Context) (n int, err error)
 	}
 	if value, ok := piu.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := piu.mutation.ConnectionStatus(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
+	}
+	if value, ok := piu.mutation.ConnectionStatusMessage(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
 	}
 	if value, ok := piu.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)
@@ -494,6 +533,34 @@ func (piuo *PorterInstanceUpdateOne) SetNillableStatus(po *porterinstance.Status
 	return piuo
 }
 
+// SetConnectionStatus sets the "connection_status" field.
+func (piuo *PorterInstanceUpdateOne) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
+	piuo.mutation.SetConnectionStatus(ps)
+	return piuo
+}
+
+// SetNillableConnectionStatus sets the "connection_status" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableConnectionStatus(ps *porterinstance.ConnectionStatus) *PorterInstanceUpdateOne {
+	if ps != nil {
+		piuo.SetConnectionStatus(*ps)
+	}
+	return piuo
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (piuo *PorterInstanceUpdateOne) SetConnectionStatusMessage(s string) *PorterInstanceUpdateOne {
+	piuo.mutation.SetConnectionStatusMessage(s)
+	return piuo
+}
+
+// SetNillableConnectionStatusMessage sets the "connection_status_message" field if the given value is not nil.
+func (piuo *PorterInstanceUpdateOne) SetNillableConnectionStatusMessage(s *string) *PorterInstanceUpdateOne {
+	if s != nil {
+		piuo.SetConnectionStatusMessage(*s)
+	}
+	return piuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (piuo *PorterInstanceUpdateOne) SetUpdatedAt(t time.Time) *PorterInstanceUpdateOne {
 	piuo.mutation.SetUpdatedAt(t)
@@ -575,6 +642,11 @@ func (piuo *PorterInstanceUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
+	if v, ok := piuo.mutation.ConnectionStatus(); ok {
+		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
+			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -642,6 +714,12 @@ func (piuo *PorterInstanceUpdateOne) sqlSave(ctx context.Context) (_node *Porter
 	}
 	if value, ok := piuo.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := piuo.mutation.ConnectionStatus(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
+	}
+	if value, ok := piuo.mutation.ConnectionStatusMessage(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
 	}
 	if value, ok := piuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)

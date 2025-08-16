@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model/modelangela"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
@@ -18,7 +17,7 @@ type Angela struct {
 	id     *libidgenerator.IDGenerator
 	search libsearch.Search
 	porter porter.LibrarianPorterServiceClient
-	supv   *supervisor.Supervisor
+	supv   *data.SupervisorRepo
 }
 
 func NewAngela(
@@ -27,7 +26,7 @@ func NewAngela(
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	pClient porter.LibrarianPorterServiceClient,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 ) *Angela {
 	return &Angela{
 		auth:   auth,

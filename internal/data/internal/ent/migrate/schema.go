@@ -698,6 +698,8 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "description", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "disabled"}},
+		{Name: "handle_status", Type: field.TypeEnum, Enums: []string{"unspecified", "active", "downgraded", "queueing", "blocked"}},
+		{Name: "handle_status_message", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "user_porter_context", Type: field.TypeInt64},
@@ -710,7 +712,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "porter_contexts_users_porter_context",
-				Columns:    []*schema.Column{PorterContextsColumns[9]},
+				Columns:    []*schema.Column{PorterContextsColumns[11]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -738,6 +740,8 @@ var (
 		{Name: "feature_summary", Type: field.TypeJSON},
 		{Name: "context_json_schema", Type: field.TypeString},
 		{Name: "status", Type: field.TypeEnum, Enums: []string{"active", "blocked"}},
+		{Name: "connection_status", Type: field.TypeEnum, Enums: []string{"unspecified", "queueing", "connected", "disconnected", "active", "activation_failed", "downgraded"}},
+		{Name: "connection_status_message", Type: field.TypeString},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "created_at", Type: field.TypeTime},
 	}

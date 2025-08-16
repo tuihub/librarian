@@ -304,25 +304,25 @@ func init() {
 	portercontextFields := schema.PorterContext{}.Fields()
 	_ = portercontextFields
 	// portercontextDescUpdatedAt is the schema descriptor for updated_at field.
-	portercontextDescUpdatedAt := portercontextFields[7].Descriptor()
+	portercontextDescUpdatedAt := portercontextFields[9].Descriptor()
 	// portercontext.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	portercontext.DefaultUpdatedAt = portercontextDescUpdatedAt.Default.(func() time.Time)
 	// portercontext.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	portercontext.UpdateDefaultUpdatedAt = portercontextDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// portercontextDescCreatedAt is the schema descriptor for created_at field.
-	portercontextDescCreatedAt := portercontextFields[8].Descriptor()
+	portercontextDescCreatedAt := portercontextFields[10].Descriptor()
 	// portercontext.DefaultCreatedAt holds the default value on creation for the created_at field.
 	portercontext.DefaultCreatedAt = portercontextDescCreatedAt.Default.(func() time.Time)
 	porterinstanceFields := schema.PorterInstance{}.Fields()
 	_ = porterinstanceFields
 	// porterinstanceDescUpdatedAt is the schema descriptor for updated_at field.
-	porterinstanceDescUpdatedAt := porterinstanceFields[13].Descriptor()
+	porterinstanceDescUpdatedAt := porterinstanceFields[15].Descriptor()
 	// porterinstance.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	porterinstance.DefaultUpdatedAt = porterinstanceDescUpdatedAt.Default.(func() time.Time)
 	// porterinstance.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	porterinstance.UpdateDefaultUpdatedAt = porterinstanceDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// porterinstanceDescCreatedAt is the schema descriptor for created_at field.
-	porterinstanceDescCreatedAt := porterinstanceFields[14].Descriptor()
+	porterinstanceDescCreatedAt := porterinstanceFields[16].Descriptor()
 	// porterinstance.DefaultCreatedAt holds the default value on creation for the created_at field.
 	porterinstance.DefaultCreatedAt = porterinstanceDescCreatedAt.Default.(func() time.Time)
 	sentinelFields := schema.Sentinel{}.Fields()

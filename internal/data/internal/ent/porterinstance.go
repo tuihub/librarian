@@ -44,6 +44,10 @@ type PorterInstance struct {
 	ContextJSONSchema string `json:"context_json_schema,omitempty"`
 	// Status holds the value of the "status" field.
 	Status porterinstance.Status `json:"status,omitempty"`
+	// ConnectionStatus holds the value of the "connection_status" field.
+	ConnectionStatus porterinstance.ConnectionStatus `json:"connection_status,omitempty"`
+	// ConnectionStatusMessage holds the value of the "connection_status_message" field.
+	ConnectionStatusMessage string `json:"connection_status_message,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -60,7 +64,7 @@ func (*PorterInstance) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case porterinstance.FieldID:
 			values[i] = new(sql.NullInt64)
-		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldDescription, porterinstance.FieldSourceCodeAddress, porterinstance.FieldBuildVersion, porterinstance.FieldBuildDate, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldRegion, porterinstance.FieldContextJSONSchema, porterinstance.FieldStatus:
+		case porterinstance.FieldName, porterinstance.FieldVersion, porterinstance.FieldDescription, porterinstance.FieldSourceCodeAddress, porterinstance.FieldBuildVersion, porterinstance.FieldBuildDate, porterinstance.FieldGlobalName, porterinstance.FieldAddress, porterinstance.FieldRegion, porterinstance.FieldContextJSONSchema, porterinstance.FieldStatus, porterinstance.FieldConnectionStatus, porterinstance.FieldConnectionStatusMessage:
 			values[i] = new(sql.NullString)
 		case porterinstance.FieldUpdatedAt, porterinstance.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -159,6 +163,18 @@ func (pi *PorterInstance) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				pi.Status = porterinstance.Status(value.String)
 			}
+		case porterinstance.FieldConnectionStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field connection_status", values[i])
+			} else if value.Valid {
+				pi.ConnectionStatus = porterinstance.ConnectionStatus(value.String)
+			}
+		case porterinstance.FieldConnectionStatusMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field connection_status_message", values[i])
+			} else if value.Valid {
+				pi.ConnectionStatusMessage = value.String
+			}
 		case porterinstance.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
@@ -242,6 +258,12 @@ func (pi *PorterInstance) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", pi.Status))
+	builder.WriteString(", ")
+	builder.WriteString("connection_status=")
+	builder.WriteString(fmt.Sprintf("%v", pi.ConnectionStatus))
+	builder.WriteString(", ")
+	builder.WriteString("connection_status_message=")
+	builder.WriteString(pi.ConnectionStatusMessage)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(pi.UpdatedAt.Format(time.ANSIC))

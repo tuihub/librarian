@@ -23,6 +23,9 @@ func (PorterContext) Fields() []ent.Field {
 		field.String("description"),
 		field.Enum("status").
 			Values("active", "disabled"),
+		field.Enum("handle_status").
+			Values("unspecified", "active", "downgraded", "queueing", "blocked"),
+		field.String("handle_status_message"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

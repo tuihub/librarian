@@ -81,6 +81,11 @@ func Description(v string) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldEQ(FieldDescription, v))
 }
 
+// HandleStatusMessage applies equality check predicate on the "handle_status_message" field. It's identical to HandleStatusMessageEQ.
+func HandleStatusMessage(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldHandleStatusMessage, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldEQ(FieldUpdatedAt, v))
@@ -434,6 +439,91 @@ func StatusIn(vs ...Status) predicate.PorterContext {
 // StatusNotIn applies the NotIn predicate on the "status" field.
 func StatusNotIn(vs ...Status) predicate.PorterContext {
 	return predicate.PorterContext(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// HandleStatusEQ applies the EQ predicate on the "handle_status" field.
+func HandleStatusEQ(v HandleStatus) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldHandleStatus, v))
+}
+
+// HandleStatusNEQ applies the NEQ predicate on the "handle_status" field.
+func HandleStatusNEQ(v HandleStatus) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldHandleStatus, v))
+}
+
+// HandleStatusIn applies the In predicate on the "handle_status" field.
+func HandleStatusIn(vs ...HandleStatus) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldHandleStatus, vs...))
+}
+
+// HandleStatusNotIn applies the NotIn predicate on the "handle_status" field.
+func HandleStatusNotIn(vs ...HandleStatus) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldHandleStatus, vs...))
+}
+
+// HandleStatusMessageEQ applies the EQ predicate on the "handle_status_message" field.
+func HandleStatusMessageEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEQ(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageNEQ applies the NEQ predicate on the "handle_status_message" field.
+func HandleStatusMessageNEQ(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNEQ(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageIn applies the In predicate on the "handle_status_message" field.
+func HandleStatusMessageIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldIn(FieldHandleStatusMessage, vs...))
+}
+
+// HandleStatusMessageNotIn applies the NotIn predicate on the "handle_status_message" field.
+func HandleStatusMessageNotIn(vs ...string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldNotIn(FieldHandleStatusMessage, vs...))
+}
+
+// HandleStatusMessageGT applies the GT predicate on the "handle_status_message" field.
+func HandleStatusMessageGT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGT(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageGTE applies the GTE predicate on the "handle_status_message" field.
+func HandleStatusMessageGTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldGTE(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageLT applies the LT predicate on the "handle_status_message" field.
+func HandleStatusMessageLT(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLT(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageLTE applies the LTE predicate on the "handle_status_message" field.
+func HandleStatusMessageLTE(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldLTE(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageContains applies the Contains predicate on the "handle_status_message" field.
+func HandleStatusMessageContains(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContains(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageHasPrefix applies the HasPrefix predicate on the "handle_status_message" field.
+func HandleStatusMessageHasPrefix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasPrefix(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageHasSuffix applies the HasSuffix predicate on the "handle_status_message" field.
+func HandleStatusMessageHasSuffix(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldHasSuffix(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageEqualFold applies the EqualFold predicate on the "handle_status_message" field.
+func HandleStatusMessageEqualFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldEqualFold(FieldHandleStatusMessage, v))
+}
+
+// HandleStatusMessageContainsFold applies the ContainsFold predicate on the "handle_status_message" field.
+func HandleStatusMessageContainsFold(v string) predicate.PorterContext {
+	return predicate.PorterContext(sql.FieldContainsFold(FieldHandleStatusMessage, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

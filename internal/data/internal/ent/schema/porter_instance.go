@@ -30,6 +30,9 @@ func (PorterInstance) Fields() []ent.Field {
 		field.String("context_json_schema"),
 		field.Enum("status").
 			Values("active", "blocked"),
+		field.Enum("connection_status").
+			Values("unspecified", "queueing", "connected", "disconnected", "active", "activation_failed", "downgraded"),
+		field.String("connection_status_message"),
 		field.Time("updated_at").
 			Default(time.Now).UpdateDefault(time.Now),
 		field.Time("created_at").

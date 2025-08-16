@@ -6,7 +6,6 @@ import (
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 	sephirah "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
@@ -258,18 +257,9 @@ func (s *LibrarianSephirahService) ListPorterContexts(
 	if err != nil {
 		return nil, err
 	}
-	res := make([]*modelsupervisor.PorterContextController, len(contexts))
-	for i := range res {
-		res[i] = s.s.GetContextController(ctx, contexts[i].ID)
-		if res[i] == nil {
-			res[i] = new(modelsupervisor.PorterContextController)
-			res[i].HandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
-		}
-		res[i].PorterContext = *contexts[i]
-	}
 	return &sephirah.ListPorterContextsResponse{
 		Paging:   &librarian.PagingResponse{TotalSize: total},
-		Contexts: converter.ToPBPorterContextList(res),
+		Contexts: converter.ToPBPorterContextList(contexts),
 	}, nil
 }
 

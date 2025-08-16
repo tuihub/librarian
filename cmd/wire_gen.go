@@ -14,6 +14,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/bizkether"
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
+	"github.com/tuihub/librarian/internal/biz/bizsupervisor"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/client"
@@ -51,91 +52,51 @@ func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	porter := conf.GetPorter(config)
-	mq := conf.GetMQ(config)
-	db := data.GetDB(dataData)
-	cache := conf.GetCache(config)
-	builtInObserver, err := libobserve.NewBuiltInObserver()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	libmqMQ, cleanup2, err := libmq.NewMQ(mq, db, cache, settings, builtInObserver)
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	consul := conf.GetConsul(config)
-	inprocPorter, err := client.NewInprocPorter()
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings, inprocPorter)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, porter, inprocPorter)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	netzachRepo := data.NewNetzachRepo(dataData)
+	supervisorRepo := data.NewSupervisorRepo(dataData)
 	idGenerator := libidgenerator.NewIDGenerator()
-	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
-	store, err := libcache.NewStore(cache)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
-	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
-	supervisorSupervisor, err := supervisor.NewSupervisor(porter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
 	search := conf.GetSearch(config)
 	libsearchSearch, err := libsearch.NewSearch(search, settings)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	ketherRepo := data.NewKetherRepo(dataData)
 	geburaRepo := data.NewGeburaRepo(dataData)
-	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	consul := conf.GetConsul(config)
+	porter := conf.GetPorter(config)
+	inprocPorter, err := client.NewInprocPorter()
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	map3 := bizkether.NewAppInfoCache(geburaRepo, store)
-	libmqTopic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
-	topic2 := bizkether.NewPullAppInfoTopic(ketherBase, map3, libmqTopic)
-	topic3 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, topic2)
-	topic4 := bizkether.NewPullAccountTopic(ketherBase, topic3)
-	cron, err := libcron.NewCron()
+	librarianPorterServiceClient, err := client.NewPorterClient(consul, porter, settings, inprocPorter)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
+	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorRepo, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	cache := conf.GetCache(config)
+	store, err := libcache.NewStore(cache)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	libcacheMap := bizkether.NewAppInfoCache(geburaRepo, store)
+	topic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
+	libmqTopic := bizkether.NewPullAppInfoTopic(ketherBase, libcacheMap, topic)
+	topic2 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, libmqTopic)
+	topic3 := bizkether.NewPullAccountTopic(ketherBase, topic2)
 	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
-	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, idGenerator, libsearchSearch, topic4, cron, key, libcacheMap)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorRepo, idGenerator, libsearchSearch, topic3, key)
 	if err != nil {
-		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	return tiphereth, func() {
-		cleanup2()
 		cleanup()
 	}, nil
 }
@@ -174,6 +135,15 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
+	supervisorRepo := data.NewSupervisorRepo(dataData)
+	angela := bizangela.NewAngela(angelaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorRepo)
+	ketherRepo := data.NewKetherRepo(dataData)
+	geburaRepo := data.NewGeburaRepo(dataData)
+	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorRepo, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	mq := conf.GetMQ(config)
 	db := data.GetDB(dataData)
 	cache := conf.GetCache(config)
@@ -187,70 +157,41 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	netzachRepo := data.NewNetzachRepo(dataData)
-	topic := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
-	tipherethRepo := data.NewTipherethRepo(dataData)
 	store, err := libcache.NewStore(cache)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	libcacheMap := biztiphereth.NewPorterInstanceCache(tipherethRepo, store)
-	map2 := biztiphereth.NewPorterContextCache(tipherethRepo, store)
-	supervisorSupervisor, err := supervisor.NewSupervisor(confPorter, libmqMQ, libauthAuth, clientPorter, topic, libcacheMap, map2)
+	libcacheMap := bizkether.NewAppInfoCache(geburaRepo, store)
+	topic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
+	libmqTopic := bizkether.NewPullAppInfoTopic(ketherBase, libcacheMap, topic)
+	topic2 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, libmqTopic)
+	topic3 := bizkether.NewPullAccountTopic(ketherBase, topic2)
+	netzachRepo := data.NewNetzachRepo(dataData)
+	map2 := bizkether.NewNotifyFlowCache(netzachRepo, store)
+	map3 := bizkether.NewFeedToNotifyFlowCache(netzachRepo, store)
+	map4 := bizkether.NewNotifyTargetCache(netzachRepo, store)
+	topic4 := bizkether.NewNotifyPushTopic(ketherBase, map4)
+	topic5 := bizkether.NewNotifyRouterTopic(ketherBase, map2, map3, topic4)
+	topic6 := biznetzach.NewSystemNotificationTopic(netzachRepo, idGenerator)
+	topic7 := bizkether.NewFeedItemPostprocessTopic(ketherBase, topic5, topic6)
+	topic8 := bizkether.NewPullFeedTopic(ketherBase, topic7, topic6)
+	kether, err := bizkether.NewKether(ketherBase, libmqMQ, topic3, topic2, libmqTopic, topic8, topic5, topic4, topic7, topic)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	angela := bizangela.NewAngela(angelaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor)
-	ketherRepo := data.NewKetherRepo(dataData)
-	geburaRepo := data.NewGeburaRepo(dataData)
-	ketherBase, err := bizkether.NewKetherBase(ketherRepo, supervisorSupervisor, geburaRepo, librarianPorterServiceClient, libsearchSearch, idGenerator)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	map3 := bizkether.NewAppInfoCache(geburaRepo, store)
-	libmqTopic := bizkether.NewUpdateAppInfoIndexTopic(ketherBase)
-	topic2 := bizkether.NewPullAppInfoTopic(ketherBase, map3, libmqTopic)
-	topic3 := bizkether.NewPullAccountAppInfoRelationTopic(ketherBase, topic2)
-	topic4 := bizkether.NewPullAccountTopic(ketherBase, topic3)
-	map4 := bizkether.NewNotifyFlowCache(netzachRepo, store)
-	map5 := bizkether.NewFeedToNotifyFlowCache(netzachRepo, store)
-	map6 := bizkether.NewNotifyTargetCache(netzachRepo, store)
-	topic5 := bizkether.NewNotifyPushTopic(ketherBase, map6)
-	topic6 := bizkether.NewNotifyRouterTopic(ketherBase, map4, map5, topic5)
-	topic7 := bizkether.NewFeedItemPostprocessTopic(ketherBase, topic6, topic)
-	topic8 := bizkether.NewPullFeedTopic(ketherBase, topic7, topic)
-	kether, err := bizkether.NewKether(ketherBase, libmqMQ, topic4, topic3, topic2, topic8, topic6, topic5, topic7, libmqTopic)
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
-	cron, err := libcron.NewCron()
-	if err != nil {
-		cleanup2()
-		cleanup()
-		return nil, nil, err
-	}
+	tipherethRepo := data.NewTipherethRepo(dataData)
 	key := biztiphereth.NewUserCountCache(tipherethRepo, store)
-	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorSupervisor, idGenerator, libsearchSearch, topic4, cron, key, libcacheMap)
+	tiphereth, err := biztiphereth.NewTiphereth(settings, tipherethRepo, libauthAuth, supervisorRepo, idGenerator, libsearchSearch, topic3, key)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorSupervisor, libmqTopic, topic2, map3)
+	gebura := bizgebura.NewGebura(geburaRepo, libauthAuth, idGenerator, libsearchSearch, librarianPorterServiceClient, supervisorRepo, topic, libmqTopic, libcacheMap)
 	storage := conf.GetStorage(config)
 	s3, err := libs3.NewS3(storage, settings)
 	if err != nil {
@@ -267,30 +208,36 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	controlBlock := bizbinah.NewControlBlock(libauthAuth)
 	binah := bizbinah.NewBinah(binahRepo, controlBlock, libauthAuth)
 	yesodRepo := data.NewYesodRepo(dataData)
-	map7 := bizyesod.NewFeedOwnerCache(yesodRepo, store)
-	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorSupervisor, cron, idGenerator, libsearchSearch, topic8, topic, map7)
+	cron, err := libcron.NewCron()
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorSupervisor, idGenerator, libsearchSearch, libmqMQ, map5, map4, map6, topic)
+	map5 := bizyesod.NewFeedOwnerCache(yesodRepo, store)
+	yesod, err := bizyesod.NewYesod(yesodRepo, supervisorRepo, cron, idGenerator, libsearchSearch, topic8, topic6, map5)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	netzach, err := biznetzach.NewNetzach(netzachRepo, supervisorRepo, idGenerator, libsearchSearch, libmqMQ, map3, map2, map4, topic6)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
 	chesedRepo := data.NewChesedRepo(dataData)
-	map8 := bizchesed.NewImageCache(store)
-	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, idGenerator, libsearchSearch, cron, librarianPorterServiceClient, controlBlock, map8)
+	map6 := bizchesed.NewImageCache(store)
+	chesed, err := bizchesed.NewChesed(chesedRepo, binahRepo, idGenerator, libsearchSearch, cron, librarianPorterServiceClient, controlBlock, map6)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth)
+	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorRepo, settings, libauthAuth)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
-	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorSupervisor, settings, libauthAuth)
+	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth)
 	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, builtInObserver, inprocPorter)
 	if err != nil {
 		cleanup2()
@@ -303,8 +250,22 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, supervisorSupervisor, key)
-	app, err := newApp(grpcServer, httpServer, angelaWeb, libmqMQ, cron, builtInObserver, consul, s3, inprocPorter)
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key)
+	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	bizsupervisorSupervisor := bizsupervisor.NewSupervisor(settings, supervisorRepo, clientPorter, libauthAuth, idGenerator)
+	porterFeatureController := bizsupervisor.NewPorterFeatureController(bizsupervisorSupervisor)
+	supervisorService, err := supervisor.NewSupervisorService(bizsupervisorSupervisor, confPorter, libauthAuth, clientPorter, topic6, cron, tipherethRepo, porterFeatureController)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	app, err := newApp(grpcServer, httpServer, angelaWeb, supervisorService, libmqMQ, cron, builtInObserver, consul, s3, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()

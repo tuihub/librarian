@@ -11,7 +11,6 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 	"github.com/tuihub/librarian/internal/model/modelkether"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -27,7 +26,7 @@ type Gebura struct {
 	id                 *libidgenerator.IDGenerator
 	search             libsearch.Search
 	porter             porter.LibrarianPorterServiceClient
-	supv               *supervisor.Supervisor
+	supv               *data.SupervisorRepo
 	updateAppInfoIndex *libmq.Topic[modelkether.UpdateAppInfoIndex]
 	pullAppInfo        *libmq.Topic[modelkether.PullAppInfo]
 	appInfoCache       *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo]
@@ -39,7 +38,7 @@ func NewGebura(
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	pClient porter.LibrarianPorterServiceClient,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 	updateAppIndex *libmq.Topic[modelkether.UpdateAppInfoIndex],
 	pullAppInfo *libmq.Topic[modelkether.PullAppInfo],
 	appInfoCache *libcache.Map[modelgebura.AppInfoID, modelgebura.AppInfo],

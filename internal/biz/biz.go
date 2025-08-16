@@ -7,6 +7,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/bizkether"
 	"github.com/tuihub/librarian/internal/biz/biznetzach"
+	"github.com/tuihub/librarian/internal/biz/bizsupervisor"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 
@@ -23,4 +24,5 @@ var ProviderSet = wire.NewSet(
 	bizyesod.ProviderSet,
 	biznetzach.ProviderSet,
 	bizchesed.ProviderSet,
+	bizsupervisor.ProviderSet,
 )

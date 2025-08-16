@@ -96,6 +96,18 @@ func (pic *PorterInstanceCreate) SetStatus(po porterinstance.Status) *PorterInst
 	return pic
 }
 
+// SetConnectionStatus sets the "connection_status" field.
+func (pic *PorterInstanceCreate) SetConnectionStatus(ps porterinstance.ConnectionStatus) *PorterInstanceCreate {
+	pic.mutation.SetConnectionStatus(ps)
+	return pic
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (pic *PorterInstanceCreate) SetConnectionStatusMessage(s string) *PorterInstanceCreate {
+	pic.mutation.SetConnectionStatusMessage(s)
+	return pic
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (pic *PorterInstanceCreate) SetUpdatedAt(t time.Time) *PorterInstanceCreate {
 	pic.mutation.SetUpdatedAt(t)
@@ -218,6 +230,17 @@ func (pic *PorterInstanceCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.status": %w`, err)}
 		}
 	}
+	if _, ok := pic.mutation.ConnectionStatus(); !ok {
+		return &ValidationError{Name: "connection_status", err: errors.New(`ent: missing required field "PorterInstance.connection_status"`)}
+	}
+	if v, ok := pic.mutation.ConnectionStatus(); ok {
+		if err := porterinstance.ConnectionStatusValidator(v); err != nil {
+			return &ValidationError{Name: "connection_status", err: fmt.Errorf(`ent: validator failed for field "PorterInstance.connection_status": %w`, err)}
+		}
+	}
+	if _, ok := pic.mutation.ConnectionStatusMessage(); !ok {
+		return &ValidationError{Name: "connection_status_message", err: errors.New(`ent: missing required field "PorterInstance.connection_status_message"`)}
+	}
 	if _, ok := pic.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PorterInstance.updated_at"`)}
 	}
@@ -304,6 +327,14 @@ func (pic *PorterInstanceCreate) createSpec() (*PorterInstance, *sqlgraph.Create
 	if value, ok := pic.mutation.Status(); ok {
 		_spec.SetField(porterinstance.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
+	}
+	if value, ok := pic.mutation.ConnectionStatus(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatus, field.TypeEnum, value)
+		_node.ConnectionStatus = value
+	}
+	if value, ok := pic.mutation.ConnectionStatusMessage(); ok {
+		_spec.SetField(porterinstance.FieldConnectionStatusMessage, field.TypeString, value)
+		_node.ConnectionStatusMessage = value
 	}
 	if value, ok := pic.mutation.UpdatedAt(); ok {
 		_spec.SetField(porterinstance.FieldUpdatedAt, field.TypeTime, value)
@@ -506,6 +537,30 @@ func (u *PorterInstanceUpsert) SetStatus(v porterinstance.Status) *PorterInstanc
 // UpdateStatus sets the "status" field to the value that was provided on create.
 func (u *PorterInstanceUpsert) UpdateStatus() *PorterInstanceUpsert {
 	u.SetExcluded(porterinstance.FieldStatus)
+	return u
+}
+
+// SetConnectionStatus sets the "connection_status" field.
+func (u *PorterInstanceUpsert) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldConnectionStatus, v)
+	return u
+}
+
+// UpdateConnectionStatus sets the "connection_status" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateConnectionStatus() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldConnectionStatus)
+	return u
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (u *PorterInstanceUpsert) SetConnectionStatusMessage(v string) *PorterInstanceUpsert {
+	u.Set(porterinstance.FieldConnectionStatusMessage, v)
+	return u
+}
+
+// UpdateConnectionStatusMessage sets the "connection_status_message" field to the value that was provided on create.
+func (u *PorterInstanceUpsert) UpdateConnectionStatusMessage() *PorterInstanceUpsert {
+	u.SetExcluded(porterinstance.FieldConnectionStatusMessage)
 	return u
 }
 
@@ -746,6 +801,34 @@ func (u *PorterInstanceUpsertOne) SetStatus(v porterinstance.Status) *PorterInst
 func (u *PorterInstanceUpsertOne) UpdateStatus() *PorterInstanceUpsertOne {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetConnectionStatus sets the "connection_status" field.
+func (u *PorterInstanceUpsertOne) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetConnectionStatus(v)
+	})
+}
+
+// UpdateConnectionStatus sets the "connection_status" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateConnectionStatus() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateConnectionStatus()
+	})
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (u *PorterInstanceUpsertOne) SetConnectionStatusMessage(v string) *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetConnectionStatusMessage(v)
+	})
+}
+
+// UpdateConnectionStatusMessage sets the "connection_status_message" field to the value that was provided on create.
+func (u *PorterInstanceUpsertOne) UpdateConnectionStatusMessage() *PorterInstanceUpsertOne {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateConnectionStatusMessage()
 	})
 }
 
@@ -1156,6 +1239,34 @@ func (u *PorterInstanceUpsertBulk) SetStatus(v porterinstance.Status) *PorterIns
 func (u *PorterInstanceUpsertBulk) UpdateStatus() *PorterInstanceUpsertBulk {
 	return u.Update(func(s *PorterInstanceUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetConnectionStatus sets the "connection_status" field.
+func (u *PorterInstanceUpsertBulk) SetConnectionStatus(v porterinstance.ConnectionStatus) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetConnectionStatus(v)
+	})
+}
+
+// UpdateConnectionStatus sets the "connection_status" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateConnectionStatus() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateConnectionStatus()
+	})
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (u *PorterInstanceUpsertBulk) SetConnectionStatusMessage(v string) *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.SetConnectionStatusMessage(v)
+	})
+}
+
+// UpdateConnectionStatusMessage sets the "connection_status_message" field to the value that was provided on create.
+func (u *PorterInstanceUpsertBulk) UpdateConnectionStatusMessage() *PorterInstanceUpsertBulk {
+	return u.Update(func(s *PorterInstanceUpsert) {
+		s.UpdateConnectionStatusMessage()
 	})
 }
 

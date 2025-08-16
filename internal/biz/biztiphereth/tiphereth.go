@@ -2,22 +2,17 @@ package biztiphereth
 
 import (
 	"context"
-	"fmt"
-	"strconv"
 
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
-	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libidgenerator"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libsearch"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/google/wire"
 )
@@ -25,52 +20,38 @@ import (
 var ProviderSet = wire.NewSet(
 	NewTiphereth,
 	NewUserCountCache,
-	NewPorterInstanceCache,
-	NewPorterContextCache,
 )
 
 type Tiphereth struct {
-	app                 *libapp.Settings
-	auth                *libauth.Auth
-	repo                *data.TipherethRepo
-	supv                *supervisor.Supervisor
-	id                  *libidgenerator.IDGenerator
-	search              libsearch.Search
-	pullAccount         *libmq.Topic[model.PullAccountInfo]
-	userCountCache      *libcache.Key[model.UserCount]
-	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance]
+	app            *libapp.Settings
+	auth           *libauth.Auth
+	repo           *data.TipherethRepo
+	supv           *data.SupervisorRepo
+	id             *libidgenerator.IDGenerator
+	search         libsearch.Search
+	pullAccount    *libmq.Topic[model.PullAccountInfo]
+	userCountCache *libcache.Key[model.UserCount]
 }
 
 func NewTiphereth(
 	app *libapp.Settings,
 	repo *data.TipherethRepo,
 	auth *libauth.Auth,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	pullAccount *libmq.Topic[model.PullAccountInfo],
-	cron *libcron.Cron,
 	userCountCache *libcache.Key[model.UserCount],
-	porterInstanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
 ) (*Tiphereth, error) {
 	t := &Tiphereth{
-		app:                 app,
-		auth:                auth,
-		repo:                repo,
-		supv:                supv,
-		id:                  id,
-		search:              search,
-		pullAccount:         pullAccount,
-		userCountCache:      userCountCache,
-		porterInstanceCache: porterInstanceCache,
-	}
-	err := cron.Duration(
-		"TipherethUpdatePorter",
-		supv.GetHeartbeatInterval(),
-		t.updatePorters, context.Background(),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("failed to register cron: %w", err)
+		app:            app,
+		auth:           auth,
+		repo:           repo,
+		supv:           supv,
+		id:             id,
+		search:         search,
+		pullAccount:    pullAccount,
+		userCountCache: userCountCache,
 	}
 	return t, nil
 }
@@ -137,40 +118,6 @@ func NewUserCountCache(
 				return nil, err
 			}
 			return &model.UserCount{Count: res}, nil
-		},
-		libcache.WithExpiration(libtime.SevenDays),
-	)
-}
-
-func NewPorterInstanceCache(
-	t *data.TipherethRepo,
-	store libcache.Store,
-) *libcache.Map[string, modelsupervisor.PorterInstance] {
-	return libcache.NewMap[string, modelsupervisor.PorterInstance](
-		store,
-		"PorterInstanceCache",
-		func(s string) string {
-			return s
-		},
-		func(ctx context.Context, s string) (*modelsupervisor.PorterInstance, error) {
-			return t.FetchPorterByAddress(ctx, s)
-		},
-		libcache.WithExpiration(libtime.SevenDays),
-	)
-}
-
-func NewPorterContextCache(
-	t *data.TipherethRepo,
-	store libcache.Store,
-) *libcache.Map[model.InternalID, modelsupervisor.PorterContext] {
-	return libcache.NewMap[model.InternalID, modelsupervisor.PorterContext](
-		store,
-		"PorterContextCache",
-		func(k model.InternalID) string {
-			return strconv.FormatInt(int64(k), 10)
-		},
-		func(ctx context.Context, k model.InternalID) (*modelsupervisor.PorterContext, error) {
-			return t.FetchPorterContext(ctx, k)
 		},
 		libcache.WithExpiration(libtime.SevenDays),
 	)

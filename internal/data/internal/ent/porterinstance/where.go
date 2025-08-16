@@ -105,6 +105,11 @@ func ContextJSONSchema(v string) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldContextJSONSchema, v))
 }
 
+// ConnectionStatusMessage applies equality check predicate on the "connection_status_message" field. It's identical to ConnectionStatusMessageEQ.
+func ConnectionStatusMessage(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldConnectionStatusMessage, v))
+}
+
 // UpdatedAt applies equality check predicate on the "updated_at" field. It's identical to UpdatedAtEQ.
 func UpdatedAt(v time.Time) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldEQ(FieldUpdatedAt, v))
@@ -783,6 +788,91 @@ func StatusIn(vs ...Status) predicate.PorterInstance {
 // StatusNotIn applies the NotIn predicate on the "status" field.
 func StatusNotIn(vs ...Status) predicate.PorterInstance {
 	return predicate.PorterInstance(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// ConnectionStatusEQ applies the EQ predicate on the "connection_status" field.
+func ConnectionStatusEQ(v ConnectionStatus) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldConnectionStatus, v))
+}
+
+// ConnectionStatusNEQ applies the NEQ predicate on the "connection_status" field.
+func ConnectionStatusNEQ(v ConnectionStatus) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldConnectionStatus, v))
+}
+
+// ConnectionStatusIn applies the In predicate on the "connection_status" field.
+func ConnectionStatusIn(vs ...ConnectionStatus) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldConnectionStatus, vs...))
+}
+
+// ConnectionStatusNotIn applies the NotIn predicate on the "connection_status" field.
+func ConnectionStatusNotIn(vs ...ConnectionStatus) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldConnectionStatus, vs...))
+}
+
+// ConnectionStatusMessageEQ applies the EQ predicate on the "connection_status_message" field.
+func ConnectionStatusMessageEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEQ(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageNEQ applies the NEQ predicate on the "connection_status_message" field.
+func ConnectionStatusMessageNEQ(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNEQ(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageIn applies the In predicate on the "connection_status_message" field.
+func ConnectionStatusMessageIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldIn(FieldConnectionStatusMessage, vs...))
+}
+
+// ConnectionStatusMessageNotIn applies the NotIn predicate on the "connection_status_message" field.
+func ConnectionStatusMessageNotIn(vs ...string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldNotIn(FieldConnectionStatusMessage, vs...))
+}
+
+// ConnectionStatusMessageGT applies the GT predicate on the "connection_status_message" field.
+func ConnectionStatusMessageGT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGT(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageGTE applies the GTE predicate on the "connection_status_message" field.
+func ConnectionStatusMessageGTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldGTE(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageLT applies the LT predicate on the "connection_status_message" field.
+func ConnectionStatusMessageLT(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLT(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageLTE applies the LTE predicate on the "connection_status_message" field.
+func ConnectionStatusMessageLTE(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldLTE(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageContains applies the Contains predicate on the "connection_status_message" field.
+func ConnectionStatusMessageContains(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContains(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageHasPrefix applies the HasPrefix predicate on the "connection_status_message" field.
+func ConnectionStatusMessageHasPrefix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasPrefix(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageHasSuffix applies the HasSuffix predicate on the "connection_status_message" field.
+func ConnectionStatusMessageHasSuffix(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldHasSuffix(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageEqualFold applies the EqualFold predicate on the "connection_status_message" field.
+func ConnectionStatusMessageEqualFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldEqualFold(FieldConnectionStatusMessage, v))
+}
+
+// ConnectionStatusMessageContainsFold applies the ContainsFold predicate on the "connection_status_message" field.
+func ConnectionStatusMessageContainsFold(v string) predicate.PorterInstance {
+	return predicate.PorterInstance(sql.FieldContainsFold(FieldConnectionStatusMessage, v))
 }
 
 // UpdatedAtEQ applies the EQ predicate on the "updated_at" field.

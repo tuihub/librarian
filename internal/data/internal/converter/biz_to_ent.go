@@ -62,10 +62,30 @@ type toEntConverter interface { //nolint:unused // used by generator
 	ToEntPorterInstanceStatusList([]model.UserStatus) []porterinstance.Status
 
 	// goverter:enum:unknown @ignore
+	// goverter:enum:map PorterConnectionStatusUnspecified ConnectionStatusUnspecified
+	// goverter:enum:map PorterConnectionStatusQueueing ConnectionStatusQueueing
+	// goverter:enum:map PorterConnectionStatusConnected ConnectionStatusConnected
+	// goverter:enum:map PorterConnectionStatusDisconnected ConnectionStatusDisconnected
+	// goverter:enum:map PorterConnectionStatusActive ConnectionStatusActive
+	// goverter:enum:map PorterConnectionStatusActivationFailed ConnectionStatusActivationFailed
+	// goverter:enum:map PorterConnectionStatusDowngraded ConnectionStatusDowngraded
+	ToEntPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) porterinstance.ConnectionStatus
+	ToEntPorterConnectionStatusList([]modelsupervisor.PorterConnectionStatus) []porterinstance.ConnectionStatus
+
+	// goverter:enum:unknown @ignore
 	// goverter:enum:map PorterContextStatusUnspecified @ignore
 	// goverter:enum:map PorterContextStatusActive StatusActive
 	// goverter:enum:map PorterContextStatusDisabled StatusDisabled
 	ToEntPorterContextStatus(modelsupervisor.PorterContextStatus) portercontext.Status
+
+	// goverter:enum:unknown @ignore
+	// goverter:enum:map PorterContextHandleStatusUnspecified HandleStatusUnspecified
+	// goverter:enum:map PorterContextHandleStatusActive HandleStatusActive
+	// goverter:enum:map PorterContextHandleStatusDowngraded HandleStatusDowngraded
+	// goverter:enum:map PorterContextHandleStatusQueueing HandleStatusQueueing
+	// goverter:enum:map PorterContextHandleStatusBlocked HandleStatusBlocked
+	ToEntPorterContextHandleStatus(modelsupervisor.PorterContextHandleStatus) portercontext.HandleStatus
+	ToEntPorterContextHandleStatusList([]modelsupervisor.PorterContextHandleStatus) []portercontext.HandleStatus
 
 	// goverter:enum:unknown @ignore
 	// goverter:enum:map SentinelSessionStatusUnspecified @ignore

@@ -520,9 +520,33 @@ func ToBizPorter(source *ent.PorterInstance) *modelsupervisor.PorterInstance {
 		modelsupervisorPorterInstance.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPModelsupervisorPorterFeatureSummary((*source).FeatureSummary)
 		modelsupervisorPorterInstance.Status = ToBizPorterStatus((*source).Status)
 		modelsupervisorPorterInstance.ContextJSONSchema = (*source).ContextJSONSchema
+		modelsupervisorPorterInstance.ConnectionStatus = ToBizPorterConnectionStatus((*source).ConnectionStatus)
+		modelsupervisorPorterInstance.ConnectionStatusMessage = (*source).ConnectionStatusMessage
 		pModelsupervisorPorterInstance = &modelsupervisorPorterInstance
 	}
 	return pModelsupervisorPorterInstance
+}
+func ToBizPorterConnectionStatus(source porterinstance.ConnectionStatus) modelsupervisor.PorterConnectionStatus {
+	var modelsupervisorPorterConnectionStatus modelsupervisor.PorterConnectionStatus
+	switch source {
+	case porterinstance.ConnectionStatusActivationFailed:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
+	case porterinstance.ConnectionStatusActive:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusActive
+	case porterinstance.ConnectionStatusConnected:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusConnected
+	case porterinstance.ConnectionStatusDisconnected:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
+	case porterinstance.ConnectionStatusDowngraded:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
+	case porterinstance.ConnectionStatusQueueing:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusQueueing
+	case porterinstance.ConnectionStatusUnspecified:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusUnspecified
+	default:
+		modelsupervisorPorterConnectionStatus = modelsupervisor.PorterConnectionStatusUnspecified
+	}
+	return modelsupervisorPorterConnectionStatus
 }
 func ToBizPorterContext(source *ent.PorterContext) *modelsupervisor.PorterContext {
 	var pModelsupervisorPorterContext *modelsupervisor.PorterContext
@@ -535,9 +559,29 @@ func ToBizPorterContext(source *ent.PorterContext) *modelsupervisor.PorterContex
 		modelsupervisorPorterContext.Name = (*source).Name
 		modelsupervisorPorterContext.Description = (*source).Description
 		modelsupervisorPorterContext.Status = ToBizPorterContextStatus((*source).Status)
+		modelsupervisorPorterContext.HandleStatus = ToBizPorterContextHandleStatus((*source).HandleStatus)
+		modelsupervisorPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
 		pModelsupervisorPorterContext = &modelsupervisorPorterContext
 	}
 	return pModelsupervisorPorterContext
+}
+func ToBizPorterContextHandleStatus(source portercontext.HandleStatus) modelsupervisor.PorterContextHandleStatus {
+	var modelsupervisorPorterContextHandleStatus modelsupervisor.PorterContextHandleStatus
+	switch source {
+	case portercontext.HandleStatusActive:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusActive
+	case portercontext.HandleStatusBlocked:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusBlocked
+	case portercontext.HandleStatusDowngraded:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusDowngraded
+	case portercontext.HandleStatusQueueing:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
+	case portercontext.HandleStatusUnspecified:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
+	default:
+		modelsupervisorPorterContextHandleStatus = modelsupervisor.PorterContextHandleStatusUnspecified
+	}
+	return modelsupervisorPorterContextHandleStatus
 }
 func ToBizPorterContextList(source []*ent.PorterContext) []*modelsupervisor.PorterContext {
 	var pModelsupervisorPorterContextList []*modelsupervisor.PorterContext
@@ -1132,6 +1176,64 @@ func ToEntNotifyTargetStatusList(source []modelnetzach.NotifyTargetStatus) []not
 		}
 	}
 	return notifytargetStatusList
+}
+func ToEntPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) porterinstance.ConnectionStatus {
+	var porterinstanceConnectionStatus porterinstance.ConnectionStatus
+	switch source {
+	case modelsupervisor.PorterConnectionStatusActivationFailed:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusActivationFailed
+	case modelsupervisor.PorterConnectionStatusActive:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusActive
+	case modelsupervisor.PorterConnectionStatusConnected:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusConnected
+	case modelsupervisor.PorterConnectionStatusDisconnected:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusDisconnected
+	case modelsupervisor.PorterConnectionStatusDowngraded:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusDowngraded
+	case modelsupervisor.PorterConnectionStatusQueueing:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusQueueing
+	case modelsupervisor.PorterConnectionStatusUnspecified:
+		porterinstanceConnectionStatus = porterinstance.ConnectionStatusUnspecified
+	default: // ignored
+	}
+	return porterinstanceConnectionStatus
+}
+func ToEntPorterConnectionStatusList(source []modelsupervisor.PorterConnectionStatus) []porterinstance.ConnectionStatus {
+	var porterinstanceConnectionStatusList []porterinstance.ConnectionStatus
+	if source != nil {
+		porterinstanceConnectionStatusList = make([]porterinstance.ConnectionStatus, len(source))
+		for i := 0; i < len(source); i++ {
+			porterinstanceConnectionStatusList[i] = ToEntPorterConnectionStatus(source[i])
+		}
+	}
+	return porterinstanceConnectionStatusList
+}
+func ToEntPorterContextHandleStatus(source modelsupervisor.PorterContextHandleStatus) portercontext.HandleStatus {
+	var portercontextHandleStatus portercontext.HandleStatus
+	switch source {
+	case modelsupervisor.PorterContextHandleStatusActive:
+		portercontextHandleStatus = portercontext.HandleStatusActive
+	case modelsupervisor.PorterContextHandleStatusBlocked:
+		portercontextHandleStatus = portercontext.HandleStatusBlocked
+	case modelsupervisor.PorterContextHandleStatusDowngraded:
+		portercontextHandleStatus = portercontext.HandleStatusDowngraded
+	case modelsupervisor.PorterContextHandleStatusQueueing:
+		portercontextHandleStatus = portercontext.HandleStatusQueueing
+	case modelsupervisor.PorterContextHandleStatusUnspecified:
+		portercontextHandleStatus = portercontext.HandleStatusUnspecified
+	default: // ignored
+	}
+	return portercontextHandleStatus
+}
+func ToEntPorterContextHandleStatusList(source []modelsupervisor.PorterContextHandleStatus) []portercontext.HandleStatus {
+	var portercontextHandleStatusList []portercontext.HandleStatus
+	if source != nil {
+		portercontextHandleStatusList = make([]portercontext.HandleStatus, len(source))
+		for i := 0; i < len(source); i++ {
+			portercontextHandleStatusList[i] = ToEntPorterContextHandleStatus(source[i])
+		}
+	}
+	return portercontextHandleStatusList
 }
 func ToEntPorterContextStatus(source modelsupervisor.PorterContextStatus) portercontext.Status {
 	var portercontextStatus portercontext.Status

@@ -14,7 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1"
 
 	"github.com/go-kratos/kratos/v2/errors"
@@ -28,7 +27,7 @@ var ProviderSet = wire.NewSet(
 
 type Netzach struct {
 	repo              *data.NetzachRepo
-	supv              *supervisor.Supervisor
+	supv              *data.SupervisorRepo
 	id                *libidgenerator.IDGenerator
 	search            libsearch.Search
 	notifySourceCache *libcache.Map[model.InternalID, modelkether.FeedToNotifyFlowValue]
@@ -38,7 +37,7 @@ type Netzach struct {
 
 func NewNetzach(
 	repo *data.NetzachRepo,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,
 	mq *libmq.MQ,

@@ -27,6 +27,10 @@ const (
 	FieldDescription = "description"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldHandleStatus holds the string denoting the handle_status field in the database.
+	FieldHandleStatus = "handle_status"
+	// FieldHandleStatusMessage holds the string denoting the handle_status_message field in the database.
+	FieldHandleStatusMessage = "handle_status_message"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -53,6 +57,8 @@ var Columns = []string{
 	FieldName,
 	FieldDescription,
 	FieldStatus,
+	FieldHandleStatus,
+	FieldHandleStatusMessage,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -110,6 +116,32 @@ func StatusValidator(s Status) error {
 	}
 }
 
+// HandleStatus defines the type for the "handle_status" enum field.
+type HandleStatus string
+
+// HandleStatus values.
+const (
+	HandleStatusUnspecified HandleStatus = "unspecified"
+	HandleStatusActive      HandleStatus = "active"
+	HandleStatusDowngraded  HandleStatus = "downgraded"
+	HandleStatusQueueing    HandleStatus = "queueing"
+	HandleStatusBlocked     HandleStatus = "blocked"
+)
+
+func (hs HandleStatus) String() string {
+	return string(hs)
+}
+
+// HandleStatusValidator is a validator for the "handle_status" field enum values. It is called by the builders before save.
+func HandleStatusValidator(hs HandleStatus) error {
+	switch hs {
+	case HandleStatusUnspecified, HandleStatusActive, HandleStatusDowngraded, HandleStatusQueueing, HandleStatusBlocked:
+		return nil
+	default:
+		return fmt.Errorf("portercontext: invalid enum value for handle_status field: %q", hs)
+	}
+}
+
 // OrderOption defines the ordering options for the PorterContext queries.
 type OrderOption func(*sql.Selector)
 
@@ -146,6 +178,16 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByHandleStatus orders the results by the handle_status field.
+func ByHandleStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHandleStatus, opts...).ToFunc()
+}
+
+// ByHandleStatusMessage orders the results by the handle_status_message field.
+func ByHandleStatusMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHandleStatusMessage, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

@@ -13,11 +13,13 @@ import (
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/google/uuid"
 )
 
 type Settings struct {
-	Name string
-	env  config.Config
+	Name         string
+	InstanceUUID uuid.UUID
+	env          config.Config
 	InherentSettings
 	Flags
 	Version           string
@@ -61,6 +63,7 @@ func NewAppSettings(id, name, version, protoVersion, date, flagConfig, flagData 
 	} else {
 		as = Settings{
 			Name:              name,
+			InstanceUUID:      uuid.New(),
 			env:               e,
 			InherentSettings:  getInherentSettings(),
 			Flags:             flags,
