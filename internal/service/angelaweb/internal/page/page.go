@@ -12,9 +12,7 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelangela"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
-	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/service/angelaweb/locales"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/gofiber/contrib/fiberi18n/v2"
@@ -26,7 +24,6 @@ type Builder struct {
 	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
 	g              *bizgebura.Gebura
-	s              *supervisor.Supervisor
 	configDigests  []*conf.ConfigDigest
 	userCountCache *libcache.Key[model.UserCount]
 }
@@ -35,7 +32,6 @@ func NewBuilder(
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
-	s *supervisor.Supervisor,
 	configDigests []*conf.ConfigDigest,
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
@@ -43,7 +39,6 @@ func NewBuilder(
 		a:              a,
 		t:              t,
 		g:              g,
-		s:              s,
 		configDigests:  configDigests,
 		userCountCache: userCountCache,
 	}
@@ -172,18 +167,8 @@ func (b *Builder) PorterList(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).SendString(fiberi18n.MustLocalize(c, "ErrorFetchingPorters"))
 	}
-	res := make([]*modelsupervisor.PorterInstanceController, len(porters))
-	for i := range res {
-		res[i] = b.s.GetInstanceController(c.UserContext(), porters[i].Address)
-		if res[i] == nil {
-			res[i] = new(modelsupervisor.PorterInstanceController)
-			res[i].ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
-		}
-		res[i].PorterInstance = *porters[i]
-	}
-
 	return c.Render("porter", addCommonData(c, fiber.Map{
-		"Porters":    res,
+		"Porters":    porters,
 		"Pagination": parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }

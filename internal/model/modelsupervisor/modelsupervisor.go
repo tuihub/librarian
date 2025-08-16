@@ -1,36 +1,29 @@
 package modelsupervisor
 
 import (
-	"time"
-
 	"github.com/tuihub/librarian/internal/lib/libtype"
 	"github.com/tuihub/librarian/internal/model"
 )
 
 type PorterInstanceController struct {
 	PorterInstance
-	ConnectionStatus        PorterConnectionStatus
-	ConnectionStatusMessage string
-	LastHeartbeat           time.Time
-	LastEnabledContext      []model.InternalID
 }
 
 type PorterContextController struct {
 	PorterContext
-	HandleStatus        PorterContextHandleStatus
-	HandleStatusMessage string
-	HandlerAddress      string
 }
 
 type PorterInstance struct {
-	ID                model.InternalID
-	BinarySummary     *PorterBinarySummary
-	GlobalName        string
-	Address           string
-	Region            string
-	FeatureSummary    *PorterFeatureSummary
-	Status            model.UserStatus
-	ContextJSONSchema string
+	ID                      model.InternalID
+	BinarySummary           *PorterBinarySummary
+	GlobalName              string
+	Address                 string
+	Region                  string
+	FeatureSummary          *PorterFeatureSummary
+	Status                  model.UserStatus
+	ContextJSONSchema       string
+	ConnectionStatus        PorterConnectionStatus
+	ConnectionStatusMessage string
 }
 
 type PorterBinarySummary struct {
@@ -86,6 +79,7 @@ type PorterConnectionStatus int
 
 const (
 	PorterConnectionStatusUnspecified PorterConnectionStatus = iota
+	PorterConnectionStatusQueueing
 	PorterConnectionStatusConnected
 	PorterConnectionStatusDisconnected
 	PorterConnectionStatusActive
@@ -94,13 +88,15 @@ const (
 )
 
 type PorterContext struct {
-	ID          model.InternalID
-	GlobalName  string
-	Region      string
-	ContextJSON string
-	Name        string
-	Description string
-	Status      PorterContextStatus
+	ID                  model.InternalID
+	GlobalName          string
+	Region              string
+	ContextJSON         string
+	Name                string
+	Description         string
+	Status              PorterContextStatus
+	HandleStatus        PorterContextHandleStatus
+	HandleStatusMessage string
 }
 
 type PorterContextStatus int

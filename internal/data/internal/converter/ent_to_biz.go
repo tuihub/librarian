@@ -75,6 +75,15 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusActive UserStatusActive
 	// goverter:enum:map StatusBlocked UserStatusBlocked
 	ToBizPorterStatus(porterinstance.Status) model.UserStatus
+	// goverter:enum:unknown PorterConnectionStatusUnspecified
+	// goverter:enum:map ConnectionStatusUnspecified PorterConnectionStatusUnspecified
+	// goverter:enum:map ConnectionStatusQueueing PorterConnectionStatusQueueing
+	// goverter:enum:map ConnectionStatusConnected PorterConnectionStatusConnected
+	// goverter:enum:map ConnectionStatusDisconnected PorterConnectionStatusDisconnected
+	// goverter:enum:map ConnectionStatusActive PorterConnectionStatusActive
+	// goverter:enum:map ConnectionStatusActivationFailed PorterConnectionStatusActivationFailed
+	// goverter:enum:map ConnectionStatusDowngraded PorterConnectionStatusDowngraded
+	ToBizPorterConnectionStatus(porterinstance.ConnectionStatus) modelsupervisor.PorterConnectionStatus
 
 	ToBizPorterContext(*ent.PorterContext) *modelsupervisor.PorterContext
 	ToBizPorterContextList([]*ent.PorterContext) []*modelsupervisor.PorterContext
@@ -82,6 +91,13 @@ type toBizConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map StatusActive PorterContextStatusActive
 	// goverter:enum:map StatusDisabled PorterContextStatusDisabled
 	ToBizPorterContextStatus(portercontext.Status) modelsupervisor.PorterContextStatus
+	// goverter:enum:unknown PorterContextHandleStatusUnspecified
+	// goverter:enum:map HandleStatusUnspecified PorterContextHandleStatusUnspecified
+	// goverter:enum:map HandleStatusActive PorterContextHandleStatusActive
+	// goverter:enum:map HandleStatusDowngraded PorterContextHandleStatusDowngraded
+	// goverter:enum:map HandleStatusQueueing PorterContextHandleStatusQueueing
+	// goverter:enum:map HandleStatusBlocked PorterContextHandleStatusBlocked
+	ToBizPorterContextHandleStatus(portercontext.HandleStatus) modelsupervisor.PorterContextHandleStatus
 
 	// goverter:ignore Libraries
 	ToBizSentinel(*ent.Sentinel) *modelgebura.Sentinel

@@ -60,6 +60,18 @@ func (pcc *PorterContextCreate) SetStatus(po portercontext.Status) *PorterContex
 	return pcc
 }
 
+// SetHandleStatus sets the "handle_status" field.
+func (pcc *PorterContextCreate) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextCreate {
+	pcc.mutation.SetHandleStatus(ps)
+	return pcc
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (pcc *PorterContextCreate) SetHandleStatusMessage(s string) *PorterContextCreate {
+	pcc.mutation.SetHandleStatusMessage(s)
+	return pcc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (pcc *PorterContextCreate) SetUpdatedAt(t time.Time) *PorterContextCreate {
 	pcc.mutation.SetUpdatedAt(t)
@@ -175,6 +187,17 @@ func (pcc *PorterContextCreate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
+	if _, ok := pcc.mutation.HandleStatus(); !ok {
+		return &ValidationError{Name: "handle_status", err: errors.New(`ent: missing required field "PorterContext.handle_status"`)}
+	}
+	if v, ok := pcc.mutation.HandleStatus(); ok {
+		if err := portercontext.HandleStatusValidator(v); err != nil {
+			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
+		}
+	}
+	if _, ok := pcc.mutation.HandleStatusMessage(); !ok {
+		return &ValidationError{Name: "handle_status_message", err: errors.New(`ent: missing required field "PorterContext.handle_status_message"`)}
+	}
 	if _, ok := pcc.mutation.UpdatedAt(); !ok {
 		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "PorterContext.updated_at"`)}
 	}
@@ -240,6 +263,14 @@ func (pcc *PorterContextCreate) createSpec() (*PorterContext, *sqlgraph.CreateSp
 	if value, ok := pcc.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
 		_node.Status = value
+	}
+	if value, ok := pcc.mutation.HandleStatus(); ok {
+		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
+		_node.HandleStatus = value
+	}
+	if value, ok := pcc.mutation.HandleStatusMessage(); ok {
+		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
+		_node.HandleStatusMessage = value
 	}
 	if value, ok := pcc.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
@@ -387,6 +418,30 @@ func (u *PorterContextUpsert) SetStatus(v portercontext.Status) *PorterContextUp
 // UpdateStatus sets the "status" field to the value that was provided on create.
 func (u *PorterContextUpsert) UpdateStatus() *PorterContextUpsert {
 	u.SetExcluded(portercontext.FieldStatus)
+	return u
+}
+
+// SetHandleStatus sets the "handle_status" field.
+func (u *PorterContextUpsert) SetHandleStatus(v portercontext.HandleStatus) *PorterContextUpsert {
+	u.Set(portercontext.FieldHandleStatus, v)
+	return u
+}
+
+// UpdateHandleStatus sets the "handle_status" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateHandleStatus() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldHandleStatus)
+	return u
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (u *PorterContextUpsert) SetHandleStatusMessage(v string) *PorterContextUpsert {
+	u.Set(portercontext.FieldHandleStatusMessage, v)
+	return u
+}
+
+// UpdateHandleStatusMessage sets the "handle_status_message" field to the value that was provided on create.
+func (u *PorterContextUpsert) UpdateHandleStatusMessage() *PorterContextUpsert {
+	u.SetExcluded(portercontext.FieldHandleStatusMessage)
 	return u
 }
 
@@ -543,6 +598,34 @@ func (u *PorterContextUpsertOne) SetStatus(v portercontext.Status) *PorterContex
 func (u *PorterContextUpsertOne) UpdateStatus() *PorterContextUpsertOne {
 	return u.Update(func(s *PorterContextUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetHandleStatus sets the "handle_status" field.
+func (u *PorterContextUpsertOne) SetHandleStatus(v portercontext.HandleStatus) *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetHandleStatus(v)
+	})
+}
+
+// UpdateHandleStatus sets the "handle_status" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateHandleStatus() *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateHandleStatus()
+	})
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (u *PorterContextUpsertOne) SetHandleStatusMessage(v string) *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetHandleStatusMessage(v)
+	})
+}
+
+// UpdateHandleStatusMessage sets the "handle_status_message" field to the value that was provided on create.
+func (u *PorterContextUpsertOne) UpdateHandleStatusMessage() *PorterContextUpsertOne {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateHandleStatusMessage()
 	})
 }
 
@@ -869,6 +952,34 @@ func (u *PorterContextUpsertBulk) SetStatus(v portercontext.Status) *PorterConte
 func (u *PorterContextUpsertBulk) UpdateStatus() *PorterContextUpsertBulk {
 	return u.Update(func(s *PorterContextUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetHandleStatus sets the "handle_status" field.
+func (u *PorterContextUpsertBulk) SetHandleStatus(v portercontext.HandleStatus) *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetHandleStatus(v)
+	})
+}
+
+// UpdateHandleStatus sets the "handle_status" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateHandleStatus() *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateHandleStatus()
+	})
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (u *PorterContextUpsertBulk) SetHandleStatusMessage(v string) *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.SetHandleStatusMessage(v)
+	})
+}
+
+// UpdateHandleStatusMessage sets the "handle_status_message" field to the value that was provided on create.
+func (u *PorterContextUpsertBulk) UpdateHandleStatusMessage() *PorterContextUpsertBulk {
+	return u.Update(func(s *PorterContextUpsert) {
+		s.UpdateHandleStatusMessage()
 	})
 }
 

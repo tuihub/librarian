@@ -114,6 +114,34 @@ func (pcu *PorterContextUpdate) SetNillableStatus(po *portercontext.Status) *Por
 	return pcu
 }
 
+// SetHandleStatus sets the "handle_status" field.
+func (pcu *PorterContextUpdate) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextUpdate {
+	pcu.mutation.SetHandleStatus(ps)
+	return pcu
+}
+
+// SetNillableHandleStatus sets the "handle_status" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableHandleStatus(ps *portercontext.HandleStatus) *PorterContextUpdate {
+	if ps != nil {
+		pcu.SetHandleStatus(*ps)
+	}
+	return pcu
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (pcu *PorterContextUpdate) SetHandleStatusMessage(s string) *PorterContextUpdate {
+	pcu.mutation.SetHandleStatusMessage(s)
+	return pcu
+}
+
+// SetNillableHandleStatusMessage sets the "handle_status_message" field if the given value is not nil.
+func (pcu *PorterContextUpdate) SetNillableHandleStatusMessage(s *string) *PorterContextUpdate {
+	if s != nil {
+		pcu.SetHandleStatusMessage(*s)
+	}
+	return pcu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (pcu *PorterContextUpdate) SetUpdatedAt(t time.Time) *PorterContextUpdate {
 	pcu.mutation.SetUpdatedAt(t)
@@ -199,6 +227,11 @@ func (pcu *PorterContextUpdate) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
+	if v, ok := pcu.mutation.HandleStatus(); ok {
+		if err := portercontext.HandleStatusValidator(v); err != nil {
+			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
+		}
+	}
 	if pcu.mutation.OwnerCleared() && len(pcu.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
@@ -234,6 +267,12 @@ func (pcu *PorterContextUpdate) sqlSave(ctx context.Context) (n int, err error) 
 	}
 	if value, ok := pcu.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := pcu.mutation.HandleStatus(); ok {
+		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
+	}
+	if value, ok := pcu.mutation.HandleStatusMessage(); ok {
+		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
 	}
 	if value, ok := pcu.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)
@@ -374,6 +413,34 @@ func (pcuo *PorterContextUpdateOne) SetNillableStatus(po *portercontext.Status) 
 	return pcuo
 }
 
+// SetHandleStatus sets the "handle_status" field.
+func (pcuo *PorterContextUpdateOne) SetHandleStatus(ps portercontext.HandleStatus) *PorterContextUpdateOne {
+	pcuo.mutation.SetHandleStatus(ps)
+	return pcuo
+}
+
+// SetNillableHandleStatus sets the "handle_status" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableHandleStatus(ps *portercontext.HandleStatus) *PorterContextUpdateOne {
+	if ps != nil {
+		pcuo.SetHandleStatus(*ps)
+	}
+	return pcuo
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (pcuo *PorterContextUpdateOne) SetHandleStatusMessage(s string) *PorterContextUpdateOne {
+	pcuo.mutation.SetHandleStatusMessage(s)
+	return pcuo
+}
+
+// SetNillableHandleStatusMessage sets the "handle_status_message" field if the given value is not nil.
+func (pcuo *PorterContextUpdateOne) SetNillableHandleStatusMessage(s *string) *PorterContextUpdateOne {
+	if s != nil {
+		pcuo.SetHandleStatusMessage(*s)
+	}
+	return pcuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (pcuo *PorterContextUpdateOne) SetUpdatedAt(t time.Time) *PorterContextUpdateOne {
 	pcuo.mutation.SetUpdatedAt(t)
@@ -472,6 +539,11 @@ func (pcuo *PorterContextUpdateOne) check() error {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.status": %w`, err)}
 		}
 	}
+	if v, ok := pcuo.mutation.HandleStatus(); ok {
+		if err := portercontext.HandleStatusValidator(v); err != nil {
+			return &ValidationError{Name: "handle_status", err: fmt.Errorf(`ent: validator failed for field "PorterContext.handle_status": %w`, err)}
+		}
+	}
 	if pcuo.mutation.OwnerCleared() && len(pcuo.mutation.OwnerIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "PorterContext.owner"`)
 	}
@@ -524,6 +596,12 @@ func (pcuo *PorterContextUpdateOne) sqlSave(ctx context.Context) (_node *PorterC
 	}
 	if value, ok := pcuo.mutation.Status(); ok {
 		_spec.SetField(portercontext.FieldStatus, field.TypeEnum, value)
+	}
+	if value, ok := pcuo.mutation.HandleStatus(); ok {
+		_spec.SetField(portercontext.FieldHandleStatus, field.TypeEnum, value)
+	}
+	if value, ok := pcuo.mutation.HandleStatusMessage(); ok {
+		_spec.SetField(portercontext.FieldHandleStatusMessage, field.TypeString, value)
 	}
 	if value, ok := pcuo.mutation.UpdatedAt(); ok {
 		_spec.SetField(portercontext.FieldUpdatedAt, field.TypeTime, value)

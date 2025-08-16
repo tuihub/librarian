@@ -38,6 +38,10 @@ const (
 	FieldContextJSONSchema = "context_json_schema"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldConnectionStatus holds the string denoting the connection_status field in the database.
+	FieldConnectionStatus = "connection_status"
+	// FieldConnectionStatusMessage holds the string denoting the connection_status_message field in the database.
+	FieldConnectionStatusMessage = "connection_status_message"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
@@ -61,6 +65,8 @@ var Columns = []string{
 	FieldFeatureSummary,
 	FieldContextJSONSchema,
 	FieldStatus,
+	FieldConnectionStatus,
+	FieldConnectionStatusMessage,
 	FieldUpdatedAt,
 	FieldCreatedAt,
 }
@@ -104,6 +110,34 @@ func StatusValidator(s Status) error {
 		return nil
 	default:
 		return fmt.Errorf("porterinstance: invalid enum value for status field: %q", s)
+	}
+}
+
+// ConnectionStatus defines the type for the "connection_status" enum field.
+type ConnectionStatus string
+
+// ConnectionStatus values.
+const (
+	ConnectionStatusUnspecified      ConnectionStatus = "unspecified"
+	ConnectionStatusQueueing         ConnectionStatus = "queueing"
+	ConnectionStatusConnected        ConnectionStatus = "connected"
+	ConnectionStatusDisconnected     ConnectionStatus = "disconnected"
+	ConnectionStatusActive           ConnectionStatus = "active"
+	ConnectionStatusActivationFailed ConnectionStatus = "activation_failed"
+	ConnectionStatusDowngraded       ConnectionStatus = "downgraded"
+)
+
+func (cs ConnectionStatus) String() string {
+	return string(cs)
+}
+
+// ConnectionStatusValidator is a validator for the "connection_status" field enum values. It is called by the builders before save.
+func ConnectionStatusValidator(cs ConnectionStatus) error {
+	switch cs {
+	case ConnectionStatusUnspecified, ConnectionStatusQueueing, ConnectionStatusConnected, ConnectionStatusDisconnected, ConnectionStatusActive, ConnectionStatusActivationFailed, ConnectionStatusDowngraded:
+		return nil
+	default:
+		return fmt.Errorf("porterinstance: invalid enum value for connection_status field: %q", cs)
 	}
 }
 
@@ -168,6 +202,16 @@ func ByContextJSONSchema(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByConnectionStatus orders the results by the connection_status field.
+func ByConnectionStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldConnectionStatus, opts...).ToFunc()
+}
+
+// ByConnectionStatusMessage orders the results by the connection_status_message field.
+func ByConnectionStatusMessage(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldConnectionStatusMessage, opts...).ToFunc()
 }
 
 // ByUpdatedAt orders the results by the updated_at field.

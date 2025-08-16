@@ -36,6 +36,7 @@ var ProviderSet = wire.NewSet(
 	NewChesedRepo,
 	NewKetherRepo,
 	NewBinahRepo,
+	NewSupervisorRepo,
 )
 
 type Data struct {
@@ -54,10 +55,13 @@ func NewData(c *conf.Database, app *libapp.Settings) (*Data, func(), error) {
 	case conf.DatabaseDriverMemory:
 		dialectName = dialect.SQLite
 		driverName = conf.DatabaseDriverSqlite
-		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1"
+		dataSourceName = "file:ent?mode=memory&cache=shared&_fk=1&_busy_timeout=30000&_timeout=30000"
 	case conf.DatabaseDriverSqlite:
 		dialectName = dialect.SQLite
-		dataSourceName = fmt.Sprintf("file:%s?cache=shared&_fk=1&_journal=WAL", path.Join(app.DataPath, "librarian.db"))
+		dataSourceName = fmt.Sprintf(
+			"file:%s?cache=shared&_fk=1&_journal=WAL&_busy_timeout=30000",
+			path.Join(app.DataPath, "librarian.db"),
+		)
 	case conf.DatabaseDriverPostgres:
 		dialectName = dialect.Postgres
 		driverName = "pgx"
@@ -135,4 +139,14 @@ func resolveWithIgnores(ignores []string) sql.ConflictOption {
 			u.SetExcluded(c)
 		}
 	})
+}
+
+func ErrorIsNotFound(err error) bool {
+	if err == nil {
+		return false
+	}
+	if ent.IsNotFound(err) {
+		return true
+	}
+	return false
 }

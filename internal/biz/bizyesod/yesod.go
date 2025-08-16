@@ -18,7 +18,6 @@ import (
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/google/wire"
 )
@@ -30,7 +29,7 @@ var ProviderSet = wire.NewSet(
 
 type Yesod struct {
 	repo               *data.YesodRepo
-	supv               *supervisor.Supervisor
+	supv               *data.SupervisorRepo
 	id                 *libidgenerator.IDGenerator
 	search             libsearch.Search
 	pullFeed           *libmq.Topic[modelyesod.PullFeed]
@@ -41,7 +40,7 @@ type Yesod struct {
 
 func NewYesod(
 	repo *data.YesodRepo,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 	cron *libcron.Cron,
 	id *libidgenerator.IDGenerator,
 	search libsearch.Search,

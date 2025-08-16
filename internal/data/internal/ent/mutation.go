@@ -20591,23 +20591,25 @@ func (m *NotifyTargetMutation) ResetEdge(name string) error {
 // PorterContextMutation represents an operation that mutates the PorterContext nodes in the graph.
 type PorterContextMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *model.InternalID
-	global_name   *string
-	region        *string
-	context_json  *string
-	name          *string
-	description   *string
-	status        *portercontext.Status
-	updated_at    *time.Time
-	created_at    *time.Time
-	clearedFields map[string]struct{}
-	owner         *model.InternalID
-	clearedowner  bool
-	done          bool
-	oldValue      func(context.Context) (*PorterContext, error)
-	predicates    []predicate.PorterContext
+	op                    Op
+	typ                   string
+	id                    *model.InternalID
+	global_name           *string
+	region                *string
+	context_json          *string
+	name                  *string
+	description           *string
+	status                *portercontext.Status
+	handle_status         *portercontext.HandleStatus
+	handle_status_message *string
+	updated_at            *time.Time
+	created_at            *time.Time
+	clearedFields         map[string]struct{}
+	owner                 *model.InternalID
+	clearedowner          bool
+	done                  bool
+	oldValue              func(context.Context) (*PorterContext, error)
+	predicates            []predicate.PorterContext
 }
 
 var _ ent.Mutation = (*PorterContextMutation)(nil)
@@ -20930,6 +20932,78 @@ func (m *PorterContextMutation) ResetStatus() {
 	m.status = nil
 }
 
+// SetHandleStatus sets the "handle_status" field.
+func (m *PorterContextMutation) SetHandleStatus(ps portercontext.HandleStatus) {
+	m.handle_status = &ps
+}
+
+// HandleStatus returns the value of the "handle_status" field in the mutation.
+func (m *PorterContextMutation) HandleStatus() (r portercontext.HandleStatus, exists bool) {
+	v := m.handle_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHandleStatus returns the old "handle_status" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldHandleStatus(ctx context.Context) (v portercontext.HandleStatus, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHandleStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHandleStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHandleStatus: %w", err)
+	}
+	return oldValue.HandleStatus, nil
+}
+
+// ResetHandleStatus resets all changes to the "handle_status" field.
+func (m *PorterContextMutation) ResetHandleStatus() {
+	m.handle_status = nil
+}
+
+// SetHandleStatusMessage sets the "handle_status_message" field.
+func (m *PorterContextMutation) SetHandleStatusMessage(s string) {
+	m.handle_status_message = &s
+}
+
+// HandleStatusMessage returns the value of the "handle_status_message" field in the mutation.
+func (m *PorterContextMutation) HandleStatusMessage() (r string, exists bool) {
+	v := m.handle_status_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldHandleStatusMessage returns the old "handle_status_message" field's value of the PorterContext entity.
+// If the PorterContext object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterContextMutation) OldHandleStatusMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldHandleStatusMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldHandleStatusMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldHandleStatusMessage: %w", err)
+	}
+	return oldValue.HandleStatusMessage, nil
+}
+
+// ResetHandleStatusMessage resets all changes to the "handle_status_message" field.
+func (m *PorterContextMutation) ResetHandleStatusMessage() {
+	m.handle_status_message = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *PorterContextMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -21075,7 +21149,7 @@ func (m *PorterContextMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PorterContextMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 10)
 	if m.global_name != nil {
 		fields = append(fields, portercontext.FieldGlobalName)
 	}
@@ -21093,6 +21167,12 @@ func (m *PorterContextMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, portercontext.FieldStatus)
+	}
+	if m.handle_status != nil {
+		fields = append(fields, portercontext.FieldHandleStatus)
+	}
+	if m.handle_status_message != nil {
+		fields = append(fields, portercontext.FieldHandleStatusMessage)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, portercontext.FieldUpdatedAt)
@@ -21120,6 +21200,10 @@ func (m *PorterContextMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case portercontext.FieldStatus:
 		return m.Status()
+	case portercontext.FieldHandleStatus:
+		return m.HandleStatus()
+	case portercontext.FieldHandleStatusMessage:
+		return m.HandleStatusMessage()
 	case portercontext.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case portercontext.FieldCreatedAt:
@@ -21145,6 +21229,10 @@ func (m *PorterContextMutation) OldField(ctx context.Context, name string) (ent.
 		return m.OldDescription(ctx)
 	case portercontext.FieldStatus:
 		return m.OldStatus(ctx)
+	case portercontext.FieldHandleStatus:
+		return m.OldHandleStatus(ctx)
+	case portercontext.FieldHandleStatusMessage:
+		return m.OldHandleStatusMessage(ctx)
 	case portercontext.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case portercontext.FieldCreatedAt:
@@ -21199,6 +21287,20 @@ func (m *PorterContextMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case portercontext.FieldHandleStatus:
+		v, ok := value.(portercontext.HandleStatus)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHandleStatus(v)
+		return nil
+	case portercontext.FieldHandleStatusMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetHandleStatusMessage(v)
 		return nil
 	case portercontext.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -21280,6 +21382,12 @@ func (m *PorterContextMutation) ResetField(name string) error {
 		return nil
 	case portercontext.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case portercontext.FieldHandleStatus:
+		m.ResetHandleStatus()
+		return nil
+	case portercontext.FieldHandleStatusMessage:
+		m.ResetHandleStatusMessage()
 		return nil
 	case portercontext.FieldUpdatedAt:
 		m.ResetUpdatedAt()
@@ -21368,27 +21476,29 @@ func (m *PorterContextMutation) ResetEdge(name string) error {
 // PorterInstanceMutation represents an operation that mutates the PorterInstance nodes in the graph.
 type PorterInstanceMutation struct {
 	config
-	op                  Op
-	typ                 string
-	id                  *model.InternalID
-	name                *string
-	version             *string
-	description         *string
-	source_code_address *string
-	build_version       *string
-	build_date          *string
-	global_name         *string
-	address             *string
-	region              *string
-	feature_summary     **modelsupervisor.PorterFeatureSummary
-	context_json_schema *string
-	status              *porterinstance.Status
-	updated_at          *time.Time
-	created_at          *time.Time
-	clearedFields       map[string]struct{}
-	done                bool
-	oldValue            func(context.Context) (*PorterInstance, error)
-	predicates          []predicate.PorterInstance
+	op                        Op
+	typ                       string
+	id                        *model.InternalID
+	name                      *string
+	version                   *string
+	description               *string
+	source_code_address       *string
+	build_version             *string
+	build_date                *string
+	global_name               *string
+	address                   *string
+	region                    *string
+	feature_summary           **modelsupervisor.PorterFeatureSummary
+	context_json_schema       *string
+	status                    *porterinstance.Status
+	connection_status         *porterinstance.ConnectionStatus
+	connection_status_message *string
+	updated_at                *time.Time
+	created_at                *time.Time
+	clearedFields             map[string]struct{}
+	done                      bool
+	oldValue                  func(context.Context) (*PorterInstance, error)
+	predicates                []predicate.PorterInstance
 }
 
 var _ ent.Mutation = (*PorterInstanceMutation)(nil)
@@ -21927,6 +22037,78 @@ func (m *PorterInstanceMutation) ResetStatus() {
 	m.status = nil
 }
 
+// SetConnectionStatus sets the "connection_status" field.
+func (m *PorterInstanceMutation) SetConnectionStatus(ps porterinstance.ConnectionStatus) {
+	m.connection_status = &ps
+}
+
+// ConnectionStatus returns the value of the "connection_status" field in the mutation.
+func (m *PorterInstanceMutation) ConnectionStatus() (r porterinstance.ConnectionStatus, exists bool) {
+	v := m.connection_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectionStatus returns the old "connection_status" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldConnectionStatus(ctx context.Context) (v porterinstance.ConnectionStatus, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectionStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectionStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectionStatus: %w", err)
+	}
+	return oldValue.ConnectionStatus, nil
+}
+
+// ResetConnectionStatus resets all changes to the "connection_status" field.
+func (m *PorterInstanceMutation) ResetConnectionStatus() {
+	m.connection_status = nil
+}
+
+// SetConnectionStatusMessage sets the "connection_status_message" field.
+func (m *PorterInstanceMutation) SetConnectionStatusMessage(s string) {
+	m.connection_status_message = &s
+}
+
+// ConnectionStatusMessage returns the value of the "connection_status_message" field in the mutation.
+func (m *PorterInstanceMutation) ConnectionStatusMessage() (r string, exists bool) {
+	v := m.connection_status_message
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldConnectionStatusMessage returns the old "connection_status_message" field's value of the PorterInstance entity.
+// If the PorterInstance object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PorterInstanceMutation) OldConnectionStatusMessage(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldConnectionStatusMessage is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldConnectionStatusMessage requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldConnectionStatusMessage: %w", err)
+	}
+	return oldValue.ConnectionStatusMessage, nil
+}
+
+// ResetConnectionStatusMessage resets all changes to the "connection_status_message" field.
+func (m *PorterInstanceMutation) ResetConnectionStatusMessage() {
+	m.connection_status_message = nil
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (m *PorterInstanceMutation) SetUpdatedAt(t time.Time) {
 	m.updated_at = &t
@@ -22033,7 +22215,7 @@ func (m *PorterInstanceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PorterInstanceMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 16)
 	if m.name != nil {
 		fields = append(fields, porterinstance.FieldName)
 	}
@@ -22069,6 +22251,12 @@ func (m *PorterInstanceMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, porterinstance.FieldStatus)
+	}
+	if m.connection_status != nil {
+		fields = append(fields, porterinstance.FieldConnectionStatus)
+	}
+	if m.connection_status_message != nil {
+		fields = append(fields, porterinstance.FieldConnectionStatusMessage)
 	}
 	if m.updated_at != nil {
 		fields = append(fields, porterinstance.FieldUpdatedAt)
@@ -22108,6 +22296,10 @@ func (m *PorterInstanceMutation) Field(name string) (ent.Value, bool) {
 		return m.ContextJSONSchema()
 	case porterinstance.FieldStatus:
 		return m.Status()
+	case porterinstance.FieldConnectionStatus:
+		return m.ConnectionStatus()
+	case porterinstance.FieldConnectionStatusMessage:
+		return m.ConnectionStatusMessage()
 	case porterinstance.FieldUpdatedAt:
 		return m.UpdatedAt()
 	case porterinstance.FieldCreatedAt:
@@ -22145,6 +22337,10 @@ func (m *PorterInstanceMutation) OldField(ctx context.Context, name string) (ent
 		return m.OldContextJSONSchema(ctx)
 	case porterinstance.FieldStatus:
 		return m.OldStatus(ctx)
+	case porterinstance.FieldConnectionStatus:
+		return m.OldConnectionStatus(ctx)
+	case porterinstance.FieldConnectionStatusMessage:
+		return m.OldConnectionStatusMessage(ctx)
 	case porterinstance.FieldUpdatedAt:
 		return m.OldUpdatedAt(ctx)
 	case porterinstance.FieldCreatedAt:
@@ -22241,6 +22437,20 @@ func (m *PorterInstanceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case porterinstance.FieldConnectionStatus:
+		v, ok := value.(porterinstance.ConnectionStatus)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectionStatus(v)
+		return nil
+	case porterinstance.FieldConnectionStatusMessage:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetConnectionStatusMessage(v)
 		return nil
 	case porterinstance.FieldUpdatedAt:
 		v, ok := value.(time.Time)
@@ -22340,6 +22550,12 @@ func (m *PorterInstanceMutation) ResetField(name string) error {
 		return nil
 	case porterinstance.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case porterinstance.FieldConnectionStatus:
+		m.ResetConnectionStatus()
+		return nil
+	case porterinstance.FieldConnectionStatusMessage:
+		m.ResetConnectionStatusMessage()
 		return nil
 	case porterinstance.FieldUpdatedAt:
 		m.ResetUpdatedAt()

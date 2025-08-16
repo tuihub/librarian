@@ -519,6 +519,8 @@ func ToBizPorterContext(source *sephirah.PorterContext) *modelsupervisor.PorterC
 		modelsupervisorPorterContext.Name = (*source).Name
 		modelsupervisorPorterContext.Description = (*source).Description
 		modelsupervisorPorterContext.Status = ToBizPorterContextStatus((*source).Status)
+		modelsupervisorPorterContext.HandleStatus = ToBizPorterContextHandleStatus((*source).HandleStatus)
+		modelsupervisorPorterContext.HandleStatusMessage = (*source).HandleStatusMessage
 		pModelsupervisorPorterContext = &modelsupervisorPorterContext
 	}
 	return pModelsupervisorPorterContext
@@ -1391,18 +1393,18 @@ func ToPBNotifyTargetStatus(source modelnetzach.NotifyTargetStatus) sephirah.Not
 	}
 	return v1NotifyTargetStatus
 }
-func ToPBPorter(source *modelsupervisor.PorterInstanceController) *sephirah.Porter {
+func ToPBPorter(source *modelsupervisor.PorterInstance) *sephirah.Porter {
 	var pV1Porter *sephirah.Porter
 	if source != nil {
 		var v1Porter sephirah.Porter
-		v1Porter.Id = ToPBInternalID((*source).PorterInstance.ID)
-		v1Porter.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).PorterInstance.BinarySummary)
-		v1Porter.GlobalName = (*source).PorterInstance.GlobalName
-		v1Porter.Region = (*source).PorterInstance.Region
-		v1Porter.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).PorterInstance.FeatureSummary)
-		v1Porter.Status = ToPBUserStatus((*source).PorterInstance.Status)
+		v1Porter.Id = ToPBInternalID((*source).ID)
+		v1Porter.BinarySummary = pModelsupervisorPorterBinarySummaryToPV1PorterBinarySummary((*source).BinarySummary)
+		v1Porter.GlobalName = (*source).GlobalName
+		v1Porter.Region = (*source).Region
+		v1Porter.FeatureSummary = pModelsupervisorPorterFeatureSummaryToPV1FeatureSummary((*source).FeatureSummary)
+		v1Porter.Status = ToPBUserStatus((*source).Status)
 		v1Porter.ConnectionStatus = ToPBPorterConnectionStatus((*source).ConnectionStatus)
-		pString := (*source).PorterInstance.ContextJSONSchema
+		pString := (*source).ContextJSONSchema
 		v1Porter.ContextJsonSchema = &pString
 		v1Porter.ConnectionStatusMessage = (*source).ConnectionStatusMessage
 		pV1Porter = &v1Porter
@@ -1422,6 +1424,8 @@ func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) s
 		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
 	case modelsupervisor.PorterConnectionStatusDowngraded:
 		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
+	case modelsupervisor.PorterConnectionStatusQueueing:
+		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	case modelsupervisor.PorterConnectionStatusUnspecified:
 		v1PorterConnectionStatus = sephirah.PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	default:
@@ -1429,17 +1433,17 @@ func ToPBPorterConnectionStatus(source modelsupervisor.PorterConnectionStatus) s
 	}
 	return v1PorterConnectionStatus
 }
-func ToPBPorterContext(source *modelsupervisor.PorterContextController) *sephirah.PorterContext {
+func ToPBPorterContext(source *modelsupervisor.PorterContext) *sephirah.PorterContext {
 	var pV1PorterContext *sephirah.PorterContext
 	if source != nil {
 		var v1PorterContext sephirah.PorterContext
-		v1PorterContext.Id = ToPBInternalID((*source).PorterContext.ID)
-		v1PorterContext.GlobalName = (*source).PorterContext.GlobalName
-		v1PorterContext.Region = (*source).PorterContext.Region
-		v1PorterContext.ContextJson = (*source).PorterContext.ContextJSON
-		v1PorterContext.Name = (*source).PorterContext.Name
-		v1PorterContext.Description = (*source).PorterContext.Description
-		v1PorterContext.Status = ToPBPorterContextStatus((*source).PorterContext.Status)
+		v1PorterContext.Id = ToPBInternalID((*source).ID)
+		v1PorterContext.GlobalName = (*source).GlobalName
+		v1PorterContext.Region = (*source).Region
+		v1PorterContext.ContextJson = (*source).ContextJSON
+		v1PorterContext.Name = (*source).Name
+		v1PorterContext.Description = (*source).Description
+		v1PorterContext.Status = ToPBPorterContextStatus((*source).Status)
 		v1PorterContext.HandleStatus = ToPBPorterContextHandleStatus((*source).HandleStatus)
 		v1PorterContext.HandleStatusMessage = (*source).HandleStatusMessage
 		pV1PorterContext = &v1PorterContext
@@ -1464,7 +1468,7 @@ func ToPBPorterContextHandleStatus(source modelsupervisor.PorterContextHandleSta
 	}
 	return v1PorterContextHandleStatus
 }
-func ToPBPorterContextList(source []*modelsupervisor.PorterContextController) []*sephirah.PorterContext {
+func ToPBPorterContextList(source []*modelsupervisor.PorterContext) []*sephirah.PorterContext {
 	var pV1PorterContextList []*sephirah.PorterContext
 	if source != nil {
 		pV1PorterContextList = make([]*sephirah.PorterContext, len(source))
@@ -1517,7 +1521,7 @@ func ToPBPorterDigestList(source []*modelsupervisor.PorterDigest) []*sephirah.Po
 	}
 	return pV1PorterDigestList
 }
-func ToPBPorterList(source []*modelsupervisor.PorterInstanceController) []*sephirah.Porter {
+func ToPBPorterList(source []*modelsupervisor.PorterInstance) []*sephirah.Porter {
 	var pV1PorterList []*sephirah.Porter
 	if source != nil {
 		pV1PorterList = make([]*sephirah.Porter, len(source))

@@ -78,11 +78,11 @@ type toPBConverter interface { //nolint:unused // used by generator
 	ToPBAccount(*model.Account) *sephirah.Account
 	ToPBAccountList([]*model.Account) []*sephirah.Account
 
-	// goverter:autoMap PorterInstance
-	ToPBPorter(*modelsupervisor.PorterInstanceController) *sephirah.Porter
-	ToPBPorterList([]*modelsupervisor.PorterInstanceController) []*sephirah.Porter
+	ToPBPorter(*modelsupervisor.PorterInstance) *sephirah.Porter
+	ToPBPorterList([]*modelsupervisor.PorterInstance) []*sephirah.Porter
 	// goverter:enum:unknown PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusUnspecified PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
+	// goverter:enum:map PorterConnectionStatusQueueing PorterConnectionStatus_PORTER_CONNECTION_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterConnectionStatusConnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_CONNECTED
 	// goverter:enum:map PorterConnectionStatusDisconnected PorterConnectionStatus_PORTER_CONNECTION_STATUS_DISCONNECTED
 	// goverter:enum:map PorterConnectionStatusActive PorterConnectionStatus_PORTER_CONNECTION_STATUS_ACTIVE
@@ -90,9 +90,8 @@ type toPBConverter interface { //nolint:unused // used by generator
 	// goverter:enum:map PorterConnectionStatusDowngraded PorterConnectionStatus_PORTER_CONNECTION_STATUS_DOWNGRADED
 	ToPBPorterConnectionStatus(modelsupervisor.PorterConnectionStatus) sephirah.PorterConnectionStatus
 
-	// goverter:autoMap PorterContext
-	ToPBPorterContext(*modelsupervisor.PorterContextController) *sephirah.PorterContext
-	ToPBPorterContextList([]*modelsupervisor.PorterContextController) []*sephirah.PorterContext
+	ToPBPorterContext(*modelsupervisor.PorterContext) *sephirah.PorterContext
+	ToPBPorterContextList([]*modelsupervisor.PorterContext) []*sephirah.PorterContext
 	// goverter:enum:unknown PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusUnspecified PorterContextStatus_PORTER_CONTEXT_STATUS_UNSPECIFIED
 	// goverter:enum:map PorterContextStatusActive PorterContextStatus_PORTER_CONTEXT_STATUS_ACTIVE

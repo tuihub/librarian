@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelkether"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
 	"github.com/google/wire"
@@ -37,7 +36,7 @@ type Kether struct {
 }
 type KetherBase struct {
 	repo   *data.KetherRepo
-	supv   *supervisor.Supervisor
+	supv   *data.SupervisorRepo
 	g      *data.GeburaRepo
 	porter porter.LibrarianPorterServiceClient
 	search libsearch.Search
@@ -46,7 +45,7 @@ type KetherBase struct {
 
 func NewKetherBase(
 	repo *data.KetherRepo,
-	supv *supervisor.Supervisor,
+	supv *data.SupervisorRepo,
 	g *data.GeburaRepo,
 	pClient porter.LibrarianPorterServiceClient,
 	search libsearch.Search,

@@ -7,10 +7,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/tuihub/librarian/internal/biz/bizsupervisor"
 	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libcron"
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/lib/libtime"
 	"github.com/tuihub/librarian/internal/lib/libtype"
@@ -18,375 +20,208 @@ import (
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelnetzach"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-	"github.com/tuihub/librarian/internal/service/sephirah/converter"
-	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 
-	"github.com/google/uuid"
 	"github.com/google/wire"
+	"github.com/panjf2000/ants/v2"
 )
 
 const (
-	defaultHeartbeatInterval  = libtime.Second * 10
+	defaultHeartbeatInterval  = libtime.Second * 5
 	defaultHeartbeatDowngrade = libtime.Second * 30
 	defaultHeartbeatTimeout   = libtime.Second * 60
+	defaultPoolSize           = 32
 )
 
-var ProviderSet = wire.NewSet(NewSupervisor)
+var ProviderSet = wire.NewSet(NewSupervisorService)
 
-type Supervisor struct {
-	UUID         int64
+type SupervisorService struct {
+	s            *bizsupervisor.Supervisor
+	cron         *libcron.Cron
 	porter       *client.Porter
+	t            *data.TipherethRepo
 	auth         *libauth.Auth
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify]
 
 	refreshMu                 sync.Mutex
 	trustedAddresses          []string
-	instanceController        *libtype.SyncMap[string, modelsupervisor.PorterInstanceController]
-	instanceContextController *libtype.SyncMap[model.InternalID, modelsupervisor.PorterContextController]
-	instanceCache             *libcache.Map[string, modelsupervisor.PorterInstance]
-	instanceContextCache      *libcache.Map[model.InternalID, modelsupervisor.PorterContext]
-	enableContextTopic        *libmq.Topic[modelsupervisor.PorterContext]
-
-	// featureSummary contains unique enabled features
-	featureSummary *modelsupervisor.ServerFeatureSummary
-	// featureSummaryMap is the map from enabled feature ID to instance addresses
-	featureSummaryMap  *modelsupervisor.ServerFeatureSummaryMap
-	featureSummaryRWMu sync.RWMutex
+	instanceController        *libtype.SyncMap[string, *bizsupervisor.PorterInstanceController]
+	instanceContextController *libtype.SyncMap[model.InternalID, *bizsupervisor.PorterContextController]
+	featureController         *bizsupervisor.PorterFeatureController
 }
 
-func NewSupervisor(
+func NewSupervisorService(
+	s *bizsupervisor.Supervisor,
 	c *conf.Porter,
-	mq *libmq.MQ,
 	auth *libauth.Auth,
 	porter *client.Porter,
 	systemNotify *libmq.Topic[modelnetzach.SystemNotify],
-	instanceCache *libcache.Map[string, modelsupervisor.PorterInstance],
-	instanceContextCache *libcache.Map[model.InternalID, modelsupervisor.PorterContext],
-) (*Supervisor, error) {
+	cron *libcron.Cron,
+	t *data.TipherethRepo,
+	featureController *bizsupervisor.PorterFeatureController,
+) (*SupervisorService, error) {
 	if c == nil {
 		c = new(conf.Porter)
 	}
-	res := Supervisor{
-		UUID:         int64(uuid.New().ID()),
+	res := SupervisorService{
+		s:            s,
+		cron:         cron,
 		porter:       porter,
+		t:            t,
 		auth:         auth,
 		systemNotify: systemNotify,
 
 		refreshMu:                 sync.Mutex{},
 		trustedAddresses:          c.Addresses,
-		instanceController:        libtype.NewSyncMap[string, modelsupervisor.PorterInstanceController](),
-		instanceContextController: libtype.NewSyncMap[model.InternalID, modelsupervisor.PorterContextController](),
-		instanceCache:             instanceCache,
-		instanceContextCache:      instanceContextCache,
-		enableContextTopic:        nil,
-
-		featureSummary:     new(modelsupervisor.ServerFeatureSummary),
-		featureSummaryMap:  modelsupervisor.NewServerFeatureSummaryMap(),
-		featureSummaryRWMu: sync.RWMutex{},
-	}
-	res.enableContextTopic = newEnablePorterContextTopic(&res)
-	err := mq.RegisterTopic(res.enableContextTopic)
-	if err != nil {
-		return nil, fmt.Errorf("failed to register topic: %w", err)
+		instanceController:        libtype.NewSyncMap[string, *bizsupervisor.PorterInstanceController](),
+		instanceContextController: libtype.NewSyncMap[model.InternalID, *bizsupervisor.PorterContextController](),
+		featureController:         featureController,
 	}
 	return &res, nil
 }
 
-func (s *Supervisor) GetHeartbeatInterval() time.Duration {
+func (s *SupervisorService) Start(ctx context.Context) error {
+	err := s.cron.Duration(
+		"SupervisorService Heartbeat",
+		s.getHeartbeatInterval(),
+		func() {
+			err := s.heartbeat(context.Background())
+			if err != nil {
+				logger.Errorf("refresh alive instances failed: %s", err.Error())
+			}
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("failed to register cron: %w", err)
+	}
+	return nil
+}
+
+func (s *SupervisorService) Stop(ctx context.Context) error {
+	return nil
+}
+
+func (s *SupervisorService) getHeartbeatInterval() time.Duration {
 	return defaultHeartbeatInterval
 }
 
-func (s *Supervisor) GetInstanceController(
+func (s *SupervisorService) heartbeat( //nolint:gocognit,funlen // TODO
 	ctx context.Context,
-	address string,
-) *modelsupervisor.PorterInstanceController {
-	if c, ok := s.instanceController.Load(address); ok {
-		return &c
-	}
-	return nil
-}
-
-func (s *Supervisor) GetContextController(
-	ctx context.Context,
-	id model.InternalID,
-) *modelsupervisor.PorterContextController {
-	if c, ok := s.instanceContextController.Load(id); ok {
-		return &c
-	}
-	return nil
-}
-
-func (s *Supervisor) RefreshAliveInstances( //nolint:gocognit,funlen // TODO
-	ctx context.Context,
-) ([]*modelsupervisor.PorterInstance, error) {
+) error {
 	if !s.refreshMu.TryLock() {
-		return nil, errors.New("refresh in progress")
+		return errors.New("refresh in progress")
 	}
 	defer s.refreshMu.Unlock()
 
 	discoveredAddresses, err := s.porter.GetServiceAddresses(ctx)
 	if err != nil {
 		logger.Errorf("%s", err.Error())
-		return nil, err
+		return err
 	}
-	newInstances := make([]*modelsupervisor.PorterInstance, 0, len(discoveredAddresses))
-	newInstancesMu := sync.Mutex{}
-	updateFeatureSummary := false
+	enabledContexts, err := s.t.GetEnabledPorterContexts(context.Background())
+	if err != nil {
+		logger.Errorf("get enabled porter contexts failed: %s", err.Error())
+		return err
+	}
 	hasError := false
 	notification := modelnetzach.NewSystemNotify(
 		modelnetzach.SystemNotificationLevelOngoing,
 		fmt.Sprintf("%s: Refresh Porter Instances", modelnetzach.SystemNotifyTitleCronJob),
 		fmt.Sprintf("Found %d Porter Instances", len(discoveredAddresses)),
 	)
+	notificationMu := &sync.Mutex{}
+	pool, err := ants.NewPool(defaultPoolSize)
+	if err != nil {
+		logger.Errorf("failed to create ants pool: %s", err.Error())
+		return fmt.Errorf("failed to create ants pool: %w", err)
+	}
 	wg := sync.WaitGroup{}
-	ctx, cancel := context.WithTimeout(ctx, libtime.Minute)
-	defer cancel()
-	notifyCh := make(chan string)
-	done := make(chan struct{})
+	availableAddresses := map[string][]string{}
+	availableAddressesMu := sync.Mutex{}
 
-	// Discover new instances and Refresh disconnected instances
+	// Discover new instances
 	for _, address := range discoveredAddresses {
-		if ic, ok := s.instanceController.Load(address); ok &&
-			ic.ConnectionStatus != modelsupervisor.PorterConnectionStatusDisconnected {
+		s.instanceController.LoadOrStore(address, s.s.NewPorterInstanceController(address))
+	}
+	// Save new instance contexts
+	for _, con := range enabledContexts {
+		if con == nil {
 			continue
 		}
-
-		wg.Add(1)
-		go func(ctx context.Context, address string) {
-			defer wg.Done()
-			var ins *modelsupervisor.PorterInstance
-			ins, err = s.evaluatePorterInstance(ctx, address)
-			if err != nil {
-				logger.Errorf("%s", err.Error())
-				hasError = true
-				notifyCh <- fmt.Sprintf("Error on %s: %s", address, err.Error())
-				return
-			}
-
-			if ic, ok := s.instanceController.Load(address); ok ||
-				(ic.GlobalName != ins.GlobalName || ic.BinarySummary.BuildVersion != ins.BinarySummary.Version) {
-				newInstancesMu.Lock()
-				newInstances = append(newInstances, ins)
-				newInstancesMu.Unlock()
-			}
-			s.instanceController.Store(address, modelsupervisor.PorterInstanceController{
-				PorterInstance:          *ins,
-				ConnectionStatus:        modelsupervisor.PorterConnectionStatusConnected,
-				ConnectionStatusMessage: "",
-				LastHeartbeat:           time.Now(),
-				LastEnabledContext:      nil,
-			})
-		}(ctx, address)
+		s.instanceContextController.LoadOrStore(con.ID, s.s.NewPorterContextController(
+			con,
+		))
 	}
 
-	// Heartbeat
-	s.instanceController.Range(func(address string, ctl modelsupervisor.PorterInstanceController) bool {
-		var ins *modelsupervisor.PorterInstance
-		if ins, err = s.instanceCache.Get(ctx, address); err != nil ||
-			ins == nil ||
-			ins.Status != model.UserStatusActive {
-			return true
-		}
-
+	// Instance Heartbeat
+	s.instanceController.Range(func(address string, ctl *bizsupervisor.PorterInstanceController) bool {
 		wg.Add(1)
-		go func(ctx context.Context, ins *modelsupervisor.PorterInstance) {
+		_ = pool.Submit(func() {
 			defer wg.Done()
-			var resp *porter.EnablePorterResponse
-			resp, err = s.enablePorterInstance(ctx, ins)
-			if err != nil {
-				logger.Errorf("%s", err.Error())
+			ctxWithTimeout, cancel := context.WithTimeout(ctx, libtime.Minute)
+			defer cancel()
+			instance := ctl.UpdateStatus(ctxWithTimeout)
+			if instance.ConnectionStatus != modelsupervisor.PorterConnectionStatusActive &&
+				instance.ConnectionStatus != modelsupervisor.PorterConnectionStatusDowngraded {
+				notificationMu.Lock()
+				defer notificationMu.Unlock()
 				hasError = true
-				notifyCh <- fmt.Sprintf("Error on %s: %s", ins.Address, err.Error())
-				// no return
+				notification.Notification.Content += fmt.Sprintf(
+					"\nInstance %s is not active: %s",
+					instance.Address,
+					instance.ConnectionStatusMessage,
+				)
+				return
 			}
-
-			if err != nil {
-				ctl.ConnectionStatusMessage += fmt.Sprintf("Error: %s", err.Error())
-			} else if resp != nil {
-				ctl.ConnectionStatusMessage = resp.GetStatusMessage()
+			s.featureController.Update(instance)
+			key := fmt.Sprintf("%s:%s", instance.GlobalName, instance.Region)
+			availableAddressesMu.Lock()
+			defer availableAddressesMu.Unlock()
+			if _, ok := availableAddresses[key]; !ok {
+				availableAddresses[key] = []string{}
 			}
-			lastConnectionStatus := ctl.ConnectionStatus
-			err = s.updateControllers(ctx, &ctl, resp)
-			if err != nil {
-				logger.Errorf("%s", err.Error())
-				hasError = true
-				notifyCh <- fmt.Sprintf("Error on %s: %s", ins.Address, err.Error())
-			}
-			if lastConnectionStatus != ctl.ConnectionStatus {
-				updateFeatureSummary = true
-			}
-
-			s.instanceController.Store(ins.Address, ctl)
-		}(ctx, ins)
-
+			availableAddresses[key] = append(availableAddresses[key], instance.Address)
+		})
 		return true
 	})
+	wg.Wait()
+	s.featureController.Commit()
 
-	// Save notification messages
-	go func() {
-		for {
-			select {
-			case <-ctx.Done():
+	// Instance Context Heartbeat
+	s.instanceContextController.Range(func(ctxID model.InternalID, ctl *bizsupervisor.PorterContextController) bool {
+		wg.Add(1)
+		_ = pool.Submit(func() {
+			defer wg.Done()
+			ctxWithTimeout, cancel := context.WithTimeout(ctx, libtime.Minute)
+			defer cancel()
+			key := fmt.Sprintf("%s:%s", ctl.GetGlobalName(), ctl.GetRegion())
+			if addresses, ok := availableAddresses[key]; !ok || len(addresses) == 0 {
+				notificationMu.Lock()
+				defer notificationMu.Unlock()
+				hasError = true
+				notification.Notification.Content += fmt.Sprintf(
+					"\nContext %s do not has active instance",
+					ctl.GetName(),
+				)
 				return
-			case msg := <-notifyCh:
-				notification.Notification.Content += "\n" + msg
+			} else {
+				handlerAddress := ctl.UpdateStatus(ctxWithTimeout, addresses)
+				if handlerAddress == "" {
+					notificationMu.Lock()
+					defer notificationMu.Unlock()
+					hasError = true
+					notification.Notification.Content += fmt.Sprintf("\nContext %s is not active", ctl.GetName())
+					return
+				}
 			}
-		}
-	}()
-
-	// Trigger done
-	go func() {
-		wg.Wait()
-		close(done)
-	}()
-
-	// Wait for goroutines or timeout
-	select {
-	case <-done:
-		notifyCh <- fmt.Sprintf("Found %d Porter Instances", len(newInstances))
-	case <-ctx.Done():
-	}
+		})
+		return true
+	})
+	wg.Wait()
 
 	if hasError {
 		notification.Notification.Level = modelnetzach.SystemNotificationLevelError
 		_ = s.systemNotify.PublishFallsLocalCall(ctx, notification)
 	}
 
-	for _, inst := range newInstances {
-		_ = s.instanceCache.Delete(ctx, inst.Address)
-	}
-
-	if updateFeatureSummary {
-		go s.updateFeatureSummary(ctx)
-	}
-	return newInstances, nil
-}
-
-func (s *Supervisor) evaluatePorterInstance(
-	ctx context.Context,
-	address string,
-) (*modelsupervisor.PorterInstance, error) {
-	if address == "" {
-		// bad address
-		return nil, errors.New("address is empty")
-	}
-	info, err := s.porter.GetPorterInformation(
-		client.WithPorterAddress(ctx, []string{address}),
-		&porter.GetPorterInformationRequest{},
-	)
-	if err != nil {
-		// bad instance
-		logger.Infof("%s", err.Error())
-		return nil, err
-	}
-	if info == nil || info.GetBinarySummary() == nil {
-		// bad instance
-		return nil, errors.New("bad instance info")
-	}
-	feature := converter.ToBizPorterFeatureSummary(info.GetFeatureSummary())
-	return &modelsupervisor.PorterInstance{
-		ID:                0,
-		BinarySummary:     converter.ToBizPorterBinarySummary(info.GetBinarySummary()),
-		GlobalName:        info.GetGlobalName(),
-		Address:           address,
-		Region:            info.GetRegion(),
-		FeatureSummary:    feature,
-		Status:            model.UserStatusUnspecified,
-		ContextJSONSchema: info.GetContextJsonSchema(),
-	}, nil
-}
-
-// enablePorterInstance enable porter instance, can be called multiple times.
-func (s *Supervisor) enablePorterInstance(
-	ctx context.Context,
-	instance *modelsupervisor.PorterInstance,
-) (*porter.EnablePorterResponse, error) {
-	if instance == nil {
-		return nil, errors.New("instance is nil")
-	}
-	resp, err := s.porter.EnablePorter(
-		client.WithPorterAddress(ctx, []string{instance.Address}),
-		&porter.EnablePorterRequest{
-			SephirahId:   s.UUID,
-			RefreshToken: nil,
-		},
-	)
-	if err != nil {
-		return nil, err
-	}
-	if resp.GetNeedRefreshToken() {
-		var refreshToken string
-		refreshToken, err = s.auth.GenerateToken(
-			instance.ID,
-			0,
-			libauth.ClaimsTypeRefreshToken,
-			model.UserTypePorter,
-			libtime.Hour,
-		)
-		if err != nil {
-			return resp, err
-		}
-		resp, err = s.porter.EnablePorter(
-			client.WithPorterAddress(ctx, []string{instance.Address}),
-			&porter.EnablePorterRequest{
-				SephirahId:   s.UUID,
-				RefreshToken: &refreshToken,
-			},
-		)
-	}
-	return resp, err
-}
-
-func (s *Supervisor) updateControllers(
-	ctx context.Context,
-	ctl *modelsupervisor.PorterInstanceController,
-	resp *porter.EnablePorterResponse,
-) error {
-	now := time.Now()
-	if resp == nil { //nolint:nestif // TODO
-		if ctl.LastHeartbeat.Add(defaultHeartbeatTimeout).Before(now) {
-			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDisconnected
-		} else if ctl.LastHeartbeat.Add(defaultHeartbeatDowngrade).Before(now) {
-			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusDowngraded
-		} else if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
-			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
-		} else {
-			ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActivationFailed
-		}
-	} else {
-		ctl.ConnectionStatus = modelsupervisor.PorterConnectionStatusActive
-		ctl.LastHeartbeat = now
-	}
-	if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive && resp == nil {
-		return nil
-	}
-	var reQueueContext []model.InternalID
-	if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusActive {
-		onlyLast, _ := libtype.DiffSlices(
-			ctl.LastEnabledContext,
-			converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds()),
-		)
-		reQueueContext = onlyLast
-		ctl.LastEnabledContext = converter.ToBizInternalIDList(resp.GetEnablesSummary().GetContextIds())
-	} else {
-		reQueueContext = ctl.LastEnabledContext
-		if ctl.ConnectionStatus == modelsupervisor.PorterConnectionStatusDowngraded {
-			ctl.LastEnabledContext = nil
-		}
-	}
-	for _, id := range reQueueContext {
-		ic, ok := s.instanceContextController.Load(id)
-		if !ok {
-			continue
-		}
-		ic.HandleStatus = modelsupervisor.PorterContextHandleStatusQueueing
-		ic.HandleStatusMessage = ""
-		ic.HandlerAddress = ""
-		s.instanceContextController.Store(id, ic)
-		err := s.QueuePorterContext(ctx, ic.PorterContext)
-		if err != nil {
-			return err
-		}
-	}
 	return nil
 }

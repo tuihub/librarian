@@ -10,7 +10,6 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizyesod"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/service/supervisor"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
 
 	"github.com/google/wire"
@@ -28,7 +27,6 @@ type LibrarianSephirahPorterService struct {
 	y    *bizyesod.Yesod
 	n    *biznetzach.Netzach
 	c    *bizchesed.Chesed
-	s    *supervisor.Supervisor
 	app  *libapp.Settings
 	auth *libauth.Auth
 }
@@ -41,7 +39,6 @@ func NewLibrarianSephirahPorterService(
 	y *bizyesod.Yesod,
 	n *biznetzach.Netzach,
 	c *bizchesed.Chesed,
-	s *supervisor.Supervisor,
 	app *libapp.Settings,
 	auth *libauth.Auth,
 ) pb.LibrarianSephirahPorterServiceServer {
@@ -54,7 +51,6 @@ func NewLibrarianSephirahPorterService(
 		y:    y,
 		n:    n,
 		c:    c,
-		s:    s,
 		app:  app,
 		auth: auth,
 	}

@@ -31,6 +31,10 @@ type PorterContext struct {
 	Description string `json:"description,omitempty"`
 	// Status holds the value of the "status" field.
 	Status portercontext.Status `json:"status,omitempty"`
+	// HandleStatus holds the value of the "handle_status" field.
+	HandleStatus portercontext.HandleStatus `json:"handle_status,omitempty"`
+	// HandleStatusMessage holds the value of the "handle_status_message" field.
+	HandleStatusMessage string `json:"handle_status_message,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
@@ -69,7 +73,7 @@ func (*PorterContext) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case portercontext.FieldID:
 			values[i] = new(sql.NullInt64)
-		case portercontext.FieldGlobalName, portercontext.FieldRegion, portercontext.FieldContextJSON, portercontext.FieldName, portercontext.FieldDescription, portercontext.FieldStatus:
+		case portercontext.FieldGlobalName, portercontext.FieldRegion, portercontext.FieldContextJSON, portercontext.FieldName, portercontext.FieldDescription, portercontext.FieldStatus, portercontext.FieldHandleStatus, portercontext.FieldHandleStatusMessage:
 			values[i] = new(sql.NullString)
 		case portercontext.FieldUpdatedAt, portercontext.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -131,6 +135,18 @@ func (pc *PorterContext) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				pc.Status = portercontext.Status(value.String)
+			}
+		case portercontext.FieldHandleStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field handle_status", values[i])
+			} else if value.Valid {
+				pc.HandleStatus = portercontext.HandleStatus(value.String)
+			}
+		case portercontext.FieldHandleStatusMessage:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field handle_status_message", values[i])
+			} else if value.Valid {
+				pc.HandleStatusMessage = value.String
 			}
 		case portercontext.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -209,6 +225,12 @@ func (pc *PorterContext) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", pc.Status))
+	builder.WriteString(", ")
+	builder.WriteString("handle_status=")
+	builder.WriteString(fmt.Sprintf("%v", pc.HandleStatus))
+	builder.WriteString(", ")
+	builder.WriteString("handle_status_message=")
+	builder.WriteString(pc.HandleStatusMessage)
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
 	builder.WriteString(pc.UpdatedAt.Format(time.ANSIC))

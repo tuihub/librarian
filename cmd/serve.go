@@ -11,6 +11,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libs3"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 	"github.com/tuihub/librarian/internal/service/angelaweb"
+	"github.com/tuihub/librarian/internal/service/supervisor"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/transport"
@@ -56,6 +57,7 @@ func newApp(
 	gs *grpc.Server,
 	hs *http.Server,
 	aw *angelaweb.AngelaWeb,
+	sv *supervisor.SupervisorService,
 	mq *libmq.MQ,
 	cron *libcron.Cron,
 	obs *libobserve.BuiltInObserver,
@@ -69,7 +71,7 @@ func newApp(
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(append([]transport.Server{
-			gs, hs, aw, mq, cron, obs, s3,
+			gs, hs, aw, sv, mq, cron, obs, s3,
 		}, inprocPorter.Servers...)...),
 	}
 	r, err := libdiscovery.NewRegistrar(consul)

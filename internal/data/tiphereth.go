@@ -14,8 +14,6 @@ import (
 	"github.com/tuihub/librarian/internal/data/internal/ent/user"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
-
-	"entgo.io/ent/dialect/sql"
 )
 
 type TipherethRepo struct {
@@ -335,40 +333,6 @@ func (t *TipherethRepo) ListLinkAccounts(
 	return converter.ToBizAccountList(a), nil
 }
 
-func (t *TipherethRepo) UpsertPorters(ctx context.Context, il []*modelsupervisor.PorterInstance) error {
-	instances := make([]*ent.PorterInstanceCreate, len(il))
-	for i, instance := range il {
-		if instance.BinarySummary == nil {
-			instance.BinarySummary = new(modelsupervisor.PorterBinarySummary)
-		}
-		instances[i] = t.data.db.PorterInstance.Create().
-			SetID(instance.ID).
-			SetName(instance.BinarySummary.Name).
-			SetVersion(instance.BinarySummary.Version).
-			SetDescription(instance.BinarySummary.Description).
-			SetSourceCodeAddress(instance.BinarySummary.SourceCodeAddress).
-			SetBuildVersion(instance.BinarySummary.BuildVersion).
-			SetBuildDate(instance.BinarySummary.BuildDate).
-			SetGlobalName(instance.GlobalName).
-			SetRegion(instance.Region).
-			SetAddress(instance.Address).
-			SetStatus(converter.ToEntPorterInstanceStatus(instance.Status)).
-			SetFeatureSummary(instance.FeatureSummary).
-			SetContextJSONSchema(instance.ContextJSONSchema)
-	}
-	return t.data.db.PorterInstance.
-		CreateBulk(instances...).
-		OnConflict(
-			sql.ConflictColumns(porterinstance.FieldAddress),
-			resolveWithIgnores([]string{
-				porterinstance.FieldID,
-				porterinstance.FieldStatus,
-				porterinstance.FieldStatus,
-			}),
-		).
-		Exec(ctx)
-}
-
 func (t *TipherethRepo) ListPorters(
 	ctx context.Context,
 	paging model.Paging,
@@ -402,19 +366,6 @@ func (t *TipherethRepo) UpdatePorterStatus(
 		return nil, err
 	}
 	return converter.ToBizPorter(pi), nil
-}
-
-func (t *TipherethRepo) FetchPorterByAddress(
-	ctx context.Context,
-	address string,
-) (*modelsupervisor.PorterInstance, error) {
-	p, err := t.data.db.PorterInstance.Query().Where(
-		porterinstance.AddressEQ(address),
-	).Only(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return converter.ToBizPorter(p), nil
 }
 
 func (t *TipherethRepo) CreatePorterContext(
