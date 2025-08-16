@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"math"
+	"net/url"
 	"sync"
 	"time"
 
@@ -140,7 +141,7 @@ func (c *PorterInstanceController) UpdateStatus(ctx context.Context) *modelsuper
 // Initial state, load or create instance info.
 func (c *PorterInstanceController) updateStatusUnspecified(ctx context.Context) {
 	instance, err := c.s.repo.FetchPorterByAddress(ctx, c.address)
-	if data.ErrorIsNotFound(err) {
+	if data.ErrorIsNotFound(err) { //nolint:nestif // no need
 		id, err1 := c.s.id.New()
 		if err1 != nil {
 			c.heartbeatCount = min(-1, c.heartbeatCount-1)
@@ -149,6 +150,10 @@ func (c *PorterInstanceController) updateStatusUnspecified(ctx context.Context) 
 		c.ID = id
 		c.Address = c.address
 		c.Status = model.UserStatusBlocked
+		if addr, err3 := url.Parse(c.address); err3 == nil && addr.Scheme == "inproc" {
+			// Enable inproc instance by default
+			c.Status = model.UserStatusActive
+		}
 		c.ConnectionStatusMessage = "First Initialization"
 		_, err2 := c.s.repo.UpsertPorter(ctx, &c.PorterInstance)
 		if err2 != nil {
