@@ -37,6 +37,7 @@ var ProviderSet = wire.NewSet(NewSupervisorService)
 type SupervisorService struct {
 	s            *bizsupervisor.Supervisor
 	cron         *libcron.Cron
+	job          *libcron.Job
 	porter       *client.Porter
 	t            *data.TipherethRepo
 	auth         *libauth.Auth
@@ -65,6 +66,7 @@ func NewSupervisorService(
 	res := SupervisorService{
 		s:            s,
 		cron:         cron,
+		job:          nil,
 		porter:       porter,
 		t:            t,
 		auth:         auth,
@@ -80,7 +82,7 @@ func NewSupervisorService(
 }
 
 func (s *SupervisorService) Start(ctx context.Context) error {
-	err := s.cron.Duration(
+	job, err := s.cron.NewJobByDuration(
 		"SupervisorService Heartbeat",
 		s.getHeartbeatInterval(),
 		func() {
@@ -93,10 +95,17 @@ func (s *SupervisorService) Start(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to register cron: %w", err)
 	}
+	s.job = job
 	return nil
 }
 
 func (s *SupervisorService) Stop(ctx context.Context) error {
+	if s.job != nil {
+		if err := s.job.Cancel(); err != nil {
+			return fmt.Errorf("failed to stop cron job: %w", err)
+		}
+		s.job = nil
+	}
 	return nil
 }
 
