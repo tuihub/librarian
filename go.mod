@@ -50,6 +50,7 @@ require (
 	github.com/stretchr/testify v1.10.0
 	github.com/tuihub/protos v0.5.6
 	github.com/urfave/cli/v2 v2.27.7
+	github.com/urfave/cli/v3 v3.4.1
 	go.opentelemetry.io/otel v1.37.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.13.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.13.0
