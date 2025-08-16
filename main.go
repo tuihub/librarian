@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/tuihub/librarian/cmd"
@@ -24,7 +25,7 @@ var (
 
 func main() {
 	app := cmd.NewCmd(name, version, id, date, protoVersion)
-	if err := app.Run(os.Args); err != nil {
+	if err := app.Run(context.Background(), os.Args); err != nil {
 		panic(err)
 	}
 }

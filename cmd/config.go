@@ -1,18 +1,20 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 func newCmdConfig() *cli.Command {
 	return &cli.Command{
 		Name:  "config",
 		Usage: "Configuration commands",
-		Subcommands: []*cli.Command{
+		Commands: []*cli.Command{
 			{
 				Name:        "check",
 				Usage:       "Validate configuration file",
@@ -31,7 +33,7 @@ func newCmdConfig() *cli.Command {
 	}
 }
 
-func runCmdConfigCheck(ctx *cli.Context) error {
+func runCmdConfigCheck(ctx context.Context, cmd *cli.Command) error {
 	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
 	stdLogger.Infof("=== Configuring ===")
 	stdLogger.Infof("[Service\t] Name: %s", name)
@@ -42,8 +44,8 @@ func runCmdConfigCheck(ctx *cli.Context) error {
 		version,
 		protoVersion,
 		date,
-		ctx.String(cmdServeFlagConfig),
-		ctx.String(cmdServeFlagData),
+		cmd.String(cmdServeFlagConfig),
+		cmd.String(cmdServeFlagData),
 	)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)
