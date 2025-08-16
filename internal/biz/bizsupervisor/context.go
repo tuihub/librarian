@@ -25,6 +25,7 @@ const (
 
 type PorterContextController struct {
 	modelsupervisor.PorterContext
+
 	s                    *Supervisor
 	heartbeatCount       int       // Positive for successful heartbeats, negative for failed heartbeats
 	lastHeartbeat        time.Time // Last heartbeat time

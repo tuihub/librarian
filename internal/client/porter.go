@@ -21,6 +21,7 @@ import (
 
 type Porter struct {
 	porter.LibrarianPorterServiceClient
+
 	checker    libdiscovery.HealthChecker
 	inprocKeys []string
 }

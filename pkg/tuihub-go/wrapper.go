@@ -25,6 +25,7 @@ const (
 
 type serviceWrapper struct {
 	pb.LibrarianPorterServiceServer
+
 	Info         *pb.GetPorterInformationResponse
 	Logger       log.Logger
 	Client       porter.LibrarianSephirahPorterServiceClient

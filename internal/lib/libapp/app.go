@@ -17,11 +17,12 @@ import (
 )
 
 type Settings struct {
-	Name         string
-	InstanceUUID uuid.UUID
-	env          config.Config
 	InherentSettings
 	Flags
+
+	Name              string
+	InstanceUUID      uuid.UUID
+	env               config.Config
 	Version           string
 	ProtoVersion      string
 	BuildDate         string

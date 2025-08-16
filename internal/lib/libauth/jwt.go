@@ -18,13 +18,14 @@ import (
 )
 
 type Claims struct {
+	ClaimsTransferExtra
+	ClaimsSentinelExtra
+	jwtv5.RegisteredClaims
+
 	UserID   model.InternalID `json:"uid,string"`
 	PorterID model.InternalID `json:"pid,string,omitempty"`
 	Type     ClaimsType       `json:"ct"`
 	UserType model.UserType   `json:"ut"`
-	ClaimsTransferExtra
-	ClaimsSentinelExtra
-	jwtv5.RegisteredClaims
 }
 
 type ClaimsExtra func(*ClaimsExtras)

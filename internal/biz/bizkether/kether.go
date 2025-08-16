@@ -32,6 +32,7 @@ var ProviderSet = wire.NewSet(
 
 type Kether struct {
 	KetherBase
+
 	mq *libmq.MQ
 }
 type KetherBase struct {

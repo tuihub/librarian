@@ -17,7 +17,7 @@ import (
 
 type Handler struct {
 	porter.UnimplementedLibrarianPorterServiceServer
-	clientMap sync.Map
+	steam *biz.SteamUseCase
 }
 
 func NewHandler() *Handler {

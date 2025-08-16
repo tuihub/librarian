@@ -207,6 +207,7 @@ func WellKnownToString(e protoreflect.Enum) string {
 
 type PorterClient struct {
 	sephirahporter.LibrarianSephirahPorterServiceClient
+
 	accessToken string
 }
 
