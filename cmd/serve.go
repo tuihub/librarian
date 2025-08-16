@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/tuihub/librarian/internal/client"
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
@@ -18,7 +20,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/google/wire"
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 	"go.uber.org/zap"
 )
 
@@ -81,7 +83,7 @@ func newApp(
 	return kratos.New(options...), nil
 }
 
-func runCmdServe(ctx *cli.Context) error {
+func runCmdServe(ctx context.Context, cmd *cli.Command) error {
 	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
 	stdLogger.Infof("=== Configuring ===")
 	stdLogger.Infof("[Service\t] Name: %s", name)
@@ -92,8 +94,8 @@ func runCmdServe(ctx *cli.Context) error {
 		version,
 		protoVersion,
 		date,
-		ctx.String(cmdServeFlagConfig),
-		ctx.String(cmdServeFlagData),
+		cmd.String(cmdServeFlagConfig),
+		cmd.String(cmdServeFlagData),
 	)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)

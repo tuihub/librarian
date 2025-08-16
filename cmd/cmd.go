@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 var (
@@ -19,13 +19,13 @@ var (
 	protoVersion string //nolint:gochecknoglobals //no need
 )
 
-func NewCmd(_name, _version, _id, _date, _protoVersion string) *cli.App {
+func NewCmd(_name, _version, _id, _date, _protoVersion string) *cli.Command {
 	name = _name
 	version = _version
 	id = _id
 	date = _date
 	protoVersion = _protoVersion
-	return &cli.App{
+	return &cli.Command{
 		Name:  "TuiHub Librarian",
 		Usage: "Librarian is the standard server implementation of TuiHub",
 		Commands: []*cli.Command{
