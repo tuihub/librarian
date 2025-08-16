@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
 func (a *AngelaWeb) setupRoutes() {
@@ -57,7 +56,7 @@ func (a *AngelaWeb) setupRoutes() {
 
 	page.Get("/config", a.pageBuilder.ConfigList)
 	page.Get("/server-info", a.pageBuilder.ServerInfoForm)
-	page.Get("/monitor", monitor.New())
+	page.Get("/monitor", a.pageBuilder.Monitor)
 
 	page.Get("/sentinels", a.pageBuilder.SentinelList)
 	page.Get("/sentinels/new", a.pageBuilder.SentinelForm)
