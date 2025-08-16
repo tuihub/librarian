@@ -1,8 +1,9 @@
 package schema
 
 import (
-	"github.com/tuihub/librarian/internal/model"
 	"time"
+
+	"github.com/tuihub/librarian/internal/model"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"

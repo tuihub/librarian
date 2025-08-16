@@ -3,11 +3,12 @@ package schema
 import (
 	"time"
 
+	"github.com/tuihub/librarian/internal/model"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
-	"github.com/tuihub/librarian/internal/model"
 )
 
 // FeedConfig holds the schema definition for the FeedConfig entity.

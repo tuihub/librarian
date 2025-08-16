@@ -2,11 +2,11 @@ package bizyesod
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/model"
 	"net/url"
 	"strings"
 
 	"github.com/tuihub/librarian/internal/lib/libcodec"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelfeed"
 	"github.com/tuihub/librarian/internal/model/modelyesod"
 

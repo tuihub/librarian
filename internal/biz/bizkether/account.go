@@ -2,12 +2,12 @@ package bizkether
 
 import (
 	"context"
-	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libmq"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelkether"
+	"github.com/tuihub/librarian/internal/service/sephirah/converter"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 )
 
@@ -24,9 +24,7 @@ func NewPullAccountTopic(
 			resp, err := a.porter.GetAccount(
 				a.supv.WithAccountPlatform(ctx, info.Platform),
 				&porter.GetAccountRequest{
-					Config:            converter.ToPBFeatureRequest(info.Config),
-					Platform:          info.Platform,
-					PlatformAccountId: info.PlatformAccountID,
+					Config: converter.ToPBFeatureRequest(info.Config),
 				},
 			)
 			if err != nil {
