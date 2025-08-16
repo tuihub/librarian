@@ -62,7 +62,12 @@ func NewYesod(
 		feedOwner:          feedOwner,
 		builtinFeedActions: builtinFeedActions,
 	}
-	err = cron.BySeconds("YesodPullFeeds", 60, y.PullFeeds, context.Background()) //nolint:mnd // hard code min interval
+	_, err = cron.NewJobBySeconds(
+		"YesodPullFeeds",
+		60, //nolint:mnd // hard code min interval
+		y.PullFeeds,
+		context.Background(),
+	)
 	if err != nil {
 		return nil, err
 	}

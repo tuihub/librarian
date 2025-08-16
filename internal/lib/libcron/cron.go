@@ -38,15 +38,32 @@ func (c *Cron) Stop(ctx context.Context) error {
 	return c.scheduler.StopJobs()
 }
 
-func (c *Cron) BySeconds(name string, seconds int, jobFunc interface{}, params ...interface{}) error {
-	return c.Duration(name, time.Duration(seconds)*time.Second, jobFunc, params...)
+func (c *Cron) NewJobBySeconds(name string, seconds int, jobFunc interface{}, params ...interface{}) (*Job, error) {
+	return c.NewJobByDuration(name, time.Duration(seconds)*time.Second, jobFunc, params...)
 }
 
-func (c *Cron) Duration(name string, duration time.Duration, jobFunc interface{}, params ...interface{}) error {
-	_, err := c.scheduler.NewJob(
+func (c *Cron) NewJobByDuration(
+	name string,
+	duration time.Duration,
+	jobFunc interface{},
+	params ...interface{},
+) (*Job, error) {
+	job, err := c.scheduler.NewJob(
 		gocron.DurationJob(duration),
 		gocron.NewTask(jobFunc, params...),
 		gocron.WithName(name),
 	)
-	return err
+	return &Job{
+		cron: c,
+		job:  job,
+	}, err
+}
+
+type Job struct {
+	cron *Cron
+	job  gocron.Job
+}
+
+func (c *Job) Cancel() error {
+	return c.cron.scheduler.RemoveJob(c.job.ID())
 }
