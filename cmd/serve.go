@@ -62,10 +62,10 @@ func newApp(
 	sv *supervisor.SupervisorService,
 	mq *libmq.MQ,
 	cron *libcron.Cron,
-	obs *libobserve.BuiltInObserver,
 	consul *conf.Consul,
 	s3 libs3.S3,
 	inprocPorter *client.InprocPorter,
+	observe *libobserve.Observe,
 ) (*kratos.App, error) {
 	options := []kratos.Option{
 		kratos.ID(id + name),
@@ -73,7 +73,7 @@ func newApp(
 		kratos.Version(version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Server(append([]transport.Server{
-			gs, hs, aw, sv, mq, cron, obs, s3,
+			gs, hs, aw, sv, mq, cron, s3, observe,
 		}, inprocPorter.Servers...)...),
 	}
 	r, err := libdiscovery.NewRegistrar(consul)
@@ -117,11 +117,6 @@ func runCmdServe(ctx context.Context, cmd *cli.Command) error {
 	}
 
 	stdLogger.Infof("=== Initializing ===")
-
-	err = libobserve.InitOTEL(bc.OTLP)
-	if err != nil {
-		stdLogger.Fatalf("Initialize OTLP client failed: %v", err)
-	}
 
 	app, cleanup, err := wireServe(
 		digests,

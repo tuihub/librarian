@@ -159,15 +159,17 @@ type Search struct {
 type OpenTelemetryProtocol string
 
 const (
-	OpenTelemetryProtocolGRPC OpenTelemetryProtocol = "grpc"
-	OpenTelemetryProtocolHTTP OpenTelemetryProtocol = "http"
+	OpenTelemetryProtocolDisable OpenTelemetryProtocol = ""
+	OpenTelemetryProtocolGRPC    OpenTelemetryProtocol = "grpc"
+	OpenTelemetryProtocolHTTP    OpenTelemetryProtocol = "http"
 )
 
 type OpenTelemetry struct {
-	Protocol     OpenTelemetryProtocol `json:"protocol"      toml:"protocol"      yaml:"protocol"`
-	Endpoint     string                `json:"endpoint"      toml:"endpoint"      yaml:"endpoint"`
-	Headers      string                `json:"headers"       toml:"headers"       yaml:"headers"`
-	GRPCInsecure bool                  `json:"grpc_insecure" toml:"grpc_insecure" yaml:"grpc_insecure"`
+	EnableMemoryMetrics bool                  `json:"enable_memory_metrics" toml:"enable_memory_metrics" yaml:"enable_memory_metrics"`
+	Protocol            OpenTelemetryProtocol `json:"protocol"              toml:"protocol"              yaml:"protocol"`
+	Endpoint            string                `json:"endpoint"              toml:"endpoint"              yaml:"endpoint"`
+	Headers             string                `json:"headers"               toml:"headers"               yaml:"headers"`
+	GRPCInsecure        bool                  `json:"grpc_insecure"         toml:"grpc_insecure"         yaml:"grpc_insecure"`
 }
 
 type Consul struct {

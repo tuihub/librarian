@@ -16,6 +16,7 @@ import (
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/api"
 	"github.com/tuihub/librarian/internal/service/angelaweb/internal/page"
@@ -63,6 +64,7 @@ func NewAngelaWeb(
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	userCountCache *libcache.Key[model.UserCount],
+	observer *libobserve.Observe,
 ) *AngelaWeb {
 	viewsEngine := html.NewFileSystem(http.FS(embedDirView), ".go.html")
 	viewsEngine.Directory = "view"
@@ -108,7 +110,7 @@ func NewAngelaWeb(
 	})
 
 	res := &AngelaWeb{
-		apiHandler:  api.NewHandler(a, t, g, userCountCache),
+		apiHandler:  api.NewHandler(a, t, g, userCountCache, observer),
 		pageBuilder: page.NewBuilder(a, t, g, digests, userCountCache),
 		auth:        auth,
 		app:         app,

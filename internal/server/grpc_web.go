@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/libobserve"
 
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
@@ -25,7 +24,6 @@ func NewGrpcWebServer(
 	c *conf.Server,
 	auth *libauth.Auth,
 	app *libapp.Settings,
-	observer *libobserve.BuiltInObserver,
 ) (*http.Server, error) {
 	validator, err := libapp.NewValidator()
 	if err != nil {
@@ -40,7 +38,6 @@ func NewGrpcWebServer(
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
-	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []http.ServerOption{
 		http.Middleware(middlewares...),

@@ -13,7 +13,6 @@ import (
 	"go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp"
-	"go.opentelemetry.io/otel/exporters/otlp/otlptrace"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"go.opentelemetry.io/otel/log/global"
@@ -25,18 +24,23 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func InitOTEL(c *conf.OpenTelemetry) error {
+func InitOTEL(
+	c *conf.OpenTelemetry,
+	memoryMetricExporter *MemoryMetricExporter,
+) error {
 	if c == nil {
 		return nil
-	}
-	headers, err := parseHeaders(c.Headers)
-	if err != nil {
-		return err
 	}
 	ctx := context.Background()
 	var conn *grpc.ClientConn
 	switch c.Protocol {
+	case conf.OpenTelemetryProtocolDisable:
+		break
 	case conf.OpenTelemetryProtocolGRPC:
+		headers, err := parseHeaders(c.Headers)
+		if err != nil {
+			return err
+		}
 		var grpcOpts []grpc.DialOption
 		if c.GRPCInsecure {
 			grpcOpts = append(grpcOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -50,15 +54,16 @@ func InitOTEL(c *conf.OpenTelemetry) error {
 			return err
 		}
 	case conf.OpenTelemetryProtocolHTTP:
+		break
 	default:
 		return errors.New("invalid protocol")
 	}
 
-	_, err = newTraceProvider(ctx, c, conn)
+	_, err := newTraceProvider(ctx, c, conn)
 	if err != nil {
 		return err
 	}
-	_, err = newMeterProvider(ctx, c, conn)
+	_, err = newMeterProvider(ctx, c, conn, memoryMetricExporter)
 	if err != nil {
 		return err
 	}
@@ -84,30 +89,37 @@ func newTraceProvider(
 	c *conf.OpenTelemetry,
 	conn *grpc.ClientConn,
 ) (*trace.TracerProvider, error) {
-	var exporter *otlptrace.Exporter
-	headers, err := parseHeaders(c.Headers)
-	if err != nil {
-		return nil, err
+	options := []trace.TracerProviderOption{
+		trace.WithSampler(trace.AlwaysSample()),
 	}
 	switch c.Protocol {
+	case conf.OpenTelemetryProtocolDisable:
+		break
 	case conf.OpenTelemetryProtocolHTTP:
-		exporter, err = otlptracehttp.New(ctx,
+		headers, err := parseHeaders(c.Headers)
+		if err != nil {
+			return nil, err
+		}
+		exporter, err := otlptracehttp.New(ctx,
 			otlptracehttp.WithEndpointURL(c.Endpoint),
 			otlptracehttp.WithHeaders(headers),
 		)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, trace.WithBatcher(exporter))
 	case conf.OpenTelemetryProtocolGRPC:
-		exporter, err = otlptracegrpc.New(ctx,
+		exporter, err := otlptracegrpc.New(ctx,
 			otlptracegrpc.WithGRPCConn(conn),
 		)
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, trace.WithBatcher(exporter))
 	}
 
-	tp := trace.NewTracerProvider(
-		trace.WithSampler(trace.AlwaysSample()),
-		trace.WithBatcher(exporter),
-	)
+	tp := trace.NewTracerProvider(options...)
+
 	otel.SetTracerProvider(tp)
 	return tp, nil
 }
@@ -116,61 +128,80 @@ func newMeterProvider(
 	ctx context.Context,
 	c *conf.OpenTelemetry,
 	conn *grpc.ClientConn,
+	memExporter *MemoryMetricExporter,
 ) (*metric.MeterProvider, error) {
-	var exporter metric.Exporter
-	headers, err := parseHeaders(c.Headers)
-	if err != nil {
-		return nil, err
+	view := metrics.DefaultSecondsHistogramView(metrics.DefaultServerSecondsHistogramName)
+	options := []metric.Option{metric.WithView(view)}
+
+	if c.EnableMemoryMetrics {
+		options = append(options, metric.WithReader(metric.NewPeriodicReader(memExporter)))
 	}
+
 	switch c.Protocol {
+	case conf.OpenTelemetryProtocolDisable:
+		break
 	case conf.OpenTelemetryProtocolHTTP:
-		exporter, err = otlpmetrichttp.New(ctx,
+		headers, err := parseHeaders(c.Headers)
+		if err != nil {
+			return nil, err
+		}
+		externalExporter, err := otlpmetrichttp.New(ctx,
 			otlpmetrichttp.WithEndpointURL(c.Endpoint),
 			otlpmetrichttp.WithHeaders(headers),
 		)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, metric.WithReader(metric.NewPeriodicReader(externalExporter)))
 	case conf.OpenTelemetryProtocolGRPC:
-		exporter, err = otlpmetricgrpc.New(ctx,
+		externalExporter, err := otlpmetricgrpc.New(ctx,
 			otlpmetricgrpc.WithGRPCConn(conn),
 		)
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, metric.WithReader(metric.NewPeriodicReader(externalExporter)))
+	default:
+		return nil, errors.New("invalid protocol for metrics")
 	}
 
-	view := metrics.DefaultSecondsHistogramView(metrics.DefaultServerSecondsHistogramName)
-
-	mp := metric.NewMeterProvider(
-		metric.WithReader(metric.NewPeriodicReader(exporter)),
-		metric.WithView(view),
-	)
+	mp := metric.NewMeterProvider(options...)
 	otel.SetMeterProvider(mp)
 	return mp, nil
 }
 
 func newLoggerProvider(ctx context.Context, c *conf.OpenTelemetry, conn *grpc.ClientConn) (*log.LoggerProvider, error) {
-	var exporter log.Exporter
-	headers, err := parseHeaders(c.Headers)
-	if err != nil {
-		return nil, err
-	}
+	var options []log.LoggerProviderOption
+
 	switch c.Protocol {
+	case conf.OpenTelemetryProtocolDisable:
+		break
 	case conf.OpenTelemetryProtocolHTTP:
-		exporter, err = otlploghttp.New(ctx,
+		headers, err := parseHeaders(c.Headers)
+		if err != nil {
+			return nil, err
+		}
+		exporter, err := otlploghttp.New(ctx,
 			otlploghttp.WithEndpointURL(c.Endpoint),
 			otlploghttp.WithHeaders(headers),
 		)
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, log.WithProcessor(log.NewBatchProcessor(exporter)))
 	case conf.OpenTelemetryProtocolGRPC:
-		exporter, err = otlploggrpc.New(ctx,
+		exporter, err := otlploggrpc.New(ctx,
 			otlploggrpc.WithGRPCConn(conn),
 		)
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+		options = append(options, log.WithProcessor(log.NewBatchProcessor(exporter)))
+	default:
+		return nil, errors.New("invalid protocol for logging")
 	}
 
-	lp := log.NewLoggerProvider(
-		log.WithProcessor(log.NewBatchProcessor(exporter)),
-	)
+	lp := log.NewLoggerProvider(options...)
 	global.SetLoggerProvider(lp)
 	return lp, nil
 }

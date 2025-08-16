@@ -31,6 +31,10 @@ func (a *AngelaWeb) setupRoutes() {
 
 	api.Get("/dashboard/stats", a.apiHandler.GetDashboardStats)
 
+	// Metrics endpoints
+	api.Get("/metrics", a.apiHandler.GetMetrics)
+	api.Get("/metrics/latest", a.apiHandler.GetLatestMetrics)
+
 	api.Get("/sentinels", a.apiHandler.ListSentinels)
 	api.Post("/sentinels", a.apiHandler.CreateSentinel)
 	api.Get("/sentinels/:id", a.apiHandler.GetSentinel)

@@ -13,6 +13,7 @@ var ProviderSet = wire.NewSet(
 	GetCache,
 	GetConsul,
 	GetSearch,
+	GetOpenTelemetry,
 )
 
 func GetEnableServiceDiscovery(c *Config) *EnableServiceDiscovery {
@@ -44,4 +45,7 @@ func GetConsul(c *Config) *Consul {
 }
 func GetSearch(c *Config) *Search {
 	return c.Search
+}
+func GetOpenTelemetry(c *Config) *OpenTelemetry {
+	return c.OTLP
 }
