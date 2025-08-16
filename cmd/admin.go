@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"context"
+
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libzap"
 
-	"github.com/urfave/cli/v2"
+	"github.com/urfave/cli/v3"
 )
 
 const (
@@ -18,11 +20,11 @@ func newCmdAdmin() *cli.Command {
 	return &cli.Command{
 		Name:  "admin",
 		Usage: "Administrative commands",
-		Subcommands: []*cli.Command{
+		Commands: []*cli.Command{
 			{
 				Name:  "user",
 				Usage: "User management commands",
-				Subcommands: []*cli.Command{
+				Commands: []*cli.Command{
 					{
 						Name:        "create",
 						Usage:       "Create a new user",
@@ -52,7 +54,7 @@ func newCmdAdmin() *cli.Command {
 	}
 }
 
-func runCmdAdminCreateUser(ctx *cli.Context) error {
+func runCmdAdminCreateUser(ctx context.Context, cmd *cli.Command) error {
 	stdLogger := libzap.NewStdout(libzap.InfoLevel).Sugar()
 	appSettings, err := libapp.NewAppSettings(
 		id,
@@ -60,8 +62,8 @@ func runCmdAdminCreateUser(ctx *cli.Context) error {
 		version,
 		protoVersion,
 		date,
-		ctx.String(cmdServeFlagConfig),
-		ctx.String(cmdServeFlagData),
+		cmd.String(cmdServeFlagConfig),
+		cmd.String(cmdServeFlagData),
 	)
 	if err != nil {
 		stdLogger.Fatalf("Initialize failed: %v", err)
@@ -85,13 +87,13 @@ func runCmdAdminCreateUser(ctx *cli.Context) error {
 		stdLogger.Fatalf("Initialize failed: %v", err)
 	}
 	defer cleanup()
-	username := ctx.String(cmdAdminFlagUsername)
-	password := ctx.String(cmdAdminFlagPassword)
-	isAdmin := ctx.Bool(cmdAdminFlagAdmin)
+	username := cmd.String(cmdAdminFlagUsername)
+	password := cmd.String(cmdAdminFlagPassword)
+	isAdmin := cmd.Bool(cmdAdminFlagAdmin)
 	if username == "" || password == "" {
 		stdLogger.Fatalf("Username and password are required")
 	}
-	err = app.CliCreateUser(ctx.Context, username, password, isAdmin)
+	err = app.CliCreateUser(ctx, username, password, isAdmin)
 	if err != nil {
 		stdLogger.Fatalf("Create user failed: %v", err)
 	}

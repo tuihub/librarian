@@ -49,7 +49,7 @@ require (
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
 	github.com/tuihub/protos v0.5.6
-	github.com/urfave/cli/v2 v2.27.7
+	github.com/urfave/cli/v3 v3.4.1
 	go.opentelemetry.io/otel v1.37.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploggrpc v0.13.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.13.0
@@ -115,7 +115,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -188,7 +187,6 @@ require (
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/cors v1.8.3 // indirect
 	github.com/rs/xid v1.6.0 // indirect
-	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryszard/goskiplist v0.0.0-20150312221310-2dfbae5fcf46 // indirect
 	github.com/saintfish/chardet v0.0.0-20230101081208-5e3ef4b5456d // indirect
 	github.com/shirou/gopsutil/v3 v3.23.6 // indirect
@@ -205,7 +203,6 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
-	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
