@@ -45,7 +45,6 @@ require (
 	github.com/panjf2000/ants/v2 v2.11.3
 	github.com/redis/go-redis/v9 v9.11.0
 	github.com/samber/lo v1.51.0
-	github.com/sony/sonyflake v1.3.0
 	github.com/sony/sonyflake/v2 v2.2.0
 	github.com/spf13/afero v1.14.0
 	github.com/stretchr/testify v1.10.0
