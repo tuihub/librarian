@@ -167,6 +167,7 @@ type AppDetails struct {
 	Success bool `json:"success"`
 	Data    *struct {
 		AppDetailsBase
+
 		RequiredAge int   `json:"required_age"` // may be string in some time
 		DLC         []int `json:"dlc"`
 		Fullgame    struct {

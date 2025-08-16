@@ -12,6 +12,7 @@ import (
 
 type Handler struct {
 	porter.UnimplementedLibrarianPorterServiceServer
+
 	steam *biz.SteamUseCase
 }
 

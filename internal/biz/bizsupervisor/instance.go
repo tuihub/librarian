@@ -36,6 +36,7 @@ const (
 
 type PorterInstanceController struct {
 	modelsupervisor.PorterInstance
+
 	s                    *Supervisor
 	address              string
 	heartbeatCount       int       // Positive for successful heartbeats, negative for failed heartbeats

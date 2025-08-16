@@ -429,6 +429,7 @@ func (t *TipherethRepo) ListPorterDigests(
 ) ([]*modelsupervisor.PorterDigest, error) {
 	var res []struct {
 		ent.PorterInstance
+
 		Min model.InternalID
 	}
 	q := t.data.db.PorterInstance.Query()

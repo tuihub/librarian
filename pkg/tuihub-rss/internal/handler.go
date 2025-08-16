@@ -13,6 +13,7 @@ import (
 
 type Handler struct {
 	porter.UnimplementedLibrarianPorterServiceServer
+
 	rss     RSS
 	favicon *favicon.Finder
 }
