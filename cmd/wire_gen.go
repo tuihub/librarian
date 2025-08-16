@@ -53,7 +53,11 @@ func wireAdmin(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	supervisorRepo := data.NewSupervisorRepo(dataData)
-	idGenerator := libidgenerator.NewIDGenerator()
+	idGenerator, err := libidgenerator.NewIDGenerator()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	search := conf.GetSearch(config)
 	libsearchSearch, err := libsearch.NewSearch(search, settings)
 	if err != nil {
@@ -116,7 +120,11 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		return nil, nil, err
 	}
 	angelaRepo := data.NewAngelaRepo(dataData)
-	idGenerator := libidgenerator.NewIDGenerator()
+	idGenerator, err := libidgenerator.NewIDGenerator()
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
 	search := conf.GetSearch(config)
 	libsearchSearch, err := libsearch.NewSearch(search, settings)
 	if err != nil {
