@@ -41,14 +41,16 @@ func (o *BuiltInObserver) Start(ctx context.Context) error {
 		o.generateReport()
 	}
 	go func() {
+		ticker := time.NewTicker(time.Hour)
+		defer ticker.Stop()
+
 		for {
 			select {
 			case <-ctx.Done():
 				return
 			case <-o.stopCh:
 				return
-			default:
-				time.Sleep(time.Hour)
+			case <-ticker.C:
 				scheduledJob()
 			}
 		}
