@@ -17,7 +17,8 @@ import (
 
 type Handler struct {
 	porter.UnimplementedLibrarianPorterServiceServer
-	steam *biz.SteamUseCase
+
+	clientMap sync.Map
 }
 
 func NewHandler() *Handler {
@@ -68,13 +69,29 @@ func (h *Handler) DisableContext(ctx context.Context, req *porter.DisableContext
 
 func (h *Handler) GetAccount(ctx context.Context, req *porter.GetAccountRequest) (
 	*porter.GetAccountResponse, error) {
-	u, err := h.steam.GetUser(ctx, req.GetPlatformAccountId())
+	var config model.GetAccountConfig
+	err := json.Unmarshal([]byte(req.GetConfig().GetConfigJson()), &config)
+	if err != nil {
+		return nil, errors.BadRequest("invalid context_json", err.Error())
+	}
+	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
+	if !ok {
+		return nil, errors.BadRequest("context not found", "")
+	}
+	client, ok := clientAny.(model.PorterContext)
+	if !ok {
+		return nil, errors.BadRequest("invalid context", "")
+	}
+	steam := biz.NewSteamUseCase(client.APIKey)
+	u, err := steam.GetUser(ctx, config.AccountID)
 	if err != nil {
 		return nil, err
 	}
 	return &porter.GetAccountResponse{Account: &porter.Account{
-		Platform:          req.GetPlatform(),
-		PlatformAccountId: req.GetPlatformAccountId(),
+		Platform: tuihub.WellKnownToString(
+			librarian.WellKnownAccountPlatform_WELL_KNOWN_ACCOUNT_PLATFORM_STEAM,
+		),
+		PlatformAccountId: config.AccountID,
 		Name:              u.Name,
 		ProfileUrl:        u.ProfileURL,
 		AvatarUrl:         u.AvatarURL,
@@ -83,7 +100,20 @@ func (h *Handler) GetAccount(ctx context.Context, req *porter.GetAccountRequest)
 
 func (h *Handler) GetAppInfo(ctx context.Context, req *porter.GetAppInfoRequest) (
 	*porter.GetAppInfoResponse, error) {
-	appID, err := strconv.Atoi(req.GetSourceAppId())
+	var config model.GetAppInfoConfig
+	err := json.Unmarshal([]byte(req.GetConfig().GetConfigJson()), &config)
+	if err != nil {
+		return nil, errors.BadRequest("invalid context_json", err.Error())
+	}
+	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
+	if !ok {
+		return nil, errors.BadRequest("context not found", "")
+	}
+	client, ok := clientAny.(model.PorterContext)
+	if !ok {
+		return nil, errors.BadRequest("invalid context", "")
+	}
+	appID, err := strconv.Atoi(config.AppID)
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +124,8 @@ func (h *Handler) GetAppInfo(ctx context.Context, req *porter.GetAppInfoRequest)
 	}
 	return &porter.GetAppInfoResponse{
 		AppInfo: &porter.AppInfo{
-			Source:      req.GetSource(),
-			SourceAppId: req.GetSourceAppId(),
+			Source:      tuihub.WellKnownToString(librarian.WellKnownAppInfoSource_WELL_KNOWN_APP_INFO_SOURCE_STEAM),
+			SourceAppId: config.AppID,
 			SourceUrl:   &a.StoreURL,
 			RawDataJson: "",
 			Details: &porter.AppInfoDetails{ // TODO
@@ -159,7 +189,21 @@ func ToPBAppType(t biz.AppType) porter.AppType {
 
 func (h *Handler) SearchAppInfo(ctx context.Context, req *porter.SearchAppInfoRequest) (
 	*porter.SearchAppInfoResponse, error) {
-	al, err := h.steam.SearchAppByName(ctx, req.GetNameLike())
+	var config model.SearchAppInfoConfig
+	err := json.Unmarshal([]byte(req.GetConfig().GetConfigJson()), &config)
+	if err != nil {
+		return nil, errors.BadRequest("invalid context_json", err.Error())
+	}
+	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
+	if !ok {
+		return nil, errors.BadRequest("context not found", "")
+	}
+	client, ok := clientAny.(model.PorterContext)
+	if !ok {
+		return nil, errors.BadRequest("invalid context", "")
+	}
+	steam := biz.NewSteamUseCase(client.APIKey)
+	al, err := steam.SearchAppByName(ctx, config.NameLike)
 	if err != nil {
 		return nil, err
 	}
