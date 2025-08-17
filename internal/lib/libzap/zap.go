@@ -83,8 +83,8 @@ func New(basePath string, accessLogLevel Level) *zap.Logger {
 		{
 			Filename: path.Join(basePath, "log", "error.log"),
 			Rotate: RotateOptions{
-				MaxSize:    1,
-				MaxAge:     1,
+				MaxSize:    0,
+				MaxAge:     0,
 				MaxBackups: 3, //nolint:mnd // default settings
 				Compress:   true,
 			},
@@ -98,8 +98,8 @@ func New(basePath string, accessLogLevel Level) *zap.Logger {
 			TeeOption{
 				Filename: path.Join(basePath, "log", "access.log"),
 				Rotate: RotateOptions{
-					MaxSize:    1,
-					MaxAge:     1,
+					MaxSize:    0,
+					MaxAge:     0,
 					MaxBackups: 3, //nolint:mnd // default settings
 					Compress:   true,
 				},

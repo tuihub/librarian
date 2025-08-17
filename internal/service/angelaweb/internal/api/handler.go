@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/lib/libcache"
+	"github.com/tuihub/librarian/internal/lib/libobserve"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelgebura"
 
@@ -20,6 +21,7 @@ type Handler struct {
 	t              *biztiphereth.Tiphereth
 	g              *bizgebura.Gebura
 	userCountCache *libcache.Key[model.UserCount]
+	observer       *libobserve.Observe
 }
 
 func NewHandler(
@@ -27,12 +29,14 @@ func NewHandler(
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
 	userCountCache *libcache.Key[model.UserCount],
+	observer *libobserve.Observe,
 ) *Handler {
 	return &Handler{
 		a:              a,
 		t:              t,
 		g:              g,
 		userCountCache: userCountCache,
+		observer:       observer,
 	}
 }
 
@@ -168,6 +172,17 @@ func (h *Handler) UpdateSentinelSessionStatus(c *fiber.Ctx) error {
 	}
 
 	return c.SendStatus(http.StatusOK)
+}
+
+func (h *Handler) GetMetrics(c *fiber.Ctx) error {
+	timeRange := c.Query("range", "5m")
+	metrics := h.observer.GetMetrics(timeRange)
+	return c.JSON(metrics)
+}
+
+func (h *Handler) GetLatestMetrics(c *fiber.Ctx) error {
+	metrics := h.observer.GetLatestMetrics()
+	return c.JSON(metrics)
 }
 
 func (h *Handler) DeleteSentinelSession(c *fiber.Ctx) error {

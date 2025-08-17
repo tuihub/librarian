@@ -135,6 +135,13 @@ func applyDeployModeTemporary(c *Config, l *zap.SugaredLogger) (*Config, error) 
 		c.Search = new(Search)
 		c.Search.Driver = SearchDriverDisable
 	}
+
+	// check OTLP
+	if c.OTLP == nil {
+		l.Warnf("[OpenTelemetry] not configured, using default OpenTelemetry")
+		c.OTLP = new(OpenTelemetry)
+		c.OTLP.EnableMemoryMetrics = true
+	}
 	return c, nil
 }
 
@@ -219,6 +226,13 @@ func applyDeployModeMinimize(c *Config, l *zap.SugaredLogger) (*Config, error) {
 		c.Search = new(Search)
 		c.Search.Driver = SearchDriverDisable
 	}
+
+	// check OTLP
+	if c.OTLP == nil {
+		l.Warnf("[OpenTelemetry] not configured, using default OpenTelemetry")
+		c.OTLP = new(OpenTelemetry)
+		c.OTLP.EnableMemoryMetrics = true
+	}
 	return c, nil
 }
 
@@ -301,6 +315,13 @@ func applyDeployModeStandard(c *Config, l *zap.SugaredLogger) (*Config, error) {
 		l.Warnf("[Search] not configured, disable search")
 		c.Search = new(Search)
 		c.Search.Driver = SearchDriverDisable
+	}
+
+	// check OTLP
+	if c.OTLP == nil {
+		l.Warnf("[OpenTelemetry] not configured, using default OpenTelemetry")
+		c.OTLP = new(OpenTelemetry)
+		c.OTLP.EnableMemoryMetrics = true
 	}
 	return c, nil
 }
@@ -401,6 +422,13 @@ func applyDeployModeCluster(c *Config, l *zap.SugaredLogger) (*Config, error) {
 	if c.Search.Driver == SearchDriverDisable {
 		l.Errorf("[Search] disable search is not allowed in cluster mode")
 		return nil, errors.New("[Search] disable search is not allowed in cluster mode")
+	}
+
+	// check OTLP
+	if c.OTLP == nil {
+		l.Warnf("[OpenTelemetry] not configured")
+	} else if c.OTLP.EnableMemoryMetrics {
+		return nil, errors.New("[OpenTelemetry] memory metrics is not allowed in cluster mode")
 	}
 	return c, nil
 }

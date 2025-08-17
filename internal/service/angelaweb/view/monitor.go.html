@@ -1,0 +1,713 @@
+<div class="container">
+    <div class="header">
+        <h1 class="title">{{localize .Ctx "MonitorTitle"}}</h1>
+        <div class="header-actions">
+            <button onclick="refreshMetrics()" class="btn btn-soft btn-primary">
+                {{template "icon-refresh" .}}
+                {{localize .Ctx "Refresh"}}
+            </button>
+            <button onclick="toggleAutoRefresh()" id="autoRefreshBtn" class="btn btn-soft btn-success">
+                {{template "icon-clock" .}}
+                <span id="autoRefreshText">{{localize .Ctx "AutoRefreshOn"}}</span>
+            </button>
+            <a href="/debug/pprof" target="_blank" class="btn btn-soft btn-success">
+                {{template "icon-debug" .}}
+                {{localize .Ctx "PprofDebug"}}
+            </a>
+        </div>
+    </div>
+
+    <!-- 控制面板 -->
+    <div class="card mb-6">
+        <div class="card-body">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">{{localize .Ctx "TimeRange"}}</span>
+                    </label>
+                    <select id="timeRange" class="select select-bordered select-sm">
+                        <option value="5m">{{localize .Ctx "Last5Minutes"}}</option>
+                        <option value="1h" selected>{{localize .Ctx "Last1Hour"}}</option>
+                        <option value="24h">{{localize .Ctx "Last24Hours"}}</option>
+                    </select>
+                </div>
+                <div class="text-sm text-slate-600 dark:text-slate-400" id="lastUpdate">
+                    {{localize .Ctx "LastUpdated"}}: --
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 系统指标卡片 -->
+    <div class="stats-grid mb-6">
+        <!-- CPU 使用率 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    {{template "icon-cpu" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "CpuUsage"}}</div>
+                <div class="stat-value text-primary" id="cpuUsage">--</div>
+                <div class="stat-desc">{{localize .Ctx "SystemLoad"}}</div>
+            </div>
+        </div>
+
+        <!-- 内存使用率 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-secondary">
+                    {{template "icon-memory" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "MemoryUsage"}}</div>
+                <div class="stat-value text-secondary" id="memoryUsage">--</div>
+                <div class="stat-desc">{{localize .Ctx "SystemMemory"}}</div>
+            </div>
+        </div>
+
+        <!-- 可用内存 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-accent">
+                    {{template "icon-storage" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "AvailableMemory"}}</div>
+                <div class="stat-value text-accent" id="memoryAvailable">--</div>
+                <div class="stat-desc">{{localize .Ctx "FreeSpace"}}</div>
+            </div>
+        </div>
+
+        <!-- 硬盘可用空间 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-info">
+                    {{template "icon-storage" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "DiskAvailable"}}</div>
+                <div class="stat-value text-info" id="diskAvailable">--</div>
+                <div class="stat-desc">{{localize .Ctx "FreeSpace"}}</div>
+            </div>
+        </div>
+
+        <!-- 网络上行 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-success">
+                    {{template "icon-network" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "NetworkUpload"}}</div>
+                <div class="stat-value text-success" id="networkUpload">--</div>
+                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
+            </div>
+        </div>
+
+        <!-- 网络下行 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-warning">
+                    {{template "icon-network" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "NetworkDownload"}}</div>
+                <div class="stat-value text-warning" id="networkDownload">--</div>
+                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进程指标卡片 -->
+    <div class="stats-grid mb-6">
+        <!-- 进程CPU使用率 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-primary">
+                    {{template "icon-cpu" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessCpuUsage"}}</div>
+                <div class="stat-value text-primary" id="processCpuUsage">--</div>
+                <div class="stat-desc">{{localize .Ctx "ProcessLoad"}}</div>
+            </div>
+        </div>
+
+        <!-- 进程内存使用率 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-secondary">
+                    {{template "icon-memory" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessMemoryUsage"}}</div>
+                <div class="stat-value text-secondary" id="processMemoryUsage">--</div>
+                <div class="stat-desc">{{localize .Ctx "ProcessMemory"}}</div>
+            </div>
+        </div>
+
+        <!-- 进程硬盘写入 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-accent">
+                    {{template "icon-storage" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessDiskWrite"}}</div>
+                <div class="stat-value text-accent" id="processDiskWrite">--</div>
+                <div class="stat-desc">{{localize .Ctx "DiskIO"}}</div>
+            </div>
+        </div>
+
+        <!-- 进程硬盘读取 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-info">
+                    {{template "icon-storage" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessDiskRead"}}</div>
+                <div class="stat-value text-info" id="processDiskRead">--</div>
+                <div class="stat-desc">{{localize .Ctx "DiskIO"}}</div>
+            </div>
+        </div>
+
+        <!-- 进程网络上行 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-success">
+                    {{template "icon-network" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessNetworkUpload"}}</div>
+                <div class="stat-value text-success" id="processNetworkUpload">--</div>
+                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
+            </div>
+        </div>
+
+        <!-- 进程网络下行 -->
+        <div class="stats bg-base-100 border-base-300 border">
+            <div class="stat">
+                <div class="stat-figure text-warning">
+                    {{template "icon-network" .}}
+                </div>
+                <div class="stat-title">{{localize .Ctx "ProcessNetworkDownload"}}</div>
+                <div class="stat-value text-warning" id="processNetworkDownload">--</div>
+                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图表区域 -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{localize .Ctx "CpuUsageChart"}}</h3>
+                <div class="chart-container">
+                    <canvas id="systemChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">{{localize .Ctx "MemoryUsageChart"}}</h3>
+                <div class="chart-container">
+                    <canvas id="processChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详细信息 -->
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">{{localize .Ctx "ProcessDetails"}}</h3>
+            <div class="stats-grid">
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "Goroutines"}}</div>
+                        <div class="stat-value text-sm" id="goroutines">--</div>
+                    </div>
+                </div>
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "GcCount"}}</div>
+                        <div class="stat-value text-sm" id="gcCount">--</div>
+                    </div>
+                </div>
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "HeapMemory"}}</div>
+                        <div class="stat-value text-sm" id="heapMemory">--</div>
+                    </div>
+                </div>
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "StackMemory"}}</div>
+                        <div class="stat-value text-sm" id="stackMemory">--</div>
+                    </div>
+                </div>
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "GcPause"}}</div>
+                        <div class="stat-value text-sm" id="gcPause">--</div>
+                    </div>
+                </div>
+                <div class="stats bg-base-100 border-base-300 border">
+                    <div class="stat">
+                        <div class="stat-title">{{localize .Ctx "StorageUsed"}}</div>
+                        <div class="stat-value text-sm" id="storageUsed">--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+<script>
+// 全局变量
+let autoRefreshInterval = setInterval(fetchMetrics, 10000);
+let systemChart = null;
+let processChart = null;
+let isAutoRefresh = true;
+let metricsHistory = [];
+let lastFetchTime = 0;
+
+// 等待 Chart.js 加载完成
+function waitForChart() {
+    return new Promise((resolve) => {
+        if (typeof Chart !== 'undefined') {
+            resolve();
+        } else {
+            setTimeout(() => waitForChart().then(resolve), 100);
+        }
+    });
+}
+
+// 防抖函数
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction() {
+        const args = arguments;
+        const later = function() {
+            clearTimeout(timeout);
+            func.apply(null, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 格式化字节数
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+// 格式化数字
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toString();
+}
+
+// 初始化图表
+async function initCharts() {
+    await waitForChart();
+
+    const systemCtx = document.getElementById('systemChart');
+    const processCtx = document.getElementById('processChart');
+
+    if (!systemCtx || !processCtx) {
+        console.error('Canvas elements not found');
+        return;
+    }
+
+    // CPU使用率图表（系统和进程）
+    systemChart = new Chart(systemCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'System CPU %',
+                data: [],
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Process CPU %',
+                data: [],
+                borderColor: 'rgb(239, 68, 68)',
+                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.2)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.2)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 2
+                }
+            }
+        }
+    });
+
+    // 内存使用率图表（系统和进程）
+    processChart = new Chart(processCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'System Memory %',
+                data: [],
+                borderColor: 'rgb(34, 197, 94)',
+                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                tension: 0.4,
+                fill: true
+            }, {
+                label: 'Process Memory %',
+                data: [],
+                borderColor: 'rgb(168, 85, 247)',
+                backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.2)'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(156, 163, 175, 0.2)'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        font: {
+                            size: 11
+                        }
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    radius: 2
+                }
+            }
+        }
+    });
+}
+
+// 更新指标卡片
+function updateMetricCards(data) {
+    try {
+        // 系统指标
+        const systemCpuUsage = (data['system.cpu.usage'] && data['system.cpu.usage'][0] && data['system.cpu.usage'][0].value) || 0;
+        const systemMemoryUsage = (data['system.memory.usage'] && data['system.memory.usage'][0] && data['system.memory.usage'][0].value) || 0;
+        const memoryAvailable = (data['system.memory.available'] && data['system.memory.available'][0] && data['system.memory.available'][0].value) || 0;
+        const diskUsage = (data['system.disk.usage'] && data['system.disk.usage'][0] && data['system.disk.usage'][0].value) || 0;
+        const networkSent = (data['system.network.bytes_sent'] && data['system.network.bytes_sent'][0] && data['system.network.bytes_sent'][0].value) || 0;
+        const networkRecv = (data['system.network.bytes_recv'] && data['system.network.bytes_recv'][0] && data['system.network.bytes_recv'][0].value) || 0;
+
+        // 进程指标
+        const processCpuUsage = (data['process.cpu.usage'] && data['process.cpu.usage'][0] && data['process.cpu.usage'][0].value) || 0;
+        const processMemoryUsage = (data['process.memory.usage'] && data['process.memory.usage'][0] && data['process.memory.usage'][0].value) || 0;
+        const processDiskWrite = (data['process.disk.write'] && data['process.disk.write'][0] && data['process.disk.write'][0].value) || 0;
+        const processDiskRead = (data['process.disk.read'] && data['process.disk.read'][0] && data['process.disk.read'][0].value) || 0;
+        const goroutines = (data['process.goroutines'] && data['process.goroutines'][0] && data['process.goroutines'][0].value) || 0;
+        const gcCount = (data['process.gc.count'] && data['process.gc.count'][0] && data['process.gc.count'][0].value) || 0;
+        const heapMemory = (data['process.memory.heap'] && data['process.memory.heap'][0] && data['process.memory.heap'][0].value) || 0;
+        const stackMemory = (data['process.memory.stack'] && data['process.memory.stack'][0] && data['process.memory.stack'][0].value) || 0;
+        const gcPause = (data['process.gc.pause_duration'] && data['process.gc.pause_duration'][0] && data['process.gc.pause_duration'][0].value) || 0;
+
+        // 更新系统指标卡片
+        const cpuElement = document.getElementById('cpuUsage');
+        const memoryElement = document.getElementById('memoryUsage');
+        const memoryAvailableElement = document.getElementById('memoryAvailable');
+        const diskAvailableElement = document.getElementById('diskAvailable');
+        const networkUploadElement = document.getElementById('networkUpload');
+        const networkDownloadElement = document.getElementById('networkDownload');
+
+        if (cpuElement) cpuElement.textContent = systemCpuUsage.toFixed(1) + '%';
+        if (memoryElement) memoryElement.textContent = systemMemoryUsage.toFixed(1) + '%';
+        if (memoryAvailableElement) memoryAvailableElement.textContent = memoryAvailable.toFixed(1) + 'GB';
+        if (diskAvailableElement) diskAvailableElement.textContent = (100 - diskUsage).toFixed(1) + '%';
+        if (networkUploadElement) networkUploadElement.textContent = formatBytes(networkSent * 1024 * 1024);
+        if (networkDownloadElement) networkDownloadElement.textContent = formatBytes(networkRecv * 1024 * 1024);
+
+        // 更新进程指标卡片
+        const processCpuElement = document.getElementById('processCpuUsage');
+        const processMemoryElement = document.getElementById('processMemoryUsage');
+        const processDiskWriteElement = document.getElementById('processDiskWrite');
+        const processDiskReadElement = document.getElementById('processDiskRead');
+        const processNetworkUploadElement = document.getElementById('processNetworkUpload');
+        const processNetworkDownloadElement = document.getElementById('processNetworkDownload');
+
+        if (processCpuElement) processCpuElement.textContent = processCpuUsage.toFixed(1) + '%';
+        if (processMemoryElement) processMemoryElement.textContent = processMemoryUsage.toFixed(1) + '%';
+        if (processDiskWriteElement) processDiskWriteElement.textContent = formatBytes(processDiskWrite * 1024 * 1024);
+        if (processDiskReadElement) processDiskReadElement.textContent = formatBytes(processDiskRead * 1024 * 1024);
+        if (processNetworkUploadElement) processNetworkUploadElement.textContent = formatBytes(networkSent * 1024 * 1024 * 0.1); // 假设进程占系统网络的10%
+        if (processNetworkDownloadElement) processNetworkDownloadElement.textContent = formatBytes(networkRecv * 1024 * 1024 * 0.1);
+
+        // 更新详细信息
+        const goroutinesElement = document.getElementById('goroutines');
+        const gcCountElement = document.getElementById('gcCount');
+        const heapElement = document.getElementById('heapMemory');
+        const stackElement = document.getElementById('stackMemory');
+        const gcPauseElement = document.getElementById('gcPause');
+        const storageElement = document.getElementById('storageUsed');
+
+        if (goroutinesElement) goroutinesElement.textContent = formatNumber(goroutines);
+        if (gcCountElement) gcCountElement.textContent = formatNumber(gcCount);
+        if (heapElement) heapElement.textContent = formatBytes(heapMemory);
+        if (stackElement) stackElement.textContent = formatBytes(stackMemory);
+        if (gcPauseElement) gcPauseElement.textContent = gcPause.toFixed(2) + 's';
+
+        // 更新存储信息
+        if (storageElement) {
+            const storageSize = JSON.stringify(metricsHistory).length;
+            storageElement.textContent = formatBytes(storageSize);
+        }
+
+        // 更新时间戳
+        const lastUpdateElement = document.getElementById('lastUpdate');
+        if (lastUpdateElement) {
+            lastUpdateElement.textContent = '{{localize .Ctx "LastUpdated"}}: ' + new Date().toLocaleTimeString();
+        }
+
+    } catch (error) {
+        console.error('Error updating metric cards:', error);
+    }
+}
+
+// 更新图表
+function updateCharts(data) {
+    try {
+        const now = new Date();
+        const timeLabel = now.toLocaleTimeString();
+
+        // 限制历史数据点数量
+        const maxDataPoints = 50;
+
+        // CPU使用率（系统和进程）
+        const systemCpuUsage = (data['system.cpu.usage'] && data['system.cpu.usage'][0] && data['system.cpu.usage'][0].value) || 0;
+        const processCpuUsage = (data['process.cpu.usage'] && data['process.cpu.usage'][0] && data['process.cpu.usage'][0].value) || 0;
+
+        if (systemChart) {
+            systemChart.data.labels.push(timeLabel);
+            systemChart.data.datasets[0].data.push(systemCpuUsage);
+            systemChart.data.datasets[1].data.push(processCpuUsage);
+
+            // 保持数据点数量
+            if (systemChart.data.labels.length > maxDataPoints) {
+                systemChart.data.labels.shift();
+                systemChart.data.datasets.forEach(function(dataset) {
+                    dataset.data.shift();
+                });
+            }
+
+            systemChart.update('none');
+        }
+
+        // 内存使用率（系统和进程）
+        const systemMemoryUsage = (data['system.memory.usage'] && data['system.memory.usage'][0] && data['system.memory.usage'][0].value) || 0;
+        const processMemoryUsage = (data['process.memory.usage'] && data['process.memory.usage'][0] && data['process.memory.usage'][0].value) || 0;
+
+        if (processChart) {
+            processChart.data.labels.push(timeLabel);
+            processChart.data.datasets[0].data.push(systemMemoryUsage);
+            processChart.data.datasets[1].data.push(processMemoryUsage);
+
+            // 保持数据点数量
+            if (processChart.data.labels.length > maxDataPoints) {
+                processChart.data.labels.shift();
+                processChart.data.datasets.forEach(function(dataset) {
+                    dataset.data.shift();
+                });
+            }
+
+            processChart.update('none');
+        }
+
+    } catch (error) {
+        console.error('Error updating charts:', error);
+    }
+}
+
+// 获取指标数据
+function fetchMetrics() {
+    const now = Date.now();
+    if (now - lastFetchTime < 2000) return;
+    lastFetchTime = now;
+
+    fetch('/api/metrics')
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('Failed to fetch metrics');
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            updateMetricCards(data);
+            updateCharts(data);
+            saveMetricsHistory(now, data);
+        })
+        .catch(function(error) {
+            console.warn('API not available, using test data:', error);
+        });
+}
+
+function saveMetricsHistory(timestamp, data) {
+    // 保存到历史记录
+    metricsHistory.push({
+        timestamp: timestamp,
+        data: data
+    });
+
+    // 限制历史记录大小
+    if (metricsHistory.length > 1000) {
+        metricsHistory = metricsHistory.slice(-500);
+    }
+
+    // 保存到 localStorage（异步）
+    setTimeout(function() {
+        try {
+            localStorage.setItem('metricsHistory', JSON.stringify(metricsHistory.slice(-100)));
+        } catch (e) {
+            console.warn('Failed to save to localStorage:', e);
+        }
+    }, 0);
+}
+
+// 刷新指标（防抖版本）
+const refreshMetrics = debounce(fetchMetrics, 1000);
+
+// 切换自动刷新
+function toggleAutoRefresh() {
+    const btn = document.getElementById('autoRefreshBtn');
+    const text = document.getElementById('autoRefreshText');
+
+    if (isAutoRefresh) {
+        clearInterval(autoRefreshInterval);
+        isAutoRefresh = false;
+        text.textContent = '{{localize .Ctx "AutoRefreshOff"}}';
+        btn.className = btn.className.replace('btn-success', 'btn-secondary');
+    } else {
+        autoRefreshInterval = setInterval(fetchMetrics, 10000); // 10秒间隔
+        isAutoRefresh = true;
+        text.textContent = '{{localize .Ctx "AutoRefreshOn"}}';
+        btn.className = btn.className.replace('btn-secondary', 'btn-success');
+    }
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+    // 从 localStorage 恢复历史数据
+    try {
+        const saved = localStorage.getItem('metricsHistory');
+        if (saved) {
+            metricsHistory = JSON.parse(saved);
+        }
+    } catch (e) {
+        console.warn('Failed to load from localStorage:', e);
+        metricsHistory = [];
+    }
+
+    initCharts().then(function() {
+        fetchMetrics();
+    });
+
+    // 时间范围变化监听
+    const timeRangeElement = document.getElementById('timeRange');
+    if (timeRangeElement) {
+        timeRangeElement.addEventListener('change', function() {
+            console.log('Time range changed to:', this.value);
+        });
+    }
+});
+
+// 页面卸载时清理
+window.addEventListener('beforeunload', function() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+});
+</script>
+
+<style>
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.chart-container {
+    height: 300px;
+    margin-top: 1rem;
+}
+
+.header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+@media (max-width: 640px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+</style>

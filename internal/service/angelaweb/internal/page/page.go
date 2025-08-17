@@ -311,3 +311,10 @@ func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
 		"Pagination":       parsePaginationData(pageNum, pageSize, int(total)),
 	}))
 }
+
+// Monitor 显示监控页面.
+func (b *Builder) Monitor(c *fiber.Ctx) error {
+	return c.Render("monitor", addCommonData(c, fiber.Map{
+		"Title": "System Monitor",
+	}))
+}

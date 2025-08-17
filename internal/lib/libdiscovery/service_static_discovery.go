@@ -4,6 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+	"time"
+
+	"github.com/tuihub/librarian/internal/lib/libtime"
 
 	"github.com/go-kratos/kratos/v2/registry"
 )
@@ -11,7 +14,6 @@ import (
 type StaticDiscovery struct {
 	serviceInstances []*registry.ServiceInstance
 	watcherCount     int
-	watcherCh        chan struct{}
 }
 
 func NewStaticDiscovery(addresses []string, name, version string) (*StaticDiscovery, error) {
@@ -35,7 +37,6 @@ func NewStaticDiscovery(addresses []string, name, version string) (*StaticDiscov
 	return &StaticDiscovery{
 		serviceInstances: serviceInstances,
 		watcherCount:     0,
-		watcherCh:        make(chan struct{}),
 	}, nil
 }
 
@@ -49,14 +50,13 @@ func (s *StaticDiscovery) Watch(ctx context.Context, serviceName string) (regist
 
 func (s *StaticDiscovery) Next() ([]*registry.ServiceInstance, error) {
 	if s.watcherCount > 0 {
-		<-s.watcherCh
+		time.Sleep(libtime.Day)
 	}
 	s.watcherCount++
 	return s.serviceInstances, nil
 }
 
 func (s *StaticDiscovery) Stop() error {
-	s.watcherCh <- struct{}{}
 	return nil
 }
 

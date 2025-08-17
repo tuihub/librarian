@@ -8,7 +8,6 @@ import (
 	"github.com/tuihub/librarian/internal/conf"
 	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libauth"
-	"github.com/tuihub/librarian/internal/lib/libobserve"
 	porterpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/porter"
 	sentinelpb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sentinel"
 	pb "github.com/tuihub/protos/pkg/librarian/sephirah/v1/sephirah"
@@ -31,7 +30,6 @@ func NewGRPCServer(
 	sentinelserver sentinelpb.LibrarianSentinelServiceServer,
 	porterserver porterpb.LibrarianSephirahPorterServiceServer,
 	app *libapp.Settings,
-	observer *libobserve.BuiltInObserver,
 	inprocPorter *client.InprocPorter,
 ) (*grpc.Server, error) {
 	validator, err := libapp.NewValidator()
@@ -65,7 +63,6 @@ func NewGRPCServer(
 	if app.EnablePanicRecovery {
 		middlewares = append(middlewares, recovery.Recovery())
 	}
-	middlewares = append(middlewares, libobserve.Server(observer))
 	middlewares = append(middlewares, NewTokenMatcher(auth)...)
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(middlewares...),

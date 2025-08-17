@@ -155,12 +155,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	mq := conf.GetMQ(config)
 	db := data.GetDB(dataData)
 	cache := conf.GetCache(config)
-	builtInObserver, err := libobserve.NewBuiltInObserver()
-	if err != nil {
-		cleanup()
-		return nil, nil, err
-	}
-	libmqMQ, cleanup2, err := libmq.NewMQ(mq, db, cache, settings, builtInObserver)
+	libmqMQ, cleanup2, err := libmq.NewMQ(mq, db, cache, settings)
 	if err != nil {
 		cleanup()
 		return nil, nil, err
@@ -246,19 +241,27 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 	librarianSephirahServiceServer := sephirah.NewLibrarianSephirahService(angela, kether, tiphereth, gebura, binah, yesod, netzach, chesed, supervisorRepo, settings, libauthAuth)
 	librarianSentinelServiceServer := sentinel.NewLibrarianSentinelService(tiphereth, gebura)
 	librarianSephirahPorterServiceServer := porter.NewLibrarianSephirahPorterService(kether, tiphereth, gebura, binah, yesod, netzach, chesed, settings, libauthAuth)
-	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, builtInObserver, inprocPorter)
+	grpcServer, err := server.NewGRPCServer(confServer, libauthAuth, librarianSephirahServiceServer, librarianSentinelServiceServer, librarianSephirahPorterServiceServer, settings, inprocPorter)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	httpServer, err := server.NewGrpcWebServer(grpcServer, confServer, libauthAuth, settings, builtInObserver)
+	httpServer, err := server.NewGrpcWebServer(grpcServer, confServer, libauthAuth, settings)
 	if err != nil {
 		cleanup2()
 		cleanup()
 		return nil, nil, err
 	}
-	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key)
+	openTelemetry := conf.GetOpenTelemetry(config)
+	memoryMetricExporter := libobserve.NewMemoryMetricExporter()
+	observe, err := libobserve.NewObserve(openTelemetry, memoryMetricExporter)
+	if err != nil {
+		cleanup2()
+		cleanup()
+		return nil, nil, err
+	}
+	angelaWeb := angelaweb.NewAngelaWeb(confServer, settings, arg, libauthAuth, angela, tiphereth, gebura, key, observe)
 	clientPorter, err := client.NewPorter(librarianPorterServiceClient, consul, confPorter, inprocPorter)
 	if err != nil {
 		cleanup2()
@@ -273,7 +276,7 @@ func wireServe(arg []*conf.ConfigDigest, config *conf.Config, settings *libapp.S
 		cleanup()
 		return nil, nil, err
 	}
-	app, err := newApp(grpcServer, httpServer, angelaWeb, supervisorService, libmqMQ, cron, builtInObserver, consul, s3, inprocPorter)
+	app, err := newApp(grpcServer, httpServer, angelaWeb, supervisorService, libmqMQ, cron, consul, s3, inprocPorter, observe)
 	if err != nil {
 		cleanup2()
 		cleanup()
