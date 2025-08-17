@@ -6,22 +6,13 @@ import (
 
 	"github.com/tuihub/librarian/pkg/tuihub-go"
 	"github.com/tuihub/librarian/pkg/tuihub-steam/internal"
+	"github.com/tuihub/librarian/pkg/tuihub-steam/internal/model"
 	porter "github.com/tuihub/protos/pkg/librarian/porter/v1"
 	librarian "github.com/tuihub/protos/pkg/librarian/v1"
 )
 
 func NewPorter(version string) (*tuihub.Porter, error) {
-	contextSchema := `{
-		"type": "object",
-		"properties": {
-			"api_key": {
-				"type": "string",
-				"title": "Steam API Key",
-				"description": "Your Steam Web API key"
-			}
-		},
-		"required": ["api_key"]
-	}`
+	contextSchema := tuihub.MustReflectJSONSchema(new(model.PorterContext))
 
 	config := &porter.GetPorterInformationResponse{
 		BinarySummary: &librarian.PorterBinarySummary{

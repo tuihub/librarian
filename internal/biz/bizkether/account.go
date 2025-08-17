@@ -19,8 +19,8 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[model.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *model.PullAccountInfo) error {
-			var configJSONObj model.PullAccountInfoConfig
-			if err := json.Unmarshal([]byte(info.Config.ConfigJSON), &configJSONObj); err != nil {
+			var config model.PullAccountInfoConfig
+			if err := json.Unmarshal([]byte(info.Config.ConfigJSON), &config); err != nil {
 				return err
 			}
 
@@ -28,7 +28,7 @@ func NewPullAccountTopic(
 				return nil
 			}
 			resp, err := a.porter.GetAccount(
-				a.supv.WithAccountPlatform(ctx, configJSONObj.Platform),
+				a.supv.WithAccountPlatform(ctx, config.Platform),
 				&porter.GetAccountRequest{
 					Config: converter.ToPBFeatureRequest(info.Config),
 				},
@@ -38,8 +38,8 @@ func NewPullAccountTopic(
 			}
 			err = a.repo.UpsertAccount(ctx, model.Account{
 				ID:                info.ID,
-				Platform:          configJSONObj.Platform,
-				PlatformAccountID: configJSONObj.PlatformAccountID,
+				Platform:          config.Platform,
+				PlatformAccountID: config.PlatformAccountID,
 				Name:              resp.GetAccount().GetName(),
 				ProfileURL:        resp.GetAccount().GetProfileUrl(),
 				AvatarURL:         resp.GetAccount().GetAvatarUrl(),
@@ -51,8 +51,8 @@ func NewPullAccountTopic(
 			return sr.
 				Publish(ctx, modelkether.PullAccountAppInfoRelation{
 					ID:                info.ID,
-					Platform:          configJSONObj.Platform,
-					PlatformAccountID: configJSONObj.PlatformAccountID,
+					Platform:          config.Platform,
+					PlatformAccountID: config.PlatformAccountID,
 				})
 		},
 	)
