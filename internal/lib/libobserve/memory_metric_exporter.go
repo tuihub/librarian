@@ -54,12 +54,31 @@ func (e *MemoryMetricExporter) Temporality(kind metric.InstrumentKind) metricdat
 
 func (e *MemoryMetricExporter) processMetric(m metricdata.Metrics) {
 	switch data := m.Data.(type) {
+	case metricdata.Gauge[int64]:
+		e.processGaugeInt64(m, data)
 	case metricdata.Gauge[float64]:
 		e.processGauge(m, data)
+	case metricdata.Sum[int64]:
+		e.processSumInt64(m, data)
 	case metricdata.Sum[float64]:
 		e.processSum(m, data)
+	case metricdata.Histogram[int64]:
+		e.processHistogramInt64(m, data)
 	case metricdata.Histogram[float64]:
 		e.processHistogram(m, data)
+	}
+}
+
+func (e *MemoryMetricExporter) processGaugeInt64(m metricdata.Metrics, data metricdata.Gauge[int64]) {
+	for _, point := range data.DataPoints {
+		e.addMetricPoint(MetricPoint{
+			Name:        m.Name,
+			Value:       float64(point.Value),
+			Timestamp:   point.Time,
+			Labels:      attributesToMap(point.Attributes),
+			Description: m.Description,
+			Unit:        m.Unit,
+		})
 	}
 }
 
@@ -68,6 +87,19 @@ func (e *MemoryMetricExporter) processGauge(m metricdata.Metrics, data metricdat
 		e.addMetricPoint(MetricPoint{
 			Name:        m.Name,
 			Value:       point.Value,
+			Timestamp:   point.Time,
+			Labels:      attributesToMap(point.Attributes),
+			Description: m.Description,
+			Unit:        m.Unit,
+		})
+	}
+}
+
+func (e *MemoryMetricExporter) processSumInt64(m metricdata.Metrics, data metricdata.Sum[int64]) {
+	for _, point := range data.DataPoints {
+		e.addMetricPoint(MetricPoint{
+			Name:        m.Name,
+			Value:       float64(point.Value),
 			Timestamp:   point.Time,
 			Labels:      attributesToMap(point.Attributes),
 			Description: m.Description,
@@ -86,6 +118,22 @@ func (e *MemoryMetricExporter) processSum(m metricdata.Metrics, data metricdata.
 			Description: m.Description,
 			Unit:        m.Unit,
 		})
+	}
+}
+
+func (e *MemoryMetricExporter) processHistogramInt64(m metricdata.Metrics, data metricdata.Histogram[int64]) {
+	for _, point := range data.DataPoints {
+		if point.Count > 0 {
+			avg := float64(point.Sum) / float64(point.Count)
+			e.addMetricPoint(MetricPoint{
+				Name:        m.Name + "_avg",
+				Value:       avg,
+				Timestamp:   point.Time,
+				Labels:      attributesToMap(point.Attributes),
+				Description: m.Description + " (average)",
+				Unit:        m.Unit,
+			})
+		}
 	}
 }
 

@@ -6,11 +6,10 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/shirou/gopsutil/v3/cpu"
-	"github.com/shirou/gopsutil/v3/disk"
-	"github.com/shirou/gopsutil/v3/mem"
-	"github.com/shirou/gopsutil/v3/net"
-	"github.com/shirou/gopsutil/v3/process"
+	"github.com/shirou/gopsutil/v4/cpu"
+	"github.com/shirou/gopsutil/v4/mem"
+	"github.com/shirou/gopsutil/v4/net"
+	"github.com/shirou/gopsutil/v4/process"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
@@ -26,8 +25,6 @@ type SystemMetricsCollector struct {
 
 	memoryUsage     metric.Float64Gauge
 	memoryAvailable metric.Float64Gauge
-
-	diskUsage metric.Float64Gauge
 
 	networkBytesSent metric.Float64Counter
 	networkBytesRecv metric.Float64Counter
@@ -73,12 +70,6 @@ func NewSystemMetricsCollector() *SystemMetricsCollector { //nolint:funlen // TO
 		"system.memory.available",
 		metric.WithDescription("Available memory in GB"),
 		metric.WithUnit("GB"),
-	)
-
-	diskUsage, _ := meter.Float64Gauge(
-		"system.disk.usage",
-		metric.WithDescription("Disk usage percentage"),
-		metric.WithUnit("percent"),
 	)
 
 	networkBytesSent, _ := meter.Float64Counter(
@@ -156,7 +147,6 @@ func NewSystemMetricsCollector() *SystemMetricsCollector { //nolint:funlen // TO
 		cpuUsage:               cpuUsage,
 		memoryUsage:            memoryUsage,
 		memoryAvailable:        memoryAvailable,
-		diskUsage:              diskUsage,
 		networkBytesSent:       networkBytesSent,
 		networkBytesRecv:       networkBytesRecv,
 		processCPUUsage:        processCPUUsage,
@@ -174,7 +164,7 @@ func NewSystemMetricsCollector() *SystemMetricsCollector { //nolint:funlen // TO
 	}
 }
 
-func (c *SystemMetricsCollector) Collect(ctx context.Context) { //nolint:gocognit // TODO
+func (c *SystemMetricsCollector) Collect(ctx context.Context) {
 	// Get current process
 	if c.currentProcess == nil {
 		if p, err := process.NewProcess(int32(os.Getpid())); err == nil { //nolint:gosec // Get current process ID
@@ -215,14 +205,6 @@ func (c *SystemMetricsCollector) Collect(ctx context.Context) { //nolint:gocogni
 	}
 
 	// Disk
-	if partitions, err := disk.Partitions(false); err == nil {
-		for _, partition := range partitions {
-			if usage, err1 := disk.Usage(partition.Mountpoint); err1 == nil {
-				c.diskUsage.Record(ctx, usage.UsedPercent,
-					metric.WithAttributes(attribute.String("mountpoint", partition.Mountpoint)))
-			}
-		}
-	}
 	if c.currentProcess != nil {
 		if ioCounters, err := c.currentProcess.IOCounters(); err == nil {
 			c.processDiskWrite.Record(ctx,

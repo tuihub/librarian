@@ -10,10 +10,12 @@
                 {{template "icon-clock" .}}
                 <span id="autoRefreshText">{{localize .Ctx "AutoRefreshOn"}}</span>
             </button>
-            <a href="/debug/pprof" target="_blank" class="btn btn-soft btn-success">
+            {{if .Debug}}
+            <a href="/debug/pprof" target="_blank" class="btn btn-soft btn-ghost">
                 {{template "icon-debug" .}}
                 {{localize .Ctx "PprofDebug"}}
             </a>
+            {{end}}
         </div>
     </div>
 
@@ -21,94 +23,9 @@
     <div class="card mb-6">
         <div class="card-body">
             <div class="flex flex-wrap items-center gap-4">
-                <div class="form-control">
-                    <label class="label">
-                        <span class="label-text">{{localize .Ctx "TimeRange"}}</span>
-                    </label>
-                    <select id="timeRange" class="select select-bordered select-sm">
-                        <option value="5m">{{localize .Ctx "Last5Minutes"}}</option>
-                        <option value="1h" selected>{{localize .Ctx "Last1Hour"}}</option>
-                        <option value="24h">{{localize .Ctx "Last24Hours"}}</option>
-                    </select>
-                </div>
                 <div class="text-sm text-slate-600 dark:text-slate-400" id="lastUpdate">
                     {{localize .Ctx "LastUpdated"}}: --
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 系统指标卡片 -->
-    <div class="stats-grid mb-6">
-        <!-- CPU 使用率 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-primary">
-                    {{template "icon-cpu" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "CpuUsage"}}</div>
-                <div class="stat-value text-primary" id="cpuUsage">--</div>
-                <div class="stat-desc">{{localize .Ctx "SystemLoad"}}</div>
-            </div>
-        </div>
-
-        <!-- 内存使用率 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-secondary">
-                    {{template "icon-memory" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "MemoryUsage"}}</div>
-                <div class="stat-value text-secondary" id="memoryUsage">--</div>
-                <div class="stat-desc">{{localize .Ctx "SystemMemory"}}</div>
-            </div>
-        </div>
-
-        <!-- 可用内存 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-accent">
-                    {{template "icon-storage" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "AvailableMemory"}}</div>
-                <div class="stat-value text-accent" id="memoryAvailable">--</div>
-                <div class="stat-desc">{{localize .Ctx "FreeSpace"}}</div>
-            </div>
-        </div>
-
-        <!-- 硬盘可用空间 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-info">
-                    {{template "icon-storage" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "DiskAvailable"}}</div>
-                <div class="stat-value text-info" id="diskAvailable">--</div>
-                <div class="stat-desc">{{localize .Ctx "FreeSpace"}}</div>
-            </div>
-        </div>
-
-        <!-- 网络上行 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-success">
-                    {{template "icon-network" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "NetworkUpload"}}</div>
-                <div class="stat-value text-success" id="networkUpload">--</div>
-                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
-            </div>
-        </div>
-
-        <!-- 网络下行 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-warning">
-                    {{template "icon-network" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "NetworkDownload"}}</div>
-                <div class="stat-value text-warning" id="networkDownload">--</div>
-                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
             </div>
         </div>
     </div>
@@ -160,30 +77,6 @@
                 <div class="stat-title">{{localize .Ctx "ProcessDiskRead"}}</div>
                 <div class="stat-value text-info" id="processDiskRead">--</div>
                 <div class="stat-desc">{{localize .Ctx "DiskIO"}}</div>
-            </div>
-        </div>
-
-        <!-- 进程网络上行 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-success">
-                    {{template "icon-network" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "ProcessNetworkUpload"}}</div>
-                <div class="stat-value text-success" id="processNetworkUpload">--</div>
-                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
-            </div>
-        </div>
-
-        <!-- 进程网络下行 -->
-        <div class="stats bg-base-100 border-base-300 border">
-            <div class="stat">
-                <div class="stat-figure text-warning">
-                    {{template "icon-network" .}}
-                </div>
-                <div class="stat-title">{{localize .Ctx "ProcessNetworkDownload"}}</div>
-                <div class="stat-value text-warning" id="processNetworkDownload">--</div>
-                <div class="stat-desc">{{localize .Ctx "DataTransfer"}}</div>
             </div>
         </div>
     </div>
@@ -242,12 +135,6 @@
                     <div class="stat">
                         <div class="stat-title">{{localize .Ctx "GcPause"}}</div>
                         <div class="stat-value text-sm" id="gcPause">--</div>
-                    </div>
-                </div>
-                <div class="stats bg-base-100 border-base-300 border">
-                    <div class="stat">
-                        <div class="stat-title">{{localize .Ctx "StorageUsed"}}</div>
-                        <div class="stat-value text-sm" id="storageUsed">--</div>
                     </div>
                 </div>
             </div>
@@ -444,15 +331,6 @@ async function initCharts() {
 // 更新指标卡片
 function updateMetricCards(data) {
     try {
-        // 系统指标
-        const systemCpuUsage = (data['system.cpu.usage'] && data['system.cpu.usage'][0] && data['system.cpu.usage'][0].value) || 0;
-        const systemMemoryUsage = (data['system.memory.usage'] && data['system.memory.usage'][0] && data['system.memory.usage'][0].value) || 0;
-        const memoryAvailable = (data['system.memory.available'] && data['system.memory.available'][0] && data['system.memory.available'][0].value) || 0;
-        const diskUsage = (data['system.disk.usage'] && data['system.disk.usage'][0] && data['system.disk.usage'][0].value) || 0;
-        const networkSent = (data['system.network.bytes_sent'] && data['system.network.bytes_sent'][0] && data['system.network.bytes_sent'][0].value) || 0;
-        const networkRecv = (data['system.network.bytes_recv'] && data['system.network.bytes_recv'][0] && data['system.network.bytes_recv'][0].value) || 0;
-
-        // 进程指标
         const processCpuUsage = (data['process.cpu.usage'] && data['process.cpu.usage'][0] && data['process.cpu.usage'][0].value) || 0;
         const processMemoryUsage = (data['process.memory.usage'] && data['process.memory.usage'][0] && data['process.memory.usage'][0].value) || 0;
         const processDiskWrite = (data['process.disk.write'] && data['process.disk.write'][0] && data['process.disk.write'][0].value) || 0;
@@ -463,35 +341,16 @@ function updateMetricCards(data) {
         const stackMemory = (data['process.memory.stack'] && data['process.memory.stack'][0] && data['process.memory.stack'][0].value) || 0;
         const gcPause = (data['process.gc.pause_duration'] && data['process.gc.pause_duration'][0] && data['process.gc.pause_duration'][0].value) || 0;
 
-        // 更新系统指标卡片
-        const cpuElement = document.getElementById('cpuUsage');
-        const memoryElement = document.getElementById('memoryUsage');
-        const memoryAvailableElement = document.getElementById('memoryAvailable');
-        const diskAvailableElement = document.getElementById('diskAvailable');
-        const networkUploadElement = document.getElementById('networkUpload');
-        const networkDownloadElement = document.getElementById('networkDownload');
-
-        if (cpuElement) cpuElement.textContent = systemCpuUsage.toFixed(1) + '%';
-        if (memoryElement) memoryElement.textContent = systemMemoryUsage.toFixed(1) + '%';
-        if (memoryAvailableElement) memoryAvailableElement.textContent = memoryAvailable.toFixed(1) + 'GB';
-        if (diskAvailableElement) diskAvailableElement.textContent = (100 - diskUsage).toFixed(1) + '%';
-        if (networkUploadElement) networkUploadElement.textContent = formatBytes(networkSent * 1024 * 1024);
-        if (networkDownloadElement) networkDownloadElement.textContent = formatBytes(networkRecv * 1024 * 1024);
-
         // 更新进程指标卡片
         const processCpuElement = document.getElementById('processCpuUsage');
         const processMemoryElement = document.getElementById('processMemoryUsage');
         const processDiskWriteElement = document.getElementById('processDiskWrite');
         const processDiskReadElement = document.getElementById('processDiskRead');
-        const processNetworkUploadElement = document.getElementById('processNetworkUpload');
-        const processNetworkDownloadElement = document.getElementById('processNetworkDownload');
 
         if (processCpuElement) processCpuElement.textContent = processCpuUsage.toFixed(1) + '%';
         if (processMemoryElement) processMemoryElement.textContent = processMemoryUsage.toFixed(1) + '%';
         if (processDiskWriteElement) processDiskWriteElement.textContent = formatBytes(processDiskWrite * 1024 * 1024);
         if (processDiskReadElement) processDiskReadElement.textContent = formatBytes(processDiskRead * 1024 * 1024);
-        if (processNetworkUploadElement) processNetworkUploadElement.textContent = formatBytes(networkSent * 1024 * 1024 * 0.1); // 假设进程占系统网络的10%
-        if (processNetworkDownloadElement) processNetworkDownloadElement.textContent = formatBytes(networkRecv * 1024 * 1024 * 0.1);
 
         // 更新详细信息
         const goroutinesElement = document.getElementById('goroutines');
@@ -499,19 +358,12 @@ function updateMetricCards(data) {
         const heapElement = document.getElementById('heapMemory');
         const stackElement = document.getElementById('stackMemory');
         const gcPauseElement = document.getElementById('gcPause');
-        const storageElement = document.getElementById('storageUsed');
 
         if (goroutinesElement) goroutinesElement.textContent = formatNumber(goroutines);
         if (gcCountElement) gcCountElement.textContent = formatNumber(gcCount);
         if (heapElement) heapElement.textContent = formatBytes(heapMemory);
         if (stackElement) stackElement.textContent = formatBytes(stackMemory);
         if (gcPauseElement) gcPauseElement.textContent = gcPause.toFixed(2) + 's';
-
-        // 更新存储信息
-        if (storageElement) {
-            const storageSize = JSON.stringify(metricsHistory).length;
-            storageElement.textContent = formatBytes(storageSize);
-        }
 
         // 更新时间戳
         const lastUpdateElement = document.getElementById('lastUpdate');
@@ -660,14 +512,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initCharts().then(function() {
         fetchMetrics();
     });
-
-    // 时间范围变化监听
-    const timeRangeElement = document.getElementById('timeRange');
-    if (timeRangeElement) {
-        timeRangeElement.addEventListener('change', function() {
-            console.log('Time range changed to:', this.value);
-        });
-    }
 });
 
 // 页面卸载时清理

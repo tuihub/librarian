@@ -8,6 +8,7 @@ import (
 	"github.com/tuihub/librarian/internal/biz/bizgebura"
 	"github.com/tuihub/librarian/internal/biz/biztiphereth"
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libapp"
 	"github.com/tuihub/librarian/internal/lib/libcache"
 	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelangela"
@@ -21,6 +22,7 @@ import (
 )
 
 type Builder struct {
+	app            *libapp.Settings
 	a              *bizangela.Angela
 	t              *biztiphereth.Tiphereth
 	g              *bizgebura.Gebura
@@ -29,6 +31,7 @@ type Builder struct {
 }
 
 func NewBuilder(
+	app *libapp.Settings,
 	a *bizangela.Angela,
 	t *biztiphereth.Tiphereth,
 	g *bizgebura.Gebura,
@@ -36,6 +39,7 @@ func NewBuilder(
 	userCountCache *libcache.Key[model.UserCount],
 ) *Builder {
 	return &Builder{
+		app:            app,
 		a:              a,
 		t:              t,
 		g:              g,
@@ -315,6 +319,6 @@ func (b *Builder) StoreAppBinaryList(c *fiber.Ctx) error {
 // Monitor 显示监控页面.
 func (b *Builder) Monitor(c *fiber.Ctx) error {
 	return c.Render("monitor", addCommonData(c, fiber.Map{
-		"Title": "System Monitor",
+		"Debug": b.app.BuildType == libapp.BuildTypeDebug,
 	}))
 }

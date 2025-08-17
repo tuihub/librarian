@@ -111,7 +111,7 @@ func NewAngelaWeb(
 
 	res := &AngelaWeb{
 		apiHandler:  api.NewHandler(a, t, g, userCountCache, observer),
-		pageBuilder: page.NewBuilder(a, t, g, digests, userCountCache),
+		pageBuilder: page.NewBuilder(settings, a, t, g, digests, userCountCache),
 		auth:        auth,
 		app:         app,
 		addr:        net.JoinHostPort(c.Admin.Host, strconv.Itoa(int(c.Admin.Port))),
