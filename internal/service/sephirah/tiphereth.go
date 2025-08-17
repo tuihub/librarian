@@ -2,7 +2,6 @@ package sephirah
 
 import (
 	"context"
-	"time"
 
 	"github.com/tuihub/librarian/internal/lib/logger"
 	"github.com/tuihub/librarian/internal/model"
@@ -140,15 +139,7 @@ func (s *LibrarianSephirahService) GetUser(ctx context.Context, req *sephirah.Ge
 func (s *LibrarianSephirahService) LinkAccount(ctx context.Context, req *sephirah.LinkAccountRequest) (
 	*sephirah.LinkAccountResponse, error,
 ) {
-	a, err := s.t.LinkAccount(ctx, model.Account{
-		ID:                0,
-		Platform:          req.GetPlatform(),
-		PlatformAccountID: req.GetPlatformAccountId(),
-		Name:              "",
-		ProfileURL:        "",
-		AvatarURL:         "",
-		LatestUpdateTime:  time.Time{},
-	})
+	a, err := s.t.LinkAccount(ctx, converter.ToBizFeatureRequest(req.GetConfig()))
 	if err != nil {
 		return nil, err
 	}
@@ -157,15 +148,7 @@ func (s *LibrarianSephirahService) LinkAccount(ctx context.Context, req *sephira
 func (s *LibrarianSephirahService) UnLinkAccount(ctx context.Context, req *sephirah.UnLinkAccountRequest) (
 	*sephirah.UnLinkAccountResponse, error,
 ) {
-	if err := s.t.UnLinkAccount(ctx, model.Account{
-		ID:                0,
-		Platform:          req.GetPlatform(),
-		PlatformAccountID: req.GetPlatformAccountId(),
-		Name:              "",
-		ProfileURL:        "",
-		AvatarURL:         "",
-		LatestUpdateTime:  time.Time{},
-	}); err != nil {
+	if err := s.t.UnLinkAccount(ctx, converter.ToBizInternalID(req.GetAccountId())); err != nil {
 		return nil, err
 	}
 	return &sephirah.UnLinkAccountResponse{}, nil

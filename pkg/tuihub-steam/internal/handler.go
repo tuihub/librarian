@@ -68,16 +68,7 @@ func (h *Handler) DisableContext(ctx context.Context, req *porter.DisableContext
 
 func (h *Handler) GetAccount(ctx context.Context, req *porter.GetAccountRequest) (
 	*porter.GetAccountResponse, error) {
-	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
-	if !ok {
-		return nil, errors.BadRequest("context not found", "")
-	}
-	client, ok := clientAny.(model.PorterContext)
-	if !ok {
-		return nil, errors.BadRequest("invalid context", "")
-	}
-	steam := biz.NewSteamUseCase(client.APIKey)
-	u, err := steam.GetUser(ctx, req.GetPlatformAccountId())
+	u, err := h.steam.GetUser(ctx, req.GetPlatformAccountId())
 	if err != nil {
 		return nil, err
 	}
@@ -92,14 +83,6 @@ func (h *Handler) GetAccount(ctx context.Context, req *porter.GetAccountRequest)
 
 func (h *Handler) GetAppInfo(ctx context.Context, req *porter.GetAppInfoRequest) (
 	*porter.GetAppInfoResponse, error) {
-	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
-	if !ok {
-		return nil, errors.BadRequest("context not found", "")
-	}
-	client, ok := clientAny.(model.PorterContext)
-	if !ok {
-		return nil, errors.BadRequest("invalid context", "")
-	}
 	appID, err := strconv.Atoi(req.GetSourceAppId())
 	if err != nil {
 		return nil, err
@@ -176,16 +159,7 @@ func ToPBAppType(t biz.AppType) porter.AppType {
 
 func (h *Handler) SearchAppInfo(ctx context.Context, req *porter.SearchAppInfoRequest) (
 	*porter.SearchAppInfoResponse, error) {
-	clientAny, ok := h.clientMap.Load(req.GetConfig().GetContextId().GetId())
-	if !ok {
-		return nil, errors.BadRequest("context not found", "")
-	}
-	client, ok := clientAny.(model.PorterContext)
-	if !ok {
-		return nil, errors.BadRequest("invalid context", "")
-	}
-	steam := biz.NewSteamUseCase(client.APIKey)
-	al, err := steam.SearchAppByName(ctx, req.GetNameLike())
+	al, err := h.steam.SearchAppByName(ctx, req.GetNameLike())
 	if err != nil {
 		return nil, err
 	}

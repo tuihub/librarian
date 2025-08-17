@@ -254,7 +254,7 @@ func (t *TipherethRepo) GetUserCount(ctx context.Context) (int, error) {
 
 func (t *TipherethRepo) LinkAccount(
 	ctx context.Context,
-	a model.Account,
+	a *model.Account,
 	userID model.InternalID,
 ) (model.InternalID, error) {
 	accountID := a.ID
@@ -308,10 +308,9 @@ func (t *TipherethRepo) LinkAccount(
 	return accountID, nil
 }
 
-func (t *TipherethRepo) UnLinkAccount(ctx context.Context, a model.Account, u model.InternalID) error {
+func (t *TipherethRepo) UnLinkAccount(ctx context.Context, aid model.InternalID, u model.InternalID) error {
 	return t.data.db.Account.Update().Where(
-		account.PlatformEQ(a.Platform),
-		account.PlatformAccountIDEQ(a.PlatformAccountID),
+		account.IDEQ(aid),
 		account.HasBoundUserWith(user.IDEQ(u)),
 	).
 		ClearBoundUser().

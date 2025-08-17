@@ -6,6 +6,7 @@ import (
 
 	"github.com/tuihub/librarian/internal/data"
 	"github.com/tuihub/librarian/internal/lib/libtype"
+	"github.com/tuihub/librarian/internal/model"
 	"github.com/tuihub/librarian/internal/model/modelsupervisor"
 )
 
@@ -47,7 +48,7 @@ func (c *PorterFeatureController) Update(instance *modelsupervisor.PorterInstanc
 		return
 	}
 
-	do := func(flags []*modelsupervisor.FeatureFlag, resMap *libtype.SyncMap[string, []string], res []*modelsupervisor.FeatureFlag) []*modelsupervisor.FeatureFlag {
+	do := func(flags []*model.FeatureFlag, resMap *libtype.SyncMap[string, []string], res []*model.FeatureFlag) []*model.FeatureFlag {
 		markMap := make(map[string]bool)
 		for _, flag := range flags {
 			a, _ := resMap.Load(flag.ID)
