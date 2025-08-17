@@ -126,6 +126,7 @@ func (e emptyRegistrar) Deregister(ctx context.Context, service *registry.Servic
 type emptyWatcher struct{}
 
 func (e emptyWatcher) Next() ([]*registry.ServiceInstance, error) {
+	time.Sleep(time.Hour * 24) //nolint:mnd // 1day
 	return []*registry.ServiceInstance{}, nil
 }
 

@@ -4,8 +4,10 @@ import (
 	"context"
 	"net"
 	"strconv"
+	"time"
 
 	"github.com/tuihub/librarian/internal/conf"
+	"github.com/tuihub/librarian/internal/lib/libtime"
 
 	"github.com/go-kratos/kratos/contrib/registry/consul/v2"
 	"github.com/go-kratos/kratos/v2/registry"
@@ -88,6 +90,7 @@ func (e emptyDiscovery) Watch(ctx context.Context, serviceName string) (registry
 type emptyWatcher struct{}
 
 func (e emptyWatcher) Next() ([]*registry.ServiceInstance, error) {
+	time.Sleep(libtime.Day)
 	return []*registry.ServiceInstance{}, nil
 }
 
