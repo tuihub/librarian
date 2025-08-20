@@ -53,21 +53,21 @@ func (s *SupervisorRepo) GetFeatureMap() *modelsupervisor.ServerFeatureSummaryMa
 	defer s.featureMu.RUnlock()
 	return s.featureMap
 }
-func (s *SupervisorRepo) HasAccountPlatform(config *model.FeatureRequest) bool {
+func (s *SupervisorRepo) HasAccountPlatform(request *model.FeatureRequest) bool {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	for _, p := range s.featureSummary.AccountPlatforms {
-		if p.ID == config.ID {
+		if p.ID == request.ID {
 			return true
 		}
 	}
 	return false
 }
-func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, f *model.FeatureRequest) context.Context {
+func (s *SupervisorRepo) WithAccountPlatform(ctx context.Context, request *model.FeatureRequest) context.Context {
 	s.featureMu.RLock()
 	defer s.featureMu.RUnlock()
 	var config model.PullAccountInfoConfig
-	if err := json.Unmarshal([]byte(f.ConfigJSON), &config); err != nil {
+	if err := json.Unmarshal([]byte(request.ConfigJSON), &config); err != nil {
 		return client.WithPorterFastFail(ctx)
 	}
 	if platforms, ok := s.featureMap.AccountPlatforms.Load(config.Platform); ok {
