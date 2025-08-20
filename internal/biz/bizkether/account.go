@@ -2,7 +2,6 @@ package bizkether
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 
 	"github.com/tuihub/librarian/internal/lib/libmq"
@@ -19,16 +18,11 @@ func NewPullAccountTopic(
 	return libmq.NewTopic[model.PullAccountInfo](
 		"PullAccountInfo",
 		func(ctx context.Context, info *model.PullAccountInfo) error {
-			var config model.PullAccountInfoConfig
-			if err := json.Unmarshal([]byte(info.Config.ConfigJSON), &config); err != nil {
-				return err
-			}
-
 			if !a.supv.HasAccountPlatform(info.Config) {
 				return nil
 			}
 			resp, err := a.porter.GetAccount(
-				a.supv.WithAccountPlatform(ctx, config.Platform),
+				a.supv.WithAccountPlatform(ctx, info.Config),
 				&porter.GetAccountRequest{
 					Config: converter.ToPBFeatureRequest(info.Config),
 				},
@@ -38,8 +32,8 @@ func NewPullAccountTopic(
 			}
 			err = a.repo.UpsertAccount(ctx, model.Account{
 				ID:                info.ID,
-				Platform:          config.Platform,
-				PlatformAccountID: config.PlatformAccountID,
+				Platform:          resp.GetAccount().GetPlatform(),
+				PlatformAccountID: resp.GetAccount().GetPlatformAccountId(),
 				Name:              resp.GetAccount().GetName(),
 				ProfileURL:        resp.GetAccount().GetProfileUrl(),
 				AvatarURL:         resp.GetAccount().GetAvatarUrl(),
@@ -51,8 +45,8 @@ func NewPullAccountTopic(
 			return sr.
 				Publish(ctx, modelkether.PullAccountAppInfoRelation{
 					ID:                info.ID,
-					Platform:          config.Platform,
-					PlatformAccountID: config.PlatformAccountID,
+					Platform:          resp.GetAccount().GetPlatform(),
+					PlatformAccountID: resp.GetAccount().GetPlatformAccountId(),
 				})
 		},
 	)
